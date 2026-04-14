@@ -1,0 +1,180 @@
+@use "sass:color";
+
+// 全局样式重置与默认配置
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html,
+body {
+  width: 100%;
+  height: 100%;
+  font-family:
+    -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue",
+    Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji",
+    "Segoe UI Symbol", "Noto Color Emoji";
+  font-size: $font-size-base;
+  color: $text-primary;
+  background-color: $bg-color;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+#app {
+  width: 100%;
+  height: 100%;
+}
+
+// 滚动条样式
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: $bg-color;
+}
+
+::-webkit-scrollbar-thumb {
+  background: $border-color;
+  border-radius: 3px;
+
+  &:hover {
+    background: $text-secondary;
+  }
+}
+
+// 链接样式
+a {
+  color: $primary-color;
+  text-decoration: none;
+  transition: color 0.3s;
+
+  &:hover {
+    color: color.adjust($primary-color, $lightness: 10%);
+  }
+}
+
+// 图片
+img {
+  max-width: 100%;
+  height: auto;
+  vertical-align: middle;
+}
+
+// 禁用选中
+.no-select {
+  user-select: none;
+}
+
+// 文本省略
+.text-ellipsis {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.text-ellipsis-2 {
+  display: -webkit-box;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+}
+
+// flex 工具类
+.flex {
+  display: flex;
+}
+
+.flex-center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.flex-between {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.flex-col {
+  display: flex;
+  flex-direction: column;
+}
+
+// 间距工具类
+@each $name,
+  $size
+    in (
+      "xs": $spacing-xs,
+      "sm": $spacing-sm,
+      "md": $spacing-md,
+      "lg": $spacing-lg,
+      "xl": $spacing-xl
+    )
+{
+  .m-#{$name} {
+    margin: $size;
+  }
+  .mt-#{$name} {
+    margin-top: $size;
+  }
+  .mb-#{$name} {
+    margin-bottom: $size;
+  }
+  .ml-#{$name} {
+    margin-left: $size;
+  }
+  .mr-#{$name} {
+    margin-right: $size;
+  }
+  .p-#{$name} {
+    padding: $size;
+  }
+  .pt-#{$name} {
+    padding-top: $size;
+  }
+  .pb-#{$name} {
+    padding-bottom: $size;
+  }
+  .pl-#{$name} {
+    padding-left: $size;
+  }
+  .pr-#{$name} {
+    padding-right: $size;
+  }
+}
+
+// 页面容器
+.page-container {
+  padding: $spacing-md;
+  background: $bg-color;
+}
+
+// 卡片容器
+.card-container {
+  background: $bg-light;
+  border-radius: $border-radius;
+  padding: $spacing-md;
+}
+
+// Element Plus 组件覆盖
+.el-button--primary {
+  background-color: $primary-color;
+  border-color: $primary-color;
+
+  &:hover,
+  &:focus {
+    background-color: color.adjust($primary-color, $lightness: 10%);
+    border-color: color.adjust($primary-color, $lightness: 10%);
+  }
+}
+
+.el-menu {
+  border-right: none !important;
+}
