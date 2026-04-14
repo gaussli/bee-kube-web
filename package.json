@@ -1,16 +1,16 @@
 {
   "name": "bee-kube",
-  "private": true,
   "version": "0.0.0",
+  "private": true,
   "type": "module",
   "scripts": {
-    "dev": "vite",
-    "dev:test": "vite --mode test",
     "build": "vue-tsc -b && vite build",
     "build:test": "vue-tsc -b && vite build --mode test",
-    "preview": "vite preview",
+    "dev": "vite",
+    "dev:test": "vite --mode test",
     "lint": "eslint . --ext .vue,.js,.jsx,.cjs,.mjs,.ts,.tsx --fix",
-    "prettier": "prettier --write ."
+    "prettier": "prettier --write .",
+    "preview": "vite preview"
   },
   "dependencies": {
     "@element-plus/icons-vue": "^2.3.2",
@@ -33,6 +33,7 @@
     "eslint-plugin-vue": "^10.8.0",
     "prettier": "^3.8.2",
     "prettier-plugin-organize-imports": "^4.3.0",
+    "prettier-plugin-packagejson": "^3.0.2",
     "sass": "^1.98.0",
     "typescript": "~5.9.3",
     "vite": "^8.0.1",
