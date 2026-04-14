@@ -37,11 +37,13 @@
 </template>
 
 <script setup lang="ts">
-import { reactive, ref } from 'vue'
-import { useRouter } from 'vue-router'
-import { ElMessage } from 'element-plus'
-import { useUserStore } from '@/stores'
+import { reactive, ref } from 'vue';
+import { useRoute, useRouter } from 'vue-router';
+import { ElMessage } from 'element-plus';
+import { useUserStore } from '@/stores';
+import { login } from '@/api';
 
+const route = useRoute()
 const router = useRouter()
 const userStore = useUserStore()
 const formRef = ref()
@@ -64,9 +66,10 @@ async function handleLogin() {
   loading.value = true
 
   try {
-    await userStore.login(loginForm)
-    ElMessage.success('登录成功')
-    router.push('/')
+    await login(loginForm).then((loginResp) => userStore.setToken(loginResp.token));
+    ElMessage.success('登录成功');
+    const redirect = route.query.redirect as string || '/';
+    router.push(redirect);
   } catch (error) {
     console.error('登录失败:', error)
   } finally {

@@ -1,61 +1,85 @@
-import { defineStore } from 'pinia'
-import { ref } from 'vue'
-import { ElMessage } from 'element-plus'
-import type { UserInfo, LoginParams } from '@/types'
-import { storage } from '@/utils'
-import { loginApi } from '@/mock/modules/user'
+import { defineStore } from "pinia";
+import { ref } from "vue";
+import type { CurrentUser, CurrentMenu } from "@/types/auth";
+import { storage } from "@/utils";
 
-export const useUserStore = defineStore('user', () => {
+export const useUserStore = defineStore("user", () => {
   // 状态
-  const token = ref<string>(storage.get('token', '') || '')
-  const userInfo = ref<UserInfo | null>(null)
+  const token = ref<string>(storage.get("token", "") || "");
+  const currentUser = ref<CurrentUser | null>(null);
+  const currentMenus = ref<CurrentMenu[] | null>(null);
+  const currentPermissions = ref<string[] | null>(null);
 
-  // 私有方法：设置 Token
   function setToken(newToken: string) {
-    token.value = newToken
-    storage.set('token', newToken)
+    token.value = newToken;
+    storage.set("token", newToken);
   }
 
-  // 私有方法：设置用户信息
-  function setUserInfo(info: UserInfo) {
-    userInfo.value = info
+  function setCurrentUser(user: CurrentUser) {
+    currentUser.value = user;
+    storage.set("current_user", user);
   }
 
-  // 登录
-  async function login(loginData: LoginParams) {
-    try {
-      const res = await loginApi(loginData)
-      if (res.code === 200 && res.data) {
-        setToken(res.data.token)
-        setUserInfo(res.data.userInfo)
-      } else {
-        ElMessage.error(res.message)
-        throw new Error(res.message)
-      }
-    } catch (error: any) {
-      // 网络异常或业务错误统一处理
-      if (!error.message) {
-        ElMessage.error('网络异常，请稍后重试')
-      }
-      throw error
-    }
+  function setCurrentMenus(menus: CurrentMenu[]) {
+    currentMenus.value = menus;
+    storage.set("current_menus", menus);
   }
 
-  // 退出登录
-  function logout() {
-    token.value = ''
-    userInfo.value = null
-    storage.remove('token')
+  function setCurrentPermissions(permissions: string[]) {
+    currentPermissions.value = permissions;
+    storage.set("current_permissions", permissions);
+  }
+
+  function getToken(): string {
+    return token.value || storage.get("token", "") || "";
+  }
+
+  function getCurrentUser(): CurrentUser | null {
+    return (
+      currentUser.value ?? storage.get<CurrentUser>("current_user") ?? null
+    );
+  }
+
+  function getCurrentMenus(): CurrentMenu[] | null {
+    return (
+      currentMenus.value ?? storage.get<CurrentMenu[]>("current_menus") ?? null
+    );
+  }
+
+  function getCurrentPermissions(): string[] | null {
+    return (
+      currentPermissions.value ??
+      storage.get<string[]>("current_permissions") ??
+      null
+    );
+  }
+
+  async function clear() {
+    token.value = "";
+    currentUser.value = null;
+    currentMenus.value = null;
+    currentPermissions.value = null;
+    storage.remove([
+      "token",
+      "current_user",
+      "current_menus",
+      "current_permissions",
+    ]);
   }
 
   // 检查是否已登录
-  const isLoggedIn = () => !!token.value
+  const isLogin = () => !!getToken();
 
   return {
-    token,
-    userInfo,
-    login,
-    logout,
-    isLoggedIn
-  }
-})
+    setToken,
+    setCurrentUser,
+    setCurrentMenus,
+    setCurrentPermissions,
+    getToken,
+    getCurrentUser,
+    getCurrentMenus,
+    getCurrentPermissions,
+    clear,
+    isLogin,
+  };
+});

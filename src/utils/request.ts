@@ -1,99 +1,143 @@
-import axios, { AxiosInstance, AxiosRequestConfig, AxiosResponse, InternalAxiosRequestConfig } from 'axios'
-import { ElMessage } from 'element-plus'
-import router from '@/router'
+import axios from "axios";
+import type {
+  AxiosInstance,
+  AxiosRequestConfig,
+  AxiosResponse,
+  InternalAxiosRequestConfig,
+} from "axios";
+import { ElMessage } from "element-plus";
+import router from "@/router";
+import { BizError } from "./error";
+import { storage } from ".";
+import { useUserStore } from "@/stores";
+import { mockRequest } from "@/mock";
+
+const useMock = import.meta.env.VITE_USE_MOCK === "true";
 
 // 创建 axios 实例
 const service: AxiosInstance = axios.create({
-  baseURL: import.meta.env.VITE_API_BASE_URL || '/api',
+  baseURL: import.meta.env.VITE_API_BASE_URL || "/api",
   timeout: 15000,
   headers: {
-    'Content-Type': 'application/json;charset=utf-8'
-  }
-})
+    "Content-Type": "application/json;charset=utf-8",
+    Accept: "application/json",
+  },
+});
+
+// 开发环境使用 mock adapter
+if (useMock) {
+  service.defaults.adapter = async (config: InternalAxiosRequestConfig) => {
+    try {
+      const response = await mockRequest(config);
+      return response;
+    } catch (error) {
+      return Promise.reject(error);
+    }
+  };
+}
 
 // 请求拦截器
 service.interceptors.request.use(
   (config: InternalAxiosRequestConfig) => {
-    // 添加 token
-    const token = localStorage.getItem('token')
-    if (token && config.headers) {
-      config.headers.Authorization = `Bearer ${token}`
+    if (!useMock) {
+      const token = useUserStore().getToken();
+      if (token && config.headers) {
+        config.headers.Authorization = `Bearer ${token}`;
+      }
     }
-    return config
+    return config;
   },
   (error) => {
-    console.error('请求错误:', error)
-    return Promise.reject(error)
-  }
-)
+    console.error("请求错误:", error);
+    return Promise.reject(error);
+  },
+);
 
 // 响应拦截器
 service.interceptors.response.use(
   (response: AxiosResponse) => {
-    const { code, message, data } = response.data
-
-    // 业务错误处理
-    if (code !== 200 && code !== 0) {
-      ElMessage.error(message || '请求失败')
-      return Promise.reject(new Error(message || '请求失败'))
+    response.headers && handleRefreshToken(response.headers);
+    const { code, message, data } = response.data;
+    if (code === 20000) {
+      return data;
+    } else if (code === 10002 || code === 10003) {
+      ElMessage.error("登录已过期，请重新登录");
+      storage.clear();
+      router.push("/login");
+    } else {
+      ElMessage.error(`[${code}]: ${message || "请求失败"}`);
     }
-
-    return data
+    return Promise.reject(new BizError(code, message || "请求失败"));
   },
   (error) => {
-    // HTTP 错误处理
     if (error.response) {
-      const { status, data } = error.response
-
-      switch (status) {
-        case 401:
-          ElMessage.error('登录已过期，请重新登录')
-          localStorage.removeItem('token')
-          router.push('/login')
-          break
-        case 403:
-          ElMessage.error('没有权限访问该资源')
-          break
-        case 404:
-          ElMessage.error('请求的资源不存在')
-          break
-        case 500:
-          ElMessage.error('服务器错误，请稍后重试')
-          break
-        default:
-          ElMessage.error(data?.message || '网络错误，请稍后重试')
-      }
+      console.log("服务器响应错误:", error.response);
+      const { status, headers, data } = error.response;
+      headers && handleRefreshToken(headers);
+      ElMessage.error(
+        `[${status}${data?.code ? `|${data.code}` : ""}]: ${data?.message || "网络异常"}`,
+      );
     } else if (error.request) {
-      ElMessage.error('网络连接失败，请检查网络')
+      console.log("请求已发出但没有响应:", error.request);
+      ElMessage.error("网络异常");
     } else {
-      ElMessage.error('请求配置错误')
+      console.log("其他错误:", error.message);
+      ElMessage.error("网络异常");
     }
-
-    return Promise.reject(error)
-  }
-)
-
-// 封装请求方法
-export const request = {
-  get<T = any>(url: string, params?: object, config?: AxiosRequestConfig): Promise<T> {
-    return service.get(url, { params, ...config })
+    return Promise.reject(error);
   },
+);
 
-  post<T = any>(url: string, data?: object, config?: AxiosRequestConfig): Promise<T> {
-    return service.post(url, data, config)
-  },
-
-  put<T = any>(url: string, data?: object, config?: AxiosRequestConfig): Promise<T> {
-    return service.put(url, data, config)
-  },
-
-  delete<T = any>(url: string, params?: object, config?: AxiosRequestConfig): Promise<T> {
-    return service.delete(url, { params, ...config })
-  },
-
-  patch<T = any>(url: string, data?: object, config?: AxiosRequestConfig): Promise<T> {
-    return service.patch(url, data, config)
+function handleRefreshToken(headers: any) {
+  const refreshToken = headers["x-custom-header"];
+  if (refreshToken) {
+    useUserStore().setToken(refreshToken);
   }
 }
 
-export default service
+// 封装请求方法
+export const request = {
+  get<T = any>(
+    url: string,
+    params?: object,
+    data?: object,
+    config?: AxiosRequestConfig,
+  ): Promise<T> {
+    return service.get(url, { params, data, ...config });
+  },
+
+  post<T = any>(
+    url: string,
+    data?: object,
+    config?: AxiosRequestConfig,
+  ): Promise<T> {
+    return service.post(url, data, config);
+  },
+
+  put<T = any>(
+    url: string,
+    data?: object,
+    config?: AxiosRequestConfig,
+  ): Promise<T> {
+    return service.put(url, data, config);
+  },
+
+  delete<T = any>(
+    url: string,
+    params?: object,
+    data?: object,
+    config?: AxiosRequestConfig,
+  ): Promise<T> {
+    return service.delete(url, { params, data, ...config });
+  },
+
+  patch<T = any>(
+    url: string,
+    data?: object,
+    config?: AxiosRequestConfig,
+  ): Promise<T> {
+    return service.patch(url, data, config);
+  },
+};
+
+export default service;

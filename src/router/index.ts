@@ -1,8 +1,13 @@
 import { createRouter, createWebHistory } from "vue-router";
 import type { RouteRecordRaw } from "vue-router";
-import { useUserStore } from "@/stores";
+import type { CurrentMenu } from "@/types";
+import { generateRoutes } from "@/utils/menu";
+import { useUserStore } from "@/stores/user";
+import { getCurrentUser } from "@/api";
 
-// 静态路由
+let dynamicRoutesAdded = false;
+
+// 静态路由（无需权限）
 export const constantRoutes: RouteRecordRaw[] = [
   {
     path: "/login",
@@ -12,53 +17,9 @@ export const constantRoutes: RouteRecordRaw[] = [
   },
   {
     path: "/",
-    redirect: "/dashboard",
-    meta: { requiresAuth: true },
-  },
-  {
-    path: "/dashboard",
-    name: "Dashboard",
-    component: () => import("@/views/dashboard/index.vue"),
+    name: "Home",
+    component: () => import("@/views/home/index.vue"),
     meta: { title: "首页", icon: "HomeFilled", requiresAuth: true },
-  },
-];
-
-// 动态路由（异步加载）
-export const asyncRoutes: RouteRecordRaw[] = [
-  {
-    path: "/system",
-    name: "System",
-    redirect: "/system/user",
-    meta: {
-      title: "系统管理",
-      icon: "Setting",
-      requiresAuth: true,
-      roles: ["admin"],
-    },
-    children: [
-      {
-        path: "/system/user",
-        name: "User",
-        component: () => import("@/views/system/user/index.vue"),
-        meta: {
-          title: "用户管理",
-          icon: "User",
-          requiresAuth: true,
-          roles: ["admin"],
-        },
-      },
-      {
-        path: "/system/role",
-        name: "Role",
-        component: () => import("@/views/system/role/index.vue"),
-        meta: {
-          title: "角色管理",
-          icon: "Avatar",
-          requiresAuth: true,
-          roles: ["admin"],
-        },
-      },
-    ],
   },
 ];
 
@@ -70,21 +31,52 @@ const router = createRouter({
 });
 
 // 路由守卫
-router.beforeEach((to, from, next) => {
+router.beforeEach(async (to, from, next) => {
   const userStore = useUserStore();
+  if (to.path === "/login") {
+    return next();
+  }
+  if (!userStore.isLogin()) {
+    return next({ path: "/login", query: { redirect: to.fullPath } });
+  }
+  if (dynamicRoutesAdded) {
+    return next();
+  }
 
+  // 动态添加路由
+  try {
+    const currentUserResp = await getCurrentUser();
+    userStore.setCurrentUser(currentUserResp.user);
+    userStore.setCurrentMenus(currentUserResp.menus);
+    userStore.setCurrentPermissions(currentUserResp.permissions);
+    if (currentUserResp.menus.length > 0) {
+      addDynamicRoutes(currentUserResp.menus);
+    }
+    dynamicRoutesAdded = true;
+    return next({ ...to, replace: true });
+  } catch {
+    userStore.clear();
+    return next({ path: "/login" });
+  }
+});
+
+router.afterEach((to) => {
   // 设置页面标题
   if (to.meta.title) {
     document.title = `${to.meta.title} - Bee Kube`;
   }
-
-  // 需要登录且未登录
-  if (to.meta.requiresAuth && !userStore.isLoggedIn()) {
-    next({ path: "/login", query: { redirect: to.fullPath } });
-  } else {
-    next();
-  }
 });
+
+// 动态添加路由（作为 Home 的子路由）
+export function addDynamicRoutes(menus: CurrentMenu[]) {
+  const routes = generateRoutes(menus);
+  for (const route of routes) {
+    // 添加到 Home 路由下
+    if (!router.getRoutes().find((r) => r.path === route.path)) {
+      router.addRoute("Home", route);
+    }
+  }
+}
 
 // 重置路由
 export function resetRouter() {

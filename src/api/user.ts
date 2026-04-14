@@ -1,22 +1,60 @@
-import { request } from '@/utils/request'
-import type { LoginParams, LoginResponse, UserInfo } from '@/types'
+import type {
+  PageResp,
+  UserChangeStatusReq,
+  UserDetailResp,
+  UserQueryReq,
+  UserResp,
+  RoleQueryReq,
+  RoleResp,
+} from "@/types";
+import { request } from "@/utils/request";
 
-// 用户登录
-export function login(data: LoginParams) {
-  return request.post<LoginResponse>('/auth/login', data)
+// 分页查询用户列表
+export function getUserPage(data: UserQueryReq) {
+  return request.get<PageResp<UserResp>>("/system/users", data);
 }
 
-// 用户退出
-export function logout() {
-  return request.post('/auth/logout')
+// 获取用户详情
+export function getUserDetail(id: string) {
+  return request.get<UserDetailResp>(`/system/users/${id}`);
 }
 
-// 获取用户信息
-export function getUserInfo() {
-  return request.get<UserInfo>('/user/info')
+// 创建用户
+export function createUser(data: Omit<UserDetailResp, "id">) {
+  return request.post<string>("/system/users", data);
 }
 
-// 更新用户信息
-export function updateUserInfo(data: Partial<UserInfo>) {
-  return request.put('/user/info', data)
+// 更新用户
+export function updateUser(id: string, data: Omit<UserDetailResp, "id">) {
+  return request.post<string>(`/system/users/${id}`, data);
+}
+
+// 修改用户状态
+export function changeUserStatus(id: string, data: UserChangeStatusReq) {
+  return request.post<void>(`/system/users/${id}/status`, data);
+}
+
+// 删除用户
+export function remove(id: string) {
+  return request.delete<void>(`/system/users/${id}`);
+}
+
+// 批量删除用户
+export function batchRemove(ids: string[]) {
+  return request.delete("/system/users", { ids });
+}
+
+// 分页查询用户关联的角色列表
+export function getUserRoles(id: string, data: RoleQueryReq) {
+  return request.get<PageResp<RoleResp>>(`/system/users/${id}/roles`, data);
+}
+
+// 批量绑定用户关联的角色
+export function bindUserRoles(id: string, roleIds: string[]) {
+  return request.post<void>(`/system/users/${id}/roles`, { roleIds });
+}
+
+// 批量解绑用户关联的角色
+export function unbindUserRoles(id: string, roleIds: string[]) {
+  return request.delete<void>(`/system/users/${id}/roles`, { roleIds });
 }

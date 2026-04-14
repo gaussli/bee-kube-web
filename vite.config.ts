@@ -2,7 +2,6 @@ import { defineConfig } from "vite";
 import vue from "@vitejs/plugin-vue";
 import { resolve } from "path";
 
-// https://vite.dev/config/
 export default defineConfig({
   plugins: [vue()],
   resolve: {
@@ -16,6 +15,14 @@ export default defineConfig({
       scss: {
         // 添加全局 SCSS 变量文件
         additionalData: `@use "@/styles/variables.scss" as *;`,
+      },
+    },
+  },
+  server: {
+    proxy: {
+      "/api": {
+        target: "http://localhost:3000", // 本地 mock 服务
+        changeOrigin: true,
       },
     },
   },

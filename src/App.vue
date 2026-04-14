@@ -10,7 +10,7 @@ const userStore = useUserStore()
 
 onMounted(() => {
   // 检查登录状态
-  if (userStore.isLoggedIn()) {
+  if (userStore.isLogin()) {
     // 可以在这里获取用户信息
     console.log('已登录')
   }

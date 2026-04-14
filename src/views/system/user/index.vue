@@ -28,13 +28,13 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref } from 'vue';
 
 const tableData = ref([
   { id: 1, username: 'admin', nickname: '管理员', email: 'admin@example.com', status: 1 },
   { id: 2, username: 'user1', nickname: '用户1', email: 'user1@example.com', status: 1 },
   { id: 3, username: 'user2', nickname: '用户2', email: 'user2@example.com', status: 0 }
-])
+]);
 </script>
 
 <style lang="scss" scoped>
