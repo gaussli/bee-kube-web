@@ -8,28 +8,13 @@
       </template>
       <el-form :model="loginForm" :rules="rules" ref="formRef" label-width="0">
         <el-form-item prop="username">
-          <el-input
-            v-model="loginForm.username"
-            placeholder="请输入用户名"
-            prefix-icon="User"
-            size="large"
-          />
+          <el-input v-model="loginForm.username" placeholder="请输入用户名" prefix-icon="User" size="large" />
         </el-form-item>
         <el-form-item prop="password">
-          <el-input
-            v-model="loginForm.password"
-            type="password"
-            placeholder="请输入密码"
-            prefix-icon="Lock"
-            show-password
-            size="large"
-            @keyup.enter="handleLogin"
-          />
+          <el-input v-model="loginForm.password" type="password" placeholder="请输入密码" prefix-icon="Lock" show-password size="large" @keyup.enter="handleLogin" />
         </el-form-item>
         <el-form-item>
-          <el-button type="primary" size="large" :loading="loading" class="login-btn" @click="handleLogin">
-            登 录
-          </el-button>
+          <el-button type="primary" size="large" :loading="loading" class="login-btn" @click="handleLogin"> 登 录 </el-button>
         </el-form-item>
       </el-form>
     </el-card>
@@ -37,11 +22,11 @@
 </template>
 
 <script setup lang="ts">
-import { reactive, ref } from 'vue';
-import { useRoute, useRouter } from 'vue-router';
-import { ElMessage } from 'element-plus';
-import { useUserStore } from '@/stores';
-import { login } from '@/api';
+import { reactive, ref } from 'vue'
+import { useRoute, useRouter } from 'vue-router'
+import { ElMessage } from 'element-plus'
+import { useUserStore } from '@/stores'
+import { login } from '@/api'
 
 const route = useRoute()
 const router = useRouter()
@@ -66,10 +51,10 @@ async function handleLogin() {
   loading.value = true
 
   try {
-    await login(loginForm).then((loginResp) => userStore.setToken(loginResp.token));
-    ElMessage.success('登录成功');
-    const redirect = route.query.redirect as string || '/';
-    router.push(redirect);
+    await login(loginForm).then(loginResp => userStore.setToken(loginResp.token))
+    ElMessage.success('登录成功')
+    const redirect = (route.query.redirect as string) || '/'
+    router.push(redirect)
   } catch (error) {
     console.error('登录失败:', error)
   } finally {

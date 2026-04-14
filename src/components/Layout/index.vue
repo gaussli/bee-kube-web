@@ -5,13 +5,7 @@
         <img src="@/assets/vue.svg" alt="logo" />
         <span v-show="appStore.sidebarOpened">Bee Kube</span>
       </div>
-      <el-menu
-        :default-active="route.path"
-        :collapse="!appStore.sidebarOpened"
-        :collapse-transition="false"
-        router
-        class="aside-menu"
-      >
+      <el-menu :default-active="route.path" :collapse="!appStore.sidebarOpened" :collapse-transition="false" router class="aside-menu">
         <el-menu-item index="/dashboard">
           <el-icon><HomeFilled /></el-icon>
           <template #title>首页</template>

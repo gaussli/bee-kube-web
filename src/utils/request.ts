@@ -1,143 +1,114 @@
-import axios from "axios";
-import type {
-  AxiosInstance,
-  AxiosRequestConfig,
-  AxiosResponse,
-  InternalAxiosRequestConfig,
-} from "axios";
-import { ElMessage } from "element-plus";
-import router from "@/router";
-import { BizError } from "./error";
-import { storage } from ".";
-import { useUserStore } from "@/stores";
-import { mockRequest } from "@/mock";
+import axios from 'axios'
+import type { AxiosInstance, AxiosRequestConfig, AxiosResponse, InternalAxiosRequestConfig } from 'axios'
+import { ElMessage } from 'element-plus'
+import router from '@/router'
+import { BizError } from './error'
+import { storage } from '.'
+import { useUserStore } from '@/stores'
+import { mockRequest } from '@/mock'
 
-const useMock = import.meta.env.VITE_USE_MOCK === "true";
+const useMock = import.meta.env.VITE_USE_MOCK === 'true'
 
 // 创建 axios 实例
 const service: AxiosInstance = axios.create({
-  baseURL: import.meta.env.VITE_API_BASE_URL || "/api",
+  baseURL: import.meta.env.VITE_API_BASE_URL || '/api',
   timeout: 15000,
   headers: {
-    "Content-Type": "application/json;charset=utf-8",
-    Accept: "application/json",
-  },
-});
+    'Content-Type': 'application/json;charset=utf-8',
+    Accept: 'application/json'
+  }
+})
 
 // 开发环境使用 mock adapter
 if (useMock) {
   service.defaults.adapter = async (config: InternalAxiosRequestConfig) => {
     try {
-      const response = await mockRequest(config);
-      return response;
+      const response = await mockRequest(config)
+      return response
     } catch (error) {
-      return Promise.reject(error);
+      return Promise.reject(error)
     }
-  };
+  }
 }
 
 // 请求拦截器
 service.interceptors.request.use(
   (config: InternalAxiosRequestConfig) => {
     if (!useMock) {
-      const token = useUserStore().getToken();
+      const token = useUserStore().getToken()
       if (token && config.headers) {
-        config.headers.Authorization = `Bearer ${token}`;
+        config.headers.Authorization = `Bearer ${token}`
       }
     }
-    return config;
+    return config
   },
-  (error) => {
-    console.error("请求错误:", error);
-    return Promise.reject(error);
-  },
-);
+  error => {
+    console.error('请求错误:', error)
+    return Promise.reject(error)
+  }
+)
 
 // 响应拦截器
 service.interceptors.response.use(
   (response: AxiosResponse) => {
-    response.headers && handleRefreshToken(response.headers);
-    const { code, message, data } = response.data;
+    response.headers && handleRefreshToken(response.headers)
+    const { code, message, data } = response.data
     if (code === 20000) {
-      return data;
+      return data
     } else if (code === 10002 || code === 10003) {
-      ElMessage.error("登录已过期，请重新登录");
-      storage.clear();
-      router.push("/login");
+      ElMessage.error('登录已过期，请重新登录')
+      storage.clear()
+      router.push('/login')
     } else {
-      ElMessage.error(`[${code}]: ${message || "请求失败"}`);
+      ElMessage.error(`[${code}]: ${message || '请求失败'}`)
     }
-    return Promise.reject(new BizError(code, message || "请求失败"));
+    return Promise.reject(new BizError(code, message || '请求失败'))
   },
-  (error) => {
+  error => {
     if (error.response) {
-      console.log("服务器响应错误:", error.response);
-      const { status, headers, data } = error.response;
-      headers && handleRefreshToken(headers);
-      ElMessage.error(
-        `[${status}${data?.code ? `|${data.code}` : ""}]: ${data?.message || "网络异常"}`,
-      );
+      console.log('服务器响应错误:', error.response)
+      const { status, headers, data } = error.response
+      headers && handleRefreshToken(headers)
+      ElMessage.error(`[${status}${data?.code ? `|${data.code}` : ''}]: ${data?.message || '网络异常'}`)
     } else if (error.request) {
-      console.log("请求已发出但没有响应:", error.request);
-      ElMessage.error("网络异常");
+      console.log('请求已发出但没有响应:', error.request)
+      ElMessage.error('网络异常')
     } else {
-      console.log("其他错误:", error.message);
-      ElMessage.error("网络异常");
+      console.log('其他错误:', error.message)
+      ElMessage.error('网络异常')
     }
-    return Promise.reject(error);
-  },
-);
+    return Promise.reject(error)
+  }
+)
 
 function handleRefreshToken(headers: any) {
-  const refreshToken = headers["x-custom-header"];
+  const refreshToken = headers['x-custom-header']
   if (refreshToken) {
-    useUserStore().setToken(refreshToken);
+    useUserStore().setToken(refreshToken)
   }
 }
 
 // 封装请求方法
 export const request = {
-  get<T = any>(
-    url: string,
-    params?: object,
-    data?: object,
-    config?: AxiosRequestConfig,
-  ): Promise<T> {
-    return service.get(url, { params, data, ...config });
+  get<T = any>(url: string, params?: object, data?: object, config?: AxiosRequestConfig): Promise<T> {
+    return service.get(url, { params, data, ...config })
   },
 
-  post<T = any>(
-    url: string,
-    data?: object,
-    config?: AxiosRequestConfig,
-  ): Promise<T> {
-    return service.post(url, data, config);
+  post<T = any>(url: string, data?: object, config?: AxiosRequestConfig): Promise<T> {
+    return service.post(url, data, config)
   },
 
-  put<T = any>(
-    url: string,
-    data?: object,
-    config?: AxiosRequestConfig,
-  ): Promise<T> {
-    return service.put(url, data, config);
+  put<T = any>(url: string, data?: object, config?: AxiosRequestConfig): Promise<T> {
+    return service.put(url, data, config)
   },
 
-  delete<T = any>(
-    url: string,
-    params?: object,
-    data?: object,
-    config?: AxiosRequestConfig,
-  ): Promise<T> {
-    return service.delete(url, { params, data, ...config });
+  delete<T = any>(url: string, params?: object, data?: object, config?: AxiosRequestConfig): Promise<T> {
+    return service.delete(url, { params, data, ...config })
   },
 
-  patch<T = any>(
-    url: string,
-    data?: object,
-    config?: AxiosRequestConfig,
-  ): Promise<T> {
-    return service.patch(url, data, config);
-  },
-};
+  patch<T = any>(url: string, data?: object, config?: AxiosRequestConfig): Promise<T> {
+    return service.patch(url, data, config)
+  }
+}
 
-export default service;
+export default service

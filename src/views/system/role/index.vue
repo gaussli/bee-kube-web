@@ -28,13 +28,13 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue';
+import { ref } from 'vue'
 
 const tableData = ref([
   { id: 1, name: '超级管理员', code: 'super_admin', description: '拥有所有权限', status: 1 },
   { id: 2, name: '普通管理员', code: 'admin', description: '拥有大部分权限', status: 1 },
   { id: 3, name: '普通用户', code: 'user', description: '拥有基础权限', status: 1 }
-]);
+])
 </script>
 
 <style lang="scss" scoped>
