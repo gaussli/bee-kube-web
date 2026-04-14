@@ -1,11 +1,11 @@
-import axios from 'axios'
-import type { AxiosInstance, AxiosRequestConfig, AxiosResponse, InternalAxiosRequestConfig } from 'axios'
-import { ElMessage } from 'element-plus'
-import router from '@/router'
-import { BizError } from './error'
-import { storage } from '.'
-import { useUserStore } from '@/stores'
 import { mockRequest } from '@/mock'
+import router from '@/router'
+import { useUserStore } from '@/stores'
+import type { AxiosInstance, AxiosRequestConfig, AxiosResponse, InternalAxiosRequestConfig } from 'axios'
+import axios from 'axios'
+import { ElMessage } from 'element-plus'
+import { storage } from '.'
+import { BizError } from './error'
 
 const useMock = import.meta.env.VITE_USE_MOCK === 'true'
 

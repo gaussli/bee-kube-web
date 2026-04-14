@@ -1,6 +1,6 @@
 // 统一导出
-export * from './common'
 export * from './auth'
-export * from './user'
-export * from './role'
+export * from './common'
 export * from './menu'
+export * from './role'
+export * from './user'

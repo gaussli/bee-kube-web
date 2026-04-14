@@ -19,8 +19,8 @@
 </template>
 
 <script setup lang="ts">
+import { Document, Goods, Money, User } from '@element-plus/icons-vue'
 import { reactive } from 'vue'
-import { User, Document, Goods, Money } from '@element-plus/icons-vue'
 
 const stats = reactive([
   { title: '用户总数', value: '1,234', icon: User, color: '#409eff' },

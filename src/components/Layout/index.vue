@@ -58,10 +58,10 @@
 </template>
 
 <script setup lang="ts">
-import { useRoute, useRouter } from 'vue-router'
-import { ElMessageBox } from 'element-plus'
-import { HomeFilled, Setting, Fold, Expand } from '@element-plus/icons-vue'
 import { useAppStore, useUserStore } from '@/stores'
+import { Expand, Fold, HomeFilled, Setting } from '@element-plus/icons-vue'
+import { ElMessageBox } from 'element-plus'
+import { useRoute, useRouter } from 'vue-router'
 
 const route = useRoute()
 const router = useRouter()

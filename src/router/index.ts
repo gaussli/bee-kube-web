@@ -1,9 +1,9 @@
-import { createRouter, createWebHistory } from 'vue-router'
-import type { RouteRecordRaw } from 'vue-router'
+import { getCurrentUser } from '@/api'
+import { useUserStore } from '@/stores/user'
 import type { CurrentMenu } from '@/types'
 import { generateRoutes } from '@/utils/menu'
-import { useUserStore } from '@/stores/user'
-import { getCurrentUser } from '@/api'
+import type { RouteRecordRaw } from 'vue-router'
+import { createRouter, createWebHistory } from 'vue-router'
 
 let dynamicRoutesAdded = false
 

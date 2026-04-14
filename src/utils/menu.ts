@@ -1,5 +1,5 @@
-import type { RouteRecordRaw } from 'vue-router'
 import type { CurrentMenu } from '@/types'
+import type { RouteRecordRaw } from 'vue-router'
 
 // 将菜单转换为路由配置（子路由版本）
 export function generateRoutes(menus: CurrentMenu[]): RouteRecordRaw[] {
