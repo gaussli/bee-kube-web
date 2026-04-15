@@ -1,4 +1,4 @@
-import { request } from '@/utils/request'
+import { request } from '@/utils'
 import type { PageResp, RoleQueryReq, RoleResp, UserChangeStatusReq, UserDetailResp, UserQueryReq, UserResp } from '@/types'
 
 // 分页查询用户列表

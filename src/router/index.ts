@@ -1,7 +1,7 @@
 import { createRouter, createWebHistory } from 'vue-router'
+import { generateRoutes } from '@/utils'
 import { getCurrentUser } from '@/api'
 import { useUserStore } from '@/stores/user'
-import { generateRoutes } from '@/utils/menu'
 import type { RouteRecordRaw } from 'vue-router'
 import type { CurrentMenu } from '@/types'
 

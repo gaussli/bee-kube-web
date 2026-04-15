@@ -4,7 +4,7 @@ import { mockRequest } from '@/mock'
 import router from '@/router'
 import { useUserStore } from '@/stores'
 import { BizError } from './error'
-import { storage } from '.'
+import { storage } from './storage'
 import type { AxiosInstance, AxiosRequestConfig, AxiosResponse, InternalAxiosRequestConfig } from 'axios'
 
 const useMock = import.meta.env.VITE_USE_MOCK === 'true'

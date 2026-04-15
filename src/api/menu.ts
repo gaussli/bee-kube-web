@@ -1,4 +1,4 @@
-import { request } from '@/utils/request'
+import { request } from '@/utils'
 import type { MenuChangeStatusReq, MenuCreateReq, MenuDetailResp, MenuQueryReq, MenuResp, MenuUpdateReq, PageResp, RoleQueryReq, RoleResp } from '@/types'
 
 // 分页查询菜单列表
