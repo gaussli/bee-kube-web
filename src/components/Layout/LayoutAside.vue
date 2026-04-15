@@ -75,7 +75,7 @@ function getIcon(iconName?: string): Component {
   display: flex;
   flex-direction: column;
   height: 100vh;
-  background: $bg-light;
+  background: none;
   transition: width 0.3s;
 
   .logo {
@@ -84,8 +84,7 @@ function getIcon(iconName?: string): Component {
     gap: $spacing-sm;
     height: 60px;
     padding: 0 $spacing-md;
-    background: $primary-color;
-    color: white;
+    background: none;
     font-weight: bold;
 
     img {
@@ -99,6 +98,10 @@ function getIcon(iconName?: string): Component {
     border-right: none;
     background: transparent;
     overflow-y: auto;
+
+    :deep(.el-menu--inline) {
+      background: none;
+    }
   }
 }
 </style>

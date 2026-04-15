@@ -23,7 +23,7 @@
       </el-form>
     </el-card>
     <el-card class="table-card">
-      <el-table v-loading="loading" :data="tableData" @selection-change="handleSelectionChange">
+      <el-table v-loading="loading" :data="tableData" height="100%" @selection-change="handleSelectionChange">
         <el-table-column type="selection" width="55" />
         <el-table-column prop="id" width="300">
           <template #header>
@@ -175,6 +175,10 @@ onMounted(() => {
   .query-card {
     flex-shrink: 0;
     margin-bottom: 16px;
+
+    :deep(.el-card__body) {
+      padding: 0;
+    }
   }
 
   .table-card {
@@ -182,6 +186,14 @@ onMounted(() => {
     display: flex;
     flex-direction: column;
     overflow: hidden;
+
+    :deep(.el-card__body) {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      padding: 0;
+      overflow: hidden;
+    }
   }
 
   .query-form {
@@ -208,10 +220,6 @@ onMounted(() => {
     tr:hover > td.el-table__cell {
       border-radius: $border-radius;
     }
-  }
-
-  :deep(.el-table__body-wrapper) {
-    overflow-y: auto;
   }
 
   :deep(.el-table__body) {

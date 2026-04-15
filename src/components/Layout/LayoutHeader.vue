@@ -163,8 +163,7 @@ function handlePasswordSubmit() {
   justify-content: space-between;
   height: 60px;
   padding: 0 $spacing-md;
-  background: $bg-light;
-  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
+  background: none;
 
   .header-left {
     display: flex;
