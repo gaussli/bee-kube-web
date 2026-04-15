@@ -5,7 +5,7 @@
       <span v-show="appStore.sidebarOpened">Bee Kube</span>
     </div>
     <el-menu :default-active="route.path" :collapse="!appStore.sidebarOpened" :collapse-transition="false" router class="aside-menu">
-      <template v-for="item in menus" :key="item.id">
+      <template v-for="item in menuList" :key="item.id">
         <el-menu-item v-if="!item.children?.length" :index="item.frontPath || '/'">
           <el-icon>
             <component :is="getIcon(item.frontIcon)" />
@@ -29,6 +29,7 @@
 </template>
 
 <script setup lang="ts">
+import { computed } from 'vue'
 import { useAppStore } from '@/stores'
 import type { CurrentMenu } from '@/types/auth'
 import { HomeFilled, Setting } from '@element-plus/icons-vue'
@@ -37,12 +38,25 @@ import { useRoute } from 'vue-router'
 
 defineOptions({ name: 'LayoutAside' })
 
-defineProps<{
+const props = defineProps<{
   menus: CurrentMenu[]
 }>()
 
 const appStore = useAppStore()
 const route = useRoute()
+
+// 默认 dashboard 菜单
+const dashboardMenu: CurrentMenu = {
+  id: 'dashboard',
+  code: 'dashboard',
+  name: '仪表盘',
+  frontPath: '/dashboard',
+  frontIcon: 'HomeFilled',
+  type: 1
+}
+
+// 合并后的菜单列表（dashboard 在首位）
+const menuList = computed(() => [dashboardMenu, ...props.menus])
 
 const iconMap: Record<string, Component> = {
   HomeFilled,

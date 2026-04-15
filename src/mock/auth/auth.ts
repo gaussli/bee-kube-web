@@ -39,6 +39,7 @@ function getCurrentUser(): CurrentUserResp {
             name: '用户管理',
             frontPath: '/system/user',
             frontIcon: 'User',
+            frontComponent: 'system/user/index',
             type: 1
           },
           {
@@ -47,6 +48,7 @@ function getCurrentUser(): CurrentUserResp {
             name: '角色管理',
             frontPath: '/system/role',
             frontIcon: 'Avatar',
+            frontComponent: 'system/role/index',
             type: 1
           },
           {
@@ -55,6 +57,7 @@ function getCurrentUser(): CurrentUserResp {
             name: '菜单管理',
             frontPath: '/system/menu',
             frontIcon: 'Menu',
+            frontComponent: 'system/menu/index',
             type: 1
           }
         ]

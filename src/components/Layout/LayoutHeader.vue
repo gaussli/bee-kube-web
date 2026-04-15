@@ -56,6 +56,7 @@
 </template>
 
 <script setup lang="ts">
+import { logout } from '@/api/auth'
 import { resetRouter } from '@/router'
 import { useAppStore, useUserStore } from '@/stores'
 import { ArrowDown, Close, Expand, Fold, FullScreen, Lock, Setting, SwitchButton, User } from '@element-plus/icons-vue'
@@ -126,14 +127,22 @@ async function handleCommand(command: string) {
       ElMessage.info('系统设置功能开发中')
       break
     case 'logout':
-      await ElMessageBox.confirm('确定要退出登录吗？', '提示', {
-        type: 'warning'
-      })
-      userStore.clear()
-      resetRouter()
-      router.push('/login')
+      await handleLogout()
       break
   }
+}
+
+async function handleLogout() {
+  await ElMessageBox.confirm('确定要退出登录吗？', '提示', { type: 'warning' })
+  try {
+    await logout()
+    ElMessage.success('退出登录成功')
+  } catch {
+    // 忽略退出接口错误，继续清理
+  }
+  userStore.clear()
+  resetRouter()
+  router.push('/login')
 }
 
 function handlePasswordSubmit() {

@@ -1,16 +1,55 @@
 <template>
   <div class="dashboard">
     <el-row :gutter="20">
-      <el-col :span="6" v-for="item in stats" :key="item.title">
-        <el-card shadow="hover" class="stat-card">
-          <div class="stat-content">
-            <div class="stat-info">
-              <p class="stat-title">{{ item.title }}</p>
-              <p class="stat-value">{{ item.value }}</p>
+      <el-col :span="6">
+        <el-card shadow="hover">
+          <div class="stat-card">
+            <div class="stat-icon" style="background: #409eff">
+              <el-icon><User /></el-icon>
             </div>
-            <el-icon class="stat-icon" :style="{ color: item.color }">
-              <component :is="item.icon" />
-            </el-icon>
+            <div class="stat-info">
+              <div class="stat-value">1,024</div>
+              <div class="stat-label">用户总数</div>
+            </div>
+          </div>
+        </el-card>
+      </el-col>
+      <el-col :span="6">
+        <el-card shadow="hover">
+          <div class="stat-card">
+            <div class="stat-icon" style="background: #67c23a">
+              <el-icon><Document /></el-icon>
+            </div>
+            <div class="stat-info">
+              <div class="stat-value">5,678</div>
+              <div class="stat-label">订单总数</div>
+            </div>
+          </div>
+        </el-card>
+      </el-col>
+      <el-col :span="6">
+        <el-card shadow="hover">
+          <div class="stat-card">
+            <div class="stat-icon" style="background: #e6a23c">
+              <el-icon><Goods /></el-icon>
+            </div>
+            <div class="stat-info">
+              <div class="stat-value">888</div>
+              <div class="stat-label">商品总数</div>
+            </div>
+          </div>
+        </el-card>
+      </el-col>
+      <el-col :span="6">
+        <el-card shadow="hover">
+          <div class="stat-card">
+            <div class="stat-icon" style="background: #f56c6c">
+              <el-icon><Warning /></el-icon>
+            </div>
+            <div class="stat-info">
+              <div class="stat-value">12</div>
+              <div class="stat-label">待处理</div>
+            </div>
           </div>
         </el-card>
       </el-col>
@@ -19,46 +58,40 @@
 </template>
 
 <script setup lang="ts">
-import { Document, Goods, Money, User } from '@element-plus/icons-vue'
-import { reactive } from 'vue'
+import { Document, Goods, User, Warning } from '@element-plus/icons-vue'
 
-const stats = reactive([
-  { title: '用户总数', value: '1,234', icon: User, color: '#409eff' },
-  { title: '订单总数', value: '5,678', icon: Document, color: '#67c23a' },
-  { title: '商品总数', value: '890', icon: Goods, color: '#e6a23c' },
-  { title: '销售总额', value: '¥99,999', icon: Money, color: '#f56c6c' }
-])
+defineOptions({ name: 'Dashboard' })
 </script>
 
 <style lang="scss" scoped>
 .dashboard {
-  padding: $spacing-md;
-
   .stat-card {
-    margin-bottom: $spacing-md;
+    display: flex;
+    align-items: center;
+    gap: $spacing-md;
 
-    .stat-content {
+    .stat-icon {
       display: flex;
-      justify-content: space-between;
       align-items: center;
+      justify-content: center;
+      width: 60px;
+      height: 60px;
+      border-radius: 8px;
+      color: white;
+      font-size: 24px;
+    }
 
-      .stat-info {
-        .stat-title {
-          margin: 0 0 $spacing-xs;
-          color: $text-secondary;
-          font-size: $font-size-sm;
-        }
-
-        .stat-value {
-          margin: 0;
-          font-size: $font-size-xl;
-          font-weight: bold;
-          color: $text-primary;
-        }
+    .stat-info {
+      .stat-value {
+        font-size: 24px;
+        font-weight: bold;
+        color: $text-primary;
       }
 
-      .stat-icon {
-        font-size: 48px;
+      .stat-label {
+        font-size: 14px;
+        color: $text-secondary;
+        margin-top: 4px;
       }
     }
   }

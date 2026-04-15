@@ -1,6 +1,9 @@
 import type { CurrentMenu } from '@/types'
 import type { RouteRecordRaw } from 'vue-router'
 
+// 使用 glob 预加载所有 views 下的 .vue 文件
+const modules = import.meta.glob('@/views/**/*.vue')
+
 // 将菜单转换为路由配置（子路由版本）
 export function generateRoutes(menus: CurrentMenu[]): RouteRecordRaw[] {
   const routes: RouteRecordRaw[] = []
@@ -23,7 +26,8 @@ export function generateRoutes(menus: CurrentMenu[]): RouteRecordRaw[] {
 
     // 动态导入组件
     if (menu.frontComponent) {
-      route.component = () => import(`@/views/${menu.frontComponent}.vue`)
+      const componentPath = `/src/views/${menu.frontComponent}.vue`
+      route.component = modules[componentPath]
     }
 
     // 处理子菜单（递归）

@@ -18,8 +18,17 @@ export const constantRoutes: RouteRecordRaw[] = [
   {
     path: '/',
     name: 'Home',
+    redirect: '/dashboard',
     component: () => import('@/views/home/index.vue'),
-    meta: { title: '首页', icon: 'HomeFilled', requiresAuth: true }
+    meta: { title: '首页', icon: 'HomeFilled', requiresAuth: true },
+    children: [
+      {
+        path: '/dashboard',
+        name: 'Dashboard',
+        component: () => import('@/views/dashboard/index.vue'),
+        meta: { title: '仪表盘', icon: 'HomeFilled' }
+      }
+    ]
   }
 ]
 
@@ -54,6 +63,7 @@ router.beforeEach(async (to, from, next) => {
     if (currentUserResp.menus.length > 0) {
       addDynamicRoutes(currentUserResp.menus)
     }
+    console.log(router.getRoutes())
     dynamicRoutesAdded = true
     return next({ ...to, replace: true })
   } catch {
