@@ -40,11 +40,13 @@ router.beforeEach(async (to, from, next) => {
     return next({ path: '/login', query: { redirect: to.fullPath } })
   }
   if (dynamicRoutesAdded) {
+    console.log('dynamicRoutesAdded == true')
     return next()
   }
 
   // 动态添加路由
   try {
+    console.log('running set userinfo')
     const currentUserResp = await getCurrentUser()
     userStore.setCurrentUser(currentUserResp.user)
     userStore.setCurrentMenus(currentUserResp.menus)
@@ -87,6 +89,7 @@ export function resetRouter() {
       router.removeRoute(name)
     }
   })
+  dynamicRoutesAdded = false
 }
 
 export default router
