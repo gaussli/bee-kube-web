@@ -42,7 +42,7 @@ const bgColor = computed(() => {
     '#DCEDC1', // 浅草绿
     '#B5EAD7', // 薄荷绿
     '#C7CEEA', // 淡紫蓝
-    '#FFB7B2'  // 浅珊瑚
+    '#FFB7B2' // 浅珊瑚
   ]
   const index = ((props.name || '').charCodeAt(0) || 0) % colors.length
   return colors[index]

@@ -14,7 +14,7 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 import UserAvatar from '@/components/UserAvatar/index.vue'
-import type { UserGender } from '@/types/user'
+import type { UserGender } from '@/types'
 
 defineOptions({ name: 'UserProfile' })
 

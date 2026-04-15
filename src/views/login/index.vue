@@ -22,11 +22,11 @@
 </template>
 
 <script setup lang="ts">
-import { login } from '@/api'
-import { useUserStore } from '@/stores'
-import { ElMessage } from 'element-plus'
 import { reactive, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
+import { ElMessage } from 'element-plus'
+import { login } from '@/api'
+import { useUserStore } from '@/stores'
 
 const route = useRoute()
 const router = useRouter()

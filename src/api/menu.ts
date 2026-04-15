@@ -1,5 +1,5 @@
-import type { MenuChangeStatusReq, MenuCreateReq, MenuDetailResp, MenuQueryReq, MenuResp, MenuUpdateReq, PageResp, RoleQueryReq, RoleResp } from '@/types'
 import { request } from '@/utils/request'
+import type { MenuChangeStatusReq, MenuCreateReq, MenuDetailResp, MenuQueryReq, MenuResp, MenuUpdateReq, PageResp, RoleQueryReq, RoleResp } from '@/types'
 
 // 分页查询菜单列表
 export function getMenuPage(data: MenuQueryReq) {

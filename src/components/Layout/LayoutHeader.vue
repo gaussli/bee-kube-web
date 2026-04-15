@@ -56,13 +56,13 @@
 </template>
 
 <script setup lang="ts">
-import { logout } from '@/api/auth'
-import { resetRouter } from '@/router'
-import { useAppStore, useUserStore } from '@/stores'
-import { ArrowDown, Close, Expand, Fold, FullScreen, Lock, Setting, SwitchButton, User } from '@element-plus/icons-vue'
-import { ElMessage, ElMessageBox } from 'element-plus'
 import { computed, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
+import { ElMessage, ElMessageBox } from 'element-plus'
+import { ArrowDown, Close, Expand, Fold, FullScreen, Lock, Setting, SwitchButton, User } from '@element-plus/icons-vue'
+import { logout } from '@/api'
+import { resetRouter } from '@/router'
+import { useAppStore, useUserStore } from '@/stores'
 
 defineOptions({ name: 'LayoutHeader' })
 

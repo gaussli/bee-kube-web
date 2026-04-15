@@ -1,5 +1,5 @@
-import { defineStore } from 'pinia'
 import { ref } from 'vue'
+import { defineStore } from 'pinia'
 
 export const useAppStore = defineStore('app', () => {
   // 侧边栏展开状态

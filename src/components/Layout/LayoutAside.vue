@@ -30,11 +30,11 @@
 
 <script setup lang="ts">
 import { computed } from 'vue'
-import { useAppStore } from '@/stores'
-import type { CurrentMenu } from '@/types/auth'
-import { HomeFilled, Setting } from '@element-plus/icons-vue'
-import type { Component } from 'vue'
 import { useRoute } from 'vue-router'
+import { HomeFilled, Setting } from '@element-plus/icons-vue'
+import { useAppStore } from '@/stores'
+import type { Component } from 'vue'
+import type { CurrentMenu } from '@/types'
 
 defineOptions({ name: 'LayoutAside' })
 

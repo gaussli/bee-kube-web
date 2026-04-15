@@ -1,5 +1,5 @@
-import type { CurrentUserResp, LoginReq, LoginResp } from '@/types'
 import { request } from '@/utils/request'
+import type { CurrentUserResp, LoginReq, LoginResp } from '@/types'
 
 // 用户登录
 export function login(data: LoginReq) {

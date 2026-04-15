@@ -1,7 +1,7 @@
-import type { CurrentMenu, CurrentUser } from '@/types/auth'
-import { storage } from '@/utils'
-import { defineStore } from 'pinia'
 import { ref } from 'vue'
+import { defineStore } from 'pinia'
+import { storage } from '@/utils'
+import type { CurrentMenu, CurrentUser } from '@/types'
 
 export const useUserStore = defineStore('user', () => {
   // 状态

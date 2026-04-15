@@ -1,5 +1,5 @@
-import type { CurrentUserResp, LoginReq, LoginResp } from '@/types'
 import { UserGender } from '@/types'
+import type { CurrentUserResp, LoginReq, LoginResp } from '@/types'
 
 function login(req: LoginReq): LoginResp {
   return {

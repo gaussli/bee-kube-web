@@ -1,5 +1,5 @@
-import type { CurrentMenu } from '@/types'
 import type { RouteRecordRaw } from 'vue-router'
+import type { CurrentMenu } from '@/types'
 
 // 使用 glob 预加载所有 views 下的 .vue 文件
 const modules = import.meta.glob('@/views/**/*.vue')

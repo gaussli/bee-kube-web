@@ -92,16 +92,16 @@
 
 <script setup lang="ts">
 import { onMounted, reactive, ref } from 'vue'
-import { Delete, Key, Plus, Refresh, Search, User, CircleCheck, Clock, EditPen } from '@element-plus/icons-vue'
 import { ElMessage, ElMessageBox } from 'element-plus'
-import { getUserPage } from '@/api/user'
+import { Delete, Key, Plus, Refresh, Search, User, CircleCheck, Clock, EditPen } from '@element-plus/icons-vue'
+import { getUserPage } from '@/api'
+import AuditCell from '@/components/AuditCell/index.vue'
 import IconLabel from '@/components/IconLabel/index.vue'
+import StatusCell from '@/components/StatusCell/index.vue'
 import TextCopyableCell from '@/components/TextCopyableCell/index.vue'
 import UserCell from '@/components/UserCell/index.vue'
-import StatusCell from '@/components/StatusCell/index.vue'
-import AuditCell from '@/components/AuditCell/index.vue'
 import type { UserQueryReq } from '@/types'
-import type { UserResp } from '@/types/user'
+import type { UserResp } from '@/types'
 
 defineOptions({ name: 'UserManage' })
 
