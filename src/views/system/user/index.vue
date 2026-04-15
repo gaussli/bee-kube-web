@@ -1,33 +1,28 @@
 <template>
   <div class="user-list">
-    <el-card>
-      <template #header>
-        <el-form :inline="true" :model="queryForm" class="query-form">
-          <el-form-item label="用户名">
-            <el-input v-model="queryForm.username" placeholder="请输入用户名" clearable />
-          </el-form-item>
-          <el-form-item label="昵称">
-            <el-input v-model="queryForm.nickname" placeholder="请输入昵称" clearable />
-          </el-form-item>
-          <el-form-item label="状态">
-            <el-select v-model="queryForm.status" placeholder="请选择状态" clearable>
-              <el-option label="启用" :value="1" />
-              <el-option label="禁用" :value="0" />
-            </el-select>
-          </el-form-item>
-          <el-form-item>
-            <el-button type="primary" :icon="Search" @click="handleSearch">搜索</el-button>
-            <el-button :icon="Refresh" @click="handleReset">重置</el-button>
-          </el-form-item>
-        </el-form>
-        <div class="card-header">
-          <span>用户管理</span>
-          <div class="actions">
-            <el-button v-if="selectedRows.length > 0" type="danger" :icon="Delete" @click="handleBatchDelete"> 批量删除 ({{ selectedRows.length }}) </el-button>
-            <el-button type="primary" :icon="Plus">新增用户</el-button>
-          </div>
-        </div>
-      </template>
+    <el-card class="query-card">
+      <el-form :inline="true" :model="queryForm" class="query-form">
+        <el-form-item label="用户名">
+          <el-input v-model="queryForm.username" placeholder="请输入用户名" clearable />
+        </el-form-item>
+        <el-form-item label="昵称">
+          <el-input v-model="queryForm.nickname" placeholder="请输入昵称" clearable />
+        </el-form-item>
+        <el-form-item label="状态">
+          <el-select v-model="queryForm.status" placeholder="请选择状态" clearable>
+            <el-option label="启用" :value="1" />
+            <el-option label="禁用" :value="0" />
+          </el-select>
+        </el-form-item>
+        <el-form-item>
+          <el-button type="primary" :icon="Search" @click="handleSearch">搜索</el-button>
+          <el-button :icon="Refresh" @click="handleReset">重置</el-button>
+          <el-button v-if="selectedRows.length > 0" type="danger" :icon="Delete" @click="handleBatchDelete"> 批量删除 ({{ selectedRows.length }}) </el-button>
+          <el-button type="primary" :icon="Plus">新增用户</el-button>
+        </el-form-item>
+      </el-form>
+    </el-card>
+    <el-card class="table-card">
       <el-table v-loading="loading" :data="tableData" @selection-change="handleSelectionChange">
         <el-table-column type="selection" width="55" />
         <el-table-column prop="id" width="300">
@@ -173,28 +168,35 @@ onMounted(() => {
 
 <style lang="scss" scoped>
 .user-list {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+
+  .query-card {
+    flex-shrink: 0;
+    margin-bottom: 16px;
+  }
+
+  .table-card {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+  }
+
   .query-form {
     margin-bottom: 0;
   }
 
-  .card-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-
-    .actions {
-      display: flex;
-      gap: $spacing-sm;
-    }
-  }
-
   .pagination {
+    flex-shrink: 0;
     display: flex;
     justify-content: flex-end;
     margin-top: 16px;
   }
 
   :deep(.el-table) {
+    flex: 1;
     --el-table-border-color: transparent;
     border-radius: $border-radius-lg;
 
@@ -206,6 +208,10 @@ onMounted(() => {
     tr:hover > td.el-table__cell {
       border-radius: $border-radius;
     }
+  }
+
+  :deep(.el-table__body-wrapper) {
+    overflow-y: auto;
   }
 
   :deep(.el-table__body) {
