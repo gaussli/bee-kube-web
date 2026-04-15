@@ -2,22 +2,33 @@
   <div class="user-profile">
     <UserAvatar :src="avatar" :name="username" :size="36" />
     <div class="user-info">
-      <div class="username">{{ username }}</div>
+      <div class="username">
+        {{ username }}
+        <span v-if="gender !== undefined && gender !== null" class="gender">{{ genderText }}</span>
+      </div>
       <div class="nickname">{{ nickname || '-' }}</div>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
+import { computed } from 'vue'
 import UserAvatar from '@/components/UserAvatar/index.vue'
+import type { UserGender } from '@/types/user'
 
 defineOptions({ name: 'UserProfile' })
 
-defineProps<{
+const props = defineProps<{
   avatar?: string
   username: string
   nickname?: string
+  gender?: UserGender
 }>()
+
+const genderText = computed(() => {
+  const map = { 0: '♀', 1: '♂' }
+  return props.gender !== undefined && props.gender !== null ? map[props.gender] : ''
+})
 </script>
 
 <style lang="scss" scoped>
@@ -35,6 +46,9 @@ defineProps<{
     min-width: 0;
 
     .username {
+      display: flex;
+      align-items: center;
+      gap: 6px;
       font-size: 14px;
       font-weight: 600;
       color: #303133;
@@ -42,6 +56,11 @@ defineProps<{
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
+
+      .gender {
+        font-size: 12px;
+        color: $text-secondary;
+      }
     }
 
     .nickname {

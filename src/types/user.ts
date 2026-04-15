@@ -62,6 +62,7 @@ export interface UserChangeStatusReq {
 export interface UserResp extends BaseEntity {
   username: string
   nickname: string
+  gender?: UserGender
   status: UserStatus
 }
 

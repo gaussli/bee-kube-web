@@ -12,18 +12,74 @@ function generateId(): string {
   return id
 }
 
-// Mock 用户数据（更真实）
+// 生成随机日期
+function randomDate(start: Date, end: Date): string {
+  const date = new Date(start.getTime() + Math.random() * (end.getTime() - start.getTime()))
+  return date.toISOString().replace('T', ' ').slice(0, 19)
+}
+
+// Mock 用户数据（60条）
 const mockUsers: UserResp[] = [
-  { id: generateId(), username: 'admin', nickname: '超级管理员', status: 1, createAt: '2024-01-15 09:30:22', createBy: 'system', updateAt: '2024-04-10 14:22:35', updateBy: 'admin' },
-  { id: generateId(), username: 'zhangsan', nickname: '张三', status: 1, createAt: '2024-02-08 14:15:36', createBy: 'admin', updateAt: '2024-04-12 10:05:18', updateBy: 'admin' },
-  { id: generateId(), username: 'lisi', nickname: '李四', status: 1, createAt: '2024-02-20 10:45:11', createBy: 'admin', updateAt: '2024-04-08 16:30:42', updateBy: 'zhangsan' },
-  { id: generateId(), username: 'wangwu', nickname: '王五', status: 0, createAt: '2024-03-05 16:22:08', createBy: 'admin', updateAt: '2024-04-11 11:15:27', updateBy: 'admin' },
-  { id: generateId(), username: 'zhaoliu', nickname: '赵六', status: 1, createAt: '2024-03-12 08:55:43', createBy: 'zhangsan', updateAt: '2024-04-09 09:42:51', updateBy: 'zhangsan' },
+  { id: generateId(), username: 'admin', nickname: '超级管理员', gender: 1, status: 1, createAt: '2024-01-15 09:30:22', createBy: 'system', updateAt: '2024-04-10 14:22:35', updateBy: 'admin' },
+  { id: generateId(), username: 'zhangsan', nickname: '张三', gender: 1, status: 1, createAt: '2024-02-08 14:15:36', createBy: 'admin', updateAt: '2024-04-12 10:05:18', updateBy: 'admin' },
+  { id: generateId(), username: 'lisi', nickname: '李四', gender: 1, status: 1, createAt: '2024-02-20 10:45:11', createBy: 'admin', updateAt: '2024-04-08 16:30:42', updateBy: 'zhangsan' },
+  { id: generateId(), username: 'wangwu', nickname: '王五', gender: 0, status: 0, createAt: '2024-03-05 16:22:08', createBy: 'admin', updateAt: '2024-04-11 11:15:27', updateBy: 'admin' },
+  { id: generateId(), username: 'zhaoliu', nickname: '赵六', gender: 0, status: 1, createAt: '2024-03-12 08:55:43', createBy: 'zhangsan', updateAt: '2024-04-09 09:42:51', updateBy: 'zhangsan' },
   { id: generateId(), username: 'sunqi', nickname: '孙七', status: 0, createAt: '2024-03-18 11:30:57', createBy: 'zhangsan', updateAt: '2024-04-07 14:58:33', updateBy: 'lisi' },
-  { id: generateId(), username: 'zhouba', nickname: '周八', status: 1, createAt: '2024-03-25 15:10:22', createBy: 'lisi', updateAt: '2024-04-13 08:25:16', updateBy: 'lisi' },
+  { id: generateId(), username: 'zhouba', nickname: '周八', gender: 1, status: 1, createAt: '2024-03-25 15:10:22', createBy: 'lisi', updateAt: '2024-04-13 08:25:16', updateBy: 'lisi' },
   { id: generateId(), username: 'wujiu', nickname: '吴九', status: 1, createAt: '2024-04-02 09:42:18', createBy: 'lisi', updateAt: '2024-04-14 17:35:09', updateBy: 'admin' },
-  { id: generateId(), username: 'zhengshi', nickname: '郑十', status: 0, createAt: '2024-04-10 13:25:34', createBy: 'admin', updateAt: '2024-04-10 13:25:34', updateBy: 'admin' },
-  { id: generateId(), username: 'caihua', nickname: '蔡华', status: 1, createAt: '2024-04-15 17:08:45', createBy: 'zhangsan', updateAt: '2024-04-15 17:08:45', updateBy: 'zhangsan' }
+  { id: generateId(), username: 'zhengshi', nickname: '郑十', gender: 0, status: 0, createAt: '2024-04-10 13:25:34', createBy: 'admin', updateAt: '2024-04-10 13:25:34', updateBy: 'admin' },
+  { id: generateId(), username: 'caihua', nickname: '蔡华', status: 1, createAt: '2024-04-15 17:08:45', createBy: 'zhangsan', updateAt: '2024-04-15 17:08:45', updateBy: 'zhangsan' },
+  { id: generateId(), username: 'chenwei', nickname: '陈伟', gender: 1, status: 1, createAt: randomDate(new Date('2024-01-01'), new Date()), createBy: 'admin', updateAt: randomDate(new Date('2024-03-01'), new Date()), updateBy: 'admin' },
+  { id: generateId(), username: 'wangli', nickname: '王丽', gender: 0, status: 1, createAt: randomDate(new Date('2024-01-01'), new Date()), createBy: 'admin', updateAt: randomDate(new Date('2024-03-01'), new Date()), updateBy: 'zhangsan' },
+  { id: generateId(), username: 'liuyang', nickname: '刘洋', gender: 1, status: 0, createAt: randomDate(new Date('2024-01-01'), new Date()), createBy: 'zhangsan', updateAt: randomDate(new Date('2024-03-01'), new Date()), updateBy: 'admin' },
+  { id: generateId(), username: 'zhaoming', nickname: '赵明', gender: 1, status: 1, createAt: randomDate(new Date('2024-01-01'), new Date()), createBy: 'lisi', updateAt: randomDate(new Date('2024-03-01'), new Date()), updateBy: 'lisi' },
+  { id: generateId(), username: 'sunflower', nickname: '孙花', gender: 0, status: 1, createAt: randomDate(new Date('2024-01-01'), new Date()), createBy: 'lisi', updateAt: randomDate(new Date('2024-03-01'), new Date()), updateBy: 'zhangsan' },
+  { id: generateId(), username: 'zhoujie', nickname: '周杰', gender: 1, status: 0, createAt: randomDate(new Date('2024-01-01'), new Date()), createBy: 'admin', updateAt: randomDate(new Date('2024-03-01'), new Date()), updateBy: 'admin' },
+  { id: generateId(), username: 'wuxin', nickname: '吴欣', gender: 0, status: 1, createAt: randomDate(new Date('2024-01-01'), new Date()), createBy: 'admin', updateAt: randomDate(new Date('2024-03-01'), new Date()), updateBy: 'lisi' },
+  { id: generateId(), username: 'zhenglei', nickname: '郑磊', gender: 1, status: 1, createAt: randomDate(new Date('2024-01-01'), new Date()), createBy: 'zhangsan', updateAt: randomDate(new Date('2024-03-01'), new Date()), updateBy: 'admin' },
+  { id: generateId(), username: 'caiyuan', nickname: '蔡媛', gender: 0, status: 1, createAt: randomDate(new Date('2024-01-01'), new Date()), createBy: 'lisi', updateAt: randomDate(new Date('2024-03-01'), new Date()), updateBy: 'lisi' },
+  { id: generateId(), username: 'linda', nickname: '林达', gender: 0, status: 0, createAt: randomDate(new Date('2024-01-01'), new Date()), createBy: 'admin', updateAt: randomDate(new Date('2024-03-01'), new Date()), updateBy: 'admin' },
+  { id: generateId(), username: 'huangshan', nickname: '黄山', gender: 1, status: 1, createAt: randomDate(new Date('2024-01-01'), new Date()), createBy: 'zhangsan', updateAt: randomDate(new Date('2024-03-01'), new Date()), updateBy: 'zhangsan' },
+  { id: generateId(), username: 'linxia', nickname: '林霞', gender: 0, status: 1, createAt: randomDate(new Date('2024-01-01'), new Date()), createBy: 'lisi', updateAt: randomDate(new Date('2024-03-01'), new Date()), updateBy: 'admin' },
+  { id: generateId(), username: 'xuwei', nickname: '徐伟', gender: 1, status: 0, createAt: randomDate(new Date('2024-01-01'), new Date()), createBy: 'admin', updateAt: randomDate(new Date('2024-03-01'), new Date()), updateBy: 'lisi' },
+  { id: generateId(), username: 'songmei', nickname: '宋梅', gender: 0, status: 1, createAt: randomDate(new Date('2024-01-01'), new Date()), createBy: 'lisi', updateAt: randomDate(new Date('2024-03-01'), new Date()), updateBy: 'zhangsan' },
+  { id: generateId(), username: 'mayun', nickname: '马云', gender: 1, status: 1, createAt: randomDate(new Date('2024-01-01'), new Date()), createBy: 'admin', updateAt: randomDate(new Date('2024-03-01'), new Date()), updateBy: 'admin' },
+  { id: generateId(), username: 'hubin', nickname: '胡彬', gender: 1, status: 0, createAt: randomDate(new Date('2024-01-01'), new Date()), createBy: 'zhangsan', updateAt: randomDate(new Date('2024-03-01'), new Date()), updateBy: 'admin' },
+  { id: generateId(), username: 'guoyan', nickname: '郭燕', gender: 0, status: 1, createAt: randomDate(new Date('2024-01-01'), new Date()), createBy: 'lisi', updateAt: randomDate(new Date('2024-03-01'), new Date()), updateBy: 'lisi' },
+  { id: generateId(), username: 'luoyong', nickname: '罗勇', gender: 1, status: 1, createAt: randomDate(new Date('2024-01-01'), new Date()), createBy: 'admin', updateAt: randomDate(new Date('2024-03-01'), new Date()), updateBy: 'zhangsan' },
+  { id: generateId(), username: 'weixiao', nickname: '韦晓', gender: 0, status: 0, createAt: randomDate(new Date('2024-01-01'), new Date()), createBy: 'lisi', updateAt: randomDate(new Date('2024-03-01'), new Date()), updateBy: 'admin' },
+  { id: generateId(), username: 'tianli', nickname: '田丽', gender: 0, status: 1, createAt: randomDate(new Date('2024-01-01'), new Date()), createBy: 'admin', updateAt: randomDate(new Date('2024-03-01'), new Date()), updateBy: 'admin' },
+  { id: generateId(), username: 'denghao', nickname: '邓浩', gender: 1, status: 1, createAt: randomDate(new Date('2024-01-01'), new Date()), createBy: 'zhangsan', updateAt: randomDate(new Date('2024-03-01'), new Date()), updateBy: 'zhangsan' },
+  { id: generateId(), username: 'fuyan', nickname: '傅燕', gender: 0, status: 1, createAt: randomDate(new Date('2024-01-01'), new Date()), createBy: 'lisi', updateAt: randomDate(new Date('2024-03-01'), new Date()), updateBy: 'admin' },
+  { id: generateId(), username: 'shiyong', nickname: '史勇', gender: 1, status: 0, createAt: randomDate(new Date('2024-01-01'), new Date()), createBy: 'admin', updateAt: randomDate(new Date('2024-03-01'), new Date()), updateBy: 'lisi' },
+  { id: generateId(), username: 'pengling', nickname: '彭玲', gender: 0, status: 1, createAt: randomDate(new Date('2024-01-01'), new Date()), createBy: 'lisi', updateAt: randomDate(new Date('2024-03-01'), new Date()), updateBy: 'zhangsan' },
+  { id: generateId(), username: 'caojian', nickname: '曹健', gender: 1, status: 1, createAt: randomDate(new Date('2024-01-01'), new Date()), createBy: 'admin', updateAt: randomDate(new Date('2024-03-01'), new Date()), updateBy: 'admin' },
+  { id: generateId(), username: 'tangna', nickname: '唐娜', gender: 0, status: 0, createAt: randomDate(new Date('2024-01-01'), new Date()), createBy: 'zhangsan', updateAt: randomDate(new Date('2024-03-01'), new Date()), updateBy: 'admin' },
+  { id: generateId(), username: 'xuejun', nickname: '薛军', gender: 1, status: 1, createAt: randomDate(new Date('2024-01-01'), new Date()), createBy: 'lisi', updateAt: randomDate(new Date('2024-03-01'), new Date()), updateBy: 'lisi' },
+  { id: generateId(), username: 'hanxi', nickname: '韩熙', gender: 0, status: 1, createAt: randomDate(new Date('2024-01-01'), new Date()), createBy: 'admin', updateAt: randomDate(new Date('2024-03-01'), new Date()), updateBy: 'zhangsan' },
+  { id: generateId(), username: 'shiyuan', nickname: '石媛', gender: 0, status: 0, createAt: randomDate(new Date('2024-01-01'), new Date()), createBy: 'lisi', updateAt: randomDate(new Date('2024-03-01'), new Date()), updateBy: 'admin' },
+  { id: generateId(), username: 'guiting', nickname: '桂婷', gender: 0, status: 1, createAt: randomDate(new Date('2024-01-01'), new Date()), createBy: 'admin', updateAt: randomDate(new Date('2024-03-01'), new Date()), updateBy: 'admin' },
+  { id: generateId(), username: 'kongjun', nickname: '孔军', gender: 1, status: 1, createAt: randomDate(new Date('2024-01-01'), new Date()), createBy: 'zhangsan', updateAt: randomDate(new Date('2024-03-01'), new Date()), updateBy: 'zhangsan' },
+  { id: generateId(), username: 'baoyan', nickname: '包艳', gender: 0, status: 1, createAt: randomDate(new Date('2024-01-01'), new Date()), createBy: 'lisi', updateAt: randomDate(new Date('2024-03-01'), new Date()), updateBy: 'admin' },
+  { id: generateId(), username: 'yuanding', nickname: '袁丁', gender: 1, status: 0, createAt: randomDate(new Date('2024-01-01'), new Date()), createBy: 'admin', updateAt: randomDate(new Date('2024-03-01'), new Date()), updateBy: 'lisi' },
+  { id: generateId(), username: 'wanfang', nickname: '万芳', gender: 0, status: 1, createAt: randomDate(new Date('2024-01-01'), new Date()), createBy: 'lisi', updateAt: randomDate(new Date('2024-03-01'), new Date()), updateBy: 'zhangsan' },
+  { id: generateId(), username: 'fengsong', nickname: '冯松', gender: 1, status: 1, createAt: randomDate(new Date('2024-01-01'), new Date()), createBy: 'admin', updateAt: randomDate(new Date('2024-03-01'), new Date()), updateBy: 'admin' },
+  { id: generateId(), username: 'zhuying', nickname: '朱英', gender: 0, status: 0, createAt: randomDate(new Date('2024-01-01'), new Date()), createBy: 'zhangsan', updateAt: randomDate(new Date('2024-03-01'), new Date()), updateBy: 'admin' },
+  { id: generateId(), username: 'qinfeng', nickname: '秦峰', gender: 1, status: 1, createAt: randomDate(new Date('2024-01-01'), new Date()), createBy: 'lisi', updateAt: randomDate(new Date('2024-03-01'), new Date()), updateBy: 'lisi' },
+  { id: generateId(), username: 'xiaping', nickname: '夏平', gender: 0, status: 1, createAt: randomDate(new Date('2024-01-01'), new Date()), createBy: 'admin', updateAt: randomDate(new Date('2024-03-01'), new Date()), updateBy: 'zhangsan' },
+  { id: generateId(), username: 'doupeng', nickname: '窦鹏', gender: 1, status: 0, createAt: randomDate(new Date('2024-01-01'), new Date()), createBy: 'lisi', updateAt: randomDate(new Date('2024-03-01'), new Date()), updateBy: 'admin' },
+  { id: generateId(), username: 'yankun', nickname: '严坤', gender: 1, status: 1, createAt: randomDate(new Date('2024-01-01'), new Date()), createBy: 'admin', updateAt: randomDate(new Date('2024-03-01'), new Date()), updateBy: 'admin' },
+  { id: generateId(), username: 'jiangli', nickname: '姜丽', gender: 0, status: 1, createAt: randomDate(new Date('2024-01-01'), new Date()), createBy: 'zhangsan', updateAt: randomDate(new Date('2024-03-01'), new Date()), updateBy: 'zhangsan' },
+  { id: generateId(), username: 'qihong', nickname: '戚红', gender: 0, status: 1, createAt: randomDate(new Date('2024-01-01'), new Date()), createBy: 'lisi', updateAt: randomDate(new Date('2024-03-01'), new Date()), updateBy: 'admin' },
+  { id: generateId(), username: 'luoxuan', nickname: '罗轩', gender: 1, status: 0, createAt: randomDate(new Date('2024-01-01'), new Date()), createBy: 'admin', updateAt: randomDate(new Date('2024-03-01'), new Date()), updateBy: 'lisi' },
+  { id: generateId(), username: 'wusiyuan', nickname: '邴思远', gender: 1, status: 1, createAt: randomDate(new Date('2024-01-01'), new Date()), createBy: 'lisi', updateAt: randomDate(new Date('2024-03-01'), new Date()), updateBy: 'zhangsan' },
+  { id: generateId(), username: 'tianyu', nickname: '田雨', gender: 0, status: 1, createAt: randomDate(new Date('2024-01-01'), new Date()), createBy: 'admin', updateAt: randomDate(new Date('2024-03-01'), new Date()), updateBy: 'admin' },
+  { id: generateId(), username: 'qiaoyan', nickname: '乔燕', gender: 0, status: 0, createAt: randomDate(new Date('2024-01-01'), new Date()), createBy: 'zhangsan', updateAt: randomDate(new Date('2024-03-01'), new Date()), updateBy: 'admin' },
+  { id: generateId(), username: 'gengfei', nickname: '耿飞', gender: 1, status: 1, createAt: randomDate(new Date('2024-01-01'), new Date()), createBy: 'lisi', updateAt: randomDate(new Date('2024-03-01'), new Date()), updateBy: 'lisi' },
+  { id: generateId(), username: 'shenli', nickname: '沈丽', gender: 0, status: 1, createAt: randomDate(new Date('2024-01-01'), new Date()), createBy: 'admin', updateAt: randomDate(new Date('2024-03-01'), new Date()), updateBy: 'zhangsan' },
+  { id: generateId(), username: 'xiebin', nickname: '谢斌', gender: 1, status: 0, createAt: randomDate(new Date('2024-01-01'), new Date()), createBy: 'lisi', updateAt: randomDate(new Date('2024-03-01'), new Date()), updateBy: 'admin' },
+  { id: generateId(), username: 'songlin', nickname: '宋林', gender: 1, status: 1, createAt: randomDate(new Date('2024-01-01'), new Date()), createBy: 'admin', updateAt: randomDate(new Date('2024-03-01'), new Date()), updateBy: 'admin' }
 ]
 
 function getUserPage(params: UserQueryReq): PageResp<UserResp> {

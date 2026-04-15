@@ -1,13 +1,12 @@
 <template>
-  <el-tag :type="tagType" class="status-tag">
-    <el-icon><component :is="icon" /></el-icon>
-    <span>{{ label }}</span>
-  </el-tag>
+  <div class="status-cell">
+    <span class="dot" :class="colorClass"></span>
+    <span class="label">{{ label }}</span>
+  </div>
 </template>
 
 <script setup lang="ts">
 import { computed } from 'vue'
-import { Check, CircleClose } from '@element-plus/icons-vue'
 
 defineOptions({ name: 'StatusCell' })
 
@@ -16,33 +15,32 @@ const props = defineProps<{
 }>()
 
 const config = {
-  1: { label: '启用', icon: Check, type: 'success' as const },
-  0: { label: '禁用', icon: CircleClose, type: 'danger' as const }
+  1: { label: '启用', colorClass: 'success' },
+  0: { label: '禁用', colorClass: 'danger' }
 }
 
 const label = computed(() => config[props.status].label)
-const icon = computed(() => config[props.status].icon)
-const tagType = computed(() => config[props.status].type)
+const colorClass = computed(() => config[props.status].colorClass)
 </script>
 
 <style lang="scss" scoped>
-.status-tag {
-  border-radius: 8px;
-  height: auto;
-  line-height: 1.5;
+.status-cell {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
 
-  :deep(.el-tag__content) {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    gap: 4px;
-    height: auto;
-    padding: 4px;
-  }
+  .dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
 
-  :deep(.el-icon) {
-    cursor: default;
-    font-size: 14px;
+    &.success {
+      background-color: #67c23a;
+    }
+
+    &.danger {
+      background-color: #f56c6c;
+    }
   }
 }
 </style>

@@ -28,34 +28,52 @@
           </div>
         </div>
       </template>
-      <el-table v-loading="loading" :data="tableData" stripe @selection-change="handleSelectionChange">
+      <el-table v-loading="loading" :data="tableData" @selection-change="handleSelectionChange">
         <el-table-column type="selection" width="55" />
-        <el-table-column prop="id" label="ID" width="300">
+        <el-table-column prop="id" width="300">
+          <template #header>
+            <IconLabel :icon="Key" label="ID" />
+          </template>
           <template #default="{ row }">
             <TextCopyableCell :text="row.id" />
           </template>
         </el-table-column>
-        <el-table-column label="账号" min-width="150">
+        <el-table-column min-width="150">
+          <template #header>
+            <IconLabel :icon="User" label="账号" />
+          </template>
           <template #default="{ row }">
-            <UserCell :username="row.username" :nickname="row.nickname" :avatar="row.avatarId" />
+            <UserCell :username="row.username" :nickname="row.nickname" :avatar="row.avatarId" :gender="row.gender" />
           </template>
         </el-table-column>
-        <el-table-column prop="status" label="状态" width="100">
+        <el-table-column prop="status" width="100">
+          <template #header>
+            <IconLabel :icon="CircleCheck" label="状态" />
+          </template>
           <template #default="{ row }">
             <StatusCell :status="row.status" />
           </template>
         </el-table-column>
-        <el-table-column label="创建" width="180">
+        <el-table-column width="180">
+          <template #header>
+            <IconLabel :icon="Clock" label="创建" />
+          </template>
           <template #default="{ row }">
             <AuditCell :user="row.createBy" :time="row.createAt" />
           </template>
         </el-table-column>
-        <el-table-column label="更新" width="180">
+        <el-table-column width="180">
+          <template #header>
+            <IconLabel :icon="Clock" label="更新" />
+          </template>
           <template #default="{ row }">
             <AuditCell :user="row.updateBy" :time="row.updateAt" />
           </template>
         </el-table-column>
-        <el-table-column label="操作" width="180" fixed="right">
+        <el-table-column width="180" fixed="right">
+          <template #header>
+            <IconLabel :icon="EditPen" label="操作" />
+          </template>
           <template #default>
             <el-button link type="primary" size="small">编辑</el-button>
             <el-button link type="danger" size="small">删除</el-button>
@@ -68,7 +86,7 @@
           v-model:page-size="pagination.pageSize"
           :total="pagination.total"
           :page-sizes="[10, 20, 50]"
-          layout="total, sizes, prev, pager, next"
+          layout="total, sizes, prev, pager, next, jumper"
           @size-change="loadData"
           @current-change="loadData"
         />
@@ -79,9 +97,10 @@
 
 <script setup lang="ts">
 import { onMounted, reactive, ref } from 'vue'
-import { Delete, Plus, Refresh, Search } from '@element-plus/icons-vue'
+import { Delete, Key, Plus, Refresh, Search, User, CircleCheck, Clock, EditPen } from '@element-plus/icons-vue'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import { getUserPage } from '@/api/user'
+import IconLabel from '@/components/IconLabel/index.vue'
 import TextCopyableCell from '@/components/TextCopyableCell/index.vue'
 import UserCell from '@/components/UserCell/index.vue'
 import StatusCell from '@/components/StatusCell/index.vue'
@@ -173,6 +192,25 @@ onMounted(() => {
     display: flex;
     justify-content: flex-end;
     margin-top: 16px;
+  }
+
+  :deep(.el-table) {
+    --el-table-border-color: transparent;
+    border-radius: $border-radius-lg;
+
+    th.el-table__cell {
+      background-color: $bg-color;
+      padding: 14px 0;
+    }
+
+    tr:hover > td.el-table__cell {
+      border-radius: $border-radius;
+    }
+  }
+
+  :deep(.el-table__body) {
+    border-collapse: separate;
+    border-spacing: 0 8px;
   }
 }
 </style>
