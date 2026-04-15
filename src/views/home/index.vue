@@ -10,10 +10,10 @@
 
 <script setup lang="ts">
 import { computed } from 'vue'
+import { useUserStore } from '@/stores'
 import LayoutAside from '@/components/Layout/LayoutAside.vue'
 import LayoutHeader from '@/components/Layout/LayoutHeader.vue'
 import LayoutMain from '@/components/Layout/LayoutMain.vue'
-import { useUserStore } from '@/stores'
 import type { CurrentMenu } from '@/types'
 
 defineOptions({ name: 'Home' })

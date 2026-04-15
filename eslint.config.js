@@ -115,6 +115,7 @@ export default [
             { pattern: '@/utils', group: 'internal', position: 'before' },
             { pattern: '@/types', group: 'internal', position: 'before' },
             { pattern: '@/api', group: 'internal', position: 'before' },
+            { pattern: '@/mock', group: 'internal', position: 'before' },
             { pattern: '@/router', group: 'internal', position: 'before' },
             { pattern: '@/stores', group: 'internal', position: 'before' },
             { pattern: '@/components/**', group: 'internal', position: 'before' },

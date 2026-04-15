@@ -1,6 +1,4 @@
-import type { UserQueryReq } from '@/types'
-import type { PageResp } from '@/types'
-import type { UserResp } from '@/types'
+import type { PageResp, UserQueryReq, UserResp } from '@/types'
 
 // 生成32位随机ID（数字+小写字母）
 function generateId(): string {

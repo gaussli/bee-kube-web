@@ -100,8 +100,7 @@ import IconLabel from '@/components/IconLabel/index.vue'
 import StatusCell from '@/components/StatusCell/index.vue'
 import TextCopyableCell from '@/components/TextCopyableCell/index.vue'
 import UserCell from '@/components/UserCell/index.vue'
-import type { UserQueryReq } from '@/types'
-import type { UserResp } from '@/types'
+import type { UserQueryReq, UserResp } from '@/types'
 
 defineOptions({ name: 'UserManage' })
 
