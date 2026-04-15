@@ -27,7 +27,7 @@ export default [
     files: ['**/*'],
     plugins: {
       'unused-imports': unusedImports,
-      import: importPlugin
+      'import': importPlugin
     },
     rules: {
       // 关闭 ESLint 原生的未使用变量检查
@@ -102,10 +102,10 @@ export default [
       'import/order': [
         'error',
         {
-          groups: ['builtin', 'external', 'internal', 'parent', 'sibling', 'index', 'object', 'type'],
+          'groups': ['builtin', 'external', 'internal', 'parent', 'sibling', 'index', 'object', 'type'],
           'newlines-between': 'never',
-          pathGroupsExcludedImportTypes: ['builtin'],
-          pathGroups: [
+          'pathGroupsExcludedImportTypes': ['builtin'],
+          'pathGroups': [
             { pattern: 'vue', group: 'external', position: 'before' },
             { pattern: 'vue-router', group: 'external', position: 'before' },
             { pattern: 'pinia', group: 'external', position: 'before' },
@@ -123,11 +123,11 @@ export default [
             { pattern: '@/views', group: 'internal', position: 'before' },
             { pattern: '@/**', group: 'internal', position: 'before' }
           ],
-          alphabetize: {
+          'alphabetize': {
             order: 'asc',
             caseInsensitive: true
           },
-          sortTypesGroup: true
+          'sortTypesGroup': true
         }
       ]
     }
