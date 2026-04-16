@@ -53,13 +53,40 @@
           <AuditCell :user="row.updateBy" :time="row.updateAt" />
         </template>
       </el-table-column>
-      <el-table-column width="180" fixed="right">
+      <el-table-column width="200" fixed="right">
         <template #header>
           <IconLabel :icon="EditPen" label="操作" />
         </template>
-        <template #default>
-          <el-button link type="primary" size="small">编辑</el-button>
-          <el-button link type="danger" size="small">删除</el-button>
+        <template #default="{ row }">
+          <el-tooltip content="详情" placement="top">
+            <el-button circle :icon="View" size="default" />
+          </el-tooltip>
+          <el-tooltip content="编辑" placement="top">
+            <el-button circle :icon="EditPen" size="default" />
+          </el-tooltip>
+          <el-tooltip content="更多" placement="top">
+            <el-dropdown trigger="click">
+              <template #default>
+                <el-button circle :icon="MoreFilled" size="default" />
+              </template>
+              <template #dropdown>
+              <el-dropdown-menu>
+                <el-dropdown-item v-if="row.status === 0">
+                  <el-icon><CircleCheck /></el-icon> 启用
+                </el-dropdown-item>
+                <el-dropdown-item v-if="row.status === 1">
+                  <el-icon><CircleClose /></el-icon> 禁用
+                </el-dropdown-item>
+                <el-dropdown-item>
+                  <el-icon><Setting /></el-icon> 配置角色
+                </el-dropdown-item>
+                <el-dropdown-item divided>
+                  <el-icon><Delete /></el-icon> 删除
+                </el-dropdown-item>
+              </el-dropdown-menu>
+            </template>
+          </el-dropdown>
+          </el-tooltip>
         </template>
       </el-table-column>
     </el-table>
@@ -81,7 +108,7 @@
 <script setup lang="ts">
 import { onMounted, reactive, ref } from 'vue'
 import { ElMessage, ElMessageBox } from 'element-plus'
-import { Delete, Key, Plus, User, CircleCheck, Clock, EditPen, Refresh } from '@element-plus/icons-vue'
+import { Delete, Key, MoreFilled, Plus, Refresh, Setting, User, CircleCheck, CircleClose, Clock, EditPen, View } from '@element-plus/icons-vue'
 import { type UserQueryReq, type UserResp } from '@/types'
 import { getUserPage } from '@/api'
 import AuditCell from '@/components/AuditCell/index.vue'
@@ -218,6 +245,14 @@ onMounted(() => {
 
   th.el-table__cell {
     padding: 12px 0;
+  }
+
+  .el-button + .el-button {
+    margin-left: 8px;
+  }
+
+  .el-button + .el-dropdown {
+    margin-left: 8px;
   }
 }
 
