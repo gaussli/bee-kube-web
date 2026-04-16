@@ -50,6 +50,8 @@ export interface MenuResp extends BaseEntity {
   code: string
   name: string
   parentId?: string
+  parentName?: string
+  parentCode?: string
   description?: string
   type: number
   status: number
@@ -60,6 +62,8 @@ export interface MenuDetailResp extends BaseEntity {
   code: string
   name: string
   parentId?: string
+  parentName?: string
+  parentCode?: string
   description?: string
   frontPath?: string
   frontComponent?: string
