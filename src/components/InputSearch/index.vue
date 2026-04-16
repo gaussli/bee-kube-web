@@ -1,5 +1,5 @@
 <template>
-  <el-input v-model="searchValue" :placeholder="placeholder" class="search-input">
+  <el-input v-model="searchValue" :placeholder="placeholder" class="search-input" @keydown.enter.prevent="handleSearch">
     <template #append>
       <el-button :icon="Search" @click="handleSearch" />
     </template>

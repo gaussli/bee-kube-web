@@ -14,7 +14,6 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 import UserAvatar from '@/components/UserAvatar/index.vue'
-import type { UserGenderEnum } from '@/types'
 
 defineOptions({ name: 'UserProfile' })
 
@@ -22,7 +21,7 @@ const props = defineProps<{
   avatar?: string
   username: string
   nickname?: string
-  gender?: UserGenderEnum
+  gender?: number
 }>()
 
 const genderText = computed(() => {

@@ -1,4 +1,3 @@
-import { UserGender } from '@/types'
 import type { CurrentUserResp, LoginReq, LoginResp } from '@/types'
 
 function login(req: LoginReq): LoginResp {
@@ -21,7 +20,7 @@ function getCurrentUser(): CurrentUserResp {
       nickname: '管理员',
       email: 'admin@example.com',
       mobile: '13800138000',
-      gender: UserGender.Male,
+      gender: 1,
       avatarId: ''
     },
     menus: [

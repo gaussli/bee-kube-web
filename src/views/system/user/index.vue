@@ -81,7 +81,7 @@
 <script setup lang="ts">
 import { onMounted, reactive, ref } from 'vue'
 import { ElMessage, ElMessageBox } from 'element-plus'
-import { Delete, Key, Plus, Refresh, User, CircleCheck, Clock, EditPen } from '@element-plus/icons-vue'
+import { Delete, Key, Plus, User, CircleCheck, Clock, EditPen, Refresh } from '@element-plus/icons-vue'
 import { type UserQueryReq, type UserResp } from '@/types'
 import { getUserPage } from '@/api'
 import AuditCell from '@/components/AuditCell/index.vue'
@@ -123,6 +123,7 @@ const pagination = reactive({
 })
 
 async function loadData() {
+  console.log(queryForm)
   loading.value = true
   try {
     const resp = await getUserPage({ ...queryForm, page: pagination.page, pageSize: pagination.pageSize })
@@ -137,13 +138,18 @@ function handleSearch(searchKey?: string) {
   queryForm.id = searchKey
   queryForm.username = searchKey
   queryForm.nickname = searchKey
+  pagination.page = 1
+  pagination.pageSize = 10
   loadData()
 }
 
 function handleSelect(selectValue?: string | number) {
-  queryForm.status = toUserStatus(selectValue)
+  queryForm.status = selectValue as number | undefined
+  pagination.page = 1
+  pagination.pageSize = 10
   loadData()
 }
+
 function handleReset() {
   queryForm.id = undefined
   queryForm.username = undefined
@@ -151,6 +157,8 @@ function handleReset() {
   queryForm.status = undefined
   queryForm.page = 1
   queryForm.pageSize = 10
+  pagination.page = 1
+  pagination.pageSize = 10
   loadData()
 }
 
