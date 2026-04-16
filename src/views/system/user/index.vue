@@ -59,7 +59,7 @@
         </template>
         <template #default="{ row }">
           <el-tooltip content="详情" placement="top">
-            <el-button circle :icon="View" size="default" />
+            <el-button circle :icon="View" size="default" @click="handleView(row)" />
           </el-tooltip>
           <el-tooltip content="编辑" placement="top">
             <el-button circle :icon="EditPen" size="default" />
@@ -70,22 +70,22 @@
                 <el-button circle :icon="MoreFilled" size="default" />
               </template>
               <template #dropdown>
-              <el-dropdown-menu>
-                <el-dropdown-item v-if="row.status === 0">
-                  <el-icon><CircleCheck /></el-icon> 启用
-                </el-dropdown-item>
-                <el-dropdown-item v-if="row.status === 1">
-                  <el-icon><CircleClose /></el-icon> 禁用
-                </el-dropdown-item>
-                <el-dropdown-item>
-                  <el-icon><Setting /></el-icon> 配置角色
-                </el-dropdown-item>
-                <el-dropdown-item divided>
-                  <el-icon><Delete /></el-icon> 删除
-                </el-dropdown-item>
-              </el-dropdown-menu>
-            </template>
-          </el-dropdown>
+                <el-dropdown-menu>
+                  <el-dropdown-item v-if="row.status === 0">
+                    <el-icon><CircleCheck /></el-icon> 启用
+                  </el-dropdown-item>
+                  <el-dropdown-item v-if="row.status === 1">
+                    <el-icon><CircleClose /></el-icon> 禁用
+                  </el-dropdown-item>
+                  <el-dropdown-item>
+                    <el-icon><Setting /></el-icon> 配置角色
+                  </el-dropdown-item>
+                  <el-dropdown-item divided>
+                    <el-icon><Delete /></el-icon> 删除
+                  </el-dropdown-item>
+                </el-dropdown-menu>
+              </template>
+            </el-dropdown>
           </el-tooltip>
         </template>
       </el-table-column>
@@ -103,13 +103,14 @@
       />
     </div>
   </el-card>
+  <UserDetailDrawer v-model="detailDrawerVisible" :user-data="currentUser" />
 </template>
 
 <script setup lang="ts">
 import { onMounted, reactive, ref } from 'vue'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import { Delete, Key, MoreFilled, Plus, Refresh, Setting, User, CircleCheck, CircleClose, Clock, EditPen, View } from '@element-plus/icons-vue'
-import { type UserQueryReq, type UserResp } from '@/types'
+import { type UserDetailResp, type UserQueryReq, type UserResp } from '@/types'
 import { getUserPage } from '@/api'
 import AuditCell from '@/components/AuditCell/index.vue'
 import IconLabel from '@/components/IconLabel/index.vue'
@@ -118,6 +119,7 @@ import StatusCell from '@/components/StatusCell/index.vue'
 import StatusSearch from '@/components/StatusSearch/index.vue'
 import TextCopyableCell from '@/components/TextCopyableCell/index.vue'
 import UserCell from '@/components/UserCell/index.vue'
+import UserDetailDrawer from './components/UserDetailDrawer/index.vue'
 
 defineOptions({ name: 'UserManage' })
 
@@ -135,6 +137,8 @@ const statusOptions = [
 const loading = ref(false)
 const tableData = ref<UserResp[]>([])
 const selectedRows = ref<UserResp[]>([])
+const detailDrawerVisible = ref(false)
+const currentUser = ref<UserDetailResp>({} as UserDetailResp)
 const queryForm = reactive<UserQueryReq>({
   id: undefined,
   username: undefined,
@@ -191,6 +195,11 @@ function handleReset() {
 
 function handleSelectionChange(rows: UserResp[]) {
   selectedRows.value = rows
+}
+
+function handleView(row: UserResp) {
+  currentUser.value = row
+  detailDrawerVisible.value = true
 }
 
 async function handleBatchDelete() {
