@@ -82,28 +82,6 @@ img {
   -webkit-box-orient: vertical;
 }
 
-// flex 工具类
-.flex {
-  display: flex;
-}
-
-.flex-center {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.flex-between {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-}
-
-.flex-col {
-  display: flex;
-  flex-direction: column;
-}
-
 // 间距工具类
 @each $name, $size in ('xs': $spacing-xs, 'sm': $spacing-sm, 'md': $spacing-md, 'lg': $spacing-lg, 'xl': $spacing-xl) {
   .m-#{$name} {
@@ -138,35 +116,42 @@ img {
   }
 }
 
-// 页面容器
-.page-container {
-  padding: $spacing-md;
-  background: $bg-color;
-}
-
-// 卡片容器
-.card-container {
-  background: $bg-light;
-  border-radius: $border-radius;
-  padding: $spacing-md;
-}
-
-// Element Plus 组件覆盖
+// Element Plus 组件样式覆盖
+// 卡片组件样式覆盖
 .el-card {
-  --el-card-border-radius: 12px;
+  --el-card-border-radius: 8px;
+  --el-box-shadow-light: none;
+  --el-card-padding: 16px;
+  border: none;
 }
 
-.el-button--primary {
-  background-color: $primary-color;
-  border-color: $primary-color;
-
-  &:hover,
-  &:focus {
-    background-color: color.adjust($primary-color, $lightness: 10%);
-    border-color: color.adjust($primary-color, $lightness: 10%);
-  }
+// 按钮组件样式覆盖
+.el-button {
+  --el-font-size-base: 12px;
+  --el-border-radius-base: 16px;
+  --el-button-size: 32px;
+  padding: 0 16px;
+  height: var(--el-button-size);
+}
+.el-button--small {
+  --el-font-size-base: 10px;
+  --el-border-radius-base: 12px;
+  --el-button-size: 24px;
+  padding: 0 12px;
+  height: var(--el-button-size);
+}
+.el-button--large {
+  --el-font-size-base: 14px;
+  --el-border-radius-base: 20px;
+  --el-button-size: 40px;
+  padding: 0 20px;
+  height: var(--el-button-size);
+}
+.el-button + .el-button {
+  margin: 0;
 }
 
+// 菜单组件样式覆盖
 .el-menu {
   border-right: none !important;
 }

@@ -18,7 +18,17 @@ function randomDate(start: Date, end: Date): string {
 
 // Mock 用户数据（60条）
 const mockUsers: UserResp[] = [
-  { id: generateId(), username: 'admin', nickname: '超级管理员', gender: 1, status: 1, createAt: '2024-01-15 09:30:22', createBy: 'system', updateAt: '2024-04-10 14:22:35', updateBy: 'admin' },
+  {
+    id: generateId(),
+    username: 'admin',
+    nickname: '超级管理员',
+    gender: 1,
+    status: 1,
+    createAt: '2024-01-15 09:30:22',
+    createBy: 'system',
+    updateAt: '2024-04-10 14:22:35',
+    updateBy: 'admin'
+  },
   { id: generateId(), username: 'zhangsan', nickname: '张三', gender: 1, status: 1, createAt: '2024-02-08 14:15:36', createBy: 'admin', updateAt: '2024-04-12 10:05:18', updateBy: 'admin' },
   { id: generateId(), username: 'lisi', nickname: '李四', gender: 1, status: 1, createAt: '2024-02-20 10:45:11', createBy: 'admin', updateAt: '2024-04-08 16:30:42', updateBy: 'zhangsan' },
   { id: generateId(), username: 'wangwu', nickname: '王五', gender: 0, status: 0, createAt: '2024-03-05 16:22:08', createBy: 'admin', updateAt: '2024-04-11 11:15:27', updateBy: 'admin' },
@@ -581,17 +591,23 @@ const mockUsers: UserResp[] = [
 ]
 
 function getUserPage(params: UserQueryReq): PageResp<UserResp> {
-  const { page = 1, pageSize = 10, username, nickname, status } = params || {}
+  const { page = 1, pageSize = 10, id, username, nickname, status } = params || {}
   let filtered = mockUsers
 
-  // 按用户名模糊搜索
-  if (username) {
-    filtered = filtered.filter(u => u.username.toLowerCase().includes(username.toLowerCase()))
+  if (id && id === username && nickname === username) {
+    console.log('filter user')
+    filtered = filtered.filter(u => u.id == id || u.username.toLowerCase().includes(username.toLowerCase()) || u.nickname.includes(nickname))
+  } else {
+    // 按用户名模糊搜索
+    if (username) {
+      filtered = filtered.filter(u => u.username.toLowerCase().includes(username.toLowerCase()))
+    }
+    // 按昵称模糊搜索
+    if (nickname) {
+      filtered = filtered.filter(u => u.nickname.includes(nickname))
+    }
   }
-  // 按昵称模糊搜索
-  if (nickname) {
-    filtered = filtered.filter(u => u.nickname.includes(nickname))
-  }
+
   // 按状态筛选
   if (status !== undefined) {
     filtered = filtered.filter(u => u.status === status)

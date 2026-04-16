@@ -1,7 +1,7 @@
 <template>
   <div class="status-cell">
-    <span class="dot" :class="colorClass"></span>
-    <span class="label">{{ label }}</span>
+    <span class="dot" :style="{ backgroundColor: currentConfig.color }"></span>
+    <span class="label">{{ currentConfig.label }}</span>
   </div>
 </template>
 
@@ -10,17 +10,22 @@ import { computed } from 'vue'
 
 defineOptions({ name: 'StatusCell' })
 
-const props = defineProps<{
-  status: 0 | 1
-}>()
-
-const config = {
-  1: { label: '启用', colorClass: 'success' },
-  0: { label: '禁用', colorClass: 'danger' }
+interface StatusConfig {
+  value: string | number | undefined
+  label: string
+  color: string
 }
 
-const label = computed(() => config[props.status].label)
-const colorClass = computed(() => config[props.status].colorClass)
+const props = defineProps<{
+  status?: string | number
+  config: StatusConfig[]
+}>()
+
+const currentConfig = computed(() => {
+  const found = props.config.find(item => item.value === props.status)
+  if (found) return found
+  return { label: '-', color: '#909399' }
+})
 </script>
 
 <style lang="scss" scoped>
@@ -33,14 +38,6 @@ const colorClass = computed(() => config[props.status].colorClass)
     width: 8px;
     height: 8px;
     border-radius: 50%;
-
-    &.success {
-      background-color: #67c23a;
-    }
-
-    &.danger {
-      background-color: #f56c6c;
-    }
   }
 }
 </style>

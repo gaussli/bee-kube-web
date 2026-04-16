@@ -1,115 +1,117 @@
 <template>
-  <div class="user-list">
-    <el-card class="query-card">
-      <el-form :inline="true" :model="queryForm" class="query-form">
-        <el-form-item label="用户名">
-          <el-input v-model="queryForm.username" placeholder="请输入用户名" clearable />
-        </el-form-item>
-        <el-form-item label="昵称">
-          <el-input v-model="queryForm.nickname" placeholder="请输入昵称" clearable />
-        </el-form-item>
-        <el-form-item label="状态">
-          <el-select v-model="queryForm.status" placeholder="请选择状态" clearable>
-            <el-option label="启用" :value="1" />
-            <el-option label="禁用" :value="0" />
-          </el-select>
-        </el-form-item>
-        <el-form-item>
-          <el-button type="primary" :icon="Search" @click="handleSearch">搜索</el-button>
-          <el-button :icon="Refresh" @click="handleReset">重置</el-button>
-          <el-button v-if="selectedRows.length > 0" type="danger" :icon="Delete" @click="handleBatchDelete"> 批量删除 ({{ selectedRows.length }}) </el-button>
-          <el-button type="primary" :icon="Plus">新增用户</el-button>
-        </el-form-item>
-      </el-form>
-    </el-card>
-    <el-card class="table-card">
-      <el-table v-loading="loading" :data="tableData" height="100%" @selection-change="handleSelectionChange">
-        <el-table-column type="selection" width="55" />
-        <el-table-column prop="id" width="300">
-          <template #header>
-            <IconLabel :icon="Key" label="ID" />
-          </template>
-          <template #default="{ row }">
-            <TextCopyableCell :text="row.id" />
-          </template>
-        </el-table-column>
-        <el-table-column min-width="150">
-          <template #header>
-            <IconLabel :icon="User" label="账号" />
-          </template>
-          <template #default="{ row }">
-            <UserCell :username="row.username" :nickname="row.nickname" :avatar="row.avatarId" :gender="row.gender" />
-          </template>
-        </el-table-column>
-        <el-table-column prop="status" width="100">
-          <template #header>
-            <IconLabel :icon="CircleCheck" label="状态" />
-          </template>
-          <template #default="{ row }">
-            <StatusCell :status="row.status" />
-          </template>
-        </el-table-column>
-        <el-table-column width="180">
-          <template #header>
-            <IconLabel :icon="Clock" label="创建" />
-          </template>
-          <template #default="{ row }">
-            <AuditCell :user="row.createBy" :time="row.createAt" />
-          </template>
-        </el-table-column>
-        <el-table-column width="180">
-          <template #header>
-            <IconLabel :icon="Clock" label="更新" />
-          </template>
-          <template #default="{ row }">
-            <AuditCell :user="row.updateBy" :time="row.updateAt" />
-          </template>
-        </el-table-column>
-        <el-table-column width="180" fixed="right">
-          <template #header>
-            <IconLabel :icon="EditPen" label="操作" />
-          </template>
-          <template #default>
-            <el-button link type="primary" size="small">编辑</el-button>
-            <el-button link type="danger" size="small">删除</el-button>
-          </template>
-        </el-table-column>
-      </el-table>
-      <div class="pagination">
-        <el-pagination
-          v-model:current-page="pagination.page"
-          v-model:page-size="pagination.pageSize"
-          :total="pagination.total"
-          :page-sizes="[10, 20, 50]"
-          layout="total, sizes, prev, pager, next, jumper"
-          @size-change="loadData"
-          @current-change="loadData"
-        />
+  <el-card class="user-card">
+    <el-form :inline="true" :model="queryForm" class="query-form">
+      <div class="query-form-left">
+        <InputSearch placeholder="按 ID / 用户名 / 昵称 搜索" @search="handleSearch" />
+        <StatusSearch v-model="queryForm.status" :options="statusOptions" @select="handleSelect" />
       </div>
-    </el-card>
-  </div>
+      <div class="query-form-right">
+        <el-button :icon="Refresh" @click="handleReset" />
+        <el-divider direction="vertical" />
+        <el-button type="success" :icon="Plus">新增</el-button>
+      </div>
+    </el-form>
+    <el-table v-loading="loading" :data="tableData" height="100%" @selection-change="handleSelectionChange">
+      <el-table-column type="selection" width="60" align="center" />
+      <el-table-column prop="id" width="300">
+        <template #header>
+          <IconLabel :icon="Key" label="ID" />
+        </template>
+        <template #default="{ row }">
+          <TextCopyableCell :text="row.id" />
+        </template>
+      </el-table-column>
+      <el-table-column min-width="150">
+        <template #header>
+          <IconLabel :icon="User" label="账号" />
+        </template>
+        <template #default="{ row }">
+          <UserCell :username="row.username" :nickname="row.nickname" :avatar="row.avatarId" :gender="row.gender" />
+        </template>
+      </el-table-column>
+      <el-table-column prop="status" width="100">
+        <template #header>
+          <IconLabel :icon="CircleCheck" label="状态" />
+        </template>
+        <template #default="{ row }">
+          <StatusCell :status="row.status" :config="userStatusConfig" />
+        </template>
+      </el-table-column>
+      <el-table-column width="180">
+        <template #header>
+          <IconLabel :icon="Clock" label="创建" />
+        </template>
+        <template #default="{ row }">
+          <AuditCell :user="row.createBy" :time="row.createAt" />
+        </template>
+      </el-table-column>
+      <el-table-column width="180">
+        <template #header>
+          <IconLabel :icon="Clock" label="更新" />
+        </template>
+        <template #default="{ row }">
+          <AuditCell :user="row.updateBy" :time="row.updateAt" />
+        </template>
+      </el-table-column>
+      <el-table-column width="180" fixed="right">
+        <template #header>
+          <IconLabel :icon="EditPen" label="操作" />
+        </template>
+        <template #default>
+          <el-button link type="primary" size="small">编辑</el-button>
+          <el-button link type="danger" size="small">删除</el-button>
+        </template>
+      </el-table-column>
+    </el-table>
+    <div class="table-footer">
+      <el-button type="danger" :icon="Delete" :disabled="selectedRows.length === 0" @click="handleBatchDelete"> 批量删除 ({{ selectedRows.length }}) </el-button>
+      <el-pagination
+        v-model:current-page="pagination.page"
+        v-model:page-size="pagination.pageSize"
+        :total="pagination.total"
+        :page-sizes="[10, 20, 50]"
+        layout="total, sizes, prev, pager, next, jumper"
+        @size-change="loadData"
+        @current-change="loadData"
+      />
+    </div>
+  </el-card>
 </template>
 
 <script setup lang="ts">
 import { onMounted, reactive, ref } from 'vue'
 import { ElMessage, ElMessageBox } from 'element-plus'
-import { Delete, Key, Plus, Refresh, Search, User, CircleCheck, Clock, EditPen } from '@element-plus/icons-vue'
+import { Delete, Key, Plus, Refresh, User, CircleCheck, Clock, EditPen } from '@element-plus/icons-vue'
+import { type UserQueryReq, type UserResp } from '@/types'
 import { getUserPage } from '@/api'
 import AuditCell from '@/components/AuditCell/index.vue'
 import IconLabel from '@/components/IconLabel/index.vue'
+import InputSearch from '@/components/InputSearch/index.vue'
 import StatusCell from '@/components/StatusCell/index.vue'
+import StatusSearch from '@/components/StatusSearch/index.vue'
 import TextCopyableCell from '@/components/TextCopyableCell/index.vue'
 import UserCell from '@/components/UserCell/index.vue'
-import type { UserQueryReq, UserResp } from '@/types'
 
 defineOptions({ name: 'UserManage' })
+
+const userStatusConfig = [
+  { value: 1, label: '启用', color: 'rgb(103, 194, 58)' },
+  { value: 0, label: '禁用', color: 'rgb(245, 108, 108)' }
+]
+
+const statusOptions = [
+  { label: '所有', value: undefined },
+  { label: '启用', value: 1 },
+  { label: '禁用', value: 0 }
+]
 
 const loading = ref(false)
 const tableData = ref<UserResp[]>([])
 const selectedRows = ref<UserResp[]>([])
 const queryForm = reactive<UserQueryReq>({
-  username: '',
-  nickname: '',
+  id: undefined,
+  username: undefined,
+  nickname: undefined,
   status: undefined,
   page: 1,
   pageSize: 10
@@ -131,16 +133,25 @@ async function loadData() {
   }
 }
 
-function handleSearch() {
-  pagination.page = 1
+function handleSearch(searchKey?: string) {
+  queryForm.id = searchKey
+  queryForm.username = searchKey
+  queryForm.nickname = searchKey
   loadData()
 }
 
+function handleSelect(selectValue?: string | number) {
+  queryForm.status = toUserStatus(selectValue)
+  loadData()
+}
 function handleReset() {
-  queryForm.username = ''
-  queryForm.nickname = ''
+  queryForm.id = undefined
+  queryForm.username = undefined
+  queryForm.nickname = undefined
   queryForm.status = undefined
-  handleSearch()
+  queryForm.page = 1
+  queryForm.pageSize = 10
+  loadData()
 }
 
 function handleSelectionChange(rows: UserResp[]) {
@@ -166,64 +177,56 @@ onMounted(() => {
 </script>
 
 <style lang="scss" scoped>
-.user-list {
-  display: flex;
-  flex-direction: column;
+.user-card {
   height: 100%;
 
-  .query-card {
-    flex-shrink: 0;
-    margin-bottom: 16px;
-
-    :deep(.el-card__body) {
-      padding: 0;
-    }
-  }
-
-  .table-card {
-    flex: 1;
+  :deep(.el-card__body) {
     display: flex;
     flex-direction: column;
-    overflow: hidden;
-
-    :deep(.el-card__body) {
-      flex: 1;
-      display: flex;
-      flex-direction: column;
-      padding: 0;
-      overflow: hidden;
-    }
   }
+}
 
-  .query-form {
-    margin-bottom: 0;
-  }
+.query-form {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
 
-  .pagination {
-    flex-shrink: 0;
+  .query-form-left {
     display: flex;
-    justify-content: flex-end;
-    margin-top: 16px;
+    align-items: center;
+    gap: 16px;
   }
 
-  :deep(.el-table) {
-    flex: 1;
-    --el-table-border-color: transparent;
-    border-radius: $border-radius-lg;
+  .query-form-right {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+}
 
-    th.el-table__cell {
-      background-color: $bg-color;
-      padding: 14px 0;
-    }
+:deep(.el-table) {
+  flex: 1;
+  width: auto;
+  // --el-table-border-color: transparent;
+  margin: 0 12px;
 
-    tr:hover > td.el-table__cell {
-      border-radius: $border-radius;
-    }
+  th.el-table__cell {
+    padding: 12px 0;
+  }
+}
+
+.table-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 0;
+
+  > .el-button {
+    margin-left: 16px;
   }
 
-  :deep(.el-table__body) {
-    border-collapse: separate;
-    border-spacing: 0 8px;
+  > .el-pagination {
+    margin-right: 16px;
   }
 }
 </style>

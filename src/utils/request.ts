@@ -23,6 +23,7 @@ const service: AxiosInstance = axios.create({
 if (useMock) {
   service.defaults.adapter = async (config: InternalAxiosRequestConfig) => {
     try {
+      console.log('running mock request...', config.url)
       const response = await mockRequest(config)
       return response
     } catch (error) {
