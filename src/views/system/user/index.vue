@@ -71,10 +71,10 @@
               </template>
               <template #dropdown>
                 <el-dropdown-menu>
-                  <el-dropdown-item v-if="row.status === 0">
+                  <el-dropdown-item v-if="row.status === 0" @click="handleToggleStatus(row)">
                     <el-icon><CircleCheck /></el-icon> 启用
                   </el-dropdown-item>
-                  <el-dropdown-item v-if="row.status === 1">
+                  <el-dropdown-item v-if="row.status === 1" @click="handleToggleStatus(row)">
                     <el-icon><CircleClose /></el-icon> 禁用
                   </el-dropdown-item>
                   <el-dropdown-item>
@@ -104,6 +104,22 @@
     </div>
   </el-card>
   <UserDetailDrawer v-model="detailDrawerVisible" :user-data="currentUser" />
+  <el-dialog v-model="statusDialogVisible" :title="currentTargetRow?.status === 1 ? '确认禁用' : '确认启用'" width="400px" :close-on-click-modal="false">
+    <div class="status-dialog-content">
+      <p v-if="currentTargetRow?.status === 1">
+        确定要禁用用户 <strong>{{ currentTargetRow?.username }}</strong> 吗？禁用后该用户将无法登录系统。
+      </p>
+      <p v-else>
+        确定要启用用户 <strong>{{ currentTargetRow?.username }}</strong> 吗？启用后该用户可以正常登录系统。
+      </p>
+    </div>
+    <template #footer>
+      <el-button @click="statusDialogVisible = false">取消</el-button>
+      <el-button :type="currentTargetRow?.status === 1 ? 'danger' : 'success'" @click="handleConfirmStatus">
+        {{ currentTargetRow?.status === 1 ? '禁用' : '启用' }}
+      </el-button>
+    </template>
+  </el-dialog>
 </template>
 
 <script setup lang="ts">
@@ -139,6 +155,8 @@ const tableData = ref<UserResp[]>([])
 const selectedRows = ref<UserResp[]>([])
 const detailDrawerVisible = ref(false)
 const currentUser = ref<UserDetailResp>({} as UserDetailResp)
+const statusDialogVisible = ref(false)
+const currentTargetRow = ref<UserResp | null>(null)
 const queryForm = reactive<UserQueryReq>({
   id: undefined,
   username: undefined,
@@ -200,6 +218,26 @@ function handleSelectionChange(rows: UserResp[]) {
 function handleView(row: UserResp) {
   currentUser.value = row
   detailDrawerVisible.value = true
+}
+
+function handleToggleStatus(row: UserResp) {
+  currentTargetRow.value = row
+  statusDialogVisible.value = true
+}
+
+async function handleConfirmStatus() {
+  if (!currentTargetRow.value) return
+  const targetStatus = currentTargetRow.value.status === 1 ? 0 : 1
+  const actionText = targetStatus === 1 ? '启用' : '禁用'
+  try {
+    // TODO: 调用 API
+    ElMessage.success(`${actionText}成功`)
+    statusDialogVisible.value = false
+    currentTargetRow.value = null
+    loadData()
+  } catch {
+    // 失败处理
+  }
 }
 
 async function handleBatchDelete() {
@@ -270,5 +308,15 @@ onMounted(() => {
   align-items: center;
   justify-content: space-between;
   margin-top: 16px;
+}
+
+.status-dialog-content {
+  p {
+    margin: 0;
+    line-height: 1.6;
+    strong {
+      color: #409eff;
+    }
+  }
 }
 </style>
