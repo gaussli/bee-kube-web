@@ -152,3 +152,61 @@ img {
 .el-menu {
   border-right: none !important;
 }
+
+// 分页组件样式覆盖
+.el-pagination {
+  --el-pagination-font-size: 12px;
+  .el-pagination__sizes {
+    --el-border-radius-base: 16px;
+    .el-select {
+      --el-fill-color-blank: #{$bg-color};
+      font-size: 12px;
+      .el-select__wrapper {
+        box-shadow: none;
+        font-size: 12px;
+        padding: 0 12px 0 20px;
+      }
+    }
+  }
+  .el-pagination__jump {
+    .el-input {
+      --el-input-bg-color: #{$bg-color};
+      --el-border-radius-base: 16px;
+      --el-font-size-base: 12px;
+      .el-input__wrapper {
+        box-shadow: none;
+      }
+    }
+  }
+}
+
+// 选择器组件弹出框样式覆盖
+.el-popper.el-select__popper {
+  --el-font-size-base: 12px;
+  --el-popper-border-radius: 8px;
+  .el-select-dropdown__list {
+    padding: 0;
+    .el-select-dropdown__item {
+      margin: 4px 8px;
+      padding: 0px 12px;
+      border-radius: 8px;
+    }
+  }
+}
+
+// 下拉组件弹出框样式覆盖
+.el-popper.el-dropdown__popper {
+  --el-font-size-base: 12px;
+  --el-popper-border-radius: 8px;
+  .el-dropdown-menu {
+    padding: 0;
+    .el-dropdown-menu__item {
+      margin: 4px 8px;
+      padding: 6px 24px;
+      border-radius: 8px;
+    }
+    .el-dropdown-menu__item--divided {
+      margin: 0;
+    }
+  }
+}

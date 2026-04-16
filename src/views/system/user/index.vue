@@ -215,8 +215,6 @@ onMounted(() => {
 :deep(.el-table) {
   flex: 1;
   width: auto;
-  // --el-table-border-color: transparent;
-  margin: 0 12px;
 
   th.el-table__cell {
     padding: 12px 0;
@@ -227,14 +225,6 @@ onMounted(() => {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 16px 0;
-
-  > .el-button {
-    margin-left: 16px;
-  }
-
-  > .el-pagination {
-    margin-right: 16px;
-  }
+  margin-top: 16px;
 }
 </style>
