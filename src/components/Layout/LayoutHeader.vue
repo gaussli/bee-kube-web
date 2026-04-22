@@ -1,14 +1,14 @@
 <template>
   <header class="header">
     <div class="header-left">
-      <el-icon class="toggle-icon" @click="appStore.toggleSidebar">
+      <!-- <el-icon class="toggle-icon" @click="appStore.toggleSidebar">
         <Fold v-show="appStore.sidebarOpened" />
         <Expand v-show="!appStore.sidebarOpened" />
       </el-icon>
       <el-breadcrumb separator="/">
         <el-breadcrumb-item :to="{ path: '/' }">首页</el-breadcrumb-item>
         <el-breadcrumb-item v-if="route.meta.title">{{ route.meta.title }}</el-breadcrumb-item>
-      </el-breadcrumb>
+      </el-breadcrumb> -->
     </div>
     <div class="header-right">
       <el-tooltip :content="isFullscreen ? '退出全屏' : '全屏'" placement="bottom">
@@ -59,7 +59,7 @@
 import { computed, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { ElMessage, ElMessageBox } from 'element-plus'
-import { ArrowDown, Close, Expand, Fold, FullScreen, Lock, Setting, SwitchButton, User } from '@element-plus/icons-vue'
+import { ArrowDown, Close, FullScreen, Lock, Setting, SwitchButton, User } from '@element-plus/icons-vue'
 import { logout } from '@/api'
 import { resetRouter } from '@/router'
 import { useAppStore, useUserStore } from '@/stores'
@@ -187,7 +187,7 @@ function handlePasswordSubmit() {
       color: $text-regular;
 
       &:hover {
-        color: $primary-color;
+        color: $color-primary;
       }
     }
 

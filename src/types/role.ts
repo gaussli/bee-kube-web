@@ -36,8 +36,10 @@ export interface RoleChangeStatusReq {
 export interface RoleResp extends BaseEntity {
   code: string
   name: string
+  description?: string
   sort?: number
   status: number
+  isSystem?: boolean
 }
 
 // 角色详情响应

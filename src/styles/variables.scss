@@ -1,32 +1,74 @@
+@use 'sass:map';
+
+// 主色调
+// 接近蜂蜜琥珀色与蜜蜂身体橘黄的中间调，不刺眼且具有自然亲和力。
+// rgb(218, 128, 48) / #da8030;
+// 更明亮活泼 —— 适合强调按钮或悬停状态
+// rgb(235, 140, 55) / #eb8c37
+// 更复古沉稳 —— 适合禁用或辅助元素
+// rgb(200, 110, 40) / #c86e28
+$color-primary-50: #fff9ea;
+$color-primary-100: #fff3e5;
+$color-primary-200: #ffe6cd;
+$color-primary-300: #ffd2ab;
+$color-primary-400: #f4bf99;
+$color-primary-500: #eaa067;
+$color-primary-600: #da8030;
+$color-primary-700: #aa611e;
+$color-primary-800: #804300;
+$color-primary-900: #5e2600;
+
 // 主题颜色
-$primary-color: #409eff;
-$success-color: #67c23a;
-$warning-color: #e6a23c;
-$danger-color: #f56c6c;
-$info-color: #909399;
+// #da8030，接近蜂蜜琥珀色与蜜蜂身体橘黄的中间调，不刺眼且具有自然亲和力。
+$color-primary: $color-primary-600;
+// 接近蜂蜜琥珀色与蜜蜂身体橘黄的中间调，不刺眼且具有自然亲和力。
+// $primary-color: rgb(218, 128, 48);
+// 更明亮活泼：rgb(235, 140, 55) —— 适合强调按钮或悬停状态
+// $primary-color: rgb(235, 140, 55);
+// 更复古沉稳：rgb(200, 110, 40) —— 适合禁用或辅助元素
+// $primary-color: rgb(200, 110, 40);
+$color-success: #67c23a;
+$color-warning: #e6a23c;
+$color-danger: #f56c6c;
+$color-info: #909399;
 
 // 背景颜色
-$bg-color: #f5f7fa;
-$bg-dark: #1a1a2e;
-$bg-light: #ffffff;
+$bg-color: #131517;
+$bg-page: #1e1f23;
+// 过度灰
+$bg-hover: #26292c;
+// 高级灰
+// $bg-hover: rgb(55, 58, 62);
+// 微蓝灰
+// $bg-hover: rgb(40, 49, 65);
+$bg-selected: #2b2e31;
+$bg-disabled: rgb(43, 46, 49);
+// 弹出框的背景遮罩
+$bg-mask: rgb(43, 46, 49);
+// 弹框、下拉菜单
+$bg-overlay: #26272d;
 
 // 文字颜色
-$text-primary: #303133;
-$text-regular: #606266;
-$text-secondary: #909399;
-$text-placeholder: #c0c4cc;
+$text-primary: #bbbdc1;
+$text-regular: white;
+$text-secondary: #7e8184;
+// 三级，非关键文本、禁用状态、图标辅助文字
+$text-tertiary: #6b6e72;
+$text-placeholder: $text-secondary;
+// // 过度灰
+// $text-hover: rgb(150, 153, 158);
+// // 近选白
+// $text-hover: rgb(170, 173, 178);
+// 高亮银
+$text-hover: #c8cad0;
+// 轻度禁用，比默认字体稍暗，仍保留一定可读性，适合短暂禁用或可恢复的选项。
+$text-disabled: #5f6267;
+// // 中度禁用，进一步降低亮度，与背景对比度较弱，清晰表明不可交互，适合永久禁用的菜单项。
+// $text-disabled: rgb(78, 80, 84);
+// // 重度禁用，几乎与背景融合（仅略亮），视觉上完全弱化，适合完全隐藏又需占位或提示存在的场景。
+// $text-disabled: rgb(60, 62, 66);
 
 // 边框颜色
-$border-color: #dcdfe6;
-$border-light: #e4e7ed;
-$border-lighter: #ebeef5;
-
-// 圆角
-$border-radius: 4px;
-$border-radius-lg: 8px;
-
-// 阴影
-$box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
 
 // 间距
 $spacing-xs: 4px;
@@ -36,8 +78,8 @@ $spacing-lg: 24px;
 $spacing-xl: 32px;
 
 // 字体大小
-$font-size-xs: 12px;
-$font-size-sm: 13px;
+$font-size-xs: 11px;
+$font-size-sm: 12px;
 $font-size-base: 14px;
 $font-size-lg: 16px;
 $font-size-xl: 18px;

@@ -1,0 +1,23 @@
+@use 'sass:map';
+@use './element-override.scss' as *;
+
+html,
+body {
+  color: $text-primary;
+  background-color: $bg-color;
+}
+
+.aside {
+  background-color: $bg-page !important;
+  margin-right: 16px;
+}
+.aside-menu {
+  background-color: $bg-page !important;
+  padding: 0 12px;
+}
+
+.status-search {
+  --status-search-slider-bg-color: #{$bg-selected};
+  --status-search-color: #{$text-secondary};
+  --status-search-active-color: #{$color-primary};
+}

@@ -28,7 +28,6 @@ defineProps<{
   flex-direction: column;
   gap: 4px;
   font-size: 13px;
-  color: $text-regular;
 
   .row {
     display: flex;

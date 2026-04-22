@@ -50,7 +50,7 @@ const genderText = computed(() => {
       gap: 6px;
       font-size: 14px;
       font-weight: 600;
-      color: #303133;
+      color: $text-regular;
       line-height: 1.2;
       white-space: nowrap;
       overflow: hidden;
@@ -58,13 +58,11 @@ const genderText = computed(() => {
 
       .gender {
         font-size: 12px;
-        color: $text-secondary;
       }
     }
 
     .nickname {
       font-size: 12px;
-      color: #909399;
       line-height: 1.2;
       white-space: nowrap;
       overflow: hidden;

@@ -6,9 +6,9 @@
         <StatusSearch v-model="queryForm.status" :options="statusOptions" @select="handleSelect" />
       </div>
       <div class="query-form-right">
-        <el-button :icon="Refresh" @click="handleReset" />
+        <el-button :icon="Refresh" round @click="handleReset" />
         <el-divider direction="vertical" />
-        <el-button type="success" :icon="Plus">新增</el-button>
+        <el-button :icon="Plus" round>新增</el-button>
       </div>
     </el-form>
     <el-table v-loading="loading" :data="tableData" height="100%" @selection-change="handleSelectionChange">

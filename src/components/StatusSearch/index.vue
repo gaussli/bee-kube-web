@@ -51,46 +51,44 @@ function handleClick(index: number, value?: string | number) {
 
 <style lang="scss" scoped>
 .status-search {
-  --item-width: 80px;
-  --slider-offset: 2px;
-  --bg-color: #{$bg-color};
-  --slider-bg-color: #fff;
+  --status-search-item-width: 80px;
+  --status-search-slider-offset: 2px;
   height: 32px;
   position: relative;
   display: inline-flex;
   align-items: center;
-  background-color: var(--bg-color);
+  background-color: var(--status-search-bg-color);
   border-radius: 16px;
-  padding: var(--slider-offset);
+  padding: var(--status-search-slider-offset);
 }
 
 .slider {
   position: absolute;
-  top: var(--slider-offset);
-  left: var(--slider-offset);
-  width: var(--item-width);
-  height: calc(100% - var(--slider-offset) * 2);
-  background-color: var(--slider-bg-color);
+  top: var(--status-search-slider-offset);
+  left: var(--status-search-slider-offset);
+  width: var(--status-search-item-width);
+  height: calc(100% - var(--status-search-slider-offset) * 2);
+  background-color: var(--status-search-slider-bg-color);
   border-radius: 16px;
   transition: transform 0.25s ease;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
 }
 
 .status-item {
-  width: var(--item-width);
+  width: var(--status-search-item-width);
   display: flex;
   align-items: center;
   justify-content: center;
   z-index: 1;
   padding: 0 16px;
   font-size: 12px;
-  color: #909399;
+  color: var(--status-search-color);
   cursor: pointer;
   transition: color 0.25s ease;
   user-select: none;
 
   &.active {
-    color: $primary-color;
+    color: var(--status-search-active-color);
   }
 }
 </style>

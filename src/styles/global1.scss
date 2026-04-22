@@ -1,0 +1,94 @@
+// Element Plus 组件样式覆盖
+// 卡片组件样式覆盖
+.el-card {
+  --el-card-border-radius: 8px;
+  --el-box-shadow-light: none;
+  --el-card-padding: 16px;
+  border: none;
+}
+
+// 按钮组件样式覆盖
+.el-button {
+  --el-font-size-base: 12px;
+  --el-border-radius-base: 16px;
+  --el-button-size: 32px;
+  padding: 16px;
+  height: var(--el-button-size);
+}
+.el-button--small {
+  --el-font-size-base: 10px;
+  --el-border-radius-base: 12px;
+  --el-button-size: 24px;
+  padding: 0 12px;
+  height: var(--el-button-size);
+}
+.el-button--large {
+  --el-font-size-base: 14px;
+  --el-border-radius-base: 20px;
+  --el-button-size: 40px;
+  padding: 0 20px;
+  height: var(--el-button-size);
+}
+
+// 菜单组件样式覆盖
+.el-menu {
+  border-right: none !important;
+}
+
+// 分页组件样式覆盖
+.el-pagination {
+  --el-pagination-font-size: 12px;
+  .el-pagination__sizes {
+    --el-border-radius-base: 16px;
+    .el-select {
+      --el-fill-color-blank: #{$bg-color};
+      font-size: 12px;
+      .el-select__wrapper {
+        box-shadow: none;
+        font-size: 12px;
+        padding: 0 12px 0 20px;
+      }
+    }
+  }
+  .el-pagination__jump {
+    .el-input {
+      --el-input-bg-color: #{$bg-color};
+      --el-border-radius-base: 16px;
+      --el-font-size-base: 12px;
+      .el-input__wrapper {
+        box-shadow: none;
+      }
+    }
+  }
+}
+
+// 选择器组件弹出框样式覆盖
+.el-popper.el-select__popper {
+  --el-font-size-base: 12px;
+  --el-popper-border-radius: 8px;
+  .el-select-dropdown__list {
+    padding: 0;
+    .el-select-dropdown__item {
+      margin: 4px 8px;
+      padding: 0px 12px;
+      border-radius: 8px;
+    }
+  }
+}
+
+// 下拉组件弹出框样式覆盖
+.el-popper.el-dropdown__popper {
+  --el-font-size-base: 12px;
+  --el-popper-border-radius: 8px;
+  .el-dropdown-menu {
+    padding: 0;
+    .el-dropdown-menu__item {
+      margin: 4px 8px;
+      padding: 6px 24px;
+      border-radius: 8px;
+    }
+    .el-dropdown-menu__item--divided {
+      margin: 0;
+    }
+  }
+}
