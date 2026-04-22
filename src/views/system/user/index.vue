@@ -8,7 +8,7 @@
       <div class="query-form-right">
         <el-button :icon="Refresh" round @click="handleReset" />
         <el-divider direction="vertical" />
-        <el-button :icon="Plus" round>新增</el-button>
+        <el-button :icon="Plus" round @click="handleCreate">新增</el-button>
       </div>
     </el-form>
     <el-table v-loading="loading" :data="tableData" height="100%" @selection-change="handleSelectionChange">
@@ -62,7 +62,7 @@
             <el-button circle :icon="View" size="default" @click="handleView(row)" />
           </el-tooltip>
           <el-tooltip content="编辑" placement="top">
-            <el-button circle :icon="EditPen" size="default" />
+            <el-button circle :icon="EditPen" size="default" @click="handleEdit(row)" />
           </el-tooltip>
           <el-tooltip content="更多" placement="top">
             <el-dropdown trigger="click">
@@ -216,6 +216,14 @@ function handleSelectionChange(rows: UserResp[]) {
 
 function handleView(row: UserResp) {
   router.push({ path: '/system/user/detail', query: { id: row.id } })
+}
+
+function handleCreate() {
+  router.push('/system/user/create')
+}
+
+function handleEdit(row: UserResp) {
+  router.push({ path: '/system/user/edit', query: { id: row.id } })
 }
 
 function handleToggleStatus(row: UserResp) {

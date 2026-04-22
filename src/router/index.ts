@@ -33,6 +33,18 @@ export const constantRoutes: RouteRecordRaw[] = [
         name: 'UserDetail',
         component: () => import('@/views/system/user/detail/index.vue'),
         meta: { title: '用户详情', hidden: true }
+      },
+      {
+        path: '/system/user/create',
+        name: 'UserCreate',
+        component: () => import('@/views/system/user/create/index.vue'),
+        meta: { title: '创建用户', hidden: true }
+      },
+      {
+        path: '/system/user/edit',
+        name: 'UserEdit',
+        component: () => import('@/views/system/user/edit/index.vue'),
+        meta: { title: '编辑用户', hidden: true }
       }
     ]
   }
