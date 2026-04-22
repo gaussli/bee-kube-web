@@ -27,6 +27,12 @@ export const constantRoutes: RouteRecordRaw[] = [
         name: 'Dashboard',
         component: () => import('@/views/dashboard/index.vue'),
         meta: { title: '仪表盘', icon: 'HomeFilled' }
+      },
+      {
+        path: '/system/user/detail',
+        name: 'UserDetail',
+        component: () => import('@/views/system/user/detail/index.vue'),
+        meta: { title: '用户详情', hidden: true }
       }
     ]
   }

@@ -91,7 +91,7 @@
       </el-table-column>
     </el-table>
     <div class="table-footer">
-      <el-button type="danger" :icon="Delete" :disabled="selectedRows.length === 0" @click="handleBatchDelete"> 批量删除 ({{ selectedRows.length }}) </el-button>
+      <el-button type="danger" round :icon="Delete" :disabled="selectedRows.length === 0" @click="handleBatchDelete"> 批量删除 ({{ selectedRows.length }}) </el-button>
       <el-pagination
         v-model:current-page="pagination.page"
         v-model:page-size="pagination.pageSize"
@@ -103,7 +103,6 @@
       />
     </div>
   </el-card>
-  <UserDetailDrawer v-model="detailDrawerVisible" :user-data="currentUser" />
   <el-dialog v-model="statusDialogVisible" :title="currentTargetRow?.status === 1 ? '确认禁用' : '确认启用'" width="400px" :close-on-click-modal="false">
     <div class="status-dialog-content">
       <p v-if="currentTargetRow?.status === 1">
@@ -124,9 +123,10 @@
 
 <script setup lang="ts">
 import { onMounted, reactive, ref } from 'vue'
+import { useRouter } from 'vue-router'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import { Delete, Key, MoreFilled, Plus, Refresh, Setting, User, CircleCheck, CircleClose, Clock, EditPen, View } from '@element-plus/icons-vue'
-import { type UserDetailResp, type UserQueryReq, type UserResp } from '@/types'
+import { type UserQueryReq, type UserResp } from '@/types'
 import { getUserPage } from '@/api'
 import AuditCell from '@/components/AuditCell/index.vue'
 import IconLabel from '@/components/IconLabel/index.vue'
@@ -135,9 +135,10 @@ import StatusCell from '@/components/StatusCell/index.vue'
 import StatusSearch from '@/components/StatusSearch/index.vue'
 import TextCopyableCell from '@/components/TextCopyableCell/index.vue'
 import UserCell from '@/components/UserCell/index.vue'
-import UserDetailDrawer from './components/UserDetailDrawer/index.vue'
 
 defineOptions({ name: 'UserManage' })
+
+const router = useRouter()
 
 const userStatusConfig = [
   { value: 1, label: '启用', color: 'rgb(103, 194, 58)' },
@@ -153,8 +154,6 @@ const statusOptions = [
 const loading = ref(false)
 const tableData = ref<UserResp[]>([])
 const selectedRows = ref<UserResp[]>([])
-const detailDrawerVisible = ref(false)
-const currentUser = ref<UserDetailResp>({} as UserDetailResp)
 const statusDialogVisible = ref(false)
 const currentTargetRow = ref<UserResp | null>(null)
 const queryForm = reactive<UserQueryReq>({
@@ -216,8 +215,7 @@ function handleSelectionChange(rows: UserResp[]) {
 }
 
 function handleView(row: UserResp) {
-  currentUser.value = row
-  detailDrawerVisible.value = true
+  router.push({ path: '/system/user/detail', query: { id: row.id } })
 }
 
 function handleToggleStatus(row: UserResp) {
