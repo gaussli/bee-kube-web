@@ -115,11 +115,33 @@ onMounted(() => {
   border-top: 1px solid rgba($text-secondary, 0.1);
 }
 
+// 动画定义
+@keyframes fadeSlideIn {
+  from {
+    opacity: 0;
+    transform: translateX(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes fadeSlideOut {
+  from {
+    opacity: 1;
+    transform: translateX(0);
+  }
+  to {
+    opacity: 0;
+    transform: translateX(-20px);
+  }
+}
+
 // 渐入渐出动画
 .fade-slide-enter-active {
   animation: fadeSlideIn 0.3s ease-out;
 }
-
 .fade-slide-leave-active {
   animation: fadeSlideOut 0.2s ease-in;
 }
