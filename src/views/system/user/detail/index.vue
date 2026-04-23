@@ -34,7 +34,7 @@
               <div class="section-title">
                 <el-icon><User /></el-icon>
                 <span>基本信息</span>
-                <span class="section-title-en">Basic Info</span>
+                <span class="section-title-en">/ Basic Info</span>
               </div>
               <div class="info-list">
                 <div class="info-item">
@@ -354,19 +354,19 @@ onMounted(() => {
   }
 
   .label-zh {
-    font-size: 13px;
+    font-size: 14px;
     color: $text-secondary;
   }
 
   .label-en {
-    font-size: 11px;
+    font-size: 12px;
     color: $text-tertiary;
     margin-left: 2px;
   }
 }
 
 .info-value {
-  font-size: 13px;
+  font-size: 14px;
   color: $text-primary;
   text-align: right;
   overflow: hidden;
@@ -375,7 +375,7 @@ onMounted(() => {
 }
 
 .description {
-  font-size: 13px;
+  font-size: 14px;
   color: $text-secondary;
   line-height: 1.6;
 }

@@ -80,9 +80,6 @@
                   <el-dropdown-item @click="handleAssignRoles(row)">
                     <el-icon><Setting /></el-icon> 配置角色
                   </el-dropdown-item>
-                  <el-dropdown-item>
-                    <el-icon><Setting /></el-icon> 配置角色
-                  </el-dropdown-item>
                   <el-dropdown-item divided>
                     <el-icon><Delete /></el-icon> 删除
                   </el-dropdown-item>

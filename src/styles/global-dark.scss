@@ -21,3 +21,7 @@ body {
   --status-search-color: #{$text-secondary};
   --status-search-active-color: #{$color-primary};
 }
+
+.bee-button + .bee-button {
+  margin-left: 8px;
+}

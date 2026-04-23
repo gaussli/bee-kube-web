@@ -116,6 +116,10 @@
   --el-input-text-color: #{$text-primary};
   --el-color-info: #{$text-primary};
   --el-text-color-placeholder: #{$text-placeholder};
+
+  .el-input__wrapper {
+    --el-input-bg-color: #{$bg-color};
+  }
 }
 
 .el-checkbox {

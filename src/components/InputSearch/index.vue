@@ -29,7 +29,6 @@ function handleSearch() {
 
 <style lang="scss" scoped>
 .search-input {
-  --el-input-bg-color: #{$bg-color};
   --el-border-radius-base: 16px;
   --el-font-size-base: 12px;
   width: 200px;

@@ -48,27 +48,44 @@ $bg-mask: rgb(43, 46, 49);
 // 弹框、下拉菜单
 $bg-overlay: #26272d;
 
-// 文字颜色
-$text-primary: #bbbdc1;
-$text-regular: white;
-$text-secondary: #7e8184;
-// 三级，非关键文本、禁用状态、图标辅助文字
-$text-tertiary: #6b6e72;
-$text-placeholder: $text-secondary;
+// 系统基础颜色
+$bee-regular: white;
+$bee-primary: #bbbdc1;
+$bee-secondary: #7e8184;
+// 三级，非关键、禁用状态、图标辅助
+$bee-tertiary: #6b6e72;
 // // 过度灰
-// $text-hover: rgb(150, 153, 158);
+// $bee-hover: rgb(150, 153, 158);
 // // 近选白
-// $text-hover: rgb(170, 173, 178);
+// $bee-hover: rgb(170, 173, 178);
 // 高亮银
-$text-hover: #c8cad0;
+$bee-hover: #c8cad0;
+$bee-active: $bee-primary;
 // 轻度禁用，比默认字体稍暗，仍保留一定可读性，适合短暂禁用或可恢复的选项。
-$text-disabled: #5f6267;
+$bee-disabled: #5f6267;
 // // 中度禁用，进一步降低亮度，与背景对比度较弱，清晰表明不可交互，适合永久禁用的菜单项。
-// $text-disabled: rgb(78, 80, 84);
+// $bee-disabled: rgb(78, 80, 84);
 // // 重度禁用，几乎与背景融合（仅略亮），视觉上完全弱化，适合完全隐藏又需占位或提示存在的场景。
-// $text-disabled: rgb(60, 62, 66);
+// $bee-disabled: rgb(60, 62, 66);
+
+// 文字颜色
+$text-regular: $bee-regular;
+$text-primary: $bee-primary;
+$text-secondary: $bee-secondary;
+$text-tertiary: $bee-tertiary;
+$text-placeholder: $bee-secondary;
+$text-hover: $bee-hover;
+$text-active: $bee-primary;
+$text-disabled: #ffffff32;
 
 // 边框颜色
+$border-regular: $bee-regular;
+$border-primary: $bee-primary;
+$border-secondary: $bee-secondary;
+$border-tertiary: $bee-tertiary;
+$border-hover: $bee-hover;
+$border-active: $bee-primary;
+$border-disabled: #ffffff32;
 
 // 间距
 $spacing-xs: 4px;
