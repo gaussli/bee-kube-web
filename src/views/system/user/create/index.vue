@@ -84,8 +84,7 @@ async function handleCreate() {
   display: flex;
   justify-content: flex-end;
   align-items: center;
-  gap: 16px;
-  padding: 20px;
+  padding: 16px 20px;
   border-top: 1px solid rgba($text-secondary, 0.1);
 }
 </style>

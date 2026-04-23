@@ -167,7 +167,7 @@ defineExpose({ validate, resetFields })
 .user-form {
   display: flex;
   flex-direction: column;
-  padding: 20px;
+  padding: 16px 20px;
 }
 
 .form-content {

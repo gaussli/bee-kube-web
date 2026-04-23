@@ -1,97 +1,115 @@
 <template>
-  <el-card class="user-card">
-    <el-form :inline="true" :model="queryForm" class="query-form">
-      <div class="query-form-left">
-        <InputSearch placeholder="按 ID / 用户名 / 昵称 搜索" @search="handleSearch" />
-        <StatusSearch v-model="queryForm.status" :options="statusOptions" @select="handleSelect" />
+  <div class="user-table">
+    <!-- 表格头部 -->
+    <div class="table-header">
+      <div class="query-form">
+        <div class="query-form-left">
+          <InputSearch placeholder="按 ID / 用户名 / 昵称 搜索" @search="handleSearch" />
+          <StatusSearch v-model="queryForm.status" :options="statusOptions" @select="handleSelect" />
+        </div>
+        <div class="query-form-right">
+          <BeeButton @click="handleReset">
+            <template #icon><Refresh /></template>
+            刷新
+          </BeeButton>
+          <el-divider direction="vertical" />
+          <BeeButton type="primary" @click="handleCreate">
+            <template #icon><Plus /></template>
+            新增
+          </BeeButton>
+        </div>
       </div>
-      <div class="query-form-right">
-        <el-button :icon="Refresh" round @click="handleReset" />
-        <el-divider direction="vertical" />
-        <el-button :icon="Plus" round @click="handleCreate">新增</el-button>
-      </div>
-    </el-form>
-    <el-table v-loading="loading" :data="tableData" height="100%" @selection-change="handleSelectionChange">
-      <el-table-column type="selection" width="60" align="center" />
-      <el-table-column prop="id" width="300">
-        <template #header>
-          <IconLabel :icon="Key" label="ID" />
-        </template>
-        <template #default="{ row }">
-          <TextCopyableCell :text="row.id" />
-        </template>
-      </el-table-column>
-      <el-table-column min-width="150">
-        <template #header>
-          <IconLabel :icon="User" label="账号" />
-        </template>
-        <template #default="{ row }">
-          <UserCell :username="row.username" :nickname="row.nickname" :avatar="row.avatarId" :gender="row.gender" />
-        </template>
-      </el-table-column>
-      <el-table-column prop="status" width="100">
-        <template #header>
-          <IconLabel :icon="CircleCheck" label="状态" />
-        </template>
-        <template #default="{ row }">
-          <StatusCell :status="row.status" :config="userStatusConfig" />
-        </template>
-      </el-table-column>
-      <el-table-column width="180">
-        <template #header>
-          <IconLabel :icon="Clock" label="创建" />
-        </template>
-        <template #default="{ row }">
-          <AuditCell :user="row.createBy" :time="row.createAt" />
-        </template>
-      </el-table-column>
-      <el-table-column width="180">
-        <template #header>
-          <IconLabel :icon="Clock" label="更新" />
-        </template>
-        <template #default="{ row }">
-          <AuditCell :user="row.updateBy" :time="row.updateAt" />
-        </template>
-      </el-table-column>
-      <el-table-column width="200" fixed="right">
-        <template #header>
-          <IconLabel :icon="EditPen" label="操作" />
-        </template>
-        <template #default="{ row }">
-          <el-tooltip content="详情" placement="top">
-            <el-button circle :icon="View" size="default" @click="handleView(row)" />
-          </el-tooltip>
-          <el-tooltip content="编辑" placement="top">
-            <el-button circle :icon="EditPen" size="default" @click="handleEdit(row)" />
-          </el-tooltip>
-          <el-tooltip content="更多" placement="top">
-            <el-dropdown trigger="click">
-              <template #default>
-                <el-button circle :icon="MoreFilled" size="default" />
-              </template>
-              <template #dropdown>
-                <el-dropdown-menu>
-                  <el-dropdown-item v-if="row.status === 0" @click="handleToggleStatus(row)">
-                    <el-icon><CircleCheck /></el-icon> 启用
-                  </el-dropdown-item>
-                  <el-dropdown-item v-if="row.status === 1" @click="handleToggleStatus(row)">
-                    <el-icon><CircleClose /></el-icon> 禁用
-                  </el-dropdown-item>
-                  <el-dropdown-item @click="handleAssignRoles(row)">
-                    <el-icon><Setting /></el-icon> 配置角色
-                  </el-dropdown-item>
-                  <el-dropdown-item divided>
-                    <el-icon><Delete /></el-icon> 删除
-                  </el-dropdown-item>
-                </el-dropdown-menu>
-              </template>
-            </el-dropdown>
-          </el-tooltip>
-        </template>
-      </el-table-column>
-    </el-table>
+    </div>
+
+    <!-- 表格主体 -->
+    <div class="table-body">
+      <el-table v-loading="loading" :data="tableData" height="100%" @selection-change="handleSelectionChange">
+        <el-table-column type="selection" width="60" align="center" />
+        <el-table-column prop="id" width="300">
+          <template #header>
+            <IconLabel :icon="Key" label="ID" />
+          </template>
+          <template #default="{ row }">
+            <TextCopyableCell :text="row.id" />
+          </template>
+        </el-table-column>
+        <el-table-column min-width="150">
+          <template #header>
+            <IconLabel :icon="User" label="账号" />
+          </template>
+          <template #default="{ row }">
+            <UserCell :username="row.username" :nickname="row.nickname" :avatar="row.avatarId" :gender="row.gender" />
+          </template>
+        </el-table-column>
+        <el-table-column prop="status" width="100">
+          <template #header>
+            <IconLabel :icon="CircleCheck" label="状态" />
+          </template>
+          <template #default="{ row }">
+            <StatusCell :status="row.status" :config="userStatusConfig" />
+          </template>
+        </el-table-column>
+        <el-table-column width="180">
+          <template #header>
+            <IconLabel :icon="Clock" label="创建" />
+          </template>
+          <template #default="{ row }">
+            <AuditCell :user="row.createBy" :time="row.createAt" />
+          </template>
+        </el-table-column>
+        <el-table-column width="180">
+          <template #header>
+            <IconLabel :icon="Clock" label="更新" />
+          </template>
+          <template #default="{ row }">
+            <AuditCell :user="row.updateBy" :time="row.updateAt" />
+          </template>
+        </el-table-column>
+        <el-table-column width="200" fixed="right">
+          <template #header>
+            <IconLabel :icon="EditPen" label="操作" />
+          </template>
+          <template #default="{ row }">
+            <el-tooltip content="详情" placement="top">
+              <el-button circle :icon="View" size="default" @click="handleView(row)" />
+            </el-tooltip>
+            <el-tooltip content="编辑" placement="top">
+              <el-button circle :icon="EditPen" size="default" @click="handleEdit(row)" />
+            </el-tooltip>
+            <el-tooltip content="更多" placement="top">
+              <el-dropdown trigger="click">
+                <template #default>
+                  <el-button circle :icon="MoreFilled" size="default" />
+                </template>
+                <template #dropdown>
+                  <el-dropdown-menu>
+                    <el-dropdown-item v-if="row.status === 0" @click="handleToggleStatus(row)">
+                      <el-icon><CircleCheck /></el-icon> 启用
+                    </el-dropdown-item>
+                    <el-dropdown-item v-if="row.status === 1" @click="handleToggleStatus(row)">
+                      <el-icon><CircleClose /></el-icon> 禁用
+                    </el-dropdown-item>
+                    <el-dropdown-item @click="handleAssignRoles(row)">
+                      <el-icon><Setting /></el-icon> 配置角色
+                    </el-dropdown-item>
+                    <el-dropdown-item divided>
+                      <el-icon><Delete /></el-icon> 删除
+                    </el-dropdown-item>
+                  </el-dropdown-menu>
+                </template>
+              </el-dropdown>
+            </el-tooltip>
+          </template>
+        </el-table-column>
+      </el-table>
+    </div>
+
+    <!-- 表格底部 -->
     <div class="table-footer">
-      <el-button type="danger" round :icon="Delete" :disabled="selectedRows.length === 0" @click="handleBatchDelete"> 批量删除 ({{ selectedRows.length }}) </el-button>
+      <BeeButton type="danger" :disabled="selectedRows.length === 0" @click="handleBatchDelete">
+        <template #icon><Delete /></template>
+        批量删除 ({{ selectedRows.length }})
+      </BeeButton>
       <el-pagination
         v-model:current-page="pagination.page"
         v-model:page-size="pagination.pageSize"
@@ -102,7 +120,7 @@
         @current-change="loadData"
       />
     </div>
-  </el-card>
+  </div>
   <el-dialog v-model="statusDialogVisible" :title="currentTargetRow?.status === 1 ? '确认禁用' : '确认启用'" width="400px" :close-on-click-modal="false">
     <div class="status-dialog-content">
       <p v-if="currentTargetRow?.status === 1">
@@ -113,10 +131,10 @@
       </p>
     </div>
     <template #footer>
-      <el-button @click="statusDialogVisible = false">取消</el-button>
-      <el-button :type="currentTargetRow?.status === 1 ? 'danger' : 'success'" @click="handleConfirmStatus">
+      <BeeButton @click="statusDialogVisible = false">取消</BeeButton>
+      <BeeButton :type="currentTargetRow?.status === 1 ? 'danger' : 'success'" @click="handleConfirmStatus">
         {{ currentTargetRow?.status === 1 ? '禁用' : '启用' }}
-      </el-button>
+      </BeeButton>
     </template>
   </el-dialog>
 </template>
@@ -129,6 +147,7 @@ import { Delete, Key, MoreFilled, Plus, Refresh, Setting, User, CircleCheck, Cir
 import { type UserQueryReq, type UserResp } from '@/types'
 import { getUserPage } from '@/api'
 import AuditCell from '@/components/AuditCell/index.vue'
+import BeeButton from '@/components/BeeButton/index.vue'
 import IconLabel from '@/components/IconLabel/index.vue'
 import InputSearch from '@/components/InputSearch/index.vue'
 import StatusCell from '@/components/StatusCell/index.vue'
@@ -269,55 +288,62 @@ onMounted(() => {
 </script>
 
 <style lang="scss" scoped>
-.user-card {
+.user-table {
   height: 100%;
-
-  :deep(.el-card__body) {
-    display: flex;
-    flex-direction: column;
-  }
-}
-
-.query-form {
   display: flex;
-  align-items: center;
-  justify-content: space-between;
+  flex-direction: column;
+  background-color: $bg-page;
+}
 
-  .query-form-left {
+.table-header {
+  flex-shrink: 0;
+  padding: 16px 20px;
+
+  .query-form {
     display: flex;
     align-items: center;
-    gap: 16px;
-  }
+    justify-content: space-between;
 
-  .query-form-right {
-    display: flex;
-    align-items: center;
-    gap: 8px;
+    .query-form-left {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .query-form-right {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
   }
 }
 
-:deep(.el-table) {
+.table-body {
   flex: 1;
-  width: auto;
+  overflow-y: auto;
+  min-height: 0;
 
-  th.el-table__cell {
-    padding: 12px 0;
-  }
+  :deep(.el-table) {
+    flex: 1;
+    width: auto;
 
-  .el-button + .el-button {
-    margin-left: 8px;
-  }
+    th.el-table__cell {
+      padding: 12px 0;
+    }
 
-  .el-button + .el-dropdown {
-    margin-left: 8px;
+    .el-button + .el-button,
+    .el-button + .el-dropdown {
+      margin-left: 8px;
+    }
   }
 }
 
 .table-footer {
+  flex-shrink: 0;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-top: 16px;
+  padding: 16px 20px;
 }
 
 .status-dialog-content {
