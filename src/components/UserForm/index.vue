@@ -1,6 +1,17 @@
 <template>
   <el-form ref="formRef" :model="formData" :rules="formRules" label-position="left" class="user-form">
     <div class="form-content">
+      <!-- 用户ID (只读) -->
+      <el-form-item label="用户ID">
+        <template #label>
+          <el-icon><Key /></el-icon>
+          <span>用户ID</span>
+        </template>
+        <div class="user-id-display">
+          <span class="user-id-value">{{ userId }}</span>
+        </div>
+      </el-form-item>
+
       <!-- 基础信息 -->
       <el-form-item label="用户名" prop="username">
         <template #label>
@@ -106,7 +117,7 @@
 
 <script setup lang="ts">
 import { computed, reactive, ref, watch } from 'vue'
-import { User, UserFilled, Postcard, Coin, Male, Female, Help, Phone, Message, Calendar, Switch, Document } from '@element-plus/icons-vue'
+import { Key, User, UserFilled, Postcard, Coin, Male, Female, Help, Phone, Message, Calendar, Switch, Document } from '@element-plus/icons-vue'
 import type { FormInstance, FormRules } from 'element-plus'
 import type { UserDetailResp } from '@/types'
 
@@ -118,6 +129,7 @@ const props = defineProps<{
 
 const formRef = ref<FormInstance>()
 const isEdit = computed(() => !!props.data?.id)
+const userId = computed(() => props.data?.id || '')
 
 const formData = reactive({
   username: '',
@@ -307,5 +319,21 @@ defineExpose({ validate, resetFields })
   background: rgba($bg-color, 0.6);
   border: 1px solid rgba($text-secondary, 0.15);
   border-radius: 8px;
+}
+
+.user-id-display {
+  display: flex;
+  align-items: center;
+  padding: 4px 12px;
+  background: rgba($bg-color, 0.6);
+  border: 1px solid rgba($text-secondary, 0.15);
+  border-radius: 8px;
+  min-height: 34px;
+}
+
+.user-id-value {
+  font-family: monospace;
+  font-size: 13px;
+  color: $text-secondary;
 }
 </style>
