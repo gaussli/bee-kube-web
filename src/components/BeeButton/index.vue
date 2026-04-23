@@ -52,6 +52,7 @@ defineExpose({ loading })
 </script>
 
 <style lang="scss" scoped>
+@use 'sass:color';
 .bee-button {
   display: inline-flex;
   align-items: center;
@@ -106,28 +107,28 @@ defineExpose({ loading })
 
   // active 状态
   &:active:not(.is-disabled):not(.is-loading) {
-    background: darken($color-primary, 10%);
-    border-color: darken($color-primary, 10%);
+    background: color.adjust($color-primary, $lightness: -10%);
+    border-color: color.adjust($color-primary, $lightness: -10%);
     color: $text-regular;
 
     &.bee-button--success {
-      background: darken($color-success, 10%);
-      border-color: darken($color-success, 10%);
+      background: color.adjust($color-success, $lightness: -10%);
+      border-color: color.adjust($color-success, $lightness: -10%);
     }
 
     &.bee-button--warning {
-      background: darken($color-warning, 10%);
-      border-color: darken($color-warning, 10%);
+      background: color.adjust($color-warning, $lightness: -10%);
+      border-color: color.adjust($color-warning, $lightness: -10%);
     }
 
     &.bee-button--danger {
-      background: darken($color-danger, 10%);
-      border-color: darken($color-danger, 10%);
+      background: color.adjust($color-danger, $lightness: -10%);
+      border-color: color.adjust($color-danger, $lightness: -10%);
     }
 
     &.bee-button--info {
-      background: darken($color-info, 10%);
-      border-color: darken($color-info, 10%);
+      background: color.adjust($color-info, $lightness: -10%);
+      border-color: color.adjust($color-info, $lightness: -10%);
     }
 
     &.bee-button--default {
