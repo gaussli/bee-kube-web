@@ -45,6 +45,12 @@ export const constantRoutes: RouteRecordRaw[] = [
         name: 'UserEdit',
         component: () => import('@/views/system/user/edit/index.vue'),
         meta: { title: '编辑用户', hidden: true }
+      },
+      {
+        path: '/system/user/assign-roles',
+        name: 'UserAssignRoles',
+        component: () => import('@/views/system/user/assign-roles/index.vue'),
+        meta: { title: '配置角色', hidden: true }
       }
     ]
   }

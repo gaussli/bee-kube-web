@@ -77,6 +77,9 @@
                   <el-dropdown-item v-if="row.status === 1" @click="handleToggleStatus(row)">
                     <el-icon><CircleClose /></el-icon> 禁用
                   </el-dropdown-item>
+                  <el-dropdown-item @click="handleAssignRoles(row)">
+                    <el-icon><Setting /></el-icon> 配置角色
+                  </el-dropdown-item>
                   <el-dropdown-item>
                     <el-icon><Setting /></el-icon> 配置角色
                   </el-dropdown-item>
@@ -224,6 +227,10 @@ function handleCreate() {
 
 function handleEdit(row: UserResp) {
   router.push({ path: '/system/user/edit', query: { id: row.id } })
+}
+
+function handleAssignRoles(row: UserResp) {
+  router.push({ path: '/system/user/assign-roles', query: { userId: row.id } })
 }
 
 function handleToggleStatus(row: UserResp) {
