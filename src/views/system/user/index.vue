@@ -92,7 +92,7 @@
                     <el-dropdown-item @click="handleAssignRoles(row)">
                       <el-icon><Setting /></el-icon> 配置角色
                     </el-dropdown-item>
-                    <el-dropdown-item divided>
+                    <el-dropdown-item divided @click="handleDelete(row)">
                       <el-icon><Delete /></el-icon> 删除
                     </el-dropdown-item>
                   </el-dropdown-menu>
@@ -121,7 +121,14 @@
       />
     </div>
   </div>
-  <el-dialog v-model="statusDialogVisible" :title="currentTargetRow?.status === 1 ? '确认禁用' : '确认启用'" width="400px" :close-on-click-modal="false">
+
+  <!-- 状态确认 Dialog -->
+  <BeeDialog
+    v-model="statusDialogVisible"
+    :title="currentTargetRow?.status === 1 ? '确认禁用' : '确认启用'"
+    :confirm-type="currentTargetRow?.status === 1 ? 'danger' : 'success'"
+    @confirm="handleConfirmStatus"
+  >
     <div class="status-dialog-content">
       <p v-if="currentTargetRow?.status === 1">
         确定要禁用用户 <strong>{{ currentTargetRow?.username }}</strong> 吗？禁用后该用户将无法登录系统。
@@ -130,13 +137,7 @@
         确定要启用用户 <strong>{{ currentTargetRow?.username }}</strong> 吗？启用后该用户可以正常登录系统。
       </p>
     </div>
-    <template #footer>
-      <BeeButton @click="statusDialogVisible = false">取消</BeeButton>
-      <BeeButton :type="currentTargetRow?.status === 1 ? 'danger' : 'success'" @click="handleConfirmStatus">
-        {{ currentTargetRow?.status === 1 ? '禁用' : '启用' }}
-      </BeeButton>
-    </template>
-  </el-dialog>
+  </BeeDialog>
 </template>
 
 <script setup lang="ts">
@@ -148,6 +149,7 @@ import { type UserQueryReq, type UserResp } from '@/types'
 import { getUserPage } from '@/api'
 import AuditCell from '@/components/AuditCell/index.vue'
 import BeeButton from '@/components/BeeButton/index.vue'
+import BeeDialog from '@/components/BeeDialog/index.vue'
 import IconLabel from '@/components/IconLabel/index.vue'
 import InputSearch from '@/components/InputSearch/index.vue'
 import StatusCell from '@/components/StatusCell/index.vue'
@@ -245,13 +247,17 @@ function handleEdit(row: UserResp) {
   router.push({ path: '/system/user/edit', query: { id: row.id } })
 }
 
+function handleToggleStatus(row: UserResp) {
+  currentTargetRow.value = row
+  statusDialogVisible.value = true
+}
+
 function handleAssignRoles(row: UserResp) {
   router.push({ path: '/system/user/assign-roles', query: { userId: row.id } })
 }
 
-function handleToggleStatus(row: UserResp) {
+function handleDelete(row: UserResp) {
   currentTargetRow.value = row
-  statusDialogVisible.value = true
 }
 
 async function handleConfirmStatus() {
