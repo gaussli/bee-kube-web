@@ -9,11 +9,11 @@
     </div>
 
     <!-- 表单主体 -->
-    <div class="form-body">
-      <transition name="fade-slide" mode="out-in">
+    <transition name="fade-slide" mode="out-in">
+      <div class="form-body">
         <UserForm ref="userFormRef" :data="userData" />
-      </transition>
-    </div>
+      </div>
+    </transition>
 
     <!-- 表单底部 -->
     <div class="form-footer">
@@ -113,29 +113,6 @@ onMounted(() => {
   align-items: center;
   padding: 16px 20px;
   border-top: 1px solid rgba($text-secondary, 0.1);
-}
-
-// 动画定义
-@keyframes fadeSlideIn {
-  from {
-    opacity: 0;
-    transform: translateX(20px);
-  }
-  to {
-    opacity: 1;
-    transform: translateX(0);
-  }
-}
-
-@keyframes fadeSlideOut {
-  from {
-    opacity: 1;
-    transform: translateX(0);
-  }
-  to {
-    opacity: 0;
-    transform: translateX(-20px);
-  }
 }
 
 // 渐入渐出动画

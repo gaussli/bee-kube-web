@@ -6,12 +6,18 @@
         <template #icon><ArrowLeft /></template>
         返回
       </BeeButton>
+      <BeeDivider direction="vertical" :length="25" margin="12px" />
+      <div class="header-title">
+        <span class="header-title__text">创建用户</span>
+      </div>
     </div>
 
     <!-- 表单主体 -->
-    <div class="form-body">
-      <UserForm ref="userFormRef" />
-    </div>
+    <transition name="fade-slide" mode="out-in">
+      <div class="form-body">
+        <UserForm ref="userFormRef" />
+      </div>
+    </transition>
 
     <!-- 表单底部 -->
     <div class="form-footer">
@@ -33,6 +39,7 @@ import { useRouter } from 'vue-router'
 import { ElMessage } from 'element-plus'
 import { ArrowLeft, Close, Check } from '@element-plus/icons-vue'
 import BeeButton from '@/components/BeeButton/index.vue'
+import BeeDivider from '@/components/BeeDivider/index.vue'
 import UserForm from '@/components/UserForm/index.vue'
 
 defineOptions({ name: 'UserCreate' })
@@ -71,12 +78,24 @@ async function handleCreate() {
   height: 48px;
   padding: 0 8px;
   border-bottom: 1px solid rgba($text-secondary, 0.1);
+  color: $text-secondary;
+
+  .header-title {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-left: 8px;
+    gap: 8px;
+    color: $text-secondary;
+    font-weight: 600;
+  }
 }
 
 .form-body {
   flex: 1;
   overflow-y: auto;
   min-height: 0;
+  animation: fadeSlideIn 0.3s ease-out;
 }
 
 .form-footer {
@@ -84,7 +103,17 @@ async function handleCreate() {
   display: flex;
   justify-content: flex-end;
   align-items: center;
+  gap: 12px;
   padding: 16px 20px;
   border-top: 1px solid rgba($text-secondary, 0.1);
+}
+
+// 渐入渐出动画
+.fade-slide-enter-active {
+  animation: fadeSlideIn 0.3s ease-out;
+}
+
+.fade-slide-leave-active {
+  animation: fadeSlideOut 0.2s ease-in;
 }
 </style>

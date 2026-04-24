@@ -100,3 +100,26 @@ $font-size-sm: 12px;
 $font-size-base: 14px;
 $font-size-lg: 16px;
 $font-size-xl: 18px;
+
+// 动画定义
+@keyframes fadeSlideIn {
+  from {
+    opacity: 0;
+    transform: translateX(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes fadeSlideOut {
+  from {
+    opacity: 1;
+    transform: translateX(0);
+  }
+  to {
+    opacity: 0;
+    transform: translateX(-20px);
+  }
+}
