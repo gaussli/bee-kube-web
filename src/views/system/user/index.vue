@@ -129,7 +129,7 @@
     :confirm-type="currentTargetRow?.status === 1 ? 'danger' : 'success'"
     @confirm="handleConfirmStatus"
   >
-    <div class="status-dialog-content">
+    <div class="dialog-content">
       <p v-if="currentTargetRow?.status === 1">
         确定要禁用用户 <strong>{{ currentTargetRow?.username }}</strong> 吗？禁用后该用户将无法登录系统。
       </p>
@@ -138,18 +138,42 @@
       </p>
     </div>
   </BeeDialog>
+
+  <!-- 批量删除 Dialog -->
+  <BeeDialog v-model="batchDeleteDialogVisible" title="确认删除" confirm-type="danger" @confirm="handleConfirmBatchDelete">
+    <div class="dialog-content">
+      <p>
+        确定要删除选中的 <strong>{{ selectedRows.length }}</strong> 个用户吗？
+      </p>
+      <div class="delete-user-tags">
+        <BeeTag v-for="row in selectedRows" :key="row.id">
+          {{ row.username }}
+        </BeeTag>
+      </div>
+    </div>
+  </BeeDialog>
+
+  <!-- 单个删除 Dialog -->
+  <BeeDialog v-model="deleteDialogVisible" title="确认删除" confirm-type="danger" @confirm="handleConfirmDelete">
+    <div class="dialog-content">
+      <p>
+        确定要删除用户 <strong>{{ currentTargetRow?.username }}</strong> 吗？
+      </p>
+    </div>
+  </BeeDialog>
 </template>
 
 <script setup lang="ts">
 import { onMounted, reactive, ref } from 'vue'
 import { useRouter } from 'vue-router'
-import { ElMessage, ElMessageBox } from 'element-plus'
+import { ElMessage } from 'element-plus'
 import { Delete, Key, MoreFilled, Plus, Refresh, Setting, User, CircleCheck, CircleClose, Clock, EditPen, View } from '@element-plus/icons-vue'
 import { type UserQueryReq, type UserResp } from '@/types'
 import { getUserPage } from '@/api'
 import AuditCell from '@/components/AuditCell/index.vue'
 import BeeButton from '@/components/BeeButton/index.vue'
 import BeeDialog from '@/components/BeeDialog/index.vue'
+import BeeTag from '@/components/BeeTag/index.vue'
 import IconLabel from '@/components/IconLabel/index.vue'
 import InputSearch from '@/components/InputSearch/index.vue'
 import StatusCell from '@/components/StatusCell/index.vue'
@@ -176,6 +200,8 @@ const loading = ref(false)
 const tableData = ref<UserResp[]>([])
 const selectedRows = ref<UserResp[]>([])
 const statusDialogVisible = ref(false)
+const batchDeleteDialogVisible = ref(false)
+const deleteDialogVisible = ref(false)
 const currentTargetRow = ref<UserResp | null>(null)
 const queryForm = reactive<UserQueryReq>({
   id: undefined,
@@ -258,6 +284,20 @@ function handleAssignRoles(row: UserResp) {
 
 function handleDelete(row: UserResp) {
   currentTargetRow.value = row
+  deleteDialogVisible.value = true
+}
+
+async function handleConfirmDelete() {
+  if (!currentTargetRow.value) return
+  try {
+    // TODO: 调用删除 API
+    ElMessage.success('删除成功')
+    deleteDialogVisible.value = false
+    currentTargetRow.value = null
+    loadData()
+  } catch {
+    // 失败处理
+  }
 }
 
 async function handleConfirmStatus() {
@@ -275,16 +315,20 @@ async function handleConfirmStatus() {
   }
 }
 
-async function handleBatchDelete() {
+function handleBatchDelete() {
+  batchDeleteDialogVisible.value = true
+}
+
+async function handleConfirmBatchDelete() {
   const ids = selectedRows.value.map(row => row.id)
   try {
-    await ElMessageBox.confirm(`确定要删除选中的 ${ids.length} 个用户吗？`, '提示', { type: 'warning' })
     // TODO: 调用批量删除 API
-    ElMessage.success('删除成功')
+    ElMessage.success(`成功删除 ${ids.length} 个用户`)
+    batchDeleteDialogVisible.value = false
     selectedRows.value = []
     loadData()
   } catch {
-    // 取消操作
+    // 失败处理
   }
 }
 
@@ -352,13 +396,16 @@ onMounted(() => {
   padding: 16px 20px;
 }
 
-.status-dialog-content {
-  p {
-    margin: 0;
-    line-height: 1.6;
-    strong {
-      color: #409eff;
-    }
+.dialog-content {
+  strong {
+    color: $color-primary;
   }
+}
+
+.delete-user-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 12px;
 }
 </style>
