@@ -6,6 +6,8 @@
         <template #icon><ArrowLeft /></template>
         返回
       </BeeButton>
+      <BeeDivider direction="vertical" :length="25" margin="12px" />
+      <span class="header-title">用户详情</span>
     </div>
 
     <!-- 详情主体 -->
@@ -164,6 +166,7 @@ import { computed, onMounted, ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { ArrowLeft, Calendar, Clock, EditPen, Male, Message, Phone, Plus, Postcard, User } from '@element-plus/icons-vue'
 import BeeButton from '@/components/BeeButton/index.vue'
+import BeeDivider from '@/components/BeeDivider/index.vue'
 import TextCopyableCell from '@/components/TextCopyableCell/index.vue'
 import UserAvatar from '@/components/UserAvatar/index.vue'
 import type { UserDetailResp } from '@/types'
@@ -220,6 +223,11 @@ onMounted(() => {
   height: 48px;
   padding: 0 8px;
   border-bottom: 1px solid rgba($text-secondary, 0.1);
+
+  .header-title {
+    color: $text-secondary;
+    font-weight: 600;
+  }
 }
 
 .detail-body {
@@ -363,27 +371,5 @@ onMounted(() => {
 
 .fade-slide-leave-active {
   animation: fadeSlideOut 0.2s ease-in;
-}
-
-@keyframes fadeSlideIn {
-  from {
-    opacity: 0;
-    transform: translateX(20px);
-  }
-  to {
-    opacity: 1;
-    transform: translateX(0);
-  }
-}
-
-@keyframes fadeSlideOut {
-  from {
-    opacity: 1;
-    transform: translateX(0);
-  }
-  to {
-    opacity: 0;
-    transform: translateX(-20px);
-  }
 }
 </style>

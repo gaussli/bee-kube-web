@@ -7,9 +7,7 @@
         返回
       </BeeButton>
       <BeeDivider direction="vertical" :length="25" margin="12px" />
-      <div class="header-title">
-        <span class="header-title__text">创建用户</span>
-      </div>
+      <span class="header-title">创建用户</span>
     </div>
 
     <!-- 表单主体 -->
@@ -78,14 +76,8 @@ async function handleCreate() {
   height: 48px;
   padding: 0 8px;
   border-bottom: 1px solid rgba($text-secondary, 0.1);
-  color: $text-secondary;
 
   .header-title {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    margin-left: 8px;
-    gap: 8px;
     color: $text-secondary;
     font-weight: 600;
   }

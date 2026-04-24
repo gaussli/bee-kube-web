@@ -6,6 +6,10 @@
         <template #icon><ArrowLeft /></template>
         返回
       </BeeButton>
+      <BeeDivider direction="vertical" :length="25" margin="12px" />
+      <span class="header-title">编辑用户</span>
+      <BeeDivider direction="vertical" :length="25" margin="12px" />
+      <span class="header-subtitle">ID：{{ userData.id }}</span>
     </div>
 
     <!-- 表单主体 -->
@@ -35,6 +39,7 @@ import { useRouter } from 'vue-router'
 import { ElMessage } from 'element-plus'
 import { ArrowLeft, Close, Check } from '@element-plus/icons-vue'
 import BeeButton from '@/components/BeeButton/index.vue'
+import BeeDivider from '@/components/BeeDivider/index.vue'
 import UserForm from '@/components/UserForm/index.vue'
 import type { UserDetailResp } from '@/types'
 
@@ -98,6 +103,17 @@ onMounted(() => {
   height: 48px;
   padding: 0 8px;
   border-bottom: 1px solid rgba($text-secondary, 0.1);
+
+  .header-title {
+    // margin-left: 8px;
+    color: $text-secondary;
+    font-weight: 600;
+  }
+
+  .header-subtitle {
+    color: $text-secondary;
+    font-weight: 600;
+  }
 }
 
 .form-body {
