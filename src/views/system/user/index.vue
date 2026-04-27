@@ -126,7 +126,6 @@
   <BeeDialog
     v-model="statusDialogVisible"
     :title="currentTargetRow?.status === 1 ? '确认禁用' : '确认启用'"
-    :confirm-type="currentTargetRow?.status === 1 ? 'danger' : 'success'"
     @confirm="handleConfirmStatus"
   >
     <div class="dialog-content">
@@ -140,7 +139,7 @@
   </BeeDialog>
 
   <!-- 批量删除 Dialog -->
-  <BeeDialog v-model="batchDeleteDialogVisible" title="确认删除" confirm-type="danger" @confirm="handleConfirmBatchDelete">
+  <BeeDialog v-model="batchDeleteDialogVisible" title="确认删除" @confirm="handleConfirmBatchDelete">
     <div class="dialog-content">
       <p>
         确定要删除选中的 <strong>{{ selectedRows.length }}</strong> 个用户吗？
@@ -154,7 +153,7 @@
   </BeeDialog>
 
   <!-- 单个删除 Dialog -->
-  <BeeDialog v-model="deleteDialogVisible" title="确认删除" confirm-type="danger" @confirm="handleConfirmDelete">
+  <BeeDialog v-model="deleteDialogVisible" title="确认删除" @confirm="handleConfirmDelete">
     <div class="dialog-content">
       <p>
         确定要删除用户 <strong>{{ currentTargetRow?.username }}</strong> 吗？
