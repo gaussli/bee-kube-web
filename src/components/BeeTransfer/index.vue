@@ -6,7 +6,7 @@
         <el-checkbox v-model="leftCheckedAll" :indeterminate="leftIndeterminate" @change="handleLeftCheckAll" />
         <span class="header-title">{{ leftTitle }}</span>
         <span class="header-count">{{ leftSelectedCount }} / {{ leftData.length }}</span>
-        <BeeSearch v-model="leftSearch" placeholder="搜索" size="default" class="header-search" />
+        <BeeInputSearch v-model="leftSearch" placeholder="搜索" size="default" class="header-search" />
       </div>
       <div class="panel-body">
         <div v-for="item in leftFilteredData" :key="getItemKey(item)" class="panel-item" :class="{ 'is-checked': leftCheckedKeys.has(getItemKey(item)) }" @click="handleLeftItemClick(item)">
@@ -38,7 +38,7 @@
         <el-checkbox v-model="rightCheckedAll" :indeterminate="rightIndeterminate" @change="handleRightCheckAll" />
         <span class="header-title">{{ rightTitle }}</span>
         <span class="header-count">{{ rightSelectedCount }} / {{ rightData.length }}</span>
-        <BeeSearch v-model="rightSearch" placeholder="搜索" size="default" class="header-search" />
+        <BeeInputSearch v-model="rightSearch" placeholder="搜索" size="default" class="header-search" />
       </div>
       <div class="panel-body">
         <div v-for="item in rightFilteredData" :key="getItemKey(item)" class="panel-item" :class="{ 'is-checked': rightCheckedKeys.has(getItemKey(item)) }" @click="handleRightItemClick(item)">
@@ -59,7 +59,7 @@
 import { computed, ref } from 'vue'
 import { ArrowLeft, ArrowRight } from '@element-plus/icons-vue'
 import BeeButton from '@/components/BeeButton/index.vue'
-import BeeSearch from '@/components/BeeSearch/index.vue'
+import BeeInputSearch from '@/components/BeeInputSearch/index.vue'
 
 defineOptions({ name: 'BeeTransfer' })
 

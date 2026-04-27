@@ -13,7 +13,7 @@
 import { computed, ref } from 'vue'
 import { Search } from '@element-plus/icons-vue'
 
-defineOptions({ name: 'BeeSearch' })
+defineOptions({ name: 'BeeInputSearch' })
 
 const props = withDefaults(
   defineProps<{
