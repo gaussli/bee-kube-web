@@ -4,7 +4,7 @@
     <div class="table-header">
       <div class="query-form">
         <div class="query-form-left">
-          <InputSearch placeholder="按 ID / 用户名 / 昵称 搜索" @search="handleSearch" />
+          <BeeSearch v-model="searchKey" placeholder="按 ID / 用户名 / 昵称 搜索" @search="handleSearch" />
           <StatusSearch v-model="queryForm.status" :options="statusOptions" @select="handleSelect" />
         </div>
         <div class="query-form-right">
@@ -173,9 +173,9 @@ import { getUserPage } from '@/api'
 import AuditCell from '@/components/AuditCell/index.vue'
 import BeeButton from '@/components/BeeButton/index.vue'
 import BeeDialog from '@/components/BeeDialog/index.vue'
+import BeeSearch from '@/components/BeeSearch/index.vue'
 import BeeTag from '@/components/BeeTag/index.vue'
 import IconLabel from '@/components/IconLabel/index.vue'
-import InputSearch from '@/components/InputSearch/index.vue'
 import StatusCell from '@/components/StatusCell/index.vue'
 import StatusSearch from '@/components/StatusSearch/index.vue'
 import TextCopyableCell from '@/components/TextCopyableCell/index.vue'
@@ -184,6 +184,7 @@ import UserCell from '@/components/UserCell/index.vue'
 defineOptions({ name: 'UserManage' })
 
 const router = useRouter()
+const searchKey = ref('')
 
 const userStatusConfig = [
   { value: 1, label: '启用', color: 'rgb(103, 194, 58)' },
@@ -229,10 +230,11 @@ async function loadData() {
   }
 }
 
-function handleSearch(searchKey?: string) {
-  queryForm.id = searchKey
-  queryForm.username = searchKey
-  queryForm.nickname = searchKey
+function handleSearch() {
+  const key = searchKey.value
+  queryForm.id = key
+  queryForm.username = key
+  queryForm.nickname = key
   pagination.page = 1
   pagination.pageSize = 10
   loadData()
