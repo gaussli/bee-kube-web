@@ -51,6 +51,24 @@ export const constantRoutes: RouteRecordRaw[] = [
         name: 'UserAssignRoles',
         component: () => import('@/views/system/user/assign-roles/index.vue'),
         meta: { title: '配置角色', hidden: true }
+      },
+      {
+        path: '/system/role/create',
+        name: 'RoleCreate',
+        component: () => import('@/views/system/role/create/index.vue'),
+        meta: { title: '创建角色', hidden: true }
+      },
+      {
+        path: '/system/role/edit',
+        name: 'RoleEdit',
+        component: () => import('@/views/system/role/edit/index.vue'),
+        meta: { title: '编辑角色', hidden: true }
+      },
+      {
+        path: '/system/role/assign-permissions',
+        name: 'RoleAssignPermissions',
+        component: () => import('@/views/system/role/assign-permissions/index.vue'),
+        meta: { title: '配置权限', hidden: true }
       }
     ]
   }
