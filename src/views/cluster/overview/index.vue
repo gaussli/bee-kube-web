@@ -1,22 +1,75 @@
 <template>
   <div class="cluster-overview">
-    <!-- 资源雷达图 -->
-    <div class="card radar-card">
-      <div class="card-header">
-        <span>资源使用概览</span>
-      </div>
-      <div class="card-body">
-        <div class="radar-container">
+    <!-- 资源雷达图 + 节点列表 -->
+    <div class="top-row">
+      <!-- 资源雷达图 -->
+      <div class="card radar-card">
+        <div class="card-header">
+          <span>资源使用概览</span>
+        </div>
+        <div class="card-body">
           <BeeRadarChart :data="radarData" :size="280" color="#da8030" />
           <div class="radar-legend">
-            <div class="legend-item">
-              <span class="legend-label">磁盘已用</span>
-              <span class="legend-value">{{ diskUsed }} / {{ diskTotal }}</span>
+            <div v-for="item in radarData" :key="item.label" class="legend-row">
+              <div class="legend-ring">
+                <BeeRingChart :percentage="item.value" :size="48" color="#da8030" />
+              </div>
+              <div class="legend-col">
+                <span class="col-value">{{ item.value }}%</span>
+                <span class="col-label">{{ item.label }}</span>
+              </div>
+              <div class="legend-col">
+                <span class="col-value">{{ item.used }}</span>
+                <span class="col-label">已使用</span>
+              </div>
+              <div class="legend-col">
+                <span class="col-value">{{ item.total }}</span>
+                <span class="col-label">总计</span>
+              </div>
             </div>
-            <div class="legend-item">
-              <span class="legend-label">容器数量</span>
-              <span class="legend-value">{{ containerUsed }} / {{ containerTotal }}</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- 节点列表 -->
+      <div class="card node-card">
+        <div class="card-header">
+          <span>节点列表</span>
+          <BeeButton size="small" @click="toggleSort">
+            <template #icon><Refresh /></template>
+            {{ sortKey === 'cpu' ? 'CPU排序' : '内存排序' }}
+          </BeeButton>
+        </div>
+        <div class="card-body">
+          <div class="node-items">
+            <div v-for="node in sortedNodeList" :key="node.name" class="node-item">
+              <div class="node-icon">
+                <el-icon :size="24"><Monitor /></el-icon>
+              </div>
+              <div class="node-info">
+                <span class="node-name">{{ node.name }}</span>
+                <span class="node-desc">{{ node.description }}</span>
+              </div>
+              <div class="node-usage">
+                <div class="usage-bar">
+                  <span class="usage-label">CPU</span>
+                  <div class="usage-track">
+                    <div class="usage-fill" :style="{ width: node.cpuUsage + '%', background: getUsageColor(node.cpuUsage) }"></div>
+                  </div>
+                  <span class="usage-value">{{ node.cpuUsage }}%</span>
+                </div>
+                <div class="usage-bar">
+                  <span class="usage-label">内存</span>
+                  <div class="usage-track">
+                    <div class="usage-fill" :style="{ width: node.memoryUsage + '%', background: getUsageColor(node.memoryUsage) }"></div>
+                  </div>
+                  <span class="usage-value">{{ node.memoryUsage }}%</span>
+                </div>
+              </div>
             </div>
+          </div>
+          <div class="node-footer">
+            <BeeButton size="small" @click="handleViewMore">查看更多</BeeButton>
           </div>
         </div>
       </div>
@@ -52,9 +105,10 @@
 
 <script setup lang="ts">
 import { ref, computed, onMounted } from 'vue'
-import { Refresh } from '@element-plus/icons-vue'
+import { Refresh, Monitor } from '@element-plus/icons-vue'
 import BeeButton from '@/components/BeeButton/index.vue'
 import BeeRadarChart from '@/components/BeeRadarChart/index.vue'
+import BeeRingChart from '@/components/BeeRingChart/index.vue'
 
 defineOptions({ name: 'ClusterOverview' })
 
@@ -98,6 +152,38 @@ const containerUsed = ref(42)
 const containerTotal = ref(60)
 const containerUsage = computed(() => Math.round((containerUsed.value / containerTotal.value) * 100))
 
+// 节点列表排序
+type SortKey = 'cpu' | 'memory'
+const sortKey = ref<SortKey>('cpu')
+
+// 节点数据
+const nodeList = ref([
+  { name: 'node-1', description: 'Master节点', cpuUsage: 85, memoryUsage: 72 },
+  { name: 'node-2', description: 'Worker节点', cpuUsage: 45, memoryUsage: 58 },
+  { name: 'node-3', description: 'Worker节点', cpuUsage: 62, memoryUsage: 81 },
+  { name: 'node-4', description: 'Worker节点', cpuUsage: 30, memoryUsage: 45 },
+  { name: 'node-5', description: 'Worker节点', cpuUsage: 78, memoryUsage: 65 },
+  { name: 'node-6', description: 'Worker节点', cpuUsage: 55, memoryUsage: 70 },
+  { name: 'node-7', description: 'Worker节点', cpuUsage: 40, memoryUsage: 52 }
+])
+
+// 排序后的节点列表（Top 5）
+const sortedNodeList = computed(() => {
+  return [...nodeList.value]
+    .sort((a, b) => b[sortKey.value + 'Usage'] - a[sortKey.value + 'Usage'])
+    .slice(0, 5)
+})
+
+function toggleSort() {
+  sortKey.value = sortKey.value === 'cpu' ? 'memory' : 'cpu'
+}
+
+function getUsageColor(usage: number) {
+  if (usage < 60) return '#67c23a'
+  if (usage < 80) return '#e6a23c'
+  return '#f56c6c'
+}
+
 // 最近事件
 const recentEvents = ref([
   { type: 'Normal', reason: 'Scheduled', object: 'pod/nginx-deployment-7fb96c846b-xk2p9', message: 'Successfully assigned pod to node-1', time: '2024-01-15 10:30:25' },
@@ -121,6 +207,11 @@ function loadEvents() {
   console.log('Loading events...')
 }
 
+function handleViewMore() {
+  // TODO: 跳转到节点列表页面
+  console.log('View more nodes...')
+}
+
 onMounted(() => {
   // TODO: 加载真实统计数据
 })
@@ -128,55 +219,175 @@ onMounted(() => {
 
 <style lang="scss" scoped>
 .cluster-overview {
-  .card {
-    background-color: $bg_page;
+  .top-row {
+    display: flex;
+    gap: 16px;
 
-    .card-header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 12px 20px;
-      font-weight: 500;
+    .card {
+      background-color: $bg_page;
+      flex: 1;
+
+      .card-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 12px 20px;
+        font-weight: 500;
+      }
+
+      .card-body {
+        padding: 20px;
+      }
     }
 
-    .card-body {
-      padding: 20px;
-    }
-
-    & + .card {
-      margin-top: 16px;
-    }
-  }
-
-  .radar-card {
-    .radar-container {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 60px;
-      padding: 20px 0;
+    .radar-card {
+      .card-body {
+        display: flex;
+        flex-direction: row;
+        align-items: flex-start;
+        gap: 24px;
+        padding: 20px;
+      }
 
       .radar-legend {
         display: flex;
         flex-direction: column;
-        gap: 16px;
+        gap: 8px;
+        flex: 1;
+        min-width: 0;
 
-        .legend-item {
+        .legend-row {
+          display: grid;
+          grid-template-columns: 48px 1fr 1fr 1fr;
+          align-items: center;
+          gap: 12px;
+          padding: 8px 16px;
+          background: $bg-selected;
+          border-radius: 8px;
+        }
+
+        .legend-ring {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          width: 48px;
+          height: 48px;
+        }
+
+        .legend-col {
           display: flex;
           flex-direction: column;
+          align-items: center;
+          justify-content: center;
+          height: 48px;
           gap: 4px;
 
-          .legend-label {
-            font-size: 12px;
-            color: $text-secondary;
+          .col-value {
+            font-size: 14px;
+            font-weight: 600;
+            color: $text-primary;
+            line-height: 1;
           }
 
-          .legend-value {
-            font-size: 16px;
+          .col-label {
+            font-size: 12px;
+            color: $text-secondary;
+            line-height: 1;
+          }
+        }
+      }
+    }
+
+    .node-card {
+      .card-body {
+        padding: 0;
+      }
+
+      .node-items {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+        max-height: 300px;
+        overflow-y: auto;
+      }
+
+      .node-item {
+        display: grid;
+        grid-template-columns: 32px 1fr 140px;
+        align-items: center;
+        gap: 12px;
+        padding: 8px 12px;
+        background: $bg-selected;
+        border-radius: 6px;
+
+        .node-icon {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          color: $color-primary;
+        }
+
+        .node-info {
+          display: flex;
+          flex-direction: column;
+          gap: 2px;
+          min-width: 0;
+
+          .node-name {
+            font-size: 14px;
             font-weight: 500;
             color: $text-primary;
           }
+
+          .node-desc {
+            font-size: 12px;
+            color: $text-secondary;
+          }
         }
+
+        .node-usage {
+          display: flex;
+          flex-direction: column;
+          gap: 6px;
+
+          .usage-bar {
+            display: grid;
+            grid-template-columns: 32px 1fr 36px;
+            align-items: center;
+            gap: 8px;
+
+            .usage-label {
+              font-size: 11px;
+              color: $text-secondary;
+            }
+
+            .usage-track {
+              height: 6px;
+              background: #e4e7ed;
+              border-radius: 3px;
+              overflow: hidden;
+
+              .usage-fill {
+                height: 100%;
+                border-radius: 3px;
+                transition: width 0.3s ease;
+              }
+            }
+
+            .usage-value {
+              font-size: 11px;
+              font-weight: 500;
+              color: $text-primary;
+              text-align: right;
+            }
+          }
+        }
+      }
+
+      .node-footer {
+        display: flex;
+        justify-content: center;
+        margin-top: 12px;
       }
     }
   }
@@ -213,6 +424,8 @@ onMounted(() => {
   }
 
   .events-card {
+    margin-top: 16px;
+
     .card-body {
       padding: 0;
     }
