@@ -5,7 +5,7 @@
       <div class="query-form">
         <div class="query-form-left">
           <BeeInputSearch v-model="searchKey" placeholder="按 ID / 用户名 / 昵称 搜索" @search="handleSearch" />
-          <StatusSearch v-model="queryForm.status" :options="statusOptions" @select="handleSelect" />
+          <BeeRadioSearch v-model="queryForm.status" :options="statusOptions" @select="handleSelect" />
         </div>
         <div class="query-form-right">
           <BeeButton @click="handleReset">
@@ -175,10 +175,10 @@ import AuditCell from '@/components/AuditCell/index.vue'
 import BeeButton from '@/components/BeeButton/index.vue'
 import BeeDialog from '@/components/BeeDialog/index.vue'
 import BeeInputSearch from '@/components/BeeInputSearch/index.vue'
+import BeeRadioSearch from '@/components/BeeRadioSearch/index.vue'
 import BeeTag from '@/components/BeeTag/index.vue'
 import IconLabel from '@/components/IconLabel/index.vue'
 import StatusCell from '@/components/StatusCell/index.vue'
-import StatusSearch from '@/components/StatusSearch/index.vue'
 import TextCopyableCell from '@/components/TextCopyableCell/index.vue'
 import UserCell from '@/components/UserCell/index.vue'
 import { usePermission } from '@/composables/usePermission'

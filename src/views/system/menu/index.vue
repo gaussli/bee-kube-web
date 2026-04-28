@@ -5,8 +5,8 @@
       <div class="query-form">
         <div class="query-form-left">
           <BeeInputSearch v-model="searchKey" placeholder="按 ID / 菜单名称 / 编码 搜索" @search="handleSearch" />
-          <StatusSearch v-model="queryForm.status" :options="statusOptions" @select="handleSelect" />
-          <StatusSearch v-model="queryForm.type" :options="typeOptions" @select="handleTypeSelect" />
+          <BeeRadioSearch v-model="queryForm.status" :options="statusOptions" @select="handleSelect" />
+          <BeeRadioSearch v-model="queryForm.type" :options="typeOptions" @select="handleTypeSelect" />
         </div>
         <div class="query-form-right">
           <BeeButton @click="handleReset">
@@ -214,7 +214,7 @@ import BeeTag from '@/components/BeeTag/index.vue'
 import IconLabel from '@/components/IconLabel/index.vue'
 import MenuCell from '@/components/MenuCell/index.vue'
 import StatusCell from '@/components/StatusCell/index.vue'
-import StatusSearch from '@/components/StatusSearch/index.vue'
+import BeeRadioSearch from '@/components/BeeRadioSearch/index.vue'
 import TextCopyableCell from '@/components/TextCopyableCell/index.vue'
 import { usePermission } from '@/composables/usePermission'
 import type { MenuQueryReq, MenuResp } from '@/types'

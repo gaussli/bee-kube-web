@@ -5,7 +5,7 @@
       <div class="query-form">
         <div class="query-form-left">
           <BeeInputSearch v-model="searchKey" placeholder="按名称搜索" @search="handleSearch" />
-          <StatusSearch v-model="queryForm.status" :options="statusOptions" @select="handleSelect" />
+          <BeeRadioSearch v-model="queryForm.status" :options="statusOptions" @select="handleSelect" />
         </div>
         <div class="query-form-right">
           <BeeButton @click="handleReset">
@@ -116,7 +116,7 @@ import { Delete, EditPen, Plus, Refresh, View } from '@element-plus/icons-vue'
 import BeeButton from '@/components/BeeButton/index.vue'
 import BeeDialog from '@/components/BeeDialog/index.vue'
 import BeeInputSearch from '@/components/BeeInputSearch/index.vue'
-import StatusSearch from '@/components/StatusSearch/index.vue'
+import BeeRadioSearch from '@/components/BeeRadioSearch/index.vue'
 
 defineOptions({ name: 'ClusterNode' })
 

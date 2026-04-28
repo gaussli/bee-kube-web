@@ -10,7 +10,7 @@
 <script setup lang="ts">
 import { computed, ref, watch } from 'vue'
 
-defineOptions({ name: 'StatusSearch' })
+defineOptions({ name: 'BeeRadioSearch' })
 
 interface Option {
   label: string
@@ -50,7 +50,7 @@ function handleClick(index: number, value?: string | number) {
 </script>
 
 <style lang="scss" scoped>
-.status-search {
+.bee-radio-search {
   --status-search-item-width: 80px;
   --status-search-slider-offset: 2px;
   height: 32px;
