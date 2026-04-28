@@ -13,21 +13,23 @@
           <Close v-else />
         </el-icon>
       </el-tooltip>
-      <el-dropdown @command="handleCommand" trigger="click">
-        <span class="user-dropdown">
-          <el-avatar :size="32" :src="currentUser?.avatarId || defaultAvatar" />
-          <span class="username">{{ currentUser?.nickname || currentUser?.username || 'Admin' }}</span>
-          <el-icon class="arrow-icon"><ArrowDown /></el-icon>
-        </span>
-        <template #dropdown>
-          <el-dropdown-menu>
-            <el-dropdown-item command="profile" :icon="User">用户信息</el-dropdown-item>
-            <el-dropdown-item command="password" :icon="Lock">修改密码</el-dropdown-item>
-            <el-dropdown-item command="setting" :icon="Setting">系统设置</el-dropdown-item>
-            <el-dropdown-item command="logout" :icon="SwitchButton" divided>退出登录</el-dropdown-item>
-          </el-dropdown-menu>
+      <BeeDropdown :options="dropdownOptions" @change="handleDropdownChange">
+        <template #trigger>
+          <span class="user-dropdown">
+            <el-avatar :size="32" :src="currentUser?.avatarId || defaultAvatar" />
+            <span class="username">{{ currentUser?.nickname || currentUser?.username || 'Admin' }}</span>
+            <el-icon class="arrow-icon"><ArrowDown /></el-icon>
+          </span>
         </template>
-      </el-dropdown>
+        <template #option="{ option }">
+          <div class="dropdown-item">
+            <el-icon v-if="option.icon">
+              <component :is="option.icon" />
+            </el-icon>
+            <span>{{ option.label }}</span>
+          </div>
+        </template>
+      </BeeDropdown>
     </div>
 
     <!-- 修改密码弹窗 -->
@@ -55,10 +57,12 @@
 import { computed, ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { ElMessage, ElMessageBox } from 'element-plus'
-import { ArrowDown, Close, FullScreen, Lock, Setting, SwitchButton, User } from '@element-plus/icons-vue'
+import { ArrowDown, Close, FullScreen } from '@element-plus/icons-vue'
+import { Lock, Setting, SwitchButton, User } from '@element-plus/icons-vue'
 import { logout } from '@/api'
 import { resetRouter } from '@/router'
 import { useAppStore, useUserStore } from '@/stores'
+import BeeDropdown from '@/components/BeeDropdown/index.vue'
 import type { TabType } from '@/stores/app'
 
 defineOptions({ name: 'LayoutHeader' })
@@ -89,6 +93,13 @@ const passwordFormRef = ref()
 const defaultAvatar = 'https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png'
 
 const currentUser = computed(() => userStore.getCurrentUser())
+
+const dropdownOptions = [
+  { label: '用户信息', value: 'profile', icon: User },
+  { label: '修改密码', value: 'password', icon: Lock },
+  { label: '系统设置', value: 'setting', icon: Setting },
+  { label: '退出登录', value: 'logout', icon: SwitchButton, divided: true }
+]
 
 const passwordForm = ref({
   oldPassword: '',
@@ -126,7 +137,7 @@ function toggleFullscreen() {
   }
 }
 
-async function handleCommand(command: string) {
+async function handleDropdownChange(command: string) {
   switch (command) {
     case 'profile':
       ElMessage.info('用户信息功能开发中')

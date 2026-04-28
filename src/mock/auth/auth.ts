@@ -164,12 +164,15 @@ function getCurrentUser(): CurrentUserResp {
     clusterMenus: clusterMenus,
     permissions: [
       'system:user:view',
+      'system:user:create',
       'system:user:edit',
       'system:user:delete',
       'system:role:view',
+      'system:role:create',
       'system:role:edit',
       'system:role:delete',
       'system:menu:view',
+      'system:menu:create',
       'system:menu:edit',
       'system:menu:delete'
     ]
