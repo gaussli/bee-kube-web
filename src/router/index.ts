@@ -124,29 +124,29 @@ const router = createRouter({
 })
 
 // 路由守卫
-router.beforeEach(async (to, from, next) => {
+router.beforeEach(async (to, from) => {
   const userStore = useUserStore()
 
   // 登录页直接通过
   if (to.path === '/login') {
-    return next()
+    return true
   }
 
   // 未登录则跳转登录页
   if (!userStore.isLogin()) {
-    return next({ path: '/login', query: { redirect: to.fullPath } })
+    return { path: '/login', query: { redirect: to.fullPath } }
   }
 
   // 检查页面权限
   const permissions = userStore.getCurrentPermissions() || []
   const requiredPermission = to.meta.permission as string | undefined
   if (requiredPermission && !permissions.includes(requiredPermission)) {
-    return next('/403')
+    return '/403'
   }
 
   // 动态路由已添加，直接放行
   if (dynamicRoutesAdded) {
-    return next()
+    return true
   }
 
   // 动态添加路由
@@ -168,10 +168,10 @@ router.beforeEach(async (to, from, next) => {
     }
     console.log(router.getRoutes())
     dynamicRoutesAdded = true
-    return next({ ...to, replace: true })
+    return { ...to, replace: true }
   } catch {
     userStore.clear()
-    return next({ path: '/login' })
+    return { path: '/login' }
   }
 })
 
