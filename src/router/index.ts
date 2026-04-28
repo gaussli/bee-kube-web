@@ -155,9 +155,16 @@ router.beforeEach(async (to, from, next) => {
     const currentUserResp = await getCurrentUser()
     userStore.setCurrentUser(currentUserResp.user)
     userStore.setCurrentMenus(currentUserResp.menus)
+    if (currentUserResp.clusterMenus) {
+      userStore.setClusterMenus(currentUserResp.clusterMenus)
+    }
     userStore.setCurrentPermissions(currentUserResp.permissions)
     if (currentUserResp.menus.length > 0) {
       addDynamicRoutes(currentUserResp.menus)
+    }
+    // 添加集群管理路由
+    if (currentUserResp.clusterMenus && currentUserResp.clusterMenus.length > 0) {
+      addDynamicRoutes(currentUserResp.clusterMenus)
     }
     console.log(router.getRoutes())
     dynamicRoutesAdded = true

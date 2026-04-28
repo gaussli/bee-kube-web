@@ -8,6 +8,7 @@ export const useUserStore = defineStore('user', () => {
   const token = ref<string>(storage.get('token', '') || '')
   const currentUser = ref<CurrentUser | null>(null)
   const currentMenus = ref<CurrentMenu[] | null>(null)
+  const clusterMenus = ref<CurrentMenu[] | null>(null)
   const currentPermissions = ref<string[] | null>(null)
 
   function setToken(newToken: string) {
@@ -23,6 +24,11 @@ export const useUserStore = defineStore('user', () => {
   function setCurrentMenus(menus: CurrentMenu[]) {
     currentMenus.value = menus
     storage.set('current_menus', menus)
+  }
+
+  function setClusterMenus(menus: CurrentMenu[]) {
+    clusterMenus.value = menus
+    storage.set('cluster_menus', menus)
   }
 
   function setCurrentPermissions(permissions: string[]) {
@@ -42,6 +48,10 @@ export const useUserStore = defineStore('user', () => {
     return currentMenus.value ?? storage.get<CurrentMenu[]>('current_menus') ?? null
   }
 
+  function getClusterMenus(): CurrentMenu[] | null {
+    return clusterMenus.value ?? storage.get<CurrentMenu[]>('cluster_menus') ?? null
+  }
+
   function getCurrentPermissions(): string[] | null {
     return currentPermissions.value ?? storage.get<string[]>('current_permissions') ?? null
   }
@@ -50,8 +60,9 @@ export const useUserStore = defineStore('user', () => {
     token.value = ''
     currentUser.value = null
     currentMenus.value = null
+    clusterMenus.value = null
     currentPermissions.value = null
-    storage.remove(['token', 'current_user', 'current_menus', 'current_permissions'])
+    storage.remove(['token', 'current_user', 'current_menus', 'cluster_menus', 'current_permissions'])
   }
 
   // 检查是否已登录
@@ -61,10 +72,12 @@ export const useUserStore = defineStore('user', () => {
     setToken,
     setCurrentUser,
     setCurrentMenus,
+    setClusterMenus,
     setCurrentPermissions,
     getToken,
     getCurrentUser,
     getCurrentMenus,
+    getClusterMenus,
     getCurrentPermissions,
     clear,
     isLogin

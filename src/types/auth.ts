@@ -17,6 +17,7 @@ export interface LoginResp {
 export interface CurrentUserResp {
   user: CurrentUser
   menus: CurrentMenu[]
+  clusterMenus?: CurrentMenu[]
   permissions: string[]
 }
 

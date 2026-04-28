@@ -1,14 +1,10 @@
 <template>
   <header class="header">
     <div class="header-left">
-      <!-- <el-icon class="toggle-icon" @click="appStore.toggleSidebar">
-        <Fold v-show="appStore.sidebarOpened" />
-        <Expand v-show="!appStore.sidebarOpened" />
-      </el-icon>
-      <el-breadcrumb separator="/">
-        <el-breadcrumb-item :to="{ path: '/' }">首页</el-breadcrumb-item>
-        <el-breadcrumb-item v-if="route.meta.title">{{ route.meta.title }}</el-breadcrumb-item>
-      </el-breadcrumb> -->
+      <el-radio-group v-model="currentTab" size="default" @change="handleTabChange">
+        <el-radio-button value="cluster">集群管理</el-radio-button>
+        <el-radio-button value="platform">平台管理</el-radio-button>
+      </el-radio-group>
     </div>
     <div class="header-right">
       <el-tooltip :content="isFullscreen ? '退出全屏' : '全屏'" placement="bottom">
@@ -57,19 +53,34 @@
 
 <script setup lang="ts">
 import { computed, ref } from 'vue'
-import { useRoute, useRouter } from 'vue-router'
+import { useRouter } from 'vue-router'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import { ArrowDown, Close, FullScreen, Lock, Setting, SwitchButton, User } from '@element-plus/icons-vue'
 import { logout } from '@/api'
 import { resetRouter } from '@/router'
 import { useAppStore, useUserStore } from '@/stores'
+import type { TabType } from '@/stores/app'
 
 defineOptions({ name: 'LayoutHeader' })
 
-const route = useRoute()
 const router = useRouter()
 const appStore = useAppStore()
 const userStore = useUserStore()
+
+const currentTab = computed({
+  get: () => appStore.currentTab,
+  set: (val: TabType) => appStore.setCurrentTab(val)
+})
+
+function handleTabChange(tab: TabType) {
+  appStore.setCurrentTab(tab)
+  // 切换 tab 时跳转到对应的默认页面
+  if (tab === 'platform') {
+    router.push('/dashboard')
+  } else {
+    router.push('/cluster/overview')
+  }
+}
 
 const isFullscreen = ref(false)
 const passwordDialogVisible = ref(false)
