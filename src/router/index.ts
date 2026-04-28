@@ -23,6 +23,12 @@ export const constantRoutes: RouteRecordRaw[] = [
     meta: { title: '首页', icon: 'HomeFilled', requiresAuth: true },
     children: [
       {
+        path: '/403',
+        name: 'NoPermission',
+        component: () => import('@/views/error/403.vue'),
+        meta: { title: '无权限', hidden: true }
+      },
+      {
         path: '/dashboard',
         name: 'Dashboard',
         component: () => import('@/views/dashboard/index.vue'),
@@ -32,43 +38,79 @@ export const constantRoutes: RouteRecordRaw[] = [
         path: '/system/user/detail',
         name: 'UserDetail',
         component: () => import('@/views/system/user/detail/index.vue'),
-        meta: { title: '用户详情', hidden: true }
+        meta: { title: '用户详情', hidden: true, permission: 'system:user:view' }
       },
       {
         path: '/system/user/create',
         name: 'UserCreate',
         component: () => import('@/views/system/user/create/index.vue'),
-        meta: { title: '创建用户', hidden: true }
+        meta: { title: '创建用户', hidden: true, permission: 'system:user:create' }
       },
       {
         path: '/system/user/edit',
         name: 'UserEdit',
         component: () => import('@/views/system/user/edit/index.vue'),
-        meta: { title: '编辑用户', hidden: true }
+        meta: { title: '编辑用户', hidden: true, permission: 'system:user:edit' }
       },
       {
         path: '/system/user/assign-roles',
         name: 'UserAssignRoles',
         component: () => import('@/views/system/user/assign-roles/index.vue'),
-        meta: { title: '配置角色', hidden: true }
+        meta: { title: '配置角色', hidden: true, permission: 'system:user:edit' }
       },
       {
         path: '/system/role/create',
         name: 'RoleCreate',
         component: () => import('@/views/system/role/create/index.vue'),
-        meta: { title: '创建角色', hidden: true }
+        meta: { title: '创建角色', hidden: true, permission: 'system:role:create' }
+      },
+      {
+        path: '/system/role/detail',
+        name: 'RoleDetail',
+        component: () => import('@/views/system/role/detail/index.vue'),
+        meta: { title: '角色详情', hidden: true, permission: 'system:role:view' }
       },
       {
         path: '/system/role/edit',
         name: 'RoleEdit',
         component: () => import('@/views/system/role/edit/index.vue'),
-        meta: { title: '编辑角色', hidden: true }
+        meta: { title: '编辑角色', hidden: true, permission: 'system:role:edit' }
       },
       {
         path: '/system/role/assign-permissions',
         name: 'RoleAssignPermissions',
         component: () => import('@/views/system/role/assign-permissions/index.vue'),
-        meta: { title: '配置权限', hidden: true }
+        meta: { title: '配置权限', hidden: true, permission: 'system:role:edit' }
+      },
+      {
+        path: '/system/role/assign-users',
+        name: 'RoleAssignUsers',
+        component: () => import('@/views/system/role/assign-users/index.vue'),
+        meta: { title: '配置用户', hidden: true, permission: 'system:role:edit' }
+      },
+      {
+        path: '/system/menu/create',
+        name: 'MenuCreate',
+        component: () => import('@/views/system/menu/create/index.vue'),
+        meta: { title: '创建菜单', hidden: true, permission: 'system:menu:create' }
+      },
+      {
+        path: '/system/menu/detail',
+        name: 'MenuDetail',
+        component: () => import('@/views/system/menu/detail/index.vue'),
+        meta: { title: '菜单详情', hidden: true, permission: 'system:menu:view' }
+      },
+      {
+        path: '/system/menu/edit',
+        name: 'MenuEdit',
+        component: () => import('@/views/system/menu/edit/index.vue'),
+        meta: { title: '编辑菜单', hidden: true, permission: 'system:menu:edit' }
+      },
+      {
+        path: '/system/menu/assign-roles',
+        name: 'MenuAssignRoles',
+        component: () => import('@/views/system/menu/assign-roles/index.vue'),
+        meta: { title: '配置角色', hidden: true, permission: 'system:menu:edit' }
       }
     ]
   }
@@ -84,14 +126,26 @@ const router = createRouter({
 // 路由守卫
 router.beforeEach(async (to, from, next) => {
   const userStore = useUserStore()
+
+  // 登录页直接通过
   if (to.path === '/login') {
     return next()
   }
+
+  // 未登录则跳转登录页
   if (!userStore.isLogin()) {
     return next({ path: '/login', query: { redirect: to.fullPath } })
   }
+
+  // 检查页面权限
+  const permissions = userStore.getCurrentPermissions() || []
+  const requiredPermission = to.meta.permission as string | undefined
+  if (requiredPermission && !permissions.includes(requiredPermission)) {
+    return next('/403')
+  }
+
+  // 动态路由已添加，直接放行
   if (dynamicRoutesAdded) {
-    console.log('dynamicRoutesAdded == true')
     return next()
   }
 

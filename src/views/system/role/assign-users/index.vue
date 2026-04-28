@@ -1,0 +1,326 @@
+<template>
+  <div class="role-assign-users">
+    <!-- 顶部导航 -->
+    <div class="assign-header">
+      <BeeButton :border="false" @click="handleBack">
+        <template #icon><ArrowLeft /></template>
+        返回
+      </BeeButton>
+      <BeeDivider direction="vertical" :length="25" margin="12px" />
+      <span class="header-title">配置用户</span>
+    </div>
+
+    <!-- 内容主体 -->
+    <transition name="fade-slide" mode="out-in">
+      <div v-if="loaded" class="assign-body">
+        <!-- 角色信息 -->
+        <div class="role-header">
+          <div class="role-icon">
+            <el-icon :size="36"><UserFilled /></el-icon>
+          </div>
+          <div class="role-meta">
+            <div class="role-name-row">
+              <span class="role-name">{{ roleData.name }}</span>
+              <el-tag :type="roleData.status === 1 ? 'success' : 'danger'" size="small">
+                {{ roleData.status === 1 ? '启用' : '禁用' }}
+              </el-tag>
+            </div>
+            <div class="role-code">
+              <TextCopyableCell :text="roleData.code" />
+            </div>
+          </div>
+        </div>
+
+        <!-- 用户分配 -->
+        <BeeTransfer v-model="selectedUserIds" :left-data="availableUsers" :right-data="selectedUsers" left-title="可选用户" right-title="已选用户" label-key="username" value-key="id">
+          <template #left="{ item }">
+            <div class="user-item-content">
+              <div class="user-icon">
+                <el-icon><User /></el-icon>
+              </div>
+              <div class="user-info">
+                <div class="user-name">{{ item.username }}</div>
+                <div class="user-detail">
+                  <el-icon><Message /></el-icon>
+                  <span>{{ item.email || '-' }}</span>
+                </div>
+              </div>
+              <div class="user-tags">
+                <BeeTag v-if="item.nickname" type="info">{{ item.nickname }}</BeeTag>
+                <BeeTag :type="item.status === 1 ? 'success' : 'danger'">
+                  {{ item.status === 1 ? '启用' : '禁用' }}
+                </BeeTag>
+              </div>
+            </div>
+          </template>
+          <template #right="{ item }">
+            <div class="user-item-content">
+              <div class="user-icon">
+                <el-icon><User /></el-icon>
+              </div>
+              <div class="user-info">
+                <div class="user-name">{{ item.username }}</div>
+                <div class="user-detail">
+                  <el-icon><Message /></el-icon>
+                  <span>{{ item.email || '-' }}</span>
+                </div>
+              </div>
+              <div class="user-tags">
+                <BeeTag v-if="item.nickname" type="info">{{ item.nickname }}</BeeTag>
+                <BeeTag :type="item.status === 1 ? 'success' : 'danger'">
+                  {{ item.status === 1 ? '启用' : '禁用' }}
+                </BeeTag>
+              </div>
+            </div>
+          </template>
+        </BeeTransfer>
+      </div>
+    </transition>
+
+    <!-- 底部操作 -->
+    <div class="assign-footer">
+      <BeeButton @click="handleBack">取消</BeeButton>
+      <BeeButton type="primary" @click="handleSubmit">保存</BeeButton>
+    </div>
+  </div>
+</template>
+
+<script setup lang="ts">
+import { computed, onMounted, ref } from 'vue'
+import { useRouter } from 'vue-router'
+import { ElMessage } from 'element-plus'
+import { ArrowLeft, Message, User, UserFilled } from '@element-plus/icons-vue'
+import BeeButton from '@/components/BeeButton/index.vue'
+import BeeDivider from '@/components/BeeDivider/index.vue'
+import BeeTag from '@/components/BeeTag/index.vue'
+import BeeTransfer from '@/components/BeeTransfer/index.vue'
+import TextCopyableCell from '@/components/TextCopyableCell/index.vue'
+import type { RoleDetailResp } from '@/types/role'
+import type { UserResp } from '@/types'
+
+defineOptions({ name: 'RoleAssignUsers' })
+
+const router = useRouter()
+const loaded = ref(false)
+
+const roleId = router.currentRoute.value.query.roleId as string
+const roleData = ref<RoleDetailResp>({
+  id: roleId,
+  code: 'admin',
+  name: '管理员',
+  status: 1
+})
+
+// 模拟所有用户数据
+const allUsers = ref<UserResp[]>([])
+for (let i = 1; i <= 55; i++) {
+  allUsers.value.push({
+    id: String(i),
+    username: `user_${i}`,
+    nickname: i <= 10 ? `用户${i}` : '',
+    email: `user${i}@example.com`,
+    status: i % 5 === 0 ? 0 : 1,
+    createAt: '',
+    updateAt: ''
+  })
+}
+
+// 已选中的用户ID
+const selectedUserIds = ref<string[]>(['1', '2'])
+
+// 已选用户列表
+const selectedUsers = computed(() => {
+  return allUsers.value.filter(user => selectedUserIds.value.includes(user.id))
+})
+
+// 可选用户列表（排除已选的）
+const availableUsers = computed(() => {
+  return allUsers.value.filter(user => !selectedUserIds.value.includes(user.id))
+})
+
+function handleBack() {
+  router.back()
+}
+
+async function handleSubmit() {
+  console.log('提交参数:', { roleId, userIds: selectedUserIds.value })
+  // TODO: 调用 API
+  ElMessage.success('保存成功')
+  router.back()
+}
+
+onMounted(() => {
+  // TODO: 加载角色信息和已有用户
+  loaded.value = true
+})
+</script>
+
+<style lang="scss" scoped>
+.role-assign-users {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  background-color: $bg-page;
+}
+
+.assign-header {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  height: 48px;
+  padding: 0 8px;
+  border-bottom: 1px solid rgba($text-secondary, 0.1);
+
+  .header-title {
+    color: $text-secondary;
+    font-weight: 600;
+  }
+}
+
+.assign-body {
+  flex: 1;
+  min-height: 0;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  overflow: hidden;
+  animation: fadeSlideIn 0.3s ease-out;
+
+  :deep(.bee-transfer) {
+    flex: 1;
+    min-height: 0;
+    overflow: hidden;
+  }
+}
+
+.assign-footer {
+  flex-shrink: 0;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 12px;
+  padding: 16px 20px;
+  border-top: 1px solid rgba($text-secondary, 0.1);
+}
+
+.role-header {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  padding: 24px;
+  background-color: $bg-color;
+  border-radius: 12px;
+
+  .role-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 72px;
+    height: 72px;
+    background-color: #ecf5ff;
+    border-radius: 16px;
+    color: #409eff;
+  }
+
+  .role-meta {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    overflow: hidden;
+
+    .role-name-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+
+      .role-name {
+        font-size: 20px;
+        font-weight: 600;
+        color: $text-primary;
+      }
+    }
+
+    .role-code {
+      font-size: 12px;
+      color: $text-secondary;
+    }
+  }
+}
+
+// 用户项内容
+.user-item-content {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+}
+
+.user-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.user-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  background: linear-gradient(135deg, rgba($color-primary, 0.15) 0%, rgba($color-primary, 0.08) 100%);
+  border-radius: 8px;
+  font-size: 14px;
+  color: $color-primary;
+  transition: all 0.25s ease;
+
+  .user-item.is-selected & {
+    background: linear-gradient(135deg, $color-primary 0%, $color-primary-400 100%);
+    color: #fff;
+  }
+}
+
+.user-name {
+  font-size: 14px;
+  font-weight: 500;
+  color: $text-primary;
+  line-height: 1.4;
+}
+
+.user-detail {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 2px;
+  font-size: 12px;
+  color: $text-secondary;
+
+  .el-icon {
+    font-size: 12px;
+    color: $color-primary;
+    opacity: 0.6;
+  }
+}
+
+.user-tags {
+  display: flex;
+  gap: 6px;
+  flex-shrink: 0;
+}
+
+// 渐入渐出动画
+.fade-slide-enter-active {
+  animation: fadeSlideIn 0.3s ease-out;
+}
+
+@keyframes fadeSlideIn {
+  from {
+    opacity: 0;
+    transform: translateX(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+</style>

@@ -38,17 +38,14 @@
             <span>菜单权限</span>
           </div>
           <div class="panel-body">
-            <el-tree
+            <BeeTree
               ref="menuTreeRef"
+              v-model="selectedMenuIds"
               :data="menuTreeData"
               :props="{ children: 'children', label: 'name' }"
-              node-key="id"
-              show-checkbox
-              default-expand-all
-              :expand-on-click-node="false"
-              @check="handleTreeCheck"
+              :default-expand-all="true"
             >
-              <template #default="{ node, data }">
+              <template #default="{ data }">
                 <div class="menu-tree-node">
                   <div class="menu-info">
                     <span class="menu-name">{{ data.name }}</span>
@@ -61,7 +58,7 @@
                   </div>
                 </div>
               </template>
-            </el-tree>
+            </BeeTree>
           </div>
         </div>
       </div>
@@ -83,15 +80,15 @@ import { ArrowLeft, Key, Menu } from '@element-plus/icons-vue'
 import { bindRoleMenus, getRoleDetail, getRoleMenus, getMenuPage } from '@/api'
 import BeeButton from '@/components/BeeButton/index.vue'
 import BeeDivider from '@/components/BeeDivider/index.vue'
+import BeeTree from '@/components/BeeTree/index.vue'
 import TextCopyableCell from '@/components/TextCopyableCell/index.vue'
 import type { RoleDetailResp, MenuResp } from '@/types'
-import type { ElTree } from 'element-plus'
 
 defineOptions({ name: 'RoleAssignPermissions' })
 
 const router = useRouter()
 const loaded = ref(false)
-const menuTreeRef = ref<InstanceType<typeof ElTree>>()
+const menuTreeRef = ref()!
 
 const roleId = router.currentRoute.value.query.roleId as string
 const roleData = ref<RoleDetailResp>({} as RoleDetailResp)
@@ -138,25 +135,8 @@ const mockMenus: MenuResp[] = [
   }
 ]
 
-function flattenMenus(menus: MenuResp[]): MenuResp[] {
-  const result: MenuResp[] = []
-  for (const menu of menus) {
-    const { children, ...rest } = menu
-    result.push(rest)
-    if (children && children.length > 0) {
-      result.push(...flattenMenus(children))
-    }
-  }
-  return result
-}
-
 function handleBack() {
   router.back()
-}
-
-function handleTreeCheck() {
-  const checkedNodes = menuTreeRef.value?.getCheckedNodes(false, true) || []
-  selectedMenuIds.value = checkedNodes.map(node => node.id)
 }
 
 async function handleSubmit() {
@@ -181,13 +161,6 @@ async function loadData() {
     // 加载角色已有菜单权限
     const roleMenus = await getRoleMenus(roleId, {})
     selectedMenuIds.value = roleMenus.list.map(m => m.id)
-
-    // 设置树形控件的选中状态
-    setTimeout(() => {
-      selectedMenuIds.value.forEach(id => {
-        menuTreeRef.value?.check(id, true, false)
-      })
-    }, 100)
 
     loaded.value = true
   } catch {

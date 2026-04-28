@@ -12,8 +12,8 @@
             <template #icon><Refresh /></template>
             刷新
           </BeeButton>
-          <el-divider direction="vertical" />
-          <BeeButton type="primary" @click="handleCreate">
+          <el-divider v-if="hasPermission('system:role:create')" direction="vertical" />
+          <BeeButton v-if="hasPermission('system:role:create')" type="primary" @click="handleCreate">
             <template #icon><Plus /></template>
             新增
           </BeeButton>
@@ -81,28 +81,31 @@
           </template>
           <template #default="{ row }">
             <el-tooltip content="详情" placement="top">
-              <el-button circle :icon="View" size="default" @click="handleView(row)" />
+              <el-button v-if="hasPermission('system:role:view')" circle :icon="View" size="default" @click="handleView(row)" />
             </el-tooltip>
             <el-tooltip content="编辑" placement="top">
-              <el-button circle :icon="EditPen" size="default" @click="handleEdit(row)" />
+              <el-button v-if="hasPermission('system:role:edit')" circle :icon="EditPen" size="default" @click="handleEdit(row)" />
             </el-tooltip>
-            <el-tooltip content="更多" placement="top">
+            <el-tooltip v-if="hasPermission('system:role:edit')" content="更多" placement="top">
               <el-dropdown trigger="click">
                 <template #default>
                   <el-button circle :icon="MoreFilled" size="default" />
                 </template>
                 <template #dropdown>
                   <el-dropdown-menu>
-                    <el-dropdown-item v-if="row.status === 0" @click="handleToggleStatus(row)">
+                    <el-dropdown-item v-if="row.status === 0 && hasPermission('system:role:edit')" @click="handleToggleStatus(row)">
                       <el-icon><CircleCheck /></el-icon> 启用
                     </el-dropdown-item>
-                    <el-dropdown-item v-if="row.status === 1" @click="handleToggleStatus(row)">
+                    <el-dropdown-item v-if="row.status === 1 && hasPermission('system:role:edit')" @click="handleToggleStatus(row)">
                       <el-icon><CircleClose /></el-icon> 禁用
                     </el-dropdown-item>
-                    <el-dropdown-item @click="handleAssignPermissions(row)">
+                    <el-dropdown-item v-if="hasPermission('system:role:edit')" @click="handleAssignPermissions(row)">
                       <el-icon><Setting /></el-icon> 配置权限
                     </el-dropdown-item>
-                    <el-dropdown-item divided @click="handleDelete(row)">
+                    <el-dropdown-item v-if="hasPermission('system:role:edit')" @click="handleAssignUsers(row)">
+                      <el-icon><User /></el-icon> 配置用户
+                    </el-dropdown-item>
+                    <el-dropdown-item v-if="hasPermission('system:role:delete')" divided @click="handleDelete(row)">
                       <el-icon><Delete /></el-icon> 删除
                     </el-dropdown-item>
                   </el-dropdown-menu>
@@ -116,7 +119,7 @@
 
     <!-- 表格底部 -->
     <div class="table-footer">
-      <BeeButton type="danger" :disabled="selectedRows.length === 0" @click="handleBatchDelete">
+      <BeeButton v-if="hasPermission('system:role:delete')" type="danger" :disabled="selectedRows.length === 0" @click="handleBatchDelete">
         <template #icon><Delete /></template>
         批量删除 ({{ selectedRows.length }})
       </BeeButton>
@@ -131,9 +134,6 @@
       />
     </div>
   </div>
-
-  <!-- 详情抽屉 -->
-  <RoleDetailDrawer v-model="detailDrawerVisible" :role-data="currentRole" />
 
   <!-- 状态确认 Dialog -->
   <BeeDialog
@@ -191,13 +191,14 @@ import RoleCell from '@/components/RoleCell/index.vue'
 import StatusCell from '@/components/StatusCell/index.vue'
 import StatusSearch from '@/components/StatusSearch/index.vue'
 import TextCopyableCell from '@/components/TextCopyableCell/index.vue'
-import RoleDetailDrawer from './components/RoleDetailDrawer/index.vue'
-import type { RoleDetailResp, RoleQueryReq, RoleResp } from '@/types'
+import { usePermission } from '@/composables/usePermission'
+import type { RoleQueryReq, RoleResp } from '@/types'
 
 defineOptions({ name: 'RoleManage' })
 
 const router = useRouter()
 const searchKey = ref('')
+const { hasPermission } = usePermission()
 
 const roleStatusConfig = [
   { value: 1, label: '启用', color: 'rgb(103, 194, 58)' },
@@ -213,8 +214,6 @@ const statusOptions = [
 const loading = ref(false)
 const tableData = ref<RoleResp[]>([])
 const selectedRows = ref<RoleResp[]>([])
-const detailDrawerVisible = ref(false)
-const currentRole = ref<RoleDetailResp>({} as RoleDetailResp)
 const statusDialogVisible = ref(false)
 const batchDeleteDialogVisible = ref(false)
 const deleteDialogVisible = ref(false)
@@ -277,8 +276,7 @@ function handleSelectionChange(rows: RoleResp[]) {
 }
 
 function handleView(row: RoleResp) {
-  currentRole.value = row as unknown as RoleDetailResp
-  detailDrawerVisible.value = true
+  router.push({ path: '/system/role/detail', query: { id: row.id } })
 }
 
 function handleCreate() {
@@ -291,6 +289,10 @@ function handleEdit(row: RoleResp) {
 
 function handleAssignPermissions(row: RoleResp) {
   router.push({ path: '/system/role/assign-permissions', query: { roleId: row.id } })
+}
+
+function handleAssignUsers(row: RoleResp) {
+  router.push({ path: '/system/role/assign-users', query: { roleId: row.id } })
 }
 
 function handleToggleStatus(row: RoleResp) {

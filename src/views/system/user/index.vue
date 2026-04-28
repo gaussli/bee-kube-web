@@ -12,8 +12,8 @@
             <template #icon><Refresh /></template>
             刷新
           </BeeButton>
-          <el-divider direction="vertical" />
-          <BeeButton type="primary" @click="handleCreate">
+          <el-divider v-if="hasPermission('system:user:create')" type="primary" @click="handleCreate" direction="vertical" />
+          <BeeButton v-if="hasPermission('system:user:create')" type="primary" @click="handleCreate">
             <template #icon><Plus /></template>
             新增
           </BeeButton>
@@ -71,33 +71,37 @@
           </template>
           <template #default="{ row }">
             <el-tooltip content="详情" placement="top">
-              <el-button circle :icon="View" size="default" @click="handleView(row)" />
+              <el-button v-if="hasPermission('system:user:view')" circle :icon="View" size="default" @click="handleView(row)" />
             </el-tooltip>
             <el-tooltip content="编辑" placement="top">
-              <el-button circle :icon="EditPen" size="default" @click="handleEdit(row)" />
+              <el-button v-if="hasPermission('system:user:edit')" circle :icon="EditPen" size="default" @click="handleEdit(row)" />
             </el-tooltip>
-            <el-tooltip content="更多" placement="top">
+
+            <el-tooltip v-if="hasPermission('system:user:edit')" content="更多" placement="top">
               <el-dropdown trigger="click">
                 <template #default>
                   <el-button circle :icon="MoreFilled" size="default" />
                 </template>
                 <template #dropdown>
                   <el-dropdown-menu>
-                    <el-dropdown-item v-if="row.status === 0" @click="handleToggleStatus(row)">
+                    <el-dropdown-item v-if="row.status === 0 && hasPermission('system:user:edit')" @click="handleToggleStatus(row)">
                       <el-icon><CircleCheck /></el-icon> 启用
                     </el-dropdown-item>
-                    <el-dropdown-item v-if="row.status === 1" @click="handleToggleStatus(row)">
+                    <el-dropdown-item v-if="row.status === 1 && hasPermission('system:user:edit')" @click="handleToggleStatus(row)">
                       <el-icon><CircleClose /></el-icon> 禁用
                     </el-dropdown-item>
-                    <el-dropdown-item @click="handleAssignRoles(row)">
+                    <el-dropdown-item v-if="hasPermission('system:user:edit')" @click="handleAssignRoles(row)">
                       <el-icon><Setting /></el-icon> 配置角色
                     </el-dropdown-item>
-                    <el-dropdown-item divided @click="handleDelete(row)">
+                    <el-dropdown-item v-if="hasPermission('system:user:delete')" divided @click="handleDelete(row)">
                       <el-icon><Delete /></el-icon> 删除
                     </el-dropdown-item>
                   </el-dropdown-menu>
                 </template>
               </el-dropdown>
+            </el-tooltip>
+            <el-tooltip v-if="hasPermission('system:user:delete')" content="删除" placement="top">
+              <el-button circle :icon="Delete" size="default" @click="handleDelete(row)" />
             </el-tooltip>
           </template>
         </el-table-column>
@@ -106,10 +110,12 @@
 
     <!-- 表格底部 -->
     <div class="table-footer">
-      <BeeButton type="danger" :disabled="selectedRows.length === 0" @click="handleBatchDelete">
-        <template #icon><Delete /></template>
-        批量删除 ({{ selectedRows.length }})
-      </BeeButton>
+      <div>
+        <BeeButton v-if="hasPermission('system:user:delete')" type="danger" :disabled="selectedRows.length === 0" @click="handleBatchDelete">
+          <template #icon><Delete /></template>
+          批量删除 ({{ selectedRows.length }})
+        </BeeButton>
+      </div>
       <el-pagination
         v-model:current-page="pagination.page"
         v-model:page-size="pagination.pageSize"
@@ -123,11 +129,7 @@
   </div>
 
   <!-- 状态确认 Dialog -->
-  <BeeDialog
-    v-model="statusDialogVisible"
-    :title="currentTargetRow?.status === 1 ? '确认禁用' : '确认启用'"
-    @confirm="handleConfirmStatus"
-  >
+  <BeeDialog v-model="statusDialogVisible" :title="currentTargetRow?.status === 1 ? '确认禁用' : '确认启用'" @confirm="handleConfirmStatus">
     <div class="dialog-content">
       <p v-if="currentTargetRow?.status === 1">
         确定要禁用用户 <strong>{{ currentTargetRow?.username }}</strong> 吗？禁用后该用户将无法登录系统。
@@ -179,8 +181,12 @@ import StatusCell from '@/components/StatusCell/index.vue'
 import StatusSearch from '@/components/StatusSearch/index.vue'
 import TextCopyableCell from '@/components/TextCopyableCell/index.vue'
 import UserCell from '@/components/UserCell/index.vue'
+import { usePermission } from '@/composables/usePermission'
 
 defineOptions({ name: 'UserManage' })
+
+// 权限校验
+const { hasPermission } = usePermission()
 
 const router = useRouter()
 const searchKey = ref('')

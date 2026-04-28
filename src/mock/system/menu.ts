@@ -101,7 +101,7 @@ const mockMenus: MenuResp[] = [
     parentId: userId,
     parentName: '用户管理',
     parentCode: 'user',
-    permission: 'system:user:update',
+    permission: 'system:user:edit',
     type: 2,
     status: 1,
     createAt: '2024-01-16 09:05:00',

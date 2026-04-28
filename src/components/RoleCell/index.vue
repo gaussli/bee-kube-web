@@ -23,7 +23,7 @@ defineProps<{
 
   .role-code {
     font-size: 12px;
-    color: #909399;
+    color: $text-secondary;
     line-height: 1.2;
     white-space: nowrap;
     overflow: hidden;
@@ -33,7 +33,7 @@ defineProps<{
   .role-name {
     font-size: 14px;
     font-weight: 600;
-    color: #303133;
+    color: $text-primary;
     line-height: 1.2;
     white-space: nowrap;
     overflow: hidden;

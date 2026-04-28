@@ -47,7 +47,7 @@ const iconComponent = computed(() => {
   }
 
   .menu-icon {
-    color: #303133;
+    color: $color-primary;
   }
 
   .menu-detail {
@@ -60,7 +60,7 @@ const iconComponent = computed(() => {
     .menu-name {
       font-size: 14px;
       font-weight: 600;
-      color: #303133;
+      color: $text-primary;
       line-height: 1.2;
       white-space: nowrap;
       overflow: hidden;
@@ -69,7 +69,7 @@ const iconComponent = computed(() => {
 
     .menu-code {
       font-size: 12px;
-      color: #909399;
+      color: $text-secondary;
       line-height: 1.2;
       white-space: nowrap;
       overflow: hidden;

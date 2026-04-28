@@ -55,6 +55,7 @@ export interface MenuResp extends BaseEntity {
   description?: string
   type: number
   status: number
+  permission?: string
 }
 
 // 菜单详情响应
