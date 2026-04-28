@@ -1,100 +1,149 @@
 <template>
   <div class="cluster-overview">
-    <!-- 资源雷达图 + 节点列表 -->
-    <div class="top-row">
-      <!-- 资源雷达图 -->
-      <div class="card radar-card">
-        <div class="card-header">
-          <span>资源使用概览</span>
+    <!-- 集群信息 -->
+    <div class="card cluster-info-card">
+      <div class="cluster-main">
+        <div class="cluster-icon">
+          <el-icon :size="48"><Grid /></el-icon>
         </div>
-        <div class="card-body">
-          <BeeRadarChart :data="radarData" :size="280" color="#da8030" />
-          <div class="radar-legend">
-            <div v-for="item in radarData" :key="item.label" class="legend-row">
-              <div class="legend-ring">
-                <BeeRingChart :percentage="item.value" :size="48" color="#da8030" />
-              </div>
-              <div class="legend-col">
-                <span class="col-value">{{ item.value }}%</span>
-                <span class="col-label">{{ item.label }}</span>
-              </div>
-              <div class="legend-col">
-                <span class="col-value">{{ item.used }}</span>
-                <span class="col-label">已使用</span>
-              </div>
-              <div class="legend-col">
-                <span class="col-value">{{ item.total }}</span>
-                <span class="col-label">总计</span>
-              </div>
-            </div>
+        <div class="cluster-basic">
+          <div class="cluster-name">{{ clusterInfo.name }}</div>
+          <div class="cluster-desc">{{ clusterInfo.description }}</div>
+          <div class="cluster-meta">
+            <span class="meta-item">
+              <el-icon><Clock /></el-icon>
+              创建于 {{ clusterInfo.createdAt }}
+            </span>
           </div>
         </div>
       </div>
-
-      <!-- 节点列表 -->
-      <div class="card node-card">
-        <div class="card-header">
-          <span>节点列表</span>
-          <BeeRadioSearch v-model="sortKey" :options="sortOptions" @select="handleSortChange" />
+      <el-divider direction="vertical" class="vertical-divider" />
+      <div class="cluster-details">
+        <div class="detail-item">
+          <span class="detail-label">Kubernetes 版本</span>
+          <span class="detail-value">{{ clusterInfo.k8sVersion }}</span>
         </div>
-        <div class="card-body">
-          <div class="node-items">
-            <div v-for="node in sortedNodeList" :key="node.name" class="node-item">
-              <div class="node-icon">
-                <el-icon :size="24"><Monitor /></el-icon>
-              </div>
-              <div class="node-info">
-                <span class="node-name">{{ node.name }}</span>
-                <span class="node-desc">{{ node.description }}</span>
-              </div>
-              <div class="node-usage">
-                <div class="usage-bar">
-                  <span class="usage-label">CPU</span>
-                  <div class="usage-track">
-                    <div class="usage-fill" :style="{ width: node.cpuUsage + '%', background: getUsageColor(node.cpuUsage) }"></div>
-                  </div>
-                  <span class="usage-value">{{ node.cpuUsage }}%</span>
-                </div>
-                <div class="usage-bar">
-                  <span class="usage-label">内存</span>
-                  <div class="usage-track">
-                    <div class="usage-fill" :style="{ width: node.memoryUsage + '%', background: getUsageColor(node.memoryUsage) }"></div>
-                  </div>
-                  <span class="usage-value">{{ node.memoryUsage }}%</span>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div class="node-footer">
-            <BeeButton size="small" @click="handleViewMore">查看更多</BeeButton>
-          </div>
+        <div class="detail-item">
+          <span class="detail-label">API Server</span>
+          <span class="detail-value api-url">{{ clusterInfo.apiServer }}</span>
         </div>
+        <div class="detail-item">
+          <span class="detail-label">证书有效期</span>
+          <span class="detail-value" :class="{ 'text-warning': clusterInfo.certExpireDays <= 30 }"> {{ clusterInfo.certExpireAt }} ({{ clusterInfo.certExpireDays }} 天) </span>
+        </div>
+      </div>
+      <el-divider direction="vertical" class="vertical-divider" />
+      <div class="cluster-status">
+        <span class="status-label">集群状态</span>
+        <el-tag :type="clusterInfo.status === 'Ready' ? 'success' : 'danger'" size="large" effect="dark">
+          {{ clusterInfo.status }}
+        </el-tag>
       </div>
     </div>
 
-    <!-- 最近事件 -->
-    <div class="card events-card">
-      <div class="card-header">
-        <span>最近事件</span>
-        <BeeButton size="small" @click="loadEvents">
-          <template #icon><Refresh /></template>
-          刷新
-        </BeeButton>
+    <!-- 可滚动内容区域 -->
+    <div class="scroll-content">
+      <!-- 资源雷达图 + 节点列表 -->
+      <div class="top-row">
+        <!-- 资源雷达图 -->
+        <div class="card radar-card">
+          <div class="card-header">
+            <span>资源用量</span>
+            <div class="header-actions">
+              <BeeButton size="small" @click="loadRadarData">
+                <template #icon><Refresh /></template>
+              </BeeButton>
+            </div>
+          </div>
+          <div class="card-body">
+            <BeeRadarChart :data="radarData" :size="280" color="#da8030" />
+            <div class="radar-legend">
+              <div v-for="item in radarData" :key="item.label" class="legend-row">
+                <div class="legend-ring">
+                  <BeeRingChart :percentage="item.value" :size="48" color="#da8030" />
+                </div>
+                <div class="legend-col">
+                  <span class="col-value">{{ item.value }}%</span>
+                  <span class="col-label">{{ item.label }}</span>
+                </div>
+                <div class="legend-col">
+                  <span class="col-value">{{ item.used }}</span>
+                  <span class="col-label">已使用</span>
+                </div>
+                <div class="legend-col">
+                  <span class="col-value">{{ item.total }}</span>
+                  <span class="col-label">总计</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 节点列表 -->
+        <div class="card node-card">
+          <div class="card-header">
+            <span>节点用量</span>
+            <div class="header-actions">
+              <BeeRadioSearch v-model="sortKey" :options="sortOptions" @select="handleSortChange" />
+              <el-divider direction="vertical" />
+              <BeeButton size="small" @click="handleViewMore">查看更多</BeeButton>
+            </div>
+          </div>
+          <div class="card-body">
+            <div class="node-items">
+              <div v-for="node in sortedNodeList" :key="node.name" class="node-item">
+                <div class="node-icon">
+                  <el-icon :size="24"><Monitor /></el-icon>
+                </div>
+                <div class="node-info">
+                  <span class="node-name">{{ node.name }}</span>
+                  <span class="node-desc">{{ node.description }}</span>
+                </div>
+                <div class="node-usage">
+                  <div class="usage-bar">
+                    <span class="usage-label">CPU</span>
+                    <div class="usage-track">
+                      <div class="usage-fill" :style="{ width: node.cpuUsage + '%', background: getUsageColor(node.cpuUsage) }"></div>
+                    </div>
+                    <span class="usage-value">{{ node.cpuUsage }}%</span>
+                  </div>
+                  <div class="usage-bar">
+                    <span class="usage-label">内存</span>
+                    <div class="usage-track">
+                      <div class="usage-fill" :style="{ width: node.memoryUsage + '%', background: getUsageColor(node.memoryUsage) }"></div>
+                    </div>
+                    <span class="usage-value">{{ node.memoryUsage }}%</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
-      <div class="card-body">
-        <el-table :data="recentEvents" height="300">
-          <el-table-column prop="type" label="类型" width="100">
-            <template #default="{ row }">
-              <el-tag :type="row.type === 'Warning' ? 'warning' : 'info'" size="small">
-                {{ row.type }}
-              </el-tag>
-            </template>
-          </el-table-column>
-          <el-table-column prop="reason" label="原因" width="150" />
-          <el-table-column prop="object" label="对象" min-width="200" />
-          <el-table-column prop="message" label="消息" min-width="300" show-overflow-tooltip />
-          <el-table-column prop="time" label="时间" width="180" />
-        </el-table>
+
+      <!-- 最近事件 -->
+      <div class="card events-card">
+        <div class="card-header">
+          <span>最近事件</span>
+          <BeeButton size="small" @click="loadEvents">
+            <template #icon><Refresh /></template>
+          </BeeButton>
+        </div>
+        <div class="card-body">
+          <el-table :data="recentEvents">
+            <el-table-column prop="type" label="类型" width="100">
+              <template #default="{ row }">
+                <BeeTag :type="row.type === 'Warning' ? 'warning' : 'info'">
+                  {{ row.type }}
+                </BeeTag>
+              </template>
+            </el-table-column>
+            <el-table-column prop="reason" label="原因" width="150" />
+            <el-table-column prop="object" label="对象" min-width="200" />
+            <el-table-column prop="message" label="消息" min-width="300" show-overflow-tooltip />
+            <el-table-column prop="time" label="时间" width="180" />
+          </el-table>
+        </div>
       </div>
     </div>
   </div>
@@ -102,13 +151,26 @@
 
 <script setup lang="ts">
 import { ref, computed, onMounted } from 'vue'
-import { Refresh, Monitor } from '@element-plus/icons-vue'
+import { Refresh, Monitor, Grid, Clock } from '@element-plus/icons-vue'
 import BeeButton from '@/components/BeeButton/index.vue'
 import BeeRadarChart from '@/components/BeeRadarChart/index.vue'
 import BeeRadioSearch from '@/components/BeeRadioSearch/index.vue'
 import BeeRingChart from '@/components/BeeRingChart/index.vue'
+import BeeTag from '@/components/BeeTag/index.vue'
 
 defineOptions({ name: 'ClusterOverview' })
+
+// 集群信息
+const clusterInfo = ref({
+  name: 'prod-cluster',
+  description: '生产环境集群',
+  status: 'Ready',
+  createdAt: '2023-06-15',
+  k8sVersion: 'v1.28.0',
+  apiServer: 'https://api.production.local:6443',
+  certExpireAt: '2026-08-20',
+  certExpireDays: 114
+})
 
 // CPU 使用率
 const cpuUsed = ref(12)
@@ -163,7 +225,8 @@ const nodeList = ref([
 
 // 排序后的节点列表（Top 5）
 const sortedNodeList = computed(() => {
-  return [...nodeList.value].sort((a, b) => b[sortKey.value + 'Usage'] - a[sortKey.value + 'Usage']).slice(0, 5)
+  const key = (sortKey.value + 'Usage') as 'cpuUsage' | 'memoryUsage'
+  return [...nodeList.value].sort((a, b) => b[key] - a[key]).slice(0, 5)
 })
 
 function getUsageColor(usage: number) {
@@ -200,6 +263,11 @@ function handleViewMore() {
   console.log('View more nodes...')
 }
 
+function loadRadarData() {
+  // TODO: 刷新资源用量数据
+  console.log('Loading radar data...')
+}
+
 onMounted(() => {
   // TODO: 加载真实统计数据
 })
@@ -207,6 +275,138 @@ onMounted(() => {
 
 <style lang="scss" scoped>
 .cluster-overview {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  overflow-y: auto;
+
+  .cluster-info-card {
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    padding: 20px 24px;
+    margin-bottom: 16px;
+    gap: 24px;
+
+    .cluster-main {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .cluster-icon {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 64px;
+      height: 64px;
+      background: linear-gradient(135deg, $color-primary 0%, #b37c30 100%);
+      border-radius: 12px;
+      color: #fff;
+    }
+
+    .cluster-basic {
+      .cluster-name {
+        font-size: 18px;
+        font-weight: 600;
+        color: $text-primary;
+        line-height: 1.4;
+      }
+
+      .cluster-desc {
+        font-size: 14px;
+        color: $text-secondary;
+        margin-top: 4px;
+      }
+
+      .cluster-meta {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        margin-top: 8px;
+
+        .meta-item {
+          display: flex;
+          align-items: center;
+          gap: 4px;
+          font-size: 12px;
+          color: $text-secondary;
+        }
+      }
+    }
+
+    .vertical-divider {
+      height: 64px;
+    }
+
+    .cluster-details {
+      display: flex;
+      gap: 32px;
+
+      .detail-item {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+
+        .detail-label {
+          font-size: 12px;
+          color: $text-secondary;
+        }
+
+        .detail-value {
+          font-size: 14px;
+          font-weight: 500;
+          color: $text-primary;
+
+          &.api-url {
+            font-family: monospace;
+            font-size: 13px;
+          }
+
+          &.text-warning {
+            color: $color-warning;
+          }
+        }
+      }
+    }
+
+    .cluster-status {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+
+      .status-label {
+        font-size: 12px;
+        color: $text-secondary;
+      }
+    }
+  }
+
+  .scroll-content {
+  }
+
+  .card {
+    background-color: $bg_page;
+
+    .card-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 12px 20px;
+      font-weight: 500;
+
+      .header-actions {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+    }
+
+    .card-body {
+      padding: 0 16px 16px 16px;
+    }
+  }
   .top-row {
     display: flex;
     gap: 16px;
@@ -221,10 +421,16 @@ onMounted(() => {
         justify-content: space-between;
         padding: 12px 20px;
         font-weight: 500;
+
+        .header-actions {
+          display: flex;
+          align-items: center;
+          gap: 8px;
+        }
       }
 
       .card-body {
-        padding: 20px;
+        padding: 0 16px 16px 16px;
       }
     }
 
@@ -233,8 +439,7 @@ onMounted(() => {
         display: flex;
         flex-direction: row;
         align-items: flex-start;
-        gap: 24px;
-        padding: 20px;
+        gap: 16px;
       }
 
       .radar-legend {
@@ -287,17 +492,11 @@ onMounted(() => {
     }
 
     .node-card {
-      .card-body {
-        padding: 0;
-      }
-
       .node-items {
         display: flex;
         flex-direction: column;
         gap: 8px;
-        max-height: 300px;
         overflow-y: auto;
-        padding: 0 16px;
       }
 
       .node-item {
@@ -370,43 +569,6 @@ onMounted(() => {
               text-align: right;
             }
           }
-        }
-      }
-
-      .node-footer {
-        display: flex;
-        justify-content: center;
-        margin-top: 12px;
-      }
-    }
-  }
-
-  .chart-container {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    padding: 20px 0;
-
-    .progress-value {
-      font-size: 24px;
-      font-weight: bold;
-      color: $text-primary;
-    }
-
-    .chart-info {
-      margin-top: 20px;
-      text-align: center;
-
-      .info-item {
-        margin-top: 8px;
-
-        .info-label {
-          color: $text-secondary;
-        }
-
-        .info-value {
-          color: $text-primary;
-          font-weight: 500;
         }
       }
     }
