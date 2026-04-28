@@ -1,7 +1,7 @@
 <template>
-  <div class="bee-radio-search">
+  <div ref="containerRef" class="bee-radio-search">
     <div class="slider" :style="sliderStyle" />
-    <div v-for="(option, index) in options" :key="option.value" class="status-item" :class="{ active: activeIndex == index }" @click="handleClick(index, option.value)">
+    <div v-for="(option, index) in options" :key="option.value" class="radio-item" :class="{ active: activeIndex == index }" @click="handleClick(index, option.value)">
       {{ option.label }}
     </div>
   </div>
@@ -26,11 +26,18 @@ const emit = defineEmits<{
   select: [value?: string | number]
 }>()
 
+const containerRef = ref<HTMLElement>()
 const activeIndex = ref<number>(0)
 
+// 计算滑块样式，动态获取宽度
 const sliderStyle = computed(() => {
+  if (!containerRef.value) return {}
+  const items = containerRef.value.querySelectorAll('.radio-item')
+  const activeItem = items[activeIndex.value] as HTMLElement
+  if (!activeItem) return {}
   return {
-    transform: `translateX(${activeIndex.value * 100}%)`
+    transform: `translateX(${activeItem.offsetLeft}px)`,
+    width: `${activeItem.offsetWidth}px`
   }
 })
 
@@ -51,7 +58,6 @@ function handleClick(index: number, value?: string | number) {
 
 <style lang="scss" scoped>
 .bee-radio-search {
-  --status-search-item-width: 80px;
   --status-search-slider-offset: 2px;
   height: 32px;
   position: relative;
@@ -65,17 +71,16 @@ function handleClick(index: number, value?: string | number) {
 .slider {
   position: absolute;
   top: var(--status-search-slider-offset);
-  left: var(--status-search-slider-offset);
-  width: var(--status-search-item-width);
+  left: 0; // var (--status-search-slider-offset);
   height: calc(100% - var(--status-search-slider-offset) * 2);
   background-color: var(--status-search-slider-bg-color);
   border-radius: 16px;
-  transition: transform 0.25s ease;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  transition:
+    transform 0.25s ease,
+    width 0.25s ease;
 }
 
-.status-item {
-  width: var(--status-search-item-width);
+.radio-item {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -86,6 +91,7 @@ function handleClick(index: number, value?: string | number) {
   cursor: pointer;
   transition: color 0.25s ease;
   user-select: none;
+  white-space: nowrap;
 
   &.active {
     color: var(--status-search-active-color);
