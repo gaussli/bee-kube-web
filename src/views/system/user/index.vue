@@ -100,7 +100,7 @@
                 </template>
               </el-dropdown>
             </el-tooltip>
-            <el-tooltip v-if="hasPermission('system:user:delete')" content="删除" placement="top">
+            <el-tooltip v-else-if="hasPermission('system:user:delete')" content="删除" placement="top">
               <el-button circle :icon="Delete" size="default" @click="handleDelete(row)" />
             </el-tooltip>
           </template>

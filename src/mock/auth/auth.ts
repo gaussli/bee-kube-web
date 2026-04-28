@@ -62,7 +62,17 @@ function getCurrentUser(): CurrentUserResp {
         ]
       }
     ],
-    permissions: ['system:user:view', 'system:user:delete']
+    permissions: [
+      'system:user:view',
+      'system:user:edit',
+      'system:user:delete',
+      'system:role:view',
+      'system:role:edit',
+      'system:role:delete',
+      'system:menu:view',
+      'system:menu:edit',
+      'system:menu:delete'
+    ]
   }
 }
 

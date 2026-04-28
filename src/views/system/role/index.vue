@@ -112,6 +112,9 @@
                 </template>
               </el-dropdown>
             </el-tooltip>
+            <el-tooltip v-else-if="hasPermission('system:role:delete')" content="删除" placement="top">
+              <el-button circle :icon="Delete" size="default" @click="handleDelete(row)" />
+            </el-tooltip>
           </template>
         </el-table-column>
       </el-table>
@@ -119,10 +122,12 @@
 
     <!-- 表格底部 -->
     <div class="table-footer">
-      <BeeButton v-if="hasPermission('system:role:delete')" type="danger" :disabled="selectedRows.length === 0" @click="handleBatchDelete">
-        <template #icon><Delete /></template>
-        批量删除 ({{ selectedRows.length }})
-      </BeeButton>
+      <div>
+        <BeeButton v-if="hasPermission('system:role:delete')" type="danger" :disabled="selectedRows.length === 0" @click="handleBatchDelete">
+          <template #icon><Delete /></template>
+          批量删除 ({{ selectedRows.length }})
+        </BeeButton>
+      </div>
       <el-pagination
         v-model:current-page="pagination.page"
         v-model:page-size="pagination.pageSize"
@@ -136,11 +141,7 @@
   </div>
 
   <!-- 状态确认 Dialog -->
-  <BeeDialog
-    v-model="statusDialogVisible"
-    :title="currentTargetRow?.status === 1 ? '确认禁用' : '确认启用'"
-    @confirm="handleConfirmStatus"
-  >
+  <BeeDialog v-model="statusDialogVisible" :title="currentTargetRow?.status === 1 ? '确认禁用' : '确认启用'" @confirm="handleConfirmStatus">
     <div class="dialog-content">
       <p v-if="currentTargetRow?.status === 1">
         确定要禁用角色 <strong>{{ currentTargetRow?.name }}</strong> 吗？禁用后该角色将无法使用。

@@ -138,6 +138,9 @@
                 </template>
               </el-dropdown>
             </el-tooltip>
+            <el-tooltip v-else-if="hasPermission('system:menu:delete')" content="删除" placement="top">
+              <el-button circle :icon="Delete" size="default" @click="handleDelete(row)" />
+            </el-tooltip>
           </template>
         </el-table-column>
       </el-table>
@@ -162,11 +165,7 @@
   </div>
 
   <!-- 状态确认 Dialog -->
-  <BeeDialog
-    v-model="statusDialogVisible"
-    :title="currentTargetRow?.status === 1 ? '确认禁用' : '确认启用'"
-    @confirm="handleConfirmStatus"
-  >
+  <BeeDialog v-model="statusDialogVisible" :title="currentTargetRow?.status === 1 ? '确认禁用' : '确认启用'" @confirm="handleConfirmStatus">
     <div class="dialog-content">
       <p v-if="currentTargetRow?.status === 1">
         确定要禁用菜单 <strong>{{ currentTargetRow?.name }}</strong> 吗？禁用后该菜单将无法访问。
@@ -218,7 +217,7 @@ import StatusCell from '@/components/StatusCell/index.vue'
 import StatusSearch from '@/components/StatusSearch/index.vue'
 import TextCopyableCell from '@/components/TextCopyableCell/index.vue'
 import { usePermission } from '@/composables/usePermission'
-import type { MenuDetailResp, MenuQueryReq, MenuResp } from '@/types'
+import type { MenuQueryReq, MenuResp } from '@/types'
 
 defineOptions({ name: 'MenuManage' })
 
