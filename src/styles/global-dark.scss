@@ -16,7 +16,8 @@ body {
   padding: 0 12px;
 }
 
-.status-search {
+.bee-radio-search {
+  --status-search-bg-color: #{$bg-color};
   --status-search-slider-bg-color: #{$bg-selected};
   --status-search-color: #{$text-secondary};
   --status-search-active-color: #{$color-primary};

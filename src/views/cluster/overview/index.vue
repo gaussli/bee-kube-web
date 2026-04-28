@@ -35,10 +35,7 @@
       <div class="card node-card">
         <div class="card-header">
           <span>节点列表</span>
-          <BeeButton size="small" @click="toggleSort">
-            <template #icon><Refresh /></template>
-            {{ sortKey === 'cpu' ? 'CPU排序' : '内存排序' }}
-          </BeeButton>
+          <BeeRadioSearch v-model="sortKey" :options="sortOptions" @select="handleSortChange" />
         </div>
         <div class="card-body">
           <div class="node-items">
@@ -108,6 +105,7 @@ import { ref, computed, onMounted } from 'vue'
 import { Refresh, Monitor } from '@element-plus/icons-vue'
 import BeeButton from '@/components/BeeButton/index.vue'
 import BeeRadarChart from '@/components/BeeRadarChart/index.vue'
+import BeeRadioSearch from '@/components/BeeRadioSearch/index.vue'
 import BeeRingChart from '@/components/BeeRingChart/index.vue'
 
 defineOptions({ name: 'ClusterOverview' })
@@ -117,22 +115,10 @@ const cpuUsed = ref(12)
 const cpuTotal = ref(32)
 const cpuUsage = computed(() => Math.round((cpuUsed.value / cpuTotal.value) * 100))
 
-const cpuColor = computed(() => {
-  if (cpuUsage.value < 60) return '#67c23a'
-  if (cpuUsage.value < 80) return '#e6a23c'
-  return '#f56c6c'
-})
-
 // 内存使用率
 const memoryUsed = ref('48 Gi')
 const memoryTotal = ref('64 Gi')
 const memoryUsage = ref(75)
-
-const memoryColor = computed(() => {
-  if (memoryUsage.value < 60) return '#67c23a'
-  if (memoryUsage.value < 80) return '#e6a23c'
-  return '#f56c6c'
-})
 
 // 雷达图数据
 const radarData = computed(() => [
@@ -155,6 +141,14 @@ const containerUsage = computed(() => Math.round((containerUsed.value / containe
 // 节点列表排序
 type SortKey = 'cpu' | 'memory'
 const sortKey = ref<SortKey>('cpu')
+const sortOptions = [
+  { label: 'CPU排名', value: 'cpu' },
+  { label: '内存排名', value: 'memory' }
+]
+
+function handleSortChange(value?: string | number) {
+  sortKey.value = (value as SortKey) || 'cpu'
+}
 
 // 节点数据
 const nodeList = ref([
@@ -169,14 +163,8 @@ const nodeList = ref([
 
 // 排序后的节点列表（Top 5）
 const sortedNodeList = computed(() => {
-  return [...nodeList.value]
-    .sort((a, b) => b[sortKey.value + 'Usage'] - a[sortKey.value + 'Usage'])
-    .slice(0, 5)
+  return [...nodeList.value].sort((a, b) => b[sortKey.value + 'Usage'] - a[sortKey.value + 'Usage']).slice(0, 5)
 })
-
-function toggleSort() {
-  sortKey.value = sortKey.value === 'cpu' ? 'memory' : 'cpu'
-}
 
 function getUsageColor(usage: number) {
   if (usage < 60) return '#67c23a'
@@ -309,13 +297,14 @@ onMounted(() => {
         gap: 8px;
         max-height: 300px;
         overflow-y: auto;
+        padding: 0 16px;
       }
 
       .node-item {
         display: grid;
         grid-template-columns: 32px 1fr 140px;
         align-items: center;
-        gap: 12px;
+        gap: 16px;
         padding: 8px 12px;
         background: $bg-selected;
         border-radius: 6px;

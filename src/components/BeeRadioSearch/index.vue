@@ -1,5 +1,5 @@
 <template>
-  <div class="status-search">
+  <div class="bee-radio-search">
     <div class="slider" :style="sliderStyle" />
     <div v-for="(option, index) in options" :key="option.value" class="status-item" :class="{ active: activeIndex == index }" @click="handleClick(index, option.value)">
       {{ option.label }}
