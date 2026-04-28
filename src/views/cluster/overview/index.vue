@@ -112,6 +112,28 @@
       </el-col>
     </el-row>
 
+    <!-- 资源雷达图 -->
+    <el-card shadow="hover" class="radar-card">
+      <template #header>
+        <div class="card-header">
+          <span>资源使用概览</span>
+        </div>
+      </template>
+      <div class="radar-container">
+        <BeeRadarChart :data="radarData" :size="280" color="#da8030" />
+        <div class="radar-legend">
+          <div class="legend-item">
+            <span class="legend-label">磁盘已用</span>
+            <span class="legend-value">{{ diskUsed }} / {{ diskTotal }}</span>
+          </div>
+          <div class="legend-item">
+            <span class="legend-label">容器数量</span>
+            <span class="legend-value">{{ containerUsed }} / {{ containerTotal }}</span>
+          </div>
+        </div>
+      </div>
+    </el-card>
+
     <!-- 最近事件 -->
     <el-card shadow="hover" class="events-card">
       <template #header>
@@ -144,6 +166,7 @@
 import { ref, computed, onMounted } from 'vue'
 import { Box, Document, FolderOpened, Refresh, Warning } from '@element-plus/icons-vue'
 import BeeButton from '@/components/BeeButton/index.vue'
+import BeeRadarChart from '@/components/BeeRadarChart/index.vue'
 
 defineOptions({ name: 'ClusterOverview' })
 
@@ -177,6 +200,24 @@ const memoryColor = computed(() => {
   return '#f56c6c'
 })
 
+// 雷达图数据
+const radarData = computed(() => [
+  { label: 'CPU', value: cpuUsage.value, used: `${cpuUsed.value} 核`, total: `${cpuTotal.value} 核` },
+  { label: '内存', value: memoryUsage.value, used: memoryUsed.value, total: memoryTotal.value },
+  { label: '磁盘', value: diskUsage.value, used: diskUsed.value, total: diskTotal.value },
+  { label: '容器数', value: containerUsage.value, used: `${containerUsed.value} 个`, total: `${containerTotal.value} 个` }
+])
+
+// 磁盘使用率
+const diskUsed = ref('320 Gi')
+const diskTotal = ref('500 Gi')
+const diskUsage = ref(64)
+
+// 容器数使用率
+const containerUsed = ref(42)
+const containerTotal = ref(60)
+const containerUsage = computed(() => Math.round((containerUsed.value / containerTotal.value) * 100))
+
 // 最近事件
 const recentEvents = ref([
   { type: 'Normal', reason: 'Scheduled', object: 'pod/nginx-deployment-7fb96c846b-xk2p9', message: 'Successfully assigned pod to node-1', time: '2024-01-15 10:30:25' },
@@ -209,6 +250,41 @@ onMounted(() => {
 
   .chart-row {
     margin-bottom: 20px;
+  }
+
+  .radar-card {
+    margin-bottom: 20px;
+
+    .radar-container {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 60px;
+      padding: 20px 0;
+
+      .radar-legend {
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+
+        .legend-item {
+          display: flex;
+          flex-direction: column;
+          gap: 4px;
+
+          .legend-label {
+            font-size: 12px;
+            color: $text-secondary;
+          }
+
+          .legend-value {
+            font-size: 16px;
+            font-weight: 500;
+            color: $text-primary;
+          }
+        }
+      }
+    }
   }
 
   .stat-card {
