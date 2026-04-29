@@ -11,108 +11,9 @@ let dynamicRoutesAdded = false
 export const constantRoutes: RouteRecordRaw[] = [
   {
     path: '/login',
-    name: 'Login',
+    name: 'login',
     component: () => import('@/views/login/index.vue'),
-    meta: { title: '登录', hidden: true }
-  },
-  {
-    path: '/',
-    name: 'Home',
-    redirect: '/dashboard',
-    component: () => import('@/views/home/index.vue'),
-    meta: { title: '首页', icon: 'HomeFilled', requiresAuth: true },
-    children: [
-      {
-        path: '/403',
-        name: 'NoPermission',
-        component: () => import('@/views/error/403.vue'),
-        meta: { title: '无权限', hidden: true }
-      },
-      {
-        path: '/dashboard',
-        name: 'Dashboard',
-        component: () => import('@/views/dashboard/index.vue'),
-        meta: { title: '仪表盘', icon: 'HomeFilled' }
-      },
-      {
-        path: '/system/user/detail',
-        name: 'UserDetail',
-        component: () => import('@/views/system/user/detail/index.vue'),
-        meta: { title: '用户详情', hidden: true, permission: 'system:user:view' }
-      },
-      {
-        path: '/system/user/create',
-        name: 'UserCreate',
-        component: () => import('@/views/system/user/create/index.vue'),
-        meta: { title: '创建用户', hidden: true, permission: 'system:user:create' }
-      },
-      {
-        path: '/system/user/edit',
-        name: 'UserEdit',
-        component: () => import('@/views/system/user/edit/index.vue'),
-        meta: { title: '编辑用户', hidden: true, permission: 'system:user:edit' }
-      },
-      {
-        path: '/system/user/assign-roles',
-        name: 'UserAssignRoles',
-        component: () => import('@/views/system/user/assign-roles/index.vue'),
-        meta: { title: '配置角色', hidden: true, permission: 'system:user:edit' }
-      },
-      {
-        path: '/system/role/create',
-        name: 'RoleCreate',
-        component: () => import('@/views/system/role/create/index.vue'),
-        meta: { title: '创建角色', hidden: true, permission: 'system:role:create' }
-      },
-      {
-        path: '/system/role/detail',
-        name: 'RoleDetail',
-        component: () => import('@/views/system/role/detail/index.vue'),
-        meta: { title: '角色详情', hidden: true, permission: 'system:role:view' }
-      },
-      {
-        path: '/system/role/edit',
-        name: 'RoleEdit',
-        component: () => import('@/views/system/role/edit/index.vue'),
-        meta: { title: '编辑角色', hidden: true, permission: 'system:role:edit' }
-      },
-      {
-        path: '/system/role/assign-permissions',
-        name: 'RoleAssignPermissions',
-        component: () => import('@/views/system/role/assign-permissions/index.vue'),
-        meta: { title: '配置权限', hidden: true, permission: 'system:role:edit' }
-      },
-      {
-        path: '/system/role/assign-users',
-        name: 'RoleAssignUsers',
-        component: () => import('@/views/system/role/assign-users/index.vue'),
-        meta: { title: '配置用户', hidden: true, permission: 'system:role:edit' }
-      },
-      {
-        path: '/system/menu/create',
-        name: 'MenuCreate',
-        component: () => import('@/views/system/menu/create/index.vue'),
-        meta: { title: '创建菜单', hidden: true, permission: 'system:menu:create' }
-      },
-      {
-        path: '/system/menu/detail',
-        name: 'MenuDetail',
-        component: () => import('@/views/system/menu/detail/index.vue'),
-        meta: { title: '菜单详情', hidden: true, permission: 'system:menu:view' }
-      },
-      {
-        path: '/system/menu/edit',
-        name: 'MenuEdit',
-        component: () => import('@/views/system/menu/edit/index.vue'),
-        meta: { title: '编辑菜单', hidden: true, permission: 'system:menu:edit' }
-      },
-      {
-        path: '/system/menu/assign-roles',
-        name: 'MenuAssignRoles',
-        component: () => import('@/views/system/menu/assign-roles/index.vue'),
-        meta: { title: '配置角色', hidden: true, permission: 'system:menu:edit' }
-      }
-    ]
+    meta: { title: '登录' }
   }
 ]
 
@@ -125,6 +26,8 @@ const router = createRouter({
 
 // 路由守卫
 router.beforeEach(async (to, from) => {
+  console.log(to)
+  console.log(from)
   const userStore = useUserStore()
 
   // 登录页直接通过
@@ -155,16 +58,9 @@ router.beforeEach(async (to, from) => {
     const currentUserResp = await getCurrentUser()
     userStore.setCurrentUser(currentUserResp.user)
     userStore.setCurrentMenus(currentUserResp.menus)
-    if (currentUserResp.clusterMenus) {
-      userStore.setClusterMenus(currentUserResp.clusterMenus)
-    }
     userStore.setCurrentPermissions(currentUserResp.permissions)
     if (currentUserResp.menus.length > 0) {
       addDynamicRoutes(currentUserResp.menus)
-    }
-    // 添加集群管理路由
-    if (currentUserResp.clusterMenus && currentUserResp.clusterMenus.length > 0) {
-      addDynamicRoutes(currentUserResp.clusterMenus)
     }
     console.log(router.getRoutes())
     dynamicRoutesAdded = true
@@ -188,7 +84,7 @@ export function addDynamicRoutes(menus: CurrentMenu[]) {
   for (const route of routes) {
     // 添加到 Home 路由下
     if (!router.getRoutes().find(r => r.path === route.path)) {
-      router.addRoute('Home', route)
+      router.addRoute(route)
     }
   }
 }

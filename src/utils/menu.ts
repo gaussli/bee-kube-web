@@ -9,24 +9,29 @@ export function generateRoutes(menus: CurrentMenu[]): RouteRecordRaw[] {
   const routes: RouteRecordRaw[] = []
 
   for (const menu of menus) {
-    // 只处理目录(0)和菜单(1)，不处理按钮(2)
-    if (menu.type > 1 || !menu.frontPath) continue
+    // 只处理目录(0)、菜单(1)和页面(2)，不处理按钮(3)
+    if (menu.type > 2) continue
 
     const route: RouteRecordRaw = {
-      path: menu.frontPath,
+      path: menu.frontPath ?? '',
       name: menu.code,
-      redirect: undefined,
       meta: {
+        id: menu.id,
         title: menu.name,
         icon: menu.frontIcon,
-        permission: menu.permission
+        permission: menu.permission,
+        activeCode: menu.activeCode ?? menu.code
       },
       children: []
     }
 
+    if (menu.frontRedirect) {
+      route.redirect = menu.frontRedirect
+    }
+
     // 动态导入组件
     if (menu.frontComponent) {
-      const componentPath = `/src/views/${menu.frontComponent}.vue`
+      const componentPath = `${menu.frontComponent}`
       route.component = modules[componentPath]
     }
 

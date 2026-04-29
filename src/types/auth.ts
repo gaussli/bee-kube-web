@@ -17,7 +17,6 @@ export interface LoginResp {
 export interface CurrentUserResp {
   user: CurrentUser
   menus: CurrentMenu[]
-  clusterMenus?: CurrentMenu[]
   permissions: string[]
 }
 
@@ -39,9 +38,12 @@ export interface CurrentMenu {
   name: string
   parentId?: string
   frontPath?: string
+  frontRedirect?: string | Record<string, string>
   frontComponent?: string
   frontIcon?: string
   permission?: string
+  // 0: 目录，1: 菜单，2: 页面，3: 按钮
   type: number
+  activeCode?: string
   children?: CurrentMenu[]
 }

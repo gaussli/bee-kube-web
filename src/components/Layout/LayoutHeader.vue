@@ -82,6 +82,20 @@ const defaultAvatar = 'https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e5
 
 const currentUser = computed(() => userStore.getCurrentUser())
 
+const currentMenus = computed(() => userStore.getCurrentMenus() ?? [])
+
+// tabOptions 从用户菜单第一层获取，label 对应 name，value 对应 code
+const tabOptions = computed(
+  () =>
+    currentMenus.value
+      .find(menu => menu.code === 'home')
+      ?.children?.filter(menu => !['403'].includes(menu.code))
+      .map(menu => ({
+        label: menu.name,
+        value: menu.code
+      })) ?? []
+)
+
 const dropdownOptions = [
   { label: '用户信息', value: 'profile', icon: User },
   { label: '修改密码', value: 'password', icon: Lock },
@@ -89,19 +103,10 @@ const dropdownOptions = [
   { label: '退出登录', value: 'logout', icon: SwitchButton, divided: true }
 ]
 
-const tabOptions = [
-  { label: '集群管理', value: 'cluster' },
-  { label: '平台管理', value: 'platform' }
-]
-
 function handleTabChange(tab?: string | number) {
   if (tab) {
     appStore.setCurrentTab(tab as TabType)
-    if (tab === 'platform') {
-      router.push('/dashboard')
-    } else {
-      router.push('/cluster/overview')
-    }
+    router.push({ name: tab as string })
   }
 }
 

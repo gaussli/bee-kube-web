@@ -32,10 +32,8 @@ export const storage = {
   },
 
   // 删除
-  remove(keys: string[]): void {
-    keys.forEach(key => {
-      localStorage.removeItem(STORAGE_PREFIX + key)
-    })
+  remove(key: string): void {
+    localStorage.removeItem(STORAGE_PREFIX + key)
   },
 
   // 清空
