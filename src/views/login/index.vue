@@ -74,8 +74,8 @@ async function handleLogin() {
 
 .login-card {
   width: 400px;
-  border-radius: $border-radius-lg;
-  box-shadow: $box-shadow;
+  // border-radius: $border-radius-lg;
+  // box-shadow: $box-shadow;
 
   .card-header {
     text-align: center;

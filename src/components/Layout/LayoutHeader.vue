@@ -57,7 +57,6 @@ import { ElMessage, ElMessageBox } from 'element-plus'
 import { ArrowDown, Close, FullScreen } from '@element-plus/icons-vue'
 import { Lock, Setting, SwitchButton, User } from '@element-plus/icons-vue'
 import { logout } from '@/api'
-import { resetRouter } from '@/router'
 import { useAppStore, useUserStore } from '@/stores'
 import BeeDropdown from '@/components/BeeDropdown/index.vue'
 import BeeRadioSearch from '@/components/BeeRadioSearch/index.vue'
@@ -87,13 +86,10 @@ const currentMenus = computed(() => userStore.getCurrentMenus() ?? [])
 // tabOptions 从用户菜单第一层获取，label 对应 name，value 对应 code
 const tabOptions = computed(
   () =>
-    currentMenus.value
-      .find(menu => menu.code === 'home')
-      ?.children?.filter(menu => !['403'].includes(menu.code))
-      .map(menu => ({
-        label: menu.name,
-        value: menu.code
-      })) ?? []
+    currentMenus.value.map(menu => ({
+      label: menu.name,
+      value: menu.code
+    })) ?? []
 )
 
 const dropdownOptions = [
@@ -172,7 +168,6 @@ async function handleLogout() {
     // 忽略退出接口错误，继续清理
   }
   userStore.clear()
-  resetRouter()
   router.push('/login')
 }
 
