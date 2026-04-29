@@ -1,10 +1,7 @@
 <template>
   <header class="header">
     <div class="header-left">
-      <el-radio-group v-model="currentTab" size="default" @change="handleTabChange">
-        <el-radio-button value="cluster">集群管理</el-radio-button>
-        <el-radio-button value="platform">平台管理</el-radio-button>
-      </el-radio-group>
+      <BeeRadioSearch :default="currentTab" :options="tabOptions" @select="handleTabChange" />
     </div>
     <div class="header-right">
       <el-tooltip :content="isFullscreen ? '退出全屏' : '全屏'" placement="bottom">
@@ -63,6 +60,7 @@ import { logout } from '@/api'
 import { resetRouter } from '@/router'
 import { useAppStore, useUserStore } from '@/stores'
 import BeeDropdown from '@/components/BeeDropdown/index.vue'
+import BeeRadioSearch from '@/components/BeeRadioSearch/index.vue'
 import type { TabType } from '@/stores/app'
 
 defineOptions({ name: 'LayoutHeader' })
@@ -75,16 +73,6 @@ const currentTab = computed({
   get: () => appStore.currentTab,
   set: (val: TabType) => appStore.setCurrentTab(val)
 })
-
-function handleTabChange(tab: TabType) {
-  appStore.setCurrentTab(tab)
-  // 切换 tab 时跳转到对应的默认页面
-  if (tab === 'platform') {
-    router.push('/dashboard')
-  } else {
-    router.push('/cluster/overview')
-  }
-}
 
 const isFullscreen = ref(false)
 const passwordDialogVisible = ref(false)
@@ -100,6 +88,22 @@ const dropdownOptions = [
   { label: '系统设置', value: 'setting', icon: Setting },
   { label: '退出登录', value: 'logout', icon: SwitchButton, divided: true }
 ]
+
+const tabOptions = [
+  { label: '集群管理', value: 'cluster' },
+  { label: '平台管理', value: 'platform' }
+]
+
+function handleTabChange(tab?: string | number) {
+  if (tab) {
+    appStore.setCurrentTab(tab as TabType)
+    if (tab === 'platform') {
+      router.push('/dashboard')
+    } else {
+      router.push('/cluster/overview')
+    }
+  }
+}
 
 const passwordForm = ref({
   oldPassword: '',

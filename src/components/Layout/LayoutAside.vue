@@ -7,23 +7,11 @@
 
     <!-- 集群选择模块（仅集群管理tab显示） -->
     <div v-if="appStore.currentTab === 'cluster'" class="cluster-selector">
-      <el-select
-        v-model="currentClusterId"
-        placeholder="选择集群"
-        size="default"
-        class="cluster-select"
-        :collapse-tags="!appStore.sidebarOpened"
-        @change="handleClusterChange"
-      >
+      <el-select v-model="currentClusterId" placeholder="选择集群" size="default" class="cluster-select" :collapse-tags="!appStore.sidebarOpened" @change="handleClusterChange">
         <template #prefix>
           <el-icon><Connection /></el-icon>
         </template>
-        <el-option
-          v-for="cluster in clusterList"
-          :key="cluster.id"
-          :label="cluster.name"
-          :value="cluster.id"
-        >
+        <el-option v-for="cluster in clusterList" :key="cluster.id" :label="cluster.name" :value="cluster.id">
           <div class="cluster-option">
             <span>{{ cluster.name }}</span>
             <el-tag v-if="cluster.status !== 'healthy'" size="small" type="danger">异常</el-tag>
@@ -35,14 +23,7 @@
           <el-button circle :icon="Plus" size="small" @click="handleAddCluster" />
         </el-tooltip>
         <el-tooltip content="删除集群" placement="top" :disabled="clusterList.length <= 1">
-          <el-button
-            circle
-            :icon="Delete"
-            size="small"
-            type="danger"
-            :disabled="clusterList.length <= 1"
-            @click="handleDeleteCluster"
-          />
+          <el-button circle :icon="Delete" size="small" type="danger" :disabled="clusterList.length <= 1" @click="handleDeleteCluster" />
         </el-tooltip>
       </div>
     </div>
@@ -87,11 +68,11 @@
     <!-- 删除集群 Dialog -->
     <BeeDialog v-model="deleteClusterDialogVisible" title="确认删除" @confirm="handleConfirmDelete">
       <div class="delete-content">
-        <p>确定要删除集群 <strong>{{ currentCluster?.name }}</strong> 吗？</p>
+        <p>
+          确定要删除集群 <strong>{{ currentCluster?.name }}</strong> 吗？
+        </p>
         <el-alert type="warning" :closable="false" show-icon>
-          <template #title>
-            删除后需要重新添加才能使用该集群
-          </template>
+          <template #title> 删除后需要重新添加才能使用该集群 </template>
         </el-alert>
       </div>
     </BeeDialog>
@@ -101,8 +82,8 @@
 <script setup lang="ts">
 import { computed, reactive, ref } from 'vue'
 import { useRoute } from 'vue-router'
-import { Delete, Plus, Connection } from '@element-plus/icons-vue'
 import { ElMessage, type FormInstance, type FormRules } from 'element-plus'
+import { Delete, Plus, Connection } from '@element-plus/icons-vue'
 import { HomeFilled, Setting, Odometer, Box, FolderOpened, Cpu, Document, Collection, Monitor, DocumentCopy, Lock } from '@element-plus/icons-vue'
 import { useAppStore, useUserStore } from '@/stores'
 import BeeDialog from '@/components/BeeDialog/index.vue'
