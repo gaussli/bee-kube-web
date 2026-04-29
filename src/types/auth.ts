@@ -36,14 +36,8 @@ export interface CurrentMenu {
   id: string
   code: string
   name: string
-  parentId?: string
-  frontPath?: string
-  frontRedirect?: string | Record<string, string>
-  frontComponent?: string
-  frontIcon?: string
-  permission?: string
+  icon?: string
   // 0: 目录，1: 菜单，2: 页面，3: 按钮
   type: number
-  activeCode?: string
   children?: CurrentMenu[]
 }

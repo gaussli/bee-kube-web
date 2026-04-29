@@ -5,23 +5,26 @@
       <span v-show="appStore.sidebarOpened">Bee Kube</span>
     </div>
 
-    <el-menu :default-active="route.meta.activeCode" :collapse="!appStore.sidebarOpened" :collapse-transition="false" router class="aside-menu">
+    <el-menu :default-active="route.meta.activeCode as string" :collapse="!appStore.sidebarOpened" :collapse-transition="false" @select="handleSelect" class="aside-menu">
       <template v-for="item in currentMenuList" :key="item.id">
-        <el-menu-item v-if="!item.children?.length" :index="item.frontPath || '/'">
-          <el-icon>
-            <component :is="getIcon(item.frontIcon)" />
+        <el-menu-item v-if="!item.children?.length" :index="item.code">
+          <el-icon v-if="item.icon">
+            <component :is="getIcon(item.icon)" />
           </el-icon>
           <template #title>{{ item.name }}</template>
         </el-menu-item>
-        <el-sub-menu v-else :index="item.frontPath || item.code">
+        <el-sub-menu v-else :index="item.code">
           <template #title>
-            <el-icon>
-              <component :is="getIcon(item.frontIcon)" />
+            <el-icon v-if="item.icon">
+              <component :is="getIcon(item.icon)" />
             </el-icon>
             <span>{{ item.name }}</span>
           </template>
-          <el-menu-item v-for="child in item.children" :key="child.id" :index="child.frontPath || '/'">
-            {{ child.name }}
+          <el-menu-item v-for="child in item.children" :key="child.id" :index="child.code">
+            <el-icon v-if="child.icon">
+              <component :is="getIcon(child.icon)" />
+            </el-icon>
+            <span>{{ child.name }}</span>
           </el-menu-item>
         </el-sub-menu>
       </template>
@@ -30,8 +33,8 @@
 </template>
 
 <script setup lang="ts">
-import { computed } from 'vue'
-import { useRoute } from 'vue-router'
+import { computed, onMounted } from 'vue'
+import { useRoute, useRouter } from 'vue-router'
 import { HomeFilled, Setting, Odometer, Box, FolderOpened, Cpu, Document, Collection, Monitor, DocumentCopy, Lock } from '@element-plus/icons-vue'
 import { useAppStore, useUserStore } from '@/stores'
 import type { Component } from 'vue'
@@ -41,13 +44,15 @@ defineOptions({ name: 'LayoutAside' })
 const appStore = useAppStore()
 const userStore = useUserStore()
 const route = useRoute()
+const router = useRouter()
 
 // 根据当前 tab 获取菜单列表
 const currentMenuList = computed(() => {
-  return userStore
-    .getCurrentMenus()
-    .find(menu => menu.code === 'home')
-    ?.children?.find(menu => menu.code === appStore.currentTab)?.children
+  return userStore.getCurrentMenus().find(menu => menu.code === appStore.currentTab)?.children
+})
+
+onMounted(() => {
+  console.log(router.getRoutes())
 })
 
 const iconMap: Record<string, Component> = {
@@ -65,11 +70,30 @@ const iconMap: Record<string, Component> = {
   User: () => import('@element-plus/icons-vue').then(m => m.User),
   Avatar: () => import('@element-plus/icons-vue').then(m => m.Avatar),
   Menu: () => import('@element-plus/icons-vue').then(m => m.Menu),
-  Goods: () => import('@element-plus/icons-vue').then(m => m.Goods)
+  Goods: () => import('@element-plus/icons-vue').then(m => m.Goods),
+  Connection: () => import('@element-plus/icons-vue').then(m => m.Connection),
+  Share: () => import('@element-plus/icons-vue').then(m => m.Share),
+  Guide: () => import('@element-plus/icons-vue').then(m => m.Guide),
+  Aim: () => import('@element-plus/icons-vue').then(m => m.Aim),
+  Files: () => import('@element-plus/icons-vue').then(m => m.Files),
+  Grid: () => import('@element-plus/icons-vue').then(m => m.Grid),
+  Coin: () => import('@element-plus/icons-vue').then(m => m.Coin),
+  Key: () => import('@element-plus/icons-vue').then(m => m.Key),
+  UserFilled: () => import('@element-plus/icons-vue').then(m => m.UserFilled),
+  Link: () => import('@element-plus/icons-vue').then(m => m.Link),
+  Timer: () => import('@element-plus/icons-vue').then(m => m.Timer),
+  Clock: () => import('@element-plus/icons-vue').then(m => m.Clock)
 }
 
 function getIcon(iconName?: string): Component {
-  return iconName ? iconMap[iconName] || HomeFilled : HomeFilled
+  return HomeFilled
+  // return iconName ? iconMap[iconName] || HomeFilled : HomeFilled
+}
+
+// 使用 name 跳转路由
+function handleSelect(index: string) {
+  console.log(index)
+  router.push({ name: index })
 }
 </script>
 
