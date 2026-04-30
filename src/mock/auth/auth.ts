@@ -307,7 +307,11 @@ function getCurrentUser(): CurrentUserResp {
       'platform:system:menu:view',
       'platform:system:menu:create',
       'platform:system:menu:edit',
-      'platform:system:menu:delete'
+      'platform:system:menu:delete',
+      'kubernetes:cluster:view',
+      'kubernetes:cluster:create',
+      'kubernetes:cluster:edit',
+      'kubernetes:cluster:delete'
     ]
   }
 }

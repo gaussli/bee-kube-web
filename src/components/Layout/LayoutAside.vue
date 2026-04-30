@@ -114,8 +114,6 @@ const iconMap: Record<string, Component> = {
 }
 
 function getIcon(iconName?: string): Component {
-  // return HomeFilled
-  console.log(iconName)
   return iconName ? iconMap[iconName] || HomeFilled : HomeFilled
 }
 

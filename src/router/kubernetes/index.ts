@@ -1,3 +1,4 @@
+import { clusterRoutes } from './cluster'
 import { configRoutes } from './config'
 import { crdRoutes } from './crd'
 import { namespaceRoutes } from './namespace'
@@ -23,6 +24,7 @@ export const kubernetesRoutes: RouteRecordRaw[] = [
       icon: 'Odometer'
     }
   },
+  ...clusterRoutes,
   ...nodeRoutes,
   ...namespaceRoutes,
   ...workloadRoutes,

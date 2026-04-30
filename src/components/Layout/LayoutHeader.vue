@@ -57,7 +57,7 @@ import { ElMessage, ElMessageBox } from 'element-plus'
 import { ArrowDown, Close, FullScreen } from '@element-plus/icons-vue'
 import { Lock, Setting, SwitchButton, User } from '@element-plus/icons-vue'
 import { logout } from '@/api'
-import { useAppStore, useUserStore } from '@/stores'
+import { useAppStore, useKubernetesStore, useUserStore } from '@/stores'
 import BeeDropdown from '@/components/BeeDropdown/index.vue'
 import BeeRadioSearch from '@/components/BeeRadioSearch/index.vue'
 import type { TabType } from '@/stores/app'
@@ -67,11 +67,7 @@ defineOptions({ name: 'LayoutHeader' })
 const router = useRouter()
 const appStore = useAppStore()
 const userStore = useUserStore()
-
-const currentTab = computed({
-  get: () => appStore.currentTab,
-  set: (val: TabType) => appStore.setCurrentTab(val)
-})
+const kubernetesStore = useKubernetesStore()
 
 const isFullscreen = ref(false)
 const passwordDialogVisible = ref(false)
@@ -80,8 +76,14 @@ const passwordFormRef = ref()
 const defaultAvatar = 'https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png'
 
 const currentUser = computed(() => userStore.getCurrentUser())
+const currentMenus = computed(() => userStore.getCurrentMenus())
 
-const currentMenus = computed(() => userStore.getCurrentMenus() ?? [])
+const currentTab = computed({
+  get: () => appStore.currentTab,
+  set: (val: TabType) => appStore.setCurrentTab(val)
+})
+
+const activeClusterId = computed(() => kubernetesStore.activeClusterId)
 
 // tabOptions 从用户菜单第一层获取，label 对应 name，value 对应 code
 const tabOptions = computed(
@@ -102,7 +104,12 @@ const dropdownOptions = [
 function handleTabChange(tab?: string | number) {
   if (tab) {
     appStore.setCurrentTab(tab as TabType)
-    router.push({ name: tab as string })
+    console.log(activeClusterId.value)
+    if (activeClusterId.value || tab !== 'kubernetes') {
+      router.push({ name: tab as string })
+    } else {
+      router.push({ name: 'kubernetes:cluster' })
+    }
   }
 }
 
