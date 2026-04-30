@@ -7,7 +7,42 @@ const configmapRoutes: RouteRecordRaw[] = [
     component: () => import('@/views/kubernetes/config/configmap/index.vue'),
     meta: {
       title: '配置映射',
-      icon: 'DocumentCopy'
+      icon: 'DocumentCopy',
+      permission: 'kubernetes:config:configmap:view',
+      activeCode: 'kubernetes:config:configmap'
+    }
+  },
+  {
+    path: '/kubernetes/config/configmap/create',
+    name: 'kubernetes:config:configmap:create',
+    component: () => import('@/views/kubernetes/config/configmap/create/index.vue'),
+    meta: {
+      title: '创建配置映射',
+      icon: 'DocumentCopy',
+      permission: 'kubernetes:config:configmap:create',
+      activeCode: 'kubernetes:config:configmap'
+    }
+  },
+  {
+    path: '/kubernetes/config/configmap/edit',
+    name: 'kubernetes:config:configmap:edit',
+    component: () => import('@/views/kubernetes/config/configmap/edit/index.vue'),
+    meta: {
+      title: '编辑配置映射',
+      icon: 'DocumentCopy',
+      permission: 'kubernetes:config:configmap:edit',
+      activeCode: 'kubernetes:config:configmap'
+    }
+  },
+  {
+    path: '/kubernetes/config/configmap/detail',
+    name: 'kubernetes:config:configmap:detail',
+    component: () => import('@/views/kubernetes/config/configmap/detail/index.vue'),
+    meta: {
+      title: '配置映射详情',
+      icon: 'DocumentCopy',
+      permission: 'kubernetes:config:configmap:view',
+      activeCode: 'kubernetes:config:configmap'
     }
   }
 ]
@@ -19,7 +54,42 @@ const secretRoutes: RouteRecordRaw[] = [
     component: () => import('@/views/kubernetes/config/secret/index.vue'),
     meta: {
       title: '密钥',
-      icon: 'Lock'
+      icon: 'Lock',
+      permission: 'kubernetes:config:secret:view',
+      activeCode: 'kubernetes:config:secret'
+    }
+  },
+  {
+    path: '/kubernetes/config/secret/create',
+    name: 'kubernetes:config:secret:create',
+    component: () => import('@/views/kubernetes/config/secret/create/index.vue'),
+    meta: {
+      title: '创建密钥',
+      icon: 'Lock',
+      permission: 'kubernetes:config:secret:create',
+      activeCode: 'kubernetes:config:secret'
+    }
+  },
+  {
+    path: '/kubernetes/config/secret/edit',
+    name: 'kubernetes:config:secret:edit',
+    component: () => import('@/views/kubernetes/config/secret/edit/index.vue'),
+    meta: {
+      title: '编辑密钥',
+      icon: 'Lock',
+      permission: 'kubernetes:config:secret:edit',
+      activeCode: 'kubernetes:config:secret'
+    }
+  },
+  {
+    path: '/kubernetes/config/secret/detail',
+    name: 'kubernetes:config:secret:detail',
+    component: () => import('@/views/kubernetes/config/secret/detail/index.vue'),
+    meta: {
+      title: '密钥详情',
+      icon: 'Lock',
+      permission: 'kubernetes:config:secret:view',
+      activeCode: 'kubernetes:config:secret'
     }
   }
 ]

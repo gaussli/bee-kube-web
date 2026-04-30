@@ -42,8 +42,7 @@ const router = createRouter({
 
 // 路由守卫
 router.beforeEach(async (to, from) => {
-  console.log(to)
-  console.log(from)
+  console.log('from:', from.fullPath, ', to:', to.fullPath)
   const userStore = useUserStore()
 
   // 登录页直接通过
