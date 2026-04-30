@@ -5,7 +5,7 @@
       <span v-show="appStore.sidebarOpened">Bee Kube</span>
     </div>
 
-    <el-menu :default-active="route.meta.activeCode as string" :collapse="!appStore.sidebarOpened" :collapse-transition="false" @select="handleSelect" class="aside-menu">
+    <el-menu :default-active="route.meta.activeCode ?? route.name" :collapse="!appStore.sidebarOpened" :collapse-transition="false" @select="handleSelect" class="aside-menu">
       <template v-for="item in currentMenuList" :key="item.id">
         <el-menu-item v-if="!item.children?.length" :index="item.code">
           <el-icon v-if="item.icon">
@@ -64,13 +64,14 @@ import {
   Timer,
   Clock
 } from '@element-plus/icons-vue'
-import { useAppStore, useUserStore } from '@/stores'
+import { useAppStore, useUserStore, useKubernetesStore } from '@/stores'
 import type { Component } from 'vue'
 
 defineOptions({ name: 'LayoutAside' })
 
 const appStore = useAppStore()
 const userStore = useUserStore()
+const kubernetesStore = useKubernetesStore()
 const route = useRoute()
 const router = useRouter()
 
@@ -80,6 +81,7 @@ const currentMenuList = computed(() => {
 })
 
 onMounted(() => {
+  console.log('current route: ', route.name, route.meta.activeCode)
   console.log(router.getRoutes())
 })
 
@@ -119,7 +121,11 @@ function getIcon(iconName?: string): Component {
 
 // 使用 name 跳转路由
 function handleSelect(index: string) {
-  console.log(index)
+  // 集群管理特殊处理：存在 activeClusterId 则跳转 dashboard，否则跳转列表
+  if (index === 'kubernetes:cluster' && kubernetesStore.activeClusterId) {
+    router.push({ name: 'kubernetes:dashboard' })
+    return
+  }
   router.push({ name: index })
 }
 </script>

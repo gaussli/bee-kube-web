@@ -1,4 +1,5 @@
 import { createRouter, createWebHistory } from 'vue-router'
+import { useKubernetesStore } from '@/stores'
 import { useUserStore } from '@/stores/user'
 import { kubernetesRoutes } from './kubernetes'
 import { platformRoutes } from './platform'
@@ -53,6 +54,16 @@ router.beforeEach(async (to, from) => {
   // 未登录则跳转登录页
   if (!userStore.isLogin()) {
     return { path: '/login', query: { redirect: to.fullPath } }
+  }
+
+  // 集群管理路由检查：未选择集群则跳转到集群列表
+  if (to.path.startsWith('/kubernetes') && to.path !== '/kubernetes/cluster') {
+    const kubernetesStore = useKubernetesStore()
+
+    // 集群管理路由检查：未选择集群则跳转到集群列表
+    if (!kubernetesStore.activeClusterId) {
+      return { name: 'kubernetes:cluster' }
+    }
   }
 
   // 检查页面权限
