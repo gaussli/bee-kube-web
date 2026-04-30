@@ -56,7 +56,7 @@ async function handleCreate() {
     const formData = menuFormRef.value?.getFormData()
     await createMenu(formData!)
     ElMessage.success('创建成功')
-    router.push('/system/menu')
+    router.push({ name: 'platform:system:menu' })
   } catch {
     // 验证失败
   }

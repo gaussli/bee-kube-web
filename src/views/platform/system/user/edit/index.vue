@@ -77,7 +77,7 @@ async function handleSubmit() {
     await userFormRef.value?.validate()
     // TODO: 调用更新 API
     ElMessage.success('保存成功')
-    router.push('/system/user')
+    router.push({ name: 'platform:system:user' })
   } catch {
     // 验证失败
   }

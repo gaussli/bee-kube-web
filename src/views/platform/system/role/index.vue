@@ -186,11 +186,11 @@ import AuditCell from '@/components/AuditCell/index.vue'
 import BeeButton from '@/components/BeeButton/index.vue'
 import BeeDialog from '@/components/BeeDialog/index.vue'
 import BeeInputSearch from '@/components/BeeInputSearch/index.vue'
+import BeeRadioSearch from '@/components/BeeRadioSearch/index.vue'
 import BeeTag from '@/components/BeeTag/index.vue'
 import IconLabel from '@/components/IconLabel/index.vue'
 import RoleCell from '@/components/RoleCell/index.vue'
 import StatusCell from '@/components/StatusCell/index.vue'
-import BeeRadioSearch from '@/components/BeeRadioSearch/index.vue'
 import TextCopyableCell from '@/components/TextCopyableCell/index.vue'
 import { usePermission } from '@/composables/usePermission'
 import type { RoleQueryReq, RoleResp } from '@/types'
@@ -277,23 +277,23 @@ function handleSelectionChange(rows: RoleResp[]) {
 }
 
 function handleView(row: RoleResp) {
-  router.push({ path: '/system/role/detail', query: { id: row.id } })
+  router.push({ name: 'platform:system:role:detail', params: { id: row.id } })
 }
 
 function handleCreate() {
-  router.push('/system/role/create')
+  router.push({ name: 'platform:system:role:create' })
 }
 
 function handleEdit(row: RoleResp) {
-  router.push({ path: '/system/role/edit', query: { id: row.id } })
+  router.push({ name: 'platform:system:role:edit', params: { id: row.id } })
 }
 
 function handleAssignPermissions(row: RoleResp) {
-  router.push({ path: '/system/role/assign-permissions', query: { roleId: row.id } })
+  router.push({ name: 'platform:system:role:assign-permissions', params: { roleId: row.id } })
 }
 
 function handleAssignUsers(row: RoleResp) {
-  router.push({ path: '/system/role/assign-users', query: { roleId: row.id } })
+  router.push({ name: ':system:role:assign-users', params: { roleId: row.id } })
 }
 
 function handleToggleStatus(row: RoleResp) {

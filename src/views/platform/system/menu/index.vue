@@ -210,11 +210,11 @@ import AuditCell from '@/components/AuditCell/index.vue'
 import BeeButton from '@/components/BeeButton/index.vue'
 import BeeDialog from '@/components/BeeDialog/index.vue'
 import BeeInputSearch from '@/components/BeeInputSearch/index.vue'
+import BeeRadioSearch from '@/components/BeeRadioSearch/index.vue'
 import BeeTag from '@/components/BeeTag/index.vue'
 import IconLabel from '@/components/IconLabel/index.vue'
 import MenuCell from '@/components/MenuCell/index.vue'
 import StatusCell from '@/components/StatusCell/index.vue'
-import BeeRadioSearch from '@/components/BeeRadioSearch/index.vue'
 import TextCopyableCell from '@/components/TextCopyableCell/index.vue'
 import { usePermission } from '@/composables/usePermission'
 import type { MenuQueryReq, MenuResp } from '@/types'
@@ -320,19 +320,19 @@ function handleSelectionChange(rows: MenuResp[]) {
 }
 
 function handleView(row: MenuResp) {
-  router.push({ path: '/system/menu/detail', query: { id: row.id } })
+  router.push({ name: 'platform:system:menu:detail', params: { id: row.id } })
 }
 
 function handleCreate() {
-  router.push('/system/menu/create')
+  router.push({ name: 'platform:system:menu:create' })
 }
 
 function handleEdit(row: MenuResp) {
-  router.push({ path: '/system/menu/edit', query: { id: row.id } })
+  router.push({ name: 'platform:system:menu:edit', params: { id: row.id } })
 }
 
 function handleAssignRoles(row: MenuResp) {
-  router.push({ path: '/system/menu/assign-roles', query: { menuId: row.id } })
+  router.push({ name: 'platform:system:menu:assign-roles', params: { menuId: row.id } })
 }
 
 function handleToggleStatus(row: MenuResp) {

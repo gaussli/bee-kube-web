@@ -269,15 +269,15 @@ function handleSelectionChange(rows: UserResp[]) {
 }
 
 function handleView(row: UserResp) {
-  router.push({ path: '/system/user/detail', query: { id: row.id } })
+  router.push({ name: 'platform:system:user:detail', params: { id: row.id } })
 }
 
 function handleCreate() {
-  router.push('/system/user/create')
+  router.push({ name: 'platform:system:user:create' })
 }
 
 function handleEdit(row: UserResp) {
-  router.push({ path: '/system/user/edit', query: { id: row.id } })
+  router.push({ name: 'platform:system:user:edit', params: { id: row.id } })
 }
 
 function handleToggleStatus(row: UserResp) {
@@ -286,7 +286,7 @@ function handleToggleStatus(row: UserResp) {
 }
 
 function handleAssignRoles(row: UserResp) {
-  router.push({ path: '/system/user/assign-roles', query: { userId: row.id } })
+  router.push({ name: 'platform:system:user:assign-roles', params: { id: row.id } })
 }
 
 function handleDelete(row: UserResp) {

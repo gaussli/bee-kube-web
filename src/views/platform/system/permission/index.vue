@@ -154,17 +154,17 @@
 import { onMounted, reactive, ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { ElMessage } from 'element-plus'
-import { CircleCheck, CircleClose, Delete, Document, EditPen, Key, Plus, Refresh, View, Clock } from '@element-plus/icons-vue'
+import { CircleCheck, Delete, Document, EditPen, Key, Plus, Refresh, View, Clock } from '@element-plus/icons-vue'
 import { changePermissionStatus, getPermissionPage, removePermission, batchRemovePermissions } from '@/api'
 import AuditCell from '@/components/AuditCell/index.vue'
 import BeeButton from '@/components/BeeButton/index.vue'
 import BeeDialog from '@/components/BeeDialog/index.vue'
 import BeeInputSearch from '@/components/BeeInputSearch/index.vue'
+import BeeRadioSearch from '@/components/BeeRadioSearch/index.vue'
 import BeeTag from '@/components/BeeTag/index.vue'
 import IconLabel from '@/components/IconLabel/index.vue'
 import PermissionCell from '@/components/PermissionCell/index.vue'
 import StatusCell from '@/components/StatusCell/index.vue'
-import BeeRadioSearch from '@/components/BeeRadioSearch/index.vue'
 import TextCopyableCell from '@/components/TextCopyableCell/index.vue'
 import { usePermission } from '@/composables/usePermission'
 import type { PermissionQueryReq, PermissionResp } from '@/types'
@@ -251,15 +251,15 @@ function handleSelectionChange(rows: PermissionResp[]) {
 }
 
 function handleView(row: PermissionResp) {
-  router.push({ path: '/platform/system/permission/detail', query: { id: row.id } })
+  router.push({ name: 'platform:system:permission:detail', params: { id: row.id } })
 }
 
 function handleCreate() {
-  router.push('/platform/system/permission/create')
+  router.push({ name: 'platform:system:permission:create' })
 }
 
 function handleEdit(row: PermissionResp) {
-  router.push({ path: '/platform/system/permission/edit', query: { id: row.id } })
+  router.push({ name: 'platform:system:permission:edit', params: { id: row.id } })
 }
 
 function handleToggleStatus(row: PermissionResp) {

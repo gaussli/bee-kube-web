@@ -35,7 +35,35 @@
 <script setup lang="ts">
 import { computed, onMounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
-import { HomeFilled, Setting, Odometer, Box, FolderOpened, Cpu, Document, Collection, Monitor, DocumentCopy, Lock } from '@element-plus/icons-vue'
+import {
+  HomeFilled,
+  Setting,
+  Odometer,
+  Box,
+  FolderOpened,
+  Cpu,
+  Document,
+  Collection,
+  Monitor,
+  DocumentCopy,
+  Lock,
+  User,
+  Avatar,
+  Menu,
+  Goods,
+  Connection,
+  Share,
+  Guide,
+  Aim,
+  Files,
+  Grid,
+  Coin,
+  Key,
+  UserFilled,
+  Link,
+  Timer,
+  Clock
+} from '@element-plus/icons-vue'
 import { useAppStore, useUserStore } from '@/stores'
 import type { Component } from 'vue'
 
@@ -67,27 +95,28 @@ const iconMap: Record<string, Component> = {
   Monitor,
   DocumentCopy,
   Lock,
-  User: () => import('@element-plus/icons-vue').then(m => m.User),
-  Avatar: () => import('@element-plus/icons-vue').then(m => m.Avatar),
-  Menu: () => import('@element-plus/icons-vue').then(m => m.Menu),
-  Goods: () => import('@element-plus/icons-vue').then(m => m.Goods),
-  Connection: () => import('@element-plus/icons-vue').then(m => m.Connection),
-  Share: () => import('@element-plus/icons-vue').then(m => m.Share),
-  Guide: () => import('@element-plus/icons-vue').then(m => m.Guide),
-  Aim: () => import('@element-plus/icons-vue').then(m => m.Aim),
-  Files: () => import('@element-plus/icons-vue').then(m => m.Files),
-  Grid: () => import('@element-plus/icons-vue').then(m => m.Grid),
-  Coin: () => import('@element-plus/icons-vue').then(m => m.Coin),
-  Key: () => import('@element-plus/icons-vue').then(m => m.Key),
-  UserFilled: () => import('@element-plus/icons-vue').then(m => m.UserFilled),
-  Link: () => import('@element-plus/icons-vue').then(m => m.Link),
-  Timer: () => import('@element-plus/icons-vue').then(m => m.Timer),
-  Clock: () => import('@element-plus/icons-vue').then(m => m.Clock)
+  User,
+  Avatar,
+  Menu,
+  Goods,
+  Connection,
+  Share,
+  Guide,
+  Aim,
+  Files,
+  Grid,
+  Coin,
+  Key,
+  UserFilled,
+  Link,
+  Timer,
+  Clock
 }
 
 function getIcon(iconName?: string): Component {
-  return HomeFilled
-  // return iconName ? iconMap[iconName] || HomeFilled : HomeFilled
+  // return HomeFilled
+  console.log(iconName)
+  return iconName ? iconMap[iconName] || HomeFilled : HomeFilled
 }
 
 // 使用 name 跳转路由

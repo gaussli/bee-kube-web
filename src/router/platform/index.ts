@@ -1,12 +1,10 @@
 import type { RouteRecordRaw } from 'vue-router'
 
-const modules = import.meta.glob('@/views/**/*.vue')
-
 const platformUserRoutes: RouteRecordRaw[] = [
   {
     path: '/platform/system/user',
     name: 'platform:system:user',
-    component: modules['/src/views/platform/system/user/index.vue'],
+    component: () => import('@/views/platform/system/user/index.vue'),
     meta: {
       title: '用户管理',
       icon: 'User',
@@ -15,9 +13,9 @@ const platformUserRoutes: RouteRecordRaw[] = [
     }
   },
   {
-    path: ':id/detail',
+    path: '/platform/system/user/:id/detail',
     name: 'platform:system:user:detail',
-    component: modules['/src/views/platform/system/user/detail/index.vue'],
+    component: () => import('@/views/platform/system/user/detail/index.vue'),
     meta: {
       title: '用户详情',
       icon: 'InfoFilled',
@@ -26,9 +24,9 @@ const platformUserRoutes: RouteRecordRaw[] = [
     }
   },
   {
-    path: 'create',
+    path: '/platform/system/user/create',
     name: 'platform:system:user:create',
-    component: modules['/src/views/platform/system/user/create/index.vue'],
+    component: () => import('@/views/platform/system/user/create/index.vue'),
     meta: {
       title: '创建用户',
       icon: 'Plus',
@@ -37,9 +35,9 @@ const platformUserRoutes: RouteRecordRaw[] = [
     }
   },
   {
-    path: ':id/edit',
+    path: '/platform/system/user/:id/edit',
     name: 'platform:system:user:edit',
-    component: modules['/src/views/platform/system/user/edit/index.vue'],
+    component: () => import('@/views/platform/system/user/edit/index.vue'),
     meta: {
       title: '编辑用户',
       icon: 'EditPen',
@@ -48,9 +46,9 @@ const platformUserRoutes: RouteRecordRaw[] = [
     }
   },
   {
-    path: ':id/assign-roles',
+    path: '/platform/system/user/:id/assign-roles',
     name: 'platform:system:user:assign-roles',
-    component: modules['/src/views/platform/system/user/assign-roles/index.vue'],
+    component: () => import('@/views/platform/system/user/assign-roles/index.vue'),
     meta: {
       title: '配置角色',
       icon: 'Key',
@@ -64,7 +62,7 @@ const platformRoleRoutes: RouteRecordRaw[] = [
   {
     path: '/platform/system/role',
     name: 'platform:system:role',
-    component: modules['/src/views/platform/system/role/index.vue'],
+    component: () => import('@/views/platform/system/role/index.vue'),
     meta: {
       title: '角色管理',
       icon: 'Avatar',
@@ -73,9 +71,9 @@ const platformRoleRoutes: RouteRecordRaw[] = [
     }
   },
   {
-    path: ':id/detail',
+    path: '/platform/system/role/:id/detail',
     name: 'platform:system:role:detail',
-    component: modules['/src/views/platform/system/role/detail/index.vue'],
+    component: () => import('@/views/platform/system/role/detail/index.vue'),
     meta: {
       title: '角色详情',
       icon: 'InfoFilled',
@@ -84,9 +82,9 @@ const platformRoleRoutes: RouteRecordRaw[] = [
     }
   },
   {
-    path: 'create',
+    path: '/platform/system/role/create',
     name: 'platform:system:role:create',
-    component: modules['/src/views/platform/system/role/create/index.vue'],
+    component: () => import('@/views/platform/system/role/create/index.vue'),
     meta: {
       title: '创建角色',
       icon: 'Plus',
@@ -95,9 +93,9 @@ const platformRoleRoutes: RouteRecordRaw[] = [
     }
   },
   {
-    path: ':id/edit',
+    path: '/platform/system/role/:id/edit',
     name: 'platform:system:role:edit',
-    component: modules['/src/views/platform/system/role/edit/index.vue'],
+    component: () => import('@/views/platform/system/role/edit/index.vue'),
     meta: {
       title: '编辑角色',
       icon: 'EditPen',
@@ -106,9 +104,9 @@ const platformRoleRoutes: RouteRecordRaw[] = [
     }
   },
   {
-    path: ':id/assign-permissions',
+    path: '/platform/system/role/:id/assign-permissions',
     name: 'platform:system:role:assign-permissions',
-    component: modules['/src/views/platform/system/role/assign-permissions/index.vue'],
+    component: () => import('@/views/platform/system/role/assign-permissions/index.vue'),
     meta: {
       title: '配置权限',
       icon: 'Key',
@@ -117,9 +115,9 @@ const platformRoleRoutes: RouteRecordRaw[] = [
     }
   },
   {
-    path: ':id/assign-users',
+    path: '/platform/system/role/:id/assign-users',
     name: 'platform:system:role:assign-users',
-    component: modules['/src/views/platform/system/role/assign-users/index.vue'],
+    component: () => import('@/views/platform/system/role/assign-users/index.vue'),
     meta: {
       title: '配置用户',
       icon: 'User',
@@ -133,7 +131,7 @@ const platformMenuRoutes: RouteRecordRaw[] = [
   {
     path: '/platform/system/menu',
     name: 'platform:system:menu',
-    component: modules['/src/views/platform/system/menu/index.vue'],
+    component: () => import('@/views/platform/system/menu/index.vue'),
     meta: {
       title: '菜单管理',
       icon: 'Menu',
@@ -142,9 +140,9 @@ const platformMenuRoutes: RouteRecordRaw[] = [
     }
   },
   {
-    path: ':id/detail',
+    path: '/platform/system/menu/:id/detail',
     name: 'platform:system:menu:detail',
-    component: modules['/src/views/platform/system/menu/detail/index.vue'],
+    component: () => import('@/views/platform/system/menu/detail/index.vue'),
     meta: {
       title: '菜单详情',
       icon: 'InfoFilled',
@@ -153,9 +151,9 @@ const platformMenuRoutes: RouteRecordRaw[] = [
     }
   },
   {
-    path: 'create',
+    path: '/platform/system/menu/create',
     name: 'platform:system:menu:create',
-    component: modules['/src/views/platform/system/menu/create/index.vue'],
+    component: () => import('@/views/platform/system/menu/create/index.vue'),
     meta: {
       title: '创建菜单',
       icon: 'Plus',
@@ -164,9 +162,9 @@ const platformMenuRoutes: RouteRecordRaw[] = [
     }
   },
   {
-    path: ':id/edit',
+    path: '/platform/system/menu/:id/edit',
     name: 'platform:system:menu:edit',
-    component: modules['/src/views/platform/system/menu/edit/index.vue'],
+    component: () => import('@/views/platform/system/menu/edit/index.vue'),
     meta: {
       title: '编辑菜单',
       icon: 'EditPen',
@@ -175,9 +173,9 @@ const platformMenuRoutes: RouteRecordRaw[] = [
     }
   },
   {
-    path: ':id/assign-roles',
+    path: '/platform/system/menu/:id/assign-roles',
     name: 'platform:system:menu:assign-roles',
-    component: modules['/src/views/platform/system/menu/assign-roles/index.vue'],
+    component: () => import('@/views/platform/system/menu/assign-roles/index.vue'),
     meta: {
       title: '配置角色',
       icon: 'Key',
@@ -191,7 +189,7 @@ const platformPermissionRoutes: RouteRecordRaw[] = [
   {
     path: '/platform/system/permission',
     name: 'platform:system:permission',
-    component: modules['/src/views/platform/system/permission/index.vue'],
+    component: () => import('@/views/platform/system/permission/index.vue'),
     meta: {
       title: '权限管理',
       icon: 'Key',
@@ -200,9 +198,9 @@ const platformPermissionRoutes: RouteRecordRaw[] = [
     }
   },
   {
-    path: ':id/detail',
+    path: '/platform/system/permission/:id/detail',
     name: 'platform:system:permission:detail',
-    component: modules['/src/views/platform/system/permission/detail/index.vue'],
+    component: () => import('@/views/platform/system/permission/detail/index.vue'),
     meta: {
       title: '权限详情',
       icon: 'InfoFilled',
@@ -211,9 +209,9 @@ const platformPermissionRoutes: RouteRecordRaw[] = [
     }
   },
   {
-    path: 'create',
+    path: '/platform/system/permission/create',
     name: 'platform:system:permission:create',
-    component: modules['/src/views/platform/system/permission/create/index.vue'],
+    component: () => import('@/views/platform/system/permission/create/index.vue'),
     meta: {
       title: '新增权限',
       icon: 'Plus',
@@ -222,9 +220,9 @@ const platformPermissionRoutes: RouteRecordRaw[] = [
     }
   },
   {
-    path: ':id/edit',
+    path: '/platform/system/permission/:id/edit',
     name: 'platform:system:permission:edit',
-    component: modules['/src/views/platform/system/permission/edit/index.vue'],
+    component: () => import('@/views/platform/system/permission/edit/index.vue'),
     meta: {
       title: '编辑权限',
       icon: 'EditPen',
@@ -243,7 +241,7 @@ export const platformRoutes: RouteRecordRaw[] = [
   {
     path: '/platform/dashboard',
     name: 'platform:dashboard',
-    component: modules['/src/views/platform/dashboard/index.vue'],
+    component: () => import('@/views/platform/dashboard/index.vue'),
     meta: {
       title: '仪表盘',
       icon: 'Odometer'

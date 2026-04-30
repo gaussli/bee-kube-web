@@ -54,7 +54,7 @@ async function handleCreate() {
     await userFormRef.value?.validate()
     // TODO: 调用创建 API
     ElMessage.success('创建成功')
-    router.push('/system/user')
+    router.push({ name: 'platform:system:user' })
   } catch {
     // 验证失败
   }

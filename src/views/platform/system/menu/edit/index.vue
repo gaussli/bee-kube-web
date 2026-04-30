@@ -76,7 +76,7 @@ async function handleUpdate() {
     const formData = menuFormRef.value?.getFormData()
     await updateMenu(menuId, formData!)
     ElMessage.success('保存成功')
-    router.push('/system/menu')
+    router.push({ name: 'platform:system:menu' })
   } catch {
     // 验证失败
   }
