@@ -12,7 +12,6 @@
       <div class="table-query">
         <div class="table-query-left">
           <BeeInputSearch v-model="searchKey" placeholder="按名称搜索" @search="handleSearch" />
-          <BeeSelect v-model="queryForm.clusterId" placeholder="选择集群" :options="clusterOptions" @change="handleClusterChange" />
           <BeeRadioSearch v-model="queryForm.status" :options="statusOptions" @select="handleSelect" />
         </div>
         <div class="table-query-right">
@@ -199,9 +198,7 @@ const pagination = reactive({
   total: 0
 })
 
-const clusterOptions = ref([
-  { label: '默认集群', value: 'default' }
-])
+
 
 const statusOptions = [
   { label: '所有', value: undefined },
@@ -241,11 +238,7 @@ function handleSearch() {
   loadData()
 }
 
-function handleClusterChange(value: string) {
-  queryForm.clusterId = value
-  pagination.page = 1
-  loadData()
-}
+
 
 function handleSelect(selectValue?: string | number) {
   queryForm.status = selectValue as string | undefined

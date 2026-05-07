@@ -12,7 +12,6 @@
       <div class="table-query">
         <div class="table-query-left">
           <BeeInputSearch v-model="searchKey" placeholder="按名称搜索" @search="handleSearch" />
-          <BeeSelect v-model="queryForm.clusterId" placeholder="选择集群" :options="clusterOptions" @change="handleClusterChange" />
           <BeeSelect v-model="queryForm.namespace" placeholder="选择命名空间" :options="namespaceOptions" @change="handleNamespaceChange" />
         </div>
         <div class="table-query-right">
@@ -190,9 +189,7 @@ const pagination = reactive({
   total: 0
 })
 
-const clusterOptions = ref([
-  { label: '默认集群', value: 'default' }
-])
+
 
 const namespaceOptions = ref([
   { label: '全部命名空间', value: undefined },
@@ -224,11 +221,7 @@ function handleSearch() {
   loadData()
 }
 
-function handleClusterChange(value: string) {
-  queryForm.clusterId = value
-  pagination.page = 1
-  loadData()
-}
+
 
 function handleNamespaceChange(value: string) {
   queryForm.namespace = value

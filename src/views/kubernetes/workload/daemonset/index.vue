@@ -8,7 +8,6 @@
       <div class="table-query">
         <div class="table-query-left">
           <BeeInputSearch v-model="searchKey" placeholder="按名称搜索" @search="handleSearch" />
-          <BeeSelect v-model="queryForm.clusterId" placeholder="选择集群" :options="clusterOptions" @change="handleClusterChange" />
           <BeeSelect v-model="queryForm.namespace" placeholder="选择命名空间" :options="namespaceOptions" @change="handleNamespaceChange" />
         </div>
         <div class="table-query-right">
@@ -82,7 +81,7 @@ const batchDeleteDialogVisible = ref(false)
 const currentTargetRow = ref<DaemonSetResp | null>(null)
 const queryForm = reactive<DaemonSetQueryReq>({ name: undefined, clusterId: kubernetesStore.activeClusterId || undefined, namespace: undefined, page: 1, pageSize: 10 })
 const pagination = reactive({ page: 1, pageSize: 10, total: 0 })
-const clusterOptions = ref([{ label: '默认集群', value: 'default' }])
+
 const namespaceOptions = ref([{ label: '全部命名空间', value: undefined }, { label: 'default', value: 'default' }])
 async function loadData() {
   if (!queryForm.clusterId) { tableData.value = []; return }
@@ -93,7 +92,7 @@ async function loadData() {
   } finally { loading.value = false }
 }
 function handleSearch() { queryForm.name = searchKey.value; pagination.page = 1; loadData() }
-function handleClusterChange(value: string) { queryForm.clusterId = value; pagination.page = 1; loadData() }
+
 function handleNamespaceChange(value: string) { queryForm.namespace = value; pagination.page = 1; loadData() }
 function handleReset() { queryForm.name = undefined; queryForm.namespace = undefined; queryForm.page = 1; queryForm.pageSize = 10; pagination.page = 1; pagination.pageSize = 10; searchKey.value = ''; loadData() }
 function handleSelectionChange(rows: DaemonSetResp[]) { selectedRows.value = rows }

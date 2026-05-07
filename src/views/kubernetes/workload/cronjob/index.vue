@@ -8,7 +8,6 @@
       <div class="table-query">
         <div class="table-query-left">
           <BeeInputSearch v-model="searchKey" placeholder="按名称搜索" @search="handleSearch" />
-          <BeeSelect v-model="queryForm.clusterId" placeholder="选择集群" :options="clusterOptions" @change="handleClusterChange" />
           <BeeSelect v-model="queryForm.namespace" placeholder="选择命名空间" :options="namespaceOptions" @change="handleNamespaceChange" />
         </div>
         <div class="table-query-right">
@@ -82,7 +81,7 @@ const batchDeleteDialogVisible = ref(false)
 const currentTargetRow = ref<CronJobResp | null>(null)
 const queryForm = reactive<CronJobQueryReq>({ name: undefined, clusterId: kubernetesStore.activeClusterId || undefined, namespace: undefined, page: 1, pageSize: 10 })
 const pagination = reactive({ page: 1, pageSize: 10, total: 0 })
-const clusterOptions = ref([{ label: '默认集群', value: 'default' }])
+
 const namespaceOptions = ref([{ label: '全部命名空间', value: undefined }, { label: 'default', value: 'default' }])
 async function loadData() {
   if (!queryForm.clusterId) { tableData.value = []; return }
@@ -93,7 +92,7 @@ async function loadData() {
   } finally { loading.value = false }
 }
 function handleSearch() { queryForm.name = searchKey.value; pagination.page = 1; loadData() }
-function handleClusterChange(value: string) { queryForm.clusterId = value; pagination.page = 1; loadData() }
+
 function handleNamespaceChange(value: string) { queryForm.namespace = value; pagination.page = 1; loadData() }
 function handleReset() { queryForm.name = undefined; queryForm.namespace = undefined; queryForm.page = 1; queryForm.pageSize = 10; pagination.page = 1; pagination.pageSize = 10; searchKey.value = ''; loadData() }
 function handleSelectionChange(rows: CronJobResp[]) { selectedRows.value = rows }
@@ -112,7 +111,7 @@ onMounted(() => { loadData() })
 .page-header { flex-shrink: 0; padding: 16px 20px 0 20px; margin-bottom: 16px; background-color: $bg-page; }
 .page-body { flex: 1; display: flex; flex-direction: column; min-height: 0; overflow: hidden; background-color: $bg-page; }
 .table-query { flex-shrink: 0; display: flex; align-items: center; justify-content: space-between; padding: 16px 20px; gap: 12px; .table-query-left { display: flex; align-items: center; gap: 12px; } }
-.table-body { flex: 1; min-height: 0; overflow-y: auto; padding: 0 20px; :deep(.el-table) { height: 100%; th.el-table__cell { padding: 12px 0; } .el-button + .el-button { margin-left: 8px; } } .schedule-code { font-family: monospace; font-size: 12px; background-color: $bg-card; padding: 2px 6px; border-radius: 4px; } }
+.table-body { flex: 1; min-height: 0; overflow-y: auto; padding: 0 20px; :deep(.el-table) { height: 100%; th.el-table__cell { padding: 12px 0; } .el-button + .el-button { margin-left: 8px; } } .schedule-code { font-family: monospace; font-size: 12px; background-color: var(--el-fill-color-light); padding: 2px 6px; border-radius: 4px; } }
 .table-footer { flex-shrink: 0; display: flex; align-items: center; justify-content: space-between; padding: 16px 20px; }
 .dialog-content { strong { color: $color-primary; } }
 .delete-tags { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
