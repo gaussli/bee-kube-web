@@ -2,8 +2,11 @@
   <div class="namespace-table">
     <!-- 提示信息和页面标题 -->
     <div class="page-header">
-      <BeeAlert type="info" label="命名空间用于在 Kubernetes 集群中划分多个虚拟集群，实现资源隔离。" />
-      <BeePageTitle :icon="FolderOpened" title="命名空间管理" description="管理 Kubernetes 集群中的命名空间资源。" />
+      <BeePageTitle
+        :icon="FolderOpened"
+        title="命名空间管理"
+        description="命名空间（Namespace）是 Kubernetes 集群中用于资源隔离的虚拟集群，可以将集群划分为多个独立的工作空间，实现项目、团队或环境之间的资源隔离和管理。"
+      />
     </div>
 
     <!-- 页面内容 -->
@@ -31,38 +34,32 @@
       <div class="table-body">
         <el-table v-loading="loading" :data="tableData" height="100%" @selection-change="handleSelectionChange">
           <el-table-column type="selection" width="60" align="center" />
-          <el-table-column min-width="150">
+          <el-table-column min-width="180">
             <template #header>
-              <IconLabel :icon="FolderOpened" label="命名空间" />
+              <IconLabel :icon="FolderOpened" label="名称" />
             </template>
             <template #default="{ row }">
-              <el-link type="primary" @click="handleViewDetail(row)">{{ row.name }}</el-link>
+              <div class="namespace-cell">
+                <div class="namespace-name-row">
+                  <span class="namespace-name">{{ row.name }}</span>
+                  <el-icon class="copy-icon" @click="handleCopy(row.name)"><DocumentCopy /></el-icon>
+                </div>
+                <div class="namespace-desc">{{ row.description || '-' }}</div>
+              </div>
             </template>
           </el-table-column>
-          <el-table-column width="120">
+          <el-table-column width="130">
             <template #header>
               <IconLabel :icon="CircleCheck" label="状态" />
             </template>
             <template #default="{ row }">
-              <el-tag :type="getStatusType(row.status)" size="small">
-                {{ row.status }}
-              </el-tag>
-            </template>
-          </el-table-column>
-          <el-table-column width="120">
-            <template #header>
-              <IconLabel :icon="InfoFilled" label="阶段" />
-            </template>
-            <template #default="{ row }">
-              <span>{{ row.phase }}</span>
-            </template>
-          </el-table-column>
-          <el-table-column min-width="200">
-            <template #header>
-              <IconLabel :icon="Grid" label="集群" />
-            </template>
-            <template #default="{ row }">
-              <span>{{ row.clusterName || row.clusterId }}</span>
+              <div class="status-cell">
+                <div class="status-dot" :style="{ backgroundColor: getStatusColor(row.status) }"></div>
+                <div class="status-info">
+                  <div class="status-label">{{ getStatusLabel(row.status) }}</div>
+                  <div class="status-en">{{ row.status }}</div>
+                </div>
+              </div>
             </template>
           </el-table-column>
           <el-table-column width="180">
@@ -70,7 +67,7 @@
               <IconLabel :icon="Clock" label="创建时间" />
             </template>
             <template #default="{ row }">
-              <TimeCell :time="row.createAt" />
+              <span class="time-text">{{ formatTime(row.createAt) }}</span>
             </template>
           </el-table-column>
           <el-table-column width="200" fixed="right">
@@ -84,7 +81,10 @@
               <el-tooltip content="详情" placement="top">
                 <el-button circle :icon="View" size="default" @click="handleViewDetail(row)" />
               </el-tooltip>
-              <el-tooltip v-if="hasPermission('kubernetes:namespace:delete')" content="删除" placement="top">
+              <el-tooltip content="资源配额" placement="top">
+                <el-button circle :icon="Document" size="default" @click="handleResourceQuota(row)" />
+              </el-tooltip>
+              <el-tooltip v-if="hasPermission('kubernetes:namespace:delete') && row.deletable !== false" content="删除" placement="top">
                 <el-button circle :icon="Delete" size="default" @click="handleDelete(row)" />
               </el-tooltip>
             </template>
@@ -143,25 +143,24 @@
 import { onMounted, reactive, ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { ElMessage } from 'element-plus'
-import { FolderOpened, Refresh, Plus, CircleCheck, EditPen, Delete, View, Grid, Clock, InfoFilled } from '@element-plus/icons-vue'
+import { FolderOpened, Refresh, Plus, CircleCheck, EditPen, Delete, View, Clock, Document, DocumentCopy } from '@element-plus/icons-vue'
 import { type NamespaceQueryReq, type NamespaceResp } from '@/types'
 import { getNamespacePage, deleteNamespace, batchDeleteNamespace } from '@/api'
 import { useKubernetesStore } from '@/stores'
-import BeeAlert from '@/components/BeeAlert/index.vue'
 import BeeButton from '@/components/BeeButton/index.vue'
 import BeeDialog from '@/components/BeeDialog/index.vue'
 import BeeInputSearch from '@/components/BeeInputSearch/index.vue'
 import BeePageTitle from '@/components/BeePageTitle/index.vue'
 import BeeRadioSearch from '@/components/BeeRadioSearch/index.vue'
-import BeeSelect from '@/components/BeeSelect/index.vue'
 import BeeTag from '@/components/BeeTag/index.vue'
 import IconLabel from '@/components/IconLabel/index.vue'
-import TimeCell from '@/components/TimeCell/index.vue'
+import { useClipboard } from '@/composables/useClipboard'
 import { usePermission } from '@/composables/usePermission'
 
 defineOptions({ name: 'NamespaceManage' })
 
 const { hasPermission } = usePermission()
+const { copy } = useClipboard()
 const router = useRouter()
 const kubernetesStore = useKubernetesStore()
 const searchKey = ref('')
@@ -186,23 +185,30 @@ const pagination = reactive({
   total: 0
 })
 
-
-
 const statusOptions = [
   { label: '所有', value: undefined },
   { label: '活跃', value: 'Active' },
   { label: '终止中', value: 'Terminating' }
 ]
 
-function getStatusType(status: string) {
-  switch (status) {
-    case 'Active':
-      return 'success'
-    case 'Terminating':
-      return 'warning'
-    default:
-      return 'info'
-  }
+const namespaceStatusConfig = [
+  { value: 'Active', label: '活跃', color: 'rgb(103, 194, 58)' },
+  { value: 'Terminating', label: '终止中', color: 'rgb(230, 162, 60)' }
+]
+
+function getStatusColor(status: string) {
+  const config = namespaceStatusConfig.find(item => item.value === status)
+  return config?.color || 'rgb(144, 147, 153)'
+}
+
+function getStatusLabel(status: string) {
+  const config = namespaceStatusConfig.find(item => item.value === status)
+  return config?.label || status || '-'
+}
+
+function formatTime(time: string) {
+  if (!time) return '-'
+  return time.replace('T', ' ').slice(0, 19)
 }
 
 async function loadData() {
@@ -225,8 +231,6 @@ function handleSearch() {
   pagination.page = 1
   loadData()
 }
-
-
 
 function handleSelect(selectValue?: string | number) {
   queryForm.status = selectValue as string | undefined
@@ -259,6 +263,14 @@ function handleEdit(row: NamespaceResp) {
 
 function handleViewDetail(row: NamespaceResp) {
   router.push({ name: 'kubernetes:namespace:detail', query: { clusterId: row.clusterId, name: row.name } })
+}
+
+function handleCopy(text: string) {
+  copy(text)
+}
+
+function handleResourceQuota(row: NamespaceResp) {
+  router.push({ name: 'kubernetes:resourcequota:list', query: { clusterId: row.clusterId, namespace: row.name } })
 }
 
 function handleDelete(row: NamespaceResp) {
@@ -312,7 +324,7 @@ onMounted(() => {
 
 .page-header {
   flex-shrink: 0;
-  padding: 16px 20px 0 20px;
+  padding: 0 20px;
   margin-bottom: 16px;
   background-color: $bg-page;
 }
@@ -354,8 +366,86 @@ onMounted(() => {
       padding: 12px 0;
     }
 
+    td.el-table__cell {
+      padding: 16px 0;
+    }
+
+    .el-table__body tr {
+      height: 56px;
+    }
+
     .el-button + .el-button {
       margin-left: 8px;
+    }
+  }
+
+  .status-cell {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+
+    .status-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+
+    .status-info {
+      display: flex;
+      flex-direction: column;
+      gap: 1px;
+
+      .status-label {
+        font-size: 14px;
+        font-weight: 500;
+        color: $text-regular;
+        line-height: 1.2;
+      }
+
+      .status-en {
+        font-size: 12px;
+        color: $text-secondary;
+        line-height: 1.2;
+      }
+    }
+  }
+
+  .time-text {
+    font-family: monospace;
+    font-size: 12px;
+    color: $text-secondary;
+  }
+
+  .namespace-cell {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+
+    .namespace-name-row {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .namespace-name {
+      font-size: 14px;
+      font-weight: 500;
+      color: $text-regular;
+    }
+
+    .copy-icon {
+      font-size: 14px;
+      color: $color-primary;
+      cursor: pointer;
+    }
+
+    .namespace-desc {
+      font-size: 12px;
+      color: $text-secondary;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
   }
 }

@@ -11,7 +11,8 @@ const mockNamespaces: NamespaceResp[] = [
     phase: 'Active',
     createAt: '2024-01-15 10:30:25',
     labels: {},
-    annotations: {}
+    annotations: {},
+    deletable: false
   },
   {
     id: 'ns-002',
@@ -24,7 +25,8 @@ const mockNamespaces: NamespaceResp[] = [
     labels: {
       'kubernetes.io/metadata.name': 'kube-system'
     },
-    annotations: {}
+    annotations: {},
+    deletable: false
   },
   {
     id: 'ns-003',
@@ -35,86 +37,89 @@ const mockNamespaces: NamespaceResp[] = [
     phase: 'Active',
     createAt: '2024-01-15 10:30:35',
     labels: {},
-    annotations: {}
+    annotations: {},
+    deletable: false
   },
   {
     id: 'ns-004',
+    name: 'kube-node-lease',
+    clusterId: 'cls-001-prod',
+    clusterName: 'prod-cluster',
+    status: 'Active',
+    phase: 'Active',
+    createAt: '2024-01-15 10:30:40',
+    labels: {},
+    annotations: {},
+    deletable: false
+  },
+  {
+    id: 'ns-005',
     name: 'app-frontend',
     clusterId: 'cls-001-prod',
     clusterName: 'prod-cluster',
     status: 'Active',
     phase: 'Active',
     createAt: '2024-02-01 08:00:00',
+    description: '前端应用命名空间',
     labels: {
       'env': 'production',
       'app': 'frontend'
     },
-    annotations: {
-      'description': '前端应用命名空间'
-    }
+    annotations: {}
   },
   {
-    id: 'ns-005',
+    id: 'ns-006',
     name: 'app-backend',
     clusterId: 'cls-001-prod',
     clusterName: 'prod-cluster',
     status: 'Active',
     phase: 'Active',
     createAt: '2024-02-01 08:05:00',
+    description: '后端应用命名空间',
     labels: {
       'env': 'production',
       'app': 'backend'
     },
-    annotations: {
-      'description': '后端应用命名空间'
-    }
+    annotations: {}
   },
   {
-    id: 'ns-006',
+    id: 'ns-007',
     name: 'monitoring',
     clusterId: 'cls-001-prod',
     clusterName: 'prod-cluster',
     status: 'Active',
     phase: 'Active',
     createAt: '2024-02-10 14:20:00',
+    description: '监控组件命名空间',
     labels: {
       'env': 'production'
     },
     annotations: {}
   },
   {
-    id: 'ns-007',
-    name: 'default',
-    clusterId: 'cls-002-staging',
-    clusterName: 'staging-cluster',
-    status: 'Active',
-    phase: 'Active',
-    createAt: '2024-02-10 09:15:00',
+    id: 'ns-008',
+    name: 'logging',
+    clusterId: 'cls-001-prod',
+    clusterName: 'prod-cluster',
+    status: 'Terminating',
+    phase: 'Terminating',
+    createAt: '2024-02-15 09:00:00',
+    description: '日志收集命名空间',
     labels: {},
     annotations: {}
   },
   {
-    id: 'ns-008',
+    id: 'ns-009',
     name: 'staging-app',
     clusterId: 'cls-002-staging',
     clusterName: 'staging-cluster',
     status: 'Active',
     phase: 'Active',
     createAt: '2024-02-15 10:00:00',
+    description: '预发布环境命名空间',
     labels: {
       'env': 'staging'
     },
-    annotations: {}
-  },
-  {
-    id: 'ns-009',
-    name: 'default',
-    clusterId: 'cls-003-dev',
-    clusterName: 'dev-cluster',
-    status: 'Active',
-    phase: 'Active',
-    createAt: '2024-02-25 14:20:10',
-    labels: {},
     annotations: {}
   },
   {
@@ -122,9 +127,10 @@ const mockNamespaces: NamespaceResp[] = [
     name: 'dev-test',
     clusterId: 'cls-003-dev',
     clusterName: 'dev-cluster',
-    status: 'Terminating',
-    phase: 'Terminating',
+    status: 'Active',
+    phase: 'Active',
     createAt: '2024-03-01 09:00:00',
+    description: '开发测试环境',
     labels: {
       'env': 'development'
     },

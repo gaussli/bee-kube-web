@@ -7,9 +7,11 @@ export interface NamespaceResp {
   clusterName?: string
   status: string
   phase: string
+  description?: string
   labels?: Record<string, string>
   annotations?: Record<string, string>
   createAt: string
+  deletable?: boolean
 }
 
 export interface NamespaceQueryReq {
