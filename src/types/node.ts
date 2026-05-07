@@ -15,13 +15,17 @@ export interface NodeResp {
   memory: string
   pods: string
   createAt: string
+  allocatedCpu?: string
+  allocatedMemory?: string
   labels?: Record<string, string>
   annotations?: Record<string, string>
+  schedulable?: boolean
 }
 
 export interface NodeQueryReq {
   id?: string
   name?: string
+  ip?: string
   clusterId?: string
   status?: string
   page?: number

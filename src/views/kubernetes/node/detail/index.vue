@@ -260,7 +260,7 @@ onMounted(() => {
 .annotation-item {
   margin-bottom: 16px;
   padding: 12px;
-  background-color: $bg-card;
+  background-color: $bg-page;
   border-radius: 4px;
 
   .annotation-key {

@@ -1,9 +1,12 @@
 <template>
   <div class="node-table">
-    <!-- 提示信息和页面标题 -->
+    <!-- 页面标题 -->
     <div class="page-header">
-      <BeeAlert type="info" label="节点是 Kubernetes 集群中的工作机器，可以是虚拟机或物理机。" />
-      <BeePageTitle :icon="Box" title="节点管理" description="管理 Kubernetes 集群中的节点资源，查看节点状态、资源使用情况等。" />
+      <BeePageTitle
+        :icon="Box"
+        title="节点管理"
+        description="节点（Node）是 Kubernetes 集群中的工作机器，负责运行容器化应用（Pod）。通过节点管理可以查看集群中所有节点的运行状态、资源使用情况，并支持节点调度控制等运维操作。"
+      />
     </div>
 
     <!-- 页面内容 -->
@@ -11,7 +14,7 @@
       <!-- 查询表单 -->
       <div class="table-query">
         <div class="table-query-left">
-          <BeeInputSearch v-model="searchKey" placeholder="按名称搜索" @search="handleSearch" />
+          <BeeInputSearch v-model="searchKey" placeholder="按名称或IP搜索" @search="handleSearch" />
           <BeeRadioSearch v-model="queryForm.status" :options="statusOptions" @select="handleSelect" />
         </div>
         <div class="table-query-right">
@@ -26,22 +29,25 @@
       <div class="table-body">
         <el-table v-loading="loading" :data="tableData" height="100%" @selection-change="handleSelectionChange">
           <el-table-column type="selection" width="60" align="center" />
-          <el-table-column min-width="150">
+          <el-table-column min-width="180">
             <template #header>
-              <IconLabel :icon="Box" label="节点名称" />
+              <IconLabel :icon="Box" label="名称" />
             </template>
             <template #default="{ row }">
-              <el-link type="primary" @click="handleViewDetail(row)">{{ row.name }}</el-link>
+              <NodeCell :name="row.name" :ip="row.internalIp" />
             </template>
           </el-table-column>
-          <el-table-column width="120">
+          <el-table-column width="130">
             <template #header>
               <IconLabel :icon="CircleCheck" label="状态" />
             </template>
             <template #default="{ row }">
-              <el-tag :type="getStatusType(row.status)" size="small">
-                {{ row.status }}
-              </el-tag>
+              <div class="status-cell">
+                <StatusCell :status="row.status" :config="nodeStatusConfig" />
+                <el-tooltip v-if="row.schedulable === false" content="节点已被设置为不可调度，不会分配新的 Pod" placement="top">
+                  <el-icon class="unschedulable-icon"><WarnTriangleFilled /></el-icon>
+                </el-tooltip>
+              </div>
             </template>
           </el-table-column>
           <el-table-column min-width="150">
@@ -60,36 +66,37 @@
               <span class="version-text">{{ row.version }}</span>
             </template>
           </el-table-column>
-          <el-table-column min-width="150">
-            <template #header>
-              <IconLabel :icon="Link" label="内部 IP" />
-            </template>
-            <template #default="{ row }">
-              <TextCopyableCell :text="row.internalIp" />
-            </template>
-          </el-table-column>
-          <el-table-column width="100">
+          <el-table-column width="120">
             <template #header>
               <IconLabel :icon="Cpu" label="CPU" />
             </template>
             <template #default="{ row }">
-              <span class="resource-text">{{ row.cpu }}</span>
+              <div class="resource-cell">
+                <span class="resource-text">{{ row.cpu }}</span>
+                <el-progress :percentage="calcPercentage(row.cpu)" :stroke-width="4" :show-text="false" :color="getResourceColor(row.cpu)" />
+              </div>
             </template>
           </el-table-column>
-          <el-table-column width="100">
+          <el-table-column width="140">
             <template #header>
               <IconLabel :icon="Memo" label="内存" />
             </template>
             <template #default="{ row }">
-              <span class="resource-text">{{ row.memory }}</span>
+              <div class="resource-cell">
+                <span class="resource-text">{{ row.memory }}</span>
+                <el-progress :percentage="calcPercentage(row.memory)" :stroke-width="4" :show-text="false" :color="getResourceColor(row.memory)" />
+              </div>
             </template>
           </el-table-column>
-          <el-table-column width="100">
+          <el-table-column width="140">
             <template #header>
               <IconLabel :icon="Grid" label="Pods" />
             </template>
             <template #default="{ row }">
-              <span class="resource-text">{{ row.pods }}</span>
+              <div class="resource-cell">
+                <span class="resource-text">{{ row.pods }}</span>
+                <el-progress :percentage="calcPercentage(row.pods)" :stroke-width="4" :show-text="false" :color="getResourceColor(row.pods)" />
+              </div>
             </template>
           </el-table-column>
           <el-table-column width="180">
@@ -118,11 +125,11 @@
                   </template>
                   <template #dropdown>
                     <el-dropdown-menu>
-                      <el-dropdown-item @click="handleCordon(row, true)" v-if="row.status === 'Ready'">
-                        <el-icon><Lock /></el-icon> 设置为不可调度
+                      <el-dropdown-item @click="handleCordon(row, true)" v-if="row.schedulable !== false">
+                        <el-icon><Lock /></el-icon> 停止调度
                       </el-dropdown-item>
                       <el-dropdown-item @click="handleCordon(row, false)" v-else>
-                        <el-icon><Unlock /></el-icon> 设置为可调度
+                        <el-icon><Unlock /></el-icon> 允许调度
                       </el-dropdown-item>
                       <el-dropdown-item divided @click="handleDrain(row)">
                         <el-icon><Download /></el-icon> 驱逐 Pod
@@ -157,19 +164,18 @@
 import { onMounted, reactive, ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { ElMessage } from 'element-plus'
-import { Box, Refresh, CircleCheck, EditPen, MoreFilled, View, User, Monitor, Link, Cpu, Memo, Grid, Clock, Lock, Unlock, Download } from '@element-plus/icons-vue'
+import { Box, Refresh, CircleCheck, EditPen, MoreFilled, View, User, Monitor, Cpu, Memo, Grid, Clock, Lock, Unlock, Download, WarnTriangleFilled } from '@element-plus/icons-vue'
 import { type NodeQueryReq, type NodeResp } from '@/types'
 import { getNodePage, cordonNode, drainNode } from '@/api'
 import { useKubernetesStore } from '@/stores'
-import BeeAlert from '@/components/BeeAlert/index.vue'
 import BeeButton from '@/components/BeeButton/index.vue'
 import BeeInputSearch from '@/components/BeeInputSearch/index.vue'
 import BeePageTitle from '@/components/BeePageTitle/index.vue'
 import BeeRadioSearch from '@/components/BeeRadioSearch/index.vue'
-import BeeSelect from '@/components/BeeSelect/index.vue'
 import BeeTag from '@/components/BeeTag/index.vue'
 import IconLabel from '@/components/IconLabel/index.vue'
-import TextCopyableCell from '@/components/TextCopyableCell/index.vue'
+import NodeCell from '@/components/NodeCell/index.vue'
+import StatusCell from '@/components/StatusCell/index.vue'
 import TimeCell from '@/components/TimeCell/index.vue'
 import { usePermission } from '@/composables/usePermission'
 
@@ -198,23 +204,34 @@ const pagination = reactive({
   total: 0
 })
 
-
-
 const statusOptions = [
   { label: '所有', value: undefined },
   { label: '就绪', value: 'Ready' },
-  { label: '未就绪', value: 'NotReady' }
+  { label: '未就绪', value: 'NotReady' },
+  { label: '未知', value: 'Unknown' }
 ]
 
-function getStatusType(status: string) {
-  switch (status) {
-    case 'Ready':
-      return 'success'
-    case 'NotReady':
-      return 'danger'
-    default:
-      return 'info'
-  }
+const nodeStatusConfig = [
+  { value: 'Ready', label: '就绪', color: 'rgb(103, 194, 58)' },
+  { value: 'NotReady', label: '未就绪', color: 'rgb(245, 108, 108)' },
+  { value: 'Unknown', label: '未知', color: 'rgb(144, 147, 153)' }
+]
+
+function calcPercentage(value: string) {
+  if (!value || typeof value !== 'string') return 0
+  const parts = value.split('/')
+  if (parts.length !== 2) return 0
+  const used = parseFloat(parts[0])
+  const total = parseFloat(parts[1])
+  if (isNaN(used) || isNaN(total) || total === 0) return 0
+  return Math.min(Math.round((used / total) * 100), 100)
+}
+
+function getResourceColor(value: string) {
+  const percent = calcPercentage(value)
+  if (percent >= 90) return '#f56c6c'
+  if (percent >= 70) return '#e6a23c'
+  return '#67c23a'
 }
 
 async function loadData() {
@@ -233,12 +250,20 @@ async function loadData() {
 }
 
 function handleSearch() {
-  queryForm.name = searchKey.value
+  const value = searchKey.value.trim()
+  if (!value) {
+    queryForm.name = undefined
+    queryForm.ip = undefined
+  } else if (/^\d+\.\d+\.\d+\.\d+$/.test(value)) {
+    queryForm.name = undefined
+    queryForm.ip = value
+  } else {
+    queryForm.name = value
+    queryForm.ip = undefined
+  }
   pagination.page = 1
   loadData()
 }
-
-
 
 function handleSelect(selectValue?: string | number) {
   queryForm.status = selectValue as string | undefined
@@ -248,6 +273,7 @@ function handleSelect(selectValue?: string | number) {
 
 function handleReset() {
   queryForm.name = undefined
+  queryForm.ip = undefined
   queryForm.status = undefined
   queryForm.page = 1
   queryForm.pageSize = 10
@@ -303,7 +329,7 @@ onMounted(() => {
 
 .page-header {
   flex-shrink: 0;
-  padding: 16px 20px 0 20px;
+  padding: 0 20px;
   margin-bottom: 16px;
   background-color: $bg-page;
 }
@@ -336,13 +362,17 @@ onMounted(() => {
   flex: 1;
   min-height: 0;
   overflow-y: auto;
-  padding: 0 20px;
+  // padding: 0 20px;
 
   :deep(.el-table) {
     height: 100%;
 
     th.el-table__cell {
       padding: 12px 0;
+    }
+
+    .bee-tag + .bee-tag {
+      margin-left: 8px;
     }
 
     .el-button + .el-button,
@@ -356,6 +386,28 @@ onMounted(() => {
     font-family: monospace;
     font-size: 12px;
     color: $text-secondary;
+  }
+
+  .status-cell {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+
+    .unschedulable-icon {
+      color: $color-warning;
+      cursor: pointer;
+      font-size: 14px;
+    }
+  }
+
+  .resource-cell {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+
+    .el-progress {
+      width: 100%;
+    }
   }
 }
 
