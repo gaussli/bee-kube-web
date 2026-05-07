@@ -1,9 +1,8 @@
 <template>
   <div class="deployment-table">
-    <!-- 提示信息和页面标题 -->
+    <!-- 页面标题 -->
     <div class="page-header">
-      <BeeAlert type="info" label="Deployment 用于管理无状态应用，支持滚动更新和回滚。" />
-      <BeePageTitle :icon="Document" title="无状态应用" description="管理 Kubernetes Deployment 资源，实现应用的部署、扩缩容和更新。" />
+      <BeePageTitle :icon="Document" title="无状态应用" description="无状态应用（Deployment）是 Kubernetes 中用于管理无状态工作负载的控制器，支持应用的部署、扩缩容、滚动更新和回滚等操作。" />
     </div>
 
     <!-- 页面内容 -->
@@ -13,6 +12,7 @@
         <div class="table-query-left">
           <BeeInputSearch v-model="searchKey" placeholder="按名称搜索" @search="handleSearch" />
           <BeeSelect v-model="queryForm.namespace" placeholder="选择命名空间" :options="namespaceOptions" @change="handleNamespaceChange" />
+          <BeeRadioSearch v-model="queryForm.status" :options="statusOptions" @select="handleStatusSelect" />
         </div>
         <div class="table-query-right">
           <BeeButton @click="handleReset">
@@ -31,12 +31,18 @@
       <div class="table-body">
         <el-table v-loading="loading" :data="tableData" height="100%" @selection-change="handleSelectionChange">
           <el-table-column type="selection" width="60" align="center" />
-          <el-table-column min-width="150">
+          <el-table-column min-width="200">
             <template #header>
               <IconLabel :icon="Document" label="名称" />
             </template>
             <template #default="{ row }">
-              <el-link type="primary" @click="handleViewDetail(row)">{{ row.name }}</el-link>
+              <div class="name-cell">
+                <div class="name-row">
+                  <span class="name-text">{{ row.name }}</span>
+                  <el-icon class="copy-icon" @click="handleCopy(row.name)"><DocumentCopy /></el-icon>
+                </div>
+                <div class="desc-text">{{ row.annotations?.description || '-' }}</div>
+              </div>
             </template>
           </el-table-column>
           <el-table-column min-width="120">
@@ -47,12 +53,18 @@
               <span>{{ row.namespace }}</span>
             </template>
           </el-table-column>
-          <el-table-column min-width="150">
+          <el-table-column width="130">
             <template #header>
-              <IconLabel :icon="Grid" label="集群" />
+              <IconLabel :icon="CircleCheck" label="状态" />
             </template>
             <template #default="{ row }">
-              <span>{{ row.clusterName || row.clusterId }}</span>
+              <div class="status-cell">
+                <div class="status-dot" :style="{ backgroundColor: getStatusColor(row.status) }"></div>
+                <div class="status-info">
+                  <div class="status-label">{{ getStatusLabel(row.status) }}</div>
+                  <div class="status-en">{{ row.status }}</div>
+                </div>
+              </div>
             </template>
           </el-table-column>
           <el-table-column width="120">
@@ -63,23 +75,15 @@
               <span :class="getReplicasClass(row)">{{ row.readyReplicas }}/{{ row.replicas }}</span>
             </template>
           </el-table-column>
-          <el-table-column width="120">
-            <template #header>
-              <IconLabel :icon="InfoFilled" label="策略" />
-            </template>
-            <template #default="{ row }">
-              <span>{{ row.strategy }}</span>
-            </template>
-          </el-table-column>
           <el-table-column width="180">
             <template #header>
               <IconLabel :icon="Clock" label="创建时间" />
             </template>
             <template #default="{ row }">
-              <TimeCell :time="row.createAt" />
+              <span class="time-text">{{ formatTime(row.createAt) }}</span>
             </template>
           </el-table-column>
-          <el-table-column width="200" fixed="right">
+          <el-table-column width="280" fixed="right">
             <template #header>
               <IconLabel :icon="EditPen" label="操作" />
             </template>
@@ -90,8 +94,32 @@
               <el-tooltip content="详情" placement="top">
                 <el-button circle :icon="View" size="default" @click="handleViewDetail(row)" />
               </el-tooltip>
-              <el-tooltip v-if="hasPermission('kubernetes:workload:deployment:delete')" content="删除" placement="top">
-                <el-button circle :icon="Delete" size="default" @click="handleDelete(row)" />
+
+              <el-tooltip content="更多" placement="top">
+                <el-dropdown trigger="click">
+                  <template #default>
+                    <el-button circle :icon="MoreFilled" size="default" />
+                  </template>
+                  <template #dropdown>
+                    <el-dropdown-menu>
+                      <el-dropdown-item @click="handleEditYaml(row)">
+                        <el-icon><DocumentChecked /></el-icon> 编辑 YAML
+                      </el-dropdown-item>
+                      <el-dropdown-item @click="handleScale(row)">
+                        <el-icon><Rank /></el-icon> 扩缩容
+                      </el-dropdown-item>
+                      <el-dropdown-item @click="handleRestart(row)">
+                        <el-icon><RefreshLeft /></el-icon> 重启
+                      </el-dropdown-item>
+                      <el-dropdown-item @click="handleRollback(row)">
+                        <el-icon><Refresh /></el-icon> 回滚
+                      </el-dropdown-item>
+                      <el-dropdown-item v-if="hasPermission('kubernetes:workload:deployment:delete') && row.deletable !== false" divided @click="handleDelete(row)">
+                        <el-icon><Delete /></el-icon> 删除
+                      </el-dropdown-item>
+                    </el-dropdown-menu>
+                  </template>
+                </el-dropdown>
               </el-tooltip>
             </template>
           </el-table-column>
@@ -147,24 +175,25 @@
 import { onMounted, reactive, ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { ElMessage } from 'element-plus'
-import { Document, Refresh, Plus, EditPen, Delete, View, FolderOpened, Grid, Cpu, Clock, InfoFilled } from '@element-plus/icons-vue'
+import { Document, Refresh, Plus, EditPen, Delete, View, FolderOpened, Cpu, Clock, CircleCheck, DocumentCopy, DocumentChecked, Rank, RefreshLeft, MoreFilled } from '@element-plus/icons-vue'
 import { type DeploymentQueryReq, type DeploymentResp } from '@/types'
 import { getDeploymentPage, deleteDeployment, batchDeleteDeployment } from '@/api'
 import { useKubernetesStore } from '@/stores'
-import BeeAlert from '@/components/BeeAlert/index.vue'
 import BeeButton from '@/components/BeeButton/index.vue'
 import BeeDialog from '@/components/BeeDialog/index.vue'
 import BeeInputSearch from '@/components/BeeInputSearch/index.vue'
 import BeePageTitle from '@/components/BeePageTitle/index.vue'
+import BeeRadioSearch from '@/components/BeeRadioSearch/index.vue'
 import BeeSelect from '@/components/BeeSelect/index.vue'
 import BeeTag from '@/components/BeeTag/index.vue'
 import IconLabel from '@/components/IconLabel/index.vue'
-import TimeCell from '@/components/TimeCell/index.vue'
+import { useClipboard } from '@/composables/useClipboard'
 import { usePermission } from '@/composables/usePermission'
 
 defineOptions({ name: 'DeploymentManage' })
 
 const { hasPermission } = usePermission()
+const { copy } = useClipboard()
 const router = useRouter()
 const kubernetesStore = useKubernetesStore()
 const searchKey = ref('')
@@ -180,6 +209,7 @@ const queryForm = reactive<DeploymentQueryReq>({
   name: undefined,
   clusterId: kubernetesStore.activeClusterId || undefined,
   namespace: undefined,
+  status: undefined,
   page: 1,
   pageSize: 10
 })
@@ -189,15 +219,52 @@ const pagination = reactive({
   total: 0
 })
 
-
-
 const namespaceOptions = ref([
   { label: '全部命名空间', value: undefined },
-  { label: 'default', value: 'default' }
+  { label: 'default', value: 'default' },
+  { label: 'app-frontend', value: 'app-frontend' },
+  { label: 'app-backend', value: 'app-backend' },
+  { label: 'kube-system', value: 'kube-system' }
 ])
+
+const statusOptions = [
+  { label: '全部', value: undefined },
+  { label: 'Running', value: 'Running' },
+  { label: 'Warning', value: 'Warning' },
+  { label: 'Stopped', value: 'Stopped' }
+]
+
+const statusColorMap: Record<string, string> = {
+  Running: 'rgb(103, 194, 58)',
+  Warning: 'rgb(230, 162, 60)',
+  Stopped: 'rgb(144, 147, 153)',
+  Terminating: 'rgb(245, 108, 108)'
+}
+
+const deploymentStatusConfig = [
+  { value: 'Running', label: '运行中', color: 'rgb(103, 194, 58)' },
+  { value: 'Warning', label: '异常', color: 'rgb(230, 162, 60)' },
+  { value: 'Stopped', label: '已停止', color: 'rgb(144, 147, 153)' },
+  { value: 'Terminating', label: '终止中', color: 'rgb(245, 108, 108)' }
+]
+
+function getStatusColor(status: string) {
+  const config = deploymentStatusConfig.find(item => item.value === status)
+  return config?.color || 'rgb(144, 147, 153)'
+}
+
+function getStatusLabel(status: string) {
+  const config = deploymentStatusConfig.find(item => item.value === status)
+  return config?.label || status || '-'
+}
 
 function getReplicasClass(row: DeploymentResp) {
   return row.readyReplicas === row.replicas ? 'replicas-ready' : 'replicas-pending'
+}
+
+function formatTime(time: string) {
+  if (!time) return '-'
+  return time.replace('T', ' ').slice(0, 19)
 }
 
 async function loadData() {
@@ -216,15 +283,19 @@ async function loadData() {
 }
 
 function handleSearch() {
-  queryForm.name = searchKey.value
+  queryForm.name = searchKey.value || undefined
   pagination.page = 1
   loadData()
 }
 
-
-
 function handleNamespaceChange(value: string) {
-  queryForm.namespace = value
+  queryForm.namespace = value || undefined
+  pagination.page = 1
+  loadData()
+}
+
+function handleStatusSelect(selectValue?: string | number) {
+  queryForm.status = selectValue as string | undefined
   pagination.page = 1
   loadData()
 }
@@ -254,6 +325,26 @@ function handleEdit(row: DeploymentResp) {
 
 function handleViewDetail(row: DeploymentResp) {
   router.push({ name: 'kubernetes:workload:deployment:detail', query: { clusterId: row.clusterId, namespace: row.namespace, name: row.name } })
+}
+
+function handleEditYaml(row: DeploymentResp) {
+  ElMessage.info(`编辑 YAML: ${row.name}`)
+}
+
+function handleScale(row: DeploymentResp) {
+  ElMessage.info(`扩缩容: ${row.name}`)
+}
+
+function handleRestart(row: DeploymentResp) {
+  ElMessage.info(`重启: ${row.name}`)
+}
+
+function handleRollback(row: DeploymentResp) {
+  ElMessage.info(`回滚: ${row.name}`)
+}
+
+function handleCopy(text: string) {
+  copy(text)
 }
 
 function handleDelete(row: DeploymentResp) {
@@ -308,7 +399,7 @@ onMounted(() => {
 
 .page-header {
   flex-shrink: 0;
-  padding: 16px 20px 0 20px;
+  padding: 0 20px;
   margin-bottom: 16px;
   background-color: $bg-page;
 }
@@ -350,6 +441,14 @@ onMounted(() => {
       padding: 12px 0;
     }
 
+    td.el-table__cell {
+      padding: 16px 0;
+    }
+
+    .el-table__body tr {
+      height: 56px;
+    }
+
     .el-button + .el-button {
       margin-left: 8px;
     }
@@ -361,6 +460,76 @@ onMounted(() => {
 
   .replicas-pending {
     color: $color-warning;
+  }
+
+  .status-cell {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+
+    .status-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+
+    .status-info {
+      display: flex;
+      flex-direction: column;
+      gap: 1px;
+
+      .status-label {
+        font-size: 14px;
+        font-weight: 500;
+        color: $text-regular;
+        line-height: 1.2;
+      }
+
+      .status-en {
+        font-size: 12px;
+        color: $text-secondary;
+        line-height: 1.2;
+      }
+    }
+  }
+
+  .name-cell {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+
+    .name-row {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .name-text {
+      font-size: 14px;
+      font-weight: 500;
+      color: $text-regular;
+    }
+
+    .copy-icon {
+      font-size: 14px;
+      color: $color-primary;
+      cursor: pointer;
+    }
+
+    .desc-text {
+      font-size: 12px;
+      color: $text-secondary;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+  }
+
+  .time-text {
+    font-family: monospace;
+    font-size: 12px;
+    color: $text-secondary;
   }
 }
 

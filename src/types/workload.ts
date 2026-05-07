@@ -7,15 +7,17 @@ export interface DeploymentResp {
   namespace: string
   clusterId: string
   clusterName?: string
+  status: string
   replicas: number
-  availableReplicas: number
   readyReplicas: number
+  availableReplicas: number
   strategy: string
-  selector: Record<string, string>
+  images: string[]
   labels?: Record<string, string>
   annotations?: Record<string, string>
   createAt: string
   updateAt?: string
+  deletable?: boolean
 }
 
 export interface DeploymentQueryReq {
@@ -23,6 +25,7 @@ export interface DeploymentQueryReq {
   name?: string
   namespace?: string
   clusterId?: string
+  status?: string
   page?: number
   pageSize?: number
 }
