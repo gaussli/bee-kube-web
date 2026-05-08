@@ -1,13 +1,12 @@
 <template>
   <div class="bee-alert" :class="[`bee-alert--${type}`, { 'is-show-icon': showIcon }]">
-    <BeeIcon v-if="showIcon" :icon="iconComponent" :size="14" class="bee-alert__icon" />
+    <BeeIcon v-if="showIcon" :name="iconName" :size="14" class="bee-alert__icon" />
     <span v-if="label" class="bee-alert__label">{{ label }}</span>
   </div>
 </template>
 
 <script setup lang="ts">
 import { computed } from 'vue'
-import { InfoFilled, CircleCheckFilled, WarningFilled, CircleCloseFilled } from '@element-plus/icons-vue'
 import BeeIcon from '@/components/BeeIcon/index.vue'
 
 defineOptions({ name: 'BeeAlert' })
@@ -25,12 +24,12 @@ const props = withDefaults(
   }
 )
 
-const iconComponent = computed(() => {
+const iconName = computed(() => {
   const iconMap = {
-    info: InfoFilled,
-    success: CircleCheckFilled,
-    warning: WarningFilled,
-    error: CircleCloseFilled
+    info: 'info',
+    success: 'success',
+    warning: 'warning',
+    error: 'error'
   }
   return iconMap[props.type]
 })

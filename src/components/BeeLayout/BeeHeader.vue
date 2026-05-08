@@ -1,9 +1,20 @@
 <template>
-  <header class="header">
+  <header class="bee-header">
     <div class="header-left">
       <BeeRadioSearch :default="currentTab" :options="tabOptions" @select="handleTabChange" />
     </div>
+
+    <div class="header-title">
+      <img src="@/assets/bee.svg" alt="logo" />
+      <span>Bee Kube</span>
+    </div>
+
     <div class="header-right">
+      <el-tooltip content="帮助说明" placement="bottom">
+        <el-icon class="header-icon">
+          <QuestionFilled />
+        </el-icon>
+      </el-tooltip>
       <el-tooltip :content="isFullscreen ? '退出全屏' : '全屏'" placement="bottom">
         <el-icon class="header-icon" @click="toggleFullscreen">
           <FullScreen v-if="!isFullscreen" />
@@ -54,7 +65,7 @@
 import { computed, ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { ElMessage, ElMessageBox } from 'element-plus'
-import { ArrowDown, Close, FullScreen } from '@element-plus/icons-vue'
+import { ArrowDown, Close, FullScreen, QuestionFilled } from '@element-plus/icons-vue'
 import { Lock, Setting, SwitchButton, User } from '@element-plus/icons-vue'
 import { logout } from '@/api'
 import { useAppStore, useKubernetesStore, useUserStore } from '@/stores'
@@ -62,7 +73,7 @@ import BeeDropdown from '@/components/BeeDropdown/index.vue'
 import BeeRadioSearch from '@/components/BeeRadioSearch/index.vue'
 import type { TabType } from '@/stores/app'
 
-defineOptions({ name: 'LayoutHeader' })
+defineOptions({ name: 'BeeHeader' })
 
 const router = useRouter()
 const appStore = useAppStore()
@@ -190,10 +201,12 @@ function handlePasswordSubmit() {
 </script>
 
 <style lang="scss" scoped>
-.header {
+.bee-header {
+  position: relative;
   display: flex;
   align-items: center;
   justify-content: space-between;
+  width: 100%;
   height: 60px;
   padding: 0 $spacing-md;
   background: none;
@@ -202,10 +215,23 @@ function handlePasswordSubmit() {
     display: flex;
     align-items: center;
     gap: $spacing-md;
+  }
 
-    .toggle-icon {
-      font-size: 20px;
-      cursor: pointer;
+  .header-title {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    align-items: center;
+    gap: $spacing-sm;
+
+    img {
+      width: 32px;
+      height: 32px;
+    }
+
+    span {
+      font-weight: bold;
     }
   }
 

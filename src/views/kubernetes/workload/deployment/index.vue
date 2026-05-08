@@ -83,7 +83,7 @@
               <span class="time-text">{{ formatTime(row.createAt) }}</span>
             </template>
           </el-table-column>
-          <el-table-column width="280" fixed="right">
+          <el-table-column width="150" fixed="right">
             <template #header>
               <IconLabel :icon="EditPen" label="操作" />
             </template>
@@ -102,9 +102,6 @@
                   </template>
                   <template #dropdown>
                     <el-dropdown-menu>
-                      <el-dropdown-item @click="handleEditYaml(row)">
-                        <el-icon><DocumentChecked /></el-icon> 编辑 YAML
-                      </el-dropdown-item>
                       <el-dropdown-item @click="handleScale(row)">
                         <el-icon><Rank /></el-icon> 扩缩容
                       </el-dropdown-item>
@@ -175,7 +172,7 @@
 import { onMounted, reactive, ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { ElMessage } from 'element-plus'
-import { Document, Refresh, Plus, EditPen, Delete, View, FolderOpened, Cpu, Clock, CircleCheck, DocumentCopy, DocumentChecked, Rank, RefreshLeft, MoreFilled } from '@element-plus/icons-vue'
+import { Document, Refresh, Plus, EditPen, Delete, View, FolderOpened, Cpu, Clock, CircleCheck, DocumentCopy, Rank, RefreshLeft, MoreFilled } from '@element-plus/icons-vue'
 import { type DeploymentQueryReq, type DeploymentResp } from '@/types'
 import { getDeploymentPage, deleteDeployment, batchDeleteDeployment } from '@/api'
 import { useKubernetesStore } from '@/stores'
@@ -327,10 +324,6 @@ function handleViewDetail(row: DeploymentResp) {
   router.push({ name: 'kubernetes:workload:deployment:detail', query: { clusterId: row.clusterId, namespace: row.namespace, name: row.name } })
 }
 
-function handleEditYaml(row: DeploymentResp) {
-  ElMessage.info(`编辑 YAML: ${row.name}`)
-}
-
 function handleScale(row: DeploymentResp) {
   ElMessage.info(`扩缩容: ${row.name}`)
 }
@@ -449,7 +442,8 @@ onMounted(() => {
       height: 56px;
     }
 
-    .el-button + .el-button {
+    .el-button + .el-button,
+    .el-button + .el-dropdown {
       margin-left: 8px;
     }
   }

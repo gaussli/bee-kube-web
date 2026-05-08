@@ -1,15 +1,14 @@
 <template>
-  <el-icon class="bee-icon" :style="iconStyle">
-    <component :is="icon" />
-  </el-icon>
+  <svg class="bee-icon" :style="iconStyle" aria-hidden="true">
+    <use :xlink:href="iconName" />
+  </svg>
 </template>
 
 <script setup lang="ts">
 import { computed } from 'vue'
-import type { Component } from 'vue'
 
 interface Props {
-  icon: Component
+  name: string
   size?: number | string
   color?: string
 }
@@ -21,13 +20,14 @@ const props = withDefaults(defineProps<Props>(), {
   color: ''
 })
 
+const iconName = computed(() => `#icon-${props.name}`)
 const iconStyle = computed(() => {
   const style: Record<string, string> = {}
   if (props.size) {
     style['--bee-icon-size'] = typeof props.size === 'number' ? `${props.size}px` : props.size
   }
   if (props.color) {
-    style['--bee-icon-color'] = props.color
+    style.color = props.color
   }
   return style
 })
@@ -36,15 +36,10 @@ const iconStyle = computed(() => {
 <style lang="scss" scoped>
 .bee-icon {
   --bee-icon-size: 24px;
-  --bee-icon-color: inherit;
 
   width: var(--bee-icon-size);
   height: var(--bee-icon-size);
-  color: var(--bee-icon-color);
-
-  :deep(svg) {
-    width: 100%;
-    height: 100%;
-  }
+  color: inherit;
+  fill: currentColor;
 }
 </style>

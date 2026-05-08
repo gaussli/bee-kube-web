@@ -65,7 +65,7 @@
             <AuditCell :user="row.updateBy" :time="row.updateAt" />
           </template>
         </el-table-column>
-        <el-table-column width="200" fixed="right">
+        <el-table-column width="150" fixed="right">
           <template #header>
             <IconLabel :icon="EditPen" label="操作" />
           </template>

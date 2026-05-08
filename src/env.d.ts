@@ -6,6 +6,8 @@ declare module '*.vue' {
   export default component
 }
 
+declare module 'virtual:svg-icons-register' {}
+
 interface ImportMetaEnv {
   readonly VITE_API_BASE_URL: string
   readonly VITE_STORAGE_PREFIX: string

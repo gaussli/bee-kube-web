@@ -1,10 +1,5 @@
 <template>
-  <aside class="aside" :style="{ width: appStore.sidebarOpened ? '220px' : '64px' }">
-    <div class="logo">
-      <img src="@/assets/vue.svg" alt="logo" />
-      <span v-show="appStore.sidebarOpened">Bee Kube</span>
-    </div>
-
+  <aside class="bee-aside" :style="{ width: appStore.sidebarOpened ? '220px' : '64px' }">
     <el-menu :default-active="route.meta.activeCode ?? route.name" :collapse="!appStore.sidebarOpened" :collapse-transition="false" @select="handleSelect" class="aside-menu">
       <template v-for="item in currentMenuList" :key="item.id">
         <el-menu-item v-if="!item.children?.length" :index="item.code">
@@ -67,7 +62,7 @@ import {
 import { useAppStore, useUserStore, useKubernetesStore } from '@/stores'
 import type { Component } from 'vue'
 
-defineOptions({ name: 'LayoutAside' })
+defineOptions({ name: 'BeeAside' })
 
 const appStore = useAppStore()
 const userStore = useUserStore()
@@ -131,57 +126,12 @@ function handleSelect(index: string) {
 </script>
 
 <style lang="scss" scoped>
-.aside {
+.bee-aside {
   display: flex;
   flex-direction: column;
-  height: 100vh;
+  height: 100%;
   background: none;
   transition: width 0.3s;
-
-  .logo {
-    display: flex;
-    align-items: center;
-    gap: $spacing-sm;
-    height: 60px;
-    padding: 0 $spacing-md;
-    background: none;
-    font-weight: bold;
-
-    img {
-      width: 32px;
-      height: 32px;
-    }
-  }
-
-  .cluster-selector {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    padding: 12px 16px;
-    background: rgba(255, 255, 255, 0.05);
-    border-radius: 8px;
-    margin: 0 8px 8px;
-
-    .cluster-select {
-      flex: 1;
-
-      :deep(.el-select__wrapper) {
-        background: rgba(255, 255, 255, 0.1);
-      }
-    }
-
-    .cluster-actions {
-      display: flex;
-      gap: 4px;
-    }
-  }
-
-  .cluster-option {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    width: 100%;
-  }
 
   .aside-menu {
     flex: 1;

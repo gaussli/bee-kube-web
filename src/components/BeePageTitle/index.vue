@@ -2,7 +2,7 @@
   <div class="bee-page-title">
     <div class="title-content">
       <div class="title-icon">
-        <BeeIcon :icon="icon" :size="40" />
+        <BeeIcon :name="icon" :size="40" />
       </div>
       <div class="title-text-wrapper">
         <span class="title-text">{{ title }}</span>
@@ -14,10 +14,9 @@
 
 <script setup lang="ts">
 import BeeIcon from '@/components/BeeIcon/index.vue'
-import type { Component } from 'vue'
 
 interface Props {
-  icon: Component
+  icon: string
   title: string
   description: string
 }
