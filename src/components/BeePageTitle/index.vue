@@ -3,7 +3,7 @@
     <div class="title-icon">
       <BeeIcon :name="icon" :size="38" />
     </div>
-    <div class="title-text-wrapper">
+    <div class="title-content">
       <span class="title-text">{{ title }}</span>
       <span class="title-desc">{{ description }}</span>
     </div>
@@ -40,31 +40,33 @@ defineProps<Props>()
     align-items: center;
     width: var(--height);
     height: var(--height);
+    border-radius: calc(var(--height) / 2) 0 calc(var(--height) / 2) calc(var(--height) / 2);
     color: $color-primary;
     background: $bg-cover;
-    border-radius: calc(var(--height) / 2) 0 calc(var(--height) / 2) calc(var(--height) / 2);
   }
 
-  .title-text-wrapper {
-    height: var(--height);
-    flex: 1;
+  .title-content {
     display: flex;
     flex-direction: column;
     justify-content: center;
+    flex: 1;
     gap: 4px;
-  }
+    height: var(--height);
 
-  .title-text {
-    font-size: 24px;
-    font-weight: 600;
-    color: $text-primary;
-    line-height: 32px;
-  }
+    .title-text {
+      margin: 0;
+      color: $text-primary;
+      font-size: 24px;
+      font-weight: 600;
+      line-height: 32px;
+    }
 
-  .title-desc {
-    font-size: 14px;
-    color: $text-secondary;
-    line-height: 22px;
+    .title-desc {
+      margin: 0;
+      color: $text-secondary;
+      font-size: 14px;
+      line-height: 22px;
+    }
   }
 }
 </style>
