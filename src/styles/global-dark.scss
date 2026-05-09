@@ -7,15 +7,6 @@ body {
   background-color: $bg-color;
 }
 
-.aside {
-  background-color: $bg-page !important;
-  margin-right: 16px;
-}
-.aside-menu {
-  background-color: $bg-page !important;
-  padding: 0 12px;
-}
-
 .bee-radio-search {
   --status-search-bg-color: #{$bg-color};
   --status-search-slider-bg-color: #{$bg-selected};

@@ -10,11 +10,12 @@
   --el-menu-active-color: #{$text-regular};
   --el-menu-sub-item-height: 46px;
   --el-menu-item-height: 46px;
-  background-color: $bg-page;
+  background-color: transparent;
 
   .el-menu-item,
   .el-sub-menu__title {
-    border-radius: 12px;
+    border-radius: $radius-full;
+    margin-top: $spacing-xs;
 
     &:hover {
       background-color: $bg-hover;

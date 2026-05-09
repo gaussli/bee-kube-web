@@ -1,5 +1,5 @@
 <template>
-  <div class="bee-search" :class="`bee-search--${size}`">
+  <div class="bee-input-search" :class="`bee-input-search--${size}`">
     <div class="search-input-wrap">
       <input ref="inputRef" v-model="inputValue" :placeholder="placeholder" :name="name" class="search-input" @keyup.enter="handleSearch" />
     </div>
@@ -26,7 +26,7 @@ const props = withDefaults(
     modelValue: '',
     placeholder: '搜索',
     size: 'default',
-    name: 'bee-search'
+    name: 'bee-input-search'
   }
 )
 
@@ -61,7 +61,7 @@ defineExpose({
 </script>
 
 <style lang="scss" scoped>
-.bee-search {
+.bee-input-search {
   display: inline-flex;
   align-items: center;
   background-color: $bg-color;

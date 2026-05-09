@@ -1,7 +1,7 @@
 <template>
   <section class="bee-home">
     <BeeHeader />
-    <section class="body">
+    <section class="bee-body">
       <BeeAside />
       <BeeMain />
     </section>
@@ -23,10 +23,13 @@ defineOptions({ name: 'Home' })
   height: 100vh;
   overflow: hidden;
 
-  .body {
+  .bee-body {
     flex: 1;
     display: flex;
+    flex-direction: row;
+    gap: $spacing-md;
     min-height: 0;
+    padding: 0 $spacing-md $spacing-md $spacing-md;
     overflow: hidden;
   }
 }

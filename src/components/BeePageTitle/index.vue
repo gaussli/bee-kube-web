@@ -1,13 +1,11 @@
 <template>
   <div class="bee-page-title">
-    <div class="title-content">
-      <div class="title-icon">
-        <BeeIcon :name="icon" :size="40" />
-      </div>
-      <div class="title-text-wrapper">
-        <span class="title-text">{{ title }}</span>
-        <span class="title-desc">{{ description }}</span>
-      </div>
+    <div class="title-icon">
+      <BeeIcon :name="icon" :size="38" />
+    </div>
+    <div class="title-text-wrapper">
+      <span class="title-text">{{ title }}</span>
+      <span class="title-desc">{{ description }}</span>
     </div>
   </div>
 </template>
@@ -28,34 +26,32 @@ defineProps<Props>()
 
 <style lang="scss" scoped>
 .bee-page-title {
+  --height: 64px;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  gap: $spacing-md;
   width: 100%;
   padding: 32px 0;
-  box-sizing: border-box;
-
-  .title-content {
-    display: flex;
-    align-items: stretch;
-    gap: 12px;
-  }
 
   .title-icon {
-    width: 64px;
-    height: 64px;
-    flex-shrink: 0;
     display: flex;
-    align-items: center;
     justify-content: center;
-    background: $bg-hover;
-    border-radius: 32px 0 32px 32px;
+    align-items: center;
+    width: var(--height);
+    height: var(--height);
+    color: $color-primary;
+    background: $bg-cover;
+    border-radius: calc(var(--height) / 2) 0 calc(var(--height) / 2) calc(var(--height) / 2);
   }
 
   .title-text-wrapper {
+    height: var(--height);
     flex: 1;
     display: flex;
     flex-direction: column;
     justify-content: center;
     gap: 4px;
-    height: 64px;
   }
 
   .title-text {
@@ -69,11 +65,6 @@ defineProps<Props>()
     font-size: 14px;
     color: $text-secondary;
     line-height: 22px;
-  }
-
-  .title-divider {
-    margin-top: 16px;
-    margin-bottom: 0;
   }
 }
 </style>

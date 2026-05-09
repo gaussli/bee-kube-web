@@ -82,40 +82,6 @@ img {
   -webkit-box-orient: vertical;
 }
 
-// 间距工具类
-@each $name, $size in ('xs': $spacing-xs, 'sm': $spacing-sm, 'md': $spacing-md, 'lg': $spacing-lg, 'xl': $spacing-xl) {
-  .m-#{$name} {
-    margin: $size;
-  }
-  .mt-#{$name} {
-    margin-top: $size;
-  }
-  .mb-#{$name} {
-    margin-bottom: $size;
-  }
-  .ml-#{$name} {
-    margin-left: $size;
-  }
-  .mr-#{$name} {
-    margin-right: $size;
-  }
-  .p-#{$name} {
-    padding: $size;
-  }
-  .pt-#{$name} {
-    padding-top: $size;
-  }
-  .pb-#{$name} {
-    padding-bottom: $size;
-  }
-  .pl-#{$name} {
-    padding-left: $size;
-  }
-  .pr-#{$name} {
-    padding-right: $size;
-  }
-}
-
 // 自定义组件样式变量
 .status-search {
   --status-search-slider-bg-color: #fff;

@@ -12,7 +12,7 @@ const props = withDefaults(
     direction?: 'horizontal' | 'vertical'
     color?: string
     thickness?: number
-    length?: number
+    length?: number | string
     margin?: number | string
   }>(),
   {
@@ -25,11 +25,12 @@ const props = withDefaults(
 )
 
 const dividerStyle = computed(() => {
+  const heightValue = typeof props.length === 'number' ? `${props.margin}%` : props.length
   const marginValue = typeof props.margin === 'number' ? `${props.margin}px` : props.margin
   return {
     '--divider-color': props.color,
     '--divider-thickness': `${props.thickness}px`,
-    '--divider-length': `${props.length}%`,
+    '--divider-length': heightValue,
     '--divider-margin': marginValue
   }
 })
@@ -37,7 +38,7 @@ const dividerStyle = computed(() => {
 
 <style lang="scss" scoped>
 .bee-divider {
-  --divider-color: #{$bee-tertiary};
+  --divider-color: #{$bee-secondary};
   background-color: var(--divider-color);
 
   &--horizontal {

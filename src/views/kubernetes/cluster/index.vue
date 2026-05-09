@@ -1,13 +1,13 @@
 <template>
-  <div class="cluster-table">
-    <!-- 提示信息和页面标题 -->
-    <div class="page-header">
+  <BeePage class="cluster-page">
+    <!-- 页面标题 -->
+    <BeeCard class="page-header">
       <BeeAlert type="info" label="在进行集群管理之前，需要先选择一个集群。" />
-      <BeePageTitle :icon="Grid" title="集群管理" description="对多集群以及每个集群的基础资源、服务组件及相关应用资源等的统一管理。" />
-    </div>
+      <BeePageTitle icon="kubernetes-cluster" title="集群管理" description="对多集群以及每个集群的基础资源、服务组件及相关应用资源等的统一管理。" />
+    </BeeCard>
 
     <!-- 页面内容 -->
-    <div class="page-body">
+    <BeeCard class="page-body">
       <!-- 查询表单 -->
       <div class="table-query">
         <div class="table-query-left">
@@ -16,12 +16,12 @@
         </div>
         <div class="table-query-right">
           <BeeButton @click="handleReset">
-            <template #icon><Refresh /></template>
+            <template #icon><BeeIcon name="basic-refresh" :size="18" /></template>
             刷新
           </BeeButton>
-          <el-divider v-if="hasPermission('kubernetes:cluster:create')" type="primary" @click="handleCreate" direction="vertical" />
+          <BeeDivider v-if="hasPermission('kubernetes:cluster:create')" direction="vertical" length="12px" />
           <BeeButton v-if="hasPermission('kubernetes:cluster:create')" type="primary" @click="handleCreate">
-            <template #icon><Plus /></template>
+            <template #icon><BeeIcon name="basic-create" :size="18" /></template>
             新增
           </BeeButton>
         </div>
@@ -130,7 +130,7 @@
           @current-change="loadData"
         />
       </div>
-    </div>
+    </BeeCard>
 
     <!-- 批量删除 Dialog -->
     <BeeDialog v-model="batchDeleteDialogVisible" title="确认删除" @confirm="handleConfirmBatchDelete">
@@ -154,22 +154,26 @@
         </p>
       </div>
     </BeeDialog>
-  </div>
+  </BeePage>
 </template>
 
 <script setup lang="ts">
 import { onMounted, reactive, ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { ElMessage } from 'element-plus'
-import { Delete, Key, MoreFilled, Plus, Refresh, CircleCheck, Clock, EditPen, Grid, Link, Document, View } from '@element-plus/icons-vue'
+import { Delete, Key, MoreFilled, CircleCheck, Clock, EditPen, Grid, Link, Document, View } from '@element-plus/icons-vue'
 import { type ClusterQueryReq, type ClusterResp } from '@/types'
 import { getClusterPage, deleteCluster, batchDeleteCluster } from '@/api'
 import { useKubernetesStore } from '@/stores'
 import AuditCell from '@/components/AuditCell/index.vue'
 import BeeAlert from '@/components/BeeAlert/index.vue'
 import BeeButton from '@/components/BeeButton/index.vue'
+import BeeCard from '@/components/BeeCard/index.vue'
 import BeeDialog from '@/components/BeeDialog/index.vue'
+import BeeDivider from '@/components/BeeDivider/index.vue'
+import BeeIcon from '@/components/BeeIcon/index.vue'
 import BeeInputSearch from '@/components/BeeInputSearch/index.vue'
+import BeePage from '@/components/BeePage/index.vue'
 import BeePageTitle from '@/components/BeePageTitle/index.vue'
 import BeeRadioSearch from '@/components/BeeRadioSearch/index.vue'
 import BeeTag from '@/components/BeeTag/index.vue'
@@ -308,80 +312,70 @@ onMounted(() => {
 </script>
 
 <style lang="scss" scoped>
-.cluster-table {
-  height: 100%;
-  display: flex;
-  flex-direction: column;
-}
-
-.page-header {
-  flex-shrink: 0;
-  padding: 16px 20px 0 20px;
-  margin-bottom: 16px;
-  background-color: $bg-page;
-}
-
-.page-body {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  min-height: 0;
-  overflow: hidden;
-  background-color: $bg-page;
-}
-
-.table-query {
-  flex-shrink: 0;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 16px 20px;
-}
-
-.table-body {
-  flex: 1;
-  min-height: 0;
-  overflow-y: auto;
-  padding: 0 20px;
-
-  :deep(.el-table) {
-    height: 100%;
-
-    th.el-table__cell {
-      padding: 12px 0;
-    }
-
-    .el-button + .el-button,
-    .el-button + .el-dropdown {
-      margin-left: 8px;
+.cluster-page {
+  .page-header {
+    .bee-alert {
+      margin-top: $spacing-md;
     }
   }
+  .page-body {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+    overflow: hidden;
 
-  .api-server {
-    font-family: monospace;
-    font-size: 12px;
-    color: $text-secondary;
+    .table-query {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: $spacing-md 0;
+
+      .table-query-left {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        gap: $spacing-sm;
+      }
+
+      .table-query-right {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        gap: $spacing-sm;
+      }
+    }
+
+    .table-body {
+      flex: 1;
+      min-height: 0;
+
+      :deep(.el-table) {
+        height: 100%;
+
+        th.el-table__cell {
+          padding: 12px 0;
+        }
+
+        .el-button + .el-button,
+        .el-button + .el-dropdown {
+          margin-left: 8px;
+        }
+      }
+
+      .api-server {
+        font-family: monospace;
+        font-size: 12px;
+        color: $text-secondary;
+      }
+    }
+
+    .table-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: $spacing-md 0;
+    }
   }
-}
-
-.table-footer {
-  flex-shrink: 0;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 16px 20px;
-}
-
-.dialog-content {
-  strong {
-    color: $color-primary;
-  }
-}
-
-.delete-cluster-tags {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-  margin-top: 12px;
 }
 </style>

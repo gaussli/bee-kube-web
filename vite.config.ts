@@ -8,7 +8,15 @@ export default defineConfig({
     vue(),
     createSvgIconsPlugin({
       iconDirs: [resolve(__dirname, 'src/assets/icons')],
-      symbolId: 'icon-[dir]-[name]'
+      symbolId: 'icon-[dir]-[name]',
+      svgoOptions: {
+        plugins: [
+          {
+            name: 'removeAttrs',
+            params: { attrs: '(fill|stroke)' } // 移除 fill 和 stroke 属性
+          }
+        ]
+      }
     })
   ],
   resolve: {

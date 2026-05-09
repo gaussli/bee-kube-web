@@ -4,7 +4,7 @@
     <div class="card cluster-info-card">
       <div class="cluster-main">
         <div class="cluster-icon">
-          <el-icon :size="48"><Grid /></el-icon>
+          <BeeIcon name="kubernetes-cluster" :size="48" />
         </div>
         <div class="cluster-basic">
           <div class="cluster-name">{{ clusterInfo.name }}</div>
@@ -151,8 +151,9 @@
 
 <script setup lang="ts">
 import { ref, computed, onMounted } from 'vue'
-import { Refresh, Monitor, Grid, Clock } from '@element-plus/icons-vue'
+import { Refresh, Monitor, Clock } from '@element-plus/icons-vue'
 import BeeButton from '@/components/BeeButton/index.vue'
+import BeeIcon from '@/components/BeeIcon/index.vue'
 import BeeRadarChart from '@/components/BeeRadarChart/index.vue'
 import BeeRadioSearch from '@/components/BeeRadioSearch/index.vue'
 import BeeRingChart from '@/components/BeeRingChart/index.vue'
@@ -300,9 +301,9 @@ onMounted(() => {
       justify-content: center;
       width: 64px;
       height: 64px;
-      background: linear-gradient(135deg, $color-primary 0%, #b37c30 100%);
+      background: $bg-selected;
       border-radius: 12px;
-      color: #fff;
+      color: $color-primary;
     }
 
     .cluster-basic {

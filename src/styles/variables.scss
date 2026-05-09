@@ -35,6 +35,7 @@ $color-info: #909399;
 // 背景颜色
 $bg-color: #131517;
 $bg-page: #1e1f23;
+$bg-cover: #222328;
 // 过度灰
 $bg-hover: #26292c;
 // 高级灰
@@ -90,9 +91,17 @@ $border-disabled: #ffffff32;
 // 间距
 $spacing-xs: 4px;
 $spacing-sm: 8px;
-$spacing-md: 16px;
-$spacing-lg: 24px;
-$spacing-xl: 32px;
+$spacing-md: 12px;
+$spacing-lg: 16px;
+$spacing-xl: 24px;
+
+// 圆角
+$radius-xs: 4px;
+$radius-sm: 8px;
+$radius-md: 12px;
+$radius-lg: 16px;
+$radius-xl: 24px;
+$radius-full: 1000px;
 
 // 字体大小
 $font-size-xs: 11px;

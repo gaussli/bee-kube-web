@@ -1,6 +1,6 @@
 <template>
-  <aside class="bee-aside" :style="{ width: appStore.sidebarOpened ? '220px' : '64px' }">
-    <el-menu :default-active="route.meta.activeCode ?? route.name" :collapse="!appStore.sidebarOpened" :collapse-transition="false" @select="handleSelect" class="aside-menu">
+  <aside class="bee-aside">
+    <el-menu class="aside-menu" :default-active="route.meta.activeCode ?? route.name" unique-opened @select="handleSelect">
       <template v-for="item in currentMenuList" :key="item.id">
         <el-menu-item v-if="!item.children?.length" :index="item.code">
           <el-icon v-if="item.icon">
@@ -129,25 +129,19 @@ function handleSelect(index: string) {
 .bee-aside {
   display: flex;
   flex-direction: column;
+  width: 220px;
   height: 100%;
-  background: none;
-  transition: width 0.3s;
+  border-radius: $radius-sm;
+  scrollbar-width: none; // 隐藏滚动条（Firefox）
 
   .aside-menu {
     flex: 1;
     border-right: none;
-    background: transparent;
     overflow-y: auto;
-
-    :deep(.el-menu--inline) {
-      background: none;
-    }
   }
 }
 
-.delete-content {
-  p {
-    margin-bottom: 12px;
-  }
+::-webkit-scrollbar {
+  display: none; // 隐藏滚动条（Chrome、Edge、Safari）
 }
 </style>

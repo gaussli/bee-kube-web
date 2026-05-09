@@ -249,7 +249,7 @@ function handleMoveToLeft() {
   flex-shrink: 0;
   margin-left: auto;
 
-  :deep(.bee-search) {
+  :deep(.bee-input-search) {
     border: none;
     background-color: transparent;
 
