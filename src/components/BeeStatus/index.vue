@@ -1,14 +1,14 @@
 <template>
-  <div class="status-cell">
-    <span class="dot" :style="{ backgroundColor: currentConfig.color }"></span>
-    <span class="label">{{ currentConfig.label }}</span>
+  <div class="bee-status" :style="{ '--bee-status-color': currentConfig.color }">
+    <span class="bee-status__dot"></span>
+    <span class="bee-status__label">{{ currentConfig.label }}</span>
   </div>
 </template>
 
 <script setup lang="ts">
 import { computed } from 'vue'
 
-defineOptions({ name: 'StatusCell' })
+defineOptions({ name: 'BeeStatus' })
 
 interface StatusConfig {
   value: string | number | undefined
@@ -24,20 +24,28 @@ const props = defineProps<{
 const currentConfig = computed(() => {
   const found = props.config.find(item => item.value === props.status)
   if (found) return found
-  return { label: '-', color: '#909399' }
+  return { label: '-', color: '#da8030' }
 })
 </script>
 
 <style lang="scss" scoped>
-.status-cell {
-  display: inline-flex;
-  gap: 8px;
-  align-items: center;
+.bee-status {
+  --bee-status-color: #da8030;
 
-  .dot {
+  display: inline-flex;
+  gap: $spacing-sm;
+  align-items: center;
+  justify-content: center;
+
+  &__dot {
     width: 8px;
     height: 8px;
     border-radius: 50%;
+    background: var(--bee-status-color);
+  }
+
+  &__label {
+    font-size: $font-size-base;
   }
 }
 </style>

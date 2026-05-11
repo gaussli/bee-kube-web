@@ -46,7 +46,7 @@
             <IconLabel :icon="CircleCheck" label="状态" />
           </template>
           <template #default="{ row }">
-            <StatusCell :status="row.status" :config="userStatusConfig" />
+            <BeeStatus :status="row.status" :config="userStatusConfig" />
           </template>
         </el-table-column>
         <el-table-column width="180">
@@ -176,9 +176,9 @@ import BeeButton from '@/components/BeeButton/index.vue'
 import BeeDialog from '@/components/BeeDialog/index.vue'
 import BeeInputSearch from '@/components/BeeInputSearch/index.vue'
 import BeeRadioSearch from '@/components/BeeRadioSearch/index.vue'
+import BeeStatus from '@/components/BeeStatus/index.vue'
 import BeeTag from '@/components/BeeTag/index.vue'
 import IconLabel from '@/components/IconLabel/index.vue'
-import StatusCell from '@/components/StatusCell/index.vue'
 import TextCopyableCell from '@/components/TextCopyableCell/index.vue'
 import UserCell from '@/components/UserCell/index.vue'
 import { usePermission } from '@/composables/usePermission'
