@@ -66,7 +66,7 @@ defineExpose({ loading })
   align-items: center;
   justify-content: center;
   height: 32px;
-  padding: $spacing-md;
+  padding: 0 $spacing-md;
   border: 1px solid currentcolor;
   border-radius: $radius-full;
   font-size: $font-size-sm;
@@ -74,6 +74,7 @@ defineExpose({ loading })
   white-space: nowrap;
   background: transparent;
   cursor: pointer;
+  user-select: none;
   transition: all 0.3s;
 
   &__icon.is-loading {
@@ -82,63 +83,68 @@ defineExpose({ loading })
 
   // hover 状态
   &:hover:not(.is-disabled, .is-loading) {
-    color: $text-regular;
-
     &.bee-button--primary {
-      border-color: $color-primary;
-      background: $color-primary;
+      border-color: rgba($color-primary, 0.4);
+      color: $color-primary;
+      background: rgba($color-primary, 0.2);
     }
 
     &.bee-button--info {
-      // hover状态下，info 类型在背景色的基础上添加10%的白色
-      border-color: rgba(#fff, 0.1);
-      background: rgba(#fff, 0.1);
+      border-color: rgba($color-info, 0.4);
+      color: $color-info;
+      background: rgba($color-info, 0.2);
     }
 
     &.bee-button--success {
-      border-color: $color-success;
-      background: $color-success;
+      border-color: rgba($color-success, 0.4);
+      color: $color-success;
+      background: rgba($color-success, 0.2);
     }
 
     &.bee-button--warning {
-      border-color: $color-warning;
-      background: $color-warning;
+      border-color: rgba($color-warning, 0.4);
+      color: $color-warning;
+      background: rgba($color-warning, 0.2);
     }
 
     &.bee-button--danger {
-      border-color: $color-danger;
-      background: $color-danger;
+      border-color: rgba($color-danger, 0.4);
+      color: $color-danger;
+      background: rgba($color-danger, 0.2);
     }
   }
 
   // active 状态
-  &:active:not(.is-disabled, .is-loading) {
-    color: $text-regular;
-
+  &:active:not(.is-disabled, .is-loading),
+  &.is-loading {
     &.bee-button--primary {
-      border-color: color.adjust($color-primary, $lightness: -10%);
-      background: color.adjust($color-primary, $lightness: -10%);
+      border-color: rgba($color-primary, 0.3);
+      color: $color-primary;
+      background: rgba($color-primary, 0.1);
     }
 
     &.bee-button--info {
-      // active状态下，info 类型在背景色的基础上添加20%的白色
-      border-color: rgba(#fff, 0.2);
-      background: rgba(#fff, 0.2);
+      border-color: rgba($color-info, 0.3);
+      color: $color-info;
+      background: rgba($color-info, 0.1);
     }
 
     &.bee-button--success {
-      border-color: color.adjust($color-success, $lightness: -10%);
-      background: color.adjust($color-success, $lightness: -10%);
+      border-color: rgba($color-success, 0.3);
+      color: $color-success;
+      background: rgba($color-success, 0.1);
     }
 
     &.bee-button--warning {
-      border-color: color.adjust($color-warning, $lightness: -10%);
-      background: color.adjust($color-warning, $lightness: -10%);
+      border-color: rgba($color-warning, 0.3);
+      color: $color-warning;
+      background: rgba($color-warning, 0.1);
     }
 
     &.bee-button--danger {
-      border-color: color.adjust($color-danger, $lightness: -10%);
-      background: color.adjust($color-danger, $lightness: -10%);
+      border-color: rgba($color-danger, 0.3);
+      color: $color-danger;
+      background: rgba($color-danger, 0.1);
     }
   }
 
@@ -158,7 +164,6 @@ defineExpose({ loading })
 
   // loading 状态
   &.is-loading {
-    color: $text-regular;
     cursor: wait;
   }
 

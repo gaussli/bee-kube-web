@@ -109,24 +109,7 @@
       <!-- 表格底部 -->
       <div class="table-footer">
         <div>
-          <BeeButton v-if="hasPermission('kubernetes:cluster:delete')" type="primary" :disabled="selectedRows.length === 0" @click="handleBatchDelete">
-            <template #icon><Delete /></template>
-            批量删除 ({{ selectedRows.length }})
-          </BeeButton>
-          <BeeButton v-if="hasPermission('kubernetes:cluster:delete')" type="info" :disabled="selectedRows.length === 0" @click="handleBatchDelete">
-            <template #icon><Delete /></template>
-            批量删除 ({{ selectedRows.length }})
-          </BeeButton>
-          <BeeButton v-if="hasPermission('kubernetes:cluster:delete')" type="success" :disabled="selectedRows.length === 0" @click="handleBatchDelete">
-            <template #icon><Delete /></template>
-            批量删除 ({{ selectedRows.length }})
-          </BeeButton>
-          <BeeButton v-if="hasPermission('kubernetes:cluster:delete')" type="warning" :disabled="selectedRows.length === 0" @click="handleBatchDelete">
-            <template #icon><Delete /></template>
-            批量删除 ({{ selectedRows.length }})
-          </BeeButton>
-          <BeeButton v-if="hasPermission('kubernetes:cluster:delete')" type="danger" :disabled="selectedRows.length === 0" @click="handleBatchDelete">
-            <template #icon><Delete /></template>
+          <BeeButton v-if="hasPermission('kubernetes:cluster:delete')" type="danger" icon="basic-delete" :disabled="selectedRows.length === 0" @click="handleBatchDelete">
             批量删除 ({{ selectedRows.length }})
           </BeeButton>
         </div>

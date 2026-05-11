@@ -9,10 +9,10 @@ defineOptions({ name: 'BeeTag' })
 
 withDefaults(
   defineProps<{
-    type?: 'primary' | 'success' | 'warning' | 'danger' | 'info' | 'default'
+    type?: 'primary' | 'info' | 'success' | 'warning' | 'danger'
   }>(),
   {
-    type: 'default'
+    type: 'primary'
   }
 )
 </script>
@@ -23,45 +23,40 @@ withDefaults(
   align-items: center;
   justify-content: center;
   height: 24px;
-  padding: 0 8px;
+  padding: 0 $spacing-sm;
   border: 1px solid;
-  border-radius: 12px;
+  border-radius: $radius-full;
   font-size: $font-size-sm;
-
-  &--default {
-    border-color: $border-secondary;
-    color: $text-secondary;
-    background: transparent;
-  }
+  white-space: nowrap;
 
   &--primary {
-    border-color: $color-primary;
+    border-color: rgba($color-primary, 0.3);
     color: $color-primary;
-    background: transparent;
-  }
-
-  &--success {
-    border-color: $color-success;
-    color: $color-success;
-    background: transparent;
-  }
-
-  &--warning {
-    border-color: $color-warning;
-    color: $color-warning;
-    background: transparent;
-  }
-
-  &--danger {
-    border-color: $color-danger;
-    color: $color-danger;
-    background: transparent;
+    background: rgba($color-primary, 0.1);
   }
 
   &--info {
-    border-color: $color-info;
+    border-color: rgba($color-info, 0.3);
     color: $color-info;
-    background: transparent;
+    background: rgba($color-info, 0.1);
+  }
+
+  &--success {
+    border-color: rgba($color-success, 0.3);
+    color: $color-success;
+    background: rgba($color-success, 0.1);
+  }
+
+  &--warning {
+    border-color: rgba($color-warning, 0.3);
+    color: $color-warning;
+    background: rgba($color-warning, 0.1);
+  }
+
+  &--danger {
+    border-color: rgba($color-danger, 0.3);
+    color: $color-danger;
+    background: rgba($color-danger, 0.1);
   }
 }
 </style>

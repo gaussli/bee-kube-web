@@ -53,9 +53,9 @@ const iconName = computed(() => {
   }
 
   &--info {
-    border-color: rgba(#fff, 0.3);
+    border-color: rgba($color-info, 0.3);
     color: $text-primary;
-    background: rgba(#fff, 0.1);
+    background: rgba($color-info, 0.1);
   }
 
   &--success {
