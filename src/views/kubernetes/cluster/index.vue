@@ -2,7 +2,7 @@
   <BeePage class="cluster-page">
     <!-- 页面标题 -->
     <BeeCard class="page-header">
-      <BeeAlert type="info" label="在进行集群管理之前，需要先选择一个集群。" />
+      <BeeAlert type="primary" label="在进行集群管理之前，需要先选择一个集群。" />
       <BeePageTitle icon="kubernetes-cluster" title="集群管理" description="对多集群以及每个集群的基础资源、服务组件及相关应用资源等的统一管理。" />
     </BeeCard>
 
@@ -15,15 +15,9 @@
           <BeeRadioSearch v-model="queryForm.status" :options="statusOptions" @select="handleSelect" />
         </div>
         <div class="table-query-right">
-          <BeeButton @click="handleReset">
-            <template #icon><BeeIcon name="basic-refresh" :size="18" /></template>
-            刷新
-          </BeeButton>
+          <BeeButton type="info" icon="basic-refresh" @click="handleReset"> 刷新 </BeeButton>
           <BeeDivider v-if="hasPermission('kubernetes:cluster:create')" direction="vertical" length="12px" />
-          <BeeButton v-if="hasPermission('kubernetes:cluster:create')" type="primary" @click="handleCreate">
-            <template #icon><BeeIcon name="basic-create" :size="18" /></template>
-            新增
-          </BeeButton>
+          <BeeButton v-if="hasPermission('kubernetes:cluster:create')" type="primary" icon="basic-create" @click="handleCreate"> 新增 </BeeButton>
         </div>
       </div>
 
@@ -115,6 +109,22 @@
       <!-- 表格底部 -->
       <div class="table-footer">
         <div>
+          <BeeButton v-if="hasPermission('kubernetes:cluster:delete')" type="primary" :disabled="selectedRows.length === 0" @click="handleBatchDelete">
+            <template #icon><Delete /></template>
+            批量删除 ({{ selectedRows.length }})
+          </BeeButton>
+          <BeeButton v-if="hasPermission('kubernetes:cluster:delete')" type="info" :disabled="selectedRows.length === 0" @click="handleBatchDelete">
+            <template #icon><Delete /></template>
+            批量删除 ({{ selectedRows.length }})
+          </BeeButton>
+          <BeeButton v-if="hasPermission('kubernetes:cluster:delete')" type="success" :disabled="selectedRows.length === 0" @click="handleBatchDelete">
+            <template #icon><Delete /></template>
+            批量删除 ({{ selectedRows.length }})
+          </BeeButton>
+          <BeeButton v-if="hasPermission('kubernetes:cluster:delete')" type="warning" :disabled="selectedRows.length === 0" @click="handleBatchDelete">
+            <template #icon><Delete /></template>
+            批量删除 ({{ selectedRows.length }})
+          </BeeButton>
           <BeeButton v-if="hasPermission('kubernetes:cluster:delete')" type="danger" :disabled="selectedRows.length === 0" @click="handleBatchDelete">
             <template #icon><Delete /></template>
             批量删除 ({{ selectedRows.length }})
@@ -171,7 +181,6 @@ import BeeButton from '@/components/BeeButton/index.vue'
 import BeeCard from '@/components/BeeCard/index.vue'
 import BeeDialog from '@/components/BeeDialog/index.vue'
 import BeeDivider from '@/components/BeeDivider/index.vue'
-import BeeIcon from '@/components/BeeIcon/index.vue'
 import BeeInputSearch from '@/components/BeeInputSearch/index.vue'
 import BeePage from '@/components/BeePage/index.vue'
 import BeePageTitle from '@/components/BeePageTitle/index.vue'

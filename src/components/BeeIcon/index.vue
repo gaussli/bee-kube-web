@@ -16,6 +16,7 @@ interface Props {
 defineOptions({ name: 'BeeIcon' })
 
 const props = withDefaults(defineProps<Props>(), {
+  type: 'basic',
   size: 24,
   color: ''
 })
@@ -37,9 +38,24 @@ const iconStyle = computed(() => {
 .bee-icon {
   --bee-icon-size: 24px;
 
+  display: inline-block;
   width: var(--bee-icon-size);
   height: var(--bee-icon-size);
   color: inherit;
   fill: currentcolor;
+
+  &.is-loading {
+    animation: bee-icon-rotating 2s linear infinite;
+  }
+}
+
+@keyframes bee-icon-rotating {
+  from {
+    transform: rotate(0deg);
+  }
+
+  to {
+    transform: rotate(360deg);
+  }
 }
 </style>

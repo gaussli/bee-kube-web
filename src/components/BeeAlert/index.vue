@@ -13,12 +13,12 @@ defineOptions({ name: 'BeeAlert' })
 
 const props = withDefaults(
   defineProps<{
-    type?: 'info' | 'success' | 'warning' | 'danger'
+    type?: 'primary' | 'info' | 'success' | 'warning' | 'danger'
     label?: string
     showIcon?: boolean
   }>(),
   {
-    type: 'info',
+    type: 'primary',
     label: '',
     showIcon: true
   }
@@ -26,6 +26,7 @@ const props = withDefaults(
 
 const iconName = computed(() => {
   const iconMap = {
+    primary: 'basic-primary-filled',
     info: 'basic-info-filled',
     success: 'basic-success-filled',
     warning: 'basic-warning-filled',
@@ -38,14 +39,24 @@ const iconName = computed(() => {
 <style lang="scss" scoped>
 .bee-alert {
   display: flex;
-  gap: 8px;
+  gap: $spacing-sm;
   align-items: center;
-  padding: 8px 16px;
-  border: 1px solid rgba($color-primary, 0.3);
-  border-radius: 8px;
+  padding: $spacing-sm;
+  border: 1px solid;
+  border-radius: $radius-sm;
   font-size: $font-size-sm;
-  color: $color-primary;
-  background: rgba($color-primary, 0.1);
+
+  &--primary {
+    border-color: rgba($color-primary, 0.3);
+    color: $color-primary;
+    background: rgba($color-primary, 0.1);
+  }
+
+  &--info {
+    border-color: rgba(#fff, 0.3);
+    color: $text-primary;
+    background: rgba(#fff, 0.1);
+  }
 
   &--success {
     border-color: rgba($color-success, 0.3);

@@ -1,12 +1,13 @@
 <template>
-  <button class="bee-button" :class="[`bee-button--${type}`, { 'is-disabled': disabled, 'is-loading': loading, 'is-borderless': !border }]" :disabled="disabled || loading" @click="handleClick">
-    <el-icon v-if="loading" class="bee-button__icon is-loading">
-      <Loading />
-    </el-icon>
-    <el-icon v-else-if="$slots.icon" class="bee-button__icon">
-      <slot name="icon" />
-    </el-icon>
-    <span v-if="$slots.default" class="bee-button__text">
+  <button
+    class="bee-button"
+    :class="[`bee-button--${type}`, { 'is-disabled': disabled, 'is-loading': loading, 'is-borderless': !border, 'is-circle': !$slots.default }]"
+    :disabled="disabled || loading"
+    @click="handleClick"
+  >
+    <BeeIcon v-if="loading" name="basic-loading" :size="12" class="bee-button__icon is-loading" />
+    <BeeIcon v-else-if="icon" :name="icon" :size="12" class="bee-button__icon" />
+    <span v-if="$slots.default" class="bee-button__label">
       <slot />
     </span>
   </button>
@@ -14,18 +15,19 @@
 
 <script setup lang="ts">
 import { ref } from 'vue'
-import { Loading } from '@element-plus/icons-vue'
+import BeeIcon from '@/components/BeeIcon/index.vue'
 
 defineOptions({ name: 'BeeButton' })
 
 withDefaults(
   defineProps<{
-    type?: 'primary' | 'success' | 'warning' | 'danger' | 'info' | 'default'
+    type?: 'primary' | 'info' | 'success' | 'warning' | 'danger'
     disabled?: boolean
     border?: boolean
+    icon?: string
   }>(),
   {
-    type: 'default',
+    type: 'primary',
     disabled: false,
     border: true
   }
@@ -38,13 +40,17 @@ const emit = defineEmits<{
 const loading = ref(false)
 
 async function handleClick(event: Event) {
+  console.log('begin click')
   if (loading.value) return
-
   loading.value = true
+
   try {
     emit('click', event)
   } finally {
-    loading.value = false
+    setTimeout(() => {
+      console.log('end click')
+      loading.value = false
+    }, 10000)
   }
 }
 
@@ -56,14 +62,14 @@ defineExpose({ loading })
 
 .bee-button {
   display: inline-flex;
-  gap: 4px;
+  gap: $spacing-xs;
   align-items: center;
   justify-content: center;
   height: 32px;
-  padding: 4px 12px;
-  border: 1px solid $border-secondary;
-  border-radius: 16px;
-  font-size: 12px;
+  padding: $spacing-md;
+  border: 1px solid currentcolor;
+  border-radius: $radius-full;
+  font-size: $font-size-sm;
   color: $text-secondary;
   white-space: nowrap;
   background: transparent;
@@ -76,9 +82,18 @@ defineExpose({ loading })
 
   // hover 状态
   &:hover:not(.is-disabled, .is-loading) {
-    border-color: $color-primary;
     color: $text-regular;
-    background: $color-primary;
+
+    &.bee-button--primary {
+      border-color: $color-primary;
+      background: $color-primary;
+    }
+
+    &.bee-button--info {
+      // hover状态下，info 类型在背景色的基础上添加10%的白色
+      border-color: rgba(#fff, 0.1);
+      background: rgba(#fff, 0.1);
+    }
 
     &.bee-button--success {
       border-color: $color-success;
@@ -94,23 +109,22 @@ defineExpose({ loading })
       border-color: $color-danger;
       background: $color-danger;
     }
-
-    &.bee-button--info {
-      border-color: $color-info;
-      background: $color-info;
-    }
-
-    &.bee-button--default {
-      border-color: rgba(#fff, 0.1);
-      background: rgba(#fff, 0.1);
-    }
   }
 
   // active 状态
   &:active:not(.is-disabled, .is-loading) {
-    border-color: color.adjust($color-primary, $lightness: -10%);
     color: $text-regular;
-    background: color.adjust($color-primary, $lightness: -10%);
+
+    &.bee-button--primary {
+      border-color: color.adjust($color-primary, $lightness: -10%);
+      background: color.adjust($color-primary, $lightness: -10%);
+    }
+
+    &.bee-button--info {
+      // active状态下，info 类型在背景色的基础上添加20%的白色
+      border-color: rgba(#fff, 0.2);
+      background: rgba(#fff, 0.2);
+    }
 
     &.bee-button--success {
       border-color: color.adjust($color-success, $lightness: -10%);
@@ -126,28 +140,25 @@ defineExpose({ loading })
       border-color: color.adjust($color-danger, $lightness: -10%);
       background: color.adjust($color-danger, $lightness: -10%);
     }
+  }
 
-    &.bee-button--info {
-      border-color: color.adjust($color-info, $lightness: -10%);
-      background: color.adjust($color-info, $lightness: -10%);
-    }
-
-    &.bee-button--default {
-      border-color: rgba(#fff, 0.2);
-      background: rgba(#fff, 0.2);
-    }
+  // 圆形状态
+  &.is-circle {
+    width: 32px;
+    padding: 0;
   }
 
   // disabled 状态
   &.is-disabled {
-    border-color: $border-disabled;
+    border-color: currentcolor;
     color: $text-disabled;
-    background: transparent;
+    background: none;
     cursor: not-allowed;
   }
 
   // loading 状态
   &.is-loading {
+    color: $text-regular;
     cursor: wait;
   }
 
