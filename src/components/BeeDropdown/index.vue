@@ -221,14 +221,14 @@ const vClickOutside = clickOutside
 
   &__default-trigger {
     display: inline-flex;
-    align-items: center;
     gap: 8px;
+    align-items: center;
     padding: 8px 12px;
     border: 1px solid $border-primary;
     border-radius: 4px;
-    background: transparent;
-    color: $text-regular;
     font-size: 14px;
+    color: $text-regular;
+    background: transparent;
     cursor: pointer;
     transition: all 0.2s;
 
@@ -252,20 +252,20 @@ const vClickOutside = clickOutside
     z-index: 1000;
     min-width: 100%;
     max-height: 300px;
-    overflow-y: auto;
-    margin-top: 4px;
     padding: 4px 0;
-    background: $bg-overlay;
+    margin-top: 4px;
     border: 1px solid $border-primary;
     border-radius: 4px;
-    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.15);
+    overflow-y: auto;
+    background: $bg-overlay;
+    box-shadow: 0 2px 12px rgb(0 0 0 / 15%);
   }
 
   &__group-label {
     padding: 8px 12px;
-    color: $text-placeholder;
     font-size: 12px;
     font-weight: 500;
+    color: $text-placeholder;
   }
 
   &__group {
@@ -277,8 +277,8 @@ const vClickOutside = clickOutside
     display: flex;
     align-items: center;
     padding: 8px 12px;
-    color: $text-regular;
     font-size: 14px;
+    color: $text-regular;
     cursor: pointer;
     transition: background 0.2s;
 
@@ -291,13 +291,13 @@ const vClickOutside = clickOutside
       background: rgba($color-primary, 0.1);
 
       &::before {
-        content: '';
         position: absolute;
-        left: 0;
         top: 0;
         bottom: 0;
+        left: 0;
         width: 3px;
         background: $color-primary;
+        content: '';
       }
     }
 
@@ -311,22 +311,22 @@ const vClickOutside = clickOutside
     }
 
     &.is-divided {
-      border-top: 1px solid $border-secondary;
-      margin-top: 4px;
       padding-top: 12px;
+      margin-top: 4px;
+      border-top: 1px solid $border-secondary;
     }
   }
 
   &__item-content {
     display: flex;
-    align-items: center;
     gap: 8px;
+    align-items: center;
     width: 100%;
   }
 
   &__item-icon {
-    font-size: 14px;
     flex-shrink: 0;
+    font-size: 14px;
   }
 }
 

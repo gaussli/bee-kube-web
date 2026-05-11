@@ -24,44 +24,44 @@ withDefaults(
   justify-content: center;
   height: 24px;
   padding: 0 8px;
-  border-radius: 12px;
   border: 1px solid;
+  border-radius: 12px;
   font-size: $font-size-sm;
 
   &--default {
-    background: transparent;
-    color: $text-secondary;
     border-color: $border-secondary;
+    color: $text-secondary;
+    background: transparent;
   }
 
   &--primary {
-    background: transparent;
-    color: $color-primary;
     border-color: $color-primary;
+    color: $color-primary;
+    background: transparent;
   }
 
   &--success {
-    background: transparent;
-    color: $color-success;
     border-color: $color-success;
+    color: $color-success;
+    background: transparent;
   }
 
   &--warning {
-    background: transparent;
-    color: $color-warning;
     border-color: $color-warning;
+    color: $color-warning;
+    background: transparent;
   }
 
   &--danger {
-    background: transparent;
-    color: $color-danger;
     border-color: $color-danger;
+    color: $color-danger;
+    background: transparent;
   }
 
   &--info {
-    background: transparent;
-    color: $color-info;
     border-color: $color-info;
+    color: $color-info;
+    background: transparent;
   }
 }
 </style>

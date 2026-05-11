@@ -7,7 +7,7 @@
 <style lang="scss" scoped>
 .bee-card {
   padding: 0 $spacing-md;
-  background: $bg-page;
   border-radius: $radius-sm;
+  background: $bg-page;
 }
 </style>

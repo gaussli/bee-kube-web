@@ -318,10 +318,11 @@ onMounted(() => {
       margin-top: $spacing-md;
     }
   }
+
   .page-body {
-    flex: 1;
     display: flex;
     flex-direction: column;
+    flex: 1;
     min-height: 0;
     overflow: hidden;
 
@@ -333,16 +334,16 @@ onMounted(() => {
 
       .table-query-left {
         display: flex;
+        gap: $spacing-sm;
         flex-direction: row;
         align-items: center;
-        gap: $spacing-sm;
       }
 
       .table-query-right {
         display: flex;
+        gap: $spacing-sm;
         flex-direction: row;
         align-items: center;
-        gap: $spacing-sm;
       }
     }
 

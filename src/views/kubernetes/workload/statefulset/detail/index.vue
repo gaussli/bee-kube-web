@@ -8,27 +8,46 @@
         <el-tab-pane label="基本信息" name="basic">
           <div class="detail-section" v-loading="loading">
             <div class="detail-row">
-              <div class="detail-item"><span class="detail-label">应用名称:</span><span class="detail-value">{{ statefulsetData?.name }}</span></div>
-              <div class="detail-item"><span class="detail-label">命名空间:</span><span class="detail-value">{{ statefulsetData?.namespace }}</span></div>
+              <div class="detail-item">
+                <span class="detail-label">应用名称:</span><span class="detail-value">{{ statefulsetData?.name }}</span>
+              </div>
+              <div class="detail-item">
+                <span class="detail-label">命名空间:</span><span class="detail-value">{{ statefulsetData?.namespace }}</span>
+              </div>
             </div>
             <div class="detail-row">
-              <div class="detail-item"><span class="detail-label">集群:</span><span class="detail-value">{{ statefulsetData?.clusterName || statefulsetData?.clusterId }}</span></div>
-              <div class="detail-item"><span class="detail-label">服务名称:</span><span class="detail-value">{{ statefulsetData?.serviceName }}</span></div>
+              <div class="detail-item">
+                <span class="detail-label">集群:</span><span class="detail-value">{{ statefulsetData?.clusterName || statefulsetData?.clusterId }}</span>
+              </div>
+              <div class="detail-item">
+                <span class="detail-label">服务名称:</span><span class="detail-value">{{ statefulsetData?.serviceName }}</span>
+              </div>
             </div>
             <div class="detail-row">
-              <div class="detail-item"><span class="detail-label">期望副本:</span><span class="detail-value">{{ statefulsetData?.replicas }}</span></div>
-              <div class="detail-item"><span class="detail-label">就绪副本:</span><span :class="['detail-value', statefulsetData?.readyReplicas === statefulsetData?.replicas ? 'replicas-ready' : 'replicas-pending']">{{ statefulsetData?.readyReplicas }}</span></div>
+              <div class="detail-item">
+                <span class="detail-label">期望副本:</span><span class="detail-value">{{ statefulsetData?.replicas }}</span>
+              </div>
+              <div class="detail-item">
+                <span class="detail-label">就绪副本:</span
+                ><span :class="['detail-value', statefulsetData?.readyReplicas === statefulsetData?.replicas ? 'replicas-ready' : 'replicas-pending']">{{ statefulsetData?.readyReplicas }}</span>
+              </div>
             </div>
             <div class="detail-row">
-              <div class="detail-item"><span class="detail-label">创建时间:</span><span class="detail-value">{{ statefulsetData?.createAt }}</span></div>
+              <div class="detail-item">
+                <span class="detail-label">创建时间:</span><span class="detail-value">{{ statefulsetData?.createAt }}</span>
+              </div>
             </div>
           </div>
         </el-tab-pane>
       </el-tabs>
     </div>
     <div class="page-footer">
-      <BeeButton @click="handleBack"><template #icon><ArrowLeft /></template>返回</BeeButton>
-      <BeeButton v-if="hasPermission('kubernetes:workload:statefulset:edit')" type="primary" @click="handleEdit"><template #icon><EditPen /></template>编辑</BeeButton>
+      <BeeButton @click="handleBack"
+        ><template #icon><ArrowLeft /></template>返回</BeeButton
+      >
+      <BeeButton v-if="hasPermission('kubernetes:workload:statefulset:edit')" type="primary" @click="handleEdit"
+        ><template #icon><EditPen /></template>编辑</BeeButton
+      >
     </div>
   </div>
 </template>
@@ -37,11 +56,11 @@
 import { ref, onMounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { Collection, ArrowLeft, EditPen } from '@element-plus/icons-vue'
-import type { StatefulSetResp } from '@/types'
 import { getStatefulSetDetail } from '@/api'
-import BeePageTitle from '@/components/BeePageTitle/index.vue'
 import BeeButton from '@/components/BeeButton/index.vue'
+import BeePageTitle from '@/components/BeePageTitle/index.vue'
 import { usePermission } from '@/composables/usePermission'
+import type { StatefulSetResp } from '@/types'
 
 defineOptions({ name: 'StatefulSetDetail' })
 const { hasPermission } = usePermission()
@@ -58,23 +77,99 @@ async function loadData() {
   loading.value = true
   try {
     statefulsetData.value = await getStatefulSetDetail(clusterId.value, namespace.value, statefulsetName.value)
-  } finally { loading.value = false }
+  } finally {
+    loading.value = false
+  }
 }
-function handleBack() { router.back() }
-function handleEdit() { router.push({ name: 'kubernetes:workload:statefulset:edit', query: { clusterId: clusterId.value, namespace: namespace.value, name: statefulsetName.value } }) }
-onMounted(() => { loadData() })
+function handleBack() {
+  router.back()
+}
+function handleEdit() {
+  router.push({ name: 'kubernetes:workload:statefulset:edit', query: { clusterId: clusterId.value, namespace: namespace.value, name: statefulsetName.value } })
+}
+onMounted(() => {
+  loadData()
+})
 </script>
 
 <style lang="scss" scoped>
-.statefulset-detail { height: 100%; display: flex; flex-direction: column; }
-.page-header { flex-shrink: 0; padding: 16px 20px 0 20px; margin-bottom: 16px; background-color: $bg-page; }
-.page-body { flex: 1; min-height: 0; overflow: hidden; padding: 0 20px; background-color: $bg-page; :deep(.el-tabs) { height: 100%; display: flex; flex-direction: column; .el-tabs__content { flex: 1; overflow-y: auto; } } }
-.page-footer { flex-shrink: 0; display: flex; justify-content: space-between; padding: 16px 20px; background-color: $bg-page; }
-.detail-section { padding: 20px; }
-.detail-row { display: flex; gap: 40px; margin-bottom: 20px; &:last-child { margin-bottom: 0; } }
-.detail-item { display: flex; align-items: center; gap: 12px; min-width: 300px; }
-.detail-label { color: $text-secondary; font-size: 14px; min-width: 100px; }
-.detail-value { color: $text-primary; font-size: 14px; }
-.replicas-ready { color: $color-success; }
-.replicas-pending { color: $color-warning; }
+.statefulset-detail {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.page-header {
+  flex-shrink: 0;
+  padding: 16px 20px 0;
+  margin-bottom: 16px;
+  background-color: $bg-page;
+}
+
+.page-body {
+  flex: 1;
+  min-height: 0;
+  padding: 0 20px;
+  overflow: hidden;
+  background-color: $bg-page;
+
+  :deep(.el-tabs) {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+
+    .el-tabs__content {
+      flex: 1;
+      overflow-y: auto;
+    }
+  }
+}
+
+.page-footer {
+  display: flex;
+  flex-shrink: 0;
+  justify-content: space-between;
+  padding: 16px 20px;
+  background-color: $bg-page;
+}
+
+.detail-section {
+  padding: 20px;
+}
+
+.detail-row {
+  display: flex;
+  gap: 40px;
+  margin-bottom: 20px;
+
+  &:last-child {
+    margin-bottom: 0;
+  }
+}
+
+.detail-item {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  min-width: 300px;
+}
+
+.detail-label {
+  min-width: 100px;
+  font-size: 14px;
+  color: $text-secondary;
+}
+
+.detail-value {
+  font-size: 14px;
+  color: $text-primary;
+}
+
+.replicas-ready {
+  color: $color-success;
+}
+
+.replicas-pending {
+  color: $color-warning;
+}
 </style>

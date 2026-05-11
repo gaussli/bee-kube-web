@@ -282,17 +282,17 @@ onMounted(() => {
   overflow-y: auto;
 
   .cluster-info-card {
-    flex-shrink: 0;
     display: flex;
+    gap: 24px;
+    flex-shrink: 0;
     align-items: center;
     padding: 20px 24px;
     margin-bottom: 16px;
-    gap: 24px;
 
     .cluster-main {
       display: flex;
-      align-items: center;
       gap: 16px;
+      align-items: center;
     }
 
     .cluster-icon {
@@ -301,35 +301,35 @@ onMounted(() => {
       justify-content: center;
       width: 64px;
       height: 64px;
-      background: $bg-selected;
       border-radius: 12px;
       color: $color-primary;
+      background: $bg-selected;
     }
 
     .cluster-basic {
       .cluster-name {
         font-size: 18px;
         font-weight: 600;
-        color: $text-primary;
         line-height: 1.4;
+        color: $text-primary;
       }
 
       .cluster-desc {
+        margin-top: 4px;
         font-size: 14px;
         color: $text-secondary;
-        margin-top: 4px;
       }
 
       .cluster-meta {
         display: flex;
-        align-items: center;
         gap: 12px;
+        align-items: center;
         margin-top: 8px;
 
         .meta-item {
           display: flex;
-          align-items: center;
           gap: 4px;
+          align-items: center;
           font-size: 12px;
           color: $text-secondary;
         }
@@ -346,8 +346,8 @@ onMounted(() => {
 
       .detail-item {
         display: flex;
-        flex-direction: column;
         gap: 4px;
+        flex-direction: column;
 
         .detail-label {
           font-size: 12px;
@@ -373,18 +373,15 @@ onMounted(() => {
 
     .cluster-status {
       display: flex;
+      gap: 8px;
       flex-direction: column;
       align-items: center;
-      gap: 8px;
 
       .status-label {
         font-size: 12px;
         color: $text-secondary;
       }
     }
-  }
-
-  .scroll-content {
   }
 
   .card {
@@ -399,22 +396,23 @@ onMounted(() => {
 
       .header-actions {
         display: flex;
-        align-items: center;
         gap: 8px;
+        align-items: center;
       }
     }
 
     .card-body {
-      padding: 0 16px 16px 16px;
+      padding: 0 16px 16px;
     }
   }
+
   .top-row {
     display: flex;
     gap: 16px;
 
     .card {
-      background-color: $bg_page;
       flex: 1;
+      background-color: $bg_page;
 
       .card-header {
         display: flex;
@@ -425,39 +423,39 @@ onMounted(() => {
 
         .header-actions {
           display: flex;
-          align-items: center;
           gap: 8px;
+          align-items: center;
         }
       }
 
       .card-body {
-        padding: 0 16px 16px 16px;
+        padding: 0 16px 16px;
       }
     }
 
     .radar-card {
       .card-body {
         display: flex;
+        gap: 16px;
         flex-direction: row;
         align-items: flex-start;
-        gap: 16px;
       }
 
       .radar-legend {
         display: flex;
-        flex-direction: column;
         gap: 8px;
+        flex-direction: column;
         flex: 1;
         min-width: 0;
 
         .legend-row {
           display: grid;
+          gap: 12px;
           grid-template-columns: 48px 1fr 1fr 1fr;
           align-items: center;
-          gap: 12px;
           padding: 8px 16px;
-          background: $bg-selected;
           border-radius: 8px;
+          background: $bg-selected;
         }
 
         .legend-ring {
@@ -470,23 +468,23 @@ onMounted(() => {
 
         .legend-col {
           display: flex;
+          gap: 4px;
           flex-direction: column;
           align-items: center;
           justify-content: center;
           height: 48px;
-          gap: 4px;
 
           .col-value {
             font-size: 14px;
             font-weight: 600;
-            color: $text-primary;
             line-height: 1;
+            color: $text-primary;
           }
 
           .col-label {
             font-size: 12px;
-            color: $text-secondary;
             line-height: 1;
+            color: $text-secondary;
           }
         }
       }
@@ -495,19 +493,19 @@ onMounted(() => {
     .node-card {
       .node-items {
         display: flex;
-        flex-direction: column;
         gap: 8px;
+        flex-direction: column;
         overflow-y: auto;
       }
 
       .node-item {
         display: grid;
+        gap: 16px;
         grid-template-columns: 32px 1fr 140px;
         align-items: center;
-        gap: 16px;
         padding: 8px 12px;
-        background: $bg-selected;
         border-radius: 6px;
+        background: $bg-selected;
 
         .node-icon {
           display: flex;
@@ -518,8 +516,8 @@ onMounted(() => {
 
         .node-info {
           display: flex;
-          flex-direction: column;
           gap: 2px;
+          flex-direction: column;
           min-width: 0;
 
           .node-name {
@@ -536,14 +534,14 @@ onMounted(() => {
 
         .node-usage {
           display: flex;
-          flex-direction: column;
           gap: 6px;
+          flex-direction: column;
 
           .usage-bar {
             display: grid;
+            gap: 8px;
             grid-template-columns: 32px 1fr 36px;
             align-items: center;
-            gap: 8px;
 
             .usage-label {
               font-size: 11px;
@@ -552,9 +550,9 @@ onMounted(() => {
 
             .usage-track {
               height: 6px;
-              background: #e4e7ed;
               border-radius: 3px;
               overflow: hidden;
+              background: #e4e7ed;
 
               .usage-fill {
                 height: 100%;

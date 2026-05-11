@@ -7,8 +7,8 @@
 <style lang="scss" scoped>
 .bee-page {
   display: flex;
-  flex-direction: column;
   gap: $spacing-md;
+  flex-direction: column;
   height: 100%;
 }
 </style>

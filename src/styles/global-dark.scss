@@ -8,10 +8,10 @@ body {
 }
 
 .bee-radio-search {
-  --status-search-bg-color: #{$bg-color};
-  --status-search-slider-bg-color: #{$bg-selected};
-  --status-search-color: #{$text-secondary};
   --status-search-active-color: #{$color-primary};
+  --status-search-bg-color: #{$bg-color};
+  --status-search-color: #{$text-secondary};
+  --status-search-slider-bg-color: #{$bg-selected};
 }
 
 .bee-button + .bee-button {

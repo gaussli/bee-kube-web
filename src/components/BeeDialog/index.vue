@@ -80,19 +80,19 @@ function handleConfirm() {
 .bee-dialog-mask {
   position: fixed;
   inset: 0;
+  z-index: 2000;
   display: flex;
   align-items: center;
   justify-content: center;
-  background-color: rgba(0, 0, 0, 0.6);
-  z-index: 2000;
+  background-color: rgb(0 0 0 / 60%);
 }
 
 .bee-dialog {
   width: var(--dialog-width);
-  background-color: $bg-overlay;
   border-radius: 12px;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
   overflow: hidden;
+  background-color: $bg-overlay;
+  box-shadow: 0 8px 32px rgb(0 0 0 / 40%);
 }
 
 .dialog-header {
@@ -100,6 +100,7 @@ function handleConfirm() {
   align-items: center;
   justify-content: space-between;
   padding: 8px 16px;
+
   // border-bottom: 1px solid rgba($text-secondary, 0.1);
 
   .dialog-title {
@@ -112,66 +113,55 @@ function handleConfirm() {
 .dialog-body {
   padding: 8px 16px;
   font-size: 14px;
-  color: $text-primary;
   line-height: 1.6;
+  color: $text-primary;
 }
 
 .dialog-footer {
   display: flex;
   justify-content: flex-end;
   padding: 16px;
+
   // border-top: 1px solid rgba($text-secondary, 0.1);
 }
 
 // 动画
 .dialog-fade-enter-active {
-  animation: dialogFadeIn 0.25s ease-out;
+  animation: dialog-fade-in 0.25s ease-out;
 }
 
 .dialog-fade-leave-active {
-  animation: dialogFadeOut 0.2s ease-in;
+  animation: dialog-fade-out 0.2s ease-in;
 }
 
 .dialog-fade-enter-active .bee-dialog {
-  animation: dialogScaleIn 0.25s ease-out;
+  animation: dialog-fade-in 0.25s ease-out;
 }
 
 .dialog-fade-leave-active .bee-dialog {
-  animation: dialogScaleOut 0.2s ease-in;
+  animation: dialog-fade-out 0.2s ease-in;
 }
 
-@keyframes dialogFadeIn {
+@keyframes dialog-fade-in {
   from {
     opacity: 0;
-  }
-  to {
-    opacity: 1;
-  }
-}
-
-@keyframes dialogFadeOut {
-  from {
-    opacity: 1;
-  }
-  to {
-    opacity: 0;
-  }
-}
-
-@keyframes dialogScaleIn {
-  from {
     transform: scale(0.95);
   }
+
   to {
+    opacity: 1;
     transform: scale(1);
   }
 }
 
-@keyframes dialogScaleOut {
+@keyframes dialog-fade-out {
   from {
+    opacity: 1;
     transform: scale(1);
   }
+
   to {
+    opacity: 0;
     transform: scale(0.95);
   }
 }

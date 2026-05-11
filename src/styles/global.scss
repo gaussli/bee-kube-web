@@ -3,9 +3,9 @@
 // 全局样式重置与默认配置
 
 * {
-  margin: 0;
-  padding: 0;
   box-sizing: border-box;
+  padding: 0;
+  margin: 0;
 }
 
 html,
@@ -14,10 +14,10 @@ body {
   height: 100%;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'Noto Sans', sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
   font-size: $font-size-base;
-  color: $text-primary;
-  background-color: $bg-color;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  color: $text-primary;
+  background-color: $bg-color;
 }
 
 #app {
@@ -36,55 +36,17 @@ body {
 }
 
 ::-webkit-scrollbar-thumb {
-  background: $bg-mask;
   border-radius: 3px;
+  background: $bg-mask;
 
   &:hover {
     background: $text-secondary;
   }
 }
 
-// 链接样式
-a {
-  color: $color-primary;
-  text-decoration: none;
-  transition: color 0.3s;
-
-  &:hover {
-    color: color.adjust($color-primary, $lightness: 10%);
-  }
-}
-
-// 图片
-img {
-  max-width: 100%;
-  height: auto;
-  vertical-align: middle;
-}
-
-// 禁用选中
-.no-select {
-  user-select: none;
-}
-
-// 文本省略
-.text-ellipsis {
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
-.text-ellipsis-2 {
-  display: -webkit-box;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  -webkit-line-clamp: 2;
-  -webkit-box-orient: vertical;
-}
-
 // 自定义组件样式变量
 .status-search {
-  --status-search-slider-bg-color: #fff;
-  --status-search-color: #909399;
   --status-search-active-color: #{$color-primary};
+  --status-search-color: #909399;
+  --status-search-slider-bg-color: #fff;
 }

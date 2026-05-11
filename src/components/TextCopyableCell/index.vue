@@ -31,8 +31,8 @@ async function handleCopy() {
 <style lang="scss" scoped>
 .text-copyable-cell {
   display: inline-flex;
-  align-items: center;
   gap: 4px;
+  align-items: center;
 
   .text {
     font-family: monospace;

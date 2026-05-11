@@ -31,20 +31,22 @@ function handleSearch() {
 .search-input {
   --el-border-radius-base: 16px;
   --el-font-size-base: 12px;
+
   width: 200px;
 
   :deep(.el-input__wrapper) {
-    box-shadow: none;
     padding: 0 0 0 16px;
+    box-shadow: none;
   }
 
   :deep(.el-input-group__append) {
-    box-shadow: none;
     padding: 0 8px 0 0;
+    box-shadow: none;
+
     .el-button {
       width: 32px;
-      margin: 0;
       padding: 0;
+      margin: 0;
       border: none;
     }
   }

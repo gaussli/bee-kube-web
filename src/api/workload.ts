@@ -1,10 +1,20 @@
 import request from '@/utils/request'
 import type {
-  DeploymentQueryReq, DeploymentPageResp, DeploymentResp,
-  StatefulSetQueryReq, StatefulSetPageResp, StatefulSetResp,
-  DaemonSetQueryReq, DaemonSetPageResp, DaemonSetResp,
-  JobQueryReq, JobPageResp, JobResp,
-  CronJobQueryReq, CronJobPageResp, CronJobResp
+  DeploymentQueryReq,
+  DeploymentPageResp,
+  DeploymentResp,
+  StatefulSetQueryReq,
+  StatefulSetPageResp,
+  StatefulSetResp,
+  DaemonSetQueryReq,
+  DaemonSetPageResp,
+  DaemonSetResp,
+  JobQueryReq,
+  JobPageResp,
+  JobResp,
+  CronJobQueryReq,
+  CronJobPageResp,
+  CronJobResp
 } from '@/types'
 
 // ==================== Deployment ====================

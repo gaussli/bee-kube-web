@@ -129,7 +129,7 @@ function handleSelect(index: string) {
 .bee-aside {
   display: flex;
   flex-direction: column;
-  width: 220px;
+  width: 200px;
   height: 100%;
   border-radius: $radius-sm;
   scrollbar-width: none; // 隐藏滚动条（Firefox）

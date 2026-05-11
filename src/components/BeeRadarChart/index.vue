@@ -3,7 +3,7 @@
     <svg :width="size" :height="size" :viewBox="`0 0 ${size} ${size}`">
       <defs>
         <!-- 数据区域径向渐变：从中心向外越来越浅 -->
-        <radialGradient :id="`radar-area-gradient-${uid}`" cx="50%" cy="50%" r="50%" gradientUnits="userSpaceOnUse" :fx="center" :fy="center" :fr="0" :r="radius">
+        <radialGradient :id="`radar-area-gradient-${uid}`" cx="50%" cy="50%" gradientUnits="userSpaceOnUse" :fx="center" :fy="center" :fr="0" :r="radius">
           <stop offset="0%" :stop-color="color" stop-opacity="0.6" />
           <stop offset="100%" :stop-color="color" stop-opacity="0.15" />
         </radialGradient>
@@ -321,8 +321,8 @@ watch(
 
 <style lang="scss" scoped>
 .bee-radar-chart {
-  display: inline-block;
   position: relative;
+  display: inline-block;
 
   svg {
     overflow: visible;
@@ -351,8 +351,8 @@ watch(
 
   .axis-label,
   .value-label {
-    user-select: none;
     pointer-events: none;
+    user-select: none;
   }
 
   .value-label {
@@ -364,26 +364,26 @@ watch(
     z-index: 1000;
     min-width: 140px;
     padding: 10px 12px;
-    background: $bg-overlay;
     border: 1px solid $border-primary;
     border-radius: 6px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    background: $bg-overlay;
+    box-shadow: 0 4px 12px rgb(0 0 0 / 30%);
     pointer-events: none;
 
     .tooltip-header {
+      padding-bottom: 6px;
+      margin-bottom: 8px;
+      border-bottom: 1px solid $border-secondary;
       font-size: 14px;
       font-weight: 500;
       color: $text-primary;
-      margin-bottom: 8px;
-      padding-bottom: 6px;
-      border-bottom: 1px solid $border-secondary;
     }
 
     .tooltip-content {
       .tooltip-item {
         display: flex;
-        justify-content: space-between;
         align-items: center;
+        justify-content: space-between;
         margin-top: 4px;
         font-size: 12px;
 
@@ -392,8 +392,8 @@ watch(
         }
 
         .tooltip-value {
-          color: $color-primary;
           font-weight: 500;
+          color: $color-primary;
         }
       }
     }
@@ -403,12 +403,13 @@ watch(
 @keyframes pulse {
   0%,
   100% {
-    transform: scale(1);
     opacity: 0.3;
+    transform: scale(1);
   }
+
   50% {
-    transform: scale(1.8);
     opacity: 0;
+    transform: scale(1.8);
   }
 }
 

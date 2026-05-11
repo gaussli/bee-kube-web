@@ -17,27 +17,27 @@ defineProps<{
 <style lang="scss" scoped>
 .permission-info {
   display: flex;
+  gap: 2px;
   flex-direction: column;
   justify-content: center;
-  gap: 2px;
 
   .permission-code {
-    font-size: 12px;
-    color: $text-secondary;
-    line-height: 1.2;
-    white-space: nowrap;
     overflow: hidden;
+    font-size: 12px;
+    line-height: 1.2;
+    color: $text-secondary;
     text-overflow: ellipsis;
+    white-space: nowrap;
   }
 
   .permission-name {
+    overflow: hidden;
     font-size: 14px;
     font-weight: 600;
-    color: $text-primary;
     line-height: 1.2;
-    white-space: nowrap;
-    overflow: hidden;
+    color: $text-primary;
     text-overflow: ellipsis;
+    white-space: nowrap;
   }
 }
 </style>

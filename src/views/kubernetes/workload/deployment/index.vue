@@ -385,9 +385,9 @@ onMounted(() => {
 
 <style lang="scss" scoped>
 .deployment-table {
-  height: 100%;
   display: flex;
   flex-direction: column;
+  height: 100%;
 }
 
 .page-header {
@@ -398,34 +398,34 @@ onMounted(() => {
 }
 
 .page-body {
-  flex: 1;
   display: flex;
   flex-direction: column;
+  flex: 1;
   min-height: 0;
   overflow: hidden;
   background-color: $bg-page;
 }
 
 .table-query {
-  flex-shrink: 0;
   display: flex;
+  gap: 12px;
+  flex-shrink: 0;
   align-items: center;
   justify-content: space-between;
   padding: 16px 20px;
-  gap: 12px;
 
   .table-query-left {
     display: flex;
-    align-items: center;
     gap: 12px;
+    align-items: center;
   }
 }
 
 .table-body {
   flex: 1;
   min-height: 0;
-  overflow-y: auto;
   padding: 0 20px;
+  overflow-y: auto;
 
   :deep(.el-table) {
     height: 100%;
@@ -458,45 +458,45 @@ onMounted(() => {
 
   .status-cell {
     display: flex;
-    align-items: center;
     gap: 8px;
+    align-items: center;
 
     .status-dot {
+      flex-shrink: 0;
       width: 8px;
       height: 8px;
       border-radius: 50%;
-      flex-shrink: 0;
     }
 
     .status-info {
       display: flex;
-      flex-direction: column;
       gap: 1px;
+      flex-direction: column;
 
       .status-label {
         font-size: 14px;
         font-weight: 500;
-        color: $text-regular;
         line-height: 1.2;
+        color: $text-regular;
       }
 
       .status-en {
         font-size: 12px;
-        color: $text-secondary;
         line-height: 1.2;
+        color: $text-secondary;
       }
     }
   }
 
   .name-cell {
     display: flex;
-    flex-direction: column;
     gap: 2px;
+    flex-direction: column;
 
     .name-row {
       display: flex;
-      align-items: center;
       gap: 4px;
+      align-items: center;
     }
 
     .name-text {
@@ -512,11 +512,11 @@ onMounted(() => {
     }
 
     .desc-text {
+      overflow: hidden;
       font-size: 12px;
       color: $text-secondary;
-      white-space: nowrap;
-      overflow: hidden;
       text-overflow: ellipsis;
+      white-space: nowrap;
     }
   }
 
@@ -528,8 +528,8 @@ onMounted(() => {
 }
 
 .table-footer {
-  flex-shrink: 0;
   display: flex;
+  flex-shrink: 0;
   align-items: center;
   justify-content: space-between;
   padding: 16px 20px;
@@ -543,8 +543,8 @@ onMounted(() => {
 
 .delete-deployment-tags {
   display: flex;
-  flex-wrap: wrap;
   gap: 8px;
+  flex-wrap: wrap;
   margin-top: 12px;
 }
 </style>

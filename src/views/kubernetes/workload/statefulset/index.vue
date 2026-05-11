@@ -2,11 +2,7 @@
   <div class="statefulset-table">
     <!-- 页面标题 -->
     <div class="page-header">
-      <BeePageTitle
-        :icon="Collection"
-        title="有状态应用"
-        description="有状态应用（StatefulSet）是 Kubernetes 中用于管理有状态工作负载的控制器，为每个 Pod 提供稳定的网络标识和持久存储。"
-      />
+      <BeePageTitle :icon="Collection" title="有状态应用" description="有状态应用（StatefulSet）是 Kubernetes 中用于管理有状态工作负载的控制器，为每个 Pod 提供稳定的网络标识和持久存储。" />
     </div>
 
     <!-- 页面内容 -->
@@ -329,9 +325,9 @@ onMounted(() => {
 
 <style lang="scss" scoped>
 .statefulset-table {
-  height: 100%;
   display: flex;
   flex-direction: column;
+  height: 100%;
 }
 
 .page-header {
@@ -342,34 +338,34 @@ onMounted(() => {
 }
 
 .page-body {
-  flex: 1;
   display: flex;
   flex-direction: column;
+  flex: 1;
   min-height: 0;
   overflow: hidden;
   background-color: $bg-page;
 }
 
 .table-query {
-  flex-shrink: 0;
   display: flex;
+  gap: 12px;
+  flex-shrink: 0;
   align-items: center;
   justify-content: space-between;
   padding: 16px 20px;
-  gap: 12px;
 
   .table-query-left {
     display: flex;
-    align-items: center;
     gap: 12px;
+    align-items: center;
   }
 }
 
 .table-body {
   flex: 1;
   min-height: 0;
-  overflow-y: auto;
   padding: 0 20px;
+  overflow-y: auto;
 
   :deep(.el-table) {
     height: 100%;
@@ -401,13 +397,13 @@ onMounted(() => {
 
   .name-cell {
     display: flex;
-    flex-direction: column;
     gap: 2px;
+    flex-direction: column;
 
     .name-row {
       display: flex;
-      align-items: center;
       gap: 4px;
+      align-items: center;
     }
 
     .name-text {
@@ -423,11 +419,11 @@ onMounted(() => {
     }
 
     .desc-text {
+      overflow: hidden;
       font-size: 12px;
       color: $text-secondary;
-      white-space: nowrap;
-      overflow: hidden;
       text-overflow: ellipsis;
+      white-space: nowrap;
     }
   }
 
@@ -439,8 +435,8 @@ onMounted(() => {
 }
 
 .table-footer {
-  flex-shrink: 0;
   display: flex;
+  flex-shrink: 0;
   align-items: center;
   justify-content: space-between;
   padding: 16px 20px;
@@ -454,8 +450,8 @@ onMounted(() => {
 
 .delete-statefulset-tags {
   display: flex;
-  flex-wrap: wrap;
   gap: 8px;
+  flex-wrap: wrap;
   margin-top: 12px;
 }
 </style>

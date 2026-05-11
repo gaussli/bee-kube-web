@@ -104,15 +104,15 @@ src/
 
 ## 技术栈
 
-| 技术 | 说明 |
-|------|------|
-| Vue 3 | 渐进式 JavaScript 框架 |
-| TypeScript | 类型化的 JavaScript 超集 |
-| Vite | 新一代前端构建工具 |
-| Pinia | 直观的状态管理解决方案 |
-| Vue Router | Vue.js 官方路由 |
-| Element Plus | Vue 3 UI 组件库 |
-| SCSS | CSS 预处理器 |
+| 技术         | 说明                     |
+| ------------ | ------------------------ |
+| Vue 3        | 渐进式 JavaScript 框架   |
+| TypeScript   | 类型化的 JavaScript 超集 |
+| Vite         | 新一代前端构建工具       |
+| Pinia        | 直观的状态管理解决方案   |
+| Vue Router   | Vue.js 官方路由          |
+| Element Plus | Vue 3 UI 组件库          |
+| SCSS         | CSS 预处理器             |
 
 ## 开发
 

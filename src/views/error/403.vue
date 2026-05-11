@@ -35,10 +35,10 @@ function handleGoBack() {
 
 <style lang="scss" scoped>
 .no-permission {
-  height: 100%;
   display: flex;
   align-items: center;
   justify-content: center;
+  height: 100%;
   background-color: $bg-page;
 
   .no-permission-content {
@@ -51,18 +51,18 @@ function handleGoBack() {
       width: 80px;
       height: 80px;
       margin-bottom: 24px;
-      background: linear-gradient(135deg, rgba($color-primary, 0.1) 0%, rgba($color-primary, 0.05) 100%);
       border-radius: 20px;
       font-size: 40px;
       color: $color-primary;
+      background: linear-gradient(135deg, rgba($color-primary, 0.1) 0%, rgba($color-primary, 0.05) 100%);
     }
 
     .title {
       margin: 0 0 16px;
       font-size: 72px;
       font-weight: 700;
-      color: $text-primary;
       line-height: 1;
+      color: $text-primary;
     }
 
     .description {

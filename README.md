@@ -104,15 +104,15 @@ src/
 
 ## Tech Stack
 
-| Technology | Description |
-|------------|-------------|
-| Vue 3 | Progressive JavaScript framework |
-| TypeScript | Typed superset of JavaScript |
-| Vite | Next-generation frontend build tool |
-| Pinia | Intuitive, type-safe state management |
-| Vue Router | The official router for Vue.js |
-| Element Plus | Vue 3 UI library |
-| SCSS | CSS preprocessor |
+| Technology   | Description                           |
+| ------------ | ------------------------------------- |
+| Vue 3        | Progressive JavaScript framework      |
+| TypeScript   | Typed superset of JavaScript          |
+| Vite         | Next-generation frontend build tool   |
+| Pinia        | Intuitive, type-safe state management |
+| Vue Router   | The official router for Vue.js        |
+| Element Plus | Vue 3 UI library                      |
+| SCSS         | CSS preprocessor                      |
 
 ## Development
 

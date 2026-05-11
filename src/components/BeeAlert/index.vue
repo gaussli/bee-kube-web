@@ -38,14 +38,14 @@ const iconName = computed(() => {
 <style lang="scss" scoped>
 .bee-alert {
   display: flex;
-  align-items: center;
   gap: 8px;
+  align-items: center;
   padding: 8px 16px;
   border: 1px solid rgba($color-primary, 0.3);
-  color: $color-primary;
-  background: rgba($color-primary, 0.1);
   border-radius: 8px;
   font-size: $font-size-sm;
+  color: $color-primary;
+  background: rgba($color-primary, 0.1);
 
   &--success {
     border-color: rgba($color-success, 0.3);
@@ -54,15 +54,15 @@ const iconName = computed(() => {
   }
 
   &--warning {
-    background-color: rgba($color-warning, 0.1);
-    color: $color-warning;
     border-color: rgba($color-warning, 0.3);
+    color: $color-warning;
+    background-color: rgba($color-warning, 0.1);
   }
 
   &--danger {
-    background-color: rgba($color-danger, 0.1);
-    color: $color-danger;
     border-color: rgba($color-danger, 0.3);
+    color: $color-danger;
+    background-color: rgba($color-danger, 0.1);
   }
 }
 </style>

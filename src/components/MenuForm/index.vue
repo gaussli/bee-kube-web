@@ -184,10 +184,10 @@ defineExpose({ validate, resetFields, getFormData })
 
 .form-content {
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
   gap: 16px 24px;
+  grid-template-columns: repeat(2, 1fr);
 
-  @media (max-width: 768px) {
+  @media (width <= 768px) {
     grid-template-columns: 1fr;
   }
 }
@@ -195,31 +195,31 @@ defineExpose({ validate, resetFields, getFormData })
 .form-item-full {
   grid-column: span 2;
 
-  @media (max-width: 768px) {
+  @media (width <= 768px) {
     grid-column: span 1;
   }
 }
 
 :deep(.el-form-item__label) {
-  color: $text-secondary;
-  white-space: nowrap;
   display: flex;
+  flex-shrink: 0;
   align-items: center;
   width: 100px;
-  flex-shrink: 0;
+  color: $text-secondary;
+  white-space: nowrap;
 
   .el-icon {
     margin-right: 4px;
-    color: $text-secondary;
     font-size: 14px;
+    color: $text-secondary;
   }
 }
 
 :deep(.el-input__wrapper) {
+  padding: 4px 12px;
   border: 1px solid rgba($text-secondary, 0.15);
   border-radius: 8px;
   box-shadow: none;
-  padding: 4px 12px;
 
   &:focus {
     border-color: $color-primary;
@@ -244,10 +244,10 @@ defineExpose({ validate, resetFields, getFormData })
 }
 
 :deep(.el-textarea__inner) {
-  background: rgba($bg-color, 0.6);
   border: 1px solid rgba($text-secondary, 0.15);
   border-radius: 8px;
   color: $text-primary;
+  background: rgba($bg-color, 0.6);
 
   &::placeholder {
     color: $text-placeholder;
@@ -264,19 +264,19 @@ defineExpose({ validate, resetFields, getFormData })
 }
 
 :deep(.el-radio) {
-  margin-right: 16px;
   display: inline-flex;
   align-items: center;
+  margin-right: 16px;
 }
 
 :deep(.el-radio__input.is-checked .el-radio__inner) {
-  background: $color-primary;
   border-color: $color-primary;
+  background: $color-primary;
 }
 
 :deep(.el-radio__inner) {
-  background: rgba($bg-color, 0.6);
   border-color: rgba($text-secondary, 0.3);
+  background: rgba($bg-color, 0.6);
 }
 
 :deep(.el-radio__label) {
@@ -285,8 +285,8 @@ defineExpose({ validate, resetFields, getFormData })
 
 .radio-status {
   display: inline-flex;
-  align-items: center;
   gap: 6px;
+  align-items: center;
 
   .status-dot {
     width: 6px;

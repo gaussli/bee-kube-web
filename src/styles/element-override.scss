@@ -6,20 +6,21 @@
 }
 
 .el-menu {
-  --el-menu-text-color: #{$text-secondary};
   --el-menu-active-color: #{$text-regular};
-  --el-menu-sub-item-height: 46px;
   --el-menu-item-height: 46px;
+  --el-menu-sub-item-height: 46px;
+  --el-menu-text-color: #{$text-secondary};
+
   background-color: transparent;
 
   .el-menu-item,
   .el-sub-menu__title {
-    border-radius: $radius-full;
     margin-top: $spacing-xs;
+    border-radius: $radius-full;
 
     &:hover {
-      background-color: $bg-hover;
       color: $text-hover;
+      background-color: $bg-hover;
     }
   }
 
@@ -30,24 +31,26 @@
 
 .el-card {
   --el-card-bg-color: #{$bg-page};
+
   border: none;
 }
 
 .el-table {
   --el-table-bg-color: #{$bg-page};
-  --el-table-header-bg-color: #{$bg-page};
-  --el-table-tr-bg-color: #{$bg-page};
   --el-table-border-color: #{$bg-selected};
+  --el-table-header-bg-color: #{$bg-page};
   --el-table-header-text-color: #{$text-primary};
-  --el-table-text-color: #{$text-primary};
+
   // row hover
-  --el-table-row-hover-bg-color: #{$bg_selected};
   --el-table-row-hover-bg-color: #{$bg_hover};
+  --el-table-text-color: #{$text-primary};
+  --el-table-tr-bg-color: #{$bg-page};
 }
 
 .el-loading-mask {
   --el-mask-color: #{$bg-page};
   --el-table-text-color: #{$text-primary};
+
   .el-loading-spinner .circular .path {
     stroke: $text-primary;
   }
@@ -63,10 +66,12 @@
 
   .el-select__wrapper {
     --el-input-text-color: #{$text-primary};
+
+    border-radius: 16px;
     font-size: #{$font-size-sm};
     background-color: #{$bg-color};
     box-shadow: none;
-    border-radius: 16px;
+
     &.is-hovering:not(.is-focused) {
       box-shadow: 0 0 0 1px #{$bg-selected};
     }
@@ -74,48 +79,47 @@
 
   :is(.btn-prev, .btn-next, .el-pager li) {
     --el-pagination-bg-color: none;
-    --el-pagination-hover-color: #{$text-primary};
     --el-pagination-button-color: #{$text-secondary};
+    --el-pagination-hover-color: #{$text-primary};
   }
 
   :is(.btn-prev:disabled, .btn-prev.is-disabled, .btn-next:disabled, .btn-next.is-disabled) {
-    --el-pagination-button-disabled-color: #{$text-disabled};
     --el-pagination-button-disabled-bg-color: none;
+    --el-pagination-button-disabled-color: #{$text-disabled};
   }
 
   .el-pagination__jump {
     .el-input {
       --el-input-bg-color: #{$bg-color};
       --el-input-border-color: none;
-      --el-input-hover-border-color: #{$bg-selected};
       --el-input-border-radius: 16px;
+      --el-input-hover-border-color: #{$bg-selected};
+
       font-size: #{$font-size-sm};
     }
   }
 }
 
 .el-button {
-  font-size: #{$font-size-sm};
-  --el-button-text-color: #{$text-primary};
-  --el-button-hover-text-color: #{$text-regular};
-  --el-button-active-text-color: #{$text-regular};
-
-  --el-button-bg-color: none;
-  --el-button-hover-bg-color: #{$color-primary};
   --el-button-active-bg-color: #{$color-primary-400};
-
-  --el-button-border-color: #{$text-secondary};
-  --el-button-hover-border-color: #{$color-primary};
   --el-button-active-border-color: #{$color-primary};
-
-  --el-button-hover-link-text-color: #{$color-primary-400};
   --el-button-active-color: #{$text-regular};
+  --el-button-active-text-color: #{$text-regular};
+  --el-button-bg-color: none;
+  --el-button-border-color: #{$text-secondary};
+  --el-button-hover-bg-color: #{$color-primary};
+  --el-button-hover-border-color: #{$color-primary};
+  --el-button-hover-link-text-color: #{$color-primary-400};
+  --el-button-hover-text-color: #{$text-regular};
+  --el-button-text-color: #{$text-primary};
+
+  font-size: #{$font-size-sm};
 }
 
 .el-input {
+  --el-color-info: #{$text-primary};
   --el-fill-color-light: #{$bg-color};
   --el-input-text-color: #{$text-primary};
-  --el-color-info: #{$text-primary};
   --el-text-color-placeholder: #{$text-placeholder};
 
   .el-input__wrapper {
@@ -124,11 +128,11 @@
 }
 
 .el-checkbox {
+  --el-border: var(--el-border-width) var(--el-border-style) var(--el-border-color);
+  --el-border-color: #{$text-secondary};
   --el-checkbox-bg-color: transparent;
   --el-checkbox-checked-bg-color: transparent;
+  --el-checkbox-checked-icon-color: #{$color-primary};
   --el-checkbox-checked-input-border-color: #{$color-primary};
   --el-checkbox-text-color: #{$color-primary};
-  --el-checkbox-checked-icon-color: #{$color-primary};
-  --el-border-color: #{$text-secondary};
-  --el-border: var(--el-border-width) var(--el-border-style) var(--el-border-color);
 }

@@ -24,47 +24,47 @@ defineProps<{
 <style lang="scss" scoped>
 .node-profile {
   display: flex;
-  align-items: center;
   gap: $spacing-sm;
+  align-items: center;
   height: 42px;
 
   .node-avatar {
-    flex-shrink: 0;
-    width: 36px;
-    height: 36px;
     display: flex;
+    flex-shrink: 0;
     align-items: center;
     justify-content: center;
-    background-color: $bg-hover;
+    width: 36px;
+    height: 36px;
     border-radius: 8px;
-    color: $color-primary;
     font-size: 18px;
+    color: $color-primary;
+    background-color: $bg-hover;
   }
 
   .node-info {
     display: flex;
+    gap: 2px;
     flex-direction: column;
     justify-content: center;
-    gap: 2px;
     min-width: 0;
 
     .node-name {
+      overflow: hidden;
       font-size: 14px;
       font-weight: 600;
-      color: $text-regular;
       line-height: 1.2;
-      white-space: nowrap;
-      overflow: hidden;
+      color: $text-regular;
       text-overflow: ellipsis;
+      white-space: nowrap;
     }
 
     .node-ip {
+      overflow: hidden;
       font-size: 12px;
       line-height: 1.2;
       color: $text-secondary;
-      white-space: nowrap;
-      overflow: hidden;
       text-overflow: ellipsis;
+      white-space: nowrap;
     }
   }
 }

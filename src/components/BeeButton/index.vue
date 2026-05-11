@@ -53,95 +53,96 @@ defineExpose({ loading })
 
 <style lang="scss" scoped>
 @use 'sass:color';
+
 .bee-button {
   display: inline-flex;
+  gap: 4px;
   align-items: center;
   justify-content: center;
   height: 32px;
-  gap: 4px;
   padding: 4px 12px;
   border: 1px solid $border-secondary;
   border-radius: 16px;
-  background: transparent;
-  color: $text-secondary;
   font-size: 12px;
+  color: $text-secondary;
+  white-space: nowrap;
+  background: transparent;
   cursor: pointer;
   transition: all 0.3s;
-  white-space: nowrap;
 
   &__icon.is-loading {
     animation: rotating 2s linear infinite;
   }
 
   // hover 状态
-  &:hover:not(.is-disabled):not(.is-loading) {
-    background: $color-primary;
+  &:hover:not(.is-disabled, .is-loading) {
     border-color: $color-primary;
     color: $text-regular;
+    background: $color-primary;
 
     &.bee-button--success {
-      background: $color-success;
       border-color: $color-success;
+      background: $color-success;
     }
 
     &.bee-button--warning {
-      background: $color-warning;
       border-color: $color-warning;
+      background: $color-warning;
     }
 
     &.bee-button--danger {
-      background: $color-danger;
       border-color: $color-danger;
+      background: $color-danger;
     }
 
     &.bee-button--info {
-      background: $color-info;
       border-color: $color-info;
+      background: $color-info;
     }
 
     &.bee-button--default {
-      background: rgba(#fff, 0.1);
       border-color: rgba(#fff, 0.1);
+      background: rgba(#fff, 0.1);
     }
   }
 
   // active 状态
-  &:active:not(.is-disabled):not(.is-loading) {
-    background: color.adjust($color-primary, $lightness: -10%);
+  &:active:not(.is-disabled, .is-loading) {
     border-color: color.adjust($color-primary, $lightness: -10%);
     color: $text-regular;
+    background: color.adjust($color-primary, $lightness: -10%);
 
     &.bee-button--success {
-      background: color.adjust($color-success, $lightness: -10%);
       border-color: color.adjust($color-success, $lightness: -10%);
+      background: color.adjust($color-success, $lightness: -10%);
     }
 
     &.bee-button--warning {
-      background: color.adjust($color-warning, $lightness: -10%);
       border-color: color.adjust($color-warning, $lightness: -10%);
+      background: color.adjust($color-warning, $lightness: -10%);
     }
 
     &.bee-button--danger {
-      background: color.adjust($color-danger, $lightness: -10%);
       border-color: color.adjust($color-danger, $lightness: -10%);
+      background: color.adjust($color-danger, $lightness: -10%);
     }
 
     &.bee-button--info {
-      background: color.adjust($color-info, $lightness: -10%);
       border-color: color.adjust($color-info, $lightness: -10%);
+      background: color.adjust($color-info, $lightness: -10%);
     }
 
     &.bee-button--default {
-      background: rgba(#fff, 0.2);
       border-color: rgba(#fff, 0.2);
+      background: rgba(#fff, 0.2);
     }
   }
 
   // disabled 状态
   &.is-disabled {
-    background: transparent;
     border-color: $border-disabled;
     color: $text-disabled;
+    background: transparent;
     cursor: not-allowed;
   }
 
@@ -164,6 +165,7 @@ defineExpose({ loading })
   from {
     transform: rotate(0deg);
   }
+
   to {
     transform: rotate(360deg);
   }

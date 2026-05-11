@@ -38,13 +38,7 @@
             <span>菜单权限</span>
           </div>
           <div class="panel-body">
-            <BeeTree
-              ref="menuTreeRef"
-              v-model="selectedMenuIds"
-              :data="menuTreeData"
-              :props="{ children: 'children', label: 'name' }"
-              :default-expand-all="true"
-            >
+            <BeeTree ref="menuTreeRef" v-model="selectedMenuIds" :data="menuTreeData" :props="{ children: 'children', label: 'name' }" :default-expand-all="true">
               <template #default="{ data }">
                 <div class="menu-tree-node">
                   <div class="menu-info">
@@ -186,54 +180,54 @@ onMounted(() => {
 
 <style lang="scss" scoped>
 .role-assign-permissions {
-  height: 100%;
   display: flex;
   flex-direction: column;
+  height: 100%;
   background-color: $bg-page;
 }
 
 .assign-header {
-  flex-shrink: 0;
   display: flex;
+  flex-shrink: 0;
   align-items: center;
   height: 48px;
   padding: 0 8px;
   border-bottom: 1px solid rgba($text-secondary, 0.1);
 
   .header-title {
-    color: $text-secondary;
     font-weight: 600;
+    color: $text-secondary;
   }
 }
 
 .assign-body {
+  display: flex;
+  gap: 16px;
+  flex-direction: column;
   flex: 1;
   min-height: 0;
   padding: 16px;
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
   overflow-y: auto;
-  animation: fadeSlideIn 0.3s ease-out;
+  animation: fade-slide-in 0.3s ease-out;
 }
 
 .assign-footer {
-  flex-shrink: 0;
   display: flex;
-  justify-content: flex-end;
-  align-items: center;
   gap: 12px;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: flex-end;
   padding: 16px 20px;
   border-top: 1px solid rgba($text-secondary, 0.1);
 }
 
 .role-header {
   display: flex;
-  align-items: center;
   gap: 20px;
+  align-items: center;
   padding: 24px;
-  background-color: $bg-color;
   border-radius: 12px;
+  background-color: $bg-color;
 
   .role-icon {
     display: flex;
@@ -241,22 +235,22 @@ onMounted(() => {
     justify-content: center;
     width: 56px;
     height: 56px;
-    background: linear-gradient(135deg, rgba($color-primary, 0.15) 0%, rgba($color-primary, 0.08) 100%);
     border-radius: 12px;
     font-size: 24px;
     color: $color-primary;
+    background: linear-gradient(135deg, rgba($color-primary, 0.15) 0%, rgba($color-primary, 0.08) 100%);
   }
 
   .role-meta {
     display: flex;
-    flex-direction: column;
     gap: 8px;
+    flex-direction: column;
     overflow: hidden;
 
     .role-name-row {
       display: flex;
-      align-items: center;
       gap: 12px;
+      align-items: center;
 
       .role-name {
         font-size: 20px;
@@ -266,30 +260,30 @@ onMounted(() => {
     }
 
     .role-code {
+      font-family: 'SF Mono', Consolas, monospace;
       font-size: 12px;
       color: $text-secondary;
-      font-family: 'SF Mono', Consolas, monospace;
     }
   }
 }
 
 .permissions-panel {
-  flex: 1;
-  min-height: 300px;
   display: flex;
   flex-direction: column;
-  background-color: $bg-color;
+  flex: 1;
+  min-height: 300px;
   border-radius: 12px;
   overflow: hidden;
+  background-color: $bg-color;
 
   .panel-header {
     display: flex;
-    align-items: center;
     gap: 8px;
+    align-items: center;
     padding: 12px 16px;
     border-bottom: 1px solid rgba($text-secondary, 0.1);
-    color: $text-secondary;
     font-weight: 500;
+    color: $text-secondary;
   }
 
   .panel-body {
@@ -301,15 +295,15 @@ onMounted(() => {
 
 .menu-tree-node {
   display: flex;
+  flex: 1;
   align-items: center;
   justify-content: space-between;
-  flex: 1;
   padding-right: 8px;
 
   .menu-info {
     display: flex;
-    align-items: center;
     gap: 12px;
+    align-items: center;
 
     .menu-name {
       font-size: 14px;
@@ -317,23 +311,24 @@ onMounted(() => {
     }
 
     .menu-code {
+      font-family: 'SF Mono', Consolas, monospace;
       font-size: 12px;
       color: $text-tertiary;
-      font-family: 'SF Mono', Consolas, monospace;
     }
   }
 }
 
 // 渐入渐出动画
 .fade-slide-enter-active {
-  animation: fadeSlideIn 0.3s ease-out;
+  animation: fade-slide-in 0.3s ease-out;
 }
 
-@keyframes fadeSlideIn {
+@keyframes fade-slide-in {
   from {
     opacity: 0;
     transform: translateX(20px);
   }
+
   to {
     opacity: 1;
     transform: translateX(0);

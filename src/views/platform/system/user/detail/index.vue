@@ -210,54 +210,54 @@ onMounted(() => {
 
 <style lang="scss" scoped>
 .user-detail {
-  height: 100%;
   display: flex;
   flex-direction: column;
+  height: 100%;
   background-color: $bg-page;
 }
 
 .detail-header {
-  flex-shrink: 0;
   display: flex;
+  flex-shrink: 0;
   align-items: center;
   height: 48px;
   padding: 0 8px;
   border-bottom: 1px solid rgba($text-secondary, 0.1);
 
   .header-title {
-    color: $text-secondary;
     font-weight: 600;
+    color: $text-secondary;
   }
 }
 
 .detail-body {
-  flex: 1;
-  overflow-y: auto;
-  min-height: 0;
   display: flex;
-  flex-direction: column;
   gap: 16px;
+  flex-direction: column;
+  flex: 1;
+  min-height: 0;
   padding: 16px 20px;
+  overflow-y: auto;
 }
 
 .user-header {
   display: flex;
-  align-items: center;
   gap: 20px;
+  align-items: center;
   padding: 24px;
-  background-color: $bg-color;
   border-radius: 12px;
+  background-color: $bg-color;
 
   .user-meta {
     display: flex;
-    flex-direction: column;
     gap: 8px;
+    flex-direction: column;
     overflow: hidden;
 
     .user-name-row {
       display: flex;
-      align-items: center;
       gap: 12px;
+      align-items: center;
 
       .user-name {
         font-size: 20px;
@@ -275,13 +275,13 @@ onMounted(() => {
 
 .info-grid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
   gap: 16px;
+  grid-template-columns: repeat(3, 1fr);
 
   .info-section {
-    background-color: $bg-color;
-    border-radius: 12px;
     padding: 20px;
+    border-radius: 12px;
+    background-color: $bg-color;
 
     &-full {
       grid-column: 1 / -1;
@@ -289,48 +289,48 @@ onMounted(() => {
 
     .section-title {
       display: flex;
-      align-items: center;
       gap: 8px;
+      align-items: center;
+      padding-bottom: 12px;
+      margin-bottom: 16px;
+      border-bottom: 1px solid $bg-selected;
       font-size: 14px;
       font-weight: 600;
       color: $text-primary;
-      margin-bottom: 16px;
-      padding-bottom: 12px;
-      border-bottom: 1px solid $bg-selected;
 
       .el-icon {
-        color: $color-primary;
         font-size: 16px;
+        color: $color-primary;
       }
 
       .section-title-en {
+        margin-left: 4px;
         font-size: 12px;
         font-weight: 400;
         color: $text-tertiary;
-        margin-left: 4px;
       }
     }
 
     .info-list {
       display: flex;
-      flex-direction: column;
       gap: 16px;
+      flex-direction: column;
 
       .info-item {
         display: flex;
-        justify-content: space-between;
-        align-items: center;
         gap: 16px;
+        align-items: center;
+        justify-content: space-between;
 
         .info-label {
           display: flex;
-          align-items: center;
           gap: 8px;
+          align-items: center;
 
           .el-icon {
-            color: $text-tertiary;
-            font-size: 14px;
             flex-shrink: 0;
+            font-size: 14px;
+            color: $text-tertiary;
           }
 
           .label-zh {
@@ -339,17 +339,17 @@ onMounted(() => {
           }
 
           .label-en {
+            margin-left: 2px;
             font-size: 12px;
             color: $text-tertiary;
-            margin-left: 2px;
           }
         }
 
         .info-value {
+          overflow: hidden;
           font-size: 14px;
           color: $text-primary;
           text-align: right;
-          overflow: hidden;
           text-overflow: ellipsis;
           white-space: nowrap;
         }
@@ -360,16 +360,16 @@ onMounted(() => {
 
 .description {
   font-size: 14px;
-  color: $text-secondary;
   line-height: 1.6;
+  color: $text-secondary;
 }
 
 // 渐入渐出动画
 .fade-slide-enter-active {
-  animation: fadeSlideIn 0.3s ease-out;
+  animation: fade-slide-in 0.3s ease-out;
 }
 
 .fade-slide-leave-active {
-  animation: fadeSlideOut 0.2s ease-in;
+  animation: fade-slide-out 0.2s ease-in;
 }
 </style>

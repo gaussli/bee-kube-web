@@ -67,8 +67,8 @@ defineOptions({ name: 'Dashboard' })
 .dashboard {
   .stat-card {
     display: flex;
-    align-items: center;
     gap: $spacing-md;
+    align-items: center;
 
     .stat-icon {
       display: flex;
@@ -77,8 +77,8 @@ defineOptions({ name: 'Dashboard' })
       width: 60px;
       height: 60px;
       border-radius: 8px;
-      color: white;
       font-size: 24px;
+      color: white;
     }
 
     .stat-info {
@@ -89,9 +89,9 @@ defineOptions({ name: 'Dashboard' })
       }
 
       .stat-label {
+        margin-top: 4px;
         font-size: 14px;
         color: $text-secondary;
-        margin-top: 4px;
       }
     }
   }

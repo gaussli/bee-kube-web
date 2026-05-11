@@ -9,19 +9,19 @@
     <div class="page-body">
       <el-form ref="formRef" :model="formData" :rules="formRules" label-width="140px" class="create-form">
         <el-form-item label="所属集群" prop="clusterId">
-          <el-select v-model="formData.clusterId" placeholder="选择集群" style="width: 300px;">
+          <el-select v-model="formData.clusterId" placeholder="选择集群" style="width: 300px">
             <el-option label="默认集群" value="default" />
           </el-select>
         </el-form-item>
 
         <el-form-item label="命名空间" prop="namespace">
-          <el-select v-model="formData.namespace" placeholder="选择命名空间" style="width: 300px;">
+          <el-select v-model="formData.namespace" placeholder="选择命名空间" style="width: 300px">
             <el-option label="default" value="default" />
           </el-select>
         </el-form-item>
 
         <el-form-item label="应用名称" prop="name">
-          <el-input v-model="formData.name" placeholder="请输入应用名称" style="width: 300px;" />
+          <el-input v-model="formData.name" placeholder="请输入应用名称" style="width: 300px" />
         </el-form-item>
 
         <el-form-item label="副本数量" prop="replicas">
@@ -86,10 +86,10 @@ import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { ElMessage, type FormInstance } from 'element-plus'
 import { Document, Plus, Delete, Close, Check } from '@element-plus/icons-vue'
-import type { DeploymentResp } from '@/types'
 import { createDeployment } from '@/api'
-import BeePageTitle from '@/components/BeePageTitle/index.vue'
 import BeeButton from '@/components/BeeButton/index.vue'
+import BeePageTitle from '@/components/BeePageTitle/index.vue'
+import type { DeploymentResp } from '@/types'
 
 defineOptions({ name: 'DeploymentCreate' })
 
@@ -178,14 +178,14 @@ async function handleSubmit() {
 
 <style lang="scss" scoped>
 .deployment-create {
-  height: 100%;
   display: flex;
   flex-direction: column;
+  height: 100%;
 }
 
 .page-header {
   flex-shrink: 0;
-  padding: 16px 20px 0 20px;
+  padding: 16px 20px 0;
   margin-bottom: 16px;
   background-color: $bg-page;
 }
@@ -193,14 +193,14 @@ async function handleSubmit() {
 .page-body {
   flex: 1;
   min-height: 0;
-  overflow-y: auto;
   padding: 0 20px;
+  overflow-y: auto;
   background-color: $bg-page;
 }
 
 .page-footer {
-  flex-shrink: 0;
   display: flex;
+  flex-shrink: 0;
   justify-content: space-between;
   padding: 16px 20px;
   background-color: $bg-page;
@@ -213,14 +213,14 @@ async function handleSubmit() {
 
 .key-value-list {
   display: flex;
-  flex-direction: column;
   gap: 12px;
+  flex-direction: column;
 }
 
 .key-value-item {
   display: flex;
-  align-items: center;
   gap: 8px;
+  align-items: center;
 
   .el-input {
     flex: 1;

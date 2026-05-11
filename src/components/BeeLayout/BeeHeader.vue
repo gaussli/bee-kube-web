@@ -213,17 +213,17 @@ function handlePasswordSubmit() {
 
   .header-left {
     display: flex;
-    align-items: center;
     gap: $spacing-md;
+    align-items: center;
   }
 
   .header-title {
     position: absolute;
     left: 50%;
-    transform: translateX(-50%);
     display: flex;
-    align-items: center;
     gap: $spacing-sm;
+    align-items: center;
+    transform: translateX(-50%);
 
     img {
       width: 32px;
@@ -237,13 +237,13 @@ function handlePasswordSubmit() {
 
   .header-right {
     display: flex;
-    align-items: center;
     gap: $spacing-md;
+    align-items: center;
 
     .header-icon {
       font-size: 20px;
-      cursor: pointer;
       color: $text-regular;
+      cursor: pointer;
 
       &:hover {
         color: $color-primary;
@@ -252,20 +252,20 @@ function handlePasswordSubmit() {
 
     .user-dropdown {
       display: flex;
-      align-items: center;
       gap: $spacing-sm;
-      cursor: pointer;
+      align-items: center;
       padding: 4px 8px;
       border-radius: 4px;
+      cursor: pointer;
       transition: background 0.3s;
 
       &:hover {
-        background: rgba(0, 0, 0, 0.05);
+        background: rgb(0 0 0 / 5%);
       }
 
       .username {
-        color: $text-primary;
         font-size: 14px;
+        color: $text-primary;
       }
 
       .arrow-icon {

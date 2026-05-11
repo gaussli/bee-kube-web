@@ -21,6 +21,7 @@ $color-primary-900: #5e2600;
 // 主题颜色
 // #da8030，接近蜂蜜琥珀色与蜜蜂身体橘黄的中间调，不刺眼且具有自然亲和力。
 $color-primary: $color-primary-600;
+
 // 接近蜂蜜琥珀色与蜜蜂身体橘黄的中间调，不刺眼且具有自然亲和力。
 // $primary-color: rgb(218, 128, 48);
 // 更明亮活泼：rgb(235, 140, 55) —— 适合强调按钮或悬停状态
@@ -36,16 +37,20 @@ $color-info: #909399;
 $bg-color: #131517;
 $bg-page: #1e1f23;
 $bg-cover: #222328;
+
 // 过度灰
 $bg-hover: #26292c;
+
 // 高级灰
 // $bg-hover: rgb(55, 58, 62);
 // 微蓝灰
 // $bg-hover: rgb(40, 49, 65);
 $bg-selected: #2b2e31;
-$bg-disabled: rgb(43, 46, 49);
+$bg-disabled: rgb(43 46 49);
+
 // 弹出框的背景遮罩
-$bg-mask: rgb(43, 46, 49);
+$bg-mask: rgb(43 46 49);
+
 // 弹框、下拉菜单
 $bg-overlay: #26272d;
 
@@ -53,8 +58,10 @@ $bg-overlay: #26272d;
 $bee-regular: white;
 $bee-primary: #bbbdc1;
 $bee-secondary: #7e8184;
+
 // 三级，非关键、禁用状态、图标辅助
 $bee-tertiary: #6b6e72;
+
 // // 过度灰
 // $bee-hover: rgb(150, 153, 158);
 // // 近选白
@@ -62,8 +69,10 @@ $bee-tertiary: #6b6e72;
 // 高亮银
 $bee-hover: #c8cad0;
 $bee-active: $bee-primary;
+
 // 轻度禁用，比默认字体稍暗，仍保留一定可读性，适合短暂禁用或可恢复的选项。
 $bee-disabled: #5f6267;
+
 // // 中度禁用，进一步降低亮度，与背景对比度较弱，清晰表明不可交互，适合永久禁用的菜单项。
 // $bee-disabled: rgb(78, 80, 84);
 // // 重度禁用，几乎与背景融合（仅略亮），视觉上完全弱化，适合完全隐藏又需占位或提示存在的场景。
@@ -111,22 +120,24 @@ $font-size-lg: 16px;
 $font-size-xl: 18px;
 
 // 动画定义
-@keyframes fadeSlideIn {
+@keyframes fade-slide-in {
   from {
     opacity: 0;
     transform: translateX(20px);
   }
+
   to {
     opacity: 1;
     transform: translateX(0);
   }
 }
 
-@keyframes fadeSlideOut {
+@keyframes fade-slide-out {
   from {
     opacity: 1;
     transform: translateX(0);
   }
+
   to {
     opacity: 0;
     transform: translateX(-20px);

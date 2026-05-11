@@ -24,12 +24,12 @@ defineOptions({ name: 'Home' })
   overflow: hidden;
 
   .bee-body {
-    flex: 1;
     display: flex;
-    flex-direction: row;
     gap: $spacing-md;
+    flex-direction: row;
+    flex: 1;
     min-height: 0;
-    padding: 0 $spacing-md $spacing-md $spacing-md;
+    padding: 0 $spacing-md $spacing-md;
     overflow: hidden;
   }
 }

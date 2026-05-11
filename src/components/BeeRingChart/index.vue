@@ -2,14 +2,7 @@
   <div class="bee-ring-chart">
     <svg :width="size" :height="size" :viewBox="`0 0 ${size} ${size}`">
       <!-- 背景圆环 -->
-      <circle
-        :cx="center"
-        :cy="center"
-        :r="radius"
-        fill="none"
-        :stroke="bgColor"
-        :stroke-width="strokeWidth"
-      />
+      <circle :cx="center" :cy="center" :r="radius" fill="none" :stroke="bgColor" :stroke-width="strokeWidth" />
       <!-- 数据圆环 -->
       <circle
         :cx="center"
@@ -90,10 +83,10 @@ const ringStyle = computed(() => {
     position: absolute;
     top: 50%;
     left: 50%;
-    transform: translate(-50%, -50%);
     display: flex;
     align-items: center;
     justify-content: center;
+    transform: translate(-50%, -50%);
 
     .ring-value {
       font-size: 12px;

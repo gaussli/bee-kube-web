@@ -27,17 +27,18 @@ defineProps<Props>()
 <style lang="scss" scoped>
 .bee-page-title {
   --height: 64px;
+
   display: flex;
+  gap: $spacing-md;
   flex-direction: row;
   justify-content: center;
-  gap: $spacing-md;
   width: 100%;
   padding: 32px 0;
 
   .title-icon {
     display: flex;
-    justify-content: center;
     align-items: center;
+    justify-content: center;
     width: var(--height);
     height: var(--height);
     border-radius: calc(var(--height) / 2) 0 calc(var(--height) / 2) calc(var(--height) / 2);
@@ -47,25 +48,25 @@ defineProps<Props>()
 
   .title-content {
     display: flex;
-    flex-direction: column;
-    justify-content: center;
-    flex: 1;
     gap: 4px;
+    flex-direction: column;
+    flex: 1;
+    justify-content: center;
     height: var(--height);
 
     .title-text {
       margin: 0;
-      color: $text-primary;
       font-size: 24px;
       font-weight: 600;
       line-height: 32px;
+      color: $text-primary;
     }
 
     .title-desc {
       margin: 0;
-      color: $text-secondary;
       font-size: 14px;
       line-height: 22px;
+      color: $text-secondary;
     }
   }
 }

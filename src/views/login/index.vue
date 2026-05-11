@@ -79,14 +79,15 @@ async function handleLogin() {
 
 .login-card {
   width: 400px;
+
   // border-radius: $border-radius-lg;
   // box-shadow: $box-shadow;
 
   .card-header {
-    text-align: center;
     font-size: $font-size-lg;
     font-weight: bold;
     color: $text-primary;
+    text-align: center;
   }
 
   :deep(.el-form-item) {

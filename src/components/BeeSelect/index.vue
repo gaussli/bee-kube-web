@@ -1,13 +1,6 @@
 <template>
   <div class="bee-select" :class="{ 'is-disabled': disabled }">
-    <el-select
-      :model-value="modelValue"
-      :placeholder="placeholder"
-      :clearable="clearable"
-      :disabled="disabled"
-      :loading="loading"
-      @change="handleChange"
-    >
+    <el-select :model-value="modelValue" :placeholder="placeholder" :clearable="clearable" :disabled="disabled" :loading="loading" @change="handleChange">
       <el-option v-for="option in options" :key="option.value" :label="option.label" :value="option.value" />
     </el-select>
   </div>

@@ -64,11 +64,11 @@ defineExpose({
 .bee-input-search {
   display: inline-flex;
   align-items: center;
-  background-color: $bg-color;
   border: 1px solid rgba($text-secondary, 0.1);
   border-radius: 16px;
-  transition: all 0.3s;
   overflow: hidden;
+  background-color: $bg-color;
+  transition: all 0.3s;
 
   &:focus-within {
     border-color: $color-primary;
@@ -128,11 +128,11 @@ defineExpose({
 
 .search-input {
   width: 100%;
+  padding: 0;
   border: none;
+  color: inherit;
   background: transparent;
   outline: none;
-  color: inherit;
-  padding: 0;
 
   &::placeholder {
     color: $text-placeholder;
@@ -141,16 +141,16 @@ defineExpose({
 
 .search-btn {
   display: flex;
+  flex-shrink: 0;
   align-items: center;
   justify-content: center;
-  border: none;
-  background: transparent;
-  color: $text-secondary;
-  cursor: pointer;
   padding: 2px;
+  border: none;
   border-radius: 4px;
+  color: $text-secondary;
+  background: transparent;
+  cursor: pointer;
   transition: all 0.2s;
-  flex-shrink: 0;
 
   &:hover {
     color: $color-primary;

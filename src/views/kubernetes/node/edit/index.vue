@@ -83,8 +83,8 @@ import { ElMessage, type FormInstance } from 'element-plus'
 import { Box, Plus, Delete, Close, Check } from '@element-plus/icons-vue'
 import { type NodeResp, type NodeEditReq } from '@/types'
 import { getNodeDetail, updateNode } from '@/api'
-import BeePageTitle from '@/components/BeePageTitle/index.vue'
 import BeeButton from '@/components/BeeButton/index.vue'
+import BeePageTitle from '@/components/BeePageTitle/index.vue'
 
 defineOptions({ name: 'NodeEdit' })
 
@@ -172,11 +172,13 @@ async function handleSubmit() {
   })
 
   // 转换污点
-  const taints = taintList.value.filter(item => item.key).map(item => ({
-    key: item.key,
-    value: item.value,
-    effect: item.effect
-  }))
+  const taints = taintList.value
+    .filter(item => item.key)
+    .map(item => ({
+      key: item.key,
+      value: item.value,
+      effect: item.effect
+    }))
 
   const data: NodeEditReq = {
     labels,
@@ -203,14 +205,14 @@ onMounted(() => {
 
 <style lang="scss" scoped>
 .node-edit {
-  height: 100%;
   display: flex;
   flex-direction: column;
+  height: 100%;
 }
 
 .page-header {
   flex-shrink: 0;
-  padding: 16px 20px 0 20px;
+  padding: 16px 20px 0;
   margin-bottom: 16px;
   background-color: $bg-page;
 }
@@ -218,14 +220,14 @@ onMounted(() => {
 .page-body {
   flex: 1;
   min-height: 0;
-  overflow-y: auto;
   padding: 0 20px;
+  overflow-y: auto;
   background-color: $bg-page;
 }
 
 .page-footer {
-  flex-shrink: 0;
   display: flex;
+  flex-shrink: 0;
   justify-content: space-between;
   padding: 16px 20px;
   background-color: $bg-page;
@@ -239,14 +241,14 @@ onMounted(() => {
 .key-value-list,
 .taint-list {
   display: flex;
-  flex-direction: column;
   gap: 12px;
+  flex-direction: column;
 }
 
 .key-value-item {
   display: flex;
-  align-items: center;
   gap: 8px;
+  align-items: center;
 
   .el-input {
     flex: 1;
@@ -259,8 +261,8 @@ onMounted(() => {
 
 .taint-item {
   display: flex;
-  align-items: center;
   gap: 8px;
+  align-items: center;
 
   .el-input,
   .el-select {

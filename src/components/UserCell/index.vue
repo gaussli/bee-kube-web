@@ -33,28 +33,28 @@ const genderText = computed(() => {
 <style lang="scss" scoped>
 .user-profile {
   display: flex;
-  align-items: center;
   gap: $spacing-sm;
+  align-items: center;
   height: 42px;
 
   .user-info {
     display: flex;
+    gap: 2px;
     flex-direction: column;
     justify-content: center;
-    gap: 2px;
     min-width: 0;
 
     .username {
       display: flex;
-      align-items: center;
       gap: 6px;
+      align-items: center;
+      overflow: hidden;
       font-size: 14px;
       font-weight: 600;
-      color: $text-regular;
       line-height: 1.2;
-      white-space: nowrap;
-      overflow: hidden;
+      color: $text-regular;
       text-overflow: ellipsis;
+      white-space: nowrap;
 
       .gender {
         font-size: 12px;
@@ -62,11 +62,11 @@ const genderText = computed(() => {
     }
 
     .nickname {
+      overflow: hidden;
       font-size: 12px;
       line-height: 1.2;
-      white-space: nowrap;
-      overflow: hidden;
       text-overflow: ellipsis;
+      white-space: nowrap;
     }
   }
 }

@@ -35,13 +35,13 @@ const iconComponent = computed(() => {
 <style lang="scss" scoped>
 .menu-info {
   display: flex;
-  align-items: center;
   gap: $spacing-sm;
+  align-items: center;
   height: 42px;
 
   .menu-left {
-    flex-shrink: 0;
     display: flex;
+    flex-shrink: 0;
     align-items: center;
     justify-content: center;
   }
@@ -52,28 +52,28 @@ const iconComponent = computed(() => {
 
   .menu-detail {
     display: flex;
+    gap: 2px;
     flex-direction: column;
     justify-content: center;
-    gap: 2px;
     min-width: 0;
 
     .menu-name {
+      overflow: hidden;
       font-size: 14px;
       font-weight: 600;
-      color: $text-primary;
       line-height: 1.2;
-      white-space: nowrap;
-      overflow: hidden;
+      color: $text-primary;
       text-overflow: ellipsis;
+      white-space: nowrap;
     }
 
     .menu-code {
-      font-size: 12px;
-      color: $text-secondary;
-      line-height: 1.2;
-      white-space: nowrap;
       overflow: hidden;
+      font-size: 12px;
+      line-height: 1.2;
+      color: $text-secondary;
       text-overflow: ellipsis;
+      white-space: nowrap;
     }
   }
 }

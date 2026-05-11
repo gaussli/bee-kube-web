@@ -199,42 +199,42 @@ onMounted(() => {
 
 <style lang="scss" scoped>
 .permission-detail {
-  height: 100%;
   display: flex;
   flex-direction: column;
+  height: 100%;
   background-color: $bg-page;
 }
 
 .detail-header {
-  flex-shrink: 0;
   display: flex;
+  flex-shrink: 0;
   align-items: center;
   height: 48px;
   padding: 0 8px;
   border-bottom: 1px solid rgba($text-secondary, 0.1);
 
   .header-title {
-    color: $text-secondary;
     font-weight: 600;
+    color: $text-secondary;
   }
 }
 
 .detail-body {
   flex: 1;
-  overflow-y: auto;
   min-height: 0;
   padding: 24px;
-  animation: fadeSlideIn 0.3s ease-out;
+  overflow-y: auto;
+  animation: fade-slide-in 0.3s ease-out;
 }
 
 .permission-header {
   display: flex;
-  align-items: center;
   gap: 20px;
+  align-items: center;
   padding: 24px;
-  background: linear-gradient(135deg, rgba($color-primary, 0.08) 0%, rgba($color-primary, 0.02) 100%);
-  border-radius: 12px;
   margin-bottom: 24px;
+  border-radius: 12px;
+  background: linear-gradient(135deg, rgba($color-primary, 0.08) 0%, rgba($color-primary, 0.02) 100%);
 
   .permission-icon {
     display: flex;
@@ -242,9 +242,9 @@ onMounted(() => {
     justify-content: center;
     width: 72px;
     height: 72px;
-    background: rgba($color-primary, 0.1);
     border-radius: 16px;
     color: $color-primary;
+    background: rgba($color-primary, 0.1);
   }
 
   .permission-meta {
@@ -252,8 +252,8 @@ onMounted(() => {
 
     .permission-name-row {
       display: flex;
-      align-items: center;
       gap: 12px;
+      align-items: center;
       margin-bottom: 8px;
 
       .permission-name {
@@ -266,59 +266,59 @@ onMounted(() => {
     .permission-code {
       display: inline-flex;
       padding: 4px 12px;
-      background: rgba($color-primary, 0.08);
       border-radius: 6px;
       font-size: 13px;
       color: $color-primary;
+      background: rgba($color-primary, 0.08);
     }
   }
 }
 
 .info-grid {
   display: flex;
-  flex-direction: column;
   gap: 24px;
+  flex-direction: column;
 }
 
 .info-section {
-  background: var(--el-bg-color);
-  border-radius: 12px;
   padding: 20px;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+  border-radius: 12px;
+  background: var(--el-bg-color);
+  box-shadow: 0 1px 3px rgb(0 0 0 / 5%);
 
   .section-title {
     display: flex;
-    align-items: center;
     gap: 8px;
+    align-items: center;
+    padding-bottom: 12px;
+    margin-bottom: 20px;
+    border-bottom: 1px solid rgba($text-secondary, 0.1);
     font-size: 16px;
     font-weight: 600;
     color: $text-primary;
-    margin-bottom: 20px;
-    padding-bottom: 12px;
-    border-bottom: 1px solid rgba($text-secondary, 0.1);
 
     .section-title-en {
-      color: $text-tertiary;
-      font-weight: 400;
       font-size: 13px;
+      font-weight: 400;
+      color: $text-tertiary;
     }
   }
 }
 
 .info-list {
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
   gap: 20px;
+  grid-template-columns: repeat(2, 1fr);
 
-  @media (max-width: 768px) {
+  @media (width <= 768px) {
     grid-template-columns: 1fr;
   }
 }
 
 .info-item {
   display: flex;
-  flex-direction: column;
   gap: 8px;
+  flex-direction: column;
 
   &.full-width {
     grid-column: 1 / -1;
@@ -326,10 +326,10 @@ onMounted(() => {
 
   .info-label {
     display: flex;
-    align-items: center;
     gap: 8px;
-    color: $text-tertiary;
+    align-items: center;
     font-size: 13px;
+    color: $text-tertiary;
 
     .label-zh {
       color: $text-secondary;
@@ -342,15 +342,15 @@ onMounted(() => {
 
   .info-value {
     font-size: 14px;
-    color: $text-primary;
     font-weight: 500;
+    color: $text-primary;
   }
 }
 
 .detail-footer {
   display: flex;
-  justify-content: flex-end;
   gap: 12px;
+  justify-content: flex-end;
   padding: 20px 0;
   margin-top: 24px;
   border-top: 1px solid rgba($text-secondary, 0.1);
@@ -358,10 +358,10 @@ onMounted(() => {
 
 // 渐入渐出动画
 .fade-slide-enter-active {
-  animation: fadeSlideIn 0.3s ease-out;
+  animation: fade-slide-in 0.3s ease-out;
 }
 
 .fade-slide-leave-active {
-  animation: fadeSlideOut 0.2s ease-in;
+  animation: fade-slide-out 0.2s ease-in;
 }
 </style>

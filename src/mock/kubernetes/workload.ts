@@ -86,7 +86,7 @@ const mockDeployments: DeploymentResp[] = [
     availableReplicas: 4,
     strategy: 'RollingUpdate',
     images: ['registry.example.com/payment:v3.0.1'],
-    labels: { app: 'payment', 'env': 'production' },
+    labels: { app: 'payment', env: 'production' },
     annotations: {},
     createAt: '2024-03-05 14:00:00',
     updateAt: '2024-03-25 09:30:00',
@@ -122,7 +122,7 @@ const mockDeployments: DeploymentResp[] = [
     availableReplicas: 2,
     strategy: 'RollingUpdate',
     images: ['redis:7.2-alpine', 'registry.example.com/notification:v1.2.0'],
-    labels: { app: 'notification', 'type': 'worker' },
+    labels: { app: 'notification', type: 'worker' },
     annotations: {},
     createAt: '2024-03-10 16:30:00',
     updateAt: '2024-03-24 08:45:00',
@@ -651,7 +651,11 @@ export default [
   { method: 'get', url: '/kubernetes/workload/statefulset/page', handler: (params: any) => getStatefulSetPage(params) },
   { method: 'get', url: '/kubernetes/workload/statefulset/:clusterId/:namespace/:name', handler: ({ clusterId, namespace, name }: any) => getStatefulSetDetail(clusterId, namespace, name) },
   { method: 'post', url: '/kubernetes/workload/statefulset', handler: (data: any) => createStatefulSet(data) },
-  { method: 'put', url: '/kubernetes/workload/statefulset/:clusterId/:namespace/:name', handler: ({ clusterId, namespace, name, ...data }: any) => updateStatefulSet(clusterId, namespace, name, data) },
+  {
+    method: 'put',
+    url: '/kubernetes/workload/statefulset/:clusterId/:namespace/:name',
+    handler: ({ clusterId, namespace, name, ...data }: any) => updateStatefulSet(clusterId, namespace, name, data)
+  },
   { method: 'delete', url: '/kubernetes/workload/statefulset/:clusterId/:namespace/:name', handler: ({ clusterId, namespace, name }: any) => deleteStatefulSet(clusterId, namespace, name) },
   { method: 'delete', url: '/kubernetes/workload/statefulset/batch', handler: (data: any) => batchDeleteStatefulSet(data) },
   // DaemonSet

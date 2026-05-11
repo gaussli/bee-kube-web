@@ -11,8 +11,12 @@
       </el-form>
     </div>
     <div class="page-footer">
-      <BeeButton @click="handleCancel"><template #icon><Close /></template>取消</BeeButton>
-      <BeeButton type="primary" :loading="submitting" @click="handleSubmit"><template #icon><Check /></template>保存</BeeButton>
+      <BeeButton @click="handleCancel"
+        ><template #icon><Close /></template>取消</BeeButton
+      >
+      <BeeButton type="primary" :loading="submitting" @click="handleSubmit"
+        ><template #icon><Check /></template>保存</BeeButton
+      >
     </div>
   </div>
 </template>
@@ -22,10 +26,10 @@ import { ref, onMounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { ElMessage, type FormInstance } from 'element-plus'
 import { Collection, Close, Check } from '@element-plus/icons-vue'
-import type { StatefulSetResp } from '@/types'
 import { getStatefulSetDetail, updateStatefulSet } from '@/api'
-import BeePageTitle from '@/components/BeePageTitle/index.vue'
 import BeeButton from '@/components/BeeButton/index.vue'
+import BeePageTitle from '@/components/BeePageTitle/index.vue'
+import type { StatefulSetResp } from '@/types'
 
 defineOptions({ name: 'StatefulSetEdit' })
 const route = useRoute()
@@ -44,9 +48,13 @@ async function loadData() {
   try {
     const data = await getStatefulSetDetail(clusterId.value, namespace.value, statefulsetName.value)
     formData.value.replicas = data.replicas
-  } finally { loading.value = false }
+  } finally {
+    loading.value = false
+  }
 }
-function handleCancel() { router.back() }
+function handleCancel() {
+  router.back()
+}
 async function handleSubmit() {
   const valid = await formRef.value?.validate().catch(() => false)
   if (!valid) return
@@ -55,15 +63,48 @@ async function handleSubmit() {
     await updateStatefulSet(clusterId.value, namespace.value, statefulsetName.value, formData.value)
     ElMessage.success('保存成功')
     router.back()
-  } catch {} finally { submitting.value = false }
+  } catch {
+  } finally {
+    submitting.value = false
+  }
 }
-onMounted(() => { loadData() })
+onMounted(() => {
+  loadData()
+})
 </script>
 
 <style lang="scss" scoped>
-.statefulset-edit { height: 100%; display: flex; flex-direction: column; }
-.page-header { flex-shrink: 0; padding: 16px 20px 0 20px; margin-bottom: 16px; background-color: $bg-page; }
-.page-body { flex: 1; min-height: 0; overflow-y: auto; padding: 0 20px; background-color: $bg-page; }
-.page-footer { flex-shrink: 0; display: flex; justify-content: space-between; padding: 16px 20px; background-color: $bg-page; }
-.edit-form { max-width: 800px; padding: 20px 0; }
+.statefulset-edit {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.page-header {
+  flex-shrink: 0;
+  padding: 16px 20px 0;
+  margin-bottom: 16px;
+  background-color: $bg-page;
+}
+
+.page-body {
+  flex: 1;
+  min-height: 0;
+  padding: 0 20px;
+  overflow-y: auto;
+  background-color: $bg-page;
+}
+
+.page-footer {
+  display: flex;
+  flex-shrink: 0;
+  justify-content: space-between;
+  padding: 16px 20px;
+  background-color: $bg-page;
+}
+
+.edit-form {
+  max-width: 800px;
+  padding: 20px 0;
+}
 </style>

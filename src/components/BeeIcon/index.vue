@@ -40,6 +40,6 @@ const iconStyle = computed(() => {
   width: var(--bee-icon-size);
   height: var(--bee-icon-size);
   color: inherit;
-  fill: currentColor;
+  fill: currentcolor;
 }
 </style>

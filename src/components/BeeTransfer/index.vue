@@ -204,49 +204,49 @@ function handleMoveToLeft() {
 <style lang="scss" scoped>
 .bee-transfer {
   display: flex;
-  align-items: stretch;
   gap: 16px;
+  align-items: stretch;
   height: 100%;
   overflow: hidden;
 }
 
 .transfer-panel {
-  flex: 1;
   display: flex;
   flex-direction: column;
+  flex: 1;
+  height: 100%;
   min-width: 200px;
-  background-color: $bg-overlay;
   border: 1px solid rgba($text-secondary, 0.1);
   border-radius: 8px;
   overflow: hidden;
-  height: 100%;
+  background-color: $bg-overlay;
 }
 
 .panel-header {
   display: flex;
-  align-items: center;
   gap: 8px;
+  align-items: center;
   padding: 12px 16px;
   border-bottom: 1px solid rgba($text-secondary, 0.1);
 }
 
 .header-title {
+  flex-shrink: 0;
   font-size: 14px;
   font-weight: 500;
   color: $text-primary;
-  flex-shrink: 0;
 }
 
 .header-count {
-  font-size: 12px;
-  color: $text-secondary;
   flex-shrink: 0;
   margin-left: 8px;
+  font-size: 12px;
+  color: $text-secondary;
 }
 
 .header-search {
-  width: 140px;
   flex-shrink: 0;
+  width: 140px;
   margin-left: auto;
 
   :deep(.bee-input-search) {
@@ -261,15 +261,15 @@ function handleMoveToLeft() {
 
 .panel-body {
   flex: 1;
-  overflow-y: auto;
-  padding: 8px;
   min-height: 0;
+  padding: 8px;
+  overflow-y: auto;
 }
 
 .panel-item {
   display: flex;
-  align-items: center;
   gap: 8px;
+  align-items: center;
   padding: 8px 12px;
   margin-bottom: 4px;
   border-radius: 6px;
@@ -291,9 +291,9 @@ function handleMoveToLeft() {
 
 .item-label {
   flex: 1;
+  overflow: hidden;
   font-size: 14px;
   color: $text-primary;
-  overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
@@ -309,9 +309,9 @@ function handleMoveToLeft() {
 
 .transfer-operate {
   display: flex;
+  gap: 8px;
   flex-direction: column;
   justify-content: center;
-  gap: 8px;
   padding: 16px 0;
 }
 </style>

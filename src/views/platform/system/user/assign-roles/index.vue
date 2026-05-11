@@ -161,35 +161,35 @@ onMounted(() => {
 
 <style lang="scss" scoped>
 .user-assign-roles {
-  height: 100%;
   display: flex;
   flex-direction: column;
+  height: 100%;
   background-color: $bg-page;
 }
 
 .assign-header {
-  flex-shrink: 0;
   display: flex;
+  flex-shrink: 0;
   align-items: center;
   height: 48px;
   padding: 0 8px;
   border-bottom: 1px solid rgba($text-secondary, 0.1);
 
   .header-title {
-    color: $text-secondary;
     font-weight: 600;
+    color: $text-secondary;
   }
 }
 
 .assign-body {
+  display: flex;
+  gap: 16px;
+  flex-direction: column;
   flex: 1;
   min-height: 0;
   padding: 16px;
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
   overflow: hidden;
-  animation: fadeSlideIn 0.3s ease-out;
+  animation: fade-slide-in 0.3s ease-out;
 
   :deep(.bee-transfer) {
     flex: 1;
@@ -199,33 +199,33 @@ onMounted(() => {
 }
 
 .assign-footer {
-  flex-shrink: 0;
   display: flex;
-  justify-content: flex-end;
-  align-items: center;
   gap: 12px;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: flex-end;
   padding: 16px 20px;
   border-top: 1px solid rgba($text-secondary, 0.1);
 }
 
 .user-header {
   display: flex;
-  align-items: center;
   gap: 20px;
+  align-items: center;
   padding: 24px;
-  background-color: $bg-color;
   border-radius: 12px;
+  background-color: $bg-color;
 
   .user-meta {
     display: flex;
-    flex-direction: column;
     gap: 8px;
+    flex-direction: column;
     overflow: hidden;
 
     .user-name-row {
       display: flex;
-      align-items: center;
       gap: 12px;
+      align-items: center;
 
       .user-name {
         font-size: 20px;
@@ -243,10 +243,10 @@ onMounted(() => {
 
 // 渐入渐出动画
 .role-item-content {
-  flex: 1;
   display: flex;
-  align-items: center;
   gap: 10px;
+  flex: 1;
+  align-items: center;
   min-width: 0;
 }
 
@@ -261,15 +261,15 @@ onMounted(() => {
   justify-content: center;
   width: 32px;
   height: 32px;
-  background: linear-gradient(135deg, rgba($color-primary, 0.15) 0%, rgba($color-primary, 0.08) 100%);
   border-radius: 8px;
   font-size: 14px;
   color: $color-primary;
+  background: linear-gradient(135deg, rgba($color-primary, 0.15) 0%, rgba($color-primary, 0.08) 100%);
   transition: all 0.25s ease;
 
   .role-item.is-selected & {
-    background: linear-gradient(135deg, $color-primary 0%, $color-primary-400 100%);
     color: #fff;
+    background: linear-gradient(135deg, $color-primary 0%, $color-primary-400 100%);
   }
 }
 
@@ -281,18 +281,18 @@ onMounted(() => {
 .role-name {
   font-size: 14px;
   font-weight: 500;
-  color: $text-primary;
   line-height: 1.4;
+  color: $text-primary;
 }
 
 .role-desc {
   display: flex;
-  align-items: center;
   gap: 6px;
+  align-items: center;
   margin-top: 2px;
+  font-family: 'SF Mono', Consolas, monospace;
   font-size: 12px;
   color: $text-secondary;
-  font-family: 'SF Mono', Consolas, monospace;
 
   .el-icon {
     font-size: 12px;
@@ -303,12 +303,12 @@ onMounted(() => {
 
 .role-code {
   display: flex;
-  align-items: center;
   gap: 6px;
+  align-items: center;
   margin-top: 2px;
+  font-family: 'SF Mono', Consolas, monospace;
   font-size: 12px;
   color: $text-secondary;
-  font-family: 'SF Mono', Consolas, monospace;
 
   .el-icon {
     font-size: 12px;
@@ -319,14 +319,15 @@ onMounted(() => {
 
 // 渐入渐出动画
 .fade-slide-enter-active {
-  animation: fadeSlideIn 0.3s ease-out;
+  animation: fade-slide-in 0.3s ease-out;
 }
 
-@keyframes fadeSlideIn {
+@keyframes fade-slide-in {
   from {
     opacity: 0;
     transform: translateX(20px);
   }
+
   to {
     opacity: 1;
     transform: translateX(0);

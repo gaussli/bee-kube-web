@@ -55,10 +55,10 @@ import { ref, onMounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { ElMessage, type FormInstance } from 'element-plus'
 import { Document, Plus, Delete, Close, Check } from '@element-plus/icons-vue'
-import type { DeploymentResp } from '@/types'
 import { getDeploymentDetail, updateDeployment } from '@/api'
-import BeePageTitle from '@/components/BeePageTitle/index.vue'
 import BeeButton from '@/components/BeeButton/index.vue'
+import BeePageTitle from '@/components/BeePageTitle/index.vue'
+import type { DeploymentResp } from '@/types'
 
 defineOptions({ name: 'DeploymentEdit' })
 
@@ -146,14 +146,14 @@ onMounted(() => {
 
 <style lang="scss" scoped>
 .deployment-edit {
-  height: 100%;
   display: flex;
   flex-direction: column;
+  height: 100%;
 }
 
 .page-header {
   flex-shrink: 0;
-  padding: 16px 20px 0 20px;
+  padding: 16px 20px 0;
   margin-bottom: 16px;
   background-color: $bg-page;
 }
@@ -161,14 +161,14 @@ onMounted(() => {
 .page-body {
   flex: 1;
   min-height: 0;
-  overflow-y: auto;
   padding: 0 20px;
+  overflow-y: auto;
   background-color: $bg-page;
 }
 
 .page-footer {
-  flex-shrink: 0;
   display: flex;
+  flex-shrink: 0;
   justify-content: space-between;
   padding: 16px 20px;
   background-color: $bg-page;
@@ -181,14 +181,14 @@ onMounted(() => {
 
 .key-value-list {
   display: flex;
-  flex-direction: column;
   gap: 12px;
+  flex-direction: column;
 }
 
 .key-value-item {
   display: flex;
-  align-items: center;
   gap: 8px;
+  align-items: center;
 
   .el-input {
     flex: 1;

@@ -397,9 +397,9 @@ onMounted(() => {
 
 <style lang="scss" scoped>
 .menu-table {
-  height: 100%;
   display: flex;
   flex-direction: column;
+  height: 100%;
   background-color: $bg-page;
 }
 
@@ -414,22 +414,22 @@ onMounted(() => {
 
     .query-form-left {
       display: flex;
-      align-items: center;
       gap: 16px;
+      align-items: center;
     }
 
     .query-form-right {
       display: flex;
-      align-items: center;
       gap: 8px;
+      align-items: center;
     }
   }
 }
 
 .table-body {
   flex: 1;
-  overflow-y: auto;
   min-height: 0;
+  overflow-y: auto;
 
   :deep(.el-table) {
     flex: 1;
@@ -447,8 +447,8 @@ onMounted(() => {
 }
 
 .table-footer {
-  flex-shrink: 0;
   display: flex;
+  flex-shrink: 0;
   align-items: center;
   justify-content: space-between;
   padding: 16px 20px;
@@ -462,38 +462,38 @@ onMounted(() => {
 
 .delete-menu-tags {
   display: flex;
-  flex-wrap: wrap;
   gap: 8px;
+  flex-wrap: wrap;
   margin-top: 12px;
 }
 
 .path {
-  font-family: 'Monaco', 'Menlo', monospace;
+  font-family: Monaco, Menlo, monospace;
   font-size: 12px;
   color: $color-success;
 }
 
 .permission {
-  font-family: 'Monaco', 'Menlo', monospace;
+  font-family: Monaco, Menlo, monospace;
   font-size: 12px;
   color: $color-warning;
 }
 
 .parent-menu {
   display: flex;
-  flex-direction: column;
   gap: 2px;
+  flex-direction: column;
 
   .parent-name {
     font-size: 14px;
-    color: $text-primary;
     line-height: 1.2;
+    color: $text-primary;
   }
 
   .parent-code {
     font-size: 12px;
-    color: $text-secondary;
     line-height: 1.2;
+    color: $text-secondary;
   }
 }
 </style>

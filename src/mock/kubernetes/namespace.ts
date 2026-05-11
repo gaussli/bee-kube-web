@@ -62,8 +62,8 @@ const mockNamespaces: NamespaceResp[] = [
     createAt: '2024-02-01 08:00:00',
     description: '前端应用命名空间',
     labels: {
-      'env': 'production',
-      'app': 'frontend'
+      env: 'production',
+      app: 'frontend'
     },
     annotations: {}
   },
@@ -77,8 +77,8 @@ const mockNamespaces: NamespaceResp[] = [
     createAt: '2024-02-01 08:05:00',
     description: '后端应用命名空间',
     labels: {
-      'env': 'production',
-      'app': 'backend'
+      env: 'production',
+      app: 'backend'
     },
     annotations: {}
   },
@@ -92,7 +92,7 @@ const mockNamespaces: NamespaceResp[] = [
     createAt: '2024-02-10 14:20:00',
     description: '监控组件命名空间',
     labels: {
-      'env': 'production'
+      env: 'production'
     },
     annotations: {}
   },
@@ -118,7 +118,7 @@ const mockNamespaces: NamespaceResp[] = [
     createAt: '2024-02-15 10:00:00',
     description: '预发布环境命名空间',
     labels: {
-      'env': 'staging'
+      env: 'staging'
     },
     annotations: {}
   },
@@ -132,7 +132,7 @@ const mockNamespaces: NamespaceResp[] = [
     createAt: '2024-03-01 09:00:00',
     description: '开发测试环境',
     labels: {
-      'env': 'development'
+      env: 'development'
     },
     annotations: {}
   }

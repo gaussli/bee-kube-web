@@ -138,21 +138,21 @@ function handleContentClick() {
     }
 
     &.is-disabled {
-      cursor: not-allowed;
       opacity: 0.6;
+      cursor: not-allowed;
     }
   }
 
   &__expand-icon {
     display: flex;
+    flex-shrink: 0;
     align-items: center;
     justify-content: center;
     width: 24px;
     height: 24px;
-    color: $text-tertiary;
     font-size: 12px;
+    color: $text-tertiary;
     transition: transform 0.3s ease;
-    flex-shrink: 0;
 
     &.is-leaf {
       visibility: hidden;
@@ -189,28 +189,28 @@ function handleContentClick() {
 
   &.is-checked {
     .el-checkbox__inner {
-      background-color: $color-primary;
       border-color: $color-primary;
+      background-color: $color-primary;
     }
   }
 
   &.is-indeterminate {
     .el-checkbox__inner {
-      background-color: $color-primary;
       border-color: $color-primary;
+      background-color: $color-primary;
 
       &::before {
-        background-color: #fff;
-        height: 2px;
         bottom: 0;
+        height: 2px;
+        background-color: #fff;
       }
     }
   }
 
   &.is-disabled {
     .el-checkbox__inner {
-      background-color: rgba($text-tertiary, 0.2);
       border-color: rgba($text-tertiary, 0.3);
+      background-color: rgba($text-tertiary, 0.2);
     }
   }
 }

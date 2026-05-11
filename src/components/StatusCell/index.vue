@@ -31,8 +31,8 @@ const currentConfig = computed(() => {
 <style lang="scss" scoped>
 .status-cell {
   display: inline-flex;
-  align-items: center;
   gap: 8px;
+  align-items: center;
 
   .dot {
     width: 8px;

@@ -14,14 +14,20 @@
               <el-input v-model="item.key" placeholder="键" /><span class="separator">:</span><el-input v-model="item.value" placeholder="值" />
               <el-button circle :icon="Delete" size="small" @click="removeLabel(index)" />
             </div>
-            <BeeButton type="primary" @click="addLabel"><template #icon><Plus /></template>添加标签</BeeButton>
+            <BeeButton type="primary" @click="addLabel"
+              ><template #icon><Plus /></template>添加标签</BeeButton
+            >
           </div>
         </el-form-item>
       </el-form>
     </div>
     <div class="page-footer">
-      <BeeButton @click="handleCancel"><template #icon><Close /></template>取消</BeeButton>
-      <BeeButton type="primary" :loading="submitting" @click="handleSubmit"><template #icon><Check /></template>保存</BeeButton>
+      <BeeButton @click="handleCancel"
+        ><template #icon><Close /></template>取消</BeeButton
+      >
+      <BeeButton type="primary" :loading="submitting" @click="handleSubmit"
+        ><template #icon><Check /></template>保存</BeeButton
+      >
     </div>
   </div>
 </template>
@@ -31,10 +37,10 @@ import { ref, onMounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { ElMessage } from 'element-plus'
 import { Timer, Plus, Delete, Close, Check } from '@element-plus/icons-vue'
-import type { JobResp } from '@/types'
 import { getJobDetail, updateJob } from '@/api'
-import BeePageTitle from '@/components/BeePageTitle/index.vue'
 import BeeButton from '@/components/BeeButton/index.vue'
+import BeePageTitle from '@/components/BeePageTitle/index.vue'
+import type { JobResp } from '@/types'
 
 defineOptions({ name: 'JobEdit' })
 const route = useRoute()
@@ -55,28 +61,93 @@ async function loadData() {
     jobData.value = await getJobDetail(clusterId.value, namespace.value, jobName.value)
     formData.value.parallelism = jobData.value.parallelism
     if (jobData.value.labels) labelList.value = Object.entries(jobData.value.labels).map(([key, value]) => ({ key, value }))
-  } finally { loading.value = false }
+  } finally {
+    loading.value = false
+  }
 }
-function addLabel() { labelList.value.push({ key: '', value: '' }) }
-function removeLabel(index: number) { labelList.value.splice(index, 1) }
-function handleCancel() { router.back() }
+function addLabel() {
+  labelList.value.push({ key: '', value: '' })
+}
+function removeLabel(index: number) {
+  labelList.value.splice(index, 1)
+}
+function handleCancel() {
+  router.back()
+}
 async function handleSubmit() {
   const valid = await formRef.value?.validate().catch(() => false)
   if (!valid) return
   const labels: Record<string, string> = {}
-  labelList.value.forEach(item => { if (item.key) labels[item.key] = item.value })
+  labelList.value.forEach(item => {
+    if (item.key) labels[item.key] = item.value
+  })
   submitting.value = true
-  try { await updateJob(clusterId.value, namespace.value, jobName.value, { ...formData.value, labels }); ElMessage.success('保存成功'); router.back() } catch {} finally { submitting.value = false }
+  try {
+    await updateJob(clusterId.value, namespace.value, jobName.value, { ...formData.value, labels })
+    ElMessage.success('保存成功')
+    router.back()
+  } catch {
+  } finally {
+    submitting.value = false
+  }
 }
-onMounted(() => { loadData() })
+onMounted(() => {
+  loadData()
+})
 </script>
 
 <style lang="scss" scoped>
-.job-edit { height: 100%; display: flex; flex-direction: column; }
-.page-header { flex-shrink: 0; padding: 16px 20px 0 20px; margin-bottom: 16px; background-color: $bg-page; }
-.page-body { flex: 1; min-height: 0; overflow-y: auto; padding: 0 20px; background-color: $bg-page; }
-.page-footer { flex-shrink: 0; display: flex; justify-content: space-between; padding: 16px 20px; background-color: $bg-page; }
-.edit-form { max-width: 800px; padding: 20px 0; }
-.key-value-list { display: flex; flex-direction: column; gap: 12px; }
-.key-value-item { display: flex; align-items: center; gap: 8px; .el-input { flex: 1; } .separator { color: $text-secondary; } }
+.job-edit {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.page-header {
+  flex-shrink: 0;
+  padding: 16px 20px 0;
+  margin-bottom: 16px;
+  background-color: $bg-page;
+}
+
+.page-body {
+  flex: 1;
+  min-height: 0;
+  padding: 0 20px;
+  overflow-y: auto;
+  background-color: $bg-page;
+}
+
+.page-footer {
+  display: flex;
+  flex-shrink: 0;
+  justify-content: space-between;
+  padding: 16px 20px;
+  background-color: $bg-page;
+}
+
+.edit-form {
+  max-width: 800px;
+  padding: 20px 0;
+}
+
+.key-value-list {
+  display: flex;
+  gap: 12px;
+  flex-direction: column;
+}
+
+.key-value-item {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+
+  .el-input {
+    flex: 1;
+  }
+
+  .separator {
+    color: $text-secondary;
+  }
+}
 </style>

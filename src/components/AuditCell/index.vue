@@ -25,23 +25,23 @@ defineProps<{
 <style lang="scss" scoped>
 .audit-cell {
   display: flex;
-  flex-direction: column;
   gap: 4px;
+  flex-direction: column;
   font-size: 13px;
 
   .row {
     display: flex;
-    align-items: center;
     gap: 4px;
+    align-items: center;
 
     .el-icon {
       color: $text-secondary;
     }
 
     span {
-      white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
+      white-space: nowrap;
     }
   }
 }

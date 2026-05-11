@@ -39,6 +39,7 @@ const dividerStyle = computed(() => {
 <style lang="scss" scoped>
 .bee-divider {
   --divider-color: #{$bee-secondary};
+
   background-color: var(--divider-color);
 
   &--horizontal {

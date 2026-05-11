@@ -10,12 +10,6 @@ function generateId(): string {
   return id
 }
 
-// 生成随机日期
-function randomDate(start: Date, end: Date): string {
-  const date = new Date(start.getTime() + Math.random() * (end.getTime() - start.getTime()))
-  return date.toISOString().replace('T', ' ').slice(0, 19)
-}
-
 // Mock 角色数据（12条）
 let mockRoles: RoleResp[] = [
   {

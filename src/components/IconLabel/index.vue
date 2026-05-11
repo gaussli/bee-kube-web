@@ -19,8 +19,8 @@ defineProps<{
 <style lang="scss" scoped>
 .icon-label {
   display: inline-flex;
-  align-items: center;
   gap: 6px;
+  align-items: center;
   font-weight: 500;
 
   .el-icon {

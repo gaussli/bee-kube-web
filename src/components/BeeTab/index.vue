@@ -70,18 +70,18 @@ function handleClick(index: number) {
 
 <style lang="scss" scoped>
 .bee-tab {
-  --tab-height: 36px;
-  --slider-offset: 2px;
   --slider-bg-color: #fff;
+  --slider-offset: 2px;
+  --tab-height: 36px;
 
   .tab-header {
     position: relative;
     display: flex;
     align-items: center;
-    background-color: #f5f7fa;
-    border-radius: 9px 9px 0 0;
-    padding: var(--slider-offset);
     height: var(--tab-height);
+    padding: var(--slider-offset);
+    border-radius: 9px 9px 0 0;
+    background-color: #f5f7fa;
   }
 
   .slider {
@@ -89,24 +89,24 @@ function handleClick(index: number) {
     top: var(--slider-offset);
     left: var(--slider-offset);
     height: calc(100% - var(--slider-offset) * 2);
-    background-color: var(--slider-bg-color);
     border-radius: 8px;
+    background-color: var(--slider-bg-color);
+    box-shadow: 0 1px 3px rgb(0 0 0 / 10%);
     transition: transform 0.25s ease;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
   }
 
   .tab-item {
-    flex: 1;
+    z-index: 1;
     display: flex;
+    gap: 6px;
+    flex: 1;
     align-items: center;
     justify-content: center;
-    gap: 6px;
-    z-index: 1;
     font-size: 12px;
     color: #909399;
     cursor: pointer;
-    transition: color 0.25s ease;
     user-select: none;
+    transition: color 0.25s ease;
 
     &.active {
       color: #409eff;
@@ -114,14 +114,14 @@ function handleClick(index: number) {
   }
 
   .tab-content {
-    flex: 1;
     display: flex;
     flex-direction: column;
-    overflow: hidden;
-    background-color: $bg-color;
+    flex: 1;
     padding: 16px;
     padding-top: 8px;
     border-radius: 0 0 9px 9px;
+    overflow: hidden;
+    background-color: $bg-color;
   }
 }
 </style>

@@ -79,49 +79,49 @@ async function handleCreate() {
 
 <style lang="scss" scoped>
 .cluster-create {
-  height: 100%;
   display: flex;
   flex-direction: column;
+  height: 100%;
   background-color: $bg-page;
 }
 
 .form-header {
-  flex-shrink: 0;
   display: flex;
+  flex-shrink: 0;
   align-items: center;
   height: 48px;
   padding: 0 8px;
   border-bottom: 1px solid rgba($text-secondary, 0.1);
 
   .header-title {
-    color: $text-secondary;
     font-weight: 600;
+    color: $text-secondary;
   }
 }
 
 .form-body {
   flex: 1;
-  overflow-y: auto;
   min-height: 0;
   padding: 20px;
-  animation: fadeSlideIn 0.3s ease-out;
+  overflow-y: auto;
+  animation: fade-slide-in 0.3s ease-out;
 }
 
 .form-footer {
-  flex-shrink: 0;
   display: flex;
-  justify-content: flex-end;
-  align-items: center;
   gap: 12px;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: flex-end;
   padding: 16px 20px;
   border-top: 1px solid rgba($text-secondary, 0.1);
 }
 
 .fade-slide-enter-active {
-  animation: fadeSlideIn 0.3s ease-out;
+  animation: fade-slide-in 0.3s ease-out;
 }
 
 .fade-slide-leave-active {
-  animation: fadeSlideOut 0.2s ease-in;
+  animation: fade-slide-out 0.2s ease-in;
 }
 </style>

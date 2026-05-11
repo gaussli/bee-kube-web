@@ -115,12 +115,12 @@
 import { ref, onMounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { Document, ArrowLeft, EditPen } from '@element-plus/icons-vue'
-import type { DeploymentResp } from '@/types'
 import { getDeploymentDetail } from '@/api'
-import BeePageTitle from '@/components/BeePageTitle/index.vue'
 import BeeButton from '@/components/BeeButton/index.vue'
+import BeePageTitle from '@/components/BeePageTitle/index.vue'
 import BeeTag from '@/components/BeeTag/index.vue'
 import { usePermission } from '@/composables/usePermission'
+import type { DeploymentResp } from '@/types'
 
 defineOptions({ name: 'DeploymentDetail' })
 
@@ -160,14 +160,14 @@ onMounted(() => {
 
 <style lang="scss" scoped>
 .deployment-detail {
-  height: 100%;
   display: flex;
   flex-direction: column;
+  height: 100%;
 }
 
 .page-header {
   flex-shrink: 0;
-  padding: 16px 20px 0 20px;
+  padding: 16px 20px 0;
   margin-bottom: 16px;
   background-color: $bg-page;
 }
@@ -175,14 +175,14 @@ onMounted(() => {
 .page-body {
   flex: 1;
   min-height: 0;
-  overflow: hidden;
   padding: 0 20px;
+  overflow: hidden;
   background-color: $bg-page;
 
   :deep(.el-tabs) {
-    height: 100%;
     display: flex;
     flex-direction: column;
+    height: 100%;
 
     .el-tabs__content {
       flex: 1;
@@ -192,8 +192,8 @@ onMounted(() => {
 }
 
 .page-footer {
-  flex-shrink: 0;
   display: flex;
+  flex-shrink: 0;
   justify-content: space-between;
   padding: 16px 20px;
   background-color: $bg-page;
@@ -215,20 +215,20 @@ onMounted(() => {
 
 .detail-item {
   display: flex;
-  align-items: center;
   gap: 12px;
+  align-items: center;
   min-width: 300px;
 }
 
 .detail-label {
-  color: $text-secondary;
-  font-size: 14px;
   min-width: 100px;
+  font-size: 14px;
+  color: $text-secondary;
 }
 
 .detail-value {
-  color: $text-primary;
   font-size: 14px;
+  color: $text-primary;
 }
 
 .replicas-ready {
@@ -244,20 +244,20 @@ onMounted(() => {
 }
 
 .annotation-item {
-  margin-bottom: 16px;
   padding: 12px;
-  background-color: $bg-card;
+  margin-bottom: 16px;
   border-radius: 4px;
+  background-color: $bg-card;
 
   .annotation-key {
+    margin-bottom: 4px;
     font-weight: 500;
     color: $text-primary;
-    margin-bottom: 4px;
   }
 
   .annotation-value {
-    color: $text-secondary;
     font-size: 13px;
+    color: $text-secondary;
     word-break: break-all;
   }
 }

@@ -59,13 +59,14 @@ function handleClick(index: number, value?: string | number) {
 <style lang="scss" scoped>
 .bee-radio-search {
   --status-search-slider-offset: 2px;
-  height: 32px;
+
   position: relative;
   display: inline-flex;
   align-items: center;
-  background-color: var(--status-search-bg-color);
-  border-radius: 16px;
+  height: 32px;
   padding: var(--status-search-slider-offset);
+  border-radius: 16px;
+  background-color: var(--status-search-bg-color);
 }
 
 .slider {
@@ -73,25 +74,25 @@ function handleClick(index: number, value?: string | number) {
   top: var(--status-search-slider-offset);
   left: 0; // var (--status-search-slider-offset);
   height: calc(100% - var(--status-search-slider-offset) * 2);
-  background-color: var(--status-search-slider-bg-color);
   border-radius: 16px;
+  background-color: var(--status-search-slider-bg-color);
   transition:
     transform 0.25s ease,
     width 0.25s ease;
 }
 
 .radio-item {
+  z-index: 1;
   display: flex;
   align-items: center;
   justify-content: center;
-  z-index: 1;
   padding: 0 16px;
   font-size: 12px;
   color: var(--status-search-color);
-  cursor: pointer;
-  transition: color 0.25s ease;
-  user-select: none;
   white-space: nowrap;
+  cursor: pointer;
+  user-select: none;
+  transition: color 0.25s ease;
 
   &.active {
     color: var(--status-search-active-color);

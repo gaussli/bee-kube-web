@@ -56,11 +56,11 @@ function handleError() {
 <style lang="scss" scoped>
 .user-avatar {
   display: inline-flex;
+  flex-shrink: 0;
   align-items: center;
   justify-content: center;
   border-radius: 8px;
   overflow: hidden;
-  flex-shrink: 0;
 
   img {
     width: 100%;
@@ -74,8 +74,8 @@ function handleError() {
     justify-content: center;
     width: 100%;
     height: 100%;
-    color: #5a5a5a;
     font-weight: 600;
+    color: #5a5a5a;
     user-select: none;
   }
 }
