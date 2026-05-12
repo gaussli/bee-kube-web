@@ -27,7 +27,7 @@
           <el-table-column type="selection" width="60" align="center" />
           <el-table-column prop="id" width="300">
             <template #header>
-              <IconLabel :icon="Key" label="ID" />
+              <BeeIconLabel icon="basic-id" label="ID" />
             </template>
             <template #default="{ row }">
               <TextCopyableCell :text="row.id" />
@@ -35,7 +35,7 @@
           </el-table-column>
           <el-table-column min-width="150">
             <template #header>
-              <IconLabel :icon="Grid" label="集群名称" />
+              <BeeIconLabel icon="kubernetes-cluster" label="集群名称" />
             </template>
             <template #default="{ row }">
               <el-link type="primary" @click="handleSelectCluster(row)">{{ row.name }}</el-link>
@@ -43,7 +43,7 @@
           </el-table-column>
           <el-table-column min-width="250">
             <template #header>
-              <IconLabel :icon="Link" label="API Server" />
+              <BeeIconLabel icon="basic-url" label="API Server" />
             </template>
             <template #default="{ row }">
               <span class="api-server">{{ row.apiServer }}</span>
@@ -51,7 +51,7 @@
           </el-table-column>
           <el-table-column prop="status" width="100">
             <template #header>
-              <IconLabel :icon="CircleCheck" label="状态" />
+              <BeeIconLabel icon="basic-status" label="状态" />
             </template>
             <template #default="{ row }">
               <el-tag :type="row.status === 1 ? 'success' : 'danger'" size="small">
@@ -61,12 +61,12 @@
           </el-table-column>
           <el-table-column prop="description" min-width="150" show-overflow-tooltip>
             <template #header>
-              <IconLabel :icon="Document" label="描述" />
+              <BeeIconLabel icon="basic-description" label="描述" />
             </template>
           </el-table-column>
           <el-table-column width="180">
             <template #header>
-              <IconLabel :icon="Clock" label="创建" />
+              <BeeIconLabel icon="basic-audit" label="创建" />
             </template>
             <template #default="{ row }">
               <AuditCell :user="row.createBy" :time="row.createAt" />
@@ -74,7 +74,7 @@
           </el-table-column>
           <el-table-column width="200" fixed="right">
             <template #header>
-              <IconLabel :icon="EditPen" label="操作" />
+              <BeeIconLabel icon="basic-operation" label="操作" />
             </template>
             <template #default="{ row }">
               <el-tooltip content="编辑" placement="top">
@@ -154,7 +154,7 @@
 import { onMounted, reactive, ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { ElMessage } from 'element-plus'
-import { Delete, Key, MoreFilled, CircleCheck, Clock, EditPen, Grid, Link, Document, View } from '@element-plus/icons-vue'
+import { Delete, EditPen, MoreFilled, View } from '@element-plus/icons-vue'
 import { type ClusterQueryReq, type ClusterResp } from '@/types'
 import { getClusterPage, deleteCluster, batchDeleteCluster } from '@/api'
 import { useKubernetesStore } from '@/stores'
@@ -164,12 +164,12 @@ import BeeButton from '@/components/BeeButton/index.vue'
 import BeeCard from '@/components/BeeCard/index.vue'
 import BeeDialog from '@/components/BeeDialog/index.vue'
 import BeeDivider from '@/components/BeeDivider/index.vue'
+import BeeIconLabel from '@/components/BeeIconLabel/index.vue'
 import BeeInputSearch from '@/components/BeeInputSearch/index.vue'
 import BeePage from '@/components/BeePage/index.vue'
 import BeePageTitle from '@/components/BeePageTitle/index.vue'
 import BeeRadioSearch from '@/components/BeeRadioSearch/index.vue'
 import BeeTag from '@/components/BeeTag/index.vue'
-import IconLabel from '@/components/IconLabel/index.vue'
 import TextCopyableCell from '@/components/TextCopyableCell/index.vue'
 import { usePermission } from '@/composables/usePermission'
 

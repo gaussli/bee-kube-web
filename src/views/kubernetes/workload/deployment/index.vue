@@ -33,7 +33,7 @@
           <el-table-column type="selection" width="60" align="center" />
           <el-table-column min-width="200">
             <template #header>
-              <IconLabel :icon="Document" label="名称" />
+              <BeeIconLabel icon="document" label="名称" />
             </template>
             <template #default="{ row }">
               <div class="name-cell">
@@ -47,7 +47,7 @@
           </el-table-column>
           <el-table-column min-width="120">
             <template #header>
-              <IconLabel :icon="FolderOpened" label="命名空间" />
+              <BeeIconLabel icon="folder-opened" label="命名空间" />
             </template>
             <template #default="{ row }">
               <span>{{ row.namespace }}</span>
@@ -55,7 +55,7 @@
           </el-table-column>
           <el-table-column width="130">
             <template #header>
-              <IconLabel :icon="CircleCheck" label="状态" />
+              <BeeIconLabel icon="circle-check" label="状态" />
             </template>
             <template #default="{ row }">
               <div class="status-cell">
@@ -69,7 +69,7 @@
           </el-table-column>
           <el-table-column width="120">
             <template #header>
-              <IconLabel :icon="Cpu" label="副本" />
+              <BeeIconLabel icon="cpu" label="副本" />
             </template>
             <template #default="{ row }">
               <span :class="getReplicasClass(row)">{{ row.readyReplicas }}/{{ row.replicas }}</span>
@@ -77,7 +77,7 @@
           </el-table-column>
           <el-table-column width="180">
             <template #header>
-              <IconLabel :icon="Clock" label="创建时间" />
+              <BeeIconLabel icon="clock" label="创建时间" />
             </template>
             <template #default="{ row }">
               <span class="time-text">{{ formatTime(row.createAt) }}</span>
@@ -85,7 +85,7 @@
           </el-table-column>
           <el-table-column width="150" fixed="right">
             <template #header>
-              <IconLabel :icon="EditPen" label="操作" />
+              <BeeIconLabel icon="edit-pen" label="操作" />
             </template>
             <template #default="{ row }">
               <el-tooltip content="编辑" placement="top">
@@ -183,7 +183,7 @@ import BeePageTitle from '@/components/BeePageTitle/index.vue'
 import BeeRadioSearch from '@/components/BeeRadioSearch/index.vue'
 import BeeSelect from '@/components/BeeSelect/index.vue'
 import BeeTag from '@/components/BeeTag/index.vue'
-import IconLabel from '@/components/IconLabel/index.vue'
+import BeeIconLabel from '@/components/BeeIconLabel/index.vue'
 import { useClipboard } from '@/composables/useClipboard'
 import { usePermission } from '@/composables/usePermission'
 

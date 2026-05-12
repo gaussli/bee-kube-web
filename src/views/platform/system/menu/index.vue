@@ -28,7 +28,7 @@
         <el-table-column type="selection" width="60" align="center" />
         <el-table-column prop="id" width="300">
           <template #header>
-            <IconLabel :icon="Key" label="ID" />
+            <BeeIconLabel icon="key" label="ID" />
           </template>
           <template #default="{ row }">
             <TextCopyableCell :text="row.id" />
@@ -36,7 +36,7 @@
         </el-table-column>
         <el-table-column min-width="180">
           <template #header>
-            <IconLabel :icon="Menu" label="菜单" />
+            <BeeIconLabel icon="menu" label="菜单" />
           </template>
           <template #default="{ row }">
             <MenuCell :code="row.code" :name="row.name" :icon="row.frontIcon" />
@@ -44,7 +44,7 @@
         </el-table-column>
         <el-table-column prop="type" width="100">
           <template #header>
-            <IconLabel :icon="Folder" label="类型" />
+            <BeeIconLabel icon="folder" label="类型" />
           </template>
           <template #default="{ row }">
             <el-tag :type="typeTagMap[row.type]" size="small">{{ typeTextMap[row.type] }}</el-tag>
@@ -52,7 +52,7 @@
         </el-table-column>
         <el-table-column min-width="150">
           <template #header>
-            <IconLabel :icon="Menu" label="父菜单" />
+            <BeeIconLabel icon="menu" label="父菜单" />
           </template>
           <template #default="{ row }">
             <div v-if="row.parentName" class="parent-menu">
@@ -64,7 +64,7 @@
         </el-table-column>
         <el-table-column prop="frontPath" min-width="180">
           <template #header>
-            <IconLabel :icon="Link" label="路由" />
+            <BeeIconLabel icon="link" label="路由" />
           </template>
           <template #default="{ row }">
             <span class="path">{{ row.frontPath || '-' }}</span>
@@ -72,7 +72,7 @@
         </el-table-column>
         <el-table-column prop="permission" width="180">
           <template #header>
-            <IconLabel :icon="Lock" label="权限" />
+            <BeeIconLabel icon="lock" label="权限" />
           </template>
           <template #default="{ row }">
             <el-tooltip :content="row.permission || '-'" placement="top" :disabled="!row.permission">
@@ -82,7 +82,7 @@
         </el-table-column>
         <el-table-column prop="status" width="100">
           <template #header>
-            <IconLabel :icon="CircleCheck" label="状态" />
+            <BeeIconLabel icon="circle-check" label="状态" />
           </template>
           <template #default="{ row }">
             <StatusCell :status="row.status" :config="menuStatusConfig" />
@@ -90,7 +90,7 @@
         </el-table-column>
         <el-table-column width="180">
           <template #header>
-            <IconLabel :icon="Plus" label="创建" />
+            <BeeIconLabel icon="plus" label="创建" />
           </template>
           <template #default="{ row }">
             <AuditCell :user="row.createBy" :time="row.createAt" />
@@ -98,7 +98,7 @@
         </el-table-column>
         <el-table-column width="180">
           <template #header>
-            <IconLabel :icon="EditPen" label="更新" />
+            <BeeIconLabel icon="edit-pen" label="更新" />
           </template>
           <template #default="{ row }">
             <AuditCell :user="row.updateBy" :time="row.updateAt" />
@@ -106,7 +106,7 @@
         </el-table-column>
         <el-table-column width="200" fixed="right">
           <template #header>
-            <IconLabel :icon="EditPen" label="操作" />
+            <BeeIconLabel icon="edit-pen" label="操作" />
           </template>
           <template #default="{ row }">
             <el-tooltip content="详情" placement="top">
@@ -212,7 +212,7 @@ import BeeDialog from '@/components/BeeDialog/index.vue'
 import BeeInputSearch from '@/components/BeeInputSearch/index.vue'
 import BeeRadioSearch from '@/components/BeeRadioSearch/index.vue'
 import BeeTag from '@/components/BeeTag/index.vue'
-import IconLabel from '@/components/IconLabel/index.vue'
+import BeeIconLabel from '@/components/BeeIconLabel/index.vue'
 import MenuCell from '@/components/MenuCell/index.vue'
 import StatusCell from '@/components/StatusCell/index.vue'
 import TextCopyableCell from '@/components/TextCopyableCell/index.vue'

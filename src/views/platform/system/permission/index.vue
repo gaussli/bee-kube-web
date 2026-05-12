@@ -27,7 +27,7 @@
         <el-table-column type="selection" width="60" align="center" />
         <el-table-column prop="id" width="300">
           <template #header>
-            <IconLabel :icon="Key" label="ID" />
+            <BeeIconLabel icon="key" label="ID" />
           </template>
           <template #default="{ row }">
             <TextCopyableCell :text="row.id" />
@@ -35,7 +35,7 @@
         </el-table-column>
         <el-table-column min-width="150">
           <template #header>
-            <IconLabel :icon="Key" label="权限" />
+            <BeeIconLabel icon="key" label="权限" />
           </template>
           <template #default="{ row }">
             <PermissionCell :code="row.code" :name="row.name" />
@@ -43,7 +43,7 @@
         </el-table-column>
         <el-table-column prop="description" min-width="150">
           <template #header>
-            <IconLabel :icon="Document" label="描述" />
+            <BeeIconLabel icon="document" label="描述" />
           </template>
           <template #default="{ row }">
             <el-tooltip :content="row.description || '-'" placement="top" :disabled="!row.description">
@@ -53,7 +53,7 @@
         </el-table-column>
         <el-table-column prop="status" width="100">
           <template #header>
-            <IconLabel :icon="CircleCheck" label="状态" />
+            <BeeIconLabel icon="circle-check" label="状态" />
           </template>
           <template #default="{ row }">
             <StatusCell :status="row.status" :config="permissionStatusConfig" />
@@ -61,7 +61,7 @@
         </el-table-column>
         <el-table-column width="180">
           <template #header>
-            <IconLabel :icon="Clock" label="创建" />
+            <BeeIconLabel icon="clock" label="创建" />
           </template>
           <template #default="{ row }">
             <AuditCell :user="row.createBy" :time="row.createAt" />
@@ -69,7 +69,7 @@
         </el-table-column>
         <el-table-column width="180">
           <template #header>
-            <IconLabel :icon="EditPen" label="更新" />
+            <BeeIconLabel icon="edit-pen" label="更新" />
           </template>
           <template #default="{ row }">
             <AuditCell :user="row.updateBy" :time="row.updateAt" />
@@ -77,7 +77,7 @@
         </el-table-column>
         <el-table-column width="150" fixed="right">
           <template #header>
-            <IconLabel :icon="EditPen" label="操作" />
+            <BeeIconLabel icon="edit-pen" label="操作" />
           </template>
           <template #default="{ row }">
             <el-tooltip content="详情" placement="top">
@@ -162,7 +162,7 @@ import BeeDialog from '@/components/BeeDialog/index.vue'
 import BeeInputSearch from '@/components/BeeInputSearch/index.vue'
 import BeeRadioSearch from '@/components/BeeRadioSearch/index.vue'
 import BeeTag from '@/components/BeeTag/index.vue'
-import IconLabel from '@/components/IconLabel/index.vue'
+import BeeIconLabel from '@/components/BeeIconLabel/index.vue'
 import PermissionCell from '@/components/PermissionCell/index.vue'
 import StatusCell from '@/components/StatusCell/index.vue'
 import TextCopyableCell from '@/components/TextCopyableCell/index.vue'

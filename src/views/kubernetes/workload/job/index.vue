@@ -32,7 +32,7 @@
           <el-table-column type="selection" width="60" align="center" />
           <el-table-column min-width="200">
             <template #header>
-              <IconLabel :icon="Timer" label="名称" />
+              <BeeIconLabel icon="timer" label="名称" />
             </template>
             <template #default="{ row }">
               <div class="name-cell">
@@ -46,7 +46,7 @@
           </el-table-column>
           <el-table-column min-width="120">
             <template #header>
-              <IconLabel :icon="FolderOpened" label="命名空间" />
+              <BeeIconLabel icon="folder-opened" label="命名空间" />
             </template>
             <template #default="{ row }">
               <span>{{ row.namespace }}</span>
@@ -54,7 +54,7 @@
           </el-table-column>
           <el-table-column width="100">
             <template #header>
-              <IconLabel :icon="Cpu" label="并行" />
+              <BeeIconLabel icon="cpu" label="并行" />
             </template>
             <template #default="{ row }">
               <span>{{ row.parallelism }}</span>
@@ -62,7 +62,7 @@
           </el-table-column>
           <el-table-column width="100">
             <template #header>
-              <IconLabel :icon="CircleCheck" label="完成" />
+              <BeeIconLabel icon="circle-check" label="完成" />
             </template>
             <template #default="{ row }">
               <span :class="row.succeeded === row.completions ? 'replicas-ready' : 'replicas-pending'">{{ row.succeeded }}/{{ row.completions }}</span>
@@ -70,7 +70,7 @@
           </el-table-column>
           <el-table-column width="100">
             <template #header>
-              <IconLabel :icon="InfoFilled" label="失败" />
+              <BeeIconLabel icon="info-filled" label="失败" />
             </template>
             <template #default="{ row }">
               <span :class="row.failed > 0 ? 'replicas-pending' : ''">{{ row.failed }}</span>
@@ -78,7 +78,7 @@
           </el-table-column>
           <el-table-column width="180">
             <template #header>
-              <IconLabel :icon="Clock" label="创建时间" />
+              <BeeIconLabel icon="clock" label="创建时间" />
             </template>
             <template #default="{ row }">
               <span class="time-text">{{ formatTime(row.createAt) }}</span>
@@ -86,7 +86,7 @@
           </el-table-column>
           <el-table-column width="200" fixed="right">
             <template #header>
-              <IconLabel :icon="EditPen" label="操作" />
+              <BeeIconLabel icon="edit-pen" label="操作" />
             </template>
             <template #default="{ row }">
               <el-tooltip content="编辑" placement="top">
@@ -177,7 +177,7 @@ import BeeInputSearch from '@/components/BeeInputSearch/index.vue'
 import BeePageTitle from '@/components/BeePageTitle/index.vue'
 import BeeSelect from '@/components/BeeSelect/index.vue'
 import BeeTag from '@/components/BeeTag/index.vue'
-import IconLabel from '@/components/IconLabel/index.vue'
+import BeeIconLabel from '@/components/BeeIconLabel/index.vue'
 import { useClipboard } from '@/composables/useClipboard'
 import { usePermission } from '@/composables/usePermission'
 

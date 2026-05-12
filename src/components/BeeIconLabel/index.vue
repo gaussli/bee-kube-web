@@ -1,31 +1,27 @@
 <template>
-  <span class="icon-label">
-    <el-icon><component :is="icon" /></el-icon>
+  <span class="bee-icon-label">
+    <BeeIcon :name="icon" :size="14" />
     <span>{{ label }}</span>
   </span>
 </template>
 
 <script setup lang="ts">
-import type { Component } from 'vue'
-
-defineOptions({ name: 'IconLabel' })
+import BeeIcon from '@/components/BeeIcon/index.vue'
+defineOptions({ name: 'BeeIconLabel' })
 
 defineProps<{
-  icon: Component
+  icon: string
   label: string
 }>()
 </script>
 
 <style lang="scss" scoped>
-.icon-label {
+.bee-icon-label {
   display: inline-flex;
   gap: 6px;
   align-items: center;
+  justify-content: center;
   font-weight: 500;
-
-  .el-icon {
-    font-size: 14px;
-    color: $text-secondary;
-  }
+  color: $text-secondary;
 }
 </style>

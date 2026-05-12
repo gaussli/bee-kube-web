@@ -31,7 +31,7 @@
           <el-table-column type="selection" width="60" align="center" />
           <el-table-column min-width="180">
             <template #header>
-              <IconLabel :icon="Box" label="名称" />
+              <BeeIconLabel icon="box" label="名称" />
             </template>
             <template #default="{ row }">
               <NodeCell :name="row.name" :ip="row.internalIp" />
@@ -39,7 +39,7 @@
           </el-table-column>
           <el-table-column width="130">
             <template #header>
-              <IconLabel :icon="CircleCheck" label="状态" />
+              <BeeIconLabel icon="circle-check" label="状态" />
             </template>
             <template #default="{ row }">
               <div class="status-cell">
@@ -52,7 +52,7 @@
           </el-table-column>
           <el-table-column min-width="150">
             <template #header>
-              <IconLabel :icon="User" label="角色" />
+              <BeeIconLabel icon="user" label="角色" />
             </template>
             <template #default="{ row }">
               <BeeTag v-for="role in row.roles" :key="role" size="small">{{ role }}</BeeTag>
@@ -60,7 +60,7 @@
           </el-table-column>
           <el-table-column min-width="120">
             <template #header>
-              <IconLabel :icon="Monitor" label="版本" />
+              <BeeIconLabel icon="monitor" label="版本" />
             </template>
             <template #default="{ row }">
               <span class="version-text">{{ row.version }}</span>
@@ -68,7 +68,7 @@
           </el-table-column>
           <el-table-column width="120">
             <template #header>
-              <IconLabel :icon="Cpu" label="CPU" />
+              <BeeIconLabel icon="cpu" label="CPU" />
             </template>
             <template #default="{ row }">
               <div class="resource-cell">
@@ -79,7 +79,7 @@
           </el-table-column>
           <el-table-column width="140">
             <template #header>
-              <IconLabel :icon="Memo" label="内存" />
+              <BeeIconLabel icon="memo" label="内存" />
             </template>
             <template #default="{ row }">
               <div class="resource-cell">
@@ -90,7 +90,7 @@
           </el-table-column>
           <el-table-column width="140">
             <template #header>
-              <IconLabel :icon="Grid" label="Pods" />
+              <BeeIconLabel icon="grid" label="Pods" />
             </template>
             <template #default="{ row }">
               <div class="resource-cell">
@@ -101,7 +101,7 @@
           </el-table-column>
           <el-table-column width="180">
             <template #header>
-              <IconLabel :icon="Clock" label="创建时间" />
+              <BeeIconLabel icon="clock" label="创建时间" />
             </template>
             <template #default="{ row }">
               <TimeCell :time="row.createAt" />
@@ -109,7 +109,7 @@
           </el-table-column>
           <el-table-column width="200" fixed="right">
             <template #header>
-              <IconLabel :icon="EditPen" label="操作" />
+              <BeeIconLabel icon="edit-pen" label="操作" />
             </template>
             <template #default="{ row }">
               <el-tooltip content="编辑" placement="top">
@@ -173,7 +173,7 @@ import BeeInputSearch from '@/components/BeeInputSearch/index.vue'
 import BeePageTitle from '@/components/BeePageTitle/index.vue'
 import BeeRadioSearch from '@/components/BeeRadioSearch/index.vue'
 import BeeTag from '@/components/BeeTag/index.vue'
-import IconLabel from '@/components/IconLabel/index.vue'
+import BeeIconLabel from '@/components/BeeIconLabel/index.vue'
 import NodeCell from '@/components/NodeCell/index.vue'
 import StatusCell from '@/components/StatusCell/index.vue'
 import TimeCell from '@/components/TimeCell/index.vue'
