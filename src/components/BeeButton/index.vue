@@ -66,17 +66,12 @@ const isCircle = computed(() => !hasDefaultSlot.value)
 const loading = ref(false)
 
 async function handleClick(event: Event) {
-  console.log('begin click')
   if (loading.value) return
   loading.value = true
-
   try {
     emit('click', event)
   } finally {
-    setTimeout(() => {
-      console.log('end click')
-      loading.value = false
-    }, 10000)
+    loading.value = false
   }
 }
 

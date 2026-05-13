@@ -5,24 +5,28 @@
   <Teleport to="body">
     <Transition name="bee-dropdown">
       <div v-if="isOpen" ref="floatingRef" class="bee-dropdown__menu" :style="floatingStyles" @click.stop>
-        <slot name="dropdown">
-          <div v-for="option in options" :key="option.value" class="bee-dropdown__item" @click="handleSelect(option)">
-            <BeeIcon v-if="option.icon" class="bee-dropdown__item-icon" :name="option.icon" :size="14" />
-            <span>{{ option.label ?? option.value }}</span>
-          </div>
-        </slot>
+        <!-- 渲染菜单项 -->
+        <div v-for="item in menuItems" :key="item.value" class="bee-dropdown__item" @click="handleSelect(item)">
+          <BeeIcon v-if="item.icon" class="bee-dropdown__item-icon" :name="item.icon" :size="14" />
+          <span>{{ item.label ?? item.value }}</span>
+        </div>
         <div ref="arrowRef" class="bee-dropdown__arrow" :style="arrowStyle" />
       </div>
     </Transition>
   </Teleport>
+  <!-- inject 模式：隐藏的 slot 容器，让 BeeDropdownItem 注册但不渲染 -->
+  <div v-if="$slots.dropdown" style="display: none">
+    <slot name="dropdown" />
+  </div>
 </template>
 
 <script setup lang="ts">
 /**
  * BeeDropdown 下拉菜单组件
  * 使用 floating-ui 实现智能定位
+ * 支持 provide/inject 模式让 BeeDropdownItem 自动注册
  */
-import { ref, computed, onMounted, onBeforeUnmount } from 'vue'
+import { ref, computed, onMounted, onBeforeUnmount, provide, watch } from 'vue'
 import { arrow, flip, offset, shift, useFloating } from '@floating-ui/vue'
 import BeeIcon from '@/components/BeeIcon/index.vue'
 import type { DropdownOption } from './types'
@@ -67,6 +71,55 @@ const triggerRef = ref<HTMLElement>()
 const floatingRef = ref<HTMLElement>()
 /** 箭头元素引用 */
 const arrowRef = ref<HTMLElement>()
+/** 菜单项列表（统一渲染数据源） */
+const menuItems = ref<DropdownOption[]>([])
+
+/** 同步 options 到 menuItems */
+watch(
+  () => props.options,
+  newOptions => {
+    menuItems.value = newOptions ? [...newOptions] : []
+  },
+  { immediate: true }
+)
+
+/** 添加菜单项（供 BeeDropdownItem 调用） */
+function addItem(item: { value: string | number; label?: string; icon?: string }) {
+  const existing = menuItems.value.findIndex(i => i.value === item.value)
+  if (existing === -1) {
+    menuItems.value.push({
+      value: item.value,
+      label: item.label,
+      icon: item.icon
+    })
+  }
+}
+
+/** 移除菜单项（供 BeeDropdownItem 调用） */
+function removeItem(value: string | number) {
+  const index = menuItems.value.findIndex(i => i.value === value)
+  if (index !== -1) {
+    menuItems.value.splice(index, 1)
+  }
+}
+
+/** 收起菜单（供 BeeDropdownItem 调用） */
+function hideMenu() {
+  isOpen.value = false
+  emit('visible-change', false)
+}
+
+// 提供上下文给 BeeDropdownItem
+provide('beeDropdown', {
+  addItem,
+  removeItem,
+  hideMenu,
+  isOpen,
+  updateValue: (value: string | number) => {
+    emit('update:modelValue', value)
+    emit('change', value)
+  }
+})
 
 /** floating-ui 定位 */
 const { floatingStyles, middlewareData, placement } = useFloating(triggerRef, floatingRef, {

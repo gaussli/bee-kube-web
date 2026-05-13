@@ -112,13 +112,11 @@
               <BeeButton v-if="hasPermission('kubernetes:node:edit')" icon="basic-edit" type="info" tooltip="编辑" @click="handleEdit(row)" />
               <BeeButton icon="basic-view" type="info" tooltip="详情" @click="handleViewDetail(row)" />
               <BeeDropdown v-if="hasPermission('kubernetes:node:edit')" trigger="click">
-                <template>
-                  <BeeButton icon="basic-more" type="info" />
-                </template>
+                <BeeButton icon="basic-more" type="info" tooltip="更多" />
                 <template #dropdown>
-                  <BeeDropdownItem v-if="row.schedulable !== false" @click="handleCordon(row, true)">停止调度</BeeDropdownItem>
-                  <BeeDropdownItem v-else @click="handleCordon(row, false)">允许调度</BeeDropdownItem>
-                  <BeeDropdownItem divided @click="handleDrain(row)">驱逐 Pod</BeeDropdownItem>
+                  <BeeDropdownItem v-if="row.schedulable !== false" value="stopScheduler" label="停止调度" icon="basic-stop" @click="handleCordon(row, true)" />
+                  <BeeDropdownItem v-else value="enableScheduler" label="允许调度" icon="basic-right" @click="handleCordon(row, false)" />
+                  <BeeDropdownItem value="drainPod" label="驱逐Pod" icon="kubernetes-drain" @click="handleDrain(row)" />
                 </template>
               </BeeDropdown>
             </template>

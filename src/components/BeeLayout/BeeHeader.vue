@@ -147,7 +147,7 @@ function toggleFullscreen() {
   }
 }
 
-async function handleDropdownChange(command: string) {
+async function handleDropdownChange(command: string | number) {
   switch (command) {
     case 'profile':
       ElMessage.info('用户信息功能开发中')

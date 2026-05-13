@@ -1,33 +1,75 @@
 <template>
-  <div class="bee-dropdown__item" :class="{ 'is-divided': divided }" @click="$emit('click')">
+  <div v-if="!hidden" class="bee-dropdown__item" @click="handleClick">
     <slot />
   </div>
 </template>
 
 <script setup lang="ts">
-withDefaults(
-  defineProps<{
-    divided?: boolean
-  }>(),
-  {
-    divided: false
-  }
-)
+import { ref, onMounted, onBeforeUnmount, inject } from 'vue'
 
-defineEmits<{
+defineOptions({ name: 'BeeDropdownItem' })
+
+const props = defineProps<{
+  /** 值，用于 v-model */
+  value: string | number
+  /** 标签文本 */
+  label?: string
+  /** 图标 */
+  icon?: string
+}>()
+
+const emit = defineEmits<{
   click: []
 }>()
 
-defineOptions({ name: 'BeeDropdownItem' })
-</script>
-
-<style lang="scss" scoped>
-.bee-dropdown__item {
-  &.is-divided {
-    padding-top: 8px;
-    margin-top: 4px;
-
-    // border-top: 1px solid $border-color;
-  }
+/** 注入的 Dropdown 上下文 */
+interface DropdownContext {
+  addItem: (item: { value: string | number; label?: string; icon?: string }) => void
+  removeItem: (value: string | number) => void
+  hideMenu: () => void
+  updateValue: (value: string | number) => void
 }
-</style>
+
+const dropdown = inject<DropdownContext | null>('beeDropdown', null)
+
+/** 是否隐藏（用于 v-permission 等指令） */
+const hidden = ref(false)
+
+/** 通知隐藏 */
+function setHidden(val: boolean) {
+  hidden.value = val
+}
+
+onMounted(() => {
+  // 注册到父组件
+  if (dropdown) {
+    dropdown.addItem({
+      value: props.value,
+      label: props.label,
+      icon: props.icon
+    })
+  }
+})
+
+onBeforeUnmount(() => {
+  // 从父组件移除
+  if (dropdown) {
+    dropdown.removeItem(props.value)
+  }
+})
+
+/** 点击处理 */
+function handleClick() {
+  // 更新父组件的 v-model
+  if (dropdown) {
+    dropdown.updateValue(props.value)
+    dropdown.hideMenu()
+  }
+  emit('click')
+}
+
+// 暴露方法供指令使用
+defineExpose({
+  setHidden
+})
+</script>
