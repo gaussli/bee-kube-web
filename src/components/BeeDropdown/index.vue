@@ -82,7 +82,7 @@ const arrowRef = ref<HTMLElement>()
 const { floatingStyles, middlewareData, placement } = useFloating(triggerRef, floatingRef, {
   placement: props.placement,
   middleware: [
-    offset(8), // dropdown-menu 与触发元素之间的距离
+    offset(10), // dropdown-menu 与触发元素之间的距离
     flip(), // 边界翻转
     shift({ padding: 8 }), // 防止超出视窗
     arrow({ element: arrowRef }) // 箭头
@@ -171,11 +171,12 @@ defineExpose({
   display: inline-block;
 
   &__menu {
+    position: relative;
     z-index: 1000;
     max-height: 300px;
-    padding: 4px 0;
-    border-radius: 4px;
+    border-radius: $radius-xs;
     background: $bg-overlay;
+    box-shadow: 0 4px 12px rgb(0 0 0 / 30%);
   }
 
   &__item {

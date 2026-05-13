@@ -1,19 +1,19 @@
 <template>
-  <div ref="triggerRef" class="bee-select" :class="{ 'is-disabled': disabled }" @click="toggle">
+  <div ref="triggerRef" class="bee-select" @click="toggle">
     <div class="bee-select__trigger">
       <span class="bee-select__value">
         {{ selectedLabel || placeholder }}
       </span>
-      <BeeIcon name="basic/arrow-down" class="bee-select__arrow" :class="{ 'is-open': isOpen }" />
+      <BeeIcon class="bee-select__arrow-icon" :class="{ 'is-open': isOpen }" name="basic-arrow-down" :size="14" />
     </div>
   </div>
   <Teleport to="body">
     <Transition name="bee-select">
       <div v-if="isOpen" ref="floatingRef" class="bee-select__menu" :style="floatingStyles" @click.stop>
-        <div v-for="option in options" :key="option[valueKey]" class="bee-select__option" :class="{ 'is-selected': option[valueKey] === modelValue }" @click="handleSelect(option)">
-          <span>{{ option[labelKey] }}</span>
-          <BeeIcon v-if="option[valueKey] === modelValue" name="basic/check" class="bee-select__check" />
+        <div v-for="option in options" :key="option[valueKey]" class="bee-select__menu-item" :class="{ 'is-selected': option[valueKey] === modelValue }" @click="handleSelect(option)">
+          {{ option[labelKey] }}
         </div>
+        <div ref="arrowRef" class="bee-select__arrow" :style="arrowStyle" />
       </div>
     </Transition>
   </Teleport>
@@ -25,7 +25,7 @@
  * 使用 floating-ui 实现智能定位
  */
 import { ref, computed, onMounted, onBeforeUnmount } from 'vue'
-import { flip, offset, shift, useFloating } from '@floating-ui/vue'
+import { arrow, flip, offset, shift, useFloating } from '@floating-ui/vue'
 import BeeIcon from '@/components/BeeIcon/index.vue'
 
 defineOptions({ name: 'BeeSelect' })
@@ -48,16 +48,13 @@ const props = withDefaults(
     valueKey?: string
     /** 占位文本 */
     placeholder?: string
-    /** 是否禁用 */
-    disabled?: boolean
   }>(),
   {
     modelValue: undefined,
     options: () => [],
     labelKey: 'label',
     valueKey: 'value',
-    placeholder: '请选择',
-    disabled: false
+    placeholder: '请选择'
   }
 )
 
@@ -77,6 +74,8 @@ const isOpen = ref(false)
 const triggerRef = ref<HTMLElement>()
 /** 菜单元素引用 */
 const floatingRef = ref<HTMLElement>()
+/** 箭头元素引用 */
+const arrowRef = ref<HTMLElement>()
 
 /** 选中的标签文本 */
 const selectedLabel = computed(() => {
@@ -86,14 +85,36 @@ const selectedLabel = computed(() => {
 })
 
 /** floating-ui 定位 */
-const { floatingStyles } = useFloating(triggerRef, floatingRef, {
+const { floatingStyles, middlewareData, placement } = useFloating(triggerRef, floatingRef, {
   placement: 'bottom-start',
-  middleware: [offset(4), flip(), shift({ padding: 8 })]
+  middleware: [offset(12), flip(), shift({ padding: 8 }), arrow({ element: arrowRef })]
+})
+
+/** 箭头样式 */
+const arrowStyle = computed(() => {
+  const arrowData = middlewareData.value.arrow
+  if (!arrowData) return {}
+
+  const { x, y } = arrowData
+  const staticSideMap: Record<string, string> = {
+    top: 'bottom',
+    right: 'left',
+    bottom: 'top',
+    left: 'right'
+  }
+  const side = placement.value.split('-')[0]
+  const staticSide = staticSideMap[side] || 'bottom'
+
+  const style: Record<string, string> = {
+    left: x != null ? `${x}px` : '',
+    top: y != null ? `${y}px` : ''
+  }
+  style[staticSide] = '-4px'
+  return style
 })
 
 /** 切换展开状态 */
 function toggle() {
-  if (props.disabled) return
   isOpen.value = !isOpen.value
   emit('visible-change', isOpen.value)
 }
@@ -133,7 +154,6 @@ defineExpose({
   isOpen,
   /** 展开菜单 */
   show: () => {
-    if (props.disabled) return
     isOpen.value = true
     emit('visible-change', true)
   },
@@ -151,35 +171,24 @@ defineExpose({
 
 <style lang="scss" scoped>
 .bee-select {
-  position: relative;
   display: inline-block;
-
-  &.is-disabled {
-    opacity: 0.5;
-    cursor: not-allowed;
-  }
 
   &__trigger {
     display: flex;
     gap: $spacing-sm;
     align-items: center;
-    min-width: 160px;
+    height: 32px;
+    min-width: 200px;
     padding: $spacing-sm $spacing-md;
-    border: 1px solid $border-regular;
-    border-radius: $radius-sm;
-    background: $bg-overlay;
+    border-radius: $radius-full;
+    font-size: $font-size-sm;
+    color: $text-secondary;
+    background: $bg-color;
     cursor: pointer;
-    transition: border-color 0.2s;
-
-    &:hover {
-      border-color: $border-hover;
-    }
   }
 
   &__value {
     flex: 1;
-    font-size: $font-size-base;
-    color: $text-regular;
 
     &:empty::before {
       color: $text-placeholder;
@@ -187,10 +196,7 @@ defineExpose({
     }
   }
 
-  &__arrow {
-    width: 14px;
-    height: 14px;
-    color: $text-secondary;
+  &__arrow-icon {
     transition: transform 0.2s;
 
     &.is-open {
@@ -199,53 +205,57 @@ defineExpose({
   }
 
   &__menu {
+    position: relative;
     z-index: 1000;
-    min-width: 160px;
-    padding: $spacing-xs 0;
+    min-width: 200px;
     border-radius: $radius-sm;
     background: $bg-overlay;
     box-shadow: 0 4px 12px rgb(0 0 0 / 30%);
   }
 
-  &__option {
+  &__arrow {
+    position: absolute;
+    width: 10px;
+    height: 10px;
+    border-top-left-radius: 4px;
+    background: $bg-overlay;
+    transform: rotate(45deg);
+  }
+
+  &__menu-item {
+    position: relative;
+    z-index: 1;
     display: flex;
     gap: $spacing-sm;
     align-items: center;
     justify-content: space-between;
     padding: $spacing-sm $spacing-md;
-    font-size: $font-size-base;
+    margin: $spacing-sm;
+    border-radius: $radius-full;
+    font-size: $font-size-sm;
     color: $text-regular;
     cursor: pointer;
     transition: background 0.2s;
 
     &:hover {
-      background: $bg-hover;
+      z-index: 2;
+      background: $color-primary;
     }
 
     &.is-selected {
-      color: $color-primary;
       background: rgba($color-primary, 0.1);
     }
-  }
-
-  &__check {
-    width: 14px;
-    height: 14px;
-    color: $color-primary;
   }
 }
 
 // 过渡动画
 .bee-select-enter-active,
 .bee-select-leave-active {
-  transition:
-    opacity 0.15s ease,
-    transform 0.15s ease;
+  transition: opacity 0.15s ease;
 }
 
 .bee-select-enter-from,
 .bee-select-leave-to {
   opacity: 0;
-  transform: translateY(-4px);
 }
 </style>
