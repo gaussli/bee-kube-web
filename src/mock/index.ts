@@ -1,6 +1,12 @@
 import type { AxiosRequestConfig, AxiosResponse, InternalAxiosRequestConfig } from 'axios'
 
-const mockRegistry = new Map<string, any>()
+interface MockHandler {
+  method: string
+  url: string
+  handler: (params: any) => any
+}
+
+const mockHandlers: MockHandler[] = []
 const mockDelay = 500
 
 // 自动导入 mock 模块
@@ -13,9 +19,30 @@ for (const path in modules) {
     if (!req) continue
     const { method, url, handler } = req
     if (method && url && handler) {
-      mockRegistry.set(`${method.toLowerCase()} ${url}`, handler)
+      mockHandlers.push({ method: method.toLowerCase(), url, handler })
     }
   }
+}
+
+/** 将 URL 路径转换为正则表达式，支持 :param 格式 */
+function pathToRegex(url: string): { regex: RegExp; paramNames: string[] } {
+  const paramNames: string[] = []
+  const regexStr = url.replace(/:([^/]+)/g, (_, paramName) => {
+    paramNames.push(paramName)
+    return '([^/]+)'
+  })
+  return { regex: new RegExp(`^${regexStr}$`), paramNames }
+}
+
+/** 提取 URL 中的路径参数 */
+function extractParams(url: string, regex: RegExp, paramNames: string[]): Record<string, string> {
+  const match = url.match(regex)
+  if (!match) return {}
+  const params: Record<string, string> = {}
+  paramNames.forEach((name, index) => {
+    params[name] = match[index + 1]
+  })
+  return params
 }
 
 export async function mockRequest(config: AxiosRequestConfig): Promise<AxiosResponse> {
@@ -25,17 +52,21 @@ export async function mockRequest(config: AxiosRequestConfig): Promise<AxiosResp
   await new Promise(r => setTimeout(r, mockDelay))
 
   // 根据 url 和 method 分发 mock 响应
-  const key = `${method?.toLowerCase()} ${url}`
-  const mockData = mockRegistry.get(key)?.(data || params)
+  const methodLower = method?.toLowerCase()
 
-  if (mockData !== undefined) {
-    return {
-      data: { code: 20000, message: 'success', data: mockData },
-      status: 200,
-      statusText: 'OK',
-      headers: {},
-      config: config as InternalAxiosRequestConfig,
-      request: {}
+  for (const mock of mockHandlers) {
+    const { regex, paramNames } = pathToRegex(mock.url)
+    if (mock.method === methodLower && regex.test(url as string)) {
+      const pathParams = extractParams(url as string, regex, paramNames)
+      const mockData = mock.handler({ ...pathParams, ...params, ...data })
+      return {
+        data: { code: 20000, message: 'success', data: mockData },
+        status: 200,
+        statusText: 'OK',
+        headers: {},
+        config: config as InternalAxiosRequestConfig,
+        request: {}
+      }
     }
   }
 
