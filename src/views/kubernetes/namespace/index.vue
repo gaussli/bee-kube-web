@@ -1,16 +1,16 @@
 <template>
-  <div class="namespace-table">
+  <BeePage class="namespace-page">
     <!-- 提示信息和页面标题 -->
-    <div class="page-header">
+    <BeeCard class="page-header">
       <BeePageTitle
-        :icon="FolderOpened"
+        icon="kubernetes-namespace"
         title="命名空间管理"
         description="命名空间（Namespace）是 Kubernetes 集群中用于资源隔离的虚拟集群，可以将集群划分为多个独立的工作空间，实现项目、团队或环境之间的资源隔离和管理。"
       />
-    </div>
+    </BeeCard>
 
     <!-- 页面内容 -->
-    <div class="page-body">
+    <BeeCard class="page-body">
       <!-- 查询表单 -->
       <div class="table-query">
         <div class="table-query-left">
@@ -18,15 +18,9 @@
           <BeeRadioSearch v-model="queryForm.status" :options="statusOptions" @select="handleSelect" />
         </div>
         <div class="table-query-right">
-          <BeeButton @click="handleReset">
-            <template #icon><Refresh /></template>
-            刷新
-          </BeeButton>
-          <el-divider v-if="hasPermission('kubernetes:namespace:create')" direction="vertical" />
-          <BeeButton v-if="hasPermission('kubernetes:namespace:create')" type="primary" @click="handleCreate">
-            <template #icon><Plus /></template>
-            新增
-          </BeeButton>
+          <BeeButton type="info" icon="basic-refresh" @click="handleReset"> 刷新 </BeeButton>
+          <BeeDivider v-if="hasPermission('kubernetes:namespace:create')" direction="vertical" length="12px" />
+          <BeeButton v-if="hasPermission('kubernetes:namespace:create')" type="primary" icon="basic-create" @click="handleCreate"> 新增 </BeeButton>
         </div>
       </div>
 
@@ -110,7 +104,7 @@
           @current-change="loadData"
         />
       </div>
-    </div>
+    </BeeCard>
 
     <!-- 单个删除 Dialog -->
     <BeeDialog v-model="deleteDialogVisible" title="确认删除" @confirm="handleConfirmDelete">
@@ -136,24 +130,27 @@
         <p class="warning-text">删除命名空间将同时删除该命名空间下的所有资源！</p>
       </div>
     </BeeDialog>
-  </div>
+  </BeePage>
 </template>
 
 <script setup lang="ts">
 import { onMounted, reactive, ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { ElMessage } from 'element-plus'
-import { FolderOpened, Refresh, Plus, CircleCheck, EditPen, Delete, View, Clock, Document, DocumentCopy } from '@element-plus/icons-vue'
+import { EditPen, Delete, View, Document, DocumentCopy } from '@element-plus/icons-vue'
 import { type NamespaceQueryReq, type NamespaceResp } from '@/types'
 import { getNamespacePage, deleteNamespace, batchDeleteNamespace } from '@/api'
 import { useKubernetesStore } from '@/stores'
 import BeeButton from '@/components/BeeButton/index.vue'
+import BeeCard from '@/components/BeeCard/index.vue'
 import BeeDialog from '@/components/BeeDialog/index.vue'
+import BeeDivider from '@/components/BeeDivider/index.vue'
+import BeeIconLabel from '@/components/BeeIconLabel/index.vue'
 import BeeInputSearch from '@/components/BeeInputSearch/index.vue'
+import BeePage from '@/components/BeePage/index.vue'
 import BeePageTitle from '@/components/BeePageTitle/index.vue'
 import BeeRadioSearch from '@/components/BeeRadioSearch/index.vue'
 import BeeTag from '@/components/BeeTag/index.vue'
-import BeeIconLabel from '@/components/BeeIconLabel/index.vue'
 import { useClipboard } from '@/composables/useClipboard'
 import { usePermission } from '@/composables/usePermission'
 
@@ -316,48 +313,40 @@ onMounted(() => {
 </script>
 
 <style lang="scss" scoped>
-.namespace-table {
-  display: flex;
-  flex-direction: column;
-  height: 100%;
-}
-
-.page-header {
-  flex-shrink: 0;
-  padding: 0 20px;
-  margin-bottom: 16px;
-  background-color: $bg-page;
-}
-
-.page-body {
-  display: flex;
-  flex-direction: column;
-  flex: 1;
-  min-height: 0;
-  overflow: hidden;
-  background-color: $bg-page;
-}
-
-.table-query {
-  display: flex;
-  gap: 12px;
-  flex-shrink: 0;
-  align-items: center;
-  justify-content: space-between;
-  padding: 16px 20px;
-
-  .table-query-left {
+.namespace-page {
+  .page-body {
     display: flex;
-    gap: 12px;
-    align-items: center;
+    flex-direction: column;
+    flex: 1;
+    min-height: 0;
+    overflow: hidden;
+
+    .table-query {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: $spacing-md 0;
+
+      .table-query-left {
+        display: flex;
+        gap: $spacing-sm;
+        flex-direction: row;
+        align-items: center;
+      }
+
+      .table-query-right {
+        display: flex;
+        gap: $spacing-sm;
+        flex-direction: row;
+        align-items: center;
+      }
+    }
   }
 }
 
 .table-body {
   flex: 1;
   min-height: 0;
-  padding: 0 20px;
-  overflow-y: auto;
 
   :deep(.el-table) {
     height: 100%;

@@ -151,9 +151,9 @@ function getNamespacePage(params: any) {
   if (name) {
     filtered = filtered.filter(ns => ns.name.toLowerCase().includes(name.toLowerCase()))
   }
-  if (clusterId) {
-    filtered = filtered.filter(ns => ns.clusterId === clusterId)
-  }
+  // if (clusterId) {
+  //   filtered = filtered.filter(ns => ns.clusterId === clusterId)
+  // }
   if (status) {
     filtered = filtered.filter(ns => ns.status === status)
   }

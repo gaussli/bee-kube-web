@@ -1,4 +1,4 @@
-import type { NodeResp } from '@/types'
+import type { NodeQueryReq, NodeResp } from '@/types'
 
 // 模拟节点数据
 const mockNodes: NodeResp[] = [
@@ -240,21 +240,24 @@ const mockNodes: NodeResp[] = [
 ]
 
 // 获取节点分页列表
-function getNodePage(params: any) {
-  const { id, name, clusterId, status, page = 1, pageSize = 10 } = params || {}
+function getNodePage(clusterId: string, params: NodeQueryReq) {
+  const { id, name, ip, status, page = 1, pageSize = 10 } = params || {}
 
   let filtered = [...mockNodes]
 
   // 搜索过滤
+  // if (clusterId) {
+  //   filtered = filtered.filter(n => n.clusterId === clusterId)
+  // }
   if (id) {
-    filtered = filtered.filter(n => n.id.includes(id))
+    filtered = filtered.filter(n => n.id === id)
   }
   if (name) {
     filtered = filtered.filter(n => n.name.toLowerCase().includes(name.toLowerCase()))
   }
-  // if (clusterId) {
-  //   filtered = filtered.filter(n => n.clusterId === clusterId)
-  // }
+  if (ip) {
+    filtered = filtered.filter(n => n.internalIp === ip)
+  }
   if (status) {
     filtered = filtered.filter(n => n.status === status)
   }
@@ -270,7 +273,7 @@ function getNodePage(params: any) {
 
 // 获取节点详情
 function getNodeDetail(clusterId: string, name: string) {
-  const node = mockNodes.find(n => n.clusterId === clusterId && n.name === name)
+  const node = mockNodes.find(n => n.name === name)
   return node || null
 }
 
@@ -305,27 +308,27 @@ function cordonNode(clusterId: string, name: string, unschedulable: boolean) {
 export default [
   {
     method: 'get',
-    url: '/kubernetes/node/page',
-    handler: (params: any) => getNodePage(params)
+    url: '/kubernetes/cluster/:clusterId/nodes',
+    handler: ({ clusterId, params }: any) => getNodePage(clusterId, params)
   },
   {
     method: 'get',
-    url: '/kubernetes/node/:clusterId/:name',
+    url: '/kubernetes/cluster/:clusterId/nodes/:name',
     handler: ({ clusterId, name }: any) => getNodeDetail(clusterId, name)
   },
   {
     method: 'put',
-    url: '/kubernetes/node/:clusterId/:name',
+    url: '/kubernetes/cluster/:clusterId/nodes/:name',
     handler: ({ clusterId, name, ...data }: any) => updateNode(clusterId, name, data)
   },
   {
     method: 'post',
-    url: '/kubernetes/node/:clusterId/:name/drain',
+    url: '/kubernetes/cluster/:clusterId/nodes/:name/drain',
     handler: ({ clusterId, name }: any) => drainNode(clusterId, name)
   },
   {
     method: 'post',
-    url: '/kubernetes/node/:clusterId/:name/cordon',
+    url: '/kubernetes/cluster/:clusterId/nodes/:name/cordon',
     handler: ({ clusterId, name, unschedulable }: any) => cordonNode(clusterId, name, unschedulable)
   }
 ]

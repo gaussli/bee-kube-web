@@ -14,7 +14,7 @@
       <!-- 查询表单 -->
       <div class="table-query">
         <div class="table-query-left">
-          <BeeInputSearch v-model="searchKey" placeholder="按名称或IP搜索" @search="handleSearch" />
+          <BeeInputSearch v-model="searchKey" placeholder="按 ID、名称或 IP 搜索" @search="handleSearch" />
           <BeeRadioSearch v-model="queryForm.status" :options="statusOptions" @select="handleSelect" />
         </div>
         <div class="table-query-right">
@@ -171,9 +171,10 @@ const loading = ref(false)
 const tableData = ref<NodeResp[]>([])
 const selectedRows = ref<NodeResp[]>([])
 const queryForm = reactive<NodeQueryReq>({
+  id: undefined,
   name: undefined,
-  clusterId: kubernetesStore.activeClusterId || undefined,
   status: undefined,
+  ip: undefined,
   page: 1,
   pageSize: 10
 })
@@ -214,13 +215,13 @@ function getResourceColor(value: string) {
 }
 
 async function loadData() {
-  if (!queryForm.clusterId) {
+  if (!kubernetesStore.activeClusterId) {
     tableData.value = []
     return
   }
   loading.value = true
   try {
-    const resp = await getNodePage({ ...queryForm, page: pagination.page, pageSize: pagination.pageSize })
+    const resp = await getNodePage(kubernetesStore.activeClusterId, { ...queryForm, page: pagination.page, pageSize: pagination.pageSize })
     tableData.value = resp.list
     pagination.total = resp.total
   } finally {
@@ -229,17 +230,10 @@ async function loadData() {
 }
 
 function handleSearch() {
-  const value = searchKey.value.trim()
-  if (!value) {
-    queryForm.name = undefined
-    queryForm.ip = undefined
-  } else if (/^\d+\.\d+\.\d+\.\d+$/.test(value)) {
-    queryForm.name = undefined
-    queryForm.ip = value
-  } else {
-    queryForm.name = value
-    queryForm.ip = undefined
-  }
+  const key = searchKey.value.trim()
+  queryForm.id = key
+  queryForm.name = key
+  queryForm.ip = key
   pagination.page = 1
   loadData()
 }
@@ -251,6 +245,7 @@ function handleSelect(selectValue?: string | number) {
 }
 
 function handleReset() {
+  queryForm.id = undefined
   queryForm.name = undefined
   queryForm.ip = undefined
   queryForm.status = undefined

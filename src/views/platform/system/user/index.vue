@@ -176,10 +176,10 @@ import BeeButton from '@/components/BeeButton/index.vue'
 import BeeDialog from '@/components/BeeDialog/index.vue'
 import BeeIconLabel from '@/components/BeeIconLabel/index.vue'
 import BeeInputSearch from '@/components/BeeInputSearch/index.vue'
+import BeeLabelCopyable from '@/components/BeeLabelCopyable/index.vue'
 import BeeRadioSearch from '@/components/BeeRadioSearch/index.vue'
 import BeeStatus from '@/components/BeeStatus/index.vue'
 import BeeTag from '@/components/BeeTag/index.vue'
-import BeeLabelCopyable from '@/components/BeeLabelCopyable/index.vue'
 import UserCell from '@/components/UserCell/index.vue'
 import { usePermission } from '@/composables/usePermission'
 
@@ -224,7 +224,6 @@ const pagination = reactive({
 })
 
 async function loadData() {
-  console.log(queryForm)
   loading.value = true
   try {
     const resp = await getUserPage({ ...queryForm, page: pagination.page, pageSize: pagination.pageSize })
@@ -236,19 +235,17 @@ async function loadData() {
 }
 
 function handleSearch() {
-  const key = searchKey.value
+  const key = searchKey.value.trim()
   queryForm.id = key
   queryForm.username = key
   queryForm.nickname = key
   pagination.page = 1
-  pagination.pageSize = 10
   loadData()
 }
 
 function handleSelect(selectValue?: string | number) {
   queryForm.status = selectValue as number | undefined
   pagination.page = 1
-  pagination.pageSize = 10
   loadData()
 }
 

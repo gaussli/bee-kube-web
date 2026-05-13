@@ -1,6 +1,15 @@
 // 节点管理相关类型定义
 
-export interface NodeResp {
+import type { BaseEntity, PageReq } from './common'
+
+export interface NodeQueryReq extends PageReq {
+  id?: string
+  name?: string
+  ip?: string
+  status?: string
+}
+
+export interface NodeResp extends BaseEntity {
   id: string
   name: string
   clusterId: string
@@ -20,21 +29,6 @@ export interface NodeResp {
   labels?: Record<string, string>
   annotations?: Record<string, string>
   schedulable?: boolean
-}
-
-export interface NodeQueryReq {
-  id?: string
-  name?: string
-  ip?: string
-  clusterId?: string
-  status?: string
-  page?: number
-  pageSize?: number
-}
-
-export interface NodePageResp {
-  list: NodeResp[]
-  total: number
 }
 
 export interface NodeEditReq {
