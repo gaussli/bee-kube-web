@@ -1,137 +1,118 @@
 <template>
-  <div class="bee-dropdown" v-click-outside="handleClickOutside">
-    <div class="bee-dropdown__trigger" @click="toggle">
-      <slot name="trigger">
-        <button class="bee-dropdown__default-trigger">
-          <span>{{ placeholder }}</span>
-          <el-icon :class="{ 'is-open': isOpen }">
-            <ArrowDown />
-          </el-icon>
-        </button>
-      </slot>
-    </div>
-    <Transition name="bee-dropdown-fade">
-      <div v-if="isOpen" class="bee-dropdown__menu" :style="menuStyle">
-        <slot>
-          <template v-for="(group, gIndex) in normalizedOptions" :key="gIndex">
-            <div v-if="group.label" class="bee-dropdown__group-label">
-              {{ group.label }}
-            </div>
-            <div class="bee-dropdown__group">
-              <template v-for="(option, oIndex) in group.options" :key="option[valueKey]">
-                <div
-                  v-if="!option[disabledKey]"
-                  class="bee-dropdown__item"
-                  :class="{
-                    'is-selected': isSelected(option),
-                    'is-divided': option.divided
-                  }"
-                  :style="option.style"
-                  @click="handleSelect(option)"
-                >
-                  <slot name="option" :option="option" :index="oIndex">
-                    <div class="bee-dropdown__item-content">
-                      <el-icon v-if="option.icon" class="bee-dropdown__item-icon">
-                        <component :is="option.icon" />
-                      </el-icon>
-                      <span>{{ option[labelKey] }}</span>
-                    </div>
-                  </slot>
-                </div>
-                <div v-else class="bee-dropdown__item is-disabled" :style="option.style">
-                  <slot name="option" :option="option" :index="oIndex">
-                    <div class="bee-dropdown__item-content">
-                      <el-icon v-if="option.icon" class="bee-dropdown__item-icon">
-                        <component :is="option.icon" />
-                      </el-icon>
-                      <span>{{ option[labelKey] }}</span>
-                    </div>
-                  </slot>
-                </div>
-              </template>
-            </div>
-            <BeeDivider v-if="gIndex < normalizedOptions.length - 1 && group.options?.length" />
-          </template>
+  <div ref="triggerRef" class="bee-dropdown" @click="toggle">
+    <slot />
+  </div>
+  <Teleport to="body">
+    <Transition name="bee-dropdown">
+      <div v-if="isOpen" ref="floatingRef" class="bee-dropdown__menu" :style="floatingStyles" @click.stop>
+        <slot name="dropdown">
+          <div v-for="option in options" :key="option[valueKey]" class="bee-dropdown__item" @click="handleSelect(option)">
+            <BeeIcon v-if="option.icon" class="bee-dropdown__item-icon" :name="option.icon" :size="14" />
+            <span>{{ option[labelKey] }}</span>
+          </div>
         </slot>
+        <div ref="arrowRef" class="bee-dropdown__arrow" :style="arrowStyle" />
       </div>
     </Transition>
-  </div>
+  </Teleport>
 </template>
 
 <script setup lang="ts">
+/**
+ * BeeDropdown 下拉菜单组件
+ * 使用 floating-ui 实现智能定位
+ */
 import { ref, computed, onMounted, onBeforeUnmount } from 'vue'
-import { ArrowDown } from '@element-plus/icons-vue'
-import BeeDivider from '@/components/BeeDivider/index.vue'
+import { arrow, flip, offset, shift, useFloating } from '@floating-ui/vue'
+import BeeIcon from '@/components/BeeIcon/index.vue'
 
 defineOptions({ name: 'BeeDropdown' })
 
+/** 下拉选项 */
 interface DropdownOption {
   [key: string]: any
 }
 
-interface DropdownGroup {
-  label?: string
-  options: DropdownOption[]
-}
-
+/** 组件属性 */
 const props = withDefaults(
   defineProps<{
+    /** 选中值（v-model） */
     modelValue?: any
+    /** 选项列表 */
     options?: DropdownOption[]
-    groups?: DropdownGroup[]
-    placeholder?: string
+    /** 选项标签字段名 */
     labelKey?: string
+    /** 选项值字段名 */
     valueKey?: string
-    disabledKey?: string
+    /** 触发方式 */
     trigger?: 'click' | 'hover'
+    /** 弹出位置 */
     placement?: 'top' | 'bottom' | 'left' | 'right'
-    width?: number | string
   }>(),
   {
     modelValue: undefined,
     options: () => [],
-    groups: () => [],
-    placeholder: '请选择',
     labelKey: 'label',
     valueKey: 'value',
-    disabledKey: 'disabled',
     trigger: 'click',
-    placement: 'bottom',
-    width: undefined
+    placement: 'bottom'
   }
 )
 
+/** 组件事件 */
 const emit = defineEmits<{
+  /** v-model 更新 */
   'update:modelValue': [value: any]
+  /** 选中变化 */
   'change': [value: any, option?: DropdownOption]
+  /** 展开状态变化 */
   'visible-change': [visible: boolean]
 }>()
 
+/** 是否展开 */
 const isOpen = ref(false)
-const dropdownRef = ref<HTMLElement>()
+/** 触发器元素引用 */
+const triggerRef = ref<HTMLElement>()
+/** 菜单元素引用 */
+const floatingRef = ref<HTMLElement>()
+/** 箭头元素引用 */
+const arrowRef = ref<HTMLElement>()
 
-const normalizedOptions = computed(() => {
-  if (props.groups.length > 0) {
-    return props.groups
-  }
-  if (props.options.length > 0) {
-    return [{ options: props.options }]
-  }
-  return []
+/** floating-ui 定位 */
+const { floatingStyles, middlewareData, placement } = useFloating(triggerRef, floatingRef, {
+  placement: props.placement,
+  middleware: [
+    offset(8), // dropdown-menu 与触发元素之间的距离
+    flip(), // 边界翻转
+    shift({ padding: 8 }), // 防止超出视窗
+    arrow({ element: arrowRef }) // 箭头
+  ]
 })
 
-const menuStyle = computed(() => {
-  const style: Record<string, any> = {}
-  if (props.width) {
-    style.width = typeof props.width === 'number' ? `${props.width}px` : props.width
+/** 箭头样式 */
+const arrowStyle = computed(() => {
+  const arrowData = middlewareData.value.arrow
+  if (!arrowData) return {}
+
+  const { x, y } = arrowData
+  const staticSideMap: Record<string, string> = {
+    top: 'bottom',
+    right: 'left',
+    bottom: 'top',
+    left: 'right'
   }
+  const side = placement.value.split('-')[0]
+  const staticSide = staticSideMap[side] || 'bottom'
+
+  const style: Record<string, string> = {
+    left: x != null ? `${x}px` : '',
+    top: y != null ? `${y}px` : ''
+  }
+  style[staticSide] = '-5px'
   return style
 })
 
-function isSelected(option: DropdownOption): boolean {
-  return option[props.valueKey] === props.modelValue
-}
-
+/** 切换展开状态 */
 function toggle() {
   if (props.trigger === 'click') {
     isOpen.value = !isOpen.value
@@ -139,6 +120,7 @@ function toggle() {
   }
 }
 
+/** 处理选项选中 */
 function handleSelect(option: DropdownOption) {
   emit('update:modelValue', option[props.valueKey])
   emit('change', option[props.valueKey], option)
@@ -146,43 +128,37 @@ function handleSelect(option: DropdownOption) {
   emit('visible-change', false)
 }
 
-function handleClickOutside() {
-  isOpen.value = false
-  emit('visible-change', false)
-}
-
-function handleMouseEnter() {
-  if (props.trigger === 'hover') {
-    isOpen.value = true
-    emit('visible-change', true)
+/** 点击外部关闭 */
+function handleClickOutside(event: MouseEvent) {
+  if (isOpen.value) {
+    const target = event.target as Node
+    // 判断点击是否在触发器或菜单外部
+    if (!triggerRef.value?.contains(target) && !floatingRef.value?.contains(target)) {
+      isOpen.value = false
+      emit('visible-change', false)
+    }
   }
 }
 
-function handleMouseLeave() {
-  if (props.trigger === 'hover') {
-    isOpen.value = false
-    emit('visible-change', false)
-  }
-}
-
+/** 监听外部点击 */
 onMounted(() => {
-  const triggerEl = document.querySelector('.bee-dropdown__trigger')
-  triggerEl?.addEventListener('mouseenter', handleMouseEnter)
-  triggerEl?.addEventListener('mouseleave', handleMouseLeave)
+  document.addEventListener('click', handleClickOutside)
 })
 
+/** 取消监听 */
 onBeforeUnmount(() => {
-  const triggerEl = document.querySelector('.bee-dropdown__trigger')
-  triggerEl?.removeEventListener('mouseenter', handleMouseEnter)
-  triggerEl?.removeEventListener('mouseleave', handleMouseLeave)
+  document.removeEventListener('click', handleClickOutside)
 })
 
+/** 暴露方法供外部调用 */
 defineExpose({
   isOpen,
+  /** 展开菜单 */
   show: () => {
     isOpen.value = true
     emit('visible-change', true)
   },
+  /** 收起菜单 */
   hide: () => {
     isOpen.value = false
     emit('visible-change', false)
@@ -190,157 +166,57 @@ defineExpose({
 })
 </script>
 
-<script lang="ts">
-// 自定义指令：点击外部关闭
-export const clickOutside = {
-  mounted(el: HTMLElement, binding: any) {
-    el._clickOutside = (event: Event) => {
-      if (!(el === event.target || el.contains(event.target as Node))) {
-        binding.value(event)
-      }
-    }
-    document.addEventListener('click', el._clickOutside)
-  },
-  unmounted(el: HTMLElement) {
-    document.removeEventListener('click', el._clickOutside)
-  }
-}
-const vClickOutside = clickOutside
-</script>
-
 <style lang="scss" scoped>
-@use '@/styles/variables' as *;
-
 .bee-dropdown {
-  position: relative;
   display: inline-block;
 
-  &__trigger {
-    cursor: pointer;
-  }
-
-  &__default-trigger {
-    display: inline-flex;
-    gap: 8px;
-    align-items: center;
-    padding: 8px 12px;
-    border: 1px solid $border-primary;
-    border-radius: 4px;
-    font-size: 14px;
-    color: $text-regular;
-    background: transparent;
-    cursor: pointer;
-    transition: all 0.2s;
-
-    &:hover {
-      border-color: $color-primary;
-      color: $color-primary;
-    }
-
-    .el-icon {
-      transition: transform 0.2s;
-
-      &.is-open {
-        transform: rotate(180deg);
-      }
-    }
-  }
-
   &__menu {
-    position: absolute;
-    left: 0;
     z-index: 1000;
-    min-width: 100%;
     max-height: 300px;
     padding: 4px 0;
-    margin-top: 4px;
-    border: 1px solid $border-primary;
     border-radius: 4px;
-    overflow-y: auto;
     background: $bg-overlay;
-    box-shadow: 0 2px 12px rgb(0 0 0 / 15%);
-  }
-
-  &__group-label {
-    padding: 8px 12px;
-    font-size: 12px;
-    font-weight: 500;
-    color: $text-placeholder;
-  }
-
-  &__group {
-    // 分组内选项容器
   }
 
   &__item {
     position: relative;
+    z-index: 1;
     display: flex;
+    gap: $spacing-sm;
     align-items: center;
-    padding: 8px 12px;
-    font-size: 14px;
+    justify-content: center;
+    padding: $spacing-sm $spacing-md;
+    margin: $spacing-sm;
+    border-radius: $radius-full;
+    font-size: $font-size-sm;
     color: $text-regular;
     cursor: pointer;
     transition: background 0.2s;
 
-    &:hover:not(.is-disabled) {
-      background: $bg-hover;
-    }
-
-    &.is-selected {
-      color: $color-primary;
-      background: rgba($color-primary, 0.1);
-
-      &::before {
-        position: absolute;
-        top: 0;
-        bottom: 0;
-        left: 0;
-        width: 3px;
-        background: $color-primary;
-        content: '';
-      }
-    }
-
-    &.is-disabled {
-      color: $text-disabled;
-      cursor: not-allowed;
-
-      &:hover {
-        background: transparent;
-      }
-    }
-
-    &.is-divided {
-      padding-top: 12px;
-      margin-top: 4px;
-      border-top: 1px solid $border-secondary;
+    &:hover {
+      z-index: 2;
+      background: $color-primary;
     }
   }
 
-  &__item-content {
-    display: flex;
-    gap: 8px;
-    align-items: center;
-    width: 100%;
-  }
-
-  &__item-icon {
-    flex-shrink: 0;
-    font-size: 14px;
+  &__arrow {
+    position: absolute;
+    width: 10px;
+    height: 10px;
+    border-top-left-radius: 4px;
+    background: $bg-overlay;
+    transform: rotate(45deg);
   }
 }
 
 // 过渡动画
-.bee-dropdown-fade-enter-active,
-.bee-dropdown-fade-leave-active {
-  transition:
-    opacity 0.2s,
-    transform 0.2s;
+.bee-dropdown-enter-active,
+.bee-dropdown-leave-active {
+  transition: opacity 0.15s ease;
 }
 
-.bee-dropdown-fade-enter-from,
-.bee-dropdown-fade-leave-to {
+.bee-dropdown-enter-from,
+.bee-dropdown-leave-to {
   opacity: 0;
-  transform: translateY(-8px);
 }
 </style>

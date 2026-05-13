@@ -18,21 +18,11 @@
         <BeeIcon class="icon-button" v-else name="basic-close" :size="20" @click="toggleFullscreen" />
       </BeeTooltip>
       <BeeDropdown :options="dropdownOptions" @change="handleDropdownChange">
-        <template #trigger>
-          <span class="user-dropdown">
-            <el-avatar :size="32" :src="currentUser?.avatarId || defaultAvatar" />
-            <span class="username">{{ currentUser?.nickname || currentUser?.username || 'Admin' }}</span>
-            <el-icon class="arrow-icon"><ArrowDown /></el-icon>
-          </span>
-        </template>
-        <template #option="{ option }">
-          <div class="dropdown-item">
-            <el-icon v-if="option.icon">
-              <component :is="option.icon" />
-            </el-icon>
-            <span>{{ option.label }}</span>
-          </div>
-        </template>
+        <span class="user-dropdown">
+          <el-avatar :size="32" :src="currentUser?.avatarId || defaultAvatar" />
+          <span class="username">{{ currentUser?.nickname || currentUser?.username || 'Admin' }}</span>
+          <el-icon class="arrow-icon"><ArrowDown /></el-icon>
+        </span>
       </BeeDropdown>
     </div>
 
@@ -62,7 +52,6 @@ import { computed, ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import { ArrowDown } from '@element-plus/icons-vue'
-import { Lock, Setting, SwitchButton, User } from '@element-plus/icons-vue'
 import { logout } from '@/api'
 import { useAppStore, useKubernetesStore, useUserStore } from '@/stores'
 import BeeDropdown from '@/components/BeeDropdown/index.vue'
@@ -104,10 +93,10 @@ const tabOptions = computed(
 )
 
 const dropdownOptions = [
-  { label: '用户信息', value: 'profile', icon: User },
-  { label: '修改密码', value: 'password', icon: Lock },
-  { label: '系统设置', value: 'setting', icon: Setting },
-  { label: '退出登录', value: 'logout', icon: SwitchButton, divided: true }
+  { label: '用户信息', value: 'profile', icon: 'basic-userinfo' },
+  { label: '修改密码', value: 'password', icon: 'basic-password' },
+  { label: '系统设置', value: 'setting', icon: 'basic-system-setting' },
+  { label: '退出登录', value: 'logout', icon: 'basic-logout', divided: true }
 ]
 
 function handleTabChange(tab?: string | number) {

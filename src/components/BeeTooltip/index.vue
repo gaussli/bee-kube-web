@@ -38,7 +38,12 @@ let hideTimeout: ReturnType<typeof setTimeout> | null = null
 
 const { floatingStyles, middlewareData, placement } = useFloating(triggerRef, floatingRef, {
   placement: props.placement,
-  middleware: [offset(12), flip(), shift({ padding: 8 }), arrow({ element: arrowRef })]
+  middleware: [
+    offset(12), // tooltip 与触发元素之间的距离
+    flip(), // 边界翻转
+    shift({ padding: 8 }), // 防止超出视窗
+    arrow({ element: arrowRef }) // 箭头
+  ]
 })
 
 // 实际的 placement（考虑 flip 后的变化）
@@ -50,8 +55,6 @@ const arrowStyle = computed(() => {
   if (!arrowData) return {}
 
   const { x, y } = arrowData
-  console.log(arrowData)
-  console.log(middlewareData.value)
   const staticSideMap: Record<string, string> = {
     top: 'bottom',
     right: 'left',
