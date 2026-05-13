@@ -26,7 +26,7 @@
               </el-tag>
             </div>
             <div class="role-code">
-              <TextCopyableCell :text="roleData.code" />
+              <BeeLabelCopyable :label="roleData.code" />
             </div>
           </div>
         </div>
@@ -75,7 +75,7 @@ import { bindRoleMenus, getRoleDetail, getRoleMenus, getMenuPage } from '@/api'
 import BeeButton from '@/components/BeeButton/index.vue'
 import BeeDivider from '@/components/BeeDivider/index.vue'
 import BeeTree from '@/components/BeeTree/index.vue'
-import TextCopyableCell from '@/components/TextCopyableCell/index.vue'
+import BeeLabelCopyable from '@/components/BeeLabelCopyable/index.vue'
 import type { RoleDetailResp, MenuResp } from '@/types'
 
 defineOptions({ name: 'RoleAssignPermissions' })

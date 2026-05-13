@@ -26,7 +26,7 @@
               </el-tag>
             </div>
             <div class="permission-code">
-              <TextCopyableCell :text="permissionData.code" />
+              <BeeLabelCopyable :label="permissionData.code" />
             </div>
           </div>
         </div>
@@ -163,7 +163,7 @@ import { ArrowLeft, Clock, Collection, Document, EditPen, Key, User } from '@ele
 import { getPermissionDetail } from '@/api'
 import BeeButton from '@/components/BeeButton/index.vue'
 import BeeDivider from '@/components/BeeDivider/index.vue'
-import TextCopyableCell from '@/components/TextCopyableCell/index.vue'
+import BeeLabelCopyable from '@/components/BeeLabelCopyable/index.vue'
 import type { PermissionDetailResp } from '@/types'
 
 defineOptions({ name: 'PermissionDetail' })

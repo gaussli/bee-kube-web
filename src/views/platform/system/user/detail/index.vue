@@ -24,7 +24,7 @@
               </el-tag>
             </div>
             <div class="user-id">
-              <TextCopyableCell :text="userData.id" />
+              <BeeLabelCopyable :label="userData.id" />
             </div>
           </div>
         </div>
@@ -167,7 +167,7 @@ import { useRouter } from 'vue-router'
 import { ArrowLeft, Calendar, Clock, EditPen, Male, Message, Phone, Plus, Postcard, User } from '@element-plus/icons-vue'
 import BeeButton from '@/components/BeeButton/index.vue'
 import BeeDivider from '@/components/BeeDivider/index.vue'
-import TextCopyableCell from '@/components/TextCopyableCell/index.vue'
+import BeeLabelCopyable from '@/components/BeeLabelCopyable/index.vue'
 import UserAvatar from '@/components/UserAvatar/index.vue'
 import type { UserDetailResp } from '@/types'
 

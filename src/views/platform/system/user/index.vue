@@ -30,7 +30,7 @@
             <BeeIconLabel icon="key" label="ID" />
           </template>
           <template #default="{ row }">
-            <TextCopyableCell :text="row.id" />
+            <BeeLabelCopyable :label="row.id" />
           </template>
         </el-table-column>
         <el-table-column min-width="150">
@@ -179,7 +179,7 @@ import BeeInputSearch from '@/components/BeeInputSearch/index.vue'
 import BeeRadioSearch from '@/components/BeeRadioSearch/index.vue'
 import BeeStatus from '@/components/BeeStatus/index.vue'
 import BeeTag from '@/components/BeeTag/index.vue'
-import TextCopyableCell from '@/components/TextCopyableCell/index.vue'
+import BeeLabelCopyable from '@/components/BeeLabelCopyable/index.vue'
 import UserCell from '@/components/UserCell/index.vue'
 import { usePermission } from '@/composables/usePermission'
 

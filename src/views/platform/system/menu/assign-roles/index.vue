@@ -26,7 +26,7 @@
               </el-tag>
             </div>
             <div class="menu-code">
-              <TextCopyableCell :text="menuData.code" />
+              <BeeLabelCopyable :label="menuData.code" />
             </div>
           </div>
         </div>
@@ -94,7 +94,7 @@ import BeeButton from '@/components/BeeButton/index.vue'
 import BeeDivider from '@/components/BeeDivider/index.vue'
 import BeeTag from '@/components/BeeTag/index.vue'
 import BeeTransfer from '@/components/BeeTransfer/index.vue'
-import TextCopyableCell from '@/components/TextCopyableCell/index.vue'
+import BeeLabelCopyable from '@/components/BeeLabelCopyable/index.vue'
 import type { MenuDetailResp } from '@/types'
 import type { RoleResp } from '@/types/role'
 

@@ -26,7 +26,7 @@
               </el-tag>
             </div>
             <div class="role-code">
-              <TextCopyableCell :text="roleData.code" />
+              <BeeLabelCopyable :label="roleData.code" />
             </div>
           </div>
         </div>
@@ -151,7 +151,7 @@ import { ArrowLeft, Clock, Collection, Document, EditPen, Key, Lock, Plus, Timer
 import { getRoleDetail } from '@/api'
 import BeeButton from '@/components/BeeButton/index.vue'
 import BeeDivider from '@/components/BeeDivider/index.vue'
-import TextCopyableCell from '@/components/TextCopyableCell/index.vue'
+import BeeLabelCopyable from '@/components/BeeLabelCopyable/index.vue'
 import type { RoleDetailResp } from '@/types'
 
 defineOptions({ name: 'RoleDetail' })

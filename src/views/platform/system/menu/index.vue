@@ -31,7 +31,7 @@
             <BeeIconLabel icon="key" label="ID" />
           </template>
           <template #default="{ row }">
-            <TextCopyableCell :text="row.id" />
+            <BeeLabelCopyable :label="row.id" />
           </template>
         </el-table-column>
         <el-table-column min-width="180">
@@ -215,7 +215,7 @@ import BeeTag from '@/components/BeeTag/index.vue'
 import BeeIconLabel from '@/components/BeeIconLabel/index.vue'
 import MenuCell from '@/components/MenuCell/index.vue'
 import StatusCell from '@/components/StatusCell/index.vue'
-import TextCopyableCell from '@/components/TextCopyableCell/index.vue'
+import BeeLabelCopyable from '@/components/BeeLabelCopyable/index.vue'
 import { usePermission } from '@/composables/usePermission'
 import type { MenuQueryReq, MenuResp } from '@/types'
 

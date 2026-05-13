@@ -27,7 +27,7 @@
               </el-tag>
             </div>
             <div class="menu-code">
-              <TextCopyableCell :text="menuData.code" />
+              <BeeLabelCopyable :label="menuData.code" />
             </div>
           </div>
         </div>
@@ -187,7 +187,7 @@ import { ArrowLeft, Clock, Collection, Document, EditPen, Folder, Key, Link, Loc
 import { getMenuDetail } from '@/api'
 import BeeButton from '@/components/BeeButton/index.vue'
 import BeeDivider from '@/components/BeeDivider/index.vue'
-import TextCopyableCell from '@/components/TextCopyableCell/index.vue'
+import BeeLabelCopyable from '@/components/BeeLabelCopyable/index.vue'
 import type { MenuDetailResp } from '@/types'
 
 defineOptions({ name: 'MenuDetail' })

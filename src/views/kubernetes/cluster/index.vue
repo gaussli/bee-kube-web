@@ -11,7 +11,6 @@
       <!-- 查询表单 -->
       <div class="table-query">
         <div class="table-query-left">
-          <BeeSelect v-model="env" :options="envOptions" placeholder="选择环境" />
           <BeeInputSearch v-model="searchKey" placeholder="按 ID / 名称 搜索" @search="handleSearch" />
           <BeeRadioSearch v-model="queryForm.status" :options="statusOptions" @select="handleSelect" />
         </div>
@@ -31,7 +30,7 @@
               <BeeIconLabel icon="basic-id" label="ID" />
             </template>
             <template #default="{ row }">
-              <TextCopyableCell :text="row.id" />
+              <BeeLabelCopyable :label="row.id" />
             </template>
           </el-table-column>
           <el-table-column min-width="150">
@@ -135,14 +134,13 @@ import BeeDialog from '@/components/BeeDialog/index.vue'
 import BeeDivider from '@/components/BeeDivider/index.vue'
 import BeeIconLabel from '@/components/BeeIconLabel/index.vue'
 import BeeInputSearch from '@/components/BeeInputSearch/index.vue'
+import BeeLabelCopyable from '@/components/BeeLabelCopyable/index.vue'
 import BeePage from '@/components/BeePage/index.vue'
 import BeePageTitle from '@/components/BeePageTitle/index.vue'
 import BeePagination from '@/components/BeePagination/index.vue'
 import BeeRadioSearch from '@/components/BeeRadioSearch/index.vue'
-import BeeSelect from '@/components/BeeSelect/index.vue'
 import BeeStatus from '@/components/BeeStatus/index.vue'
 import BeeTag from '@/components/BeeTag/index.vue'
-import TextCopyableCell from '@/components/TextCopyableCell/index.vue'
 import { usePermission } from '@/composables/usePermission'
 import { clusterStatusConfig } from '@/config/cluster'
 
@@ -154,11 +152,6 @@ const { hasPermission } = usePermission()
 const router = useRouter()
 const kubernetesStore = useKubernetesStore()
 const searchKey = ref('')
-const env = ref<string | number>()
-const envOptions = [
-  { label: '正式环境', value: 'prod' },
-  { label: '测试环境', value: 'test' }
-]
 
 const loading = ref(false)
 const tableData = ref<ClusterResp[]>([])
