@@ -47,7 +47,7 @@
               </div>
             </template>
           </el-table-column>
-          <el-table-column min-width="150">
+          <el-table-column min-width="150" class-name="bee-table-category">
             <template #header>
               <BeeIconLabel icon="basic-category" label="角色" />
             </template>
@@ -340,8 +340,12 @@ onMounted(() => {
           padding: $spacing-md 0;
         }
 
-        .bee-tag + .bee-tag {
-          margin-left: 8px;
+        .bee-table-category {
+          .cell {
+            display: flex;
+            gap: $spacing-sm;
+            flex-flow: row wrap;
+          }
         }
 
         .bee-table-operation {
