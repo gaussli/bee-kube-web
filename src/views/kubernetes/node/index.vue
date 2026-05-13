@@ -1,16 +1,16 @@
 <template>
-  <div class="node-table">
+  <BeePage class="node-page">
     <!-- 页面标题 -->
-    <div class="page-header">
+    <BeeCard class="page-header">
       <BeePageTitle
-        :icon="Box"
+        icon="kubernetes-node"
         title="节点管理"
         description="节点（Node）是 Kubernetes 集群中的工作机器，负责运行容器化应用（Pod）。通过节点管理可以查看集群中所有节点的运行状态、资源使用情况，并支持节点调度控制等运维操作。"
       />
-    </div>
+    </BeeCard>
 
     <!-- 页面内容 -->
-    <div class="page-body">
+    <BeeCard class="page-body">
       <!-- 查询表单 -->
       <div class="table-query">
         <div class="table-query-left">
@@ -18,10 +18,7 @@
           <BeeRadioSearch v-model="queryForm.status" :options="statusOptions" @select="handleSelect" />
         </div>
         <div class="table-query-right">
-          <BeeButton @click="handleReset">
-            <template #icon><Refresh /></template>
-            刷新
-          </BeeButton>
+          <BeeButton type="info" icon="basic-refresh" @click="handleReset"> 刷新 </BeeButton>
         </div>
       </div>
 
@@ -31,7 +28,7 @@
           <el-table-column type="selection" width="60" align="center" />
           <el-table-column min-width="180">
             <template #header>
-              <BeeIconLabel icon="box" label="名称" />
+              <BeeIconLabel icon="kubernetes-node" label="名称" />
             </template>
             <template #default="{ row }">
               <NodeCell :name="row.name" :ip="row.internalIp" />
@@ -39,20 +36,20 @@
           </el-table-column>
           <el-table-column width="130">
             <template #header>
-              <BeeIconLabel icon="circle-check" label="状态" />
+              <BeeIconLabel icon="basic-status" label="状态" />
             </template>
             <template #default="{ row }">
               <div class="status-cell">
-                <StatusCell :status="row.status" :config="nodeStatusConfig" />
-                <el-tooltip v-if="row.schedulable === false" content="节点已被设置为不可调度，不会分配新的 Pod" placement="top">
-                  <el-icon class="unschedulable-icon"><WarnTriangleFilled /></el-icon>
-                </el-tooltip>
+                <BeeStatus :status="row.status" :config="nodeStatusConfig" />
+                <BeeTooltip v-if="row.schedulable === false" label="节点已被设置为不可调度，不会分配新的 Pod" placement="top">
+                  <BeeIcon name="basic-warning-filled" :size="14" />
+                </BeeTooltip>
               </div>
             </template>
           </el-table-column>
           <el-table-column min-width="150">
             <template #header>
-              <BeeIconLabel icon="user" label="角色" />
+              <BeeIconLabel icon="basic-category" label="角色" />
             </template>
             <template #default="{ row }">
               <BeeTag v-for="role in row.roles" :key="role" size="small">{{ role }}</BeeTag>
@@ -60,15 +57,15 @@
           </el-table-column>
           <el-table-column min-width="120">
             <template #header>
-              <BeeIconLabel icon="monitor" label="版本" />
+              <BeeIconLabel icon="kubernetes-version" label="版本" />
             </template>
             <template #default="{ row }">
               <span class="version-text">{{ row.version }}</span>
             </template>
           </el-table-column>
-          <el-table-column width="120">
+          <el-table-column width="140">
             <template #header>
-              <BeeIconLabel icon="cpu" label="CPU" />
+              <BeeIconLabel icon="kubernetes-cpu" label="CPU" />
             </template>
             <template #default="{ row }">
               <div class="resource-cell">
@@ -79,7 +76,7 @@
           </el-table-column>
           <el-table-column width="140">
             <template #header>
-              <BeeIconLabel icon="memo" label="内存" />
+              <BeeIconLabel icon="kubernetes-memory" label="内存" />
             </template>
             <template #default="{ row }">
               <div class="resource-cell">
@@ -90,7 +87,7 @@
           </el-table-column>
           <el-table-column width="140">
             <template #header>
-              <BeeIconLabel icon="grid" label="Pods" />
+              <BeeIconLabel icon="kubernetes-pod" label="Pods" />
             </template>
             <template #default="{ row }">
               <div class="resource-cell">
@@ -101,43 +98,29 @@
           </el-table-column>
           <el-table-column width="180">
             <template #header>
-              <BeeIconLabel icon="clock" label="创建时间" />
+              <BeeIconLabel icon="basic-audit" label="创建" />
             </template>
             <template #default="{ row }">
-              <TimeCell :time="row.createAt" />
+              <AuditCell :user="row.createBy" :time="row.createAt" />
             </template>
           </el-table-column>
-          <el-table-column width="200" fixed="right">
+          <el-table-column width="150" fixed="right" class-name="bee-table-operation">
             <template #header>
-              <BeeIconLabel icon="edit-pen" label="操作" />
+              <BeeIconLabel icon="basic-operation" label="操作" />
             </template>
             <template #default="{ row }">
-              <el-tooltip content="编辑" placement="top">
-                <el-button v-if="hasPermission('kubernetes:node:edit')" circle :icon="EditPen" size="default" @click="handleEdit(row)" />
-              </el-tooltip>
-              <el-tooltip content="详情" placement="top">
-                <el-button circle :icon="View" size="default" @click="handleViewDetail(row)" />
-              </el-tooltip>
-              <el-tooltip v-if="hasPermission('kubernetes:node:edit')" content="更多" placement="top">
-                <el-dropdown trigger="click">
-                  <template #default>
-                    <el-button circle :icon="MoreFilled" size="default" />
-                  </template>
-                  <template #dropdown>
-                    <el-dropdown-menu>
-                      <el-dropdown-item @click="handleCordon(row, true)" v-if="row.schedulable !== false">
-                        <el-icon><Lock /></el-icon> 停止调度
-                      </el-dropdown-item>
-                      <el-dropdown-item @click="handleCordon(row, false)" v-else>
-                        <el-icon><Unlock /></el-icon> 允许调度
-                      </el-dropdown-item>
-                      <el-dropdown-item divided @click="handleDrain(row)">
-                        <el-icon><Download /></el-icon> 驱逐 Pod
-                      </el-dropdown-item>
-                    </el-dropdown-menu>
-                  </template>
-                </el-dropdown>
-              </el-tooltip>
+              <BeeButton v-if="hasPermission('kubernetes:node:edit')" icon="basic-edit" type="info" tooltip="编辑" @click="handleEdit(row)" />
+              <BeeButton icon="basic-view" type="info" tooltip="详情" @click="handleViewDetail(row)" />
+              <BeeDropdown v-if="hasPermission('kubernetes:node:edit')" trigger="click">
+                <template>
+                  <BeeButton icon="basic-more" type="info" />
+                </template>
+                <template #dropdown>
+                  <BeeDropdownItem v-if="row.schedulable !== false" @click="handleCordon(row, true)">停止调度</BeeDropdownItem>
+                  <BeeDropdownItem v-else @click="handleCordon(row, false)">允许调度</BeeDropdownItem>
+                  <BeeDropdownItem divided @click="handleDrain(row)">驱逐 Pod</BeeDropdownItem>
+                </template>
+              </BeeDropdown>
             </template>
           </el-table-column>
         </el-table>
@@ -146,37 +129,35 @@
       <!-- 表格底部 -->
       <div class="table-footer">
         <div></div>
-        <el-pagination
-          v-model:current-page="pagination.page"
-          v-model:page-size="pagination.pageSize"
-          :total="pagination.total"
-          :page-sizes="[10, 20, 50]"
-          layout="total, sizes, prev, pager, next, jumper"
-          @size-change="loadData"
-          @current-change="loadData"
-        />
+        <BeePagination v-model="pagination.page" v-model:pageSize="pagination.pageSize" :total="pagination.total" :page-sizes="[10, 20, 50]" @change="loadData" />
       </div>
-    </div>
-  </div>
+    </BeeCard>
+  </BeePage>
 </template>
 
 <script setup lang="ts">
 import { onMounted, reactive, ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { ElMessage } from 'element-plus'
-import { Box, Refresh, CircleCheck, EditPen, MoreFilled, View, User, Monitor, Cpu, Memo, Grid, Clock, Lock, Unlock, Download, WarnTriangleFilled } from '@element-plus/icons-vue'
 import { type NodeQueryReq, type NodeResp } from '@/types'
 import { getNodePage, cordonNode, drainNode } from '@/api'
 import { useKubernetesStore } from '@/stores'
+import AuditCell from '@/components/AuditCell/index.vue'
 import BeeButton from '@/components/BeeButton/index.vue'
-import BeeInputSearch from '@/components/BeeInputSearch/index.vue'
-import BeePageTitle from '@/components/BeePageTitle/index.vue'
-import BeeRadioSearch from '@/components/BeeRadioSearch/index.vue'
-import BeeTag from '@/components/BeeTag/index.vue'
+import BeeCard from '@/components/BeeCard/index.vue'
+import BeeDropdown from '@/components/BeeDropdown/index.vue'
+import BeeDropdownItem from '@/components/BeeDropdownItem/index.vue'
+import BeeIcon from '@/components/BeeIcon/index.vue'
 import BeeIconLabel from '@/components/BeeIconLabel/index.vue'
+import BeeInputSearch from '@/components/BeeInputSearch/index.vue'
+import BeePage from '@/components/BeePage/index.vue'
+import BeePageTitle from '@/components/BeePageTitle/index.vue'
+import BeePagination from '@/components/BeePagination/index.vue'
+import BeeRadioSearch from '@/components/BeeRadioSearch/index.vue'
+import BeeStatus from '@/components/BeeStatus/index.vue'
+import BeeTag from '@/components/BeeTag/index.vue'
+import BeeTooltip from '@/components/BeeTooltip/index.vue'
 import NodeCell from '@/components/NodeCell/index.vue'
-import StatusCell from '@/components/StatusCell/index.vue'
-import TimeCell from '@/components/TimeCell/index.vue'
 import { usePermission } from '@/composables/usePermission'
 
 defineOptions({ name: 'NodeManage' })
@@ -321,102 +302,89 @@ onMounted(() => {
 </script>
 
 <style lang="scss" scoped>
-.node-table {
-  display: flex;
-  flex-direction: column;
-  height: 100%;
-}
-
-.page-header {
-  flex-shrink: 0;
-  padding: 0 20px;
-  margin-bottom: 16px;
-  background-color: $bg-page;
-}
-
-.page-body {
-  display: flex;
-  flex-direction: column;
-  flex: 1;
-  min-height: 0;
-  overflow: hidden;
-  background-color: $bg-page;
-}
-
-.table-query {
-  display: flex;
-  gap: 12px;
-  flex-shrink: 0;
-  align-items: center;
-  justify-content: space-between;
-  padding: 16px 20px;
-
-  .table-query-left {
+.node-page {
+  .page-body {
     display: flex;
-    gap: 12px;
-    align-items: center;
-  }
-}
-
-.table-body {
-  flex: 1;
-  min-height: 0;
-  overflow-y: auto;
-
-  // padding: 0 20px;
-
-  :deep(.el-table) {
-    height: 100%;
-
-    th.el-table__cell {
-      padding: 12px 0;
-    }
-
-    .bee-tag + .bee-tag {
-      margin-left: 8px;
-    }
-
-    .el-button + .el-button,
-    .el-button + .el-dropdown {
-      margin-left: 8px;
-    }
-  }
-
-  .version-text,
-  .resource-text {
-    font-family: monospace;
-    font-size: 12px;
-    color: $text-secondary;
-  }
-
-  .status-cell {
-    display: flex;
-    gap: 4px;
-    align-items: center;
-
-    .unschedulable-icon {
-      font-size: 14px;
-      color: $color-warning;
-      cursor: pointer;
-    }
-  }
-
-  .resource-cell {
-    display: flex;
-    gap: 4px;
     flex-direction: column;
+    flex: 1;
+    min-height: 0;
+    overflow: hidden;
 
-    .el-progress {
-      width: 100%;
+    .table-query {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: $spacing-md 0;
+
+      .table-query-left {
+        display: flex;
+        gap: $spacing-sm;
+        flex-direction: row;
+        align-items: center;
+      }
+
+      .table-query-right {
+        display: flex;
+        gap: $spacing-sm;
+        flex-direction: row;
+        align-items: center;
+      }
+    }
+
+    .table-body {
+      flex: 1;
+      min-height: 0;
+
+      :deep(.el-table) {
+        height: 100%;
+
+        th.el-table__cell {
+          padding: $spacing-md 0;
+        }
+
+        .bee-tag + .bee-tag {
+          margin-left: 8px;
+        }
+
+        .bee-table-operation {
+          .cell {
+            display: flex;
+            gap: $spacing-sm;
+            flex-direction: row;
+          }
+        }
+      }
+
+      .version-text,
+      .resource-text {
+        font-family: monospace;
+        font-size: 12px;
+        color: $text-secondary;
+      }
+
+      .status-cell {
+        display: flex;
+        gap: 4px;
+        align-items: center;
+      }
+
+      .resource-cell {
+        display: flex;
+        gap: 4px;
+        flex-direction: column;
+
+        .el-progress {
+          width: 100%;
+        }
+      }
+    }
+
+    .table-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: $spacing-md 0;
     }
   }
-}
-
-.table-footer {
-  display: flex;
-  flex-shrink: 0;
-  align-items: center;
-  justify-content: space-between;
-  padding: 16px 20px;
 }
 </style>

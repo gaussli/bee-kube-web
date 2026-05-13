@@ -16,6 +16,7 @@ const mockNodes: NodeResp[] = [
     cpu: '3/16',
     memory: '8Gi/32Gi',
     pods: '30/110',
+    createBy: 'admin',
     createAt: '2024-01-15 10:30:25',
     allocatedCpu: '1.2',
     allocatedMemory: '4Gi',
@@ -42,6 +43,7 @@ const mockNodes: NodeResp[] = [
     cpu: '18/24',
     memory: '48Gi/64Gi',
     pods: '82/110',
+    createBy: 'admin',
     createAt: '2024-01-15 10:35:10',
     allocatedCpu: '14.5',
     allocatedMemory: '38Gi',
@@ -64,6 +66,7 @@ const mockNodes: NodeResp[] = [
     cpu: '20/24',
     memory: '58Gi/64Gi',
     pods: '95/110',
+    createBy: 'admin',
     createAt: '2024-01-15 10:40:05',
     allocatedCpu: '18.8',
     allocatedMemory: '52Gi',
@@ -86,6 +89,7 @@ const mockNodes: NodeResp[] = [
     cpu: '1/8',
     memory: '4Gi/16Gi',
     pods: '12/110',
+    createBy: 'developer',
     createAt: '2024-02-10 09:15:00',
     allocatedCpu: '0.5',
     allocatedMemory: '2Gi',
@@ -108,6 +112,7 @@ const mockNodes: NodeResp[] = [
     cpu: '2/8',
     memory: '6Gi/16Gi',
     pods: '8/110',
+    createBy: 'developer',
     createAt: '2024-02-10 09:20:00',
     allocatedCpu: '1.0',
     allocatedMemory: '3Gi',
@@ -129,6 +134,7 @@ const mockNodes: NodeResp[] = [
     cpu: '6/8',
     memory: '12Gi/16Gi',
     pods: '65/110',
+    createBy: 'developer',
     createAt: '2024-02-10 09:25:00',
     allocatedCpu: '5.2',
     allocatedMemory: '10Gi',
@@ -151,6 +157,7 @@ const mockNodes: NodeResp[] = [
     cpu: '6/8',
     memory: '14Gi/16Gi',
     pods: '102/110',
+    createBy: 'devops',
     createAt: '2024-02-25 14:20:10',
     allocatedCpu: '5.8',
     allocatedMemory: '13Gi',
@@ -173,6 +180,7 @@ const mockNodes: NodeResp[] = [
     cpu: '4/24',
     memory: '8Gi/64Gi',
     pods: '18/110',
+    createBy: 'admin',
     createAt: '2024-01-16 08:00:00',
     allocatedCpu: '2.5',
     allocatedMemory: '5Gi',
@@ -196,6 +204,7 @@ const mockNodes: NodeResp[] = [
     cpu: '0/16',
     memory: '0Gi/32Gi',
     pods: '0/110',
+    createBy: 'admin',
     createAt: '2024-03-01 10:00:00',
     allocatedCpu: '0',
     allocatedMemory: '0Gi',
@@ -218,6 +227,7 @@ const mockNodes: NodeResp[] = [
     cpu: '22/24',
     memory: '62Gi/64Gi',
     pods: '108/110',
+    createBy: 'admin',
     createAt: '2024-01-17 09:00:00',
     allocatedCpu: '21.2',
     allocatedMemory: '60Gi',
@@ -242,9 +252,9 @@ function getNodePage(params: any) {
   if (name) {
     filtered = filtered.filter(n => n.name.toLowerCase().includes(name.toLowerCase()))
   }
-  if (clusterId) {
-    filtered = filtered.filter(n => n.clusterId === clusterId)
-  }
+  // if (clusterId) {
+  //   filtered = filtered.filter(n => n.clusterId === clusterId)
+  // }
   if (status) {
     filtered = filtered.filter(n => n.status === status)
   }

@@ -1,4 +1,4 @@
-import type { StatusConfig } from './types'
+import type { StatusConfig } from '@/components/BeeStatus/types'
 
 export const clusterStatusConfig: StatusConfig[] = [
   { value: 1, label: '正常', color: 'rgb(103, 194, 58)' },

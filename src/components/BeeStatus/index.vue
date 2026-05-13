@@ -7,7 +7,7 @@
 
 <script setup lang="ts">
 import { computed } from 'vue'
-import type { StatusConfig } from '@/config/types'
+import type { StatusConfig } from './types'
 
 defineOptions({ name: 'BeeStatus' })
 
