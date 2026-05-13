@@ -31,7 +31,7 @@
               <BeeIconLabel icon="kubernetes-node" label="名称" />
             </template>
             <template #default="{ row }">
-              <NodeCell :name="row.name" :ip="row.internalIp" />
+              <BeeLabelGroup :main="row.name" :sub="row.internalIp" />
             </template>
           </el-table-column>
           <el-table-column width="130">
@@ -150,6 +150,7 @@ import BeeDropdownItem from '@/components/BeeDropdownItem/index.vue'
 import BeeIcon from '@/components/BeeIcon/index.vue'
 import BeeIconLabel from '@/components/BeeIconLabel/index.vue'
 import BeeInputSearch from '@/components/BeeInputSearch/index.vue'
+import BeeLabelGroup from '@/components/BeeLabelGroup/index.vue'
 import BeePage from '@/components/BeePage/index.vue'
 import BeePageTitle from '@/components/BeePageTitle/index.vue'
 import BeePagination from '@/components/BeePagination/index.vue'
@@ -157,7 +158,6 @@ import BeeRadioSearch from '@/components/BeeRadioSearch/index.vue'
 import BeeStatus from '@/components/BeeStatus/index.vue'
 import BeeTag from '@/components/BeeTag/index.vue'
 import BeeTooltip from '@/components/BeeTooltip/index.vue'
-import NodeCell from '@/components/NodeCell/index.vue'
 import { usePermission } from '@/composables/usePermission'
 
 defineOptions({ name: 'NodeManage' })
