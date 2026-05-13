@@ -1,9 +1,19 @@
 import type { ClusterResp } from '@/types'
 
+// 生成32位随机ID（数字+小写字母）
+function generateId(): string {
+  const chars = '0123456789abcdefghijklmnopqrstuvwxyz'
+  let id = ''
+  for (let i = 0; i < 32; i++) {
+    id += chars.charAt(Math.floor(Math.random() * chars.length))
+  }
+  return id
+}
+
 // 模拟集群数据
 const mockClusters: ClusterResp[] = [
   {
-    id: 'cls-001-prod',
+    id: generateId(),
     name: 'prod-cluster',
     apiServer: 'https://api.prod-cluster.local:6443',
     description: '生产环境集群，用于部署生产应用',
@@ -15,7 +25,7 @@ const mockClusters: ClusterResp[] = [
     updateAt: '2024-03-20 14:22:18'
   },
   {
-    id: 'cls-002-staging',
+    id: generateId(),
     name: 'staging-cluster',
     apiServer: 'https://api.staging-cluster.local:6443',
     description: '预发环境集群，用于测试部署',
@@ -27,7 +37,7 @@ const mockClusters: ClusterResp[] = [
     updateAt: '2024-03-18 16:45:30'
   },
   {
-    id: 'cls-003-dev',
+    id: generateId(),
     name: 'dev-cluster',
     apiServer: 'https://api.dev-cluster.local:6443',
     description: '开发环境集群，用于日常开发测试',
@@ -39,7 +49,7 @@ const mockClusters: ClusterResp[] = [
     updateAt: '2024-03-15 11:30:45'
   },
   {
-    id: 'cls-004-test',
+    id: generateId(),
     name: 'test-cluster',
     apiServer: 'https://api.test-cluster.local:6443',
     description: '测试环境集群，用于自动化测试',
@@ -51,7 +61,7 @@ const mockClusters: ClusterResp[] = [
     updateAt: '2024-03-22 10:15:30'
   },
   {
-    id: 'cls-005-monitor',
+    id: generateId(),
     name: 'monitor-cluster',
     apiServer: 'https://api.monitor-cluster.local:6443',
     description: '监控集群，部署 Prometheus 和 Grafana',
@@ -99,7 +109,7 @@ function getClusterDetail(id: string) {
 // 创建集群
 function createCluster(data: Partial<ClusterResp>) {
   const newCluster: ClusterResp = {
-    id: `cls-${Date.now()}`,
+    id: generateId(),
     name: data.name || '',
     apiServer: data.apiServer || '',
     description: data.description || '',

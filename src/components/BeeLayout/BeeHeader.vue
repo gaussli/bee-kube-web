@@ -10,17 +10,13 @@
     </div>
 
     <div class="header-right">
-      <el-tooltip content="帮助说明" placement="bottom">
-        <el-icon class="header-icon">
-          <QuestionFilled />
-        </el-icon>
-      </el-tooltip>
-      <el-tooltip :content="isFullscreen ? '退出全屏' : '全屏'" placement="bottom">
-        <el-icon class="header-icon" @click="toggleFullscreen">
-          <FullScreen v-if="!isFullscreen" />
-          <Close v-else />
-        </el-icon>
-      </el-tooltip>
+      <BeeTooltip label="帮助" placement="top">
+        <BeeIcon class="icon-button" name="basic-help" :size="20" />
+      </BeeTooltip>
+      <BeeTooltip label="全屏" placement="top">
+        <BeeIcon class="icon-button" v-if="!isFullscreen" name="basic-fullscreen" :size="20" @click="toggleFullscreen" />
+        <BeeIcon class="icon-button" v-else name="basic-close" :size="20" @click="toggleFullscreen" />
+      </BeeTooltip>
       <BeeDropdown :options="dropdownOptions" @change="handleDropdownChange">
         <template #trigger>
           <span class="user-dropdown">
@@ -65,12 +61,14 @@
 import { computed, ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { ElMessage, ElMessageBox } from 'element-plus'
-import { ArrowDown, Close, FullScreen, QuestionFilled } from '@element-plus/icons-vue'
+import { ArrowDown } from '@element-plus/icons-vue'
 import { Lock, Setting, SwitchButton, User } from '@element-plus/icons-vue'
 import { logout } from '@/api'
 import { useAppStore, useKubernetesStore, useUserStore } from '@/stores'
 import BeeDropdown from '@/components/BeeDropdown/index.vue'
+import BeeIcon from '@/components/BeeIcon/index.vue'
 import BeeRadioSearch from '@/components/BeeRadioSearch/index.vue'
+import BeeTooltip from '@/components/BeeTooltip/index.vue'
 import type { TabType } from '@/stores/app'
 
 defineOptions({ name: 'BeeHeader' })
@@ -271,6 +269,14 @@ function handlePasswordSubmit() {
       .arrow-icon {
         font-size: 12px;
         color: $text-secondary;
+      }
+    }
+
+    .icon-button {
+      cursor: pointer;
+
+      &:hover {
+        color: $color-primary;
       }
     }
   }

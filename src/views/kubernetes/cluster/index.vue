@@ -54,9 +54,7 @@
               <BeeIconLabel icon="basic-status" label="状态" />
             </template>
             <template #default="{ row }">
-              <el-tag :type="row.status === 1 ? 'success' : 'danger'" size="small">
-                {{ row.status === 1 ? '正常' : '异常' }}
-              </el-tag>
+              <BeeStatus :status="row.status" :config="clusterStatusConfig" />
             </template>
           </el-table-column>
           <el-table-column prop="description" min-width="150" show-overflow-tooltip>
@@ -72,35 +70,14 @@
               <AuditCell :user="row.createBy" :time="row.createAt" />
             </template>
           </el-table-column>
-          <el-table-column width="200" fixed="right">
+          <el-table-column width="150" fixed="right" class-name="bee-table-operation">
             <template #header>
               <BeeIconLabel icon="basic-operation" label="操作" />
             </template>
             <template #default="{ row }">
-              <el-tooltip content="编辑" placement="top">
-                <el-button v-if="hasPermission('kubernetes:cluster:edit')" circle :icon="EditPen" size="default" @click="handleEdit(row)" />
-              </el-tooltip>
-
-              <el-tooltip v-if="hasPermission('kubernetes:cluster:edit')" content="更多" placement="top">
-                <el-dropdown trigger="click">
-                  <template #default>
-                    <el-button circle :icon="MoreFilled" size="default" />
-                  </template>
-                  <template #dropdown>
-                    <el-dropdown-menu>
-                      <el-dropdown-item v-if="hasPermission('kubernetes:cluster:edit')" @click="handleSelectCluster(row)">
-                        <el-icon><View /></el-icon> 切换到该集群
-                      </el-dropdown-item>
-                      <el-dropdown-item v-if="hasPermission('kubernetes:cluster:delete')" divided @click="handleDelete(row)">
-                        <el-icon><Delete /></el-icon> 删除
-                      </el-dropdown-item>
-                    </el-dropdown-menu>
-                  </template>
-                </el-dropdown>
-              </el-tooltip>
-              <el-tooltip v-else-if="hasPermission('kubernetes:cluster:delete')" content="删除" placement="top">
-                <el-button circle :icon="Delete" size="default" @click="handleDelete(row)" />
-              </el-tooltip>
+              <BeeButton v-if="hasPermission('kubernetes:cluster:edit')" icon="basic-edit" type="info" tooltip="编辑" @click="handleEdit(row)" />
+              <BeeButton v-if="hasPermission('kubernetes:cluster:edit')" icon="basic-switch" type="info" tooltip="切换集群" @click="handleSelectCluster(row)" />
+              <BeeButton v-if="hasPermission('kubernetes:cluster:delete')" icon="basic-delete" type="danger" tooltip="删除" @click="handleDelete(row)" />
             </template>
           </el-table-column>
         </el-table>
@@ -154,7 +131,6 @@
 import { onMounted, reactive, ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { ElMessage } from 'element-plus'
-import { Delete, EditPen, MoreFilled, View } from '@element-plus/icons-vue'
 import { type ClusterQueryReq, type ClusterResp } from '@/types'
 import { getClusterPage, deleteCluster, batchDeleteCluster } from '@/api'
 import { useKubernetesStore } from '@/stores'
@@ -169,9 +145,11 @@ import BeeInputSearch from '@/components/BeeInputSearch/index.vue'
 import BeePage from '@/components/BeePage/index.vue'
 import BeePageTitle from '@/components/BeePageTitle/index.vue'
 import BeeRadioSearch from '@/components/BeeRadioSearch/index.vue'
+import BeeStatus from '@/components/BeeStatus/index.vue'
 import BeeTag from '@/components/BeeTag/index.vue'
 import TextCopyableCell from '@/components/TextCopyableCell/index.vue'
 import { usePermission } from '@/composables/usePermission'
+import { clusterStatusConfig } from '@/config/cluster'
 
 defineOptions({ name: 'ClusterManage' })
 
@@ -347,12 +325,17 @@ onMounted(() => {
         height: 100%;
 
         th.el-table__cell {
-          padding: 12px 0;
+          padding: $spacing-md 0;
         }
 
-        .el-button + .el-button,
-        .el-button + .el-dropdown {
-          margin-left: 8px;
+        .el-table__body-wrapper {
+          .bee-table-operation {
+            .cell {
+              display: flex;
+              gap: $spacing-sm;
+              flex-direction: row;
+            }
+          }
         }
       }
 

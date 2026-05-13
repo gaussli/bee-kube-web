@@ -1,7 +1,22 @@
 <template>
+  <BeeTooltip v-if="isCircle && tooltip" :label="tooltip" placement="top">
+    <button
+      class="bee-button"
+      :class="[`bee-button--${type}`, { 'is-disabled': disabled, 'is-loading': loading, 'is-borderless': !border, 'is-circle': isCircle }]"
+      :disabled="disabled || loading"
+      @click="handleClick"
+    >
+      <BeeIcon v-if="loading" name="basic-loading" :size="12" class="bee-button__icon is-loading" />
+      <BeeIcon v-else-if="icon" :name="icon" :size="12" class="bee-button__icon" />
+      <span v-if="$slots.default" class="bee-button__label">
+        <slot />
+      </span>
+    </button>
+  </BeeTooltip>
   <button
+    v-else
     class="bee-button"
-    :class="[`bee-button--${type}`, { 'is-disabled': disabled, 'is-loading': loading, 'is-borderless': !border, 'is-circle': !$slots.default }]"
+    :class="[`bee-button--${type}`, { 'is-disabled': disabled, 'is-loading': loading, 'is-borderless': !border, 'is-circle': isCircle }]"
     :disabled="disabled || loading"
     @click="handleClick"
   >
@@ -14,28 +29,39 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue'
+import { computed, ref, useSlots } from 'vue'
 import BeeIcon from '@/components/BeeIcon/index.vue'
+import BeeTooltip from '@/components/BeeTooltip/index.vue'
 
 defineOptions({ name: 'BeeButton' })
 
-withDefaults(
+const props = withDefaults(
   defineProps<{
     type?: 'primary' | 'info' | 'success' | 'warning' | 'danger'
     disabled?: boolean
     border?: boolean
     icon?: string
+    tooltip?: string
   }>(),
   {
     type: 'primary',
     disabled: false,
-    border: true
+    border: true,
+    tooltip: ''
   }
 )
 
 const emit = defineEmits<{
   click: [event: Event]
 }>()
+
+const slots = useSlots()
+
+// 判断是否有默认插槽内容（按钮有文字时不需要 tooltip）
+const hasDefaultSlot = computed(() => !!slots.default?.())
+
+// 圆形按钮 = 没有默认插槽内容
+const isCircle = computed(() => !hasDefaultSlot.value)
 
 const loading = ref(false)
 

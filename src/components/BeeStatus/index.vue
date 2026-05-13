@@ -7,14 +7,9 @@
 
 <script setup lang="ts">
 import { computed } from 'vue'
+import type { StatusConfig } from '@/config/types'
 
 defineOptions({ name: 'BeeStatus' })
-
-interface StatusConfig {
-  value: string | number | undefined
-  label: string
-  color: string
-}
 
 const props = defineProps<{
   status?: string | number

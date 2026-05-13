@@ -1,7 +1,7 @@
 <template>
   <span class="bee-icon-label">
-    <BeeIcon :name="icon" :size="14" />
-    <span>{{ label }}</span>
+    <BeeIcon class="bee-icon-label__icon" :name="icon" :size="14" />
+    <span class="bee-icon-label__label">{{ label }}</span>
   </span>
 </template>
 
@@ -18,7 +18,7 @@ defineProps<{
 <style lang="scss" scoped>
 .bee-icon-label {
   display: inline-flex;
-  gap: 6px;
+  gap: $spacing-xs;
   align-items: center;
   justify-content: center;
   font-weight: 500;
