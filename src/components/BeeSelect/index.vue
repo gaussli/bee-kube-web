@@ -7,7 +7,7 @@
       <BeeIcon class="bee-select__arrow-icon" :class="{ 'is-open': isOpen }" name="basic-arrow-down" :size="14" />
     </div>
   </div>
-  <Teleport to="body">
+  <Teleport to="body" :disabled="!isOpen">
     <Transition name="bee-select">
       <div v-if="isOpen" ref="floatingRef" class="bee-select__menu" :style="floatingStyles" @click.stop>
         <div v-for="option in options" :key="option[valueKey]" class="bee-select__menu-item" :class="{ 'is-selected': option[valueKey] === modelValue }" @click="handleSelect(option)">
@@ -167,6 +167,12 @@ defineExpose({
   /** 获取选中项 */
   getSelected: () => props.options.find(opt => opt[props.valueKey] === props.modelValue)
 })
+</script>
+
+<script lang="ts">
+export default {
+  inheritAttrs: false
+}
 </script>
 
 <style lang="scss" scoped>
