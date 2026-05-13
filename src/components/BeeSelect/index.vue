@@ -10,8 +10,9 @@
   <Teleport to="body" :disabled="!isOpen">
     <Transition name="bee-select">
       <div v-if="isOpen" ref="floatingRef" class="bee-select__menu" :style="floatingStyles" @click.stop>
-        <div v-for="option in options" :key="option[valueKey]" class="bee-select__menu-item" :class="{ 'is-selected': option[valueKey] === modelValue }" @click="handleSelect(option)">
-          {{ option[labelKey] }}
+        <div v-for="option in options" :key="option.value" class="bee-select__menu-item" :class="{ 'is-selected': option.value === modelValue }" @click="handleSelect(option)">
+          <BeeIcon v-if="option.icon" class="bee-select__menu-icon" :name="option.icon" :size="14" />
+          <span>{{ option.label }}</span>
         </div>
         <div ref="arrowRef" class="bee-select__arrow" :style="arrowStyle" />
       </div>
@@ -27,13 +28,9 @@
 import { ref, computed, onMounted, onBeforeUnmount } from 'vue'
 import { arrow, flip, offset, shift, useFloating } from '@floating-ui/vue'
 import BeeIcon from '@/components/BeeIcon/index.vue'
+import type { SelectOption } from './types'
 
 defineOptions({ name: 'BeeSelect' })
-
-/** 下拉选项 */
-interface SelectOption {
-  [key: string]: any
-}
 
 /** 组件属性 */
 const props = withDefaults(
@@ -42,18 +39,12 @@ const props = withDefaults(
     modelValue?: string | number
     /** 选项列表 */
     options?: SelectOption[]
-    /** 选项标签字段名 */
-    labelKey?: string
-    /** 选项值字段名 */
-    valueKey?: string
     /** 占位文本 */
     placeholder?: string
   }>(),
   {
     modelValue: undefined,
     options: () => [],
-    labelKey: 'label',
-    valueKey: 'value',
     placeholder: '请选择'
   }
 )
@@ -63,7 +54,7 @@ const emit = defineEmits<{
   /** v-model 更新 */
   'update:modelValue': [value: string | number | undefined]
   /** 选中变化 */
-  'change': [value: string | number | undefined, option?: SelectOption]
+  'change': [value: string | number | undefined]
   /** 展开状态变化 */
   'visible-change': [visible: boolean]
 }>()
@@ -80,8 +71,8 @@ const arrowRef = ref<HTMLElement>()
 /** 选中的标签文本 */
 const selectedLabel = computed(() => {
   if (props.modelValue === undefined || props.modelValue === null) return ''
-  const selected = props.options.find(opt => opt[props.valueKey] === props.modelValue)
-  return selected ? selected[props.labelKey] : ''
+  const selected = props.options.find(opt => opt.value === props.modelValue)
+  return selected?.label ?? ''
 })
 
 /** floating-ui 定位 */
@@ -121,9 +112,8 @@ function toggle() {
 
 /** 处理选项选中 */
 function handleSelect(option: SelectOption) {
-  const value = option[props.valueKey]
-  emit('update:modelValue', value)
-  emit('change', value, option)
+  emit('update:modelValue', option.value)
+  emit('change', option.value)
   isOpen.value = false
   emit('visible-change', false)
 }
@@ -165,7 +155,7 @@ defineExpose({
   /** 获取选中值 */
   getValue: () => props.modelValue,
   /** 获取选中项 */
-  getSelected: () => props.options.find(opt => opt[props.valueKey] === props.modelValue)
+  getSelected: () => props.options.find(opt => opt.value === props.modelValue)
 })
 </script>
 
@@ -184,7 +174,7 @@ export default {
     gap: $spacing-sm;
     align-items: center;
     height: 32px;
-    min-width: 200px;
+    min-width: 120px;
     padding: $spacing-sm $spacing-md;
     border-radius: $radius-full;
     font-size: $font-size-sm;
@@ -213,7 +203,7 @@ export default {
   &__menu {
     position: relative;
     z-index: 1000;
-    min-width: 200px;
+    min-width: 120px;
     border-radius: $radius-sm;
     background: $bg-overlay;
     box-shadow: 0 4px 12px rgb(0 0 0 / 30%);
@@ -251,6 +241,11 @@ export default {
     &.is-selected {
       background: rgba($color-primary, 0.1);
     }
+  }
+
+  &__menu-icon {
+    flex-shrink: 0;
+    color: $text-secondary;
   }
 }
 

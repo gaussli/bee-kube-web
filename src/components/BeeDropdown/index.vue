@@ -6,9 +6,9 @@
     <Transition name="bee-dropdown">
       <div v-if="isOpen" ref="floatingRef" class="bee-dropdown__menu" :style="floatingStyles" @click.stop>
         <slot name="dropdown">
-          <div v-for="option in options" :key="option[valueKey]" class="bee-dropdown__item" @click="handleSelect(option)">
+          <div v-for="option in options" :key="option.value" class="bee-dropdown__item" @click="handleSelect(option)">
             <BeeIcon v-if="option.icon" class="bee-dropdown__item-icon" :name="option.icon" :size="14" />
-            <span>{{ option[labelKey] }}</span>
+            <span>{{ option.label ?? option.value }}</span>
           </div>
         </slot>
         <div ref="arrowRef" class="bee-dropdown__arrow" :style="arrowStyle" />
@@ -25,25 +25,17 @@
 import { ref, computed, onMounted, onBeforeUnmount } from 'vue'
 import { arrow, flip, offset, shift, useFloating } from '@floating-ui/vue'
 import BeeIcon from '@/components/BeeIcon/index.vue'
+import type { DropdownOption } from './types'
 
 defineOptions({ name: 'BeeDropdown' })
-
-/** 下拉选项 */
-interface DropdownOption {
-  [key: string]: any
-}
 
 /** 组件属性 */
 const props = withDefaults(
   defineProps<{
     /** 选中值（v-model） */
-    modelValue?: any
+    modelValue?: string | number
     /** 选项列表 */
     options?: DropdownOption[]
-    /** 选项标签字段名 */
-    labelKey?: string
-    /** 选项值字段名 */
-    valueKey?: string
     /** 触发方式 */
     trigger?: 'click' | 'hover'
     /** 弹出位置 */
@@ -52,8 +44,6 @@ const props = withDefaults(
   {
     modelValue: undefined,
     options: () => [],
-    labelKey: 'label',
-    valueKey: 'value',
     trigger: 'click',
     placement: 'bottom'
   }
@@ -62,9 +52,9 @@ const props = withDefaults(
 /** 组件事件 */
 const emit = defineEmits<{
   /** v-model 更新 */
-  'update:modelValue': [value: any]
+  'update:modelValue': [value: string | number]
   /** 选中变化 */
-  'change': [value: any, option?: DropdownOption]
+  'change': [value: string | number]
   /** 展开状态变化 */
   'visible-change': [visible: boolean]
 }>()
@@ -122,8 +112,8 @@ function toggle() {
 
 /** 处理选项选中 */
 function handleSelect(option: DropdownOption) {
-  emit('update:modelValue', option[props.valueKey])
-  emit('change', option[props.valueKey], option)
+  emit('update:modelValue', option.value)
+  emit('change', option.value)
   isOpen.value = false
   emit('visible-change', false)
 }
