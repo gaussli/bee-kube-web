@@ -12,6 +12,7 @@ export interface NodeQueryReq extends PageReq {
 export interface NodeResp extends BaseEntity {
   id: string
   name: string
+  description?: string
   clusterId: string
   clusterName?: string
   status: string
@@ -23,7 +24,6 @@ export interface NodeResp extends BaseEntity {
   cpu: string
   memory: string
   pods: string
-  createAt: string
   allocatedCpu?: string
   allocatedMemory?: string
   labels?: Record<string, string>

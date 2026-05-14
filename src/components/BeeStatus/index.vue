@@ -1,7 +1,10 @@
 <template>
-  <div class="bee-status" :style="{ '--bee-status-color': currentConfig.color }">
+  <div class="bee-status">
     <span class="bee-status__dot"></span>
-    <span class="bee-status__label">{{ currentConfig.label }}</span>
+    <div class="bee-status__label">
+      <span class="bee-status__label-zh">{{ currentConfig.label }}</span>
+      <span v-if="currentConfig.labelEn" class="bee-status__label-en">{{ currentConfig.labelEn }}</span>
+    </div>
   </div>
 </template>
 
@@ -19,28 +22,38 @@ const props = defineProps<{
 const currentConfig = computed(() => {
   const found = props.config.find(item => item.value === props.status)
   if (found) return found
-  return { label: '-', color: '#da8030' }
+  return { label: '未知', color: '#da8030', labelEn: 'unknown' }
 })
+
+const currentColor = computed(() => currentConfig.value.color)
 </script>
 
 <style lang="scss" scoped>
 .bee-status {
-  --bee-status-color: #da8030;
-
   display: inline-flex;
   gap: $spacing-sm;
   align-items: center;
   justify-content: center;
+  line-height: 1;
 
   &__dot {
     width: 8px;
     height: 8px;
     border-radius: 50%;
-    background: var(--bee-status-color);
+    background: v-bind(currentColor);
   }
 
   &__label {
-    font-size: $font-size-base;
+    display: flex;
+    gap: $spacing-xs;
+    flex-direction: column;
+    font-weight: 600;
+  }
+
+  &__label-en {
+    font-size: $font-size-sm;
+    font-weight: 200;
+    color: $text-secondary;
   }
 }
 </style>

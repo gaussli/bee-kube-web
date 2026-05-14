@@ -25,25 +25,25 @@
       <div class="table-body">
         <el-table v-loading="loading" :data="tableData" height="100%" @selection-change="handleSelectionChange">
           <el-table-column type="selection" width="60" align="center" />
-          <el-table-column prop="id" width="300">
+          <el-table-column prop="id" width="280">
             <template #header>
-              <BeeIconLabel icon="basic-id" label="ID" />
+              <BeeIconLabel icon="basic-id" label="ID" :size="tableHeaderFontSize" :color="tableHeaderColor" :font-weight="tableHeaderFontWeight" />
             </template>
             <template #default="{ row }">
               <BeeLabelCopyable :label="row.id" />
             </template>
           </el-table-column>
-          <el-table-column min-width="150">
+          <el-table-column width="300" class-name="bee-table-name">
             <template #header>
-              <BeeIconLabel icon="kubernetes-cluster" label="集群名称" />
+              <BeeIconLabel icon="kubernetes-cluster" label="名称" :size="tableHeaderFontSize" :color="tableHeaderColor" :font-weight="tableHeaderFontWeight" />
             </template>
             <template #default="{ row }">
-              <el-link type="primary" @click="handleSelectCluster(row)">{{ row.name }}</el-link>
+              <BeeLabelGroup :mainLabel="row.name" :subLabel="row.description" subIcon="basic-description" :subColor="color.textSecondary" />
             </template>
           </el-table-column>
-          <el-table-column min-width="250">
+          <el-table-column min-width="200">
             <template #header>
-              <BeeIconLabel icon="basic-url" label="API Server" />
+              <BeeIconLabel icon="basic-url" label="API Server" :size="tableHeaderFontSize" :color="tableHeaderColor" :font-weight="tableHeaderFontWeight" />
             </template>
             <template #default="{ row }">
               <span class="api-server">{{ row.apiServer }}</span>
@@ -51,28 +51,31 @@
           </el-table-column>
           <el-table-column prop="status" width="100">
             <template #header>
-              <BeeIconLabel icon="basic-status" label="状态" />
+              <BeeIconLabel icon="basic-status" label="状态" :size="tableHeaderFontSize" :color="tableHeaderColor" :font-weight="tableHeaderFontWeight" />
             </template>
             <template #default="{ row }">
               <BeeStatus :status="row.status" :config="clusterStatusConfig" />
             </template>
           </el-table-column>
-          <el-table-column prop="description" min-width="150" show-overflow-tooltip>
-            <template #header>
-              <BeeIconLabel icon="basic-description" label="描述" />
-            </template>
-          </el-table-column>
           <el-table-column width="180">
             <template #header>
-              <BeeIconLabel icon="basic-audit" label="创建" />
+              <BeeIconLabel icon="basic-audit" label="创建" :size="tableHeaderFontSize" :color="tableHeaderColor" :font-weight="tableHeaderFontWeight" />
             </template>
             <template #default="{ row }">
               <AuditCell :user="row.createBy" :time="row.createAt" />
             </template>
           </el-table-column>
+          <el-table-column width="180">
+            <template #header>
+              <BeeIconLabel icon="basic-audit" label="更新" :size="tableHeaderFontSize" :color="tableHeaderColor" :font-weight="tableHeaderFontWeight" />
+            </template>
+            <template #default="{ row }">
+              <AuditCell :user="row.updateBy" :time="row.updateAt" />
+            </template>
+          </el-table-column>
           <el-table-column width="150" fixed="right" class-name="bee-table-operation">
             <template #header>
-              <BeeIconLabel icon="basic-operation" label="操作" />
+              <BeeIconLabel icon="basic-operation" label="操作" :size="tableHeaderFontSize" :color="tableHeaderColor" :font-weight="tableHeaderFontWeight" />
             </template>
             <template #default="{ row }">
               <BeeButton v-if="hasPermission('kubernetes:cluster:edit')" icon="basic-edit" type="info" tooltip="编辑" @click="handleEdit(row)" />
@@ -135,6 +138,7 @@ import BeeDivider from '@/components/BeeDivider/index.vue'
 import BeeIconLabel from '@/components/BeeIconLabel/index.vue'
 import BeeInputSearch from '@/components/BeeInputSearch/index.vue'
 import BeeLabelCopyable from '@/components/BeeLabelCopyable/index.vue'
+import BeeLabelGroup from '@/components/BeeLabelGroup/index.vue'
 import BeePage from '@/components/BeePage/index.vue'
 import BeePageTitle from '@/components/BeePageTitle/index.vue'
 import BeePagination from '@/components/BeePagination/index.vue'
@@ -143,6 +147,7 @@ import BeeStatus from '@/components/BeeStatus/index.vue'
 import BeeTag from '@/components/BeeTag/index.vue'
 import { usePermission } from '@/composables/usePermission'
 import { clusterStatusConfig } from '@/config/cluster'
+import { color } from '@/config/color'
 
 defineOptions({ name: 'ClusterManage' })
 
@@ -151,9 +156,14 @@ const { hasPermission } = usePermission()
 
 const router = useRouter()
 const kubernetesStore = useKubernetesStore()
-const searchKey = ref('')
+
+const tableHeaderFontSize = ref<string>('14px')
+const tableHeaderColor = ref<string>('#7e8184')
+const tableHeaderFontWeight = ref<number>(400)
 
 const loading = ref(false)
+
+const searchKey = ref('')
 const tableData = ref<ClusterResp[]>([])
 const selectedRows = ref<ClusterResp[]>([])
 const batchDeleteDialogVisible = ref(false)
@@ -322,6 +332,15 @@ onMounted(() => {
         }
 
         .el-table__body-wrapper {
+          .bee-table-name {
+            .bee-icon-label__label {
+              max-width: 250px;
+              overflow: hidden;
+              text-overflow: ellipsis;
+              white-space: nowrap;
+            }
+          }
+
           .bee-table-operation {
             .cell {
               display: flex;

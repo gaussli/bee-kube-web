@@ -1,5 +1,5 @@
-import type { ClusterResp } from '@/types'
 import { generateId } from '../utils'
+import type { ClusterResp } from '@/types'
 
 // 模拟集群数据
 const mockClusters: ClusterResp[] = [
@@ -7,7 +7,7 @@ const mockClusters: ClusterResp[] = [
     id: generateId(),
     name: 'prod-cluster',
     apiServer: 'https://api.prod-cluster.local:6443',
-    description: '生产环境集群，用于部署生产应用',
+    description: '生产环境集群，用于部署生产应用生产环境集群，用于部署生产应用',
     status: 1,
     k8sVersion: 'v1.28.3',
     createBy: 'admin',

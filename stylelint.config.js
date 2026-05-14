@@ -8,6 +8,13 @@ export default {
         message: selector => `Expected class selector "${selector}" to be kebab-case`
       }
     ],
+    'value-keyword-case': [
+      'lower',
+      {
+        ignoreFunctions: [/^v-bind/]
+      }
+    ],
+
     // prettier-ignore
     'order/order': [
       'custom-properties',

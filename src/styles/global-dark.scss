@@ -3,6 +3,7 @@
 
 html,
 body {
+  font-weight: 400;
   color: $text-primary;
   background-color: $bg-color;
 }
@@ -12,8 +13,4 @@ body {
   --status-search-bg-color: #{$bg-color};
   --status-search-color: #{$text-secondary};
   --status-search-slider-bg-color: #{$bg-selected};
-}
-
-.bee-button + .bee-button {
-  margin-left: 12px;
 }

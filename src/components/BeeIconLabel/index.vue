@@ -1,18 +1,29 @@
 <template>
   <span class="bee-icon-label">
-    <BeeIcon class="bee-icon-label__icon" :name="icon" :size="14" />
+    <BeeIcon v-if="icon" class="bee-icon-label__icon" :name="icon" :size="14" />
     <span class="bee-icon-label__label">{{ label }}</span>
   </span>
 </template>
 
 <script setup lang="ts">
 import BeeIcon from '@/components/BeeIcon/index.vue'
+
 defineOptions({ name: 'BeeIconLabel' })
 
-defineProps<{
-  icon: string
-  label: string
-}>()
+const props = withDefaults(
+  defineProps<{
+    icon?: string
+    label: string
+    size?: string
+    color?: string
+    fontWeight?: number | string
+  }>(),
+  {
+    size: 'inherit',
+    color: 'inherit',
+    fontWeight: 'inherit'
+  }
+)
 </script>
 
 <style lang="scss" scoped>
@@ -21,7 +32,14 @@ defineProps<{
   gap: $spacing-xs;
   align-items: center;
   justify-content: center;
-  font-weight: 500;
-  color: $text-secondary;
+  font-size: v-bind(size);
+  font-weight: v-bind(fontWeight);
+  color: v-bind(color);
+
+  .bee-icon-label__label {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
 }
 </style>

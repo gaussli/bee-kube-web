@@ -1,22 +1,28 @@
 <template>
-  <span class="bee-label-group">
-    <span class="bee-label-group__main" :style="{ fontSize: mainSize, color: mainColor }">{{ main }}</span>
-    <span v-if="sub" class="bee-label-group__sub" :style="{ fontSize: subSize, color: subColor }">{{ sub }}</span>
-  </span>
+  <div class="bee-label-group">
+    <BeeIconLabel :icon="mainIcon" :label="mainLabel" :color="mainColor" :font-weight="600" />
+    <BeeIconLabel v-if="subLabel" class="bee-label-group__sub" :icon="subIcon" :label="subLabel" :color="subColor" size="12px" :font-weight="200" />
+  </div>
 </template>
 
 <script setup lang="ts">
+import BeeIconLabel from '@/components/BeeIconLabel/index.vue'
+
 defineOptions({ name: 'BeeLabelGroup' })
 
 defineProps<{
   /** 主标签 */
-  main: string
+  mainLabel: string
+  /** 主标签 Icon */
+  mainIcon?: string
   /** 主标签字体大小 */
   mainSize?: string
   /** 主标签字体颜色 */
   mainColor?: string
   /** 副标签 */
-  sub?: string
+  subLabel?: string
+  /** 副标签 Icon */
+  subIcon?: string
   /** 副标签字体大小 */
   subSize?: string
   /** 副标签字体颜色 */
@@ -29,18 +35,7 @@ defineProps<{
   display: inline-flex;
   gap: $spacing-xs;
   flex-direction: column;
-
-  &__main {
-    font-size: $font-size-base;
-    font-weight: 500;
-    line-height: 1.2;
-    color: $text-primary;
-  }
-
-  &__sub {
-    font-size: $font-size-sm;
-    line-height: 1.2;
-    color: $text-secondary;
-  }
+  align-items: flex-start;
+  line-height: 1.2;
 }
 </style>

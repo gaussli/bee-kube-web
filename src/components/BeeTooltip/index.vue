@@ -1,10 +1,19 @@
 <template>
-  <div ref="triggerRef" class="bee-tooltip-trigger" @mouseenter="handleMouseEnter" @mouseleave="handleMouseLeave">
+  <div ref="triggerRef" class="bee-tooltip-trigger" @mouseenter="handleTriggerMouseEnter" @mouseleave="handleTriggerMouseLeave">
     <slot />
   </div>
   <Teleport to="body">
     <Transition name="bee-tooltip">
-      <div v-if="visible" ref="floatingRef" class="bee-tooltip" role="tooltip" :style="floatingStyles" :data-popper-placement="dataPlacement">
+      <div
+        v-if="visible"
+        ref="floatingRef"
+        class="bee-tooltip"
+        role="tooltip"
+        :style="floatingStyles"
+        :data-popper-placement="dataPlacement"
+        @mouseenter="handleTooltipMouseEnter"
+        @mouseleave="handleTooltipMouseLeave"
+      >
         <slot name="label">{{ label }}</slot>
         <div ref="arrowRef" class="bee-tooltip__arrow" :style="arrowStyle" />
       </div>
@@ -33,7 +42,9 @@ const triggerRef = ref<HTMLElement>()
 const floatingRef = ref<HTMLElement>()
 const arrowRef = ref<HTMLElement>()
 const visible = ref(false)
+const isHovered = ref(false)
 
+let showTimeout: ReturnType<typeof setTimeout> | null = null
 let hideTimeout: ReturnType<typeof setTimeout> | null = null
 
 const { floatingStyles, middlewareData, placement } = useFloating(triggerRef, floatingRef, {
@@ -77,21 +88,48 @@ function show() {
     clearTimeout(hideTimeout)
     hideTimeout = null
   }
+  if (showTimeout) {
+    clearTimeout(showTimeout)
+    showTimeout = null
+  }
   visible.value = true
 }
 
 function hide() {
+  if (showTimeout) {
+    clearTimeout(showTimeout)
+    showTimeout = null
+  }
   hideTimeout = setTimeout(() => {
-    visible.value = false
+    if (!isHovered.value) {
+      visible.value = false
+    }
     hideTimeout = null
-  }, 100)
+  }, 150)
 }
 
-function handleMouseEnter() {
+// 触发器鼠标进入：立即显示
+function handleTriggerMouseEnter() {
   show()
 }
 
-function handleMouseLeave() {
+// 触发器鼠标离开：延迟隐藏（给用户时间移到 tooltip）
+function handleTriggerMouseLeave() {
+  hide()
+}
+
+// tooltip 鼠标进入：标记为 hover，取消隐藏
+function handleTooltipMouseEnter() {
+  isHovered.value = true
+  if (hideTimeout) {
+    clearTimeout(hideTimeout)
+    hideTimeout = null
+  }
+}
+
+// tooltip 鼠标离开：标记为非 hover，延迟隐藏
+function handleTooltipMouseLeave() {
+  isHovered.value = false
   hide()
 }
 
@@ -116,7 +154,8 @@ export default {
   font-size: $font-size-xs;
   color: $text-regular;
   background: $color-primary-600;
-  pointer-events: none;
+  cursor: default;
+  user-select: text; // 允许选中文本
 
   &__arrow {
     position: absolute;
@@ -124,6 +163,7 @@ export default {
     height: 8px;
     border-top-left-radius: 2px;
     background: $color-primary-600;
+    pointer-events: none; // 箭头不拦截事件
     transform: rotate(45deg);
   }
 }
