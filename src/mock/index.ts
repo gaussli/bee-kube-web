@@ -3,7 +3,7 @@ import type { AxiosRequestConfig, AxiosResponse, InternalAxiosRequestConfig } fr
 interface MockHandler {
   method: string
   url: string
-  handler: (params: any) => any
+  handler: (pathParams: Record<string, string>, params: any, data: any) => any
 }
 
 const mockHandlers: MockHandler[] = []
@@ -58,7 +58,7 @@ export async function mockRequest(config: AxiosRequestConfig): Promise<AxiosResp
     const { regex, paramNames } = pathToRegex(mock.url)
     if (mock.method === methodLower && regex.test(url as string)) {
       const pathParams = extractParams(url as string, regex, paramNames)
-      const mockData = mock.handler({ ...pathParams, ...params, ...data })
+      const mockData = mock.handler(pathParams, params, data)
       return {
         data: { code: 20000, message: 'success', data: mockData },
         status: 200,

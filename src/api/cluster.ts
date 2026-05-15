@@ -1,4 +1,4 @@
-import request from '@/utils/request'
+import { request } from '@/utils'
 import type { ClusterQueryReq, ClusterReq, ClusterResp, PageResp } from '@/types'
 
 // 获取集群分页列表

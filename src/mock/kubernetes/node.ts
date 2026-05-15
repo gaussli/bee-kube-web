@@ -1,7 +1,139 @@
-import { generateId, randomIndex } from '../utils'
-import type { NodeQueryReq, NodeResp } from '@/types'
+/**
+ * Kubernetes 节点管理 Mock API
+ * @module mock/kubernetes/node
+ */
+import { generateId } from '../utils'
+import type { NodeQueryReq, NodeReq, NodeResp, NodeCordonReq } from '@/types'
 
-// 模拟节点数据
+/**
+ * 节点路由配置
+ * @remarks
+ * - GET /kubernetes/clusters/:clusterId/nodes - 获取节点分页列表
+ * - GET /kubernetes/clusters/:clusterId/nodes/:name - 获取节点详情
+ * - PUT /kubernetes/clusters/:clusterId/nodes/:name - 更新节点
+ * - POST /kubernetes/clusters/:clusterId/nodes/:name/drain - 驱逐节点
+ * - POST /kubernetes/clusters/:clusterId/nodes/:name/cordon - 设置可调度状态
+ */
+export default [
+  {
+    method: 'get',
+    url: '/kubernetes/clusters/:clusterId/nodes',
+    handler: (pathParams: Record<string, string>, params: Partial<NodeQueryReq>) => getNodePage(pathParams.clusterId, params)
+  },
+  {
+    method: 'get',
+    url: '/kubernetes/clusters/:clusterId/nodes/:name',
+    handler: (pathParams: Record<string, string>, params: any, data: any) => getNodeDetail(pathParams.clusterId, pathParams.name)
+  },
+  {
+    method: 'put',
+    url: '/kubernetes/clusters/:clusterId/nodes/:name',
+    handler: (pathParams: Record<string, string>, params: any, data: Partial<NodeReq>) => updateNode(pathParams.clusterId, pathParams.name, data)
+  },
+  {
+    method: 'post',
+    url: '/kubernetes/clusters/:clusterId/nodes/:name/drain',
+    handler: (pathParams: Record<string, string>, params: any, data: any) => drainNode(pathParams.clusterId, pathParams.name)
+  },
+  {
+    method: 'post',
+    url: '/kubernetes/clusters/:clusterId/nodes/:name/cordon',
+    handler: (pathParams: Record<string, string>, params: any, data: NodeCordonReq) => manageNodeCordon(pathParams.clusterId, pathParams.name, data)
+  }
+]
+
+/**
+ * 获取节点分页列表
+ * @param clusterId - 集群ID
+ * @param params - 查询参数
+ * @returns 分页数据
+ */
+function getNodePage(clusterId: string, params: Partial<NodeQueryReq>) {
+  const { id, name, ip, status, page = 1, pageSize = 10 } = params || {}
+
+  let filtered = [...mockNodes]
+  if (id) {
+    filtered = filtered.filter(n => n.id === id)
+  }
+  if (name) {
+    filtered = filtered.filter(n => n.name.toLowerCase().includes(name.toLowerCase()))
+  }
+  if (ip) {
+    filtered = filtered.filter(n => n.ip === ip)
+  }
+  if (status) {
+    filtered = filtered.filter(n => n.status === status)
+  }
+
+  const total = filtered.length
+  const start = (page - 1) * pageSize
+  const end = start + pageSize
+  const list = filtered.slice(start, end)
+  return { list, total, page, pageSize }
+}
+
+/**
+ * 获取节点详情
+ * @param clusterId - 集群ID
+ * @param name - 节点名称
+ * @returns 节点详情
+ */
+function getNodeDetail(clusterId: string, name: string) {
+  return mockNodes[0]
+}
+
+/**
+ * 更新节点
+ * @param clusterId - 集群ID
+ * @param name - 节点名称
+ * @param data - 更新数据
+ * @returns 更新后的节点ID
+ */
+function updateNode(clusterId: string, name: string, data: Partial<NodeReq>) {
+  const index = mockNodes.findIndex(n => n.name === name)
+  if (index === -1) {
+    console.error(`[Update Node] can not find node: ${name}`)
+    return null
+  }
+
+  const updated = {
+    ...mockNodes[index],
+    ...data
+  }
+  mockNodes[index] = updated
+  return updated.id
+}
+
+/**
+ * 驱逐节点上的 Pod
+ * @param clusterId - 集群ID
+ * @param name - 节点名称
+ * @returns 是否驱逐成功
+ */
+function drainNode(clusterId: string, name: string) {
+  const node = mockNodes.find(n => n.name === name)
+  if (!node) return null
+  node.pods = '0' + node.pods.substring(node.pods.indexOf('/'))
+  return true
+}
+
+/**
+ * 设置节点可调度/不可调度
+ * @param clusterId - 集群ID
+ * @param name - 节点名称
+ * @param data - 调度配置
+ * @returns 是否设置成功
+ */
+function manageNodeCordon(clusterId: string, name: string, data: NodeCordonReq) {
+  const node = mockNodes.find(n => n.name === name)
+  if (!node) return null
+  node.schedulable = data.cordon
+  return true
+}
+
+/**
+ * 模拟节点数据
+ */
 const mockNodes: NodeResp[] = [
   {
     id: generateId(),
@@ -14,7 +146,7 @@ const mockNodes: NodeResp[] = [
     version: 'v1.28.3',
     os: 'Ubuntu 22.04.3 LTS',
     architecture: 'amd64',
-    internalIp: '192.168.1.10',
+    ip: '192.168.1.10',
     cpu: '3/16',
     memory: '8Gi/32Gi',
     pods: '30/110',
@@ -44,7 +176,7 @@ const mockNodes: NodeResp[] = [
     version: 'v1.28.3',
     os: 'Ubuntu 22.04.3 LTS',
     architecture: 'amd64',
-    internalIp: '192.168.1.11',
+    ip: '192.168.1.11',
     cpu: '18/24',
     memory: '48Gi/64Gi',
     pods: '82/110',
@@ -57,7 +189,8 @@ const mockNodes: NodeResp[] = [
     labels: {
       'node-role.kubernetes.io/worker': '',
       'kubernetes.io/os': 'linux'
-    }
+    },
+    schedulable: true
   },
   {
     id: generateId(),
@@ -70,7 +203,7 @@ const mockNodes: NodeResp[] = [
     version: 'v1.28.3',
     os: 'Ubuntu 22.04.3 LTS',
     architecture: 'amd64',
-    internalIp: '192.168.1.12',
+    ip: '192.168.1.12',
     cpu: '20/24',
     memory: '58Gi/64Gi',
     pods: '95/110',
@@ -83,7 +216,8 @@ const mockNodes: NodeResp[] = [
     labels: {
       'node-role.kubernetes.io/worker': '',
       'kubernetes.io/os': 'linux'
-    }
+    },
+    schedulable: true
   },
   {
     id: generateId(),
@@ -96,7 +230,7 @@ const mockNodes: NodeResp[] = [
     version: 'v1.28.3',
     os: 'Ubuntu 22.04.3 LTS',
     architecture: 'amd64',
-    internalIp: '10.0.1.10',
+    ip: '10.0.1.10',
     cpu: '1/8',
     memory: '4Gi/16Gi',
     pods: '12/110',
@@ -122,7 +256,7 @@ const mockNodes: NodeResp[] = [
     version: 'v1.28.3',
     os: 'Ubuntu 22.04.3 LTS',
     architecture: 'amd64',
-    internalIp: '10.0.1.11',
+    ip: '10.0.1.11',
     cpu: '2/8',
     memory: '6Gi/16Gi',
     pods: '8/110',
@@ -134,7 +268,8 @@ const mockNodes: NodeResp[] = [
     allocatedMemory: '3Gi',
     labels: {
       'node-role.kubernetes.io/worker': ''
-    }
+    },
+    schedulable: true
   },
   {
     id: generateId(),
@@ -147,7 +282,7 @@ const mockNodes: NodeResp[] = [
     version: 'v1.28.3',
     os: 'Ubuntu 22.04.3 LTS',
     architecture: 'amd64',
-    internalIp: '10.0.1.12',
+    ip: '10.0.1.12',
     cpu: '6/8',
     memory: '12Gi/16Gi',
     pods: '65/110',
@@ -160,7 +295,8 @@ const mockNodes: NodeResp[] = [
     labels: {
       'node-role.kubernetes.io/worker': '',
       'kubernetes.io/os': 'linux'
-    }
+    },
+    schedulable: true
   },
   {
     id: generateId(),
@@ -173,7 +309,7 @@ const mockNodes: NodeResp[] = [
     version: 'v1.27.5',
     os: 'Ubuntu 20.04.6 LTS',
     architecture: 'amd64',
-    internalIp: '172.16.1.10',
+    ip: '172.16.1.10',
     cpu: '6/8',
     memory: '14Gi/16Gi',
     pods: '102/110',
@@ -199,7 +335,7 @@ const mockNodes: NodeResp[] = [
     version: 'v1.28.3',
     os: 'Ubuntu 22.04.3 LTS',
     architecture: 'amd64',
-    internalIp: '192.168.1.13',
+    ip: '192.168.1.13',
     cpu: '4/24',
     memory: '8Gi/64Gi',
     pods: '18/110',
@@ -213,7 +349,8 @@ const mockNodes: NodeResp[] = [
       'node-role.kubernetes.io/worker': '',
       'kubernetes.io/os': 'linux',
       'disk-type': 'ssd'
-    }
+    },
+    schedulable: true
   },
   {
     id: generateId(),
@@ -226,7 +363,7 @@ const mockNodes: NodeResp[] = [
     version: 'v1.28.3',
     os: 'Ubuntu 22.04.3 LTS',
     architecture: 'amd64',
-    internalIp: '192.168.1.14',
+    ip: '192.168.1.14',
     cpu: '0/16',
     memory: '0Gi/32Gi',
     pods: '0/110',
@@ -239,7 +376,8 @@ const mockNodes: NodeResp[] = [
     labels: {
       'node-role.kubernetes.io/worker': '',
       'kubernetes.io/os': 'linux'
-    }
+    },
+    schedulable: false
   },
   {
     id: generateId(),
@@ -252,7 +390,7 @@ const mockNodes: NodeResp[] = [
     version: 'v1.28.3',
     os: 'Ubuntu 22.04.3 LTS',
     architecture: 'amd64',
-    internalIp: '192.168.1.15',
+    ip: '192.168.1.15',
     cpu: '22/24',
     memory: '62Gi/64Gi',
     pods: '108/110',
@@ -266,7 +404,8 @@ const mockNodes: NodeResp[] = [
       'node-role.kubernetes.io/worker': '',
       'kubernetes.io/os': 'linux',
       'workload-type': 'compute-intensive'
-    }
+    },
+    schedulable: false
   },
   {
     id: generateId(),
@@ -279,7 +418,7 @@ const mockNodes: NodeResp[] = [
     version: 'v1.28.3',
     os: 'Ubuntu 22.04.3 LTS',
     architecture: 'amd64',
-    internalIp: '10.0.1.13',
+    ip: '10.0.1.13',
     cpu: '8/16',
     memory: '32Gi/64Gi',
     pods: '45/110',
@@ -293,7 +432,8 @@ const mockNodes: NodeResp[] = [
       'node-role.kubernetes.io/worker': '',
       'kubernetes.io/os': 'linux',
       'gpu-type': 'nvidia-t4'
-    }
+    },
+    schedulable: true
   },
   {
     id: generateId(),
@@ -306,7 +446,7 @@ const mockNodes: NodeResp[] = [
     version: 'v1.28.3',
     os: 'Ubuntu 22.04.3 LTS',
     architecture: 'amd64',
-    internalIp: '192.168.1.16',
+    ip: '192.168.1.16',
     cpu: '4/16',
     memory: '12Gi/32Gi',
     pods: '28/110',
@@ -333,7 +473,7 @@ const mockNodes: NodeResp[] = [
     version: 'v1.28.3',
     os: 'Ubuntu 22.04.3 LTS',
     architecture: 'amd64',
-    internalIp: '192.168.1.17',
+    ip: '192.168.1.17',
     cpu: '12/32',
     memory: '120Gi/128Gi',
     pods: '85/110',
@@ -347,7 +487,8 @@ const mockNodes: NodeResp[] = [
       'node-role.kubernetes.io/worker': '',
       'kubernetes.io/os': 'linux',
       'memory-optimized': 'true'
-    }
+    },
+    schedulable: true
   },
   {
     id: generateId(),
@@ -360,7 +501,7 @@ const mockNodes: NodeResp[] = [
     version: 'v1.27.5',
     os: 'Ubuntu 20.04.6 LTS',
     architecture: 'amd64',
-    internalIp: '172.16.1.11',
+    ip: '172.16.1.11',
     cpu: '4/8',
     memory: '8Gi/16Gi',
     pods: '55/110',
@@ -372,7 +513,8 @@ const mockNodes: NodeResp[] = [
     allocatedMemory: '6Gi',
     labels: {
       'node-role.kubernetes.io/worker': ''
-    }
+    },
+    schedulable: true
   },
   {
     id: generateId(),
@@ -385,7 +527,7 @@ const mockNodes: NodeResp[] = [
     version: 'v1.28.3',
     os: 'Ubuntu 22.04.3 LTS',
     architecture: 'amd64',
-    internalIp: '192.168.1.18',
+    ip: '192.168.1.18',
     cpu: '8/16',
     memory: '16Gi/32Gi',
     pods: '42/110',
@@ -399,7 +541,8 @@ const mockNodes: NodeResp[] = [
       'node-role.kubernetes.io/worker': '',
       'kubernetes.io/os': 'linux',
       'network-optimized': 'true'
-    }
+    },
+    schedulable: false
   },
   {
     id: generateId(),
@@ -412,7 +555,7 @@ const mockNodes: NodeResp[] = [
     version: 'v1.28.3',
     os: 'Ubuntu 22.04.3 LTS',
     architecture: 'arm64',
-    internalIp: '192.168.2.10',
+    ip: '192.168.2.10',
     cpu: '4/8',
     memory: '8Gi/16Gi',
     pods: '35/110',
@@ -426,7 +569,8 @@ const mockNodes: NodeResp[] = [
       'node-role.kubernetes.io/worker': '',
       'kubernetes.io/os': 'linux',
       'edge-node': 'true'
-    }
+    },
+    schedulable: true
   },
   {
     id: generateId(),
@@ -439,7 +583,7 @@ const mockNodes: NodeResp[] = [
     version: 'v1.28.3',
     os: 'Ubuntu 22.04.3 LTS',
     architecture: 'arm64',
-    internalIp: '192.168.2.11',
+    ip: '192.168.2.11',
     cpu: '4/8',
     memory: '8Gi/16Gi',
     pods: '28/110',
@@ -453,7 +597,8 @@ const mockNodes: NodeResp[] = [
       'node-role.kubernetes.io/worker': '',
       'kubernetes.io/os': 'linux',
       'edge-node': 'true'
-    }
+    },
+    schedulable: true
   },
   {
     id: generateId(),
@@ -466,7 +611,7 @@ const mockNodes: NodeResp[] = [
     version: 'v1.28.3',
     os: 'Ubuntu 22.04.3 LTS',
     architecture: 'amd64',
-    internalIp: '10.0.1.14',
+    ip: '10.0.1.14',
     cpu: '4/8',
     memory: '8Gi/16Gi',
     pods: '38/110',
@@ -480,7 +625,8 @@ const mockNodes: NodeResp[] = [
       'node-role.kubernetes.io/worker': '',
       'kubernetes.io/os': 'linux',
       'preemptible': 'true'
-    }
+    },
+    schedulable: true
   },
   {
     id: generateId(),
@@ -493,7 +639,7 @@ const mockNodes: NodeResp[] = [
     version: 'v1.28.3',
     os: 'Ubuntu 22.04.3 LTS',
     architecture: 'amd64',
-    internalIp: '192.168.1.19',
+    ip: '192.168.1.19',
     cpu: '16/32',
     memory: '64Gi/128Gi',
     pods: '12/110',
@@ -507,7 +653,8 @@ const mockNodes: NodeResp[] = [
       'node-role.kubernetes.io/worker': '',
       'kubernetes.io/os': 'linux',
       'workload-type': 'database'
-    }
+    },
+    schedulable: true
   },
   {
     id: generateId(),
@@ -520,7 +667,7 @@ const mockNodes: NodeResp[] = [
     version: 'v1.27.5',
     os: 'Ubuntu 20.04.6 LTS',
     architecture: 'amd64',
-    internalIp: '172.16.1.12',
+    ip: '172.16.1.12',
     cpu: '6/8',
     memory: '12Gi/16Gi',
     pods: '48/110',
@@ -534,7 +681,8 @@ const mockNodes: NodeResp[] = [
       'node-role.kubernetes.io/worker': '',
       'kubernetes.io/os': 'linux',
       'workload-type': 'ci-runner'
-    }
+    },
+    schedulable: true
   },
   {
     id: generateId(),
@@ -547,7 +695,7 @@ const mockNodes: NodeResp[] = [
     version: 'v1.28.3',
     os: 'Ubuntu 22.04.3 LTS',
     architecture: 'amd64',
-    internalIp: '192.168.1.20',
+    ip: '192.168.1.20',
     cpu: '4/16',
     memory: '16Gi/32Gi',
     pods: '22/110',
@@ -561,7 +709,8 @@ const mockNodes: NodeResp[] = [
       'node-role.kubernetes.io/worker': '',
       'kubernetes.io/os': 'linux',
       'workload-type': 'monitoring'
-    }
+    },
+    schedulable: true
   },
   {
     id: generateId(),
@@ -574,7 +723,7 @@ const mockNodes: NodeResp[] = [
     version: 'v1.28.3',
     os: 'Ubuntu 22.04.3 LTS',
     architecture: 'amd64',
-    internalIp: '192.168.1.21',
+    ip: '192.168.1.21',
     cpu: '8/16',
     memory: '28Gi/32Gi',
     pods: '8/110',
@@ -588,7 +737,8 @@ const mockNodes: NodeResp[] = [
       'node-role.kubernetes.io/worker': '',
       'kubernetes.io/os': 'linux',
       'workload-type': 'cache'
-    }
+    },
+    schedulable: true
   },
   {
     id: generateId(),
@@ -601,7 +751,7 @@ const mockNodes: NodeResp[] = [
     version: 'v1.27.5',
     os: 'Ubuntu 20.04.6 LTS',
     architecture: 'amd64',
-    internalIp: '172.16.1.13',
+    ip: '172.16.1.13',
     cpu: '2/8',
     memory: '4Gi/16Gi',
     pods: '30/110',
@@ -613,95 +763,7 @@ const mockNodes: NodeResp[] = [
     allocatedMemory: '2.5Gi',
     labels: {
       'node-role.kubernetes.io/worker': ''
-    }
-  }
-]
-
-// 获取节点分页列表
-function getNodePage(clusterId: string, params: NodeQueryReq) {
-  const { id, name, ip, status, page = 1, pageSize = 10 } = params || {}
-
-  let filtered = [...mockNodes]
-  // if (clusterId) {
-  //   filtered = filtered.filter(n => n.clusterId === clusterId)
-  // }
-  if (id) {
-    filtered = filtered.filter(n => n.id === id)
-  }
-  if (name) {
-    filtered = filtered.filter(n => n.name.toLowerCase().includes(name.toLowerCase()))
-  }
-  if (ip) {
-    filtered = filtered.filter(n => n.internalIp === ip)
-  }
-  if (status) {
-    filtered = filtered.filter(n => n.status === status)
-  }
-
-  const total = filtered.length
-  const start = (page - 1) * pageSize
-  const end = start + pageSize
-  const list = filtered.slice(start, end)
-  return { list, total, page, pageSize }
-}
-
-// 获取节点详情
-function getNodeDetail(clusterId: string, name: string) {
-  return mockNodes[randomIndex(mockNodes.length)]
-}
-
-// 更新节点
-function updateNode(clusterId: string, name: string, data: any) {
-  const index = mockNodes.findIndex(n => n.clusterId === clusterId && n.name === name)
-  if (index === -1) return null
-
-  const updated = {
-    ...mockNodes[index],
-    ...data
-  }
-  mockNodes[index] = updated
-  return updated
-}
-
-// 驱逐节点上的 Pod
-function drainNode(clusterId: string, name: string) {
-  const node = mockNodes.find(n => n.clusterId === clusterId && n.name === name)
-  if (!node) return null
-  node.pods = '0' + node.pods.substring(node.pods.indexOf('/'))
-  return { success: true }
-}
-
-// 设置节点可调度/不可调度
-function cordonNode(clusterId: string, name: string, unschedulable: boolean) {
-  const node = mockNodes.find(n => n.clusterId === clusterId && n.name === name)
-  if (!node) return null
-  return { success: true, unschedulable }
-}
-
-export default [
-  {
-    method: 'get',
-    url: '/kubernetes/cluster/:clusterId/nodes',
-    handler: (clusterId: string, params: NodeQueryReq) => getNodePage(clusterId, params)
-  },
-  {
-    method: 'get',
-    url: '/kubernetes/cluster/:clusterId/nodes/:name',
-    handler: (clusterId: string, name: string) => getNodeDetail(clusterId, name)
-  },
-  {
-    method: 'put',
-    url: '/kubernetes/cluster/:clusterId/nodes/:name',
-    handler: ({ clusterId, name, ...data }: any) => updateNode(clusterId, name, data)
-  },
-  {
-    method: 'post',
-    url: '/kubernetes/cluster/:clusterId/nodes/:name/drain',
-    handler: ({ clusterId, name }: any) => drainNode(clusterId, name)
-  },
-  {
-    method: 'post',
-    url: '/kubernetes/cluster/:clusterId/nodes/:name/cordon',
-    handler: ({ clusterId, name, unschedulable }: any) => cordonNode(clusterId, name, unschedulable)
+    },
+    schedulable: true
   }
 ]

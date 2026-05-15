@@ -1,6 +1,240 @@
-import type { NamespaceResp } from '@/types'
+/**
+ * Kubernetes 命名空间管理 Mock API
+ * @module mock/kubernetes/namespace
+ */
+import type { NamespaceResp, NamespaceQueryReq, NamespaceReq, NamespaceLabelsReq, NamespaceAnnotationsReq } from '@/types'
 
-// 模拟命名空间数据
+/**
+ * 命名空间路由配置
+ * @remarks
+ * - GET /kubernetes/clusters/:clusterId/namespaces - 获取命名空间分页列表
+ * - GET /kubernetes/clusters/:clusterId/namespaces/:name - 获取命名空间详情
+ * - POST /kubernetes/clusters/:clusterId/namespaces - 创建命名空间
+ * - PUT /kubernetes/clusters/:clusterId/namespaces/:name - 更新命名空间
+ * - POST /kubernetes/clusters/:clusterId/namespaces/:name/labels - 更新标签
+ * - POST /kubernetes/clusters/:clusterId/namespaces/:name/annotations - 更新注解
+ * - DELETE /kubernetes/clusters/:clusterId/namespaces/:name - 删除命名空间
+ * - DELETE /kubernetes/clusters/:clusterId/namespaces/batch - 批量删除命名空间
+ */
+export default [
+  {
+    method: 'get',
+    url: '/kubernetes/clusters/:clusterId/namespaces',
+    handler: (pathParams: Record<string, string>, params: Partial<NamespaceQueryReq>) => getNamespacePage(pathParams.clusterId, params)
+  },
+  {
+    method: 'get',
+    url: '/kubernetes/clusters/:clusterId/namespaces/:name',
+    handler: (pathParams: Record<string, string>, params: any, data: any) => getNamespaceDetail(pathParams.clusterId, pathParams.name)
+  },
+  {
+    method: 'post',
+    url: '/kubernetes/clusters/:clusterId/namespaces',
+    handler: (pathParams: Record<string, string>, params: any, data: Partial<NamespaceReq>) => createNamespace(pathParams.clusterId, data)
+  },
+  {
+    method: 'put',
+    url: '/kubernetes/clusters/:clusterId/namespaces/:name',
+    handler: (pathParams: Record<string, string>, params: any, data: Partial<NamespaceReq>) => updateNamespace(pathParams.clusterId, pathParams.name, data)
+  },
+  {
+    method: 'post',
+    url: '/kubernetes/clusters/:clusterId/namespaces/:name/labels',
+    handler: (pathParams: Record<string, string>, params: any, data: NamespaceLabelsReq) => manageNamespaceLabels(pathParams.clusterId, pathParams.name, data)
+  },
+  {
+    method: 'post',
+    url: '/kubernetes/clusters/:clusterId/namespaces/:name/annotations',
+    handler: (pathParams: Record<string, string>, params: any, data: NamespaceAnnotationsReq) => manageNamespaceAnnotations(pathParams.clusterId, pathParams.name, data)
+  },
+  {
+    method: 'delete',
+    url: '/kubernetes/clusters/:clusterId/namespaces/:name',
+    handler: (pathParams: Record<string, string>, params: any, data: any) => deleteNamespace(pathParams.clusterId, pathParams.name)
+  },
+  {
+    method: 'delete',
+    url: '/kubernetes/clusters/:clusterId/namespaces/batch',
+    handler: (pathParams: Record<string, string>, params: any, data: string[]) => deleteNamespaces(pathParams.clusterId, data)
+  }
+]
+
+/**
+ * 获取命名空间分页列表
+ * @param clusterId - 集群ID
+ * @param params - 查询参数
+ * @returns 分页数据
+ */
+function getNamespacePage(clusterId: string, params: Partial<NamespaceQueryReq>) {
+  const { name, status, page = 1, pageSize = 10 } = params || {}
+
+  let filtered = [...mockNamespaces]
+
+  // 集群过滤
+  if (clusterId) {
+    filtered = filtered.filter(ns => ns.clusterId === clusterId)
+  }
+  // 名称过滤
+  if (name) {
+    filtered = filtered.filter(ns => ns.name.toLowerCase().includes(name.toLowerCase()))
+  }
+  // 状态过滤
+  if (status) {
+    filtered = filtered.filter(ns => ns.status === status)
+  }
+
+  // 分页
+  const total = filtered.length
+  const start = (page - 1) * pageSize
+  const end = start + pageSize
+  const list = filtered.slice(start, end)
+
+  return { list, total, page, pageSize }
+}
+
+/**
+ * 获取命名空间详情
+ * @param clusterId - 集群ID
+ * @param name - 命名空间名称
+ * @returns 命名空间详情
+ */
+function getNamespaceDetail(clusterId: string, name: string) {
+  const ns = mockNamespaces.find(n => n.clusterId === clusterId && n.name === name)
+  return ns || null
+}
+
+/**
+ * 创建命名空间
+ * @param clusterId - 集群ID
+ * @param data - 创建参数
+ * @returns 创建的命名空间ID
+ */
+function createNamespace(clusterId: string, data: Partial<NamespaceReq>) {
+  const newNs: NamespaceResp = {
+    id: `ns-${Date.now()}`,
+    name: data.name || '',
+    clusterId: clusterId,
+    clusterName: data.clusterName || '',
+    status: 'Active',
+    phase: 'Active',
+    labels: data.labels || {},
+    annotations: data.annotations || {},
+    createAt: new Date().toLocaleString()
+  }
+  mockNamespaces.push(newNs)
+  return newNs.id
+}
+
+/**
+ * 更新命名空间
+ * @param clusterId - 集群ID
+ * @param name - 命名空间名称
+ * @param data - 更新参数
+ * @returns 更新后的命名空间ID
+ */
+function updateNamespace(clusterId: string, name: string, data: Partial<NamespaceReq>) {
+  const index = mockNamespaces.findIndex(n => n.clusterId === clusterId && n.name === name)
+  if (index === -1) return null
+
+  const updated = {
+    ...mockNamespaces[index],
+    ...data
+  }
+  mockNamespaces[index] = updated
+  return updated.id
+}
+
+/**
+ * 更新命名空间标签
+ * @param clusterId - 集群ID
+ * @param name - 命名空间名称
+ * @param data - 标签数据
+ * @returns 是否更新成功
+ */
+function manageNamespaceLabels(clusterId: string, name: string, data: NamespaceLabelsReq) {
+  const index = mockNamespaces.findIndex(n => n.clusterId === clusterId && n.name === name)
+  if (index === -1) return false
+
+  const currentLabels = mockNamespaces[index].labels || {}
+
+  if (data.operation === 1) {
+    // 新增
+    mockNamespaces[index].labels = { ...currentLabels, ...data.labels }
+  } else if (data.operation === 2) {
+    // 移除
+    const newLabels = { ...currentLabels }
+    Object.keys(data.labels).forEach(key => delete newLabels[key])
+    mockNamespaces[index].labels = newLabels
+  } else if (data.operation === 3) {
+    // 全量替换
+    mockNamespaces[index].labels = data.labels
+  }
+
+  return true
+}
+
+/**
+ * 更新命名空间注解
+ * @param clusterId - 集群ID
+ * @param name - 命名空间名称
+ * @param data - 注解数据
+ * @returns 是否更新成功
+ */
+function manageNamespaceAnnotations(clusterId: string, name: string, data: NamespaceAnnotationsReq) {
+  const index = mockNamespaces.findIndex(n => n.clusterId === clusterId && n.name === name)
+  if (index === -1) return false
+
+  const currentAnnotations = mockNamespaces[index].annotations || {}
+
+  if (data.operation === 1) {
+    // 新增
+    mockNamespaces[index].annotations = { ...currentAnnotations, ...data.annotations }
+  } else if (data.operation === 2) {
+    // 移除
+    const newAnnotations = { ...currentAnnotations }
+    Object.keys(data.annotations).forEach(key => delete newAnnotations[key])
+    mockNamespaces[index].annotations = newAnnotations
+  } else if (data.operation === 3) {
+    // 全量替换
+    mockNamespaces[index].annotations = data.annotations
+  }
+
+  return true
+}
+
+/**
+ * 删除命名空间
+ * @param clusterId - 集群ID
+ * @param name - 命名空间名称
+ * @returns 是否删除成功
+ */
+function deleteNamespace(clusterId: string, name: string) {
+  const index = mockNamespaces.findIndex(n => n.clusterId === clusterId && n.name === name)
+  if (index === -1) return false
+
+  mockNamespaces.splice(index, 1)
+  return true
+}
+
+/**
+ * 批量删除命名空间
+ * @param clusterId - 集群ID
+ * @param names - 命名空间名称数组
+ * @returns 是否删除成功
+ */
+function deleteNamespaces(clusterId: string, names: string[]) {
+  names.forEach((name: string) => {
+    const index = mockNamespaces.findIndex(n => n.clusterId === clusterId && n.name === name)
+    if (index !== -1) {
+      mockNamespaces.splice(index, 1)
+    }
+  })
+  return true
+}
+
+/**
+ * 模拟命名空间数据
+ */
 const mockNamespaces: NamespaceResp[] = [
   {
     id: 'ns-001',
@@ -135,124 +369,5 @@ const mockNamespaces: NamespaceResp[] = [
       env: 'development'
     },
     annotations: {}
-  }
-]
-
-// 获取命名空间分页列表
-function getNamespacePage(params: any) {
-  const { id, name, clusterId, status, page = 1, pageSize = 10 } = params || {}
-
-  let filtered = [...mockNamespaces]
-
-  // 搜索过滤
-  if (id) {
-    filtered = filtered.filter(ns => ns.id.includes(id))
-  }
-  if (name) {
-    filtered = filtered.filter(ns => ns.name.toLowerCase().includes(name.toLowerCase()))
-  }
-  // if (clusterId) {
-  //   filtered = filtered.filter(ns => ns.clusterId === clusterId)
-  // }
-  if (status) {
-    filtered = filtered.filter(ns => ns.status === status)
-  }
-
-  // 分页
-  const total = filtered.length
-  const start = (page - 1) * pageSize
-  const end = start + pageSize
-  const list = filtered.slice(start, end)
-
-  return { list, total }
-}
-
-// 获取命名空间详情
-function getNamespaceDetail(clusterId: string, name: string) {
-  const ns = mockNamespaces.find(n => n.clusterId === clusterId && n.name === name)
-  return ns || null
-}
-
-// 创建命名空间
-function createNamespace(data: any) {
-  const newNs: NamespaceResp = {
-    id: `ns-${Date.now()}`,
-    name: data.name || '',
-    clusterId: data.clusterId || '',
-    clusterName: data.clusterName || '',
-    status: 'Active',
-    phase: 'Active',
-    labels: data.labels || {},
-    annotations: data.annotations || {},
-    createAt: new Date().toLocaleString()
-  }
-  mockNamespaces.push(newNs)
-  return newNs
-}
-
-// 更新命名空间
-function updateNamespace(clusterId: string, name: string, data: any) {
-  const index = mockNamespaces.findIndex(n => n.clusterId === clusterId && n.name === name)
-  if (index === -1) return null
-
-  const updated = {
-    ...mockNamespaces[index],
-    ...data
-  }
-  mockNamespaces[index] = updated
-  return updated
-}
-
-// 删除命名空间
-function deleteNamespace(clusterId: string, name: string) {
-  const index = mockNamespaces.findIndex(n => n.clusterId === clusterId && n.name === name)
-  if (index === -1) return false
-
-  mockNamespaces.splice(index, 1)
-  return true
-}
-
-// 批量删除命名空间
-function batchDeleteNamespace(data: any) {
-  const { clusterId, names } = data
-  names.forEach((name: string) => {
-    const index = mockNamespaces.findIndex(n => n.clusterId === clusterId && n.name === name)
-    if (index !== -1) {
-      mockNamespaces.splice(index, 1)
-    }
-  })
-  return true
-}
-
-export default [
-  {
-    method: 'get',
-    url: '/kubernetes/namespace/page',
-    handler: (params: any) => getNamespacePage(params)
-  },
-  {
-    method: 'get',
-    url: '/kubernetes/namespace/:clusterId/:name',
-    handler: ({ clusterId, name }: any) => getNamespaceDetail(clusterId, name)
-  },
-  {
-    method: 'post',
-    url: '/kubernetes/namespace',
-    handler: (data: any) => createNamespace(data)
-  },
-  {
-    method: 'put',
-    url: '/kubernetes/namespace/:clusterId/:name',
-    handler: ({ clusterId, name, ...data }: any) => updateNamespace(clusterId, name, data)
-  },
-  {
-    method: 'delete',
-    url: '/kubernetes/namespace/:clusterId/:name',
-    handler: ({ clusterId, name }: any) => deleteNamespace(clusterId, name)
-  },
-  {
-    method: 'delete',
-    url: '/kubernetes/namespace/batch',
-    handler: (data: any) => batchDeleteNamespace(data)
   }
 ]
