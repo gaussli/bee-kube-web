@@ -1,10 +1,9 @@
-// 统一导出 API 模块
+/**
+ * @fileOverview API 模块统一导出入口
+ */
+// 认证模块
 export * from './auth'
-export * from './cluster'
-export * from './menu'
-export * from './namespace'
-export * from './node'
-export * from './permission'
-export * from './role'
-export * from './user'
-export * from './workload'
+// Kubernetes 资源管理模块
+export * from './kubernetes'
+// 平台管理模块
+export * from './platform'
