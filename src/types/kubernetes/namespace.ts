@@ -2,7 +2,7 @@
  * 命名空间管理相关类型定义
  * @module types/namespace
  */
-import type { BaseEntity, PageReq } from './common'
+import type { BaseEntity, PageReq } from '@/types/common'
 
 /**
  * 命名空间响应数据

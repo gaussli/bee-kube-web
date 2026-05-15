@@ -1,6 +1,6 @@
 // 角色相关类型
 
-import type { BaseEntity, PageReq } from './common'
+import type { BaseEntity, PageReq } from '@/types/common'
 
 // 角色查询请求参数
 export interface RoleQueryReq extends PageReq {

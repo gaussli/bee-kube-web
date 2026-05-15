@@ -2,7 +2,7 @@
  * Deployment 资源相关类型定义
  * @module types/deployment
  */
-import type { BaseEntity, PageReq } from './common'
+import type { BaseEntity, PageReq } from '@/types/common'
 
 /**
  * Deployment 副本状态

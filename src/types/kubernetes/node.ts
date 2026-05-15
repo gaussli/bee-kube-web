@@ -2,7 +2,7 @@
  * 节点管理相关类型定义
  * @module types/node
  */
-import type { BaseEntity, PageReq } from './common'
+import type { BaseEntity, PageReq } from '@/types/common'
 
 /**
  * 节点响应数据

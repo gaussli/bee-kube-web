@@ -1,6 +1,6 @@
 // 权限相关类型
 
-import type { BaseEntity, PageReq } from './common'
+import type { BaseEntity, PageReq } from '@/types/common'
 
 // 菜单查询请求参数
 export interface MenuQueryReq extends PageReq {

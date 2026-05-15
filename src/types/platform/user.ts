@@ -1,5 +1,5 @@
 // 用户相关类型
-import type { BaseEntity, PageReq } from './common'
+import type { BaseEntity, PageReq } from '@/types/common'
 
 // 用户查询请求参数
 export interface UserQueryReq extends PageReq {
