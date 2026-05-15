@@ -1,4 +1,4 @@
-import { generateId } from '../utils'
+import { generateId, randomIndex } from '../utils'
 import type { NodeQueryReq, NodeResp } from '@/types'
 
 // 模拟节点数据
@@ -622,8 +622,6 @@ function getNodePage(clusterId: string, params: NodeQueryReq) {
   const { id, name, ip, status, page = 1, pageSize = 10 } = params || {}
 
   let filtered = [...mockNodes]
-
-  // 搜索过滤
   // if (clusterId) {
   //   filtered = filtered.filter(n => n.clusterId === clusterId)
   // }
@@ -640,19 +638,16 @@ function getNodePage(clusterId: string, params: NodeQueryReq) {
     filtered = filtered.filter(n => n.status === status)
   }
 
-  // 分页
   const total = filtered.length
   const start = (page - 1) * pageSize
   const end = start + pageSize
   const list = filtered.slice(start, end)
-
-  return { list, total }
+  return { list, total, page, pageSize }
 }
 
 // 获取节点详情
 function getNodeDetail(clusterId: string, name: string) {
-  const node = mockNodes.find(n => n.name === name)
-  return node || null
+  return mockNodes[randomIndex(mockNodes.length)]
 }
 
 // 更新节点
@@ -687,12 +682,12 @@ export default [
   {
     method: 'get',
     url: '/kubernetes/cluster/:clusterId/nodes',
-    handler: ({ clusterId, params }: any) => getNodePage(clusterId, params)
+    handler: (clusterId: string, params: NodeQueryReq) => getNodePage(clusterId, params)
   },
   {
     method: 'get',
     url: '/kubernetes/cluster/:clusterId/nodes/:name',
-    handler: ({ clusterId, name }: any) => getNodeDetail(clusterId, name)
+    handler: (clusterId: string, name: string) => getNodeDetail(clusterId, name)
   },
   {
     method: 'put',

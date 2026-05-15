@@ -1,7 +1,7 @@
 <template>
   <div class="bee-label-group">
     <BeeIconLabel :icon="mainIcon" :label="mainLabel" :color="mainColor" :font-weight="600" />
-    <BeeIconLabel v-if="subLabel" class="bee-label-group__sub" :icon="subIcon" :label="subLabel" :color="subColor" size="12px" :font-weight="200" />
+    <BeeIconLabel v-if="subLabel" class="bee-label-group__sub" :icon="subIcon" :label="subLabel" :color="subColor" size="12px" :font-weight="300" />
   </div>
 </template>
 

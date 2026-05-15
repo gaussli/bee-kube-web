@@ -7,3 +7,7 @@ export function generateId(): string {
   }
   return id
 }
+
+export function randomIndex(len: number): number {
+  return Math.random() % len
+}

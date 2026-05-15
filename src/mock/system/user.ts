@@ -591,37 +591,28 @@ const mockUsers: UserResp[] = [
 ]
 
 function getUserPage(params: UserQueryReq): PageResp<UserResp> {
-  const { page = 1, pageSize = 10, id, username, nickname, status } = params || {}
-  let filtered = mockUsers
+  const { id, username, nickname, status, page = 1, pageSize = 10 } = params || {}
 
+  let filtered = [...mockUsers]
   if (id && id === username && nickname === username) {
-    console.log('filter user')
-    filtered = filtered.filter(u => u.id == id || u.username.toLowerCase().includes(username.toLowerCase()) || u.nickname.includes(nickname))
+    filtered = filtered.filter(u => u.id == id || u.username.includes(username.toLowerCase()) || u.nickname.includes(nickname))
   } else {
-    // 按用户名模糊搜索
     if (username) {
-      filtered = filtered.filter(u => u.username.toLowerCase().includes(username.toLowerCase()))
+      filtered = filtered.filter(u => u.username.includes(username))
     }
-    // 按昵称模糊搜索
     if (nickname) {
       filtered = filtered.filter(u => u.nickname.includes(nickname))
     }
   }
-
-  // 按状态筛选
-  if (status !== undefined) {
+  if (status) {
     filtered = filtered.filter(u => u.status === status)
   }
 
   const total = filtered.length
   const start = (page - 1) * pageSize
   const end = start + pageSize
-  return {
-    list: filtered.slice(start, end),
-    total,
-    page,
-    pageSize
-  }
+  const list = filtered.slice(start, end)
+  return { list, total, page, pageSize }
 }
 
 export default [

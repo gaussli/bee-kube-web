@@ -1,6 +1,6 @@
 import js from '@eslint/js'
-import tseslint from '@typescript-eslint/eslint-plugin'
-import tsparser from '@typescript-eslint/parser'
+import tseslintPlugin from '@typescript-eslint/eslint-plugin'
+import tseslintParser from '@typescript-eslint/parser'
 import eslintConfigPrettier from 'eslint-config-prettier'
 import importPlugin from 'eslint-plugin-import'
 import prettier from 'eslint-plugin-prettier'
@@ -32,7 +32,6 @@ export default [
     rules: {
       // 关闭 ESLint 原生的未使用变量检查
       'no-unused-vars': 'off',
-      '@typescript-eslint/no-unused-vars': 'off',
       // 启用 unused-imports 的规则
       'unused-imports/no-unused-imports': 'error',
       'unused-imports/no-unused-vars': ['error', { vars: 'all', varsIgnorePattern: '^_*', args: 'after-used', argsIgnorePattern: '^_' }]
@@ -45,7 +44,7 @@ export default [
       parserOptions: {
         ecmaVersion: 'latest',
         sourceType: 'module',
-        parser: tsparser
+        parser: tseslintParser
       }
     },
     plugins: {
@@ -59,14 +58,14 @@ export default [
   {
     files: ['**/*.ts', '**/*.tsx', 'vite.config.ts'],
     languageOptions: {
-      parser: tsparser,
+      parser: tseslintParser,
       parserOptions: {
         ecmaVersion: 'latest',
         sourceType: 'module'
       }
     },
     plugins: {
-      '@typescript-eslint': tseslint
+      '@typescript-eslint': tseslintPlugin
     },
     rules: {
       'no-redeclare': 'off',

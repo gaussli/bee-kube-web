@@ -1,12 +1,12 @@
-import { generateId } from '../utils'
-import type { ClusterResp } from '@/types'
+import { generateId, randomIndex } from '../utils'
+import type { ClusterQueryReq, ClusterResp } from '@/types'
 
 // 模拟集群数据
 const mockClusters: ClusterResp[] = [
   {
     id: generateId(),
     name: 'prod-cluster',
-    apiServer: 'https://api.prod-cluster.local:6443',
+    apiServer: 'https://192.168.100.201:6443',
     description: '生产环境集群，用于部署生产应用生产环境集群，用于部署生产应用',
     status: 1,
     k8sVersion: 'v1.28.3',
@@ -642,35 +642,30 @@ const mockClusters: ClusterResp[] = [
 ]
 
 // 获取集群分页列表
-function getClusterPage(params: any) {
+function getClusterPage(params: ClusterQueryReq) {
   const { id, name, status, page = 1, pageSize = 10 } = params || {}
 
   let filtered = [...mockClusters]
-
-  // 搜索过滤
   if (id) {
     filtered = filtered.filter(c => c.id.includes(id))
   }
   if (name) {
-    filtered = filtered.filter(c => c.name.toLowerCase().includes(name.toLowerCase()))
+    filtered = filtered.filter(c => c.name.includes(name))
   }
-  if (status !== undefined && status !== null) {
+  if (status) {
     filtered = filtered.filter(c => c.status === status)
   }
 
-  // 分页
   const total = filtered.length
   const start = (page - 1) * pageSize
   const end = start + pageSize
   const list = filtered.slice(start, end)
-
-  return { list, total }
+  return { list, total, page, pageSize }
 }
 
 // 获取集群详情
 function getClusterDetail(id: string) {
-  const cluster = mockClusters.find(c => c.id === id)
-  return cluster || null
+  return mockClusters[randomIndex(mockClusters.length)]
 }
 
 // 创建集群
@@ -688,7 +683,7 @@ function createCluster(data: Partial<ClusterResp>) {
     updateAt: new Date().toLocaleString()
   }
   mockClusters.push(newCluster)
-  return newCluster
+  return newCluster.id
 }
 
 // 更新集群
@@ -729,32 +724,32 @@ function batchDeleteCluster(ids: string[]) {
 export default [
   {
     method: 'get',
-    url: '/kubernetes/cluster/page',
-    handler: (params: any) => getClusterPage(params)
+    url: '/kubernetes/clusters',
+    handler: (params: ClusterQueryReq) => getClusterPage(params)
   },
   {
     method: 'get',
-    url: '/kubernetes/cluster/:id',
+    url: '/kubernetes/clusters/:id',
     handler: ({ id }: any) => getClusterDetail(id)
   },
   {
     method: 'post',
-    url: '/kubernetes/cluster',
+    url: '/kubernetes/clusters',
     handler: (data: any) => createCluster(data)
   },
   {
     method: 'put',
-    url: '/kubernetes/cluster/:id',
+    url: '/kubernetes/clusters/:id',
     handler: ({ id, ...data }: any) => updateCluster(id, data)
   },
   {
     method: 'delete',
-    url: '/kubernetes/cluster/:id',
+    url: '/kubernetes/clusters/:id',
     handler: ({ id }: any) => deleteCluster(id)
   },
   {
     method: 'delete',
-    url: '/kubernetes/cluster/batch',
+    url: '/kubernetes/clusters/batch',
     handler: (data: any) => batchDeleteCluster(data.ids)
   }
 ]

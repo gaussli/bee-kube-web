@@ -25,7 +25,7 @@
       <div class="table-body">
         <el-table v-loading="loading" :data="tableData" height="100%" @selection-change="handleSelectionChange">
           <el-table-column type="selection" width="60" align="center" />
-          <el-table-column prop="id" width="280">
+          <el-table-column prop="id" width="280" class-name="bee-table-cell-id">
             <template #header>
               <BeeIconLabel icon="basic-id" label="ID" :size="tableHeaderFontSize" :color="tableHeaderColor" :font-weight="tableHeaderFontWeight" />
             </template>
@@ -33,7 +33,7 @@
               <BeeLabelCopyable :label="row.id" />
             </template>
           </el-table-column>
-          <el-table-column width="300" class-name="bee-table-name">
+          <el-table-column width="300" class-name="bee-table-cell-name">
             <template #header>
               <BeeIconLabel icon="kubernetes-cluster" label="名称" :size="tableHeaderFontSize" :color="tableHeaderColor" :font-weight="tableHeaderFontWeight" />
             </template>
@@ -41,12 +41,12 @@
               <BeeLabelGroup :mainLabel="row.name" :subLabel="row.description" subIcon="basic-description" :subColor="color.textSecondary" />
             </template>
           </el-table-column>
-          <el-table-column min-width="200">
+          <el-table-column min-width="260">
             <template #header>
               <BeeIconLabel icon="basic-url" label="API Server" :size="tableHeaderFontSize" :color="tableHeaderColor" :font-weight="tableHeaderFontWeight" />
             </template>
             <template #default="{ row }">
-              <span class="api-server">{{ row.apiServer }}</span>
+              {{ row.apiServer }}
             </template>
           </el-table-column>
           <el-table-column prop="status" width="100">
@@ -73,7 +73,7 @@
               <AuditCell :user="row.updateBy" :time="row.updateAt" />
             </template>
           </el-table-column>
-          <el-table-column width="150" fixed="right" class-name="bee-table-operation">
+          <el-table-column width="150" fixed="right" class-name="bee-table-cell-operation">
             <template #header>
               <BeeIconLabel icon="basic-operation" label="操作" :size="tableHeaderFontSize" :color="tableHeaderColor" :font-weight="tableHeaderFontWeight" />
             </template>
@@ -169,7 +169,7 @@ const selectedRows = ref<ClusterResp[]>([])
 const batchDeleteDialogVisible = ref(false)
 const deleteDialogVisible = ref(false)
 const currentTargetRow = ref<ClusterResp | null>(null)
-const queryForm = reactive<ClusterQueryReq>({
+const queryForm = reactive<Partial<ClusterQueryReq>>({
   id: undefined,
   name: undefined,
   status: undefined,
@@ -332,7 +332,11 @@ onMounted(() => {
         }
 
         .el-table__body-wrapper {
-          .bee-table-name {
+          .bee-table-cell-id {
+            font-family: monospace;
+          }
+
+          .bee-table-cell-name {
             .bee-icon-label__label {
               max-width: 250px;
               overflow: hidden;
@@ -341,7 +345,7 @@ onMounted(() => {
             }
           }
 
-          .bee-table-operation {
+          .bee-table-cell-operation {
             .cell {
               display: flex;
               gap: $spacing-sm;
@@ -349,12 +353,6 @@ onMounted(() => {
             }
           }
         }
-      }
-
-      .api-server {
-        font-family: monospace;
-        font-size: 12px;
-        color: $text-secondary;
       }
     }
 
