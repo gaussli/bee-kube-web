@@ -1,5 +1,5 @@
 /**
- * @fileOverview Kubernetes 资源管理模块 API 导出
+ * @fileOverview Kubernetes Mock 数据模块导出
  */
 // 集群管理
 export * from './cluster'

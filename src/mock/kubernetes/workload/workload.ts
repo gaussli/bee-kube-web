@@ -1,9 +1,14 @@
+/**
+ * @fileOverview Kubernetes 工作负载 Mock 数据汇总
+ * @module mock/kubernetes/workload/workload
+ */
+import { generateId } from '@/mock/utils'
 import type { DeploymentResp, StatefulSetResp, DaemonSetResp, JobResp, CronJobResp } from '@/types'
 
 // ==================== Deployment 数据 ====================
 const mockDeployments: DeploymentResp[] = [
   {
-    id: 'deploy-001',
+    id: generateId(),
     name: 'nginx-deployment',
     namespace: 'app-frontend',
     clusterId: 'cls-001-prod',
@@ -21,7 +26,7 @@ const mockDeployments: DeploymentResp[] = [
     deletable: true
   },
   {
-    id: 'deploy-002',
+    id: generateId(),
     name: 'api-gateway',
     namespace: 'app-backend',
     clusterId: 'cls-001-prod',
@@ -39,7 +44,7 @@ const mockDeployments: DeploymentResp[] = [
     deletable: true
   },
   {
-    id: 'deploy-003',
+    id: generateId(),
     name: 'user-service',
     namespace: 'app-backend',
     clusterId: 'cls-001-prod',
@@ -57,7 +62,7 @@ const mockDeployments: DeploymentResp[] = [
     deletable: true
   },
   {
-    id: 'deploy-004',
+    id: generateId(),
     name: 'frontend-app',
     namespace: 'staging-app',
     clusterId: 'cls-002-staging',
@@ -75,7 +80,7 @@ const mockDeployments: DeploymentResp[] = [
     deletable: true
   },
   {
-    id: 'deploy-005',
+    id: generateId(),
     name: 'payment-service',
     namespace: 'app-backend',
     clusterId: 'cls-001-prod',
@@ -93,7 +98,7 @@ const mockDeployments: DeploymentResp[] = [
     deletable: true
   },
   {
-    id: 'deploy-006',
+    id: generateId(),
     name: 'order-service',
     namespace: 'app-backend',
     clusterId: 'cls-001-prod',
@@ -111,7 +116,7 @@ const mockDeployments: DeploymentResp[] = [
     deletable: true
   },
   {
-    id: 'deploy-007',
+    id: generateId(),
     name: 'notification-worker',
     namespace: 'app-backend',
     clusterId: 'cls-001-prod',
@@ -129,7 +134,7 @@ const mockDeployments: DeploymentResp[] = [
     deletable: true
   },
   {
-    id: 'deploy-008',
+    id: generateId(),
     name: 'coredns',
     namespace: 'kube-system',
     clusterId: 'cls-001-prod',
@@ -147,7 +152,7 @@ const mockDeployments: DeploymentResp[] = [
     deletable: false
   },
   {
-    id: 'deploy-009',
+    id: generateId(),
     name: 'metrics-server',
     namespace: 'kube-system',
     clusterId: 'cls-001-prod',
@@ -165,7 +170,7 @@ const mockDeployments: DeploymentResp[] = [
     deletable: false
   },
   {
-    id: 'deploy-010',
+    id: generateId(),
     name: 'dev-test-app',
     namespace: 'dev-test',
     clusterId: 'cls-003-dev',
@@ -187,7 +192,7 @@ const mockDeployments: DeploymentResp[] = [
 // ==================== StatefulSet 数据 ====================
 const mockStatefulSets: StatefulSetResp[] = [
   {
-    id: 'sts-001',
+    id: generateId(),
     name: 'mysql-primary',
     namespace: 'app-backend',
     clusterId: 'cls-001-prod',
@@ -200,7 +205,7 @@ const mockStatefulSets: StatefulSetResp[] = [
     createAt: '2024-02-10 14:00:00'
   },
   {
-    id: 'sts-002',
+    id: generateId(),
     name: 'redis-cluster',
     namespace: 'app-backend',
     clusterId: 'cls-001-prod',
@@ -213,7 +218,7 @@ const mockStatefulSets: StatefulSetResp[] = [
     createAt: '2024-02-12 10:00:00'
   },
   {
-    id: 'sts-003',
+    id: generateId(),
     name: 'kafka-broker',
     namespace: 'app-backend',
     clusterId: 'cls-001-prod',
@@ -230,7 +235,7 @@ const mockStatefulSets: StatefulSetResp[] = [
 // ==================== DaemonSet 数据 ====================
 const mockDaemonSets: DaemonSetResp[] = [
   {
-    id: 'ds-001',
+    id: generateId(),
     name: 'fluentd-agent',
     namespace: 'kube-system',
     clusterId: 'cls-001-prod',
@@ -243,7 +248,7 @@ const mockDaemonSets: DaemonSetResp[] = [
     createAt: '2024-01-20 09:00:00'
   },
   {
-    id: 'ds-002',
+    id: generateId(),
     name: 'node-exporter',
     namespace: 'monitoring',
     clusterId: 'cls-001-prod',
@@ -256,7 +261,7 @@ const mockDaemonSets: DaemonSetResp[] = [
     createAt: '2024-02-10 10:00:00'
   },
   {
-    id: 'ds-003',
+    id: generateId(),
     name: 'calico-node',
     namespace: 'kube-system',
     clusterId: 'cls-002-staging',
@@ -273,7 +278,7 @@ const mockDaemonSets: DaemonSetResp[] = [
 // ==================== Job 数据 ====================
 const mockJobs: JobResp[] = [
   {
-    id: 'job-001',
+    id: generateId(),
     name: 'data-migration-20240320',
     namespace: 'app-backend',
     clusterId: 'cls-001-prod',
@@ -289,7 +294,7 @@ const mockJobs: JobResp[] = [
     createAt: '2024-03-20 02:00:00'
   },
   {
-    id: 'job-002',
+    id: generateId(),
     name: 'backup-daily',
     namespace: 'kube-system',
     clusterId: 'cls-001-prod',
@@ -305,7 +310,7 @@ const mockJobs: JobResp[] = [
     createAt: '2024-03-21 01:00:00'
   },
   {
-    id: 'job-003',
+    id: generateId(),
     name: 'batch-processing',
     namespace: 'app-backend',
     clusterId: 'cls-001-prod',
@@ -324,7 +329,7 @@ const mockJobs: JobResp[] = [
 // ==================== CronJob 数据 ====================
 const mockCronJobs: CronJobResp[] = [
   {
-    id: 'cj-001',
+    id: generateId(),
     name: 'db-backup',
     namespace: 'kube-system',
     clusterId: 'cls-001-prod',
@@ -337,7 +342,7 @@ const mockCronJobs: CronJobResp[] = [
     createAt: '2024-02-01 10:00:00'
   },
   {
-    id: 'cj-002',
+    id: generateId(),
     name: 'log-cleanup',
     namespace: 'kube-system',
     clusterId: 'cls-001-prod',
@@ -350,7 +355,7 @@ const mockCronJobs: CronJobResp[] = [
     createAt: '2024-02-05 14:00:00'
   },
   {
-    id: 'cj-003',
+    id: generateId(),
     name: 'report-generator',
     namespace: 'app-backend',
     clusterId: 'cls-001-prod',
@@ -382,7 +387,7 @@ function getDeploymentDetail(clusterId: string, namespace: string, name: string)
 
 function createDeployment(data: any) {
   const newDeploy: DeploymentResp = {
-    id: `deploy-${Date.now()}`,
+    id: generateId(),
     name: data.name || '',
     namespace: data.namespace || '',
     clusterId: data.clusterId || '',
@@ -441,7 +446,7 @@ function getStatefulSetDetail(clusterId: string, namespace: string, name: string
 
 function createStatefulSet(data: any) {
   const newSts: StatefulSetResp = {
-    id: `sts-${Date.now()}`,
+    id: generateId(),
     name: data.name || '',
     namespace: data.namespace || '',
     clusterId: data.clusterId || '',
@@ -495,7 +500,7 @@ function getDaemonSetDetail(clusterId: string, namespace: string, name: string) 
 
 function createDaemonSet(data: any) {
   const newDs: DaemonSetResp = {
-    id: `ds-${Date.now()}`,
+    id: generateId(),
     name: data.name || '',
     namespace: data.namespace || '',
     clusterId: data.clusterId || '',
@@ -549,7 +554,7 @@ function getJobDetail(clusterId: string, namespace: string, name: string) {
 
 function createJob(data: any) {
   const newJob: JobResp = {
-    id: `job-${Date.now()}`,
+    id: generateId(),
     name: data.name || '',
     namespace: data.namespace || '',
     clusterId: data.clusterId || '',
@@ -605,7 +610,7 @@ function getCronJobDetail(clusterId: string, namespace: string, name: string) {
 
 function createCronJob(data: any) {
   const newCj: CronJobResp = {
-    id: `cj-${Date.now()}`,
+    id: generateId(),
     name: data.name || '',
     namespace: data.namespace || '',
     clusterId: data.clusterId || '',

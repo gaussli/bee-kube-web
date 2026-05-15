@@ -2,7 +2,7 @@
  * Kubernetes 集群管理 Mock API
  * @module mock/kubernetes/cluster
  */
-import { generateId } from '../utils'
+import { generateId } from '@/mock/utils'
 import type { ClusterQueryReq, ClusterReq, ClusterResp } from '@/types'
 
 /**

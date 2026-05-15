@@ -1,7 +1,8 @@
 /**
  * Kubernetes Deployment 管理 Mock API
- * @module mock/kubernetes/deployment
+ * @module mock/kubernetes/workload/deployment
  */
+import { generateId } from '@/mock/utils'
 import type { DeploymentResp, DeploymentQueryReq, DeploymentReq, DeploymentLabelsReq, DeploymentAnnotationsReq, DeploymentScaleReq } from '@/types'
 
 /**
@@ -125,7 +126,7 @@ function getDeploymentDetail(clusterId: string, namespace: string, name: string)
  */
 function createDeployment(clusterId: string, namespace: string, data: Partial<DeploymentReq>) {
   const newDeployment: DeploymentResp = {
-    id: `deploy-${Date.now()}`,
+    id: generateId(),
     name: data.name || '',
     namespace: namespace,
     clusterId: clusterId,
@@ -333,7 +334,7 @@ function deleteDeployments(clusterId: string, namespace: string, names: string[]
  */
 const mockDeployments: DeploymentResp[] = [
   {
-    id: 'deploy-001',
+    id: generateId(),
     name: 'nginx-ingress-controller',
     namespace: 'kube-system',
     clusterId: 'cls-001-prod',
@@ -358,7 +359,7 @@ const mockDeployments: DeploymentResp[] = [
     updateBy: 'admin'
   },
   {
-    id: 'deploy-002',
+    id: generateId(),
     name: 'coredns',
     namespace: 'kube-system',
     clusterId: 'cls-001-prod',
@@ -381,7 +382,7 @@ const mockDeployments: DeploymentResp[] = [
     updateBy: 'admin'
   },
   {
-    id: 'deploy-003',
+    id: generateId(),
     name: 'metrics-server',
     namespace: 'kube-system',
     clusterId: 'cls-001-prod',
@@ -403,7 +404,7 @@ const mockDeployments: DeploymentResp[] = [
     updateBy: 'admin'
   },
   {
-    id: 'deploy-004',
+    id: generateId(),
     name: 'frontend-app',
     namespace: 'app-frontend',
     clusterId: 'cls-001-prod',
@@ -429,7 +430,7 @@ const mockDeployments: DeploymentResp[] = [
     updateBy: 'developer'
   },
   {
-    id: 'deploy-005',
+    id: generateId(),
     name: 'backend-api',
     namespace: 'app-backend',
     clusterId: 'cls-001-prod',
@@ -455,7 +456,7 @@ const mockDeployments: DeploymentResp[] = [
     updateBy: 'developer'
   },
   {
-    id: 'deploy-006',
+    id: generateId(),
     name: 'prometheus',
     namespace: 'monitoring',
     clusterId: 'cls-001-prod',
@@ -480,7 +481,7 @@ const mockDeployments: DeploymentResp[] = [
     updateBy: 'admin'
   },
   {
-    id: 'deploy-007',
+    id: generateId(),
     name: 'grafana',
     namespace: 'monitoring',
     clusterId: 'cls-001-prod',
@@ -505,7 +506,7 @@ const mockDeployments: DeploymentResp[] = [
     updateBy: 'admin'
   },
   {
-    id: 'deploy-008',
+    id: generateId(),
     name: 'user-service',
     namespace: 'app-backend',
     clusterId: 'cls-001-prod',
@@ -530,7 +531,7 @@ const mockDeployments: DeploymentResp[] = [
     updateBy: 'developer'
   },
   {
-    id: 'deploy-009',
+    id: generateId(),
     name: 'order-service',
     namespace: 'app-backend',
     clusterId: 'cls-001-prod',
@@ -555,7 +556,7 @@ const mockDeployments: DeploymentResp[] = [
     updateBy: 'developer'
   },
   {
-    id: 'deploy-010',
+    id: generateId(),
     name: 'payment-service',
     namespace: 'app-backend',
     clusterId: 'cls-001-prod',
@@ -580,7 +581,7 @@ const mockDeployments: DeploymentResp[] = [
     updateBy: 'developer'
   },
   {
-    id: 'deploy-011',
+    id: generateId(),
     name: 'redis-cache',
     namespace: 'app-backend',
     clusterId: 'cls-001-prod',
@@ -605,7 +606,7 @@ const mockDeployments: DeploymentResp[] = [
     updateBy: 'developer'
   },
   {
-    id: 'deploy-012',
+    id: generateId(),
     name: 'staging-frontend',
     namespace: 'staging-app',
     clusterId: 'cls-002-staging',
@@ -628,7 +629,7 @@ const mockDeployments: DeploymentResp[] = [
     updateBy: 'developer'
   },
   {
-    id: 'deploy-013',
+    id: generateId(),
     name: 'staging-backend',
     namespace: 'staging-app',
     clusterId: 'cls-002-staging',
@@ -651,7 +652,7 @@ const mockDeployments: DeploymentResp[] = [
     updateBy: 'developer'
   },
   {
-    id: 'deploy-014',
+    id: generateId(),
     name: 'dev-app',
     namespace: 'dev-test',
     clusterId: 'cls-003-dev',

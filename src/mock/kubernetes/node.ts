@@ -2,7 +2,7 @@
  * Kubernetes 节点管理 Mock API
  * @module mock/kubernetes/node
  */
-import { generateId } from '../utils'
+import { generateId } from '@/mock/utils'
 import type { NodeQueryReq, NodeReq, NodeResp, NodeCordonReq } from '@/types'
 
 /**

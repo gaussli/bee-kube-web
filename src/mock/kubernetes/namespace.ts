@@ -2,6 +2,7 @@
  * Kubernetes 命名空间管理 Mock API
  * @module mock/kubernetes/namespace
  */
+import { generateId } from '@/mock/utils'
 import type { NamespaceResp, NamespaceQueryReq, NamespaceReq, NamespaceLabelsReq, NamespaceAnnotationsReq } from '@/types'
 
 /**
@@ -111,7 +112,7 @@ function getNamespaceDetail(clusterId: string, name: string) {
  */
 function createNamespace(clusterId: string, data: Partial<NamespaceReq>) {
   const newNs: NamespaceResp = {
-    id: `ns-${Date.now()}`,
+    id: generateId(),
     name: data.name || '',
     clusterId: clusterId,
     clusterName: data.clusterName || '',
@@ -237,7 +238,7 @@ function deleteNamespaces(clusterId: string, names: string[]) {
  */
 const mockNamespaces: NamespaceResp[] = [
   {
-    id: 'ns-001',
+    id: generateId(),
     name: 'default',
     clusterId: 'cls-001-prod',
     clusterName: 'prod-cluster',
@@ -249,7 +250,7 @@ const mockNamespaces: NamespaceResp[] = [
     deletable: false
   },
   {
-    id: 'ns-002',
+    id: generateId(),
     name: 'kube-system',
     clusterId: 'cls-001-prod',
     clusterName: 'prod-cluster',
@@ -263,7 +264,7 @@ const mockNamespaces: NamespaceResp[] = [
     deletable: false
   },
   {
-    id: 'ns-003',
+    id: generateId(),
     name: 'kube-public',
     clusterId: 'cls-001-prod',
     clusterName: 'prod-cluster',
@@ -275,7 +276,7 @@ const mockNamespaces: NamespaceResp[] = [
     deletable: false
   },
   {
-    id: 'ns-004',
+    id: generateId(),
     name: 'kube-node-lease',
     clusterId: 'cls-001-prod',
     clusterName: 'prod-cluster',
@@ -287,7 +288,7 @@ const mockNamespaces: NamespaceResp[] = [
     deletable: false
   },
   {
-    id: 'ns-005',
+    id: generateId(),
     name: 'app-frontend',
     clusterId: 'cls-001-prod',
     clusterName: 'prod-cluster',
@@ -302,7 +303,7 @@ const mockNamespaces: NamespaceResp[] = [
     annotations: {}
   },
   {
-    id: 'ns-006',
+    id: generateId(),
     name: 'app-backend',
     clusterId: 'cls-001-prod',
     clusterName: 'prod-cluster',
@@ -317,7 +318,7 @@ const mockNamespaces: NamespaceResp[] = [
     annotations: {}
   },
   {
-    id: 'ns-007',
+    id: generateId(),
     name: 'monitoring',
     clusterId: 'cls-001-prod',
     clusterName: 'prod-cluster',
@@ -331,7 +332,7 @@ const mockNamespaces: NamespaceResp[] = [
     annotations: {}
   },
   {
-    id: 'ns-008',
+    id: generateId(),
     name: 'logging',
     clusterId: 'cls-001-prod',
     clusterName: 'prod-cluster',
@@ -343,7 +344,7 @@ const mockNamespaces: NamespaceResp[] = [
     annotations: {}
   },
   {
-    id: 'ns-009',
+    id: generateId(),
     name: 'staging-app',
     clusterId: 'cls-002-staging',
     clusterName: 'staging-cluster',
@@ -357,7 +358,7 @@ const mockNamespaces: NamespaceResp[] = [
     annotations: {}
   },
   {
-    id: 'ns-010',
+    id: generateId(),
     name: 'dev-test',
     clusterId: 'cls-003-dev',
     clusterName: 'dev-cluster',

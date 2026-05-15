@@ -1,0 +1,153 @@
+/**
+ * @fileOverview Job 资源相关类型定义
+ */
+import type { BaseEntity, PageReq } from '@/types/common'
+
+/**
+ * Job 容器配置
+ */
+export interface JobContainer {
+  /** 容器名称 */
+  name: string
+  /** 镜像 */
+  image: string
+  /** 镜像拉取策略 */
+  imagePullPolicy: string
+  /** 资源请求 */
+  resources?: {
+    requests?: {
+      cpu?: string
+      memory?: string
+    }
+    limits?: {
+      cpu?: string
+      memory?: string
+    }
+  }
+  /** 命令 */
+  command?: string[]
+  /** 参数 */
+  args?: string[]
+  /** 环境变量 */
+  env?: Array<{
+    name: string
+    value?: string
+    valueFrom?: {
+      fieldRef?: {
+        fieldPath: string
+      }
+      secretRef?: {
+        name: string
+        key: string
+      }
+      configMapRef?: {
+        name: string
+        key: string
+      }
+    }
+  }>
+}
+
+/**
+ * Job 响应数据
+ * @extends BaseEntity 继承基础实体（含 id, createAt, createBy, updateAt, updateBy）
+ */
+export interface JobResp extends BaseEntity {
+  /** Job ID */
+  id: string
+  /** Job 名称 */
+  name: string
+  /** 所属命名空间 */
+  namespace: string
+  /** 所属集群 ID */
+  clusterId: string
+  /** 所属集群名称 */
+  clusterName?: string
+  /** 状态 */
+  status: string
+  /** 期望并行副本数 */
+  parallelism: number
+  /** 完成数 */
+  completions: number
+  /** 成功数 */
+  succeeded: number
+  /** 失败数 */
+  failed: number
+  /** 活动数 */
+  active: number
+  /** 开始时间 */
+  startTime?: string
+  /** 完成时间 */
+  completionTime?: string
+  /** 使用的镜像列表 */
+  images: string[]
+  /** 标签 */
+  labels?: Record<string, string>
+  /** 注解 */
+  annotations?: Record<string, string>
+  /** 是否可删除 */
+  deletable?: boolean
+}
+
+/**
+ * Job 查询请求参数
+ * @extends PageReq 继承分页请求（含 page, pageSize）
+ */
+export interface JobQueryReq extends PageReq {
+  /** 命名空间 ID */
+  id: string
+  /** Job 名称（模糊匹配） */
+  name: string
+  /** 命名空间名称 */
+  namespace: string
+  /** 集群 ID */
+  clusterId: string
+  /** 状态 */
+  status: string
+  /** 标签选择器 */
+  labelSelector: string
+}
+
+/**
+ * Job 创建/更新请求参数
+ */
+export interface JobReq {
+  /** Job 名称 */
+  name: string
+  /** 命名空间名称 */
+  namespace: string
+  /** 期望并行副本数 */
+  parallelism?: number
+  /** 完成数 */
+  completions?: number
+  /** 失败重试次数 */
+  backoffLimit?: number
+  /** 超时秒数 */
+  activeDeadlineSeconds?: number
+  /** 容器配置列表 */
+  containers: JobContainer[]
+  /** 标签 */
+  labels?: Record<string, string>
+  /** 注解 */
+  annotations?: Record<string, string>
+}
+
+/**
+ * Job 标签更新请求
+ */
+export interface JobLabelsReq {
+  /** 标签键值对 */
+  labels: Record<string, string>
+  /** 操作（1: 新增；2: 移除：3: 全量替换） */
+  operation: number
+}
+
+/**
+ * Job 注解更新请求
+ */
+export interface JobAnnotationsReq {
+  /** 注解键值对 */
+  annotations: Record<string, string>
+  /** 操作（1: 新增；2: 移除：3: 全量替换） */
+  operation: number
+}
