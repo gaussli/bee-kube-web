@@ -1,11 +1,19 @@
-// 统一导出
-export * from './auth'
-export * from './cluster'
+/**
+ * @fileOverview 类型定义统一导出入口
+ */
+/**
+ * 通用类型
+ */
 export * from './common'
-export * from './deployment'
-export * from './menu'
-export * from './namespace'
-export * from './node'
-export * from './permission'
-export * from './role'
-export * from './user'
+/**
+ * 认证模块
+ */
+export * from './auth'
+/**
+ * Kubernetes 资源管理模块
+ */
+export * from './kubernetes'
+/**
+ * 平台管理模块
+ */
+export * from './platform'

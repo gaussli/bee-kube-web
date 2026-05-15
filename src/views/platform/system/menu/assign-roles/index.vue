@@ -96,7 +96,7 @@ import BeeTag from '@/components/BeeTag/index.vue'
 import BeeTransfer from '@/components/BeeTransfer/index.vue'
 import BeeLabelCopyable from '@/components/BeeLabelCopyable/index.vue'
 import type { MenuDetailResp } from '@/types'
-import type { RoleResp } from '@/types/role'
+import type { RoleResp } from '@/types'
 
 defineOptions({ name: 'MenuAssignRoles' })
 

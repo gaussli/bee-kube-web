@@ -2,7 +2,7 @@
  * 集群管理相关类型定义
  * @description 包含集群查询请求、创建/更新请求、响应等类型定义
  */
-import type { BaseEntity, PageReq } from './common'
+import type { BaseEntity, PageReq } from '@/types/common'
 
 /**
  * 集群查询请求参数

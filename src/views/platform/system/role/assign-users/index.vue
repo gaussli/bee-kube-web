@@ -96,7 +96,7 @@ import BeeTag from '@/components/BeeTag/index.vue'
 import BeeTransfer from '@/components/BeeTransfer/index.vue'
 import BeeLabelCopyable from '@/components/BeeLabelCopyable/index.vue'
 import type { UserResp } from '@/types'
-import type { RoleDetailResp } from '@/types/role'
+import type { RoleDetailResp } from '@/types'
 
 defineOptions({ name: 'RoleAssignUsers' })
 

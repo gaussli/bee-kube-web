@@ -1,4 +1,11 @@
-// 生成32位随机ID（数字+小写字母）
+/**
+ * Mock 工具函数
+ */
+
+/**
+ * 生成32位随机ID（数字+小写字母）
+ * @returns 随机生成的32位ID字符串
+ */
 export function generateId(): string {
   const chars = '0123456789abcdefghijklmnopqrstuvwxyz'
   let id = ''
@@ -8,6 +15,11 @@ export function generateId(): string {
   return id
 }
 
+/**
+ * 生成随机索引
+ * @param len - 数组长度
+ * @returns 0 到 len-1 之间的随机整数
+ */
 export function randomIndex(len: number): number {
-  return Math.random() % len
+  return Math.floor(Math.random() * len)
 }
