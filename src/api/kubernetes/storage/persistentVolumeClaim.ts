@@ -1,8 +1,8 @@
 /**
  * @fileOverview PersistentVolumeClaim 资源管理 API
  */
-import { request } from '@/utils'
 import type { PersistentVolumeClaimQueryReq, PersistentVolumeClaimResp, PersistentVolumeClaimReq, PersistentVolumeClaimLabelsReq, PersistentVolumeClaimAnnotationsReq, PageResp } from '@/types'
+import { request } from '@/utils'
 
 /**
  * 获取 PersistentVolumeClaim 分页列表

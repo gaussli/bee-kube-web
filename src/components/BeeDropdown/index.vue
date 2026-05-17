@@ -28,8 +28,8 @@
  */
 import { ref, computed, onMounted, onBeforeUnmount, provide, watch } from 'vue'
 import { arrow, flip, offset, shift, useFloating } from '@floating-ui/vue'
-import BeeIcon from '@/components/BeeIcon/index.vue'
 import type { DropdownOption } from './types'
+import BeeIcon from '@/components/BeeIcon/index.vue'
 
 defineOptions({ name: 'BeeDropdown' })
 

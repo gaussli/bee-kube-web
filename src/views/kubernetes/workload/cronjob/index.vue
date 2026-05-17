@@ -167,19 +167,19 @@
 import { onMounted, reactive, ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { ElMessage } from 'element-plus'
-import { Timer, Refresh, Plus, EditPen, Delete, View, FolderOpened, Cpu, Clock, InfoFilled, DocumentCopy, DocumentChecked, MoreFilled } from '@element-plus/icons-vue'
-import { type CronJobQueryReq, type CronJobResp } from '@/types'
-import { getCronJobPage, deleteCronJob, batchDeleteCronJob } from '@/api'
-import { useKubernetesStore } from '@/stores'
+import { Timer, Refresh, Plus, EditPen, Delete, View, DocumentCopy, DocumentChecked, MoreFilled } from '@element-plus/icons-vue'
+import type { CronJobQueryReq, CronJobResp } from '@/types/kubernetes/workload/cronjob'
+import { getCronJobPage, deleteCronJob, deleteCronJobs } from '@/api/kubernetes/workload/cronjob'
 import BeeButton from '@/components/BeeButton/index.vue'
 import BeeDialog from '@/components/BeeDialog/index.vue'
+import BeeIconLabel from '@/components/BeeIconLabel/index.vue'
 import BeeInputSearch from '@/components/BeeInputSearch/index.vue'
 import BeePageTitle from '@/components/BeePageTitle/index.vue'
 import BeeSelect from '@/components/BeeSelect/index.vue'
 import BeeTag from '@/components/BeeTag/index.vue'
-import BeeIconLabel from '@/components/BeeIconLabel/index.vue'
 import { useClipboard } from '@/composables/useClipboard'
 import { usePermission } from '@/composables/usePermission'
+import { useKubernetesStore } from '@/stores'
 
 defineOptions({ name: 'CronJobManage' })
 
@@ -312,7 +312,7 @@ async function handleConfirmBatchDelete() {
   const namespace = selectedRows.value[0].namespace
   const names = selectedRows.value.map(row => row.name)
   try {
-    await batchDeleteCronJob(clusterId, namespace, names)
+    await deleteCronJobs(clusterId, namespace, names)
     ElMessage.success(`成功删除 ${names.length} 个 CronJob`)
     batchDeleteDialogVisible.value = false
     selectedRows.value = []

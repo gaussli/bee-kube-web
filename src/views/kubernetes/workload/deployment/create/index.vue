@@ -86,10 +86,10 @@ import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { ElMessage, type FormInstance } from 'element-plus'
 import { Document, Plus, Delete, Close, Check } from '@element-plus/icons-vue'
-import { createDeployment } from '@/api'
+import type { DeploymentResp } from '@/types/kubernetes/workload/deployment'
+import { createDeployment } from '@/api/kubernetes/workload/deployment'
 import BeeButton from '@/components/BeeButton/index.vue'
 import BeePageTitle from '@/components/BeePageTitle/index.vue'
-import type { DeploymentResp } from '@/types'
 
 defineOptions({ name: 'DeploymentCreate' })
 

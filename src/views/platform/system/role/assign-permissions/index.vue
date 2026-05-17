@@ -71,12 +71,12 @@ import { onMounted, ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { ElMessage } from 'element-plus'
 import { ArrowLeft, Key, Menu } from '@element-plus/icons-vue'
-import { bindRoleMenus, getRoleDetail, getRoleMenus, getMenuPage } from '@/api'
+import type { RoleDetailResp, MenuResp } from '@/types/platform/role'
+import { bindRoleMenus, getRoleDetail, getRoleMenus, getMenuPage } from '@/api/platform/role'
 import BeeButton from '@/components/BeeButton/index.vue'
 import BeeDivider from '@/components/BeeDivider/index.vue'
-import BeeTree from '@/components/BeeTree/index.vue'
 import BeeLabelCopyable from '@/components/BeeLabelCopyable/index.vue'
-import type { RoleDetailResp, MenuResp } from '@/types'
+import BeeTree from '@/components/BeeTree/index.vue'
 
 defineOptions({ name: 'RoleAssignPermissions' })
 

@@ -1,8 +1,8 @@
 /**
  * @fileOverview CronJob 资源管理 API
  */
-import { request } from '@/utils'
 import type { CronJobQueryReq, CronJobResp, CronJobReq, CronJobLabelsReq, CronJobAnnotationsReq, PageResp } from '@/types'
+import { request } from '@/utils'
 
 /**
  * 获取 CronJob 分页列表

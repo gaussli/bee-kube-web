@@ -2,15 +2,9 @@
  * @fileOverview NetworkPolicy 资源相关 API
  * @module api/kubernetes/networkPolicy
  */
-import request from '@/utils/request'
 import type { PageResp } from '@/types/common'
-import type {
-  NetworkPolicyResp,
-  NetworkPolicyQueryReq,
-  NetworkPolicyReq,
-  NetworkPolicyLabelsReq,
-  NetworkPolicyAnnotationsReq
-} from '@/types/kubernetes/networkPolicy'
+import type { NetworkPolicyResp, NetworkPolicyQueryReq, NetworkPolicyReq, NetworkPolicyLabelsReq, NetworkPolicyAnnotationsReq } from '@/types/kubernetes/networkPolicy'
+import request from '@/utils/request'
 
 /**
  * 获取 NetworkPolicy 分页列表

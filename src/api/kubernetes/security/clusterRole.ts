@@ -2,16 +2,9 @@
  * @fileOverview ClusterRole 资源相关 API
  * @module api/kubernetes/clusterRole
  */
-import request from '@/utils/request'
 import type { PageResp } from '@/types/common'
-import type {
-  ClusterRoleResp,
-  ClusterRoleQueryReq,
-  ClusterRoleReq,
-  ClusterRoleLabelsReq,
-  ClusterRoleAnnotationsReq,
-  ClusterRoleRulesReq
-} from '@/types/kubernetes/clusterRole'
+import type { ClusterRoleResp, ClusterRoleQueryReq, ClusterRoleReq, ClusterRoleLabelsReq, ClusterRoleAnnotationsReq, ClusterRoleRulesReq } from '@/types/kubernetes/clusterRole'
+import request from '@/utils/request'
 
 /**
  * 获取 ClusterRole 分页列表

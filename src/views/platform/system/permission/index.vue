@@ -56,7 +56,7 @@
             <BeeIconLabel icon="circle-check" label="状态" />
           </template>
           <template #default="{ row }">
-            <StatusCell :status="row.status" :config="permissionStatusConfig" />
+            <BeeStatus :status="row.status" :config="permissionStatusConfig" />
           </template>
         </el-table-column>
         <el-table-column width="180">
@@ -154,20 +154,19 @@
 import { onMounted, reactive, ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { ElMessage } from 'element-plus'
-import { CircleCheck, Delete, Document, EditPen, Key, Plus, Refresh, View, Clock } from '@element-plus/icons-vue'
-import { changePermissionStatus, getPermissionPage, removePermission, batchRemovePermissions } from '@/api'
+import { Delete, EditPen, Plus, Refresh, View } from '@element-plus/icons-vue'
+import type { PermissionQueryReq, PermissionResp } from '@/types/platform/permission'
+import { changePermissionStatus, getPermissionPage, removePermission, batchRemovePermissions } from '@/api/platform/permission'
 import AuditCell from '@/components/AuditCell/index.vue'
 import BeeButton from '@/components/BeeButton/index.vue'
 import BeeDialog from '@/components/BeeDialog/index.vue'
+import BeeIconLabel from '@/components/BeeIconLabel/index.vue'
 import BeeInputSearch from '@/components/BeeInputSearch/index.vue'
+import BeeLabelCopyable from '@/components/BeeLabelCopyable/index.vue'
 import BeeRadioSearch from '@/components/BeeRadioSearch/index.vue'
 import BeeTag from '@/components/BeeTag/index.vue'
-import BeeIconLabel from '@/components/BeeIconLabel/index.vue'
 import PermissionCell from '@/components/PermissionCell/index.vue'
-import StatusCell from '@/components/StatusCell/index.vue'
-import BeeLabelCopyable from '@/components/BeeLabelCopyable/index.vue'
 import { usePermission } from '@/composables/usePermission'
-import type { PermissionQueryReq, PermissionResp } from '@/types'
 
 defineOptions({ name: 'PermissionManage' })
 

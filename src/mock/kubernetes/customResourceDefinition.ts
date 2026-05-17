@@ -2,9 +2,9 @@
  * @fileOverview CustomResourceDefinition Mock 数据
  * @module mock/kubernetes/customResourceDefinition
  */
+import type { CustomResourceDefinitionResp, CustomResourceDefinitionQueryReq } from '@/types/kubernetes/customResourceDefinition'
 import { getCustomResourceDefinitionPage, getCustomResourceDefinitionDetail } from '@/api/kubernetes/customResourceDefinition'
 import { generateId } from '@/mock/utils'
-import type { CustomResourceDefinitionResp, CustomResourceDefinitionQueryReq } from '@/types/kubernetes/customResourceDefinition'
 
 /**
  * CustomResourceDefinition Mock 数据
@@ -198,11 +198,11 @@ export default [
   {
     method: 'GET',
     url: '/kubernetes/clusters/:clusterId/customresourcedefinitions',
-    handler: (pathParams: Record<string, string>, params: CustomResourceDefinitionQueryReq) => getCustomResourceDefinitionPage(pathParams.clusterId, params)
+    handler: (_pathParams: Record<string, string>, _params: CustomResourceDefinitionQueryReq) => getCustomResourceDefinitionPage(_pathParams.clusterId, _params)
   },
   {
     method: 'GET',
     url: '/kubernetes/clusters/:clusterId/customresourcedefinitions/:name',
-    handler: (pathParams: Record<string, string>) => getCustomResourceDefinitionDetail(pathParams.clusterId, pathParams.name)
+    handler: (_pathParams: Record<string, string>) => getCustomResourceDefinitionDetail(_pathParams.clusterId, pathParams.name)
   }
 ]

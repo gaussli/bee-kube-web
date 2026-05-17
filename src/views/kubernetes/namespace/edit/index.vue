@@ -59,8 +59,8 @@ import { ref, onMounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { ElMessage, type FormInstance } from 'element-plus'
 import { FolderOpened, Plus, Delete, Close, Check } from '@element-plus/icons-vue'
-import { type NamespaceResp, type NamespaceEditReq } from '@/types'
-import { getNamespaceDetail, updateNamespace } from '@/api'
+import type { NamespaceResp, NamespaceReq } from '@/types/kubernetes/namespace'
+import { getNamespaceDetail, updateNamespace } from '@/api/kubernetes/namespace'
 import BeeButton from '@/components/BeeButton/index.vue'
 import BeePageTitle from '@/components/BeePageTitle/index.vue'
 
@@ -76,7 +76,7 @@ const loading = ref(false)
 const submitting = ref(false)
 const namespaceData = ref<NamespaceResp>()
 
-const formData = ref<NamespaceEditReq>({
+const formData = ref<NamespaceReq>({
   labels: {},
   annotations: {}
 })
@@ -139,7 +139,7 @@ async function handleSubmit() {
     if (item.key) annotations[item.key] = item.value
   })
 
-  const data: NamespaceEditReq = {
+  const data: NamespaceReq = {
     labels,
     annotations
   }

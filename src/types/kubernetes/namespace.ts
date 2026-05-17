@@ -1,6 +1,6 @@
 /**
  * 命名空间管理相关类型定义
- * @module types/namespace
+ * @module types/kubernetes/namespace
  */
 import type { BaseEntity, PageReq } from '@/types/common'
 
@@ -9,8 +9,6 @@ import type { BaseEntity, PageReq } from '@/types/common'
  * @extends BaseEntity 继承基础实体（含 id, createAt, createBy, updateAt, updateBy）
  */
 export interface NamespaceResp extends BaseEntity {
-  /** 命名空间ID */
-  id: string
   /** 命名空间名称 */
   name: string
   /** 描述信息 */
@@ -22,9 +20,13 @@ export interface NamespaceResp extends BaseEntity {
   /** 状态 */
   status: string
   /** 标签 */
-  labels?: Record<string, string>
+  labels: Record<string, string>
   /** 注解 */
-  annotations?: Record<string, string>
+  annotations: Record<string, string>
+  /** 资源配额 */
+  resourceQuota: NamespaceResourceQuota
+  /** 资源限制范围 */
+  limitRange: NamespaceLimitRange
   /** 是否可删除 */
   deletable: boolean
 }
@@ -53,9 +55,9 @@ export interface NamespaceReq {
   /** 描述信息 */
   description: string
   /** 标签 */
-  labels?: Record<string, string>
+  labels: Record<string, string>
   /** 注解 */
-  annotations?: Record<string, string>
+  annotations: Record<string, string>
 }
 
 /**
@@ -87,6 +89,14 @@ export interface NamespaceQuotaReq {
   resouceQuota: NamespaceResourceQuota
   /** 资源限制范围 */
   limitRange: NamespaceLimitRange
+}
+
+/**
+ * 命名空间导入请求
+ */
+export interface NamespaceImportReq {
+  /** YAML 配置内容 */
+  yaml: string
 }
 
 /**

@@ -2,15 +2,9 @@
  * @fileOverview Service 资源相关 API
  * @module api/kubernetes/service
  */
-import request from '@/utils/request'
 import type { PageResp } from '@/types/common'
-import type {
-  ServiceResp,
-  ServiceQueryReq,
-  ServiceReq,
-  ServiceLabelsReq,
-  ServiceAnnotationsReq
-} from '@/types/kubernetes/service'
+import type { ServiceResp, ServiceQueryReq, ServiceReq, ServiceLabelsReq, ServiceAnnotationsReq } from '@/types/kubernetes/service'
+import request from '@/utils/request'
 
 /**
  * 获取 Service 分页列表

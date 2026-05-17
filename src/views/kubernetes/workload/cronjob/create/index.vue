@@ -43,10 +43,10 @@ import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { ElMessage, type FormInstance } from 'element-plus'
 import { Clock, Close, Check, InfoFilled } from '@element-plus/icons-vue'
-import { createCronJob } from '@/api'
+import type { CronJobResp } from '@/types/kubernetes/workload/cronjob'
+import { createCronJob } from '@/api/kubernetes/workload/cronjob'
 import BeeButton from '@/components/BeeButton/index.vue'
 import BeePageTitle from '@/components/BeePageTitle/index.vue'
-import type { CronJobResp } from '@/types'
 
 defineOptions({ name: 'CronJobCreate' })
 const router = useRouter()

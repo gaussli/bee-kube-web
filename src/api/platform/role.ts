@@ -1,5 +1,5 @@
-import { request } from '@/utils'
 import type { MenuQueryReq, MenuResp, PageResp, RoleChangeStatusReq, RoleCreateReq, RoleDetailResp, RoleQueryReq, RoleResp, RoleUpdateReq, UserQueryReq, UserResp } from '@/types'
+import { request } from '@/utils'
 
 // 分页查询角色列表
 export function getRolePage(data: RoleQueryReq) {

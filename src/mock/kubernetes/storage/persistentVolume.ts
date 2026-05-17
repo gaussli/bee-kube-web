@@ -2,8 +2,8 @@
  * @fileOverview Kubernetes PersistentVolume 管理 Mock API
  * @module mock/kubernetes/storage/persistentVolume
  */
-import { generateId } from '@/mock/utils'
 import type { PersistentVolumeResp, PersistentVolumeQueryReq, PersistentVolumeLabelsReq, PersistentVolumeAnnotationsReq } from '@/types'
+import { generateId } from '@/mock/utils'
 
 /**
  * PersistentVolume 路由配置
@@ -19,36 +19,36 @@ export default [
   {
     method: 'get',
     url: '/kubernetes/clusters/:clusterId/persistentvolumes',
-    handler: (pathParams: Record<string, string>, params: Partial<PersistentVolumeQueryReq>) => getPersistentVolumePage(pathParams.clusterId, params)
+    handler: (_pathParams: Record<string, string>, _params: Partial<PersistentVolumeQueryReq>) => getPersistentVolumePage(_pathParams.clusterId, _params)
   },
   {
     method: 'get',
     url: '/kubernetes/clusters/:clusterId/persistentvolumes/:name',
-    handler: (pathParams: Record<string, string>, params: any, data: any) => getPersistentVolumeDetail(pathParams.clusterId, pathParams.name)
+    handler: (_pathParams: Record<string, string>, _params: any, data: any) => getPersistentVolumeDetail(_pathParams.clusterId, pathParams.name)
   },
   {
     method: 'post',
     url: '/kubernetes/clusters/:clusterId/persistentvolumes/:name/labels',
-    handler: (pathParams: Record<string, string>, params: any, data: PersistentVolumeLabelsReq) => managePersistentVolumeLabels(pathParams.clusterId, pathParams.name, data)
+    handler: (_pathParams: Record<string, string>, _params: any, data: PersistentVolumeLabelsReq) => managePersistentVolumeLabels(_pathParams.clusterId, pathParams.name, data)
   },
   {
     method: 'post',
     url: '/kubernetes/clusters/:clusterId/persistentvolumes/:name/annotations',
-    handler: (pathParams: Record<string, string>, params: any, data: PersistentVolumeAnnotationsReq) => managePersistentVolumeAnnotations(pathParams.clusterId, pathParams.name, data)
+    handler: (_pathParams: Record<string, string>, _params: any, data: PersistentVolumeAnnotationsReq) => managePersistentVolumeAnnotations(_pathParams.clusterId, pathParams.name, data)
   },
   {
     method: 'delete',
     url: '/kubernetes/clusters/:clusterId/persistentvolumes/:name',
-    handler: (pathParams: Record<string, string>, params: any, data: any) => deletePersistentVolume(pathParams.clusterId, pathParams.name)
+    handler: (_pathParams: Record<string, string>, _params: any, data: any) => deletePersistentVolume(_pathParams.clusterId, pathParams.name)
   },
   {
     method: 'delete',
     url: '/kubernetes/clusters/:clusterId/persistentvolumes/batch',
-    handler: (pathParams: Record<string, string>, params: any, data: string[]) => deletePersistentVolumes(pathParams.clusterId, data)
+    handler: (_pathParams: Record<string, string>, _params: any, data: string[]) => deletePersistentVolumes(_pathParams.clusterId, data)
   }
 ]
 
-function getPersistentVolumePage(clusterId: string, params: Partial<PersistentVolumeQueryReq>) {
+function getPersistentVolumePage(clusterId: string, _params: Partial<PersistentVolumeQueryReq>) {
   const { name, status, page = 1, pageSize = 10 } = params || {}
   let filtered = mockPVs.filter(p => p.clusterId === clusterId)
   if (name) filtered = filtered.filter(p => p.name.toLowerCase().includes(name.toLowerCase()))

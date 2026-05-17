@@ -2,7 +2,6 @@
  * @fileOverview ServiceAccount 资源相关 API
  * @module api/kubernetes/serviceAccount
  */
-import request from '@/utils/request'
 import type { PageResp } from '@/types/common'
 import type {
   ServiceAccountResp,
@@ -12,6 +11,7 @@ import type {
   ServiceAccountAnnotationsReq,
   ServiceAccountImagePullSecretsReq
 } from '@/types/kubernetes/serviceAccount'
+import request from '@/utils/request'
 
 /**
  * 获取 ServiceAccount 分页列表

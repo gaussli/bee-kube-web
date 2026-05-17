@@ -2,9 +2,9 @@
  * @fileOverview Ingress Mock 数据
  * @module mock/kubernetes/network/ingress
  */
+import type { IngressResp, IngressQueryReq } from '@/types/kubernetes/ingress'
 import { getIngressPage, getIngressDetail } from '@/api/kubernetes/network/ingress'
 import { generateId } from '@/mock/utils'
-import type { IngressResp, IngressQueryReq } from '@/types/kubernetes/ingress'
 
 /**
  * Ingress Mock 数据
@@ -176,11 +176,11 @@ export default [
   {
     method: 'GET',
     url: '/kubernetes/clusters/:clusterId/namespaces/:namespaceId/ingresses',
-    handler: (pathParams: Record<string, string>, params: IngressQueryReq) => getIngressPage(pathParams.clusterId, params)
+    handler: (_pathParams: Record<string, string>, _params: IngressQueryReq) => getIngressPage(_pathParams.clusterId, _params)
   },
   {
     method: 'GET',
     url: '/kubernetes/clusters/:clusterId/namespaces/:namespaceName/ingresses/:name',
-    handler: (pathParams: Record<string, string>) => getIngressDetail(pathParams.clusterId, pathParams.namespaceName, pathParams.name)
+    handler: (_pathParams: Record<string, string>) => getIngressDetail(_pathParams.clusterId, pathParams.namespaceName, pathParams.name)
   }
 ]

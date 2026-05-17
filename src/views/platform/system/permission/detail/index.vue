@@ -160,11 +160,11 @@ import { onMounted, ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { ElMessage } from 'element-plus'
 import { ArrowLeft, Clock, Collection, Document, EditPen, Key, User } from '@element-plus/icons-vue'
-import { getPermissionDetail } from '@/api'
+import type { PermissionDetailResp } from '@/types/platform/permission'
+import { getPermissionDetail } from '@/api/platform/permission'
 import BeeButton from '@/components/BeeButton/index.vue'
 import BeeDivider from '@/components/BeeDivider/index.vue'
 import BeeLabelCopyable from '@/components/BeeLabelCopyable/index.vue'
-import type { PermissionDetailResp } from '@/types'
 
 defineOptions({ name: 'PermissionDetail' })
 

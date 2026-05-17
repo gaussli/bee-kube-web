@@ -172,20 +172,20 @@
 import { onMounted, reactive, ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { ElMessage } from 'element-plus'
-import { Document, Refresh, Plus, EditPen, Delete, View, FolderOpened, Cpu, Clock, CircleCheck, DocumentCopy, Rank, RefreshLeft, MoreFilled } from '@element-plus/icons-vue'
-import { type DeploymentQueryReq, type DeploymentResp } from '@/types'
-import { getDeploymentPage, deleteDeployment, batchDeleteDeployment } from '@/api'
-import { useKubernetesStore } from '@/stores'
+import { Document, Refresh, Plus, EditPen, Delete, View, DocumentCopy, Rank, RefreshLeft, MoreFilled } from '@element-plus/icons-vue'
+import type { DeploymentQueryReq, DeploymentResp } from '@/types/kubernetes/workload/deployment'
+import { getDeploymentPage, deleteDeployment, deleteDeployments } from '@/api/kubernetes/workload/deployment'
 import BeeButton from '@/components/BeeButton/index.vue'
 import BeeDialog from '@/components/BeeDialog/index.vue'
+import BeeIconLabel from '@/components/BeeIconLabel/index.vue'
 import BeeInputSearch from '@/components/BeeInputSearch/index.vue'
 import BeePageTitle from '@/components/BeePageTitle/index.vue'
 import BeeRadioSearch from '@/components/BeeRadioSearch/index.vue'
 import BeeSelect from '@/components/BeeSelect/index.vue'
 import BeeTag from '@/components/BeeTag/index.vue'
-import BeeIconLabel from '@/components/BeeIconLabel/index.vue'
 import { useClipboard } from '@/composables/useClipboard'
 import { usePermission } from '@/composables/usePermission'
+import { useKubernetesStore } from '@/stores'
 
 defineOptions({ name: 'DeploymentManage' })
 
@@ -368,7 +368,7 @@ async function handleConfirmBatchDelete() {
   const namespace = selectedRows.value[0].namespace
   const names = selectedRows.value.map(row => row.name)
   try {
-    await batchDeleteDeployment(clusterId, namespace, names)
+    await deleteDeployments(clusterId, namespace, names)
     ElMessage.success(`成功删除 ${names.length} 个 Deployment`)
     batchDeleteDialogVisible.value = false
     selectedRows.value = []

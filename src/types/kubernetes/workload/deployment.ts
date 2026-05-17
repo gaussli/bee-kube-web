@@ -1,8 +1,122 @@
 /**
  * Deployment 资源相关类型定义
- * @module types/deployment
+ * @module types/kubernetes/workload/deployment
  */
 import type { BaseEntity, PageReq } from '@/types/common'
+
+/**
+ * Deployment 响应数据
+ * @extends BaseEntity 继承基础实体（含 id, createAt, createBy, updateAt, updateBy）
+ */
+export interface DeploymentResp extends BaseEntity {
+  /** Deployment 名称 */
+  name: string
+  /** 所属命名空间 */
+  namespace: string
+  /** 所属集群 ID */
+  clusterId: string
+  /** 所属集群名称 */
+  clusterName: string
+  /** 状态 */
+  status: string
+  /** 期望副本数 */
+  replicas: number
+  /** 就绪副本数 */
+  readyReplicas: number
+  /** 可用副本数 */
+  availableReplicas: number
+  /** 版本号 */
+  revision: number
+  /** 更新策略 */
+  strategy: 'RollingUpdate' | 'Recreate'
+  /** 使用的镜像列表 */
+  images: string[]
+  /** 标签选择器 */
+  selector: Record<string, string>
+  /** 标签 */
+  labels: Record<string, string>
+  /** 注解 */
+  annotations: Record<string, string>
+  /** 是否可删除 */
+  deletable: boolean
+}
+
+/**
+ * Deployment 查询请求参数
+ * @extends PageReq 继承分页请求（含 page, pageSize）
+ */
+export interface DeploymentQueryReq extends PageReq {
+  /** 命名空间 ID */
+  id: string
+  /** Deployment 名称（模糊匹配） */
+  name: string
+  /** 命名空间名称 */
+  namespace: string
+  /** 集群 ID */
+  clusterId: string
+  /** 状态 */
+  status: string
+  /** 标签选择器 */
+  labelSelector: string
+}
+
+/**
+ * Deployment 创建/更新请求参数
+ */
+export interface DeploymentReq {
+  /** Deployment 名称 */
+  name: string
+  /** 命名空间名称 */
+  namespace: string
+  /** 副本数 */
+  replicas: number
+  /** 更新策略 */
+  strategy: 'RollingUpdate' | 'Recreate'
+  /** 标签选择器 */
+  selector: Record<string, string>
+  /** 容器配置列表 */
+  containers: DeploymentContainer[]
+  /** 标签 */
+  labels: Record<string, string>
+  /** 注解 */
+  annotations: Record<string, string>
+}
+
+/**
+ * Deployment 标签更新请求
+ */
+export interface DeploymentLabelsReq {
+  /** 标签键值对 */
+  labels: Record<string, string>
+  /** 操作（1: 新增；2: 移除：3: 全量替换） */
+  operation: number
+}
+
+/**
+ * Deployment 注解更新请求
+ */
+export interface DeploymentAnnotationsReq {
+  /** 注解键值对 */
+  annotations: Record<string, string>
+  /** 操作（1: 新增；2: 移除：3: 全量替换） */
+  operation: number
+}
+
+/**
+ * Deployment 扩缩容请求
+ */
+export interface DeploymentScaleReq {
+  /** 期望副本数 */
+  replicas: number
+}
+
+/**
+ * Deployment YAML 导入请求
+ */
+export interface DeploymentYamlReq {
+  /** YAML 配置内容 */
+  yaml: string
+}
 
 /**
  * Deployment 副本状态
@@ -65,111 +179,6 @@ export interface DeploymentContainer {
   }>
   /** 健康检查 */
   livenessProbe?: object
+  /** 就绪探针 */
   readinessProbe?: object
-}
-
-/**
- * Deployment 响应数据
- * @extends BaseEntity 继承基础实体（含 id, createAt, createBy, updateAt, updateBy）
- */
-export interface DeploymentResp extends BaseEntity {
-  /** Deployment ID */
-  id: string
-  /** Deployment 名称 */
-  name: string
-  /** 所属命名空间 */
-  namespace: string
-  /** 所属集群 ID */
-  clusterId: string
-  /** 所属集群名称 */
-  clusterName?: string
-  /** 状态 */
-  status: string
-  /** 副本状态 */
-  replicas: number
-  /** 就绪副本数 */
-  readyReplicas: number
-  /** 可用副本数 */
-  availableReplicas: number
-  /** 更新策略 */
-  strategy: string
-  /** 使用的镜像列表 */
-  images: string[]
-  /** 标签选择器 */
-  selector?: Record<string, string>
-  /** 标签 */
-  labels?: Record<string, string>
-  /** 注解 */
-  annotations?: Record<string, string>
-  /** 是否可删除 */
-  deletable?: boolean
-}
-
-/**
- * Deployment 查询请求参数
- * @extends PageReq 继承分页请求（含 page, pageSize）
- */
-export interface DeploymentQueryReq extends PageReq {
-  /** 命名空间 ID */
-  id: string
-  /** Deployment 名称（模糊匹配） */
-  name: string
-  /** 命名空间名称 */
-  namespace: string
-  /** 集群 ID */
-  clusterId: string
-  /** 状态 */
-  status: string
-  /** 标签选择器 */
-  labelSelector: string
-}
-
-/**
- * Deployment 创建/更新请求参数
- */
-export interface DeploymentReq {
-  /** Deployment 名称 */
-  name: string
-  /** 命名空间名称 */
-  namespace: string
-  /** 副本数 */
-  replicas: number
-  /** 更新策略 */
-  strategy: 'RollingUpdate' | 'Recreate'
-  /** 标签选择器 */
-  selector: Record<string, string>
-  /** 容器配置列表 */
-  containers: DeploymentContainer[]
-  /** 标签 */
-  labels?: Record<string, string>
-  /** 注解 */
-  annotations?: Record<string, string>
-}
-
-/**
- * Deployment 标签更新请求
- */
-export interface DeploymentLabelsReq {
-  /** 标签键值对 */
-  labels: Record<string, string>
-  /** 操作（1: 新增；2: 移除：3: 全量替换） */
-  operation: number
-}
-
-/**
- * Deployment 注解更新请求
- */
-export interface DeploymentAnnotationsReq {
-  /** 注解键值对 */
-  annotations: Record<string, string>
-  /** 操作（1: 新增；2: 移除：3: 全量替换） */
-  operation: number
-}
-
-/**
- * Deployment 扩缩容请求
- */
-export interface DeploymentScaleReq {
-  /** 期望副本数 */
-  replicas: number
 }

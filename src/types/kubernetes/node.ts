@@ -1,6 +1,6 @@
 /**
  * 节点管理相关类型定义
- * @module types/node
+ * @module types/kubernetes/node
  */
 import type { BaseEntity, PageReq } from '@/types/common'
 
@@ -9,8 +9,6 @@ import type { BaseEntity, PageReq } from '@/types/common'
  * @extends BaseEntity 继承基础实体（含 id, createAt, createBy, updateAt, updateBy）
  */
 export interface NodeResp extends BaseEntity {
-  /** 节点ID */
-  id: string
   /** 节点名称 */
   name: string
   /** 描述信息 */
@@ -72,9 +70,16 @@ export interface NodeQueryReq extends PageReq {
  * 节点创建/更新请求参数
  */
 export interface NodeReq {
+  /** 节点ID */
   id: string
+  /** 节点名称 */
   name: string
+  /** 描述信息 */
   description: string
+  /** 标签 */
+  labels: Record<string, string>
+  /** 注解 */
+  annotations: Record<string, string>
 }
 
 /**
@@ -82,5 +87,55 @@ export interface NodeReq {
  * @description 用于设置节点是否可调度（cordon/uncordon）
  */
 export interface NodeCordonReq {
+  /** 是否不可调度 */
   cordon: boolean
+}
+
+/**
+ * 节点标签配置请求
+ */
+export interface NodeLabelsReq {
+  /** 标签键值对 */
+  labels: Record<string, string>
+  /** 操作（1: 新增；2: 移除：3: 全量替换） */
+  operation: number
+}
+
+/**
+ * 节点注解配置请求
+ */
+export interface NodeAnnotationsReq {
+  /** 注解键值对 */
+  annotations: Record<string, string>
+  /** 操作（1: 新增；2: 移除：3: 全量替换） */
+  operation: number
+}
+
+/**
+ * Kubernetes 污点效果枚举
+ */
+export type TaintEffect = 'NoSchedule' | 'PreferNoSchedule' | 'NoExecute'
+
+/**
+ * Kubernetes 污点配置
+ */
+export interface Taint {
+  /** 键名 */
+  key: string
+  /** 值（可选） */
+  value?: string
+  /** 影响效果 */
+  effect: TaintEffect
+  /** 添加时间（可选） */
+  timeAdded?: string
+}
+
+/**
+ * 节点污点配置请求
+ */
+export interface NodeTaintsReq {
+  /** 污点配置列表 */
+  taints: Taint[]
+  /** 操作（1: 新增；2: 移除：3: 全量替换） */
+  operation: number
 }

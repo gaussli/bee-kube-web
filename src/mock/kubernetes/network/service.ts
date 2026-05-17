@@ -2,9 +2,9 @@
  * @fileOverview Service Mock 数据
  * @module mock/kubernetes/network/service
  */
+import type { ServiceResp, ServiceQueryReq } from '@/types/kubernetes/service'
 import { getServicePage, getServiceDetail } from '@/api/kubernetes/network/service'
 import { generateId } from '@/mock/utils'
-import type { ServiceResp, ServiceQueryReq } from '@/types/kubernetes/service'
 
 /**
  * Service Mock 数据
@@ -132,11 +132,11 @@ export default [
   {
     method: 'GET',
     url: '/kubernetes/clusters/:clusterId/namespaces/:namespaceId/services',
-    handler: (pathParams: Record<string, string>, params: ServiceQueryReq) => getServicePage(pathParams.clusterId, params)
+    handler: (_pathParams: Record<string, string>, _params: ServiceQueryReq) => getServicePage(_pathParams.clusterId, _params)
   },
   {
     method: 'GET',
     url: '/kubernetes/clusters/:clusterId/namespaces/:namespaceName/services/:name',
-    handler: (pathParams: Record<string, string>) => getServiceDetail(pathParams.clusterId, pathParams.namespaceName, pathParams.name)
+    handler: (_pathParams: Record<string, string>) => getServiceDetail(_pathParams.clusterId, pathParams.namespaceName, pathParams.name)
   }
 ]

@@ -32,10 +32,10 @@ import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { ElMessage, type FormInstance } from 'element-plus'
 import { Monitor, Close, Check } from '@element-plus/icons-vue'
-import { createDaemonSet } from '@/api'
+import type { DaemonSetResp } from '@/types/kubernetes/workload/daemonset'
+import { createDaemonSet } from '@/api/kubernetes/workload/daemonset'
 import BeeButton from '@/components/BeeButton/index.vue'
 import BeePageTitle from '@/components/BeePageTitle/index.vue'
-import type { DaemonSetResp } from '@/types'
 
 defineOptions({ name: 'DaemonSetCreate' })
 const router = useRouter()

@@ -2,8 +2,8 @@
  * @fileOverview Kubernetes StorageClass 管理 Mock API
  * @module mock/kubernetes/storage/storageClass
  */
-import { generateId } from '@/mock/utils'
 import type { StorageClassResp, StorageClassQueryReq, StorageClassLabelsReq, StorageClassAnnotationsReq } from '@/types'
+import { generateId } from '@/mock/utils'
 
 /**
  * StorageClass 路由配置
@@ -17,26 +17,26 @@ export default [
   {
     method: 'get',
     url: '/kubernetes/clusters/:clusterId/storageclasses',
-    handler: (pathParams: Record<string, string>, params: Partial<StorageClassQueryReq>) => getStorageClassPage(pathParams.clusterId, params)
+    handler: (_pathParams: Record<string, string>, _params: Partial<StorageClassQueryReq>) => getStorageClassPage(_pathParams.clusterId, _params)
   },
   {
     method: 'get',
     url: '/kubernetes/clusters/:clusterId/storageclasses/:name',
-    handler: (pathParams: Record<string, string>, params: any, data: any) => getStorageClassDetail(pathParams.clusterId, pathParams.name)
+    handler: (_pathParams: Record<string, string>, _params: any, data: any) => getStorageClassDetail(_pathParams.clusterId, pathParams.name)
   },
   {
     method: 'post',
     url: '/kubernetes/clusters/:clusterId/storageclasses/:name/labels',
-    handler: (pathParams: Record<string, string>, params: any, data: StorageClassLabelsReq) => manageStorageClassLabels(pathParams.clusterId, pathParams.name, data)
+    handler: (_pathParams: Record<string, string>, _params: any, data: StorageClassLabelsReq) => manageStorageClassLabels(_pathParams.clusterId, pathParams.name, data)
   },
   {
     method: 'post',
     url: '/kubernetes/clusters/:clusterId/storageclasses/:name/annotations',
-    handler: (pathParams: Record<string, string>, params: any, data: StorageClassAnnotationsReq) => manageStorageClassAnnotations(pathParams.clusterId, pathParams.name, data)
+    handler: (_pathParams: Record<string, string>, _params: any, data: StorageClassAnnotationsReq) => manageStorageClassAnnotations(_pathParams.clusterId, pathParams.name, data)
   }
 ]
 
-function getStorageClassPage(clusterId: string, params: Partial<StorageClassQueryReq>) {
+function getStorageClassPage(clusterId: string, _params: Partial<StorageClassQueryReq>) {
   const { name, provisioner, page = 1, pageSize = 10 } = params || {}
   let filtered = mockSCs.filter(s => s.clusterId === clusterId)
   if (name) filtered = filtered.filter(s => s.name.toLowerCase().includes(name.toLowerCase()))

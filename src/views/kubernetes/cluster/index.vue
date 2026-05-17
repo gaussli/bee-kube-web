@@ -54,7 +54,7 @@
               <BeeIconLabel icon="basic-status" label="状态" :size="tableHeaderFontSize" :color="tableHeaderColor" :font-weight="tableHeaderFontWeight" />
             </template>
             <template #default="{ row }">
-              <BeeStatus :status="row.status" :config="clusterStatusConfig" />
+              <BeeStatus :status="row.status" :config="ClusterStatusConfig" />
             </template>
           </el-table-column>
           <el-table-column width="180">
@@ -126,9 +126,8 @@
 import { onMounted, reactive, ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { ElMessage } from 'element-plus'
-import { type ClusterQueryReq, type ClusterResp } from '@/types'
-import { getClusterPage, deleteCluster, batchDeleteCluster } from '@/api'
-import { useKubernetesStore } from '@/stores'
+import type { ClusterQueryReq, ClusterResp } from '@/types'
+import { getClusterPage, deleteCluster, batchDeleteCluster } from '@/api/kubernetes/cluster'
 import AuditCell from '@/components/AuditCell/index.vue'
 import BeeAlert from '@/components/BeeAlert/index.vue'
 import BeeButton from '@/components/BeeButton/index.vue'
@@ -146,8 +145,9 @@ import BeeRadioSearch from '@/components/BeeRadioSearch/index.vue'
 import BeeStatus from '@/components/BeeStatus/index.vue'
 import BeeTag from '@/components/BeeTag/index.vue'
 import { usePermission } from '@/composables/usePermission'
-import { clusterStatusConfig } from '@/config/cluster'
 import { color } from '@/config/color'
+import { ClusterStatusConfig } from '@/config/kubernetes'
+import { useKubernetesStore } from '@/stores'
 
 defineOptions({ name: 'ClusterManage' })
 

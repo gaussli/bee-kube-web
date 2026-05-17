@@ -1,8 +1,8 @@
 /**
  * @fileOverview ConfigMap 资源管理 API
  */
-import { request } from '@/utils'
 import type { ConfigMapQueryReq, ConfigMapResp, ConfigMapReq, ConfigMapDataReq, ConfigMapLabelsReq, ConfigMapAnnotationsReq, PageResp } from '@/types'
+import { request } from '@/utils'
 
 /**
  * 获取 ConfigMap 分页列表

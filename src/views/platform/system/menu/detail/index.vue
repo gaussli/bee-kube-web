@@ -184,11 +184,11 @@
 import { computed, onMounted, ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { ArrowLeft, Clock, Collection, Document, EditPen, Folder, Key, Link, Lock, Menu, Plus, Sort, Timer, User } from '@element-plus/icons-vue'
-import { getMenuDetail } from '@/api'
+import type { MenuDetailResp } from '@/types/platform/menu'
+import { getMenuDetail } from '@/api/platform/menu'
 import BeeButton from '@/components/BeeButton/index.vue'
 import BeeDivider from '@/components/BeeDivider/index.vue'
 import BeeLabelCopyable from '@/components/BeeLabelCopyable/index.vue'
-import type { MenuDetailResp } from '@/types'
 
 defineOptions({ name: 'MenuDetail' })
 

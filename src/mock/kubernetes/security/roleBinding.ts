@@ -2,9 +2,9 @@
  * @fileOverview RoleBinding Mock 数据
  * @module mock/kubernetes/security/roleBinding
  */
+import type { RoleBindingResp, RoleBindingQueryReq } from '@/types/kubernetes/roleBinding'
 import { getRoleBindingPage, getRoleBindingDetail } from '@/api/kubernetes/security/roleBinding'
 import { generateId } from '@/mock/utils'
-import type { RoleBindingResp, RoleBindingQueryReq } from '@/types/kubernetes/roleBinding'
 
 /**
  * RoleBinding Mock 数据
@@ -190,11 +190,11 @@ export default [
   {
     method: 'GET',
     url: '/kubernetes/clusters/:clusterId/namespaces/:namespaceId/rolebindings',
-    handler: (pathParams: Record<string, string>, params: RoleBindingQueryReq) => getRoleBindingPage(pathParams.clusterId, params)
+    handler: (_pathParams: Record<string, string>, _params: RoleBindingQueryReq) => getRoleBindingPage(_pathParams.clusterId, _params)
   },
   {
     method: 'GET',
     url: '/kubernetes/clusters/:clusterId/namespaces/:namespaceName/rolebindings/:name',
-    handler: (pathParams: Record<string, string>) => getRoleBindingDetail(pathParams.clusterId, pathParams.namespaceName, pathParams.name)
+    handler: (_pathParams: Record<string, string>) => getRoleBindingDetail(_pathParams.clusterId, pathParams.namespaceName, pathParams.name)
   }
 ]

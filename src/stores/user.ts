@@ -1,7 +1,7 @@
 import { ref } from 'vue'
 import { defineStore } from 'pinia'
-import { storage } from '@/utils'
 import type { CurrentMenu, CurrentUser } from '@/types'
+import { storage } from '@/utils'
 
 /**
  * 用户状态管理

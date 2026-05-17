@@ -2,8 +2,8 @@
  * @fileOverview Kubernetes Secret 管理 Mock API
  * @module mock/kubernetes/config/secret
  */
-import { generateId } from '@/mock/utils'
 import type { SecretResp, SecretQueryReq, SecretReq, SecretDataReq, SecretLabelsReq, SecretAnnotationsReq } from '@/types'
+import { generateId } from '@/mock/utils'
 
 /**
  * Secret 路由配置
@@ -22,51 +22,51 @@ export default [
   {
     method: 'get',
     url: '/kubernetes/clusters/:clusterId/namespaces/:namespace/secrets',
-    handler: (pathParams: Record<string, string>, params: Partial<SecretQueryReq>) => getSecretPage(pathParams.clusterId, pathParams.namespace, params)
+    handler: (_pathParams: Record<string, string>, _params: Partial<SecretQueryReq>) => getSecretPage(_pathParams.clusterId, pathParams.namespace, _params)
   },
   {
     method: 'get',
     url: '/kubernetes/clusters/:clusterId/namespaces/:namespace/secrets/:name',
-    handler: (pathParams: Record<string, string>, params: any, data: any) => getSecretDetail(pathParams.clusterId, pathParams.namespace, pathParams.name)
+    handler: (_pathParams: Record<string, string>, _params: any, data: any) => getSecretDetail(_pathParams.clusterId, pathParams.namespace, pathParams.name)
   },
   {
     method: 'post',
     url: '/kubernetes/clusters/:clusterId/namespaces/:namespace/secrets',
-    handler: (pathParams: Record<string, string>, params: any, data: Partial<SecretReq>) => createSecret(pathParams.clusterId, pathParams.namespace, data)
+    handler: (_pathParams: Record<string, string>, _params: any, data: Partial<SecretReq>) => createSecret(_pathParams.clusterId, pathParams.namespace, data)
   },
   {
     method: 'put',
     url: '/kubernetes/clusters/:clusterId/namespaces/:namespace/secrets/:name',
-    handler: (pathParams: Record<string, string>, params: any, data: Partial<SecretReq>) => updateSecret(pathParams.clusterId, pathParams.namespace, pathParams.name, data)
+    handler: (_pathParams: Record<string, string>, _params: any, data: Partial<SecretReq>) => updateSecret(_pathParams.clusterId, pathParams.namespace, pathParams.name, data)
   },
   {
     method: 'post',
     url: '/kubernetes/clusters/:clusterId/namespaces/:namespace/secrets/:name/data',
-    handler: (pathParams: Record<string, string>, params: any, data: SecretDataReq) => manageSecretData(pathParams.clusterId, pathParams.namespace, pathParams.name, data)
+    handler: (_pathParams: Record<string, string>, _params: any, data: SecretDataReq) => manageSecretData(_pathParams.clusterId, pathParams.namespace, pathParams.name, data)
   },
   {
     method: 'post',
     url: '/kubernetes/clusters/:clusterId/namespaces/:namespace/secrets/:name/labels',
-    handler: (pathParams: Record<string, string>, params: any, data: SecretLabelsReq) => manageSecretLabels(pathParams.clusterId, pathParams.namespace, pathParams.name, data)
+    handler: (_pathParams: Record<string, string>, _params: any, data: SecretLabelsReq) => manageSecretLabels(_pathParams.clusterId, pathParams.namespace, pathParams.name, data)
   },
   {
     method: 'post',
     url: '/kubernetes/clusters/:clusterId/namespaces/:namespace/secrets/:name/annotations',
-    handler: (pathParams: Record<string, string>, params: any, data: SecretAnnotationsReq) => manageSecretAnnotations(pathParams.clusterId, pathParams.namespace, pathParams.name, data)
+    handler: (_pathParams: Record<string, string>, _params: any, data: SecretAnnotationsReq) => manageSecretAnnotations(_pathParams.clusterId, pathParams.namespace, pathParams.name, data)
   },
   {
     method: 'delete',
     url: '/kubernetes/clusters/:clusterId/namespaces/:namespace/secrets/:name',
-    handler: (pathParams: Record<string, string>, params: any, data: any) => deleteSecret(pathParams.clusterId, pathParams.namespace, pathParams.name)
+    handler: (_pathParams: Record<string, string>, _params: any, data: any) => deleteSecret(_pathParams.clusterId, pathParams.namespace, pathParams.name)
   },
   {
     method: 'delete',
     url: '/kubernetes/clusters/:clusterId/namespaces/:namespace/secrets/batch',
-    handler: (pathParams: Record<string, string>, params: any, data: string[]) => deleteSecrets(pathParams.clusterId, pathParams.namespace, data)
+    handler: (_pathParams: Record<string, string>, _params: any, data: string[]) => deleteSecrets(_pathParams.clusterId, pathParams.namespace, data)
   }
 ]
 
-function getSecretPage(clusterId: string, namespace: string, params: Partial<SecretQueryReq>) {
+function getSecretPage(clusterId: string, namespace: string, _params: Partial<SecretQueryReq>) {
   const { name, type, page = 1, pageSize = 10 } = params || {}
   let filtered = mockSecrets.filter(s => s.clusterId === clusterId && s.namespace === namespace)
   if (name) filtered = filtered.filter(s => s.name.toLowerCase().includes(name.toLowerCase()))

@@ -2,8 +2,8 @@
  * @fileOverview Kubernetes CronJob 管理 Mock API
  * @module mock/kubernetes/workload/cronjob
  */
-import { generateId } from '@/mock/utils'
 import type { CronJobResp, CronJobQueryReq, CronJobReq, CronJobLabelsReq, CronJobAnnotationsReq } from '@/types'
+import { generateId } from '@/mock/utils'
 
 /**
  * CronJob 路由配置
@@ -24,61 +24,61 @@ export default [
   {
     method: 'get',
     url: '/kubernetes/clusters/:clusterId/namespaces/:namespace/cronjobs',
-    handler: (pathParams: Record<string, string>, params: Partial<CronJobQueryReq>) => getCronJobPage(pathParams.clusterId, pathParams.namespace, params)
+    handler: (_pathParams: Record<string, string>, _params: Partial<CronJobQueryReq>) => getCronJobPage(_pathParams.clusterId, pathParams.namespace, _params)
   },
   {
     method: 'get',
     url: '/kubernetes/clusters/:clusterId/namespaces/:namespace/cronjobs/:name',
-    handler: (pathParams: Record<string, string>, params: any, data: any) => getCronJobDetail(pathParams.clusterId, pathParams.namespace, pathParams.name)
+    handler: (_pathParams: Record<string, string>, _params: any, data: any) => getCronJobDetail(_pathParams.clusterId, pathParams.namespace, pathParams.name)
   },
   {
     method: 'post',
     url: '/kubernetes/clusters/:clusterId/namespaces/:namespace/cronjobs',
-    handler: (pathParams: Record<string, string>, params: any, data: Partial<CronJobReq>) => createCronJob(pathParams.clusterId, pathParams.namespace, data)
+    handler: (_pathParams: Record<string, string>, _params: any, data: Partial<CronJobReq>) => createCronJob(_pathParams.clusterId, pathParams.namespace, data)
   },
   {
     method: 'put',
     url: '/kubernetes/clusters/:clusterId/namespaces/:namespace/cronjobs/:name',
-    handler: (pathParams: Record<string, string>, params: any, data: Partial<CronJobReq>) => updateCronJob(pathParams.clusterId, pathParams.namespace, pathParams.name, data)
+    handler: (_pathParams: Record<string, string>, _params: any, data: Partial<CronJobReq>) => updateCronJob(_pathParams.clusterId, pathParams.namespace, pathParams.name, data)
   },
   {
     method: 'post',
     url: '/kubernetes/clusters/:clusterId/namespaces/:namespace/cronjobs/:name/suspend',
-    handler: (pathParams: Record<string, string>, params: any, data: any) => suspendCronJob(pathParams.clusterId, pathParams.namespace, pathParams.name)
+    handler: (_pathParams: Record<string, string>, _params: any, data: any) => suspendCronJob(_pathParams.clusterId, pathParams.namespace, pathParams.name)
   },
   {
     method: 'post',
     url: '/kubernetes/clusters/:clusterId/namespaces/:namespace/cronjobs/:name/resume',
-    handler: (pathParams: Record<string, string>, params: any, data: any) => resumeCronJob(pathParams.clusterId, pathParams.namespace, pathParams.name)
+    handler: (_pathParams: Record<string, string>, _params: any, data: any) => resumeCronJob(_pathParams.clusterId, pathParams.namespace, pathParams.name)
   },
   {
     method: 'post',
     url: '/kubernetes/clusters/:clusterId/namespaces/:namespace/cronjobs/:name/trigger',
-    handler: (pathParams: Record<string, string>, params: any, data: any) => triggerCronJob(pathParams.clusterId, pathParams.namespace, pathParams.name)
+    handler: (_pathParams: Record<string, string>, _params: any, data: any) => triggerCronJob(_pathParams.clusterId, pathParams.namespace, pathParams.name)
   },
   {
     method: 'post',
     url: '/kubernetes/clusters/:clusterId/namespaces/:namespace/cronjobs/:name/labels',
-    handler: (pathParams: Record<string, string>, params: any, data: CronJobLabelsReq) => manageCronJobLabels(pathParams.clusterId, pathParams.namespace, pathParams.name, data)
+    handler: (_pathParams: Record<string, string>, _params: any, data: CronJobLabelsReq) => manageCronJobLabels(_pathParams.clusterId, pathParams.namespace, pathParams.name, data)
   },
   {
     method: 'post',
     url: '/kubernetes/clusters/:clusterId/namespaces/:namespace/cronjobs/:name/annotations',
-    handler: (pathParams: Record<string, string>, params: any, data: CronJobAnnotationsReq) => manageCronJobAnnotations(pathParams.clusterId, pathParams.namespace, pathParams.name, data)
+    handler: (_pathParams: Record<string, string>, _params: any, data: CronJobAnnotationsReq) => manageCronJobAnnotations(_pathParams.clusterId, pathParams.namespace, pathParams.name, data)
   },
   {
     method: 'delete',
     url: '/kubernetes/clusters/:clusterId/namespaces/:namespace/cronjobs/:name',
-    handler: (pathParams: Record<string, string>, params: any, data: any) => deleteCronJob(pathParams.clusterId, pathParams.namespace, pathParams.name)
+    handler: (_pathParams: Record<string, string>, _params: any, data: any) => deleteCronJob(_pathParams.clusterId, pathParams.namespace, pathParams.name)
   },
   {
     method: 'delete',
     url: '/kubernetes/clusters/:clusterId/namespaces/:namespace/cronjobs/batch',
-    handler: (pathParams: Record<string, string>, params: any, data: string[]) => deleteCronJobs(pathParams.clusterId, pathParams.namespace, data)
+    handler: (_pathParams: Record<string, string>, _params: any, data: string[]) => deleteCronJobs(_pathParams.clusterId, pathParams.namespace, data)
   }
 ]
 
-function getCronJobPage(clusterId: string, namespace: string, params: Partial<CronJobQueryReq>) {
+function getCronJobPage(clusterId: string, namespace: string, _params: Partial<CronJobQueryReq>) {
   const { name, status, page = 1, pageSize = 10 } = params || {}
   let filtered = mockCronJobs.filter(c => c.clusterId === clusterId && c.namespace === namespace)
   if (name) filtered = filtered.filter(c => c.name.toLowerCase().includes(name.toLowerCase()))

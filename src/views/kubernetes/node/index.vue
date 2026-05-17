@@ -137,9 +137,8 @@
 import { onMounted, reactive, ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { ElMessage } from 'element-plus'
-import { type NodeQueryReq, type NodeResp } from '@/types'
-import { getNodePage, cordonNode, drainNode } from '@/api'
-import { useKubernetesStore } from '@/stores'
+import type { NodeQueryReq, NodeResp } from '@/types/kubernetes/node'
+import { getNodePage, cordonNode, drainNode } from '@/api/kubernetes/node'
 import AuditCell from '@/components/AuditCell/index.vue'
 import BeeButton from '@/components/BeeButton/index.vue'
 import BeeCard from '@/components/BeeCard/index.vue'
@@ -157,6 +156,7 @@ import BeeStatus from '@/components/BeeStatus/index.vue'
 import BeeTag from '@/components/BeeTag/index.vue'
 import BeeTooltip from '@/components/BeeTooltip/index.vue'
 import { usePermission } from '@/composables/usePermission'
+import { useKubernetesStore } from '@/stores'
 
 defineOptions({ name: 'NodeManage' })
 
@@ -170,11 +170,11 @@ const searchKey = ref('')
 const loading = ref(false)
 const tableData = ref<NodeResp[]>([])
 const selectedRows = ref<NodeResp[]>([])
-const queryForm = reactive<NodeQueryReq>({
+const queryForm = reactive<Partial<NodeQueryReq>>({
   id: undefined,
   name: undefined,
-  status: undefined,
   ip: undefined,
+  status: undefined,
   page: 1,
   pageSize: 10
 })

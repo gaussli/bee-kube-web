@@ -1,8 +1,8 @@
 /**
  * @fileOverview StorageClass 资源管理 API
  */
-import { request } from '@/utils'
 import type { StorageClassQueryReq, StorageClassResp, StorageClassLabelsReq, StorageClassAnnotationsReq, PageResp } from '@/types'
+import { request } from '@/utils'
 
 /**
  * 获取 StorageClass 分页列表

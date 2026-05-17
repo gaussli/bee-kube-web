@@ -165,11 +165,11 @@
 import { computed, onMounted, ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { ArrowLeft, Calendar, Clock, EditPen, Male, Message, Phone, Plus, Postcard, User } from '@element-plus/icons-vue'
+import type { UserDetailResp } from '@/types'
 import BeeButton from '@/components/BeeButton/index.vue'
 import BeeDivider from '@/components/BeeDivider/index.vue'
 import BeeLabelCopyable from '@/components/BeeLabelCopyable/index.vue'
 import UserAvatar from '@/components/UserAvatar/index.vue'
-import type { UserDetailResp } from '@/types'
 
 defineOptions({ name: 'UserDetail' })
 

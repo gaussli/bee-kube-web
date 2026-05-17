@@ -2,9 +2,9 @@
  * @fileOverview ClusterRole Mock 数据
  * @module mock/kubernetes/security/clusterRole
  */
+import type { ClusterRoleResp, ClusterRoleQueryReq, ClusterRolePolicyRule } from '@/types/kubernetes/clusterRole'
 import { getClusterRolePage, getClusterRoleDetail } from '@/api/kubernetes/security/clusterRole'
 import { generateId } from '@/mock/utils'
-import type { ClusterRoleResp, ClusterRoleQueryReq, ClusterRolePolicyRule } from '@/types/kubernetes/clusterRole'
 
 /**
  * ClusterRolePolicyRule 生成函数
@@ -132,7 +132,7 @@ const mockClusterRole: ClusterRoleResp[] = [
   },
   {
     id: generateId(),
-    name: generateName('developer'),
+    name: 'developer',
     clusterId: 'cluster-1',
     clusterName: 'prod-cluster',
     isSystem: false,
@@ -158,7 +158,7 @@ const mockClusterRole: ClusterRoleResp[] = [
   },
   {
     id: generateId(),
-    name: generateName('readonly'),
+    name: 'readonly',
     clusterId: 'cluster-1',
     clusterName: 'prod-cluster',
     isSystem: false,
@@ -177,11 +177,11 @@ export default [
   {
     method: 'GET',
     url: '/kubernetes/clusters/:clusterId/clusterroles',
-    handler: (pathParams: Record<string, string>, params: ClusterRoleQueryReq) => getClusterRolePage(pathParams.clusterId, params)
+    handler: (_pathParams: Record<string, string>, _params: ClusterRoleQueryReq) => getClusterRolePage(_pathParams.clusterId, _params)
   },
   {
     method: 'GET',
     url: '/kubernetes/clusters/:clusterId/clusterroles/:name',
-    handler: (pathParams: Record<string, string>) => getClusterRoleDetail(pathParams.clusterId, pathParams.name)
+    handler: (_pathParams: Record<string, string>) => getClusterRoleDetail(_pathParams.clusterId, pathParams.name)
   }
 ]

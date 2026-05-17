@@ -115,12 +115,12 @@
 import { ref, onMounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { Document, ArrowLeft, EditPen } from '@element-plus/icons-vue'
-import { getDeploymentDetail } from '@/api'
+import type { DeploymentResp } from '@/types/kubernetes/workload/deployment'
+import { getDeploymentDetail } from '@/api/kubernetes/workload/deployment'
 import BeeButton from '@/components/BeeButton/index.vue'
 import BeePageTitle from '@/components/BeePageTitle/index.vue'
 import BeeTag from '@/components/BeeTag/index.vue'
 import { usePermission } from '@/composables/usePermission'
-import type { DeploymentResp } from '@/types'
 
 defineOptions({ name: 'DeploymentDetail' })
 

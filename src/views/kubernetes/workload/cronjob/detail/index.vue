@@ -56,12 +56,12 @@
 import { ref, onMounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { Clock, ArrowLeft, EditPen } from '@element-plus/icons-vue'
-import { getCronJobDetail } from '@/api'
+import type { CronJobResp } from '@/types/kubernetes/workload/cronjob'
+import { getCronJobDetail } from '@/api/kubernetes/workload/cronjob'
 import BeeButton from '@/components/BeeButton/index.vue'
 import BeePageTitle from '@/components/BeePageTitle/index.vue'
 import TimeCell from '@/components/TimeCell/index.vue'
 import { usePermission } from '@/composables/usePermission'
-import type { CronJobResp } from '@/types'
 
 defineOptions({ name: 'CronJobDetail' })
 const { hasPermission } = usePermission()

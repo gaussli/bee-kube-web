@@ -148,11 +148,11 @@
 import { onMounted, ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { ArrowLeft, Clock, Collection, Document, EditPen, Key, Lock, Plus, Timer, UserFilled } from '@element-plus/icons-vue'
-import { getRoleDetail } from '@/api'
+import type { RoleDetailResp } from '@/types/platform/role'
+import { getRoleDetail } from '@/api/platform/role'
 import BeeButton from '@/components/BeeButton/index.vue'
 import BeeDivider from '@/components/BeeDivider/index.vue'
 import BeeLabelCopyable from '@/components/BeeLabelCopyable/index.vue'
-import type { RoleDetailResp } from '@/types'
 
 defineOptions({ name: 'RoleDetail' })
 

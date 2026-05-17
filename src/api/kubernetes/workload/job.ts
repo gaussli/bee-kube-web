@@ -1,8 +1,8 @@
 /**
  * @fileOverview Job 资源管理 API
  */
-import { request } from '@/utils'
 import type { JobQueryReq, JobResp, JobReq, JobLabelsReq, JobAnnotationsReq, PageResp } from '@/types'
+import { request } from '@/utils'
 
 /**
  * 获取 Job 分页列表

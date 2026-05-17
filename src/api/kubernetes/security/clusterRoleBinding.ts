@@ -2,7 +2,6 @@
  * @fileOverview ClusterRoleBinding 资源相关 API
  * @module api/kubernetes/clusterRoleBinding
  */
-import request from '@/utils/request'
 import type { PageResp } from '@/types/common'
 import type {
   ClusterRoleBindingResp,
@@ -12,6 +11,7 @@ import type {
   ClusterRoleBindingAnnotationsReq,
   ClusterRoleBindingSubjectsReq
 } from '@/types/kubernetes/clusterRoleBinding'
+import request from '@/utils/request'
 
 /**
  * 获取 ClusterRoleBinding 分页列表

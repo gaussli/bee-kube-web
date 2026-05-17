@@ -56,11 +56,11 @@
 import { ref, onMounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { Monitor, ArrowLeft, EditPen } from '@element-plus/icons-vue'
-import { getDaemonSetDetail } from '@/api'
+import type { DaemonSetResp } from '@/types/kubernetes/workload/daemonset'
+import { getDaemonSetDetail } from '@/api/kubernetes/workload/daemonset'
 import BeeButton from '@/components/BeeButton/index.vue'
 import BeePageTitle from '@/components/BeePageTitle/index.vue'
 import { usePermission } from '@/composables/usePermission'
-import type { DaemonSetResp } from '@/types'
 
 defineOptions({ name: 'DaemonSetDetail' })
 const { hasPermission } = usePermission()

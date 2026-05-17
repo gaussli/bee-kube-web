@@ -159,19 +159,19 @@
 import { onMounted, reactive, ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { ElMessage } from 'element-plus'
-import { Collection, Refresh, Plus, EditPen, Delete, View, FolderOpened, Cpu, Clock, Link, DocumentCopy, DocumentChecked, MoreFilled } from '@element-plus/icons-vue'
-import { type StatefulSetQueryReq, type StatefulSetResp } from '@/types'
-import { getStatefulSetPage, deleteStatefulSet, batchDeleteStatefulSet } from '@/api'
-import { useKubernetesStore } from '@/stores'
+import { Collection, Refresh, Plus, EditPen, Delete, View, DocumentCopy, DocumentChecked, MoreFilled } from '@element-plus/icons-vue'
+import type { StatefulSetQueryReq, StatefulSetResp } from '@/types/kubernetes/workload/statefulset'
+import { getStatefulSetPage, deleteStatefulSet, deleteStatefulSets } from '@/api/kubernetes/workload/statefulset'
 import BeeButton from '@/components/BeeButton/index.vue'
 import BeeDialog from '@/components/BeeDialog/index.vue'
+import BeeIconLabel from '@/components/BeeIconLabel/index.vue'
 import BeeInputSearch from '@/components/BeeInputSearch/index.vue'
 import BeePageTitle from '@/components/BeePageTitle/index.vue'
 import BeeSelect from '@/components/BeeSelect/index.vue'
 import BeeTag from '@/components/BeeTag/index.vue'
-import BeeIconLabel from '@/components/BeeIconLabel/index.vue'
 import { useClipboard } from '@/composables/useClipboard'
 import { usePermission } from '@/composables/usePermission'
+import { useKubernetesStore } from '@/stores'
 
 defineOptions({ name: 'StatefulSetManage' })
 
@@ -308,7 +308,7 @@ async function handleConfirmBatchDelete() {
   const namespace = selectedRows.value[0].namespace
   const names = selectedRows.value.map(row => row.name)
   try {
-    await batchDeleteStatefulSet(clusterId, namespace, names)
+    await deleteStatefulSets(clusterId, namespace, names)
     ElMessage.success(`成功删除 ${names.length} 个 StatefulSet`)
     batchDeleteDialogVisible.value = false
     selectedRows.value = []

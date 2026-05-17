@@ -90,13 +90,13 @@ import { computed, onMounted, ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { ElMessage } from 'element-plus'
 import { ArrowLeft, Collection, UserFilled } from '@element-plus/icons-vue'
-import BeeButton from '@/components/BeeButton/index.vue'
-import BeeDivider from '@/components/BeeDivider/index.vue'
-import BeeTag from '@/components/BeeTag/index.vue'
-import BeeTransfer from '@/components/BeeTransfer/index.vue'
-import BeeLabelCopyable from '@/components/BeeLabelCopyable/index.vue'
 import type { MenuDetailResp } from '@/types'
 import type { RoleResp } from '@/types'
+import BeeButton from '@/components/BeeButton/index.vue'
+import BeeDivider from '@/components/BeeDivider/index.vue'
+import BeeLabelCopyable from '@/components/BeeLabelCopyable/index.vue'
+import BeeTag from '@/components/BeeTag/index.vue'
+import BeeTransfer from '@/components/BeeTransfer/index.vue'
 
 defineOptions({ name: 'MenuAssignRoles' })
 

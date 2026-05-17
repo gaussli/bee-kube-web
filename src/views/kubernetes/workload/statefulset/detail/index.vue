@@ -56,11 +56,11 @@
 import { ref, onMounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { Collection, ArrowLeft, EditPen } from '@element-plus/icons-vue'
-import { getStatefulSetDetail } from '@/api'
+import type { StatefulSetResp } from '@/types/kubernetes/workload/statefulset'
+import { getStatefulSetDetail } from '@/api/kubernetes/workload/statefulset'
 import BeeButton from '@/components/BeeButton/index.vue'
 import BeePageTitle from '@/components/BeePageTitle/index.vue'
 import { usePermission } from '@/composables/usePermission'
-import type { StatefulSetResp } from '@/types'
 
 defineOptions({ name: 'StatefulSetDetail' })
 const { hasPermission } = usePermission()

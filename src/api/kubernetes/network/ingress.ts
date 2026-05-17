@@ -2,15 +2,9 @@
  * @fileOverview Ingress 资源相关 API
  * @module api/kubernetes/ingress
  */
-import request from '@/utils/request'
 import type { PageResp } from '@/types/common'
-import type {
-  IngressResp,
-  IngressQueryReq,
-  IngressReq,
-  IngressLabelsReq,
-  IngressAnnotationsReq
-} from '@/types/kubernetes/ingress'
+import type { IngressResp, IngressQueryReq, IngressReq, IngressLabelsReq, IngressAnnotationsReq } from '@/types/kubernetes/ingress'
+import request from '@/utils/request'
 
 /**
  * 获取 Ingress 分页列表

@@ -2,8 +2,8 @@
  * @fileOverview Kubernetes Job 管理 Mock API
  * @module mock/kubernetes/workload/job
  */
-import { generateId } from '@/mock/utils'
 import type { JobResp, JobQueryReq, JobReq, JobLabelsReq, JobAnnotationsReq } from '@/types'
+import { generateId } from '@/mock/utils'
 
 /**
  * Job 路由配置
@@ -21,46 +21,46 @@ export default [
   {
     method: 'get',
     url: '/kubernetes/clusters/:clusterId/namespaces/:namespace/jobs',
-    handler: (pathParams: Record<string, string>, params: Partial<JobQueryReq>) => getJobPage(pathParams.clusterId, pathParams.namespace, params)
+    handler: (_pathParams: Record<string, string>, _params: Partial<JobQueryReq>) => getJobPage(_pathParams.clusterId, pathParams.namespace, _params)
   },
   {
     method: 'get',
     url: '/kubernetes/clusters/:clusterId/namespaces/:namespace/jobs/:name',
-    handler: (pathParams: Record<string, string>, params: any, data: any) => getJobDetail(pathParams.clusterId, pathParams.namespace, pathParams.name)
+    handler: (_pathParams: Record<string, string>, _params: any, data: any) => getJobDetail(_pathParams.clusterId, pathParams.namespace, pathParams.name)
   },
   {
     method: 'post',
     url: '/kubernetes/clusters/:clusterId/namespaces/:namespace/jobs',
-    handler: (pathParams: Record<string, string>, params: any, data: Partial<JobReq>) => createJob(pathParams.clusterId, pathParams.namespace, data)
+    handler: (_pathParams: Record<string, string>, _params: any, data: Partial<JobReq>) => createJob(_pathParams.clusterId, pathParams.namespace, data)
   },
   {
     method: 'put',
     url: '/kubernetes/clusters/:clusterId/namespaces/:namespace/jobs/:name',
-    handler: (pathParams: Record<string, string>, params: any, data: Partial<JobReq>) => updateJob(pathParams.clusterId, pathParams.namespace, pathParams.name, data)
+    handler: (_pathParams: Record<string, string>, _params: any, data: Partial<JobReq>) => updateJob(_pathParams.clusterId, pathParams.namespace, pathParams.name, data)
   },
   {
     method: 'delete',
     url: '/kubernetes/clusters/:clusterId/namespaces/:namespace/jobs/:name',
-    handler: (pathParams: Record<string, string>, params: any, data: any) => deleteJob(pathParams.clusterId, pathParams.namespace, pathParams.name)
+    handler: (_pathParams: Record<string, string>, _params: any, data: any) => deleteJob(_pathParams.clusterId, pathParams.namespace, pathParams.name)
   },
   {
     method: 'delete',
     url: '/kubernetes/clusters/:clusterId/namespaces/:namespace/jobs/batch',
-    handler: (pathParams: Record<string, string>, params: any, data: string[]) => deleteJobs(pathParams.clusterId, pathParams.namespace, data)
+    handler: (_pathParams: Record<string, string>, _params: any, data: string[]) => deleteJobs(_pathParams.clusterId, pathParams.namespace, data)
   },
   {
     method: 'post',
     url: '/kubernetes/clusters/:clusterId/namespaces/:namespace/jobs/:name/labels',
-    handler: (pathParams: Record<string, string>, params: any, data: JobLabelsReq) => manageJobLabels(pathParams.clusterId, pathParams.namespace, pathParams.name, data)
+    handler: (_pathParams: Record<string, string>, _params: any, data: JobLabelsReq) => manageJobLabels(_pathParams.clusterId, pathParams.namespace, pathParams.name, data)
   },
   {
     method: 'post',
     url: '/kubernetes/clusters/:clusterId/namespaces/:namespace/jobs/:name/annotations',
-    handler: (pathParams: Record<string, string>, params: any, data: JobAnnotationsReq) => manageJobAnnotations(pathParams.clusterId, pathParams.namespace, pathParams.name, data)
+    handler: (_pathParams: Record<string, string>, _params: any, data: JobAnnotationsReq) => manageJobAnnotations(_pathParams.clusterId, pathParams.namespace, pathParams.name, data)
   }
 ]
 
-function getJobPage(clusterId: string, namespace: string, params: Partial<JobQueryReq>) {
+function getJobPage(clusterId: string, namespace: string, _params: Partial<JobQueryReq>) {
   const { name, status, page = 1, pageSize = 10 } = params || {}
   let filtered = mockJobs.filter(j => j.clusterId === clusterId && j.namespace === namespace)
   if (name) filtered = filtered.filter(j => j.name.toLowerCase().includes(name.toLowerCase()))

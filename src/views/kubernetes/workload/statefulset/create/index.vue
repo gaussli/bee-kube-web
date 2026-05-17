@@ -42,10 +42,10 @@ import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { ElMessage, type FormInstance } from 'element-plus'
 import { Collection, Close, Check } from '@element-plus/icons-vue'
-import { createStatefulSet } from '@/api'
+import type { StatefulSetResp } from '@/types/kubernetes/workload/statefulset'
+import { createStatefulSet } from '@/api/kubernetes/workload/statefulset'
 import BeeButton from '@/components/BeeButton/index.vue'
 import BeePageTitle from '@/components/BeePageTitle/index.vue'
-import type { StatefulSetResp } from '@/types'
 
 defineOptions({ name: 'StatefulSetCreate' })
 const router = useRouter()

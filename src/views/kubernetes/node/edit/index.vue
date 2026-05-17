@@ -81,8 +81,8 @@ import { ref, onMounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { ElMessage, type FormInstance } from 'element-plus'
 import { Box, Plus, Delete, Close, Check } from '@element-plus/icons-vue'
-import { type NodeResp, type NodeEditReq } from '@/types'
-import { getNodeDetail, updateNode } from '@/api'
+import type { NodeResp, NodeReq } from '@/types/kubernetes/node'
+import { getNodeDetail, updateNode } from '@/api/kubernetes/node'
 import BeeButton from '@/components/BeeButton/index.vue'
 import BeePageTitle from '@/components/BeePageTitle/index.vue'
 
@@ -98,7 +98,7 @@ const loading = ref(false)
 const submitting = ref(false)
 const nodeData = ref<NodeResp>()
 
-const formData = ref<NodeEditReq>({
+const formData = ref<NodeReq>({
   labels: {},
   annotations: {},
   taints: []
@@ -180,7 +180,7 @@ async function handleSubmit() {
       effect: item.effect
     }))
 
-  const data: NodeEditReq = {
+  const data: NodeReq = {
     labels,
     annotations,
     taints

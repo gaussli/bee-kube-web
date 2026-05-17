@@ -2,43 +2,62 @@
  * Kubernetes 节点管理 Mock API
  * @module mock/kubernetes/node
  */
+import type { PageResp } from '@/types/common'
+import type { NodeQueryReq, NodeReq, NodeResp, NodeCordonReq, NodeLabelsReq, NodeAnnotationsReq, NodeTaintsReq } from '@/types/kubernetes/node'
 import { generateId } from '@/mock/utils'
-import type { NodeQueryReq, NodeReq, NodeResp, NodeCordonReq } from '@/types'
 
 /**
  * 节点路由配置
  * @remarks
- * - GET /kubernetes/clusters/:clusterId/nodes - 获取节点分页列表
- * - GET /kubernetes/clusters/:clusterId/nodes/:name - 获取节点详情
- * - PUT /kubernetes/clusters/:clusterId/nodes/:name - 更新节点
- * - POST /kubernetes/clusters/:clusterId/nodes/:name/drain - 驱逐节点
- * - POST /kubernetes/clusters/:clusterId/nodes/:name/cordon - 设置可调度状态
+ * - GET /kubernetes/clusters/:clusterId/nodes - 获取节点分页列表（getNodePage）
+ * - GET /kubernetes/clusters/:clusterId/nodes/:name - 获取节点详情（getNodeDetail）
+ * - PUT /kubernetes/clusters/:clusterId/nodes/:name - 更新节点（updateNode）
+ * - POST /kubernetes/clusters/:clusterId/nodes/:name/drain - 驱逐节点（drainNode）
+ * - POST /kubernetes/clusters/:clusterId/nodes/:name/cordon - 设置可调度状态（cordonNode）
+ * - POST /kubernetes/clusters/:clusterId/nodes/:name/labels - 更新节点标签（manageNodeLabels）
+ * - POST /kubernetes/clusters/:clusterId/nodes/:name/annotations - 更新节点注解（manageNodeAnnotations）
+ * - POST /kubernetes/clusters/:clusterId/nodes/:name/taints - 更新节点污点（manageNodeTaints）
  */
 export default [
   {
     method: 'get',
     url: '/kubernetes/clusters/:clusterId/nodes',
-    handler: (pathParams: Record<string, string>, params: Partial<NodeQueryReq>) => getNodePage(pathParams.clusterId, params)
+    handler: (pathParams: Record<string, string>, params: Partial<NodeQueryReq>): PageResp<NodeResp> => getNodePage(pathParams.clusterId, params)
   },
   {
     method: 'get',
     url: '/kubernetes/clusters/:clusterId/nodes/:name',
-    handler: (pathParams: Record<string, string>, params: any, data: any) => getNodeDetail(pathParams.clusterId, pathParams.name)
+    handler: (pathParams: Record<string, string>): NodeResp => getNodeDetail(pathParams.clusterId, pathParams.name)
   },
   {
     method: 'put',
     url: '/kubernetes/clusters/:clusterId/nodes/:name',
-    handler: (pathParams: Record<string, string>, params: any, data: Partial<NodeReq>) => updateNode(pathParams.clusterId, pathParams.name, data)
+    handler: (pathParams: Record<string, string>, data: Partial<NodeReq>): void => updateNode(pathParams.clusterId, pathParams.name, data)
   },
   {
     method: 'post',
     url: '/kubernetes/clusters/:clusterId/nodes/:name/drain',
-    handler: (pathParams: Record<string, string>, params: any, data: any) => drainNode(pathParams.clusterId, pathParams.name)
+    handler: (pathParams: Record<string, string>): void => drainNode(pathParams.clusterId, pathParams.name)
   },
   {
     method: 'post',
     url: '/kubernetes/clusters/:clusterId/nodes/:name/cordon',
-    handler: (pathParams: Record<string, string>, params: any, data: NodeCordonReq) => manageNodeCordon(pathParams.clusterId, pathParams.name, data)
+    handler: (pathParams: Record<string, string>, data: Partial<NodeCordonReq>): void => cordonNode(pathParams.clusterId, pathParams.name, data)
+  },
+  {
+    method: 'post',
+    url: '/kubernetes/clusters/:clusterId/nodes/:name/labels',
+    handler: (pathParams: Record<string, string>, data: Partial<NodeLabelsReq>): void => manageNodeLabels(pathParams.clusterId, pathParams.name, data)
+  },
+  {
+    method: 'post',
+    url: '/kubernetes/clusters/:clusterId/nodes/:name/annotations',
+    handler: (pathParams: Record<string, string>, data: Partial<NodeAnnotationsReq>): void => manageNodeAnnotations(pathParams.clusterId, pathParams.name, data)
+  },
+  {
+    method: 'post',
+    url: '/kubernetes/clusters/:clusterId/nodes/:name/taints',
+    handler: (pathParams: Record<string, string>, data: Partial<NodeTaintsReq>): void => manageNodeTaints(pathParams.clusterId, pathParams.name, data)
   }
 ]
 
@@ -48,10 +67,10 @@ export default [
  * @param params - 查询参数
  * @returns 分页数据
  */
-function getNodePage(clusterId: string, params: Partial<NodeQueryReq>) {
+function getNodePage(clusterId: string, params: Partial<NodeQueryReq>): PageResp<NodeResp> {
   const { id, name, ip, status, page = 1, pageSize = 10 } = params || {}
 
-  let filtered = [...mockNodes]
+  let filtered = mockNodes.filter(n => n.clusterId === clusterId)
   if (id) {
     filtered = filtered.filter(n => n.id === id)
   }
@@ -78,8 +97,13 @@ function getNodePage(clusterId: string, params: Partial<NodeQueryReq>) {
  * @param name - 节点名称
  * @returns 节点详情
  */
-function getNodeDetail(clusterId: string, name: string) {
-  return mockNodes[0]
+function getNodeDetail(clusterId: string, name: string): NodeResp {
+  const node = mockNodes.find(n => n.clusterId === clusterId && n.name === name)
+  if (!node) {
+    console.error('[getNodeDetail] can not find node:', clusterId, name)
+    return mockNodes[0]
+  }
+  return node
 }
 
 /**
@@ -87,34 +111,37 @@ function getNodeDetail(clusterId: string, name: string) {
  * @param clusterId - 集群ID
  * @param name - 节点名称
  * @param data - 更新数据
- * @returns 更新后的节点ID
  */
-function updateNode(clusterId: string, name: string, data: Partial<NodeReq>) {
-  const index = mockNodes.findIndex(n => n.name === name)
+function updateNode(clusterId: string, name: string, data: Partial<NodeReq>): void {
+  const index = mockNodes.findIndex(n => n.clusterId === clusterId && n.name === name)
   if (index === -1) {
-    console.error(`[Update Node] can not find node: ${name}`)
-    return null
+    console.error('[updateNode] can not find node:', clusterId, name)
+    return
   }
-
   const updated = {
     ...mockNodes[index],
-    ...data
+    ...data,
+    updateBy: 'admin',
+    updateAt: new Date().toLocaleString()
   }
   mockNodes[index] = updated
-  return updated.id
 }
 
 /**
  * 驱逐节点上的 Pod
  * @param clusterId - 集群ID
  * @param name - 节点名称
- * @returns 是否驱逐成功
  */
-function drainNode(clusterId: string, name: string) {
-  const node = mockNodes.find(n => n.name === name)
-  if (!node) return null
-  node.pods = '0' + node.pods.substring(node.pods.indexOf('/'))
-  return true
+function drainNode(clusterId: string, name: string): void {
+  const node = mockNodes.find(n => n.clusterId === clusterId && n.name === name)
+  if (!node) {
+    console.error('[drainNode] can not find node:', clusterId, name)
+    return
+  }
+  const slashIndex = node.pods.indexOf('/')
+  if (slashIndex !== -1) {
+    node.pods = '0' + node.pods.substring(slashIndex)
+  }
 }
 
 /**
@@ -122,13 +149,82 @@ function drainNode(clusterId: string, name: string) {
  * @param clusterId - 集群ID
  * @param name - 节点名称
  * @param data - 调度配置
- * @returns 是否设置成功
  */
-function manageNodeCordon(clusterId: string, name: string, data: NodeCordonReq) {
-  const node = mockNodes.find(n => n.name === name)
-  if (!node) return null
-  node.schedulable = data.cordon
-  return true
+function cordonNode(clusterId: string, name: string, data: Partial<NodeCordonReq>): void {
+  const node = mockNodes.find(n => n.clusterId === clusterId && n.name === name)
+  if (!node) {
+    console.error('[cordonNode] can not find node:', clusterId, name)
+    return
+  }
+  node.schedulable = data.cordon ?? false
+}
+
+/**
+ * 更新节点标签配置
+ * @param clusterId - 集群ID
+ * @param name - 节点名称
+ * @param data - 标签配置
+ */
+function manageNodeLabels(clusterId: string, name: string, data: Partial<NodeLabelsReq>): void {
+  const node = mockNodes.find(n => n.clusterId === clusterId && n.name === name)
+  if (!node) {
+    console.error('[manageNodeLabels] can not find node:', clusterId, name)
+    return
+  }
+  node.labels = node.labels || {}
+  switch (data.operation) {
+    case 1: // 新增
+      Object.assign(node.labels, data.labels)
+      break
+    case 2: // 移除
+      Object.keys(data.labels || {}).forEach(key => delete node.labels?.[key])
+      break
+    case 3: // 全量替换
+      node.labels = data.labels || {}
+      break
+  }
+}
+
+/**
+ * 更新节点注解配置
+ * @param clusterId - 集群ID
+ * @param name - 节点名称
+ * @param data - 注解配置
+ */
+function manageNodeAnnotations(clusterId: string, name: string, data: Partial<NodeAnnotationsReq>): void {
+  const node = mockNodes.find(n => n.clusterId === clusterId && n.name === name)
+  if (!node) {
+    console.error('[manageNodeAnnotations] can not find node:', clusterId, name)
+    return
+  }
+  node.annotations = node.annotations || {}
+  switch (data.operation) {
+    case 1: // 新增
+      Object.assign(node.annotations, data.annotations)
+      break
+    case 2: // 移除
+      Object.keys(data.annotations || {}).forEach(key => delete node.annotations?.[key])
+      break
+    case 3: // 全量替换
+      node.annotations = data.annotations || {}
+      break
+  }
+}
+
+/**
+ * 更新节点污点配置
+ * @param clusterId - 集群ID
+ * @param name - 节点名称
+ * @param data - 污点配置
+ */
+function manageNodeTaints(clusterId: string, name: string, data: Partial<NodeTaintsReq>): void {
+  const node = mockNodes.find(n => n.clusterId === clusterId && n.name === name)
+  if (!node) {
+    console.error('[manageNodeTaints] can not find node:', clusterId, name)
+    return
+  }
+  // 污点配置模拟，实际污点存储需要扩展 NodeResp 类型
+  console.log('[manageNodeTaints] update taints:', clusterId, name, data)
 }
 
 /**

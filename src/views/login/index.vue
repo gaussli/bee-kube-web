@@ -25,7 +25,7 @@
 import { reactive, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { ElMessage } from 'element-plus'
-import { getCurrentUser, login } from '@/api'
+import { getCurrentUser, login } from '@/api/auth/auth'
 import { useUserStore } from '@/stores'
 
 const route = useRoute()

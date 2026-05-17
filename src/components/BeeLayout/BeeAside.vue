@@ -59,8 +59,8 @@ import {
   Timer,
   Clock
 } from '@element-plus/icons-vue'
-import { useAppStore, useUserStore, useKubernetesStore } from '@/stores'
 import type { Component } from 'vue'
+import { useAppStore, useUserStore, useKubernetesStore } from '@/stores'
 
 defineOptions({ name: 'BeeAside' })
 

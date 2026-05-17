@@ -6,7 +6,15 @@ import type { BaseEntity, PageReq } from '@/types/common'
 /**
  * Secret 类型枚举
  */
-export type SecretType = 'Opaque' | 'kubernetes.io/service-account-token' | 'kubernetes.io/dockercfg' | 'kubernetes.io/dockerconfigjson' | 'kubernetes.io/basic-auth' | 'kubernetes.io/ssh-auth' | 'kubernetes.io/tls' | 'kubernetes.io/boot-straph-token'
+export type SecretType =
+  | 'Opaque'
+  | 'kubernetes.io/service-account-token'
+  | 'kubernetes.io/dockercfg'
+  | 'kubernetes.io/dockerconfigjson'
+  | 'kubernetes.io/basic-auth'
+  | 'kubernetes.io/ssh-auth'
+  | 'kubernetes.io/tls'
+  | 'kubernetes.io/boot-straph-token'
 
 /**
  * Secret 响应数据

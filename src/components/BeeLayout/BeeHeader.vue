@@ -52,13 +52,13 @@ import { computed, ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import { ArrowDown } from '@element-plus/icons-vue'
-import { logout } from '@/api'
-import { useAppStore, useKubernetesStore, useUserStore } from '@/stores'
+import type { TabType } from '@/stores/app'
+import { logout } from '@/api/auth/auth'
 import BeeDropdown from '@/components/BeeDropdown/index.vue'
 import BeeIcon from '@/components/BeeIcon/index.vue'
 import BeeRadioSearch from '@/components/BeeRadioSearch/index.vue'
 import BeeTooltip from '@/components/BeeTooltip/index.vue'
-import type { TabType } from '@/stores/app'
+import { useAppStore, useKubernetesStore, useUserStore } from '@/stores'
 
 defineOptions({ name: 'BeeHeader' })
 

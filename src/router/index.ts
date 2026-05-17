@@ -1,9 +1,9 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import { useKubernetesStore } from '@/stores'
+import type { RouteRecordRaw } from 'vue-router'
+import { useKubernetesStore } from '@/stores/kubernetes'
 import { useUserStore } from '@/stores/user'
 import { kubernetesRoutes } from './kubernetes'
 import { platformRoutes } from './platform'
-import type { RouteRecordRaw } from 'vue-router'
 
 // 静态路由（无需权限）
 export const constantRoutes: RouteRecordRaw[] = [

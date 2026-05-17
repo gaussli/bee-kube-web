@@ -33,8 +33,7 @@ export default [
       // 关闭 ESLint 原生的未使用变量检查
       'no-unused-vars': 'off',
       // 启用 unused-imports 的规则
-      'unused-imports/no-unused-imports': 'error',
-      'unused-imports/no-unused-vars': ['error', { vars: 'all', varsIgnorePattern: '^_*', args: 'after-used', argsIgnorePattern: '^_' }]
+      'unused-imports/no-unused-imports': 'error'
     }
   },
   {
@@ -71,7 +70,15 @@ export default [
       'no-redeclare': 'off',
       '@typescript-eslint/no-redeclare': 'error',
       '@typescript-eslint/no-explicit-any': 'off',
-      '@typescript-eslint/no-unused-vars': ['warn', { argsIgnorePattern: '^_' }],
+      '@typescript-eslint/no-unused-vars': [
+        'error',
+        {
+          vars: 'all',
+          varsIgnorePattern: '^_',
+          args: 'all',
+          argsIgnorePattern: '^_'
+        }
+      ],
       'no-prototype-builtins': 'off'
     }
   },
@@ -101,7 +108,7 @@ export default [
       'import/order': [
         'error',
         {
-          'groups': ['builtin', 'external', 'internal', 'parent', 'sibling', 'index', 'object', 'type'],
+          'groups': ['builtin', 'external', 'type', 'internal', 'parent', 'sibling', 'index', 'object'],
           'newlines-between': 'never',
           'pathGroupsExcludedImportTypes': ['builtin'],
           'pathGroups': [
@@ -111,15 +118,15 @@ export default [
             { pattern: 'axios', group: 'external', position: 'before' },
             { pattern: 'element-plus', group: 'external', position: 'before' },
             { pattern: '@element-plus/**', group: 'external', position: 'before' },
-            { pattern: '@/utils', group: 'internal', position: 'before' },
-            { pattern: '@/types', group: 'internal', position: 'before' },
-            { pattern: '@/api', group: 'internal', position: 'before' },
+            { pattern: '@/utils/**', group: 'internal', position: 'before' },
+            { pattern: '@/types/**', group: 'internal', position: 'before' },
+            { pattern: '@/api/**', group: 'internal', position: 'before' },
             { pattern: '@/mock', group: 'internal', position: 'before' },
-            { pattern: '@/router', group: 'internal', position: 'before' },
-            { pattern: '@/stores', group: 'internal', position: 'before' },
+            { pattern: '@/router/**', group: 'internal', position: 'before' },
+            { pattern: '@/stores/**', group: 'internal', position: 'before' },
             { pattern: '@/components/**', group: 'internal', position: 'before' },
             { pattern: '@components/**', group: 'internal', position: 'before' },
-            { pattern: '@/views', group: 'internal', position: 'before' },
+            { pattern: '@/views/**', group: 'internal', position: 'before' },
             { pattern: '@/**', group: 'internal', position: 'before' }
           ],
           'alphabetize': {

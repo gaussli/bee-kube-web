@@ -2,16 +2,9 @@
  * @fileOverview Role 资源相关 API
  * @module api/kubernetes/role
  */
-import request from '@/utils/request'
 import type { PageResp } from '@/types/common'
-import type {
-  RoleResp,
-  RoleQueryReq,
-  RoleReq,
-  RoleLabelsReq,
-  RoleAnnotationsReq,
-  RoleRulesReq
-} from '@/types/kubernetes/role'
+import type { RoleResp, RoleQueryReq, RoleReq, RoleLabelsReq, RoleAnnotationsReq, RoleRulesReq } from '@/types/kubernetes/role'
+import request from '@/utils/request'
 
 /**
  * 获取 Role 分页列表

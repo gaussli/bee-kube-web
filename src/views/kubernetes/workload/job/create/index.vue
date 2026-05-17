@@ -38,10 +38,10 @@ import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { ElMessage, type FormInstance } from 'element-plus'
 import { Timer, Close, Check } from '@element-plus/icons-vue'
-import { createJob } from '@/api'
+import type { JobResp } from '@/types/kubernetes/workload/job'
+import { createJob } from '@/api/kubernetes/workload/job'
 import BeeButton from '@/components/BeeButton/index.vue'
 import BeePageTitle from '@/components/BeePageTitle/index.vue'
-import type { JobResp } from '@/types'
 
 defineOptions({ name: 'JobCreate' })
 const router = useRouter()

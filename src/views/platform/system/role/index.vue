@@ -56,7 +56,7 @@
             <BeeIconLabel icon="circle-check" label="状态" />
           </template>
           <template #default="{ row }">
-            <StatusCell :status="row.status" :config="roleStatusConfig" />
+            <BeeStatus :status="row.status" :config="roleStatusConfig" />
           </template>
         </el-table-column>
         <el-table-column width="180">
@@ -180,20 +180,20 @@
 import { onMounted, reactive, ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { ElMessage } from 'element-plus'
-import { CircleCheck, CircleClose, Delete, Document, EditPen, Key, MoreFilled, Plus, Refresh, Setting, User, View, Clock } from '@element-plus/icons-vue'
-import { changeRoleStatus, getRolePage, removeRole, batchRemoveRoles } from '@/api'
+import { CircleCheck, CircleClose, Delete, EditPen, MoreFilled, Plus, Refresh, Setting, User, View } from '@element-plus/icons-vue'
+import type { RoleQueryReq, RoleResp } from '@/types/platform/role'
+import { changeRoleStatus, getRolePage, removeRole, batchRemoveRoles } from '@/api/platform/role'
 import AuditCell from '@/components/AuditCell/index.vue'
 import BeeButton from '@/components/BeeButton/index.vue'
 import BeeDialog from '@/components/BeeDialog/index.vue'
-import BeeInputSearch from '@/components/BeeInputSearch/index.vue'
-import BeeRadioSearch from '@/components/BeeRadioSearch/index.vue'
-import BeeTag from '@/components/BeeTag/index.vue'
 import BeeIconLabel from '@/components/BeeIconLabel/index.vue'
-import RoleCell from '@/components/RoleCell/index.vue'
-import StatusCell from '@/components/StatusCell/index.vue'
+import BeeInputSearch from '@/components/BeeInputSearch/index.vue'
 import BeeLabelCopyable from '@/components/BeeLabelCopyable/index.vue'
+import BeeRadioSearch from '@/components/BeeRadioSearch/index.vue'
+import BeeStatus from '@/components/BeeStatus/index.vue'
+import BeeTag from '@/components/BeeTag/index.vue'
+import RoleCell from '@/components/RoleCell/index.vue'
 import { usePermission } from '@/composables/usePermission'
-import type { RoleQueryReq, RoleResp } from '@/types'
 
 defineOptions({ name: 'RoleManage' })
 

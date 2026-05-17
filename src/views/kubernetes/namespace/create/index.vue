@@ -69,8 +69,8 @@ import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { ElMessage, type FormInstance } from 'element-plus'
 import { FolderOpened, Plus, Delete, Close, Check } from '@element-plus/icons-vue'
-import { type NamespaceCreateReq } from '@/types'
-import { createNamespace } from '@/api'
+import type { NamespaceReq } from '@/types'
+import { createNamespace } from '@/api/kubernetes/namespace'
 import BeeButton from '@/components/BeeButton/index.vue'
 import BeePageTitle from '@/components/BeePageTitle/index.vue'
 
@@ -80,7 +80,7 @@ const router = useRouter()
 const formRef = ref<FormInstance>()
 const submitting = ref(false)
 
-const formData = ref<NamespaceCreateReq>({
+const formData = ref<NamespaceReq>({
   name: '',
   clusterId: 'default',
   labels: {},
@@ -133,7 +133,7 @@ async function handleSubmit() {
     if (item.key) annotations[item.key] = item.value
   })
 
-  const data: NamespaceCreateReq = {
+  const data: NamespaceReq = {
     ...formData.value,
     labels,
     annotations

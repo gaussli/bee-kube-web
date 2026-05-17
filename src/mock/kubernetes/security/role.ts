@@ -2,9 +2,9 @@
  * @fileOverview Role Mock 数据
  * @module mock/kubernetes/security/role
  */
+import type { RoleResp, RoleQueryReq } from '@/types/kubernetes/role'
 import { getRolePage, getRoleDetail } from '@/api/kubernetes/security/role'
 import { generateId } from '@/mock/utils'
-import type { RoleResp, RoleQueryReq } from '@/types/kubernetes/role'
 
 /**
  * Role Mock 数据
@@ -150,11 +150,11 @@ export default [
   {
     method: 'GET',
     url: '/kubernetes/clusters/:clusterId/namespaces/:namespaceId/roles',
-    handler: (pathParams: Record<string, string>, params: RoleQueryReq) => getRolePage(pathParams.clusterId, params)
+    handler: (_pathParams: Record<string, string>, _params: RoleQueryReq) => getRolePage(_pathParams.clusterId, _params)
   },
   {
     method: 'GET',
     url: '/kubernetes/clusters/:clusterId/namespaces/:namespaceName/roles/:name',
-    handler: (pathParams: Record<string, string>) => getRoleDetail(pathParams.clusterId, pathParams.namespaceName, pathParams.name)
+    handler: (_pathParams: Record<string, string>) => getRoleDetail(_pathParams.clusterId, pathParams.namespaceName, pathParams.name)
   }
 ]

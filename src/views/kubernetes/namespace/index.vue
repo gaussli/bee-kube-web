@@ -138,9 +138,8 @@ import { onMounted, reactive, ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { ElMessage } from 'element-plus'
 import { EditPen, Delete, View, Document, DocumentCopy } from '@element-plus/icons-vue'
-import { type NamespaceQueryReq, type NamespaceResp } from '@/types'
-import { getNamespacePage, deleteNamespace, batchDeleteNamespace } from '@/api'
-import { useKubernetesStore } from '@/stores'
+import type { NamespaceQueryReq, NamespaceResp } from '@/types/kubernetes/namespace'
+import { getNamespacePage, deleteNamespace, deleteNamespaces } from '@/api/kubernetes/namespace'
 import BeeButton from '@/components/BeeButton/index.vue'
 import BeeCard from '@/components/BeeCard/index.vue'
 import BeeDialog from '@/components/BeeDialog/index.vue'
@@ -153,6 +152,7 @@ import BeeRadioSearch from '@/components/BeeRadioSearch/index.vue'
 import BeeTag from '@/components/BeeTag/index.vue'
 import { useClipboard } from '@/composables/useClipboard'
 import { usePermission } from '@/composables/usePermission'
+import { useKubernetesStore } from '@/stores'
 
 defineOptions({ name: 'NamespaceManage' })
 
@@ -297,7 +297,7 @@ async function handleConfirmBatchDelete() {
   const clusterId = selectedRows.value[0].clusterId
   const names = selectedRows.value.map(row => row.name)
   try {
-    await batchDeleteNamespace(clusterId, names)
+    await deleteNamespaces(clusterId, names)
     ElMessage.success(`成功删除 ${names.length} 个命名空间`)
     batchDeleteDialogVisible.value = false
     selectedRows.value = []

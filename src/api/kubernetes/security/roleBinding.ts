@@ -2,16 +2,9 @@
  * @fileOverview RoleBinding 资源相关 API
  * @module api/kubernetes/roleBinding
  */
-import request from '@/utils/request'
 import type { PageResp } from '@/types/common'
-import type {
-  RoleBindingResp,
-  RoleBindingQueryReq,
-  RoleBindingReq,
-  RoleBindingLabelsReq,
-  RoleBindingAnnotationsReq,
-  RoleBindingSubjectsReq
-} from '@/types/kubernetes/roleBinding'
+import type { RoleBindingResp, RoleBindingQueryReq, RoleBindingReq, RoleBindingLabelsReq, RoleBindingAnnotationsReq, RoleBindingSubjectsReq } from '@/types/kubernetes/roleBinding'
+import request from '@/utils/request'
 
 /**
  * 获取 RoleBinding 分页列表

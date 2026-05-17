@@ -1,97 +1,14 @@
 /**
- * @fileOverview StatefulSet 资源相关类型定义
+ * StatefulSet 资源相关类型定义
+ * @module types/kubernetes/workload/statefulset
  */
 import type { BaseEntity, PageReq } from '@/types/common'
-
-/**
- * StatefulSet 副本状态
- */
-export interface StatefulSetReplicaStatus {
-  /** 期望副本数 */
-  replicas: number
-  /** 就绪副本数 */
-  readyReplicas: number
-  /** 当前副本数 */
-  currentReplicas: number
-  /** 更新副本数 */
-  updatedReplicas: number
-}
-
-/**
- * StatefulSet 容器配置
- */
-export interface StatefulSetContainer {
-  /** 容器名称 */
-  name: string
-  /** 镜像 */
-  image: string
-  /** 镜像拉取策略 */
-  imagePullPolicy: string
-  /** 资源请求 */
-  resources?: {
-    requests?: {
-      cpu?: string
-      memory?: string
-    }
-    limits?: {
-      cpu?: string
-      memory?: string
-    }
-  }
-  /** 端口配置 */
-  ports?: Array<{
-    name: string
-    containerPort: number
-    protocol: string
-  }>
-  /** 环境变量 */
-  env?: Array<{
-    name: string
-    value?: string
-    valueFrom?: {
-      fieldRef?: {
-        fieldPath: string
-      }
-      secretRef?: {
-        name: string
-        key: string
-      }
-      configMapRef?: {
-        name: string
-        key: string
-      }
-    }
-  }>
-  /** 健康检查 */
-  livenessProbe?: object
-  readinessProbe?: object
-}
-
-/**
- * VolumeClaimTemplate 持久化存储模板
- */
-export interface VolumeClaimTemplate {
-  /** 名称 */
-  name: string
-  /** 存储类名 */
-  storageClassName?: string
-  /** 请求存储大小 */
-  resources?: {
-    requests?: {
-      storage: string
-    }
-  }
-  /** 访问模式 */
-  accessModes?: string[]
-}
 
 /**
  * StatefulSet 响应数据
  * @extends BaseEntity 继承基础实体（含 id, createAt, createBy, updateAt, updateBy）
  */
 export interface StatefulSetResp extends BaseEntity {
-  /** StatefulSet ID */
-  id: string
   /** StatefulSet 名称 */
   name: string
   /** 所属命名空间 */
@@ -99,7 +16,7 @@ export interface StatefulSetResp extends BaseEntity {
   /** 所属集群 ID */
   clusterId: string
   /** 所属集群名称 */
-  clusterName?: string
+  clusterName: string
   /** 状态 */
   status: string
   /** 期望副本数 */
@@ -117,15 +34,15 @@ export interface StatefulSetResp extends BaseEntity {
   /** 使用的镜像列表 */
   images: string[]
   /** 标签选择器 */
-  selector?: Record<string, string>
+  selector: Record<string, string>
   /** 标签 */
-  labels?: Record<string, string>
+  labels: Record<string, string>
   /** 注解 */
-  annotations?: Record<string, string>
+  annotations: Record<string, string>
   /** 存储模板 */
   volumeClaimTemplates?: VolumeClaimTemplate[]
   /** 是否可删除 */
-  deletable?: boolean
+  deletable: boolean
 }
 
 /**
@@ -133,18 +50,16 @@ export interface StatefulSetResp extends BaseEntity {
  * @extends PageReq 继承分页请求（含 page, pageSize）
  */
 export interface StatefulSetQueryReq extends PageReq {
-  /** 命名空间 ID */
-  id: string
   /** StatefulSet 名称（模糊匹配） */
-  name: string
+  name?: string
   /** 命名空间名称 */
-  namespace: string
+  namespace?: string
   /** 集群 ID */
   clusterId: string
   /** 状态 */
-  status: string
+  status?: string
   /** 标签选择器 */
-  labelSelector: string
+  labelSelector?: string
 }
 
 /**
@@ -201,4 +116,95 @@ export interface StatefulSetAnnotationsReq {
 export interface StatefulSetScaleReq {
   /** 期望副本数 */
   replicas: number
+}
+
+/**
+ * StatefulSet YAML 导入请求
+ */
+export interface StatefulSetYamlReq {
+  /** YAML 配置内容 */
+  yaml: string
+}
+
+/**
+ * StatefulSet 副本状态
+ */
+export interface StatefulSetReplicaStatus {
+  /** 期望副本数 */
+  replicas: number
+  /** 就绪副本数 */
+  readyReplicas: number
+  /** 当前副本数 */
+  currentReplicas: number
+  /** 更新副本数 */
+  updatedReplicas: number
+}
+
+/**
+ * StatefulSet 容器配置
+ */
+export interface StatefulSetContainer {
+  /** 容器名称 */
+  name: string
+  /** 镜像 */
+  image: string
+  /** 镜像拉取策略 */
+  imagePullPolicy?: string
+  /** 资源请求 */
+  resources?: {
+    requests?: {
+      cpu?: string
+      memory?: string
+    }
+    limits?: {
+      cpu?: string
+      memory?: string
+    }
+  }
+  /** 端口配置 */
+  ports?: Array<{
+    name: string
+    containerPort: number
+    protocol: string
+  }>
+  /** 环境变量 */
+  env?: Array<{
+    name: string
+    value?: string
+    valueFrom?: {
+      fieldRef?: {
+        fieldPath: string
+      }
+      secretRef?: {
+        name: string
+        key: string
+      }
+      configMapRef?: {
+        name: string
+        key: string
+      }
+    }
+  }>
+  /** 健康检查 */
+  livenessProbe?: object
+  /** 就绪探针 */
+  readinessProbe?: object
+}
+
+/**
+ * VolumeClaimTemplate 持久化存储模板
+ */
+export interface VolumeClaimTemplate {
+  /** 名称 */
+  name: string
+  /** 存储类名 */
+  storageClassName?: string
+  /** 请求存储大小 */
+  resources?: {
+    requests?: {
+      storage: string
+    }
+  }
+  /** 访问模式 */
+  accessModes?: string[]
 }

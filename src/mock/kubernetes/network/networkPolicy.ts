@@ -2,9 +2,9 @@
  * @fileOverview NetworkPolicy Mock 数据
  * @module mock/kubernetes/network/networkPolicy
  */
+import type { NetworkPolicyResp, NetworkPolicyQueryReq } from '@/types/kubernetes/networkPolicy'
 import { getNetworkPolicyPage, getNetworkPolicyDetail } from '@/api/kubernetes/network/networkPolicy'
 import { generateId } from '@/mock/utils'
-import type { NetworkPolicyResp, NetworkPolicyQueryReq } from '@/types/kubernetes/networkPolicy'
 
 /**
  * NetworkPolicy Mock 数据
@@ -161,11 +161,11 @@ export default [
   {
     method: 'GET',
     url: '/kubernetes/clusters/:clusterId/namespaces/:namespaceId/networkpolicies',
-    handler: (pathParams: Record<string, string>, params: NetworkPolicyQueryReq) => getNetworkPolicyPage(pathParams.clusterId, params)
+    handler: (_pathParams: Record<string, string>, _params: NetworkPolicyQueryReq) => getNetworkPolicyPage(_pathParams.clusterId, _params)
   },
   {
     method: 'GET',
     url: '/kubernetes/clusters/:clusterId/namespaces/:namespaceName/networkpolicies/:name',
-    handler: (pathParams: Record<string, string>) => getNetworkPolicyDetail(pathParams.clusterId, pathParams.namespaceName, pathParams.name)
+    handler: (_pathParams: Record<string, string>) => getNetworkPolicyDetail(_pathParams.clusterId, pathParams.namespaceName, pathParams.name)
   }
 ]

@@ -2,8 +2,8 @@
  * @fileOverview Kubernetes ConfigMap 管理 Mock API
  * @module mock/kubernetes/config/configmap
  */
-import { generateId } from '@/mock/utils'
 import type { ConfigMapResp, ConfigMapQueryReq, ConfigMapReq, ConfigMapDataReq, ConfigMapLabelsReq, ConfigMapAnnotationsReq } from '@/types'
+import { generateId } from '@/mock/utils'
 
 /**
  * ConfigMap 路由配置
@@ -22,51 +22,51 @@ export default [
   {
     method: 'get',
     url: '/kubernetes/clusters/:clusterId/namespaces/:namespace/configmaps',
-    handler: (pathParams: Record<string, string>, params: Partial<ConfigMapQueryReq>) => getConfigMapPage(pathParams.clusterId, pathParams.namespace, params)
+    handler: (_pathParams: Record<string, string>, _params: Partial<ConfigMapQueryReq>) => getConfigMapPage(_pathParams.clusterId, pathParams.namespace, _params)
   },
   {
     method: 'get',
     url: '/kubernetes/clusters/:clusterId/namespaces/:namespace/configmaps/:name',
-    handler: (pathParams: Record<string, string>, params: any, data: any) => getConfigMapDetail(pathParams.clusterId, pathParams.namespace, pathParams.name)
+    handler: (_pathParams: Record<string, string>, _params: any, data: any) => getConfigMapDetail(_pathParams.clusterId, pathParams.namespace, pathParams.name)
   },
   {
     method: 'post',
     url: '/kubernetes/clusters/:clusterId/namespaces/:namespace/configmaps',
-    handler: (pathParams: Record<string, string>, params: any, data: Partial<ConfigMapReq>) => createConfigMap(pathParams.clusterId, pathParams.namespace, data)
+    handler: (_pathParams: Record<string, string>, _params: any, data: Partial<ConfigMapReq>) => createConfigMap(_pathParams.clusterId, pathParams.namespace, data)
   },
   {
     method: 'put',
     url: '/kubernetes/clusters/:clusterId/namespaces/:namespace/configmaps/:name',
-    handler: (pathParams: Record<string, string>, params: any, data: Partial<ConfigMapReq>) => updateConfigMap(pathParams.clusterId, pathParams.namespace, pathParams.name, data)
+    handler: (_pathParams: Record<string, string>, _params: any, data: Partial<ConfigMapReq>) => updateConfigMap(_pathParams.clusterId, pathParams.namespace, pathParams.name, data)
   },
   {
     method: 'post',
     url: '/kubernetes/clusters/:clusterId/namespaces/:namespace/configmaps/:name/data',
-    handler: (pathParams: Record<string, string>, params: any, data: ConfigMapDataReq) => manageConfigMapData(pathParams.clusterId, pathParams.namespace, pathParams.name, data)
+    handler: (_pathParams: Record<string, string>, _params: any, data: ConfigMapDataReq) => manageConfigMapData(_pathParams.clusterId, pathParams.namespace, pathParams.name, data)
   },
   {
     method: 'post',
     url: '/kubernetes/clusters/:clusterId/namespaces/:namespace/configmaps/:name/labels',
-    handler: (pathParams: Record<string, string>, params: any, data: ConfigMapLabelsReq) => manageConfigMapLabels(pathParams.clusterId, pathParams.namespace, pathParams.name, data)
+    handler: (_pathParams: Record<string, string>, _params: any, data: ConfigMapLabelsReq) => manageConfigMapLabels(_pathParams.clusterId, pathParams.namespace, pathParams.name, data)
   },
   {
     method: 'post',
     url: '/kubernetes/clusters/:clusterId/namespaces/:namespace/configmaps/:name/annotations',
-    handler: (pathParams: Record<string, string>, params: any, data: ConfigMapAnnotationsReq) => manageConfigMapAnnotations(pathParams.clusterId, pathParams.namespace, pathParams.name, data)
+    handler: (_pathParams: Record<string, string>, _params: any, data: ConfigMapAnnotationsReq) => manageConfigMapAnnotations(_pathParams.clusterId, pathParams.namespace, pathParams.name, data)
   },
   {
     method: 'delete',
     url: '/kubernetes/clusters/:clusterId/namespaces/:namespace/configmaps/:name',
-    handler: (pathParams: Record<string, string>, params: any, data: any) => deleteConfigMap(pathParams.clusterId, pathParams.namespace, pathParams.name)
+    handler: (_pathParams: Record<string, string>, _params: any, data: any) => deleteConfigMap(_pathParams.clusterId, pathParams.namespace, pathParams.name)
   },
   {
     method: 'delete',
     url: '/kubernetes/clusters/:clusterId/namespaces/:namespace/configmaps/batch',
-    handler: (pathParams: Record<string, string>, params: any, data: string[]) => deleteConfigMaps(pathParams.clusterId, pathParams.namespace, data)
+    handler: (_pathParams: Record<string, string>, _params: any, data: string[]) => deleteConfigMaps(_pathParams.clusterId, pathParams.namespace, data)
   }
 ]
 
-function getConfigMapPage(clusterId: string, namespace: string, params: Partial<ConfigMapQueryReq>) {
+function getConfigMapPage(clusterId: string, namespace: string, _params: Partial<ConfigMapQueryReq>) {
   const { name, page = 1, pageSize = 10 } = params || {}
   let filtered = mockConfigMaps.filter(c => c.clusterId === clusterId && c.namespace === namespace)
   if (name) filtered = filtered.filter(c => c.name.toLowerCase().includes(name.toLowerCase()))

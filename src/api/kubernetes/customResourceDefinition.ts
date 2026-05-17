@@ -2,7 +2,6 @@
  * @fileOverview CustomResourceDefinition 资源相关 API
  * @module api/kubernetes/customResourceDefinition
  */
-import request from '@/utils/request'
 import type { PageResp } from '@/types/common'
 import type {
   CustomResourceDefinitionResp,
@@ -10,6 +9,7 @@ import type {
   CustomResourceDefinitionLabelsReq,
   CustomResourceDefinitionAnnotationsReq
 } from '@/types/kubernetes/customResourceDefinition'
+import request from '@/utils/request'
 
 /**
  * 获取 CustomResourceDefinition 分页列表

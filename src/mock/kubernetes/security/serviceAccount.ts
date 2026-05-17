@@ -2,9 +2,9 @@
  * @fileOverview ServiceAccount Mock 数据
  * @module mock/kubernetes/security/serviceAccount
  */
-import { getServiceAccountPage, getServiceAccountDetail } from '@/api/kubernetes/security/serviceAccount'
-import { generateId } from '@/mock/utils'
 import type { ServiceAccountResp, ServiceAccountQueryReq } from '@/types/kubernetes/serviceAccount'
+import { getServiceAccountPage, getServiceAccountDetail } from '@/api/kubernetes/security/serviceAccount'
+import { generateId, generateImagePullSecretName } from '@/mock/utils'
 
 /**
  * ServiceAccount Mock 数据
@@ -101,11 +101,11 @@ export default [
   {
     method: 'GET',
     url: '/kubernetes/clusters/:clusterId/namespaces/:namespaceId/serviceaccounts',
-    handler: (pathParams: Record<string, string>, params: ServiceAccountQueryReq) => getServiceAccountPage(pathParams.clusterId, params)
+    handler: (_pathParams: Record<string, string>, _params: ServiceAccountQueryReq) => getServiceAccountPage(_pathParams.clusterId, _params)
   },
   {
     method: 'GET',
     url: '/kubernetes/clusters/:clusterId/namespaces/:namespaceName/serviceaccounts/:name',
-    handler: (pathParams: Record<string, string>) => getServiceAccountDetail(pathParams.clusterId, pathParams.namespaceName, pathParams.name)
+    handler: (_pathParams: Record<string, string>) => getServiceAccountDetail(_pathParams.clusterId, pathParams.namespaceName, pathParams.name)
   }
 ]

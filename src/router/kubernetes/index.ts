@@ -1,3 +1,4 @@
+import type { RouteRecordRaw } from 'vue-router'
 import { clusterRoutes } from './cluster'
 import { configRoutes } from './config'
 import { crdRoutes } from './crd'
@@ -7,7 +8,6 @@ import { nodeRoutes } from './node'
 import { securityRoutes } from './security'
 import { storageRoutes } from './storage'
 import { workloadRoutes } from './workload'
-import type { RouteRecordRaw } from 'vue-router'
 
 export const kubernetesRoutes: RouteRecordRaw[] = [
   {

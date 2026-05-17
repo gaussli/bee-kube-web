@@ -23,3 +23,16 @@ export function generateId(): string {
 export function randomIndex(len: number): number {
   return Math.floor(Math.random() * len)
 }
+
+/**
+ * 生成镜像拉取密钥名称
+ * @returns 镜像拉取密钥名称，格式：regcred-{8位随机字符}
+ */
+export function generateImagePullSecretName(): string {
+  const chars = '0123456789abcdefghijklmnopqrstuvwxyz'
+  let suffix = ''
+  for (let i = 0; i < 8; i++) {
+    suffix += chars.charAt(Math.floor(Math.random() * chars.length))
+  }
+  return `regcred-${suffix}`
+}

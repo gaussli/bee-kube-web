@@ -1,5 +1,5 @@
-import { request } from '@/utils'
 import type { PageResp, PermissionChangeStatusReq, PermissionCreateReq, PermissionDetailResp, PermissionQueryReq, PermissionResp, PermissionUpdateReq } from '@/types'
+import { request } from '@/utils'
 
 // 分页查询权限列表
 export function getPermissionPage(data: PermissionQueryReq) {

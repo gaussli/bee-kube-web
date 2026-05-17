@@ -38,10 +38,10 @@ import { onMounted, ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { ElMessage } from 'element-plus'
 import { ArrowLeft, Close, Check } from '@element-plus/icons-vue'
+import type { UserDetailResp } from '@/types'
 import BeeButton from '@/components/BeeButton/index.vue'
 import BeeDivider from '@/components/BeeDivider/index.vue'
 import UserForm from '@/components/UserForm/index.vue'
-import type { UserDetailResp } from '@/types'
 
 defineOptions({ name: 'UserEdit' })
 

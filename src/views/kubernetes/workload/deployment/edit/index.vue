@@ -55,10 +55,10 @@ import { ref, onMounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { ElMessage, type FormInstance } from 'element-plus'
 import { Document, Plus, Delete, Close, Check } from '@element-plus/icons-vue'
-import { getDeploymentDetail, updateDeployment } from '@/api'
+import type { DeploymentResp } from '@/types/kubernetes/workload/deployment'
+import { getDeploymentDetail, updateDeployment } from '@/api/kubernetes/workload/deployment'
 import BeeButton from '@/components/BeeButton/index.vue'
 import BeePageTitle from '@/components/BeePageTitle/index.vue'
-import type { DeploymentResp } from '@/types'
 
 defineOptions({ name: 'DeploymentEdit' })
 

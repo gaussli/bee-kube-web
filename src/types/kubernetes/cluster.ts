@@ -1,8 +1,24 @@
 /**
- * 集群管理相关类型定义
- * @description 包含集群查询请求、创建/更新请求、响应等类型定义
+ * Kubernetes 集群管理类型定义
+ * @module types/kubernetes/cluster
  */
 import type { BaseEntity, PageReq } from '@/types/common'
+
+/**
+ * 集群响应数据
+ */
+export interface ClusterResp extends BaseEntity {
+  /** 集群名称 */
+  name: string
+  /** 集群描述 */
+  description?: string
+  /** API Server 地址 */
+  apiServer: string
+  /** 集群状态 */
+  status: number
+  /** Kubernetes 版本 */
+  k8sVersion: string
+}
 
 /**
  * 集群查询请求参数
@@ -39,17 +55,15 @@ export interface ClusterReq {
 }
 
 /**
- * 集群响应数据
+ * 集群注册请求参数（Agent 模式）
  */
-export interface ClusterResp extends BaseEntity {
+export interface ClusterRegistrationReq {
   /** 集群名称 */
   name: string
   /** 集群描述 */
-  description?: string
-  /** API Server 地址 */
-  apiServer: string
-  /** 集群状态 */
-  status: number
-  /** Kubernetes 版本 */
-  k8sVersion?: string
+  description: string
+  /** Kubeconfig 配置 */
+  kubeconfig: string
+  /** 集群标签 */
+  labels: Record<string, string>
 }

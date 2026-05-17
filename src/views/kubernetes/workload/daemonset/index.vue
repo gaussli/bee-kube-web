@@ -167,19 +167,19 @@
 import { onMounted, reactive, ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { ElMessage } from 'element-plus'
-import { Monitor, Refresh, Plus, EditPen, Delete, View, FolderOpened, Cpu, Clock, CircleCheck, InfoFilled, DocumentCopy, DocumentChecked, MoreFilled } from '@element-plus/icons-vue'
-import { type DaemonSetQueryReq, type DaemonSetResp } from '@/types'
-import { getDaemonSetPage, deleteDaemonSet, batchDeleteDaemonSet } from '@/api'
-import { useKubernetesStore } from '@/stores'
+import { Monitor, Refresh, Plus, EditPen, Delete, View, DocumentCopy, DocumentChecked, MoreFilled } from '@element-plus/icons-vue'
+import type { DaemonSetQueryReq, DaemonSetResp } from '@/types/kubernetes/workload/daemonset'
+import { getDaemonSetPage, deleteDaemonSet, deleteDaemonSets } from '@/api/kubernetes/workload/daemonset'
 import BeeButton from '@/components/BeeButton/index.vue'
 import BeeDialog from '@/components/BeeDialog/index.vue'
+import BeeIconLabel from '@/components/BeeIconLabel/index.vue'
 import BeeInputSearch from '@/components/BeeInputSearch/index.vue'
 import BeePageTitle from '@/components/BeePageTitle/index.vue'
 import BeeSelect from '@/components/BeeSelect/index.vue'
 import BeeTag from '@/components/BeeTag/index.vue'
-import BeeIconLabel from '@/components/BeeIconLabel/index.vue'
 import { useClipboard } from '@/composables/useClipboard'
 import { usePermission } from '@/composables/usePermission'
+import { useKubernetesStore } from '@/stores'
 
 defineOptions({ name: 'DaemonSetManage' })
 
@@ -312,7 +312,7 @@ async function handleConfirmBatchDelete() {
   const namespace = selectedRows.value[0].namespace
   const names = selectedRows.value.map(row => row.name)
   try {
-    await batchDeleteDaemonSet(clusterId, namespace, names)
+    await deleteDaemonSets(clusterId, namespace, names)
     ElMessage.success(`成功删除 ${names.length} 个 DaemonSet`)
     batchDeleteDialogVisible.value = false
     selectedRows.value = []

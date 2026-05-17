@@ -1,5 +1,5 @@
-import { request } from '@/utils'
 import type { PageResp, RoleQueryReq, RoleResp, UserChangeStatusReq, UserDetailResp, UserQueryReq, UserResp } from '@/types'
+import { request } from '@/utils'
 
 // 分页查询用户列表
 export function getUserPage(data: UserQueryReq) {

@@ -2,8 +2,9 @@
  * Kubernetes 集群管理 Mock API
  * @module mock/kubernetes/cluster
  */
+import type { PageResp } from '@/types/common'
+import type { ClusterQueryReq, ClusterRegistrationReq, ClusterReq, ClusterResp } from '@/types/kubernetes/cluster'
 import { generateId } from '@/mock/utils'
-import type { ClusterQueryReq, ClusterReq, ClusterResp } from '@/types'
 
 /**
  * 集群路由配置
@@ -11,40 +12,46 @@ import type { ClusterQueryReq, ClusterReq, ClusterResp } from '@/types'
  * - GET /kubernetes/clusters - 获取集群分页列表
  * - GET /kubernetes/clusters/:id - 获取集群详情
  * - POST /kubernetes/clusters - 创建集群
+ * - POST /kubernetes/clusters/register - 注册集群
  * - PUT /kubernetes/clusters/:id - 更新集群
  * - DELETE /kubernetes/clusters/:id - 删除集群
- * - DELETE /kubernetes/clusters/batch - 批量删除集群
+ * - DELETE /kubernetes/clusters/batch - 批量删除集
  */
 export default [
   {
     method: 'get',
     url: '/kubernetes/clusters',
-    handler: (pathParams: Record<string, string>, params: Partial<ClusterQueryReq>) => getClusterPage(params)
+    handler: (params: Partial<ClusterQueryReq>): PageResp<ClusterResp> => getClusterPage(params)
   },
   {
     method: 'get',
     url: '/kubernetes/clusters/:id',
-    handler: (pathParams: Record<string, string>, params: any, data: any) => getClusterDetail(pathParams.id)
+    handler: (pathParams: Record<string, string>): ClusterResp => getClusterDetail(pathParams.id)
   },
   {
     method: 'post',
     url: '/kubernetes/clusters',
-    handler: (pathParams: Record<string, string>, params: any, data: Partial<ClusterReq>) => createCluster(data)
+    handler: (data: Partial<ClusterReq>): void => createCluster(data)
+  },
+  {
+    method: 'post',
+    url: '/kubernetes/clusters/register',
+    handler: (data: Partial<ClusterRegistrationReq>): void => registerCluster(data)
   },
   {
     method: 'put',
     url: '/kubernetes/clusters/:id',
-    handler: (pathParams: Record<string, string>, params: any, data: Partial<ClusterReq>) => updateCluster(pathParams.id, data)
+    handler: (pathParams: Record<string, string>, data: Partial<ClusterReq>): void => updateCluster(pathParams.id, data)
   },
   {
     method: 'delete',
     url: '/kubernetes/clusters/:id',
-    handler: (pathParams: Record<string, string>, params: any, data: any) => deleteCluster(pathParams.id)
+    handler: (pathParams: Record<string, string>): void => deleteCluster(pathParams.id)
   },
   {
     method: 'delete',
     url: '/kubernetes/clusters/batch',
-    handler: (pathParams: Record<string, string>, params: any, data: string[]) => batchDeleteCluster(data)
+    handler: (data: string[]): void => deleteClusters(data)
   }
 ]
 
@@ -53,7 +60,7 @@ export default [
  * @param params - 查询参数
  * @returns 分页数据
  */
-function getClusterPage(params: Partial<ClusterQueryReq>) {
+function getClusterPage(params: Partial<ClusterQueryReq>): PageResp<ClusterResp> {
   const { id, name, status, page = 1, pageSize = 10 } = params || {}
 
   let filtered = [...mockClusters]
@@ -79,75 +86,95 @@ function getClusterPage(params: Partial<ClusterQueryReq>) {
  * @param id - 集群ID
  * @returns 集群详情对象
  */
-function getClusterDetail(id: string) {
-  return mockClusters[0]
+function getClusterDetail(id: string): ClusterResp {
+  const cluster = mockClusters.find(c => c.id === id)
+  if (!cluster) {
+    console.error('[getClusterDetail] can not find cluster:', id)
+    return mockClusters[0]
+  }
+  return cluster
 }
 
 /**
  * 创建集群
  * @param data - 集群创建数据
- * @returns 新创建的集群ID
  */
-function createCluster(data: Partial<ClusterReq>) {
+function createCluster(data: Partial<ClusterReq>): void {
   const created: ClusterResp = {
     id: generateId(),
     name: data.name || '',
     apiServer: data.apiServer || '',
     description: data.description || '',
     status: 1,
+    k8sVersion: '',
     createBy: 'admin',
     createAt: new Date().toLocaleString(),
     updateBy: 'admin',
     updateAt: new Date().toLocaleString()
   }
   mockClusters.push(created)
-  return created.id
+}
+
+/**
+ * 注册集群
+ * @param data - 集群注册数据
+ */
+function registerCluster(data: Partial<ClusterRegistrationReq>): void {
+  const created: ClusterResp = {
+    id: generateId(),
+    name: data.name || '',
+    apiServer: '',
+    description: '',
+    status: 1,
+    k8sVersion: '',
+    labels: data.labels || {},
+    createBy: 'admin',
+    createAt: new Date().toLocaleString(),
+    updateBy: 'admin',
+    updateAt: new Date().toLocaleString()
+  }
+  mockClusters.push(created)
 }
 
 /**
  * 更新集群信息
  * @param id - 集群ID
  * @param data - 集群更新数据
- * @returns 更新后的集群ID
  */
-function updateCluster(id: string, data: Partial<ClusterReq>) {
+function updateCluster(id: string, data: Partial<ClusterReq>): void {
   const index = mockClusters.findIndex(c => c.id === id)
   if (index === -1) {
     console.error('[Update Cluster] can not find cluster:', id)
-    return id
+    return
   }
   const updated = {
-    ...mockClusters[0],
+    ...mockClusters[index],
     ...data,
     updateBy: 'admin',
     updateAt: new Date().toLocaleString()
   }
-  mockClusters[0] = updated
-  return updated.id
+  mockClusters[index] = updated
 }
 
 /**
  * 删除单个集群
  * @param id - 集群ID
- * @returns 是否删除成功
  */
-function deleteCluster(id: string) {
+function deleteCluster(id: string): void {
   const index = mockClusters.findIndex(c => c.id === id)
   if (index === -1) {
     console.error('[Delete Cluster] can not find cluster:', id)
-    return false
+    return
   }
 
   mockClusters.splice(index, 1)
-  return true
 }
 
 /**
  * 批量删除集群
  * @param ids - 集群ID数组
- * @returns 是否删除成功
  */
-function batchDeleteCluster(ids: string[]) {
+function deleteClusters(ids: string[]): void {
   ids.forEach(id => {
     const index = mockClusters.findIndex(c => c.id === id)
     if (index === -1) {
@@ -156,7 +183,6 @@ function batchDeleteCluster(ids: string[]) {
       mockClusters.splice(index, 1)
     }
   })
-  return true
 }
 
 /**
