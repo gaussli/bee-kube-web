@@ -14,6 +14,8 @@ import { generateId } from '@/mock/utils'
  * - GET /kubernetes/clusters/:clusterId/namespaces/:namespace/daemonsets/:name/yaml - 查看 YAML
  * - POST /kubernetes/clusters/:clusterId/namespaces/:namespace/daemonsets - 创建 DaemonSet
  * - PUT /kubernetes/clusters/:clusterId/namespaces/:namespace/daemonsets/:name - 更新 DaemonSet
+ * - POST /kubernetes/clusters/:clusterId/namespaces/:namespace/daemonsets/:name/restart - 重启
+ * - POST /kubernetes/clusters/:clusterId/namespaces/:namespace/daemonsets/:name/rollback - 回滚
  * - POST /kubernetes/clusters/:clusterId/namespaces/:namespace/daemonsets/:name/labels - 更新标签
  * - POST /kubernetes/clusters/:clusterId/namespaces/:namespace/daemonsets/:name/annotations - 更新注解
  * - DELETE /kubernetes/clusters/:clusterId/namespaces/:namespace/daemonsets/:name - 删除 DaemonSet
@@ -46,6 +48,16 @@ export default [
     method: 'put',
     url: '/kubernetes/clusters/:clusterId/namespaces/:namespace/daemonsets/:name',
     handler: (pathParams: Record<string, string>, data: Partial<DaemonSetReq>): void => updateDaemonSet(pathParams.clusterId, pathParams.namespace, pathParams.name, data)
+  },
+  {
+    method: 'post',
+    url: '/kubernetes/clusters/:clusterId/namespaces/:namespace/daemonsets/:name/restart',
+    handler: (pathParams: Record<string, string>): void => restartDaemonSet(pathParams.clusterId, pathParams.namespace, pathParams.name)
+  },
+  {
+    method: 'post',
+    url: '/kubernetes/clusters/:clusterId/namespaces/:namespace/daemonsets/:name/rollback',
+    handler: (pathParams: Record<string, string>): void => rollbackDaemonSet(pathParams.clusterId, pathParams.namespace, pathParams.name)
   },
   {
     method: 'post',
@@ -259,6 +271,40 @@ function updateDaemonSet(clusterId: string, namespace: string, name: string, dat
     updateAt: new Date().toLocaleString()
   }
   mockDaemonSets[index] = updated
+}
+
+/**
+ * 重启 DaemonSet
+ * @param clusterId - 集群ID
+ * @param namespace - 命名空间
+ * @param name - DaemonSet 名称
+ */
+function restartDaemonSet(clusterId: string, namespace: string, name: string): void {
+  const index = mockDaemonSets.findIndex(d => d.clusterId === clusterId && d.namespace === namespace && d.name === name)
+  if (index === -1) {
+    console.error('[Restart DaemonSet] can not find daemonset:', clusterId, namespace, name)
+    return
+  }
+  console.log('[Restart DaemonSet] restart:', clusterId, namespace, name)
+  mockDaemonSets[index].updateAt = new Date().toLocaleString()
+  mockDaemonSets[index].updateBy = 'admin'
+}
+
+/**
+ * 回滚 DaemonSet
+ * @param clusterId - 集群ID
+ * @param namespace - 命名空间
+ * @param name - DaemonSet 名称
+ */
+function rollbackDaemonSet(clusterId: string, namespace: string, name: string): void {
+  const index = mockDaemonSets.findIndex(d => d.clusterId === clusterId && d.namespace === namespace && d.name === name)
+  if (index === -1) {
+    console.error('[Rollback DaemonSet] can not find daemonset:', clusterId, namespace, name)
+    return
+  }
+  console.log('[Rollback DaemonSet] rollback:', clusterId, namespace, name)
+  mockDaemonSets[index].updateAt = new Date().toLocaleString()
+  mockDaemonSets[index].updateBy = 'admin'
 }
 
 /**

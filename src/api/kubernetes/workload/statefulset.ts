@@ -69,6 +69,26 @@ export function scaleStatefulSet(clusterId: string, namespace: string, name: str
 }
 
 /**
+ * 重启 StatefulSet
+ * @param clusterId - 集群ID
+ * @param namespace - 命名空间名称
+ * @param name - StatefulSet 名称
+ */
+export function restartStatefulSet(clusterId: string, namespace: string, name: string): Promise<void> {
+  return request.post(`/kubernetes/clusters/${clusterId}/namespaces/${namespace}/statefulsets/${name}/restart`)
+}
+
+/**
+ * 回滚 StatefulSet
+ * @param clusterId - 集群ID
+ * @param namespace - 命名空间名称
+ * @param name - StatefulSet 名称
+ */
+export function rollbackStatefulSet(clusterId: string, namespace: string, name: string): Promise<void> {
+  return request.post(`/kubernetes/clusters/${clusterId}/namespaces/${namespace}/statefulsets/${name}/rollback`)
+}
+
+/**
  * 更新 StatefulSet 标签
  * @param clusterId - 集群ID
  * @param namespace - 命名空间名称
@@ -111,6 +131,17 @@ export function deleteStatefulSets(clusterId: string, namespace: string, names: 
 }
 
 /**
+ * 查看 StatefulSet YAML
+ * @param clusterId - 集群ID
+ * @param namespace - 命名空间名称
+ * @param name - StatefulSet 名称
+ * @returns StatefulSet YAML 配置
+ */
+export function getStatefulSetYaml(clusterId: string, namespace: string, name: string): Promise<string> {
+  return request.get<string>(`/kubernetes/clusters/${clusterId}/namespaces/${namespace}/statefulsets/${name}/yaml`)
+}
+
+/**
  * 导出 StatefulSet CSV
  * @param clusterId - 集群ID
  * @param namespace - 命名空间名称
@@ -128,15 +159,4 @@ export function exportStatefulSet(clusterId: string, namespace: string, params: 
  */
 export function importStatefulSet(clusterId: string, namespace: string, data: Partial<StatefulSetYamlReq>): Promise<void> {
   return request.post(`/kubernetes/clusters/${clusterId}/namespaces/${namespace}/statefulsets/import`, { data: data })
-}
-
-/**
- * 查看 StatefulSet YAML
- * @param clusterId - 集群ID
- * @param namespace - 命名空间名称
- * @param name - StatefulSet 名称
- * @returns StatefulSet YAML 配置
- */
-export function getStatefulSetYaml(clusterId: string, namespace: string, name: string): Promise<string> {
-  return request.get<string>(`/kubernetes/clusters/${clusterId}/namespaces/${namespace}/statefulsets/${name}/yaml`)
 }

@@ -15,6 +15,8 @@ import { generateId } from '@/mock/utils'
  * - POST /kubernetes/clusters/:clusterId/namespaces/:namespace/statefulsets - 创建 StatefulSet
  * - PUT /kubernetes/clusters/:clusterId/namespaces/:namespace/statefulsets/:name - 更新 StatefulSet
  * - POST /kubernetes/clusters/:clusterId/namespaces/:namespace/statefulsets/:name/scale - 扩缩容
+ * - POST /kubernetes/clusters/:clusterId/namespaces/:namespace/statefulsets/:name/restart - 重启
+ * - POST /kubernetes/clusters/:clusterId/namespaces/:namespace/statefulsets/:name/rollback - 回滚
  * - POST /kubernetes/clusters/:clusterId/namespaces/:namespace/statefulsets/:name/labels - 更新标签
  * - POST /kubernetes/clusters/:clusterId/namespaces/:namespace/statefulsets/:name/annotations - 更新注解
  * - DELETE /kubernetes/clusters/:clusterId/namespaces/:namespace/statefulsets/:name - 删除 StatefulSet
@@ -52,6 +54,16 @@ export default [
     method: 'post',
     url: '/kubernetes/clusters/:clusterId/namespaces/:namespace/statefulsets/:name/scale',
     handler: (pathParams: Record<string, string>, data: Partial<StatefulSetScaleReq>): void => scaleStatefulSet(pathParams.clusterId, pathParams.namespace, pathParams.name, data)
+  },
+  {
+    method: 'post',
+    url: '/kubernetes/clusters/:clusterId/namespaces/:namespace/statefulsets/:name/restart',
+    handler: (pathParams: Record<string, string>): void => restartStatefulSet(pathParams.clusterId, pathParams.namespace, pathParams.name)
+  },
+  {
+    method: 'post',
+    url: '/kubernetes/clusters/:clusterId/namespaces/:namespace/statefulsets/:name/rollback',
+    handler: (pathParams: Record<string, string>): void => rollbackStatefulSet(pathParams.clusterId, pathParams.namespace, pathParams.name)
   },
   {
     method: 'post',
@@ -297,6 +309,40 @@ function scaleStatefulSet(clusterId: string, namespace: string, name: string, da
     updateBy: 'admin',
     updateAt: new Date().toLocaleString()
   }
+}
+
+/**
+ * 重启 StatefulSet
+ * @param clusterId - 集群ID
+ * @param namespace - 命名空间
+ * @param name - StatefulSet 名称
+ */
+function restartStatefulSet(clusterId: string, namespace: string, name: string): void {
+  const index = mockStatefulSets.findIndex(s => s.clusterId === clusterId && s.namespace === namespace && s.name === name)
+  if (index === -1) {
+    console.error('[Restart StatefulSet] can not find statefulset:', clusterId, namespace, name)
+    return
+  }
+  console.log('[Restart StatefulSet] restart:', clusterId, namespace, name)
+  mockStatefulSets[index].updateAt = new Date().toLocaleString()
+  mockStatefulSets[index].updateBy = 'admin'
+}
+
+/**
+ * 回滚 StatefulSet
+ * @param clusterId - 集群ID
+ * @param namespace - 命名空间
+ * @param name - StatefulSet 名称
+ */
+function rollbackStatefulSet(clusterId: string, namespace: string, name: string): void {
+  const index = mockStatefulSets.findIndex(s => s.clusterId === clusterId && s.namespace === namespace && s.name === name)
+  if (index === -1) {
+    console.error('[Rollback StatefulSet] can not find statefulset:', clusterId, namespace, name)
+    return
+  }
+  console.log('[Rollback StatefulSet] rollback:', clusterId, namespace, name)
+  mockStatefulSets[index].updateAt = new Date().toLocaleString()
+  mockStatefulSets[index].updateBy = 'admin'
 }
 
 /**

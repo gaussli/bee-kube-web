@@ -50,6 +50,26 @@ export function updateDaemonSet(clusterId: string, namespace: string, name: stri
 }
 
 /**
+ * 重启 DaemonSet
+ * @param clusterId - 集群ID
+ * @param namespace - 命名空间名称
+ * @param name - DaemonSet 名称
+ */
+export function restartDaemonSet(clusterId: string, namespace: string, name: string): Promise<void> {
+  return request.post(`/kubernetes/clusters/${clusterId}/namespaces/${namespace}/daemonsets/${name}/restart`)
+}
+
+/**
+ * 回滚 DaemonSet
+ * @param clusterId - 集群ID
+ * @param namespace - 命名空间名称
+ * @param name - DaemonSet 名称
+ */
+export function rollbackDaemonSet(clusterId: string, namespace: string, name: string): Promise<void> {
+  return request.post(`/kubernetes/clusters/${clusterId}/namespaces/${namespace}/daemonsets/${name}/rollback`)
+}
+
+/**
  * 更新 DaemonSet 标签
  * @param clusterId - 集群ID
  * @param namespace - 命名空间名称
@@ -92,6 +112,17 @@ export function deleteDaemonSets(clusterId: string, namespace: string, names: st
 }
 
 /**
+ * 查看 DaemonSet YAML
+ * @param clusterId - 集群ID
+ * @param namespace - 命名空间名称
+ * @param name - DaemonSet 名称
+ * @returns DaemonSet YAML 配置
+ */
+export function getDaemonSetYaml(clusterId: string, namespace: string, name: string): Promise<string> {
+  return request.get<string>(`/kubernetes/clusters/${clusterId}/namespaces/${namespace}/daemonsets/${name}/yaml`)
+}
+
+/**
  * 导出 DaemonSet CSV
  * @param clusterId - 集群ID
  * @param namespace - 命名空间名称
@@ -109,15 +140,4 @@ export function exportDaemonSet(clusterId: string, namespace: string, params: Pa
  */
 export function importDaemonSet(clusterId: string, namespace: string, data: Partial<DaemonSetYamlReq>): Promise<void> {
   return request.post(`/kubernetes/clusters/${clusterId}/namespaces/${namespace}/daemonsets/import`, { data: data })
-}
-
-/**
- * 查看 DaemonSet YAML
- * @param clusterId - 集群ID
- * @param namespace - 命名空间名称
- * @param name - DaemonSet 名称
- * @returns DaemonSet YAML 配置
- */
-export function getDaemonSetYaml(clusterId: string, namespace: string, name: string): Promise<string> {
-  return request.get<string>(`/kubernetes/clusters/${clusterId}/namespaces/${namespace}/daemonsets/${name}/yaml`)
 }
