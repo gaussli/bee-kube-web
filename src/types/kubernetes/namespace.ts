@@ -3,33 +3,65 @@
  * @module types/kubernetes/namespace
  */
 import type { BaseEntity, PageReq } from '@/types/common'
+import type { MetadataAnnotationReq, MetadataLabelReq } from './comomn'
+import type { Condition, Metadata } from './types'
+
+/**
+ * 命名空间状态枚举
+ * - Active: 命名空间活跃，可正常使用
+ * - Terminating: 命名空间正在终止中（等待资源清理）
+ */
+export type NamespaceStatus = 'Active' | 'Terminating'
 
 /**
  * 命名空间响应数据
  * @extends BaseEntity 继承基础实体（含 id, createAt, createBy, updateAt, updateBy）
  */
 export interface NamespaceResp extends BaseEntity {
-  /** 命名空间名称 */
-  name: string
-  /** 描述信息 */
-  description?: string
+  uid: string
   /** 所属集群ID */
   clusterId: string
   /** 所属集群名称 */
   clusterName: string
+  /** 命名空间名称 */
+  name: string
+  /** 描述信息 */
+  description?: string
   /** 状态 */
   status: string
-  /** 标签 */
-  labels: Record<string, string>
-  /** 注解 */
-  annotations: Record<string, string>
+  /** 命名空间类型，0:系统级，不可删除；1:用户级，可删除 */
+  type: number
+}
+
+export interface NamespaceOverviewResp extends BaseEntity {
+  uid: string
+  clusterId: string
+  clusterName: string
+  name: string
+  description: string
+  status: string
+  type: number
+}
+
+export interface NamespaceRunningResp {
+  conditions: Condition[]
+  podUsage: number
+  deploymentUsage: number
+  statefulSetUsage: number
+  daemonSetUsage: number
+  serviceUsage: number
+}
+
+export interface NamespaceQuotaResp {
   /** 资源配额 */
   resourceQuota: NamespaceResourceQuota
   /** 资源限制范围 */
   limitRange: NamespaceLimitRange
-  /** 是否可删除 */
-  deletable: boolean
 }
+
+export interface NamespaceMetadataResp extends Metadata {}
+
+export interface NamespaceEventResp extends Event {}
 
 /**
  * 命名空间查询请求参数
@@ -63,22 +95,12 @@ export interface NamespaceReq {
 /**
  * 命名空间标签更新请求
  */
-export interface NamespaceLabelsReq {
-  /** 标签键值对 */
-  labels: Record<string, string>
-  /** 操作（1: 新增；2: 移除：3: 全量替换） */
-  operation: number
-}
+export interface NamespaceLabelsReq extends MetadataLabelReq {}
 
 /**
  * 命名空间注解更新请求
  */
-export interface NamespaceAnnotationsReq {
-  /** 注解键值对 */
-  annotations: Record<string, string>
-  /** 操作（1: 新增；2: 移除：3: 全量替换） */
-  operation: number
-}
+export interface NamespaceAnnotationsReq extends MetadataAnnotationReq {}
 
 /**
  * 命名空间配额请求

@@ -4,6 +4,17 @@
  */
 
 /**
+ * Kubernetes 元数据
+ * @description 用于描述资源的标签和注解信息
+ */
+export interface Metadata {
+  /** 标签 */
+  labels: Record<string, string>
+  /** 注解 */
+  annotations: Record<string, string>
+}
+
+/**
  * Kubernetes 对象引用
  * @description 用于引用集群中的任意 Kubernetes 资源对象
  */
@@ -41,6 +52,9 @@ export interface Condition {
 
 /**
  * Kubernetes 污点效果枚举
+ * - NoSchedule: 不允许调度新 Pod 到该节点
+ * - PreferNoSchedule: 尽量避免调度新 Pod 到该节点
+ * - NoExecute: 不允许调度并驱逐已有 Pod
  */
 export type TaintEffect = 'NoSchedule' | 'PreferNoSchedule' | 'NoExecute'
 
@@ -70,11 +84,18 @@ export interface EventSource {
 }
 
 /**
+ * Kubernetes 事件类型枚举
+ * - Normal: 正常事件（如容器启动、调度成功）
+ * - Warning: 警告事件（如资源不足、镜像拉取失败）
+ */
+export type EventType = 'Normal' | 'Warning'
+
+/**
  * 事件
  */
 export interface Event {
   /** 事件类型（Normal: 正常事件；Warning: 警告事件） */
-  type?: string
+  type?: EventType
   /** 事件原因 */
   reason?: string
   /** 事件消息 */

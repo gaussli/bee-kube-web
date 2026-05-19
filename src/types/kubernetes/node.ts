@@ -3,7 +3,16 @@
  * @module types/kubernetes/node
  */
 import type { BaseEntity, PageReq } from '@/types/common'
-import type { Condition, Event, Taint } from './types'
+import type { MetadataAnnotationReq, MetadataLabelReq } from './comomn'
+import type { Condition, Event, Metadata, Taint } from './types'
+
+/**
+ * 节点状态枚举
+ * - Ready: 节点健康，可正常调度 Pod
+ * - NotReady: 节点不健康，无法调度 Pod
+ * - Unknown: 节点状态未知
+ */
+export type NodeType = 'Ready' | 'NotReady' | 'Unknown'
 
 /**
  * 节点响应数据
@@ -20,10 +29,10 @@ export interface NodeResp extends BaseEntity {
   name: string
   /** 描述信息 */
   description?: string
+  /** 状态 */
+  status: NodeType
   /** IP 地址 */
   ip: string
-  /** 状态 */
-  status: string
   /** 是否不可调度 */
   unschedulable: boolean
   /** CPU 分配 */
@@ -59,14 +68,14 @@ export interface NodeOverviewResp extends BaseEntity {
   name: string
   /** 描述信息 */
   description: string
+  /** 状态 */
+  status: NodeType
+  /** 角色列表 */
+  roles: string[]
   /** IP 地址 */
   ip: string
   /** 主机名 */
   hostname: string
-  /** 角色列表 */
-  roles: string[]
-  /** 状态 */
-  status: string
   /** 是否不可调度 */
   unschedulable: boolean
   /** CRI 版本 */
@@ -122,11 +131,7 @@ export interface NodeRunningResp {
 /**
  * 节点元数据响应数据
  */
-export interface NodeMetadataResp {
-  /** 标签 */
-  labels: Record<string, string>
-  /** 注解 */
-  annotations: Record<string, string>
+export interface NodeMetadataResp extends Metadata {
   /** 拓扑信息 */
   topologies: Record<string, string>
 }
@@ -173,7 +178,7 @@ export interface NodeQueryReq extends PageReq {
   /** IP 地址 */
   ip?: string
   /** 状态 */
-  status?: string
+  status?: NodeType
   /** 标签选择器 */
   labelSelector?: string
 }
@@ -206,22 +211,12 @@ export interface NodeCordonReq {
 /**
  * 节点标签配置请求
  */
-export interface NodeLabelsReq {
-  /** 标签键值对 */
-  labels: Record<string, string>
-  /** 操作（1: 新增；2: 移除：3: 全量替换） */
-  operation: number
-}
+export interface NodeLabelsReq extends MetadataLabelReq {}
 
 /**
  * 节点注解配置请求
  */
-export interface NodeAnnotationsReq {
-  /** 注解键值对 */
-  annotations: Record<string, string>
-  /** 操作（1: 新增；2: 移除：3: 全量替换） */
-  operation: number
-}
+export interface NodeAnnotationsReq extends MetadataAnnotationReq {}
 
 /**
  * 节点拓扑配置请求
