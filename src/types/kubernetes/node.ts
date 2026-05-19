@@ -15,6 +15,16 @@ import type { Condition, Event, Metadata, Taint } from './types'
 export type NodeType = 'Ready' | 'NotReady' | 'Unknown'
 
 /**
+ * 节点条件类型枚举
+ * - Ready: 节点Ready状态
+ * - MemoryPressure: 内存压力
+ * - DiskPressure: 磁盘压力
+ * - PIDPressure: PID压力
+ * - NetworkUnavailable: 网络不可用
+ */
+export type NodeConditionType = 'Ready' | 'MemoryPressure' | 'DiskPressure' | 'PIDPressure' | 'NetworkUnavailable'
+
+/**
  * 节点响应数据
  * @extends BaseEntity 继承基础实体（含 id, createAt, createBy, updateAt, updateBy）
  */
@@ -92,16 +102,16 @@ export interface NodeOverviewResp extends BaseEntity {
   kernelVersion: string
   /** 架构 */
   architecture: string
+  /** 条件列表 */
+  conditions: Condition<NodeConditionType>[]
+  /** 污点列表 */
+  taints: Taint[]
 }
 
 /**
  * 节点运行状态响应数据
  */
-export interface NodeRunningResp {
-  /** 条件列表 */
-  conditions: Condition[]
-  /** 污点列表 */
-  taints: Taint[]
+export interface NodeMonitorResp {
   /** CPU 容量 */
   cpuCapacity: string
   /** CPU 分配 */

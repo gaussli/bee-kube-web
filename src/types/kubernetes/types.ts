@@ -5,7 +5,6 @@
 
 /**
  * Kubernetes 元数据
- * @description 用于描述资源的标签和注解信息
  */
 export interface Metadata {
   /** 标签 */
@@ -16,7 +15,6 @@ export interface Metadata {
 
 /**
  * Kubernetes 对象引用
- * @description 用于引用集群中的任意 Kubernetes 资源对象
  */
 export interface ObjectReference {
   /** 资源所属 API 组 */
@@ -35,11 +33,10 @@ export interface ObjectReference {
 
 /**
  * Kubernetes 条件状态
- * @description 描述资源的当前状态条件
  */
-export interface Condition {
+export interface Condition<T> {
   /** 条件类型 */
-  type: string
+  type: T
   /** 条件原因 */
   reason?: string
   /** 条件消息 */
@@ -74,7 +71,7 @@ export interface Taint {
 
 /**
  * 事件来源
- * @description 描述事件产生的来源信息
+ * 描述事件产生的来源信息
  */
 export interface EventSource {
   /** 来源组件（如 kubelet、scheduler） */
@@ -91,7 +88,7 @@ export interface EventSource {
 export type EventType = 'Normal' | 'Warning'
 
 /**
- * 事件
+ * Kubernetes 事件
  */
 export interface Event {
   /** 事件类型（Normal: 正常事件；Warning: 警告事件） */
@@ -111,3 +108,25 @@ export interface Event {
   /** 最后发生时间 */
   lastTimestamp?: string
 }
+
+/**
+ * 资源修订版本
+ */
+export interface Revision {
+  /** 修订版本号 */
+  revision: number
+  /** 变更原因 */
+  changeCause: string
+  /** 创建时间 */
+  creationAt: string
+  /** 是否为当前活跃版本 */
+  active: boolean
+}
+
+/**
+ * 工作负载重启策略枚举
+ * - Always: 始终重启（默认策略，适用于长运行服务）
+ * - OnFailure: 失败时重启（适用于一次性任务）
+ * - Never: 从不重启（适用于不间断任务）
+ */
+export type WorkloadRestartPolicy = 'Always' | 'OnFailure' | 'Never'
