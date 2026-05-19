@@ -1,5 +1,6 @@
 /**
- * @fileOverview Job 资源相关类型定义
+ * Job 资源相关类型定义
+ * @module types/kubernetes/workload/job
  */
 import type { BaseEntity, PageReq } from '@/types/common'
 
@@ -53,8 +54,6 @@ export interface JobContainer {
  * @extends BaseEntity 继承基础实体（含 id, createAt, createBy, updateAt, updateBy）
  */
 export interface JobResp extends BaseEntity {
-  /** Job ID */
-  id: string
   /** Job 名称 */
   name: string
   /** 所属命名空间 */
@@ -94,18 +93,12 @@ export interface JobResp extends BaseEntity {
  * @extends PageReq 继承分页请求（含 page, pageSize）
  */
 export interface JobQueryReq extends PageReq {
-  /** 命名空间 ID */
-  id: string
   /** Job 名称（模糊匹配） */
-  name: string
-  /** 命名空间名称 */
-  namespace: string
-  /** 集群 ID */
-  clusterId: string
+  name?: string
   /** 状态 */
-  status: string
+  status?: string
   /** 标签选择器 */
-  labelSelector: string
+  labelSelector?: string
 }
 
 /**

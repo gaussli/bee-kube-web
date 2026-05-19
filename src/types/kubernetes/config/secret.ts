@@ -1,5 +1,6 @@
 /**
- * @fileOverview Secret 资源相关类型定义
+ * Secret 资源相关类型定义
+ * @module types/kubernetes/config/secret
  */
 import type { BaseEntity, PageReq } from '@/types/common'
 
@@ -21,8 +22,6 @@ export type SecretType =
  * @extends BaseEntity 继承基础实体（含 id, createAt, createBy, updateAt, updateBy）
  */
 export interface SecretResp extends BaseEntity {
-  /** Secret ID */
-  id: string
   /** Secret 名称 */
   name: string
   /** 所属命名空间 */
@@ -52,18 +51,12 @@ export interface SecretResp extends BaseEntity {
  * @extends PageReq 继承分页请求（含 page, pageSize）
  */
 export interface SecretQueryReq extends PageReq {
-  /** 命名空间 ID */
-  id: string
   /** Secret 名称（模糊匹配） */
-  name: string
-  /** 命名空间名称 */
-  namespace: string
-  /** 集群 ID */
-  clusterId: string
+  name?: string
   /** Secret 类型 */
-  type: SecretType
+  type?: SecretType
   /** 标签选择器 */
-  labelSelector: string
+  labelSelector?: string
 }
 
 /**

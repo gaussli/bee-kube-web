@@ -1,15 +1,188 @@
 /**
- * @fileOverview CustomResourceDefinition Mock 数据
+ * CRD Mock API
  * @module mock/kubernetes/customResourceDefinition
  */
-import type { CustomResourceDefinitionResp, CustomResourceDefinitionQueryReq } from '@/types/kubernetes/customResourceDefinition'
-import { getCustomResourceDefinitionPage, getCustomResourceDefinitionDetail } from '@/api/kubernetes/customResourceDefinition'
+import type { PageResp } from '@/types/common'
+import type { CrdResp, CrdQueryReq, CrdLabelsReq, CrdAnnotationsReq } from '@/types/kubernetes/crd'
 import { generateId } from '@/mock/utils'
 
 /**
- * CustomResourceDefinition Mock 数据
+ * CRD 路由配置
+ * @remarks
+ * - GET /kubernetes/clusters/:clusterId/crds - 获取 CRD 分页列表
+ * - GET /kubernetes/clusters/:clusterId/crds/:name - 获取 CRD 详情
+ * - POST /kubernetes/clusters/:clusterId/crds/:name/labels - 更新 CRD 标签
+ * - POST /kubernetes/clusters/:clusterId/crds/:name/annotations - 更新 CRD 注解
+ * - DELETE /kubernetes/clusters/:clusterId/crds/:name - 删除 CRD
+ * - DELETE /kubernetes/clusters/:clusterId/crds - 批量删除 CRD
  */
-const mockCustomResourceDefinitions: CustomResourceDefinitionResp[] = [
+export default [
+  {
+    method: 'GET',
+    url: '/kubernetes/clusters/:clusterId/crds',
+    handler: (pathParams: Record<string, string>, params: Partial<CrdQueryReq>): PageResp<CrdResp> => getCrdPage(pathParams.clusterId, params)
+  },
+  {
+    method: 'GET',
+    url: '/kubernetes/clusters/:clusterId/crds/:name',
+    handler: (pathParams: Record<string, string>): CrdResp => getCrdDetail(pathParams.clusterId, pathParams.name)
+  },
+  {
+    method: 'POST',
+    url: '/kubernetes/clusters/:clusterId/crds/:name/labels',
+    handler: (pathParams: Record<string, string>, data: Partial<CrdLabelsReq>): void => manageCrdLabels(pathParams.clusterId, pathParams.name, data)
+  },
+  {
+    method: 'POST',
+    url: '/kubernetes/clusters/:clusterId/crds/:name/annotations',
+    handler: (pathParams: Record<string, string>, data: Partial<CrdAnnotationsReq>): void => manageCrdAnnotations(pathParams.clusterId, pathParams.name, data)
+  },
+  {
+    method: 'DELETE',
+    url: '/kubernetes/clusters/:clusterId/crds/:name',
+    handler: (pathParams: Record<string, string>): void => deleteCrd(pathParams.clusterId, pathParams.name)
+  },
+  {
+    method: 'DELETE',
+    url: '/kubernetes/clusters/:clusterId/crds',
+    handler: (pathParams: Record<string, string>, data: { names: string[] }): void => deleteCrds(pathParams.clusterId, data)
+  }
+]
+
+/**
+ * 获取 CRD 分页列表
+ * @param clusterId - 集群 ID
+ * @param params - 查询参数
+ * @returns 分页数据
+ */
+function getCrdPage(clusterId: string, params: Partial<CrdQueryReq>): PageResp<CrdResp> {
+  const { name, group, scope, page = 1, pageSize = 10 } = params || {}
+
+  let filtered = [...mockCrds].filter(c => c.clusterId === clusterId)
+  if (name) {
+    filtered = filtered.filter(c => c.name.includes(name))
+  }
+  if (group) {
+    filtered = filtered.filter(c => c.group.includes(group))
+  }
+  if (scope) {
+    filtered = filtered.filter(c => c.scope === scope)
+  }
+
+  const total = filtered.length
+  const start = (page - 1) * pageSize
+  const end = start + pageSize
+  const list = filtered.slice(start, end)
+
+  return { list, total, page, pageSize }
+}
+
+/**
+ * 获取 CRD 详情
+ * @param clusterId - 集群 ID
+ * @param name - CRD 名称
+ * @returns CRD 详情
+ */
+function getCrdDetail(clusterId: string, name: string): CrdResp {
+  const crd = mockCrds.find(c => c.clusterId === clusterId && c.name === name)
+  if (!crd) {
+    throw new Error(`[Get CRD Detail] can not find crd: ${name}`)
+  }
+  return { ...crd }
+}
+
+/**
+ * 更新 CRD 标签
+ * @param clusterId - 集群 ID
+ * @param name - CRD 名称
+ * @param data - 标签更新数据
+ */
+function manageCrdLabels(clusterId: string, name: string, data: Partial<CrdLabelsReq>): void {
+  const index = mockCrds.findIndex(c => c.clusterId === clusterId && c.name === name)
+  if (index === -1) {
+    console.error('[Update CRD Labels] can not find crd:', name)
+    return
+  }
+  const { labels, operation } = data
+  const currentLabels = mockCrds[index].labels || {}
+
+  if (operation === 1) {
+    mockCrds[index].labels = { ...currentLabels, ...labels }
+  } else if (operation === 2) {
+    const newLabels = { ...currentLabels }
+    Object.keys(labels || {}).forEach(key => delete newLabels[key])
+    mockCrds[index].labels = newLabels
+  } else if (operation === 3) {
+    mockCrds[index].labels = labels
+  }
+  mockCrds[index].updateAt = new Date().toLocaleString()
+  mockCrds[index].updateBy = 'admin'
+}
+
+/**
+ * 更新 CRD 注解
+ * @param clusterId - 集群 ID
+ * @param name - CRD 名称
+ * @param data - 注解更新数据
+ */
+function manageCrdAnnotations(clusterId: string, name: string, data: Partial<CrdAnnotationsReq>): void {
+  const index = mockCrds.findIndex(c => c.clusterId === clusterId && c.name === name)
+  if (index === -1) {
+    console.error('[Update CRD Annotations] can not find crd:', name)
+    return
+  }
+  const { annotations, operation } = data
+  const currentAnnotations = mockCrds[index].annotations || {}
+
+  if (operation === 1) {
+    mockCrds[index].annotations = { ...currentAnnotations, ...annotations }
+  } else if (operation === 2) {
+    const newAnnotations = { ...currentAnnotations }
+    Object.keys(annotations || {}).forEach(key => delete newAnnotations[key])
+    mockCrds[index].annotations = newAnnotations
+  } else if (operation === 3) {
+    mockCrds[index].annotations = annotations
+  }
+  mockCrds[index].updateAt = new Date().toLocaleString()
+  mockCrds[index].updateBy = 'admin'
+}
+
+/**
+ * 删除 CRD
+ * @param clusterId - 集群 ID
+ * @param name - CRD 名称
+ */
+function deleteCrd(clusterId: string, name: string): void {
+  const index = mockCrds.findIndex(c => c.clusterId === clusterId && c.name === name)
+  if (index === -1) {
+    console.error('[Delete CRD] can not find crd:', name)
+    return
+  }
+  mockCrds.splice(index, 1)
+}
+
+/**
+ * 批量删除 CRD
+ * @param clusterId - 集群 ID
+ * @param data - 待删除的 CRD 名称列表
+ */
+function deleteCrds(clusterId: string, data: { names: string[] }): void {
+  const { names } = data
+  names.forEach(name => {
+    const index = mockCrds.findIndex(c => c.clusterId === clusterId && c.name === name)
+    if (index === -1) {
+      console.error('[Delete CRDs] can not find crd:', name)
+    } else {
+      mockCrds.splice(index, 1)
+    }
+  })
+}
+
+/**
+ * 模拟 CRD 数据
+ * @remarks 包含多种常见的 CRD 示例数据，如 Prometheus Operator、cert-manager、ArgoCD 等
+ */
+const mockCrds: CrdResp[] = [
   {
     id: generateId(),
     name: 'alertmanagers.monitoring.coreos.com',
@@ -191,18 +364,5 @@ const mockCustomResourceDefinitions: CustomResourceDefinitionResp[] = [
     createBy: 'system',
     updateAt: '2024-03-05T11:00:00Z',
     updateBy: 'system'
-  }
-]
-
-export default [
-  {
-    method: 'GET',
-    url: '/kubernetes/clusters/:clusterId/customresourcedefinitions',
-    handler: (_pathParams: Record<string, string>, _params: CustomResourceDefinitionQueryReq) => getCustomResourceDefinitionPage(_pathParams.clusterId, _params)
-  },
-  {
-    method: 'GET',
-    url: '/kubernetes/clusters/:clusterId/customresourcedefinitions/:name',
-    handler: (_pathParams: Record<string, string>) => getCustomResourceDefinitionDetail(_pathParams.clusterId, pathParams.name)
   }
 ]

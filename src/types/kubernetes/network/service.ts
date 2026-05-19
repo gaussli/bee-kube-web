@@ -1,5 +1,5 @@
 /**
- * @fileOverview Service 资源相关类型定义
+ * Service 资源类型定义
  * @module types/kubernetes/service
  */
 import type { BaseEntity, PageReq } from '@/types/common'
@@ -38,8 +38,6 @@ export interface ServiceLoadBalancer {
  * @extends BaseEntity 继承基础实体（含 id, createAt, createBy, updateAt, updateBy）
  */
 export interface ServiceResp extends BaseEntity {
-  /** Service ID */
-  id: string
   /** Service 名称 */
   name: string
   /** 所属命名空间 */
@@ -75,14 +73,8 @@ export interface ServiceResp extends BaseEntity {
  * @extends PageReq 继承分页请求（含 page, pageSize）
  */
 export interface ServiceQueryReq extends PageReq {
-  /** 命名空间 ID */
-  id: string
   /** Service 名称（模糊匹配） */
   name?: string
-  /** 命名空间名称 */
-  namespace?: string
-  /** 集群 ID */
-  clusterId: string
   /** Service 类型 */
   type?: string
   /** 标签选择器 */
@@ -119,7 +111,7 @@ export interface ServiceReq {
 export interface ServiceLabelsReq {
   /** 标签键值对 */
   labels: Record<string, string>
-  /** 操作（1: 新增；2: 移除：3: 全量替换） */
+  /** 操作（1: 新增；2: 移除；3: 全量替换） */
   operation: number
 }
 
@@ -129,6 +121,6 @@ export interface ServiceLabelsReq {
 export interface ServiceAnnotationsReq {
   /** 注解键值对 */
   annotations: Record<string, string>
-  /** 操作（1: 新增；2: 移除：3: 全量替换） */
+  /** 操作（1: 新增；2: 移除；3: 全量替换） */
   operation: number
 }

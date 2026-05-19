@@ -1,5 +1,6 @@
 /**
- * @fileOverview PersistentVolumeClaim 资源相关类型定义
+ * PersistentVolumeClaim 资源类型定义
+ * @module types/kubernetes/persistentVolumeClaim
  */
 import type { BaseEntity, PageReq } from '@/types/common'
 
@@ -13,8 +14,6 @@ export type PersistentVolumeClaimAccessMode = 'ReadWriteOnce' | 'ReadOnlyMany' |
  * @extends BaseEntity 继承基础实体（含 id, createAt, createBy, updateAt, updateBy）
  */
 export interface PersistentVolumeClaimResp extends BaseEntity {
-  /** PersistentVolumeClaim ID */
-  id: string
   /** PersistentVolumeClaim 名称 */
   name: string
   /** 所属命名空间 */
@@ -48,24 +47,18 @@ export interface PersistentVolumeClaimResp extends BaseEntity {
  * @extends PageReq 继承分页请求（含 page, pageSize）
  */
 export interface PersistentVolumeClaimQueryReq extends PageReq {
-  /** 命名空间 ID */
-  id: string
   /** PersistentVolumeClaim 名称（模糊匹配） */
-  name: string
-  /** 命名空间名称 */
-  namespace: string
-  /** 集群 ID */
-  clusterId: string
+  name?: string
   /** 状态 */
-  status: string
+  status?: string
   /** 存储类名 */
-  storageClassName: string
+  storageClassName?: string
   /** 标签选择器 */
-  labelSelector: string
+  labelSelector?: string
 }
 
 /**
- * PersistentVolumeClaim 创建请求参数
+ * PersistentVolumeClaim 创建/更新请求参数
  */
 export interface PersistentVolumeClaimReq {
   /** PersistentVolumeClaim 名称 */
@@ -92,7 +85,7 @@ export interface PersistentVolumeClaimReq {
 export interface PersistentVolumeClaimLabelsReq {
   /** 标签键值对 */
   labels: Record<string, string>
-  /** 操作（1: 新增；2: 移除：3: 全量替换） */
+  /** 操作（1: 新增；2: 移除；3: 全量替换） */
   operation: number
 }
 
@@ -102,6 +95,6 @@ export interface PersistentVolumeClaimLabelsReq {
 export interface PersistentVolumeClaimAnnotationsReq {
   /** 注解键值对 */
   annotations: Record<string, string>
-  /** 操作（1: 新增；2: 移除：3: 全量替换） */
+  /** 操作（1: 新增；2: 移除；3: 全量替换） */
   operation: number
 }

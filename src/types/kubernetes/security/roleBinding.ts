@@ -1,5 +1,5 @@
 /**
- * @fileOverview RoleBinding 资源相关类型定义
+ * RoleBinding 资源类型定义
  * @module types/kubernetes/roleBinding
  */
 import type { BaseEntity, PageReq } from '@/types/common'
@@ -10,8 +10,6 @@ import type { ClusterRoleBindingSubject } from './clusterRoleBinding'
  * @extends BaseEntity 继承基础实体（含 id, createAt, createBy, updateAt, updateBy）
  */
 export interface RoleBindingResp extends BaseEntity {
-  /** RoleBinding ID */
-  id: string
   /** RoleBinding 名称 */
   name: string
   /** 所属命名空间 */
@@ -46,14 +44,8 @@ export interface RoleBindingResp extends BaseEntity {
  * @extends PageReq 继承分页请求（含 page, pageSize）
  */
 export interface RoleBindingQueryReq extends PageReq {
-  /** 命名空间 ID */
-  id: string
   /** RoleBinding 名称（模糊匹配） */
   name?: string
-  /** 命名空间名称 */
-  namespace?: string
-  /** 集群 ID */
-  clusterId: string
   /** 标签选择器 */
   labelSelector?: string
   /** 是否显示系统内置角色绑定 */
@@ -86,7 +78,7 @@ export interface RoleBindingReq {
 export interface RoleBindingLabelsReq {
   /** 标签键值对 */
   labels: Record<string, string>
-  /** 操作（1: 新增；2: 移除：3: 全量替换） */
+  /** 操作（1: 新增；2: 移除；3: 全量替换） */
   operation: number
 }
 
@@ -96,7 +88,7 @@ export interface RoleBindingLabelsReq {
 export interface RoleBindingAnnotationsReq {
   /** 注解键值对 */
   annotations: Record<string, string>
-  /** 操作（1: 新增；2: 移除：3: 全量替换） */
+  /** 操作（1: 新增；2: 移除；3: 全量替换） */
   operation: number
 }
 
@@ -106,6 +98,6 @@ export interface RoleBindingAnnotationsReq {
 export interface RoleBindingSubjectsReq {
   /** 主体列表 */
   subjects: ClusterRoleBindingSubject[]
-  /** 操作（1: 新增；2: 移除：3: 全量替换） */
+  /** 操作（1: 新增；2: 移除；3: 全量替换） */
   operation: number
 }

@@ -1,5 +1,5 @@
 /**
- * @fileOverview ClusterRoleBinding 资源相关类型定义
+ * ClusterRoleBinding 资源类型定义
  * @module types/kubernetes/clusterRoleBinding
  */
 import type { BaseEntity, PageReq } from '@/types/common'
@@ -24,8 +24,6 @@ export interface ClusterRoleBindingSubject {
  * @extends BaseEntity 继承基础实体（含 id, createAt, createBy, updateAt, updateBy）
  */
 export interface ClusterRoleBindingResp extends BaseEntity {
-  /** ClusterRoleBinding ID */
-  id: string
   /** ClusterRoleBinding 名称 */
   name: string
   /** 所属集群 ID */
@@ -58,8 +56,6 @@ export interface ClusterRoleBindingResp extends BaseEntity {
  * @extends PageReq 继承分页请求（含 page, pageSize）
  */
 export interface ClusterRoleBindingQueryReq extends PageReq {
-  /** 集群 ID */
-  clusterId: string
   /** ClusterRoleBinding 名称（模糊匹配） */
   name?: string
   /** 标签选择器 */
@@ -90,7 +86,7 @@ export interface ClusterRoleBindingReq {
 export interface ClusterRoleBindingLabelsReq {
   /** 标签键值对 */
   labels: Record<string, string>
-  /** 操作（1: 新增；2: 移除：3: 全量替换） */
+  /** 操作（1: 新增；2: 移除；3: 全量替换） */
   operation: number
 }
 
@@ -100,7 +96,7 @@ export interface ClusterRoleBindingLabelsReq {
 export interface ClusterRoleBindingAnnotationsReq {
   /** 注解键值对 */
   annotations: Record<string, string>
-  /** 操作（1: 新增；2: 移除：3: 全量替换） */
+  /** 操作（1: 新增；2: 移除；3: 全量替换） */
   operation: number
 }
 
@@ -110,6 +106,6 @@ export interface ClusterRoleBindingAnnotationsReq {
 export interface ClusterRoleBindingSubjectsReq {
   /** 主体列表 */
   subjects: ClusterRoleBindingSubject[]
-  /** 操作（1: 新增；2: 移除：3: 全量替换） */
+  /** 操作（1: 新增；2: 移除；3: 全量替换） */
   operation: number
 }

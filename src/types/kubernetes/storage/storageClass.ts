@@ -1,5 +1,6 @@
 /**
- * @fileOverview StorageClass 资源相关类型定义
+ * StorageClass 资源类型定义
+ * @module types/kubernetes/storageClass
  */
 import type { BaseEntity, PageReq } from '@/types/common'
 
@@ -8,8 +9,6 @@ import type { BaseEntity, PageReq } from '@/types/common'
  * @extends BaseEntity 继承基础实体（含 id, createAt, createBy, updateAt, updateBy）
  */
 export interface StorageClassResp extends BaseEntity {
-  /** StorageClass ID */
-  id: string
   /** StorageClass 名称 */
   name: string
   /** 所属集群 ID */
@@ -24,7 +23,7 @@ export interface StorageClassResp extends BaseEntity {
   mountOptions?: string[]
   /** 允许的卷绑定模式 */
   volumeBindingMode?: 'Immediate' | 'WaitForFirstConsumer'
-  /** 允许的访问模式 */
+  /** 允许的卷扩展 */
   allowVolumeExpansion?: boolean
   /** 标签 */
   labels?: Record<string, string>
@@ -40,13 +39,11 @@ export interface StorageClassResp extends BaseEntity {
  */
 export interface StorageClassQueryReq extends PageReq {
   /** StorageClass 名称（模糊匹配） */
-  name: string
-  /** 集群 ID */
-  clusterId: string
+  name?: string
   /** 存储提供者 */
-  provisioner: string
+  provisioner?: string
   /** 标签选择器 */
-  labelSelector: string
+  labelSelector?: string
 }
 
 /**
@@ -55,7 +52,7 @@ export interface StorageClassQueryReq extends PageReq {
 export interface StorageClassLabelsReq {
   /** 标签键值对 */
   labels: Record<string, string>
-  /** 操作（1: 新增；2: 移除：3: 全量替换） */
+  /** 操作（1: 新增；2: 移除；3: 全量替换） */
   operation: number
 }
 
@@ -65,6 +62,6 @@ export interface StorageClassLabelsReq {
 export interface StorageClassAnnotationsReq {
   /** 注解键值对 */
   annotations: Record<string, string>
-  /** 操作（1: 新增；2: 移除：3: 全量替换） */
+  /** 操作（1: 新增；2: 移除；3: 全量替换） */
   operation: number
 }

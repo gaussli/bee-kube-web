@@ -1,21 +1,20 @@
 /**
- * @fileOverview Ingress 资源相关 API
+ * Ingress 资源 API
  * @module api/kubernetes/ingress
  */
 import type { PageResp } from '@/types/common'
-import type { IngressResp, IngressQueryReq, IngressReq, IngressLabelsReq, IngressAnnotationsReq } from '@/types/kubernetes/ingress'
-import request from '@/utils/request'
+import type { IngressResp, IngressQueryReq, IngressReq, IngressLabelsReq, IngressAnnotationsReq } from '@/types/kubernetes/network/ingress'
+import { request } from '@/utils'
 
 /**
  * 获取 Ingress 分页列表
  * @param clusterId - 集群 ID
+ * @param namespaceName - 命名空间名称
  * @param params - 查询参数
- * @returns Ingress 分页列表
+ * @returns 分页后的 Ingress 列表
  */
-export function getIngressPage(clusterId: string, params: IngressQueryReq) {
-  return request.get<PageResp<IngressResp>>(`/kubernetes/clusters/${clusterId}/namespaces/${params.id}/ingresses`, {
-    params
-  })
+export function getIngressPage(clusterId: string, namespaceName: string, params: Partial<IngressQueryReq>): Promise<PageResp<IngressResp>> {
+  return request.get(`/kubernetes/clusters/${clusterId}/namespaces/${namespaceName}/ingresses`, { params })
 }
 
 /**
@@ -25,8 +24,8 @@ export function getIngressPage(clusterId: string, params: IngressQueryReq) {
  * @param name - Ingress 名称
  * @returns Ingress 详情
  */
-export function getIngressDetail(clusterId: string, namespaceName: string, name: string) {
-  return request.get<IngressResp>(`/kubernetes/clusters/${clusterId}/namespaces/${namespaceName}/ingresses/${name}`)
+export function getIngressDetail(clusterId: string, namespaceName: string, name: string): Promise<IngressResp> {
+  return request.get(`/kubernetes/clusters/${clusterId}/namespaces/${namespaceName}/ingresses/${name}`)
 }
 
 /**
@@ -35,8 +34,8 @@ export function getIngressDetail(clusterId: string, namespaceName: string, name:
  * @param data - 创建参数
  * @returns 创建的 Ingress ID
  */
-export function createIngress(clusterId: string, data: IngressReq) {
-  return request.post<string>(`/kubernetes/clusters/${clusterId}/namespaces/${data.namespace}/ingresses`, data)
+export function createIngress(clusterId: string, data: Partial<IngressReq>): Promise<void> {
+  return request.post(`/kubernetes/clusters/${clusterId}/namespaces/${data.namespace}/ingresses`, { data })
 }
 
 /**
@@ -45,8 +44,8 @@ export function createIngress(clusterId: string, data: IngressReq) {
  * @param data - 更新参数
  * @returns 更新的 Ingress ID
  */
-export function updateIngress(clusterId: string, data: IngressReq) {
-  return request.put<string>(`/kubernetes/clusters/${clusterId}/namespaces/${data.namespace}/ingresses/${data.name}`, data)
+export function updateIngress(clusterId: string, data: Partial<IngressReq>): Promise<void> {
+  return request.put(`/kubernetes/clusters/${clusterId}/namespaces/${data.namespace}/ingresses/${data.name}`, { data })
 }
 
 /**
@@ -56,8 +55,8 @@ export function updateIngress(clusterId: string, data: IngressReq) {
  * @param name - Ingress 名称
  * @param data - 标签更新参数
  */
-export function manageIngressLabels(clusterId: string, namespaceName: string, name: string, data: IngressLabelsReq) {
-  return request.post(`/kubernetes/clusters/${clusterId}/namespaces/${namespaceName}/ingresses/${name}/labels`, data)
+export function manageIngressLabels(clusterId: string, namespaceName: string, name: string, data: Partial<IngressLabelsReq>): Promise<void> {
+  return request.put(`/kubernetes/clusters/${clusterId}/namespaces/${namespaceName}/ingresses/${name}/labels`, { data })
 }
 
 /**
@@ -67,8 +66,8 @@ export function manageIngressLabels(clusterId: string, namespaceName: string, na
  * @param name - Ingress 名称
  * @param data - 注解更新参数
  */
-export function manageIngressAnnotations(clusterId: string, namespaceName: string, name: string, data: IngressAnnotationsReq) {
-  return request.post(`/kubernetes/clusters/${clusterId}/namespaces/${namespaceName}/ingresses/${name}/annotations`, data)
+export function manageIngressAnnotations(clusterId: string, namespaceName: string, name: string, data: Partial<IngressAnnotationsReq>): Promise<void> {
+  return request.put(`/kubernetes/clusters/${clusterId}/namespaces/${namespaceName}/ingresses/${name}/annotations`, { data })
 }
 
 /**
@@ -77,7 +76,7 @@ export function manageIngressAnnotations(clusterId: string, namespaceName: strin
  * @param namespaceName - 命名空间名称
  * @param name - Ingress 名称
  */
-export function deleteIngress(clusterId: string, namespaceName: string, name: string) {
+export function deleteIngress(clusterId: string, namespaceName: string, name: string): Promise<void> {
   return request.delete(`/kubernetes/clusters/${clusterId}/namespaces/${namespaceName}/ingresses/${name}`)
 }
 
@@ -85,10 +84,8 @@ export function deleteIngress(clusterId: string, namespaceName: string, name: st
  * 批量删除 Ingress
  * @param clusterId - 集群 ID
  * @param namespaceName - 命名空间名称
- * @param data - 待删除的 Ingress 名称列表
+ * @param names - 待删除的 Ingress 名称列表
  */
-export function deleteIngresses(clusterId: string, namespaceName: string, data: { names: string[] }) {
-  return request.delete(`/kubernetes/clusters/${clusterId}/namespaces/${namespaceName}/ingresses`, {
-    data
-  })
+export function deleteIngresses(clusterId: string, namespaceName: string, names: string[]): Promise<void> {
+  return request.delete(`/kubernetes/clusters/${clusterId}/namespaces/${namespaceName}/ingresses`, { data: names })
 }

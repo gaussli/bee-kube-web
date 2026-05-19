@@ -161,9 +161,9 @@ function getDeploymentYaml(clusterId: string, namespace: string, name: string): 
     .map(([key, value]) => `      ${key}: "${value}"`)
     .join('\n')
 
-  const containers = deployment.images.map((image, index) => {
-    const imageName = image.split(':')[0] || image
-    return `      - name: ${deployment.name}-container-${index}
+  const containers = deployment.images
+    .map((image, index) => {
+      return `      - name: ${deployment.name}-container-${index}
         image: ${image}
         ports:
         - containerPort: 8080
@@ -186,7 +186,8 @@ function getDeploymentYaml(clusterId: string, namespace: string, name: string): 
             port: 8080
           initialDelaySeconds: 5
           periodSeconds: 5`
-  }).join('\n')
+    })
+    .join('\n')
 
   const yaml = `apiVersion: apps/v1
 kind: Deployment

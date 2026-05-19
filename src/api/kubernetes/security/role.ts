@@ -1,21 +1,20 @@
 /**
- * @fileOverview Role 资源相关 API
+ * Role 资源 API
  * @module api/kubernetes/role
  */
 import type { PageResp } from '@/types/common'
-import type { RoleResp, RoleQueryReq, RoleReq, RoleLabelsReq, RoleAnnotationsReq, RoleRulesReq } from '@/types/kubernetes/role'
-import request from '@/utils/request'
+import type { RoleResp, RoleQueryReq, RoleReq, RoleLabelsReq, RoleAnnotationsReq, RoleRulesReq } from '@/types/kubernetes/security/role'
+import { request } from '@/utils'
 
 /**
  * 获取 Role 分页列表
  * @param clusterId - 集群 ID
+ * @param namespaceName - 命名空间名称
  * @param params - 查询参数
- * @returns Role 分页列表
+ * @returns 分页后的 Role 列表
  */
-export function getRolePage(clusterId: string, params: RoleQueryReq) {
-  return request.get<PageResp<RoleResp>>(`/kubernetes/clusters/${clusterId}/namespaces/${params.id}/roles`, {
-    params
-  })
+export function getRolePage(clusterId: string, namespaceName: string, params: Partial<RoleQueryReq>): Promise<PageResp<RoleResp>> {
+  return request.get(`/kubernetes/clusters/${clusterId}/namespaces/${namespaceName}/roles`, { params })
 }
 
 /**
@@ -25,8 +24,8 @@ export function getRolePage(clusterId: string, params: RoleQueryReq) {
  * @param name - Role 名称
  * @returns Role 详情
  */
-export function getRoleDetail(clusterId: string, namespaceName: string, name: string) {
-  return request.get<RoleResp>(`/kubernetes/clusters/${clusterId}/namespaces/${namespaceName}/roles/${name}`)
+export function getRoleDetail(clusterId: string, namespaceName: string, name: string): Promise<RoleResp> {
+  return request.get(`/kubernetes/clusters/${clusterId}/namespaces/${namespaceName}/roles/${name}`)
 }
 
 /**
@@ -35,8 +34,8 @@ export function getRoleDetail(clusterId: string, namespaceName: string, name: st
  * @param data - 创建参数
  * @returns 创建的 Role ID
  */
-export function createRole(clusterId: string, data: RoleReq) {
-  return request.post<string>(`/kubernetes/clusters/${clusterId}/namespaces/${data.namespace}/roles`, data)
+export function createRole(clusterId: string, data: Partial<RoleReq>): Promise<void> {
+  return request.post(`/kubernetes/clusters/${clusterId}/namespaces/${data.namespace}/roles`, { data })
 }
 
 /**
@@ -45,8 +44,8 @@ export function createRole(clusterId: string, data: RoleReq) {
  * @param data - 更新参数
  * @returns 更新的 Role ID
  */
-export function updateRole(clusterId: string, data: RoleReq) {
-  return request.put<string>(`/kubernetes/clusters/${clusterId}/namespaces/${data.namespace}/roles/${data.name}`, data)
+export function updateRole(clusterId: string, data: Partial<RoleReq>): Promise<void> {
+  return request.put(`/kubernetes/clusters/${clusterId}/namespaces/${data.namespace}/roles/${data.name}`, { data })
 }
 
 /**
@@ -56,8 +55,8 @@ export function updateRole(clusterId: string, data: RoleReq) {
  * @param name - Role 名称
  * @param data - 标签更新参数
  */
-export function manageRoleLabels(clusterId: string, namespaceName: string, name: string, data: RoleLabelsReq) {
-  return request.post(`/kubernetes/clusters/${clusterId}/namespaces/${namespaceName}/roles/${name}/labels`, data)
+export function manageRoleLabels(clusterId: string, namespaceName: string, name: string, data: Partial<RoleLabelsReq>): Promise<void> {
+  return request.put(`/kubernetes/clusters/${clusterId}/namespaces/${namespaceName}/roles/${name}/labels`, { data })
 }
 
 /**
@@ -67,8 +66,8 @@ export function manageRoleLabels(clusterId: string, namespaceName: string, name:
  * @param name - Role 名称
  * @param data - 注解更新参数
  */
-export function manageRoleAnnotations(clusterId: string, namespaceName: string, name: string, data: RoleAnnotationsReq) {
-  return request.post(`/kubernetes/clusters/${clusterId}/namespaces/${namespaceName}/roles/${name}/annotations`, data)
+export function manageRoleAnnotations(clusterId: string, namespaceName: string, name: string, data: Partial<RoleAnnotationsReq>): Promise<void> {
+  return request.put(`/kubernetes/clusters/${clusterId}/namespaces/${namespaceName}/roles/${name}/annotations`, { data })
 }
 
 /**
@@ -78,8 +77,8 @@ export function manageRoleAnnotations(clusterId: string, namespaceName: string, 
  * @param name - Role 名称
  * @param data - 规则更新参数
  */
-export function updateRoleRules(clusterId: string, namespaceName: string, name: string, data: RoleRulesReq) {
-  return request.put(`/kubernetes/clusters/${clusterId}/namespaces/${namespaceName}/roles/${name}/rules`, data)
+export function updateRoleRules(clusterId: string, namespaceName: string, name: string, data: Partial<RoleRulesReq>): Promise<void> {
+  return request.put(`/kubernetes/clusters/${clusterId}/namespaces/${namespaceName}/roles/${name}/rules`, { data })
 }
 
 /**
@@ -88,7 +87,7 @@ export function updateRoleRules(clusterId: string, namespaceName: string, name: 
  * @param namespaceName - 命名空间名称
  * @param name - Role 名称
  */
-export function deleteRole(clusterId: string, namespaceName: string, name: string) {
+export function deleteRole(clusterId: string, namespaceName: string, name: string): Promise<void> {
   return request.delete(`/kubernetes/clusters/${clusterId}/namespaces/${namespaceName}/roles/${name}`)
 }
 
@@ -96,10 +95,8 @@ export function deleteRole(clusterId: string, namespaceName: string, name: strin
  * 批量删除 Role
  * @param clusterId - 集群 ID
  * @param namespaceName - 命名空间名称
- * @param data - 待删除的 Role 名称列表
+ * @param names - 待删除的 Role 名称列表
  */
-export function deleteRoles(clusterId: string, namespaceName: string, data: { names: string[] }) {
-  return request.delete(`/kubernetes/clusters/${clusterId}/namespaces/${namespaceName}/roles`, {
-    data
-  })
+export function deleteRoles(clusterId: string, namespaceName: string, names: string[]): Promise<void> {
+  return request.delete(`/kubernetes/clusters/${clusterId}/namespaces/${namespaceName}/roles`, { data: names })
 }

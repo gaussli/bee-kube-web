@@ -1,74 +1,69 @@
 /**
- * @fileOverview CustomResourceDefinition 资源相关 API
+ * CRD 资源相关 API
  * @module api/kubernetes/customResourceDefinition
  */
 import type { PageResp } from '@/types/common'
-import type {
-  CustomResourceDefinitionResp,
-  CustomResourceDefinitionQueryReq,
-  CustomResourceDefinitionLabelsReq,
-  CustomResourceDefinitionAnnotationsReq
-} from '@/types/kubernetes/customResourceDefinition'
+import type { CrdResp, CrdQueryReq, CrdLabelsReq, CrdAnnotationsReq } from '@/types/kubernetes/crd'
 import request from '@/utils/request'
 
 /**
- * 获取 CustomResourceDefinition 分页列表
+ * 获取 CRD 分页列表
  * @param clusterId - 集群 ID
  * @param params - 查询参数
- * @returns CustomResourceDefinition 分页列表
+ * @returns CRD 分页列表
  */
-export function getCustomResourceDefinitionPage(clusterId: string, params: CustomResourceDefinitionQueryReq) {
-  return request.get<PageResp<CustomResourceDefinitionResp>>(`/kubernetes/clusters/${clusterId}/customresourcedefinitions`, {
+export function getCrdPage(clusterId: string, params: Partial<CrdQueryReq>): Promise<PageResp<CrdResp>> {
+  return request.get(`/kubernetes/clusters/${clusterId}/crds`, {
     params
   })
 }
 
 /**
- * 获取 CustomResourceDefinition 详情
+ * 获取 CRD 详情
  * @param clusterId - 集群 ID
- * @param name - CustomResourceDefinition 名称
- * @returns CustomResourceDefinition 详情
+ * @param name - CRD 名称
+ * @returns CRD 详情
  */
-export function getCustomResourceDefinitionDetail(clusterId: string, name: string) {
-  return request.get<CustomResourceDefinitionResp>(`/kubernetes/clusters/${clusterId}/customresourcedefinitions/${name}`)
+export function getCrdDetail(clusterId: string, name: string): Promise<CrdResp> {
+  return request.get(`/kubernetes/clusters/${clusterId}/crds/${name}`)
 }
 
 /**
- * 更新 CustomResourceDefinition 标签
+ * 更新 CRD 标签
  * @param clusterId - 集群 ID
- * @param name - CustomResourceDefinition 名称
+ * @param name - CRD 名称
  * @param data - 标签更新参数
  */
-export function manageCustomResourceDefinitionLabels(clusterId: string, name: string, data: CustomResourceDefinitionLabelsReq) {
-  return request.post(`/kubernetes/clusters/${clusterId}/customresourcedefinitions/${name}/labels`, data)
+export function manageCrdLabels(clusterId: string, name: string, data: Partial<CrdLabelsReq>): Promise<void> {
+  return request.post(`/kubernetes/clusters/${clusterId}/crds/${name}/labels`, { data })
 }
 
 /**
- * 更新 CustomResourceDefinition 注解
+ * 更新 CRD 注解
  * @param clusterId - 集群 ID
- * @param name - CustomResourceDefinition 名称
+ * @param name - CRD 名称
  * @param data - 注解更新参数
  */
-export function manageCustomResourceDefinitionAnnotations(clusterId: string, name: string, data: CustomResourceDefinitionAnnotationsReq) {
-  return request.post(`/kubernetes/clusters/${clusterId}/customresourcedefinitions/${name}/annotations`, data)
+export function manageCrdAnnotations(clusterId: string, name: string, data: Partial<CrdAnnotationsReq>): Promise<void> {
+  return request.post(`/kubernetes/clusters/${clusterId}/crds/${name}/annotations`, { data })
 }
 
 /**
- * 删除 CustomResourceDefinition
+ * 删除 CRD
  * @param clusterId - 集群 ID
- * @param name - CustomResourceDefinition 名称
+ * @param name - CRD 名称
  */
-export function deleteCustomResourceDefinition(clusterId: string, name: string) {
-  return request.delete(`/kubernetes/clusters/${clusterId}/customresourcedefinitions/${name}`)
+export function deleteCrd(clusterId: string, name: string): Promise<void> {
+  return request.delete(`/kubernetes/clusters/${clusterId}/crds/${name}`)
 }
 
 /**
- * 批量删除 CustomResourceDefinition
+ * 批量删除 CRD
  * @param clusterId - 集群 ID
- * @param data - 待删除的 CustomResourceDefinition 名称列表
+ * @param data - 待删除的 CRD 名称列表
  */
-export function deleteCustomResourceDefinitions(clusterId: string, data: { names: string[] }) {
-  return request.delete(`/kubernetes/clusters/${clusterId}/customresourcedefinitions`, {
+export function deleteCrds(clusterId: string, data: { names: string[] }): Promise<void> {
+  return request.delete(`/kubernetes/clusters/${clusterId}/crds`, {
     data
   })
 }

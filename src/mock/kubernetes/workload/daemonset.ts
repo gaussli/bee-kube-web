@@ -155,8 +155,9 @@ function getDaemonSetYaml(clusterId: string, namespace: string, name: string): s
     .map(([key, value]) => `      ${key}: "${value}"`)
     .join('\n')
 
-  const containers = daemonSet.images.map((image, index) => {
-    return `      - name: ${daemonSet.name}-container-${index}
+  const containers = daemonSet.images
+    .map((image, index) => {
+      return `      - name: ${daemonSet.name}-container-${index}
         image: ${image}
         resources:
           limits:
@@ -165,7 +166,8 @@ function getDaemonSetYaml(clusterId: string, namespace: string, name: string): s
           requests:
             cpu: "100m"
             memory: "128Mi"`
-  }).join('\n')
+    })
+    .join('\n')
 
   const yaml = `apiVersion: apps/v1
 kind: DaemonSet
@@ -429,7 +431,9 @@ function exportDaemonSet(clusterId: string, namespace: string, params: Partial<D
     d.currentReplicas,
     d.availableReplicas,
     d.images.join(';'),
-    Object.entries(d.labels || {}).map(([k, v]) => `${k}=${v}`).join(';'),
+    Object.entries(d.labels || {})
+      .map(([k, v]) => `${k}=${v}`)
+      .join(';'),
     d.createAt,
     d.createBy,
     d.updateAt,

@@ -1,8 +1,9 @@
 /**
- * @fileOverview Kubernetes Job 管理 Mock API
+ * Kubernetes Job 管理 Mock API
  * @module mock/kubernetes/workload/job
  */
-import type { JobResp, JobQueryReq, JobReq, JobLabelsReq, JobAnnotationsReq } from '@/types'
+import type { PageResp } from '@/types/common'
+import type { JobQueryReq, JobResp, JobReq, JobLabelsReq, JobAnnotationsReq } from '@/types/kubernetes/workload/job'
 import { generateId } from '@/mock/utils'
 
 /**
@@ -12,55 +13,62 @@ import { generateId } from '@/mock/utils'
  * - GET /kubernetes/clusters/:clusterId/namespaces/:namespace/jobs/:name - 获取 Job 详情
  * - POST /kubernetes/clusters/:clusterId/namespaces/:namespace/jobs - 创建 Job
  * - PUT /kubernetes/clusters/:clusterId/namespaces/:namespace/jobs/:name - 更新 Job
+ * - PUT /kubernetes/clusters/:clusterId/namespaces/:namespace/jobs/:name/labels - 更新标签
+ * - PUT /kubernetes/clusters/:clusterId/namespaces/:namespace/jobs/:name/annotations - 更新注解
  * - DELETE /kubernetes/clusters/:clusterId/namespaces/:namespace/jobs/:name - 删除 Job
  * - DELETE /kubernetes/clusters/:clusterId/namespaces/:namespace/jobs/batch - 批量删除
- * - POST /kubernetes/clusters/:clusterId/namespaces/:namespace/jobs/:name/labels - 更新标签
- * - POST /kubernetes/clusters/:clusterId/namespaces/:namespace/jobs/:name/annotations - 更新注解
  */
 export default [
   {
     method: 'get',
     url: '/kubernetes/clusters/:clusterId/namespaces/:namespace/jobs',
-    handler: (_pathParams: Record<string, string>, _params: Partial<JobQueryReq>) => getJobPage(_pathParams.clusterId, pathParams.namespace, _params)
+    handler: (pathParams: Record<string, string>, params: Partial<JobQueryReq>): PageResp<JobResp> => getJobPage(pathParams.clusterId, pathParams.namespace, params)
   },
   {
     method: 'get',
     url: '/kubernetes/clusters/:clusterId/namespaces/:namespace/jobs/:name',
-    handler: (_pathParams: Record<string, string>, _params: any, data: any) => getJobDetail(_pathParams.clusterId, pathParams.namespace, pathParams.name)
+    handler: (pathParams: Record<string, string>): JobResp => getJobDetail(pathParams.clusterId, pathParams.namespace, pathParams.name)
   },
   {
     method: 'post',
     url: '/kubernetes/clusters/:clusterId/namespaces/:namespace/jobs',
-    handler: (_pathParams: Record<string, string>, _params: any, data: Partial<JobReq>) => createJob(_pathParams.clusterId, pathParams.namespace, data)
+    handler: (pathParams: Record<string, string>, data: Partial<JobReq>): void => createJob(pathParams.clusterId, pathParams.namespace, data)
   },
   {
     method: 'put',
     url: '/kubernetes/clusters/:clusterId/namespaces/:namespace/jobs/:name',
-    handler: (_pathParams: Record<string, string>, _params: any, data: Partial<JobReq>) => updateJob(_pathParams.clusterId, pathParams.namespace, pathParams.name, data)
+    handler: (pathParams: Record<string, string>, data: Partial<JobReq>): void => updateJob(pathParams.clusterId, pathParams.namespace, pathParams.name, data)
+  },
+  {
+    method: 'put',
+    url: '/kubernetes/clusters/:clusterId/namespaces/:namespace/jobs/:name/labels',
+    handler: (pathParams: Record<string, string>, data: Partial<JobLabelsReq>): void => manageJobLabels(pathParams.clusterId, pathParams.namespace, pathParams.name, data)
+  },
+  {
+    method: 'put',
+    url: '/kubernetes/clusters/:clusterId/namespaces/:namespace/jobs/:name/annotations',
+    handler: (pathParams: Record<string, string>, data: Partial<JobAnnotationsReq>): void => manageJobAnnotations(pathParams.clusterId, pathParams.namespace, pathParams.name, data)
   },
   {
     method: 'delete',
     url: '/kubernetes/clusters/:clusterId/namespaces/:namespace/jobs/:name',
-    handler: (_pathParams: Record<string, string>, _params: any, data: any) => deleteJob(_pathParams.clusterId, pathParams.namespace, pathParams.name)
+    handler: (pathParams: Record<string, string>): void => deleteJob(pathParams.clusterId, pathParams.namespace, pathParams.name)
   },
   {
     method: 'delete',
     url: '/kubernetes/clusters/:clusterId/namespaces/:namespace/jobs/batch',
-    handler: (_pathParams: Record<string, string>, _params: any, data: string[]) => deleteJobs(_pathParams.clusterId, pathParams.namespace, data)
-  },
-  {
-    method: 'post',
-    url: '/kubernetes/clusters/:clusterId/namespaces/:namespace/jobs/:name/labels',
-    handler: (_pathParams: Record<string, string>, _params: any, data: JobLabelsReq) => manageJobLabels(_pathParams.clusterId, pathParams.namespace, pathParams.name, data)
-  },
-  {
-    method: 'post',
-    url: '/kubernetes/clusters/:clusterId/namespaces/:namespace/jobs/:name/annotations',
-    handler: (_pathParams: Record<string, string>, _params: any, data: JobAnnotationsReq) => manageJobAnnotations(_pathParams.clusterId, pathParams.namespace, pathParams.name, data)
+    handler: (_pathParams: Record<string, string>, _params: any, data: string[]): void => deleteJobs(_pathParams.clusterId, _pathParams.namespace, data)
   }
 ]
 
-function getJobPage(clusterId: string, namespace: string, _params: Partial<JobQueryReq>) {
+/**
+ * 获取 Job 分页列表
+ * @param clusterId - 集群ID
+ * @param namespace - 命名空间名称
+ * @param params - 查询参数
+ * @returns 分页数据
+ */
+function getJobPage(clusterId: string, namespace: string, params: Partial<JobQueryReq>): PageResp<JobResp> {
   const { name, status, page = 1, pageSize = 10 } = params || {}
   let filtered = mockJobs.filter(j => j.clusterId === clusterId && j.namespace === namespace)
   if (name) filtered = filtered.filter(j => j.name.toLowerCase().includes(name.toLowerCase()))
@@ -68,11 +76,24 @@ function getJobPage(clusterId: string, namespace: string, _params: Partial<JobQu
   return { list: filtered.slice((page - 1) * pageSize, page * pageSize), total: filtered.length, page, pageSize }
 }
 
-function getJobDetail(clusterId: string, namespace: string, name: string) {
-  return mockJobs.find(j => j.clusterId === clusterId && j.namespace === namespace && j.name === name) || null
+/**
+ * 获取 Job 详情
+ * @param clusterId - 集群ID
+ * @param namespace - 命名空间名称
+ * @param name - Job 名称
+ * @returns Job 详情
+ */
+function getJobDetail(clusterId: string, namespace: string, name: string): JobResp {
+  return mockJobs.find(j => j.clusterId === clusterId && j.namespace === namespace && j.name === name) || (null as any)
 }
 
-function createJob(clusterId: string, namespace: string, data: Partial<JobReq>) {
+/**
+ * 创建 Job
+ * @param clusterId - 集群ID
+ * @param namespace - 命名空间名称
+ * @param data - 创建数据
+ */
+function createJob(clusterId: string, namespace: string, data: Partial<JobReq>): void {
   const newJob: JobResp = {
     id: generateId(),
     name: data.name || '',
@@ -95,58 +116,94 @@ function createJob(clusterId: string, namespace: string, data: Partial<JobReq>) 
     updateBy: 'admin'
   }
   mockJobs.push(newJob)
-  return newJob.id
 }
 
-function updateJob(clusterId: string, namespace: string, name: string, data: Partial<JobReq>) {
+/**
+ * 更新 Job
+ * @param clusterId - 集群ID
+ * @param namespace - 命名空间名称
+ * @param name - Job 名称
+ * @param data - 更新数据
+ */
+function updateJob(clusterId: string, namespace: string, name: string, data: Partial<JobReq>): void {
   const index = mockJobs.findIndex(j => j.clusterId === clusterId && j.namespace === namespace && j.name === name)
-  if (index === -1) return null
-  const updated = { ...mockJobs[index], ...data, images: data.containers?.map(c => c.image) || mockJobs[index].images, updateAt: new Date().toLocaleString(), updateBy: 'admin' }
+  if (index === -1) return
+  const updated = {
+    ...mockJobs[index],
+    ...data,
+    images: data.containers?.map(c => c.image) || mockJobs[index].images,
+    updateAt: new Date().toLocaleString(),
+    updateBy: 'admin'
+  }
   mockJobs[index] = updated
-  return updated.id
 }
 
-function deleteJob(clusterId: string, namespace: string, name: string) {
+/**
+ * 更新 Job 标签
+ * @param clusterId - 集群ID
+ * @param namespace - 命名空间名称
+ * @param name - Job 名称
+ * @param data - 标签数据
+ */
+function manageJobLabels(clusterId: string, namespace: string, name: string, data: Partial<JobLabelsReq>): void {
   const index = mockJobs.findIndex(j => j.clusterId === clusterId && j.namespace === namespace && j.name === name)
-  if (index === -1) return false
-  mockJobs.splice(index, 1)
-  return true
-}
-
-function deleteJobs(clusterId: string, namespace: string, names: string[]) {
-  names.forEach(name => {
-    const index = mockJobs.findIndex(j => j.clusterId === clusterId && j.namespace === namespace && j.name === name)
-    if (index !== -1) mockJobs.splice(index, 1)
-  })
-  return true
-}
-
-function manageJobLabels(clusterId: string, namespace: string, name: string, data: JobLabelsReq) {
-  const index = mockJobs.findIndex(j => j.clusterId === clusterId && j.namespace === namespace && j.name === name)
-  if (index === -1) return false
+  if (index === -1) return
   const currentLabels = mockJobs[index].labels || {}
   if (data.operation === 1) mockJobs[index].labels = { ...currentLabels, ...data.labels }
   else if (data.operation === 2) {
     const newLabels = { ...currentLabels }
-    Object.keys(data.labels).forEach(key => delete newLabels[key])
+    Object.keys(data.labels || {}).forEach(key => delete newLabels[key])
     mockJobs[index].labels = newLabels
   } else if (data.operation === 3) mockJobs[index].labels = data.labels
-  return true
 }
 
-function manageJobAnnotations(clusterId: string, namespace: string, name: string, data: JobAnnotationsReq) {
+/**
+ * 更新 Job 注解
+ * @param clusterId - 集群ID
+ * @param namespace - 命名空间名称
+ * @param name - Job 名称
+ * @param data - 注解数据
+ */
+function manageJobAnnotations(clusterId: string, namespace: string, name: string, data: Partial<JobAnnotationsReq>): void {
   const index = mockJobs.findIndex(j => j.clusterId === clusterId && j.namespace === namespace && j.name === name)
-  if (index === -1) return false
+  if (index === -1) return
   const currentAnnotations = mockJobs[index].annotations || {}
   if (data.operation === 1) mockJobs[index].annotations = { ...currentAnnotations, ...data.annotations }
   else if (data.operation === 2) {
     const newAnnotations = { ...currentAnnotations }
-    Object.keys(data.annotations).forEach(key => delete newAnnotations[key])
+    Object.keys(data.annotations || {}).forEach(key => delete newAnnotations[key])
     mockJobs[index].annotations = newAnnotations
   } else if (data.operation === 3) mockJobs[index].annotations = data.annotations
-  return true
 }
 
+/**
+ * 删除 Job
+ * @param clusterId - 集群ID
+ * @param namespace - 命名空间名称
+ * @param name - Job 名称
+ */
+function deleteJob(clusterId: string, namespace: string, name: string): void {
+  const index = mockJobs.findIndex(j => j.clusterId === clusterId && j.namespace === namespace && j.name === name)
+  if (index === -1) return
+  mockJobs.splice(index, 1)
+}
+
+/**
+ * 批量删除 Job
+ * @param clusterId - 集群ID
+ * @param namespace - 命名空间名称
+ * @param names - Job 名称数组
+ */
+function deleteJobs(clusterId: string, namespace: string, names: string[]): void {
+  names.forEach(name => {
+    const index = mockJobs.findIndex(j => j.clusterId === clusterId && j.namespace === namespace && j.name === name)
+    if (index !== -1) mockJobs.splice(index, 1)
+  })
+}
+
+/**
+ * 模拟 Job 数据
+ */
 const mockJobs: JobResp[] = [
   {
     id: generateId(),
@@ -164,7 +221,6 @@ const mockJobs: JobResp[] = [
     completionTime: '2024-03-20 02:15:00',
     images: ['mysql:8.0'],
     labels: { app: 'db-backup', date: '20240320' },
-    annotations: {},
     createAt: '2024-03-20 02:00:00',
     createBy: 'system',
     updateAt: '2024-03-20 02:15:00',
@@ -229,7 +285,6 @@ const mockJobs: JobResp[] = [
     completionTime: '2024-03-19 00:10:00',
     images: ['redis:7.2-alpine'],
     labels: { app: 'cache-warmup' },
-    annotations: {},
     createAt: '2024-03-19 00:00:00',
     createBy: 'system',
     updateAt: '2024-03-19 00:10:00',

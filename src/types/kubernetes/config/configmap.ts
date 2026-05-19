@@ -1,5 +1,6 @@
 /**
- * @fileOverview ConfigMap 资源相关类型定义
+ * ConfigMap 资源相关类型定义
+ * @module types/kubernetes/config/configmap
  */
 import type { BaseEntity, PageReq } from '@/types/common'
 
@@ -8,8 +9,6 @@ import type { BaseEntity, PageReq } from '@/types/common'
  * @extends BaseEntity 继承基础实体（含 id, createAt, createBy, updateAt, updateBy）
  */
 export interface ConfigMapResp extends BaseEntity {
-  /** ConfigMap ID */
-  id: string
   /** ConfigMap 名称 */
   name: string
   /** 所属命名空间 */
@@ -37,16 +36,10 @@ export interface ConfigMapResp extends BaseEntity {
  * @extends PageReq 继承分页请求（含 page, pageSize）
  */
 export interface ConfigMapQueryReq extends PageReq {
-  /** 命名空间 ID */
-  id: string
   /** ConfigMap 名称（模糊匹配） */
-  name: string
-  /** 命名空间名称 */
-  namespace: string
-  /** 集群 ID */
-  clusterId: string
+  name?: string
   /** 标签选择器 */
-  labelSelector: string
+  labelSelector?: string
 }
 
 /**

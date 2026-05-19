@@ -1,5 +1,5 @@
 /**
- * @fileOverview CustomResourceDefinition 资源相关类型定义
+ * CRD 资源相关类型定义
  * @module types/kubernetes/customResourceDefinition
  */
 import type { BaseEntity, PageReq } from '@/types/common'
@@ -7,7 +7,7 @@ import type { BaseEntity, PageReq } from '@/types/common'
 /**
  * CRD 版本配置
  */
-export interface CustomResourceDefinitionVersion {
+export interface CrdVersion {
   /** 版本名称 */
   name: string
   /** 是否为当前生效版本 */
@@ -19,12 +19,12 @@ export interface CustomResourceDefinitionVersion {
 /**
  * CRD 作用域
  */
-export type CustomResourceDefinitionScope = 'Namespaced' | 'Cluster'
+export type CrdScope = 'Namespaced' | 'Cluster'
 
 /**
  * CRD 资源描述
  */
-export interface CustomResourceDefinitionResource {
+export interface CrdResource {
   /** 复数名称 */
   name: string
   /** 种类名称 */
@@ -38,10 +38,10 @@ export interface CustomResourceDefinitionResource {
 }
 
 /**
- * CustomResourceDefinition 响应数据
+ * CRD 响应数据
  * @extends BaseEntity 继承基础实体（含 id, createAt, createBy, updateAt, updateBy）
  */
-export interface CustomResourceDefinitionResp extends BaseEntity {
+export interface CrdResp extends BaseEntity {
   /** CRD ID */
   id: string
   /** CRD 名称 */
@@ -53,11 +53,11 @@ export interface CustomResourceDefinitionResp extends BaseEntity {
   /** 组名称 */
   group: string
   /** 版本列表 */
-  versions: CustomResourceDefinitionVersion[]
+  versions: CrdVersion[]
   /** 作用域 */
-  scope: CustomResourceDefinitionScope
+  scope: CrdScope
   /** 资源描述 */
-  resource: CustomResourceDefinitionResource
+  resource: CrdResource
   /** 创建时间 */
   creationTimestamp?: string
   /** 标签 */
@@ -69,12 +69,10 @@ export interface CustomResourceDefinitionResp extends BaseEntity {
 }
 
 /**
- * CustomResourceDefinition 查询请求参数
+ * CRD 查询请求参数
  * @extends PageReq 继承分页请求（含 page, pageSize）
  */
-export interface CustomResourceDefinitionQueryReq extends PageReq {
-  /** 集群 ID */
-  clusterId: string
+export interface CrdQueryReq extends PageReq {
   /** CRD 名称（模糊匹配） */
   name?: string
   /** API 组 */
@@ -86,9 +84,9 @@ export interface CustomResourceDefinitionQueryReq extends PageReq {
 }
 
 /**
- * CustomResourceDefinition 标签更新请求
+ * CRD 标签更新请求
  */
-export interface CustomResourceDefinitionLabelsReq {
+export interface CrdLabelsReq {
   /** 标签键值对 */
   labels: Record<string, string>
   /** 操作（1: 新增；2: 移除：3: 全量替换） */
@@ -96,9 +94,9 @@ export interface CustomResourceDefinitionLabelsReq {
 }
 
 /**
- * CustomResourceDefinition 注解更新请求
+ * CRD 注解更新请求
  */
-export interface CustomResourceDefinitionAnnotationsReq {
+export interface CrdAnnotationsReq {
   /** 注解键值对 */
   annotations: Record<string, string>
   /** 操作（1: 新增；2: 移除：3: 全量替换） */

@@ -1,5 +1,5 @@
 /**
- * @fileOverview NetworkPolicy 资源相关类型定义
+ * NetworkPolicy 资源类型定义
  * @module types/kubernetes/networkPolicy
  */
 import type { BaseEntity, PageReq } from '@/types/common'
@@ -53,8 +53,6 @@ export interface NetworkPolicyEgressRule {
  * @extends BaseEntity 继承基础实体（含 id, createAt, createBy, updateAt, updateBy）
  */
 export interface NetworkPolicyResp extends BaseEntity {
-  /** NetworkPolicy ID */
-  id: string
   /** NetworkPolicy 名称 */
   name: string
   /** 所属命名空间 */
@@ -84,14 +82,8 @@ export interface NetworkPolicyResp extends BaseEntity {
  * @extends PageReq 继承分页请求（含 page, pageSize）
  */
 export interface NetworkPolicyQueryReq extends PageReq {
-  /** 命名空间 ID */
-  id: string
   /** NetworkPolicy 名称（模糊匹配） */
   name?: string
-  /** 命名空间名称 */
-  namespace?: string
-  /** 集群 ID */
-  clusterId: string
   /** 标签选择器 */
   labelSelector?: string
 }
@@ -124,7 +116,7 @@ export interface NetworkPolicyReq {
 export interface NetworkPolicyLabelsReq {
   /** 标签键值对 */
   labels: Record<string, string>
-  /** 操作（1: 新增；2: 移除：3: 全量替换） */
+  /** 操作（1: 新增；2: 移除；3: 全量替换） */
   operation: number
 }
 
@@ -134,6 +126,6 @@ export interface NetworkPolicyLabelsReq {
 export interface NetworkPolicyAnnotationsReq {
   /** 注解键值对 */
   annotations: Record<string, string>
-  /** 操作（1: 新增；2: 移除：3: 全量替换） */
+  /** 操作（1: 新增；2: 移除；3: 全量替换） */
   operation: number
 }

@@ -1,116 +1,162 @@
 /**
- * @fileOverview Kubernetes StorageClass 管理 Mock API
+ * StorageClass Mock API
  * @module mock/kubernetes/storage/storageClass
  */
-import type { StorageClassResp, StorageClassQueryReq, StorageClassLabelsReq, StorageClassAnnotationsReq } from '@/types'
+import type { PageResp } from '@/types/common'
+import type { StorageClassResp, StorageClassQueryReq } from '@/types/kubernetes/storage/storageClass'
 import { generateId } from '@/mock/utils'
+
+/**
+ * 获取 StorageClass 分页列表
+ * @param clusterId - 集群 ID
+ * @param params - 查询参数
+ * @returns 分页数据
+ */
+function getStorageClassPage(clusterId: string, params: Partial<StorageClassQueryReq>): PageResp<StorageClassResp> {
+  const { name, provisioner, page = 1, pageSize = 10 } = params || {}
+  let filtered = mockSCs.filter(s => s.clusterId === clusterId)
+  if (name) filtered = filtered.filter(s => s.name.toLowerCase().includes(name.toLowerCase()))
+  if (provisioner) filtered = filtered.filter(s => s.provisioner === provisioner)
+  const total = filtered.length
+  const start = (page - 1) * pageSize
+  const end = start + pageSize
+  const list = filtered.slice(start, end)
+  return { list, total, page, pageSize }
+}
+
+/**
+ * 获取 StorageClass 详情
+ * @param clusterId - 集群 ID
+ * @param name - StorageClass 名称
+ * @returns StorageClass 详情
+ */
+function getStorageClassDetail(clusterId: string, name: string): StorageClassResp | null {
+  return mockSCs.find(s => s.clusterId === clusterId && s.name === name) || null
+}
+
+/**
+ * 更新 StorageClass 标签
+ * @param clusterId - 集群 ID
+ * @param name - StorageClass 名称
+ * @param labels - 标签键值对
+ * @param operation - 操作类型
+ */
+function manageStorageClassLabels(clusterId: string, name: string, labels: Record<string, string>, operation: number): void {
+  const index = mockSCs.findIndex(s => s.clusterId === clusterId && s.name === name)
+  if (index === -1) {
+    console.error('[Update StorageClass Labels] can not find sc:', name)
+    return
+  }
+  const currentLabels = mockSCs[index].labels || {}
+  if (operation === 1) {
+    mockSCs[index].labels = { ...currentLabels, ...labels }
+  } else if (operation === 2) {
+    const newLabels = { ...currentLabels }
+    Object.keys(labels).forEach(key => delete newLabels[key])
+    mockSCs[index].labels = newLabels
+  } else if (operation === 3) {
+    mockSCs[index].labels = labels
+  }
+}
+
+/**
+ * 更新 StorageClass 注解
+ * @param clusterId - 集群 ID
+ * @param name - StorageClass 名称
+ * @param annotations - 注解键值对
+ * @param operation - 操作类型
+ */
+function manageStorageClassAnnotations(clusterId: string, name: string, annotations: Record<string, string>, operation: number): void {
+  const index = mockSCs.findIndex(s => s.clusterId === clusterId && s.name === name)
+  if (index === -1) {
+    console.error('[Update StorageClass Annotations] can not find sc:', name)
+    return
+  }
+  const currentAnnotations = mockSCs[index].annotations || {}
+  if (operation === 1) {
+    mockSCs[index].annotations = { ...currentAnnotations, ...annotations }
+  } else if (operation === 2) {
+    const newAnnotations = { ...currentAnnotations }
+    Object.keys(annotations).forEach(key => delete newAnnotations[key])
+    mockSCs[index].annotations = newAnnotations
+  } else if (operation === 3) {
+    mockSCs[index].annotations = annotations
+  }
+}
 
 /**
  * StorageClass 路由配置
  * @remarks
  * - GET /kubernetes/clusters/:clusterId/storageclasses - 获取 StorageClass 分页列表
  * - GET /kubernetes/clusters/:clusterId/storageclasses/:name - 获取 StorageClass 详情
- * - POST /kubernetes/clusters/:clusterId/storageclasses/:name/labels - 更新标签
- * - POST /kubernetes/clusters/:clusterId/storageclasses/:name/annotations - 更新注解
+ * - PUT /kubernetes/clusters/:clusterId/storageclasses/:name/labels - 更新标签
+ * - PUT /kubernetes/clusters/:clusterId/storageclasses/:name/annotations - 更新注解
  */
 export default [
   {
     method: 'get',
     url: '/kubernetes/clusters/:clusterId/storageclasses',
-    handler: (_pathParams: Record<string, string>, _params: Partial<StorageClassQueryReq>) => getStorageClassPage(_pathParams.clusterId, _params)
+    handler: (pathParams: Record<string, string>, params: Partial<StorageClassQueryReq>) => getStorageClassPage(pathParams.clusterId, params)
   },
   {
     method: 'get',
     url: '/kubernetes/clusters/:clusterId/storageclasses/:name',
-    handler: (_pathParams: Record<string, string>, _params: any, data: any) => getStorageClassDetail(_pathParams.clusterId, pathParams.name)
+    handler: (pathParams: Record<string, string>) => getStorageClassDetail(pathParams.clusterId, pathParams.name)
   },
   {
-    method: 'post',
+    method: 'put',
     url: '/kubernetes/clusters/:clusterId/storageclasses/:name/labels',
-    handler: (_pathParams: Record<string, string>, _params: any, data: StorageClassLabelsReq) => manageStorageClassLabels(_pathParams.clusterId, pathParams.name, data)
+    handler: (pathParams: Record<string, string>, _params: unknown, data: { labels: Record<string, string>; operation: number }) =>
+      manageStorageClassLabels(pathParams.clusterId, pathParams.name, data.labels, data.operation)
   },
   {
-    method: 'post',
+    method: 'put',
     url: '/kubernetes/clusters/:clusterId/storageclasses/:name/annotations',
-    handler: (_pathParams: Record<string, string>, _params: any, data: StorageClassAnnotationsReq) => manageStorageClassAnnotations(_pathParams.clusterId, pathParams.name, data)
+    handler: (pathParams: Record<string, string>, _params: unknown, data: { annotations: Record<string, string>; operation: number }) =>
+      manageStorageClassAnnotations(pathParams.clusterId, pathParams.name, data.annotations, data.operation)
   }
 ]
 
-function getStorageClassPage(clusterId: string, _params: Partial<StorageClassQueryReq>) {
-  const { name, provisioner, page = 1, pageSize = 10 } = params || {}
-  let filtered = mockSCs.filter(s => s.clusterId === clusterId)
-  if (name) filtered = filtered.filter(s => s.name.toLowerCase().includes(name.toLowerCase()))
-  if (provisioner) filtered = filtered.filter(s => s.provisioner === provisioner)
-  return { list: filtered.slice((page - 1) * pageSize, page * pageSize), total: filtered.length, page, pageSize }
-}
-
-function getStorageClassDetail(clusterId: string, name: string) {
-  return mockSCs.find(s => s.clusterId === clusterId && s.name === name) || null
-}
-
-function manageStorageClassLabels(clusterId: string, name: string, data: StorageClassLabelsReq) {
-  const index = mockSCs.findIndex(s => s.clusterId === clusterId && s.name === name)
-  if (index === -1) return false
-  const currentLabels = mockSCs[index].labels || {}
-  if (data.operation === 1) mockSCs[index].labels = { ...currentLabels, ...data.labels }
-  else if (data.operation === 2) {
-    const newLabels = { ...currentLabels }
-    Object.keys(data.labels).forEach(key => delete newLabels[key])
-    mockSCs[index].labels = newLabels
-  } else if (data.operation === 3) mockSCs[index].labels = data.labels
-  return true
-}
-
-function manageStorageClassAnnotations(clusterId: string, name: string, data: StorageClassAnnotationsReq) {
-  const index = mockSCs.findIndex(s => s.clusterId === clusterId && s.name === name)
-  if (index === -1) return false
-  const currentAnnotations = mockSCs[index].annotations || {}
-  if (data.operation === 1) mockSCs[index].annotations = { ...currentAnnotations, ...data.annotations }
-  else if (data.operation === 2) {
-    const newAnnotations = { ...currentAnnotations }
-    Object.keys(data.annotations).forEach(key => delete newAnnotations[key])
-    mockSCs[index].annotations = newAnnotations
-  } else if (data.operation === 3) mockSCs[index].annotations = data.annotations
-  return true
-}
-
+/**
+ * StorageClass Mock 数据
+ */
 const mockSCs: StorageClassResp[] = [
   {
     id: generateId(),
     name: 'ssd-storage',
-    clusterId: 'cls-001-prod',
+    clusterId: 'cluster-1',
     clusterName: 'prod-cluster',
     provisioner: 'kubernetes.io/gce-pd',
     reclaimPolicy: 'Delete',
     volumeBindingMode: 'WaitForFirstConsumer',
     allowVolumeExpansion: true,
     labels: { type: 'ssd' },
-    annotations: {},
-    createAt: '2024-01-15 10:00:00',
+    deletable: true,
+    createAt: '2024-01-15T10:00:00Z',
     createBy: 'admin',
-    updateAt: '2024-03-15 14:00:00',
+    updateAt: '2024-03-15T14:00:00Z',
     updateBy: 'admin'
   },
   {
     id: generateId(),
     name: 'standard-storage',
-    clusterId: 'cls-001-prod',
+    clusterId: 'cluster-1',
     clusterName: 'prod-cluster',
     provisioner: 'kubernetes.io/gce-pd',
     reclaimPolicy: 'Delete',
     volumeBindingMode: 'Immediate',
     allowVolumeExpansion: true,
     labels: { type: 'standard' },
-    annotations: {},
-    createAt: '2024-01-15 10:05:00',
+    deletable: true,
+    createAt: '2024-01-15T10:05:00Z',
     createBy: 'admin',
-    updateAt: '2024-03-10 11:00:00',
+    updateAt: '2024-03-10T11:00:00Z',
     updateBy: 'admin'
   },
   {
     id: generateId(),
     name: 'nfs-storage',
-    clusterId: 'cls-001-prod',
+    clusterId: 'cluster-1',
     clusterName: 'prod-cluster',
     provisioner: 'nfs.io/provisioner',
     reclaimPolicy: 'Retain',
@@ -118,42 +164,42 @@ const mockSCs: StorageClassResp[] = [
     volumeBindingMode: 'Immediate',
     allowVolumeExpansion: true,
     labels: { type: 'nfs' },
-    annotations: {},
-    createAt: '2024-02-01 09:00:00',
+    deletable: true,
+    createAt: '2024-02-01T09:00:00Z',
     createBy: 'admin',
-    updateAt: '2024-03-12 16:00:00',
+    updateAt: '2024-03-12T16:00:00Z',
     updateBy: 'admin'
   },
   {
     id: generateId(),
     name: 'local-storage',
-    clusterId: 'cls-001-prod',
+    clusterId: 'cluster-1',
     clusterName: 'prod-cluster',
     provisioner: 'kubernetes.io/no-provisioner',
     reclaimPolicy: 'Delete',
     volumeBindingMode: 'WaitForFirstConsumer',
     allowVolumeExpansion: false,
     labels: { type: 'local' },
-    annotations: {},
-    createAt: '2024-02-15 14:00:00',
+    deletable: true,
+    createAt: '2024-02-15T14:00:00Z',
     createBy: 'admin',
-    updateAt: '2024-03-01 10:00:00',
+    updateAt: '2024-03-01T10:00:00Z',
     updateBy: 'admin'
   },
   {
     id: generateId(),
     name: 'ceph-rbd',
-    clusterId: 'cls-001-prod',
+    clusterId: 'cluster-1',
     clusterName: 'prod-cluster',
     provisioner: 'ceph.com/rbd',
     reclaimPolicy: 'Retain',
     volumeBindingMode: 'WaitForFirstConsumer',
     allowVolumeExpansion: true,
     labels: { type: 'ceph' },
-    annotations: {},
-    createAt: '2024-03-01 10:00:00',
+    deletable: true,
+    createAt: '2024-03-01T10:00:00Z',
     createBy: 'admin',
-    updateAt: '2024-03-19 08:00:00',
+    updateAt: '2024-03-19T08:00:00Z',
     updateBy: 'admin'
   }
 ]

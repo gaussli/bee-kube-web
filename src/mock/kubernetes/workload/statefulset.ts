@@ -3,7 +3,15 @@
  * @module mock/kubernetes/workload/statefulset
  */
 import type { PageResp } from '@/types/common'
-import type { StatefulSetQueryReq, StatefulSetReq, StatefulSetResp, StatefulSetLabelsReq, StatefulSetAnnotationsReq, StatefulSetScaleReq, StatefulSetYamlReq } from '@/types/kubernetes/workload/statefulset'
+import type {
+  StatefulSetQueryReq,
+  StatefulSetReq,
+  StatefulSetResp,
+  StatefulSetLabelsReq,
+  StatefulSetAnnotationsReq,
+  StatefulSetScaleReq,
+  StatefulSetYamlReq
+} from '@/types/kubernetes/workload/statefulset'
 import { generateId } from '@/mock/utils'
 
 /**
@@ -161,8 +169,9 @@ function getStatefulSetYaml(clusterId: string, namespace: string, name: string):
     .map(([key, value]) => `      ${key}: "${value}"`)
     .join('\n')
 
-  const containers = statefulSet.images.map((image, index) => {
-    return `      - name: ${statefulSet.name}-container-${index}
+  const containers = statefulSet.images
+    .map((image, index) => {
+      return `      - name: ${statefulSet.name}-container-${index}
         image: ${image}
         ports:
         - containerPort: 8080
@@ -173,10 +182,12 @@ function getStatefulSetYaml(clusterId: string, namespace: string, name: string):
           requests:
             cpu: "100m"
             memory: "128Mi"`
-  }).join('\n')
+    })
+    .join('\n')
 
-  const volumeClaimTemplates = (statefulSet.volumeClaimTemplates || []).map(vct => {
-    return `  - metadata:
+  const volumeClaimTemplates = (statefulSet.volumeClaimTemplates || [])
+    .map(vct => {
+      return `  - metadata:
       name: ${vct.name}
     spec:
       accessModes: [${(vct.accessModes || ['ReadWriteOnce']).map(m => `"${m}"`).join(', ')}]
@@ -184,7 +195,8 @@ function getStatefulSetYaml(clusterId: string, namespace: string, name: string):
       resources:
         requests:
           storage: ${vct.resources?.requests?.storage || '10Gi'}`
-  }).join('\n')
+    })
+    .join('\n')
 
   const yaml = `apiVersion: apps/v1
 kind: StatefulSet
@@ -469,7 +481,9 @@ function exportStatefulSet(clusterId: string, namespace: string, params: Partial
     s.updateStrategy,
     s.podManagementPolicy,
     s.images.join(';'),
-    Object.entries(s.labels || {}).map(([k, v]) => `${k}=${v}`).join(';'),
+    Object.entries(s.labels || {})
+      .map(([k, v]) => `${k}=${v}`)
+      .join(';'),
     s.createAt,
     s.createBy,
     s.updateAt,

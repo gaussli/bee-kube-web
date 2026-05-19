@@ -1,5 +1,6 @@
 /**
- * @fileOverview PersistentVolume 资源相关类型定义
+ * PersistentVolume 资源类型定义
+ * @module types/kubernetes/persistentVolume
  */
 import type { BaseEntity, PageReq } from '@/types/common'
 
@@ -18,8 +19,6 @@ export type PersistentVolumePhase = 'Pending' | 'Available' | 'Bound' | 'Release
  * @extends BaseEntity 继承基础实体（含 id, createAt, createBy, updateAt, updateBy）
  */
 export interface PersistentVolumeResp extends BaseEntity {
-  /** PersistentVolume ID */
-  id: string
   /** PersistentVolume 名称 */
   name: string
   /** 所属集群 ID */
@@ -63,15 +62,13 @@ export interface PersistentVolumeResp extends BaseEntity {
  */
 export interface PersistentVolumeQueryReq extends PageReq {
   /** PersistentVolume 名称（模糊匹配） */
-  name: string
-  /** 集群 ID */
-  clusterId: string
+  name?: string
   /** 状态 */
-  status: string
+  status?: string
   /** 存储类名 */
-  storageClassName: string
+  storageClassName?: string
   /** 标签选择器 */
-  labelSelector: string
+  labelSelector?: string
 }
 
 /**
@@ -80,7 +77,7 @@ export interface PersistentVolumeQueryReq extends PageReq {
 export interface PersistentVolumeLabelsReq {
   /** 标签键值对 */
   labels: Record<string, string>
-  /** 操作（1: 新增；2: 移除：3: 全量替换） */
+  /** 操作（1: 新增；2: 移除；3: 全量替换） */
   operation: number
 }
 
@@ -90,6 +87,6 @@ export interface PersistentVolumeLabelsReq {
 export interface PersistentVolumeAnnotationsReq {
   /** 注解键值对 */
   annotations: Record<string, string>
-  /** 操作（1: 新增；2: 移除：3: 全量替换） */
+  /** 操作（1: 新增；2: 移除；3: 全量替换） */
   operation: number
 }

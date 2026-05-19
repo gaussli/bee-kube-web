@@ -1,5 +1,5 @@
 /**
- * @fileOverview ServiceAccount 资源相关类型定义
+ * ServiceAccount 资源类型定义
  * @module types/kubernetes/serviceAccount
  */
 import type { BaseEntity, PageReq } from '@/types/common'
@@ -9,8 +9,6 @@ import type { BaseEntity, PageReq } from '@/types/common'
  * @extends BaseEntity 继承基础实体（含 id, createAt, createBy, updateAt, updateBy）
  */
 export interface ServiceAccountResp extends BaseEntity {
-  /** ServiceAccount ID */
-  id: string
   /** ServiceAccount 名称 */
   name: string
   /** 所属命名空间 */
@@ -43,14 +41,8 @@ export interface ServiceAccountResp extends BaseEntity {
  * @extends PageReq 继承分页请求（含 page, pageSize）
  */
 export interface ServiceAccountQueryReq extends PageReq {
-  /** 命名空间 ID */
-  id: string
   /** ServiceAccount 名称（模糊匹配） */
   name?: string
-  /** 命名空间名称 */
-  namespace?: string
-  /** 集群 ID */
-  clusterId: string
   /** 标签选择器 */
   labelSelector?: string
 }
@@ -79,7 +71,7 @@ export interface ServiceAccountReq {
 export interface ServiceAccountLabelsReq {
   /** 标签键值对 */
   labels: Record<string, string>
-  /** 操作（1: 新增；2: 移除：3: 全量替换） */
+  /** 操作（1: 新增；2: 移除；3: 全量替换） */
   operation: number
 }
 
@@ -89,7 +81,7 @@ export interface ServiceAccountLabelsReq {
 export interface ServiceAccountAnnotationsReq {
   /** 注解键值对 */
   annotations: Record<string, string>
-  /** 操作（1: 新增；2: 移除：3: 全量替换） */
+  /** 操作（1: 新增；2: 移除；3: 全量替换） */
   operation: number
 }
 
@@ -99,6 +91,6 @@ export interface ServiceAccountAnnotationsReq {
 export interface ServiceAccountImagePullSecretsReq {
   /** 镜像拉取密钥名称列表 */
   imagePullSecrets: string[]
-  /** 操作（1: 新增；2: 移除：3: 全量替换） */
+  /** 操作（1: 新增；2: 移除；3: 全量替换） */
   operation: number
 }
