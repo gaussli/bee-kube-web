@@ -7,14 +7,17 @@ import type { Condition, Event, Metadata, Revision, WorkloadRestartPolicy } from
 
 /**
  * Deployment 状态枚举
- * - Running: 运行中
- * - Updating: 更新中
- * - Deleting: 删除中
- * - StartTimeout: 启动超时
- * - UpdateTimeout: 更新超时
- * - Unknown: 未知
+ * - Running: 运行中，完全就绪，达到期望副本
+ * - Available：满足最小可用性
+ * - Creating：创建中，generation = 1 且不满足最小可用性
+ * - Updating: 更新中，generation > 1 且不满足最小可用性
+ * - Terminating: 终止中，存在 deletionTimestamp
+ * - CreateTimeout: 创建超时，generation = 1 且 Processing 的 reason = ProgressDeadlineExceeded
+ * - UpdateTimeout: 更新超时，generation > 1 且 Processing 的 reason = ProgressDeadlineExceeded
+ * - Failed： * 失败异常，ReplicaFailure = True 或 （Progressing=False 且 reason != ProgressDeadlineExceeded → Failed）
+ * - Unknown: 未知，兜底状态
  */
-export type DeploymentStatus = 'Running' | 'Updating' | 'Deleting' | 'StartTimeout' | 'UpdateTimeout' | 'Unknown'
+export type DeploymentStatus = 'Running' | 'Available' | 'Creating' | 'Updating' | 'Terminating' | 'CreateTimeout' | 'UpdateTimeout' | 'Failed' | 'Unknown'
 
 /**
  * Deployment 条件类型枚举
@@ -92,7 +95,7 @@ export interface DeploymentOverviewResp extends BaseEntity {
   /** 标签选择器 */
   selector: Record<string, string>
   /** 触发删除时间 */
-  deletionAt?: string
+  deletionTimestamp?: string
   /** Pod CPU 请求 */
   podCpuRequest?: string
   /** Pod CPU 限制 */

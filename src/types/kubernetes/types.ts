@@ -118,7 +118,7 @@ export interface Revision {
   /** 变更原因 */
   changeCause: string
   /** 创建时间 */
-  creationAt: string
+  creationTimestamp: string
   /** 是否为当前活跃版本 */
   active: boolean
 }

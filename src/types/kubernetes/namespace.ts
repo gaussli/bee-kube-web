@@ -70,7 +70,7 @@ export interface NamespaceOverviewResp extends BaseEntity {
   /** 命名空间类型 */
   type: NamespaceType
   /** 触发删除时间 */
-  deletionAt: string
+  deletionTimestamp: string
   /** 条件列表 */
   conditions: Condition<NamespaceConditionType>[]
 }
