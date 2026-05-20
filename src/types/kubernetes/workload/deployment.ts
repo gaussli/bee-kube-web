@@ -3,7 +3,7 @@
  * @module types/kubernetes/workload/deployment
  */
 import type { BaseEntity, PageReq } from '@/types/common'
-import type { Condition, Event, Metadata, Revision, WorkloadRestartPolicy } from '../types'
+import type { Condition, ContainerResource, Event, Metadata, Revision, WorkloadRestartPolicy } from '../types'
 
 /**
  * Deployment 状态枚举
@@ -96,14 +96,8 @@ export interface DeploymentOverviewResp extends BaseEntity {
   selector: Record<string, string>
   /** 触发删除时间 */
   deletionTimestamp?: string
-  /** Pod CPU 请求 */
-  podCpuRequest?: string
-  /** Pod CPU 限制 */
-  podCpuLimit?: string
-  /** Pod 内存请求 */
-  podMemoryRequest?: string
-  /** Pod 内存限制 */
-  podMemoryLimit?: string
+  /** 容器资源列表 */
+  containerResources: ContainerResource[]
   /** 条件列表 */
   conditions: Condition<DeploymentConditionType>
 }
@@ -127,18 +121,18 @@ export interface DeploymentUpdateResp {
 
 /**
  * Deployment 监控响应数据
- * TODO: 监控属性
+ * TODO: 待补充监控相关属性（如 CPU、内存使用率等）
  */
 export interface DeploymentMonitorResp {}
 
 /**
- * Deployment 元数据更新请求
+ * Deployment 元数据响应
  * @extends Metadata 继承元数据类型（含 labels, annotations）
  */
 export interface DeploymentMetadataResp extends Metadata {}
 
 /**
- * Deployment 事件请求
+ * Deployment 事件响应
  * @extends Event 继承事件类型
  */
 export interface DeploymentEventResp extends Event {}

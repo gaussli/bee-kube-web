@@ -130,3 +130,14 @@ export interface Revision {
  * - Never: 从不重启（适用于不间断任务）
  */
 export type WorkloadRestartPolicy = 'Always' | 'OnFailure' | 'Never'
+
+export interface ContainerResource {
+  request: {
+    cpu: string
+    memory: string
+  }
+  limit: {
+    cpu: string
+    memory: string
+  }
+}
