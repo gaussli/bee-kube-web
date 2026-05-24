@@ -1,71 +1,47 @@
 /**
  * Service 资源类型定义
- * @module types/kubernetes/service
+ * @module types/kubernetes/network/service
  */
 import type { BaseEntity, PageReq } from '@/types/common'
+import type { ServicePort } from './types'
 
 /**
- * Service 端口配置
+ * Service 类型枚举
+ * @remarks
+ * - ClusterIP: 集群内部 IP 暴露（默认类型，仅集群内可访问）
+ * - NodePort: 节点端口暴露（每个节点上开放固定端口，外部可通过 `<NodeIP>:<NodePort>` 访问）
+ * - LoadBalancer: 负载均衡器暴露（由云厂商提供外部 LB，自动分配公网 IP）
+ * - ExternalName: 外部域名映射（将 Service 映射为集群外部域名，通过 DNS CNAME 转发）
  */
-export interface ServicePort {
-  /** 端口名称 */
-  name?: string
-  /** 协议 */
-  protocol: string
-  /** 服务端口 */
-  port: number
-  /** 目标端口 */
-  targetPort: number | string
-  /** 节点端口（仅 NodePort/LoadBalancer） */
-  nodePort?: number
-}
-
-/**
- * Service 负载均衡器配置
- */
-export interface ServiceLoadBalancer {
-  /** 负载均衡器 IP */
-  ip?: string
-  /** 入口点列表 */
-  ingress?: Array<{
-    ip?: string
-    hostname?: string
-  }>
-}
+export type ServiceType = 'ClusterIP' | 'NodePort' | 'LoadBalancer' | 'ExternalName'
 
 /**
  * Service 响应数据
  * @extends BaseEntity 继承基础实体（含 id, createAt, createBy, updateAt, updateBy）
  */
 export interface ServiceResp extends BaseEntity {
+  /** 资源 UID */
+  uid: string
   /** Service 名称 */
   name: string
-  /** 所属命名空间 */
-  namespace: string
   /** 所属集群 ID */
   clusterId: string
   /** 所属集群名称 */
   clusterName?: string
-  /** Service 类型（ClusterIP, NodePort, LoadBalancer, ExternalName） */
-  type: 'ClusterIP' | 'NodePort' | 'LoadBalancer' | 'ExternalName'
-  /** 集群 IP */
-  clusterIp: string
-  /** 外部 IP 列表 */
-  external Ips?: string[]
+  /** 所属命名空间 */
+  namespace: string
+  /** 描述信息 */
+  description: string
+  /** Service 类型 */
+  type: ServiceType
   /** 端口配置列表 */
   ports: ServicePort[]
-  /** 标签选择器 */
+  /** 标签选择器（匹配目标 Pod 的标签） */
   selector?: Record<string, string>
-  /** 负载均衡器配置 */
-  loadBalancer?: ServiceLoadBalancer
-  /** 外部名称（仅 ExternalName 类型） */
+  /** 集群内部 IP（ClusterIP / NodePort / LoadBalancer 类型自动分配） */
+  clusterIp: string
+  /** 外部域名（仅 ExternalName 类型生效） */
   externalName?: string
-  /** 标签 */
-  labels?: Record<string, string>
-  /** 注解 */
-  annotations?: Record<string, string>
-  /** 是否可删除 */
-  deletable?: boolean
 }
 
 /**
@@ -77,7 +53,7 @@ export interface ServiceQueryReq extends PageReq {
   name?: string
   /** Service 类型 */
   type?: string
-  /** 标签选择器 */
+  /** 标签选择器（key=value 格式，多个用逗号分隔） */
   labelSelector?: string
 }
 
@@ -90,14 +66,14 @@ export interface ServiceReq {
   /** 命名空间名称 */
   namespace: string
   /** Service 类型 */
-  type: 'ClusterIP' | 'NodePort' | 'LoadBalancer' | 'ExternalName'
-  /** 集群 IP（ClusterIP 类型可选，ExternalName 类型不支持） */
+  type: ServiceType
+  /** 集群 IP（ClusterIP 类型可选指定，ExternalName 类型不支持） */
   clusterIp?: string
   /** 端口配置列表 */
   ports: ServicePort[]
-  /** 标签选择器 */
+  /** 标签选择器（匹配目标 Pod 的标签） */
   selector?: Record<string, string>
-  /** 外部名称（ExternalName 类型必需） */
+  /** 外部域名（ExternalName 类型必需） */
   externalName?: string
   /** 标签 */
   labels?: Record<string, string>

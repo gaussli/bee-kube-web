@@ -3,8 +3,9 @@
  * @module types/kubernetes/pod
  */
 import type { BaseEntity } from '../common'
+import type { Container } from './types'
 
-export type PodStatus = 'Running' | 'Pending' | 'Failed'
+export type PodStatus = 'Running' | 'Pending' | 'Succeeded' | 'Failed' | 'Unknown'
 
 /**
  * Pod 响应数据
@@ -29,8 +30,7 @@ export interface PodResp extends BaseEntity {
   /** Pod IP */
   ip: string
   restarts: number
-  ready: number
+  readyContainerCount: number
   containerCount: number
-  /** 启动时间 */
-  startTime: string
+  containers: Container[]
 }

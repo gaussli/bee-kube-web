@@ -3,21 +3,40 @@
  * @module types/kubernetes/workload/deployment
  */
 import type { BaseEntity, PageReq } from '@/types/common'
-import type { Condition, ContainerResource, Event, Metadata, Revision, WorkloadRestartPolicy } from '../types'
+import type { Condition, ContainerResource, Event, Metadata } from '../types'
+import type { NodeAffinity, PodAffinity, PodAntiAffinity, RestartPolicy, Revision, Toleration } from './types'
 
 /**
  * Deployment 状态枚举
- * - Running: 运行中，完全就绪，达到期望副本
- * - Available：满足最小可用性
- * - Creating：创建中，generation = 1 且不满足最小可用性
- * - Updating: 更新中，generation > 1 且不满足最小可用性
- * - Terminating: 终止中，存在 deletionTimestamp
- * - CreateTimeout: 创建超时，generation = 1 且 Processing 的 reason = ProgressDeadlineExceeded
- * - UpdateTimeout: 更新超时，generation > 1 且 Processing 的 reason = ProgressDeadlineExceeded
- * - Failed： * 失败异常，ReplicaFailure = True 或 （Progressing=False 且 reason != ProgressDeadlineExceeded → Failed）
- * - Unknown: 未知，兜底状态
+ * @remarks
+ * - Running: 运行中（所有 Pod 正常运行）
+ * - Available: 部分就绪（至少一个副本可用，但未全部就绪）
+ * - Stopped: 已停止（副本数缩容为 0）
+ * - Creating: 创建中（正在创建 Pod）
+ * - Updating: 更新中（正在执行滚动更新）
+ * - Terminating: 终止中（正在删除）
+ * - CreateTimeout: 创建超时（Pod 创建超时）
+ * - UpdateTimeout: 更新超时（更新过程超时）
+ * - Failed: 失败异常（创建或更新过程出现错误）
+ * - Unknown: 未知状态
  */
-export type DeploymentStatus = 'Running' | 'Available' | 'Creating' | 'Updating' | 'Terminating' | 'CreateTimeout' | 'UpdateTimeout' | 'Failed' | 'Unknown'
+export type DeploymentStatus = 'Running' | 'Available' | 'Stopped' | 'Creating' | 'Updating' | 'Terminating' | 'CreateTimeout' | 'UpdateTimeout' | 'Failed' | 'Unknown'
+
+/**
+ * Deployment 状态中文映射表
+ */
+export const DeploymentStatusRecord: Record<string, string> = {
+  Running: '运行中',
+  Available: '部分就绪',
+  Stopped: '已停止',
+  Creating: '创建中',
+  Updating: '更新中',
+  Terminating: '终止中',
+  CreateTimeout: '创建超时',
+  UpdateTimeout: '更新超时',
+  Failed: '失败异常',
+  Unknown: '未知'
+}
 
 /**
  * Deployment 条件类型枚举
@@ -35,7 +54,7 @@ export type DeploymentConditionType = 'Available' | 'Progressing' | 'ReplicaFail
 export type DeploymentStrategyType = 'RollingUpdate' | 'Recreate'
 
 /**
- * Deployment 响应数据
+ * Deployment 列表对象响应数据
  * @extends BaseEntity 继承基础实体（含 id, createAt, createBy, updateAt, updateBy）
  */
 export interface DeploymentResp extends BaseEntity {
@@ -53,20 +72,39 @@ export interface DeploymentResp extends BaseEntity {
   description?: string
   /** 状态 */
   status: DeploymentStatus
+  /** 状态描述信息（如异常原因） */
+  statusMessage?: string
   /** 期望副本数 */
   replicas: number
   /** 可用副本数 */
   availableReplicas: number
   /** 更新策略 */
   strategyType: DeploymentStrategyType
-  /** 使用的镜像列表 */
-  images: string[]
   /** 触发删除时间 */
-  detetionAt?: string
+  deletionAt?: string
 }
 
 /**
- * Deployment 概览响应数据
+ * Deployment 基础信息响应
+ * 用于下拉选择、关联引用等场景，仅返回核心标识字段
+ */
+export interface DeploymentBasicResp {
+  /** 资源 UID */
+  uid: string
+  /** 所属命名空间 */
+  namespace: string
+  /** Deployment 名称 */
+  name: string
+  /** 描述信息 */
+  description: string
+  /** 状态 */
+  status: DeploymentStatus
+  /** 创建时间 */
+  createAt: string
+}
+
+/**
+ * Deployment 概览响应
  * @extends BaseEntity 继承基础实体（含 id, createAt, createBy, updateAt, updateBy）
  */
 export interface DeploymentOverviewResp extends BaseEntity {
@@ -76,14 +114,6 @@ export interface DeploymentOverviewResp extends BaseEntity {
   clusterId: string
   /** 所属集群名称 */
   clusterName: string
-  /** 所属命名空间 */
-  namespace: string
-  /** Deployment 名称 */
-  name: string
-  /** 描述信息 */
-  description?: string
-  /** 状态 */
-  status: DeploymentStatus
   /** 期望副本数 */
   replicas: number
   /** 就绪副本数 */
@@ -100,36 +130,53 @@ export interface DeploymentOverviewResp extends BaseEntity {
   containerResources: ContainerResource[]
   /** 条件列表 */
   conditions: Condition<DeploymentConditionType>
-}
-
-/**
- * Deployment 更新响应数据
- */
-export interface DeploymentUpdateResp {
-  /** 更新策略类型 */
-  strategyType: DeploymentStrategyType
-  /** 滚动更新配置 */
-  rollingUpdate: {
-    /** 最大不可用副本数 */
-    maxUnavailable: string | number
-    /** 最大超出副本数 */
-    maxSurge: string | number
+  /** 更新策略配置 */
+  strategy: {
+    /** 策略类型 */
+    type: DeploymentStrategyType
+    /** 滚动更新参数 */
+    rollingUpdate: {
+      /** 最大不可用副本数（支持数字或百分比，如 "2" 或 "25%"） */
+      maxUnavailable: string
+      /** 最大超出副本数（支持数字或百分比，如 "2" 或 "25%"） */
+      maxSurge: string
+    }
   }
-  /** 修订版本列表 */
-  revisions: Revision[]
 }
-
-/**
- * Deployment 监控响应数据
- * TODO: 待补充监控相关属性（如 CPU、内存使用率等）
- */
-export interface DeploymentMonitorResp {}
 
 /**
  * Deployment 元数据响应
  * @extends Metadata 继承元数据类型（含 labels, annotations）
  */
 export interface DeploymentMetadataResp extends Metadata {}
+
+/**
+ * Deployment 调度策略响应
+ * 包含节点选择器、亲和性规则和容忍度配置
+ */
+export interface DeploymentScheduleResp {
+  /** 节点选择器（通过节点标签筛选调度目标节点） */
+  nodeSelector: Record<string, string>
+  /** 亲和性规则 */
+  affinity: {
+    /** 节点亲和性 */
+    nodeAffinity: NodeAffinity
+    /** Pod 亲和性 */
+    podAffinity: PodAffinity
+    /** Pod 反亲和性 */
+    podAntiAffinity: PodAntiAffinity
+  }
+  /** 容忍度配置列表 */
+  tolerations: Toleration[]
+}
+
+export interface DeploymentRevisionResp extends Revision {}
+
+/**
+ * Deployment 监控响应数据
+ * TODO: 待补充监控相关属性（如 CPU、内存使用率等）
+ */
+export interface DeploymentMonitorResp {}
 
 /**
  * Deployment 事件响应
@@ -141,14 +188,20 @@ export interface DeploymentEventResp extends Event {}
  * Deployment 高级配置信息
  */
 export interface DeploymentAdvancedResp {
-  /** 历史版本数量限制 */
+  /** 保留历史 Revision 的数量（默认 10） */
   revisionHistoryLimit: number
-  /** 最小就绪等待秒数（Pod 就绪后需保持的最短时间） */
+  /** 最小就绪等待秒数（Pod 就绪后需保持的最短时间，默认 0） */
   minReadySeconds: number
-  /** 进度超时秒数（Deployment 未能完成时的最长等待时间） */
+  /** 进度超时秒数（Deployment 未能完成时的最长等待时间，默认 600） */
   progressDeadlineSeconds: number
-  /** 重启策略 */
-  restartPolicy: WorkloadRestartPolicy
+  /**
+   * 重启策略
+   * @remarks
+   * 针对 Deployment 必须为 Always，且不可编辑
+   */
+  restartPolicy: RestartPolicy
+  /** Pod 优雅退出时间（秒，默认 30） */
+  terminationGracePeriodSeconds: number
 }
 
 /**
@@ -156,7 +209,7 @@ export interface DeploymentAdvancedResp {
  * @extends PageReq 继承分页请求（含 page, pageSize）
  */
 export interface DeploymentQueryReq extends PageReq {
-  /** 命名空间 ID */
+  /** Deployment ID */
   id?: string
   /** Deployment 名称（模糊匹配） */
   name?: string
@@ -164,9 +217,9 @@ export interface DeploymentQueryReq extends PageReq {
   namespace?: string
   /** 集群 ID */
   clusterId?: string
-  /** 状态 */
+  /** Deployment 状态 */
   status?: string
-  /** 标签选择器 */
+  /** 标签选择器（key=value 格式，多个用逗号分隔） */
   labelSelector?: string
 }
 
@@ -181,11 +234,11 @@ export interface DeploymentReq {
   /** 副本数 */
   replicas?: number
   /** 更新策略 */
-  strategy?: 'RollingUpdate' | 'Recreate'
+  strategy?: DeploymentStrategyType
   /** 标签选择器 */
   selector?: Record<string, string>
   /** 容器配置列表 */
-  containers?: DeploymentContainer[]
+  // containers?: DeploymentContainer[]
   /** 标签 */
   labels?: Record<string, string>
   /** 注解 */
@@ -241,75 +294,4 @@ export interface DeploymentReplicaStatus {
   availableReplicas: number
   /** 已更新副本数 */
   updatedReplicas: number
-}
-
-/**
- * Deployment 容器配置
- */
-export interface DeploymentContainer {
-  /** 容器名称 */
-  name: string
-  /** 镜像 */
-  image: string
-  /** 镜像拉取策略 */
-  imagePullPolicy?: 'Always' | 'Never' | 'IfNotPresent'
-  /** 资源请求/限制 */
-  resources?: {
-    /** 请求资源 */
-    requests?: {
-      /** CPU 请求 */
-      cpu?: string
-      /** 内存请求 */
-      memory?: string
-    }
-    /** 限制资源 */
-    limits?: {
-      /** CPU 限制 */
-      cpu?: string
-      /** 内存限制 */
-      memory?: string
-    }
-  }
-  /** 端口配置列表 */
-  ports?: Array<{
-    /** 端口名称 */
-    name: string
-    /** 容器端口 */
-    containerPort: number
-    /** 协议 */
-    protocol: string
-  }>
-  /** 环境变量列表 */
-  env?: Array<{
-    /** 变量名称 */
-    name: string
-    /** 变量值 */
-    value?: string
-    /** 值来源 */
-    valueFrom?: {
-      /** 字段引用 */
-      fieldRef?: {
-        /** 字段路径 */
-        fieldPath: string
-      }
-      /** Secret 引用 */
-      secretRef?: {
-        /** Secret 名称 */
-        name: string
-        /** Key */
-        key: string
-      }
-      /** ConfigMap 引用 */
-      configMapRef?: {
-        /** ConfigMap 名称 */
-        name: string
-        /** Key */
-        key: string
-      }
-    }
-  }>
-  /** 存活探针 */
-  livenessProbe?: object
-  /** 就绪探针 */
-  readinessProbe?: object
 }

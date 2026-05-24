@@ -37,14 +37,20 @@ export interface ObjectReference {
 export interface Condition<T> {
   /** 条件类型 */
   type: T
+  /** 条件状态 */
+  status: string
   /** 条件原因 */
   reason?: string
   /** 条件消息 */
   message?: string
-  /** 上次转换时间 */
+  /** 最后一次状态变更时间 */
   lastTransitionTime?: string
-  /** 上次心跳时间 */
+  /** Node 特有，最后一次心跳时间 */
   lastHeartbeatTime?: string
+  /** Pod 特有，kubelet 最后一次探测 Pod Conditioin 状态时间 */
+  lastProbeTime?: string
+  /** Workload，最后一次更新时间 */
+  lastUpdateTime?: string
 }
 
 /**
@@ -109,35 +115,33 @@ export interface Event {
   lastTimestamp?: string
 }
 
-/**
- * 资源修订版本
- */
-export interface Revision {
-  /** 修订版本号 */
-  revision: number
-  /** 变更原因 */
-  changeCause: string
-  /** 创建时间 */
-  creationTimestamp: string
-  /** 是否为当前活跃版本 */
-  active: boolean
-}
-
-/**
- * 工作负载重启策略枚举
- * - Always: 始终重启（默认策略，适用于长运行服务）
- * - OnFailure: 失败时重启（适用于一次性任务）
- * - Never: 从不重启（适用于不间断任务）
- */
-export type WorkloadRestartPolicy = 'Always' | 'OnFailure' | 'Never'
+export type ContainerStatus = 'Waiting' | 'Running' | 'Terminated'
 
 export interface ContainerResource {
   request: {
-    cpu: string
-    memory: string
+    cpu: number
+    memory: number
   }
   limit: {
-    cpu: string
-    memory: string
+    cpu: number
+    memory: number
   }
+}
+
+export interface ContainerPort {
+  name: string
+  protocol: string
+  containerPort: number
+  hostPort: number
+}
+
+export interface Container {
+  containerId: string
+  name: string
+  status: ContainerStatus
+  statusMessage: string
+  image: string
+  ports: ContainerPort[]
+  restart: number
+  isInit: boolean
 }
