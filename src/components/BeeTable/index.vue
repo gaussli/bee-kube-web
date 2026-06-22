@@ -11,16 +11,6 @@
       <div class="bee-table__inner">
         <!-- 表头行（纵向 sticky），无 label/header 插槽时视觉隐藏，保留 DOM 以维持列宽对齐 -->
         <div class="bee-table__row bee-table__row--header" :class="{ 'bee-table__row--header-hidden': !hasHeaderContent }">
-          <!-- 全选复选框 -->
-          <div v-if="selectable" class="bee-table__cell bee-table__cell--header bee-table__cell--selection">
-            <input
-              type="checkbox"
-              class="bee-table__checkbox"
-              :checked="isAllSelected()"
-              :indeterminate="isIndeterminate()"
-              @change="toggleAllSelection"
-            />
-          </div>
           <div v-for="(col, colIndex) in columnList" :key="col.id" class="bee-table__cell bee-table__cell--header" :class="getFixedClass(col)" :style="getColumnStyle(col, colIndex)">
             <template v-if="col.slots.header">
               <component :is="headerRenderers[colIndex]" />
@@ -31,16 +21,17 @@
 
         <!-- 表体 -->
         <div class="bee-table__body" :style="{ gap: 'var(--bee-table-row-gap, 8px)' }">
-          <div v-for="(row, rowIndex) in data" :key="getRowKey(row, rowIndex)" class="bee-table__row" :class="{ 'bee-table__row--divided': divider }">
-            <!-- 行选择复选框 -->
-            <div v-if="selectable" class="bee-table__cell bee-table__cell--selection">
-              <input
-                type="checkbox"
-                class="bee-table__checkbox"
-                :checked="isRowSelected(row, rowIndex)"
-                @change="toggleRowSelection(row, rowIndex)"
-              />
-            </div>
+          <div
+            v-for="(row, rowIndex) in data"
+            :key="getRowKey(row, rowIndex)"
+            class="bee-table__row"
+            :class="{
+              'bee-table__row--divided': divider,
+              'bee-table__row--selected': selectable && isRowSelected(row, rowIndex)
+            }"
+            :style="{ cursor: selectable ? 'pointer' : undefined }"
+            @click="selectable && handleRowClick(row, rowIndex)"
+          >
             <div
               v-for="(col, colIndex) in columnList"
               :key="col.id"
@@ -120,9 +111,7 @@ const wrapperRef = ref<HTMLElement>()
 const columnList = ref<ColumnConfig[]>([])
 
 /** 是否有表头内容需要展示（任一列有 label 或 header 插槽） */
-const hasHeaderContent = computed(() =>
-  columnList.value.some(col => col.label || col.slots.header)
-)
+const hasHeaderContent = computed(() => columnList.value.some(col => col.label || col.slots.header))
 
 function registerColumn(config: ColumnConfig) {
   columnList.value.push(config)
@@ -158,7 +147,7 @@ function getRowKey(row: Record<string, unknown>, index: number): string {
   return (row[props.rowKey] as string) ?? `bee-row-${index}`
 }
 
-// ---- 多选 ----
+// ---- 行点击选中 ----
 
 const selectedRowKeys = ref(new Set<string>())
 
@@ -166,16 +155,7 @@ function isRowSelected(row: Record<string, unknown>, index: number): boolean {
   return selectedRowKeys.value.has(getRowKey(row, index))
 }
 
-function isAllSelected(): boolean {
-  return props.data.length > 0 && selectedRowKeys.value.size === props.data.length
-}
-
-function isIndeterminate(): boolean {
-  const size = selectedRowKeys.value.size
-  return size > 0 && size < props.data.length
-}
-
-function toggleRowSelection(row: Record<string, unknown>, index: number) {
+function handleRowClick(row: Record<string, unknown>, index: number) {
   const key = getRowKey(row, index)
   const next = new Set(selectedRowKeys.value)
   if (next.has(key)) {
@@ -184,16 +164,6 @@ function toggleRowSelection(row: Record<string, unknown>, index: number) {
     next.add(key)
   }
   selectedRowKeys.value = next
-  emitSelectionChange()
-}
-
-function toggleAllSelection() {
-  if (isAllSelected()) {
-    selectedRowKeys.value = new Set()
-  } else {
-    const keys = new Set(props.data.map((row, i) => getRowKey(row, i)))
-    selectedRowKeys.value = keys
-  }
   emitSelectionChange()
 }
 
@@ -270,9 +240,10 @@ function getColumnStyle(col: ColumnConfig, index: number) {
   --bee-table-bg: transparent;
   --bee-table-row-bg: #{$color-bg-elevated};
   --bee-table-row-gap: 8px;
+  --bee-table-row-hover-bg: #{map.get($colors, 'primary', 'bg')};
   --bee-table-row-padding: 16px;
   --bee-table-row-radius: 8px;
-  --bee-table-row-hover-bg: #{map.get($colors, 'primary', 'bg')};
+  --bee-table-row-selected-bg: #{map.get($colors, 'primary', 10)};
 
   position: relative;
   box-sizing: border-box;
@@ -328,10 +299,17 @@ function getColumnStyle(col: ColumnConfig, index: number) {
     width: 100%;
     border-radius: var(--bee-table-row-radius);
     background: var(--bee-table-row-bg);
-    contain: paint;
 
-    &:hover:not(&--header) {
+    // contain: paint;
+
+    &:hover:not(&--header, &--selected) {
       background: var(--bee-table-row-hover-bg);
+    }
+
+    &--selected {
+      --bee-row-selected-icon-color: #{$color-primary};
+
+      background: var(--bee-table-row-selected-bg);
     }
 
     &--header {
@@ -341,10 +319,10 @@ function getColumnStyle(col: ColumnConfig, index: number) {
     }
 
     &--header-hidden {
+      flex-shrink: 0;
       height: 1px;
       min-height: 0;
       overflow: hidden;
-      flex-shrink: 0;
       visibility: hidden;
     }
 
@@ -359,19 +337,14 @@ function getColumnStyle(col: ColumnConfig, index: number) {
     display: flex;
     align-items: center;
     box-sizing: border-box;
+    min-width: 0;
     padding: var(--bee-table-row-padding);
+    overflow: hidden;
     font-size: $font-size-14;
     color: $color-text-primary;
 
     &--header {
       font-weight: 600;
-    }
-
-    // 选择列
-    &--selection {
-      flex-shrink: 0;
-      width: 50px;
-      justify-content: center;
     }
 
     // 固定列
@@ -390,15 +363,6 @@ function getColumnStyle(col: ColumnConfig, index: number) {
         border-right: none;
       }
     }
-  }
-
-  // ---- checkbox ----
-  &__checkbox {
-    width: 16px;
-    height: 16px;
-    margin: 0;
-    cursor: pointer;
-    accent-color: $color-primary;
   }
 }
 

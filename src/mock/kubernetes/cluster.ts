@@ -194,7 +194,8 @@ const mockClusters: ClusterResp[] = [
     id: generateId(),
     name: 'prod-cluster',
     apiServer: 'https://192.168.100.201:6443',
-    description: '生产环境集群，用于部署生产应用生产环境集群，用于部署生产应用',
+    description:
+      '生产环境集群，用于部署生产应用生产环境集群，用于部署生产应用生产环境集群，用于部署生产应用生产环境集群，用于部署生产应用生产环境集群，用于部署生产应用生产环境集群，用于部署生产应用生产环境集群，用于部署生产应用生产环境集群，用于部署生产应用',
     status: 1,
     k8sVersion: 'v1.28.3',
     createBy: 'admin',

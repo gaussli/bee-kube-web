@@ -20,18 +20,13 @@
 
       <!-- 表格主体 -->
       <div class="table-body">
-        <BeeTable :data="tableData" :loading="loading" @selection-change="handleSelectionChange">
-          <BeeTableColumn width="280">
+        <BeeTable :data="tableData" :loading="loading" selectable @selection-change="handleSelectionChange">
+          <BeeTableColumn width="500">
             <template #default="{ row }">
-              <BeeLabelCopyable :label="row.id" />
+              <BeeClusterColumn :name="row.name" :cluster-id="row.id" :description="row.description" />
             </template>
           </BeeTableColumn>
-          <BeeTableColumn width="300">
-            <template #default="{ row }">
-              <BeeLabelGroup :mainLabel="row.name" :subLabel="row.description" subIcon="basic-description" :subColor="color.textSecondary" />
-            </template>
-          </BeeTableColumn>
-          <BeeTableColumn min-width="560">
+          <BeeTableColumn min-width="300">
             <template #default="{ row }">
               {{ row.apiServer }}
             </template>
@@ -108,11 +103,10 @@ import BeeAlert from '@/components/BeeAlert/index.vue'
 import BeeButton from '@/components/BeeButton/index.vue'
 import BeeCard from '@/components/BeeCard/index.vue'
 import BeeCircleButton from '@/components/BeeCircleButton/index.vue'
+import BeeClusterColumn from '@/components/BeeClusterColumn/index.vue'
 import BeeDialog from '@/components/BeeDialog/index.vue'
 import BeeDivider from '@/components/BeeDivider/index.vue'
 import BeeInputSearch from '@/components/BeeInputSearch/index.vue'
-import BeeLabelCopyable from '@/components/BeeLabelCopyable/index.vue'
-import BeeLabelGroup from '@/components/BeeLabelGroup/index.vue'
 import BeePage from '@/components/BeePage/index.vue'
 import BeePageTitle from '@/components/BeePageTitle/index.vue'
 import BeePagination from '@/components/BeePagination/index.vue'
@@ -122,7 +116,6 @@ import BeeTableColumn from '@/components/BeeTable/BeeTableColumn.vue'
 import BeeTable from '@/components/BeeTable/index.vue'
 import BeeTag from '@/components/BeeTag/index.vue'
 import { usePermission } from '@/composables/usePermission'
-import { color } from '@/config/color'
 import { ClusterStatusConfig } from '@/config/kubernetes'
 import { useKubernetesStore } from '@/stores'
 

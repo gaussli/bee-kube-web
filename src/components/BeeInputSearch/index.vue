@@ -42,6 +42,8 @@ const inputValue = computed({
 
 .bee-input-search {
   --bee-input-search-bg: transparent;
+  --bee-input-search-border-color: #{map.get($colors, 'gray', 90)};
+  --bee-input-search-border-color-focus: #{map.get($colors, 'primary', 50)};
 
   display: flex;
   gap: $spacing-8;
@@ -50,13 +52,13 @@ const inputValue = computed({
   width: 100%;
   height: 32px;
   padding: 0 $spacing-16;
-  border: 1px solid map.get($colors, 'gray', 90);
+  border: 1px solid var(--bee-input-search-border-color);
   border-radius: $radius-full;
   background: var(--bee-input-search-bg);
   transition: border-color 0.2s ease;
 
   &:focus-within {
-    border-color: map.get($colors, 'primary', 50);
+    border-color: var(--bee-input-search-border-color-focus);
   }
 
   &__icon {
