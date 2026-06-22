@@ -7,7 +7,7 @@
 <script setup lang="ts">
 /**
  * 主内容区布局组件
- * 承载 router-view，提供滚动和内边距
+ * 承载 router-view
  * @module components/BeeLayout/BeeMain
  */
 defineOptions({ name: 'BeeMain' })

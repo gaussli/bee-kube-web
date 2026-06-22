@@ -146,12 +146,12 @@ function handleClick(index: number, value?: string | number) {
     position: relative;
     z-index: 1;
     display: flex;
-    gap: 4px;
+    gap: $spacing-4;
     align-items: center;
     justify-content: center;
     height: 100%;
-    padding: 0 16px;
-    font-size: 14px;
+    padding: 0 $spacing-16;
+    font-size: $font-size-14;
     color: var(--bee-segmented-color);
     white-space: nowrap;
     cursor: pointer;
