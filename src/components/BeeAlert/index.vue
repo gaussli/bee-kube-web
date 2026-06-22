@@ -39,12 +39,12 @@ const iconName = computed(() => {
 <style lang="scss" scoped>
 .bee-alert {
   display: flex;
-  gap: $spacing-sm;
+  gap: $spacing-8;
   align-items: center;
-  padding: $spacing-sm;
+  padding: $spacing-8;
   border: 1px solid;
-  border-radius: $radius-sm;
-  font-size: $font-size-sm;
+  border-radius: $radius-8;
+  font-size: $font-size-12;
 
   &--primary {
     border-color: rgba($color-primary, 0.3);

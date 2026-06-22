@@ -84,7 +84,7 @@
           <div class="card-header">
             <span>节点用量</span>
             <div class="header-actions">
-              <BeeRadioSearch v-model="sortKey" :options="sortOptions" @select="handleSortChange" />
+              <BeeSegmentedControl v-model="sortKey" :options="sortOptions" @select="handleSortChange" />
               <el-divider direction="vertical" />
               <BeeButton size="small" @click="handleViewMore">查看更多</BeeButton>
             </div>
@@ -155,7 +155,7 @@ import { Refresh, Monitor, Clock } from '@element-plus/icons-vue'
 import BeeButton from '@/components/BeeButton/index.vue'
 import BeeIcon from '@/components/BeeIcon/index.vue'
 import BeeRadarChart from '@/components/BeeRadarChart/index.vue'
-import BeeRadioSearch from '@/components/BeeRadioSearch/index.vue'
+import BeeSegmentedControl from '@/components/BeeSegmentedControl/index.vue'
 import BeeRingChart from '@/components/BeeRingChart/index.vue'
 import BeeTag from '@/components/BeeTag/index.vue'
 

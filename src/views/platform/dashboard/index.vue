@@ -67,7 +67,7 @@ defineOptions({ name: 'Dashboard' })
 .dashboard {
   .stat-card {
     display: flex;
-    gap: $spacing-md;
+    gap: $spacing-16;
     align-items: center;
 
     .stat-icon {

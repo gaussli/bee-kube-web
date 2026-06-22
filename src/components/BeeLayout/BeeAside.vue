@@ -1,65 +1,27 @@
 <template>
   <aside class="bee-aside">
-    <el-menu class="aside-menu" :default-active="route.meta.activeCode ?? route.name" unique-opened @select="handleSelect">
+    <BeeMenu :default-active="defaultActive" @select="handleSelect">
       <template v-for="item in currentMenuList" :key="item.id">
-        <el-menu-item v-if="!item.children?.length" :index="item.code">
-          <el-icon v-if="item.icon">
-            <component :is="getIcon(item.icon)" />
-          </el-icon>
-          <template #title>{{ item.name }}</template>
-        </el-menu-item>
-        <el-sub-menu v-else :index="item.code">
-          <template #title>
-            <el-icon v-if="item.icon">
-              <component :is="getIcon(item.icon)" />
-            </el-icon>
-            <span>{{ item.name }}</span>
-          </template>
-          <el-menu-item v-for="child in item.children" :key="child.id" :index="child.code">
-            <el-icon v-if="child.icon">
-              <component :is="getIcon(child.icon)" />
-            </el-icon>
-            <span>{{ child.name }}</span>
-          </el-menu-item>
-        </el-sub-menu>
+        <BeeMenuItem v-if="!item.children?.length" :index="item.code" :label="item.name" :icon="item.icon" />
+        <BeeSubMenu v-else :index="item.code" :label="item.name" :icon="item.icon">
+          <BeeMenuItem v-for="child in item.children" :key="child.id" :index="child.code" :label="child.name" :icon="child.icon" />
+        </BeeSubMenu>
       </template>
-    </el-menu>
+    </BeeMenu>
   </aside>
 </template>
 
 <script setup lang="ts">
-import { computed, onMounted } from 'vue'
+/**
+ * 侧边栏导航组件
+ * 根据当前 Tab 动态渲染菜单，支持子菜单展开和路由跳转
+ * @module components/BeeLayout/BeeAside
+ */
+import { computed } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
-import {
-  HomeFilled,
-  Setting,
-  Odometer,
-  Box,
-  FolderOpened,
-  Cpu,
-  Document,
-  Collection,
-  Monitor,
-  DocumentCopy,
-  Lock,
-  User,
-  Avatar,
-  Menu,
-  Goods,
-  Connection,
-  Share,
-  Guide,
-  Aim,
-  Files,
-  Grid,
-  Coin,
-  Key,
-  UserFilled,
-  Link,
-  Timer,
-  Clock
-} from '@element-plus/icons-vue'
-import type { Component } from 'vue'
+import BeeMenu from '@/components/BeeMenu/BeeMenu.vue'
+import BeeMenuItem from '@/components/BeeMenu/BeeMenuItem.vue'
+import BeeSubMenu from '@/components/BeeMenu/BeeSubMenu.vue'
 import { useAppStore, useUserStore, useKubernetesStore } from '@/stores'
 
 defineOptions({ name: 'BeeAside' })
@@ -70,58 +32,30 @@ const kubernetesStore = useKubernetesStore()
 const route = useRoute()
 const router = useRouter()
 
-// 根据当前 tab 获取菜单列表
+/** 集群管理相关路由名称常量 */
+const CLUSTER_ROUTE = 'kubernetes:cluster' as const
+const CLUSTER_DASHBOARD_ROUTE = 'kubernetes:dashboard' as const
+
+/** 当前激活的菜单项，优先使用路由 meta.activeCode，回退到 route.name */
+const defaultActive = computed(() => (route.meta.activeCode ?? route.name) as string | undefined)
+
+/** 根据当前 tab 获取菜单列表，无匹配时返回空数组 */
 const currentMenuList = computed(() => {
-  return userStore.getCurrentMenus().find(menu => menu.code === appStore.currentTab)?.children
+  return userStore.getCurrentMenus().find(menu => menu.code === appStore.currentTab)?.children ?? []
 })
 
-onMounted(() => {
-  console.log('current route: ', route.name, route.meta.activeCode)
-  console.log(router.getRoutes())
-})
-
-const iconMap: Record<string, Component> = {
-  HomeFilled,
-  Setting,
-  Odometer,
-  Box,
-  FolderOpened,
-  Cpu,
-  Document,
-  Collection,
-  Monitor,
-  DocumentCopy,
-  Lock,
-  User,
-  Avatar,
-  Menu,
-  Goods,
-  Connection,
-  Share,
-  Guide,
-  Aim,
-  Files,
-  Grid,
-  Coin,
-  Key,
-  UserFilled,
-  Link,
-  Timer,
-  Clock
-}
-
-function getIcon(iconName?: string): Component {
-  return iconName ? iconMap[iconName] || HomeFilled : HomeFilled
-}
-
-// 使用 name 跳转路由
-function handleSelect(index: string) {
+/**
+ * 菜单项选中回调，使用路由名称跳转
+ * @param index - 菜单项 code（即路由 name）
+ */
+function handleSelect(index: string | number) {
+  const routeName = String(index)
   // 集群管理特殊处理：存在 activeClusterId 则跳转 dashboard，否则跳转列表
-  if (index === 'kubernetes:cluster' && kubernetesStore.activeClusterId) {
-    router.push({ name: 'kubernetes:dashboard' })
+  if (routeName === CLUSTER_ROUTE && kubernetesStore.activeClusterId) {
+    router.push({ name: CLUSTER_DASHBOARD_ROUTE })
     return
   }
-  router.push({ name: index })
+  router.push({ name: routeName })
 }
 </script>
 
@@ -129,16 +63,9 @@ function handleSelect(index: string) {
 .bee-aside {
   display: flex;
   flex-direction: column;
-  width: 200px;
+  width: 240px;
   height: 100%;
-  border-radius: $radius-sm;
   scrollbar-width: none; // 隐藏滚动条（Firefox）
-
-  .aside-menu {
-    flex: 1;
-    border-right: none;
-    overflow-y: auto;
-  }
 }
 
 ::-webkit-scrollbar {

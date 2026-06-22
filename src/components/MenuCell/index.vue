@@ -35,7 +35,7 @@ const iconComponent = computed(() => {
 <style lang="scss" scoped>
 .menu-info {
   display: flex;
-  gap: $spacing-sm;
+  gap: $spacing-8;
   align-items: center;
   height: 42px;
 

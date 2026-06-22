@@ -12,7 +12,7 @@
         <div class="table-query-left">
           <BeeInputSearch v-model="searchKey" placeholder="按名称搜索" @search="handleSearch" />
           <BeeSelect v-model="queryForm.namespace" placeholder="选择命名空间" :options="namespaceOptions" @change="handleNamespaceChange" />
-          <BeeRadioSearch v-model="queryForm.status" :options="statusOptions" @select="handleStatusSelect" />
+          <BeeSegmentedControl v-model="queryForm.status" :options="statusOptions" @select="handleStatusSelect" />
         </div>
         <div class="table-query-right">
           <BeeButton @click="handleReset">
@@ -180,7 +180,7 @@ import BeeDialog from '@/components/BeeDialog/index.vue'
 import BeeIconLabel from '@/components/BeeIconLabel/index.vue'
 import BeeInputSearch from '@/components/BeeInputSearch/index.vue'
 import BeePageTitle from '@/components/BeePageTitle/index.vue'
-import BeeRadioSearch from '@/components/BeeRadioSearch/index.vue'
+import BeeSegmentedControl from '@/components/BeeSegmentedControl/index.vue'
 import BeeSelect from '@/components/BeeSelect/index.vue'
 import BeeTag from '@/components/BeeTag/index.vue'
 import { useClipboard } from '@/composables/useClipboard'

@@ -84,14 +84,14 @@ async function handleLogin() {
   // box-shadow: $box-shadow;
 
   .card-header {
-    font-size: $font-size-lg;
+    font-size: $font-size-16;
     font-weight: bold;
     color: $text-primary;
     text-align: center;
   }
 
   :deep(.el-form-item) {
-    margin-bottom: $spacing-lg;
+    margin-bottom: $spacing-16;
   }
 
   .login-btn {

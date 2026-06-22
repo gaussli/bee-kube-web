@@ -33,7 +33,7 @@ defineProps<{
 <style lang="scss" scoped>
 .bee-label-group {
   display: inline-flex;
-  gap: $spacing-xs;
+  gap: $spacing-4;
   flex-direction: column;
   align-items: flex-start;
   line-height: 1.2;

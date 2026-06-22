@@ -187,17 +187,17 @@ function handlePageInputFilter(event: Event) {
 <style lang="scss" scoped>
 .bee-pagination {
   display: flex;
-  gap: $spacing-md;
+  gap: $spacing-16;
   align-items: center;
 
   &__total {
-    font-size: $font-size-sm;
+    font-size: $font-size-12;
     color: $text-secondary;
     white-space: nowrap;
   }
 
   &__total-pages {
-    font-size: $font-size-sm;
+    font-size: $font-size-12;
     color: $text-secondary;
   }
 
@@ -207,7 +207,7 @@ function handlePageInputFilter(event: Event) {
 
   &__controls {
     display: flex;
-    gap: $spacing-xs;
+    gap: $spacing-4;
     align-items: center;
   }
 
@@ -215,7 +215,7 @@ function handlePageInputFilter(event: Event) {
     display: flex;
     align-items: center;
     height: 32px;
-    padding: 0 $spacing-lg;
+    padding: 0 $spacing-16;
     border: 1px solid transparent;
     border-radius: $radius-full;
     background: $bg-color;
@@ -228,8 +228,8 @@ function handlePageInputFilter(event: Event) {
   }
 
   &__page-separator {
-    margin: 0 $spacing-xs;
-    font-size: $font-size-sm;
+    margin: 0 $spacing-4;
+    font-size: $font-size-12;
     color: $text-secondary;
   }
 
@@ -241,7 +241,7 @@ function handlePageInputFilter(event: Event) {
     height: 28px;
     padding: 0;
     border: none;
-    border-radius: $radius-xs;
+    border-radius: $radius-4;
     color: $text-secondary;
     background: transparent;
     cursor: pointer;
@@ -278,7 +278,7 @@ function handlePageInputFilter(event: Event) {
   &__input {
     padding: 0;
     border: none;
-    font-size: $font-size-sm;
+    font-size: $font-size-12;
     color: $text-secondary;
     text-align: center;
     background: transparent;

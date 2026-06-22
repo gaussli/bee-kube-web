@@ -31,7 +31,7 @@ const currentColor = computed(() => currentConfig.value.color)
 <style lang="scss" scoped>
 .bee-status {
   display: inline-flex;
-  gap: $spacing-sm;
+  gap: $spacing-8;
   align-items: center;
   justify-content: center;
   line-height: 1;
@@ -45,13 +45,13 @@ const currentColor = computed(() => currentConfig.value.color)
 
   &__label {
     display: flex;
-    gap: $spacing-xs;
+    gap: $spacing-4;
     flex-direction: column;
     font-weight: 600;
   }
 
   &__label-en {
-    font-size: $font-size-sm;
+    font-size: $font-size-12;
     font-weight: 200;
     color: $text-secondary;
   }

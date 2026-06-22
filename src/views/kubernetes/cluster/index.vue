@@ -12,10 +12,10 @@
       <div class="table-query">
         <div class="table-query-left">
           <BeeInputSearch v-model="searchKey" placeholder="按 ID / 名称 搜索" @search="handleSearch" />
-          <BeeRadioSearch v-model="queryForm.status" :options="statusOptions" @select="handleSelect" />
+          <BeeSegmentedControl v-model="queryForm.status" :options="statusOptions" @select="handleSelect" />
         </div>
         <div class="table-query-right">
-          <BeeButton type="info" icon="basic-refresh" @click="handleReset"> 刷新 </BeeButton>
+          <BeeButton icon="basic-refresh" @click="handleReset"> 刷新 </BeeButton>
           <BeeDivider v-if="hasPermission('kubernetes:cluster:create')" direction="vertical" length="12px" />
           <BeeButton v-if="hasPermission('kubernetes:cluster:create')" type="primary" icon="basic-create" @click="handleCreate"> 新增 </BeeButton>
         </div>
@@ -78,9 +78,9 @@
               <BeeIconLabel icon="basic-operation" label="操作" :size="tableHeaderFontSize" :color="tableHeaderColor" :font-weight="tableHeaderFontWeight" />
             </template>
             <template #default="{ row }">
-              <BeeButton v-if="hasPermission('kubernetes:cluster:edit')" icon="basic-edit" type="info" tooltip="编辑" @click="handleEdit(row)" />
-              <BeeButton v-if="hasPermission('kubernetes:cluster:edit')" icon="basic-switch" type="info" tooltip="切换集群" @click="handleSelectCluster(row)" />
-              <BeeButton v-if="hasPermission('kubernetes:cluster:delete')" icon="basic-delete" type="danger" tooltip="删除" @click="handleDelete(row)" />
+              <BeeCircleButton v-if="hasPermission('kubernetes:cluster:edit')" icon="basic-edit" type="info" tooltip="编辑" @click="handleEdit(row)" />
+              <BeeCircleButton v-if="hasPermission('kubernetes:cluster:edit')" icon="basic-switch" type="info" tooltip="切换集群" @click="handleSelectCluster(row)" />
+              <BeeCircleButton v-if="hasPermission('kubernetes:cluster:delete')" icon="basic-delete" type="danger" tooltip="删除" @click="handleDelete(row)" />
             </template>
           </el-table-column>
         </el-table>
@@ -126,11 +126,12 @@
 import { onMounted, reactive, ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { ElMessage } from 'element-plus'
-import type { ClusterQueryReq, ClusterResp } from '@/types'
-import { getClusterPage, deleteCluster, batchDeleteCluster } from '@/api/kubernetes/cluster'
+import type { ClusterQueryReq, ClusterResp } from '@/types/kubernetes/cluster'
+import { getClusterPage, deleteCluster, deleteClusters } from '@/api/kubernetes/cluster'
 import AuditCell from '@/components/AuditCell/index.vue'
 import BeeAlert from '@/components/BeeAlert/index.vue'
 import BeeButton from '@/components/BeeButton/index.vue'
+import BeeCircleButton from '@/components/BeeCircleButton/index.vue'
 import BeeCard from '@/components/BeeCard/index.vue'
 import BeeDialog from '@/components/BeeDialog/index.vue'
 import BeeDivider from '@/components/BeeDivider/index.vue'
@@ -141,7 +142,7 @@ import BeeLabelGroup from '@/components/BeeLabelGroup/index.vue'
 import BeePage from '@/components/BeePage/index.vue'
 import BeePageTitle from '@/components/BeePageTitle/index.vue'
 import BeePagination from '@/components/BeePagination/index.vue'
-import BeeRadioSearch from '@/components/BeeRadioSearch/index.vue'
+import BeeSegmentedControl from '@/components/BeeSegmentedControl/index.vue'
 import BeeStatus from '@/components/BeeStatus/index.vue'
 import BeeTag from '@/components/BeeTag/index.vue'
 import { usePermission } from '@/composables/usePermission'
@@ -269,7 +270,7 @@ function handleBatchDelete() {
 async function handleConfirmBatchDelete() {
   const ids = selectedRows.value.map(row => row.id)
   try {
-    await batchDeleteCluster(ids)
+    await deleteClusters(ids)
     ElMessage.success(`成功删除 ${ids.length} 个集群`)
     batchDeleteDialogVisible.value = false
     selectedRows.value = []
@@ -288,7 +289,7 @@ onMounted(() => {
 .cluster-page {
   .page-header {
     .bee-alert {
-      margin-top: $spacing-md;
+      margin-top: $spacing-16;
     }
   }
 
@@ -303,18 +304,18 @@ onMounted(() => {
       display: flex;
       align-items: center;
       justify-content: space-between;
-      padding: $spacing-md 0;
+      padding: $spacing-16 0;
 
       .table-query-left {
         display: flex;
-        gap: $spacing-sm;
+        gap: $spacing-8;
         flex-direction: row;
         align-items: center;
       }
 
       .table-query-right {
         display: flex;
-        gap: $spacing-sm;
+        gap: $spacing-8;
         flex-direction: row;
         align-items: center;
       }
@@ -328,7 +329,7 @@ onMounted(() => {
         height: 100%;
 
         th.el-table__cell {
-          padding: $spacing-md 0;
+          padding: $spacing-16 0;
         }
 
         .el-table__body-wrapper {
@@ -348,7 +349,7 @@ onMounted(() => {
           .bee-table-cell-operation {
             .cell {
               display: flex;
-              gap: $spacing-sm;
+              gap: $spacing-8;
               flex-direction: row;
             }
           }
@@ -360,7 +361,7 @@ onMounted(() => {
       display: flex;
       align-items: center;
       justify-content: space-between;
-      padding: $spacing-md 0;
+      padding: $spacing-16 0;
     }
   }
 }

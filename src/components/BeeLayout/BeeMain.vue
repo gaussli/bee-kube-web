@@ -5,6 +5,11 @@
 </template>
 
 <script setup lang="ts">
+/**
+ * 主内容区布局组件
+ * 承载 router-view，提供滚动和内边距
+ * @module components/BeeLayout/BeeMain
+ */
 defineOptions({ name: 'BeeMain' })
 </script>
 
@@ -12,5 +17,6 @@ defineOptions({ name: 'BeeMain' })
 .bee-main {
   flex: 1;
   min-width: 0;
+  padding: $spacing-16 $spacing-16 $spacing-16 0;
 }
 </style>

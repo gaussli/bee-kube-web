@@ -149,9 +149,9 @@ export default {
 
 .bee-tooltip {
   z-index: 9999;
-  padding: $spacing-sm $spacing-md;
-  border-radius: $radius-xs;
-  font-size: $font-size-xs;
+  padding: $spacing-8 $spacing-16;
+  border-radius: $radius-4;
+  font-size: $font-size-10;
   color: $text-regular;
   background: $color-primary-600;
   cursor: default;

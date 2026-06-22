@@ -211,13 +211,15 @@ defineExpose({
 
 <style lang="scss" scoped>
 .bee-dropdown {
-  display: inline-block;
+  display: inline-flex;
+  height: 100%;
+  cursor: pointer;
 
   &__menu {
     position: relative;
     z-index: 1000;
     max-height: 300px;
-    border-radius: $radius-xs;
+    border-radius: $radius-4;
     background: $bg-overlay;
     box-shadow: 0 4px 12px rgb(0 0 0 / 30%);
   }
@@ -226,13 +228,13 @@ defineExpose({
     position: relative;
     z-index: 1;
     display: flex;
-    gap: $spacing-sm;
+    gap: $spacing-8;
     align-items: center;
     justify-content: center;
-    padding: $spacing-sm $spacing-md;
-    margin: $spacing-sm;
+    padding: $spacing-8 $spacing-16;
+    margin: $spacing-8;
     border-radius: $radius-full;
-    font-size: $font-size-sm;
+    font-size: $font-size-12;
     color: $text-regular;
     cursor: pointer;
     transition: background 0.2s;

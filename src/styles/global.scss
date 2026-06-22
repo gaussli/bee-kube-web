@@ -1,4 +1,4 @@
-@use 'sass:color';
+@use './element-override.scss' as *;
 
 // 全局样式重置与默认配置
 
@@ -13,11 +13,12 @@ body {
   width: 100%;
   height: 100%;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'Noto Sans', sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
-  font-size: $font-size-base;
+  font-size: $font-size-14;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  font-weight: 400;
   color: $text-primary;
-  background-color: $bg-color;
+  background-color: $color-bg-page;
 }
 
 #app {
@@ -32,7 +33,7 @@ body {
 }
 
 ::-webkit-scrollbar-track {
-  background: $bg-color;
+  background: transparent;
 }
 
 ::-webkit-scrollbar-thumb {
@@ -42,11 +43,4 @@ body {
   &:hover {
     background: $text-secondary;
   }
-}
-
-// 自定义组件样式变量
-.status-search {
-  --status-search-active-color: #{$color-primary};
-  --status-search-color: #909399;
-  --status-search-slider-bg-color: #fff;
 }

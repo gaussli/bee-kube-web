@@ -2,7 +2,7 @@
   <div class="user-assign-roles">
     <!-- 顶部导航 -->
     <div class="assign-header">
-      <BeeButton :border="false" @click="handleBack">
+      <BeeButton @click="handleBack">
         <template #icon><ArrowLeft /></template>
         返回
       </BeeButton>

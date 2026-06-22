@@ -1,4 +1,109 @@
 @use 'sass:map';
+@use 'sass:math';
+@use 'sass:color';
+
+// 全局颜色映射表，用于集中管理所有主题色阶
+$colors: () !default;
+
+/**
+ * 生成灰色色阶映射表
+ * @param $step - 明度步进值，默认 5，取值范围 1-100 且能整除 100
+ * @returns 键为明度百分比，值为对应灰色的映射表
+ */
+@function generate-gray-color-variants($step: 5) {
+  $result: ();
+
+  @for $i from 0 through math.div(100, $step) {
+    $lightness: $i * $step * 1%;
+    $key: $i * $step;
+    $value: color.change(#000, $lightness: $lightness);
+    $result: map.set($result, $key, $value);
+  }
+
+  @return $result;
+}
+
+/**
+ * 生成颜色色阶映射表
+ * @param $hue - 色相值，取值范围 0-360
+ * @param $step - 明度步进值，默认 10，取值范围 1-100 且能整除 100
+ * @returns 键为明度百分比，值为对应颜色色阶的映射表
+ */
+@function generate-color-variants($hue, $step: 10) {
+  $result: (
+    'bg': hsl(30deg 20% 10%)
+  );
+
+  @for $s from 0 through math.div(100, $step) {
+    $saturation: 95 - $s * math.div($step, 2);
+    $lightness: $s * $step;
+    $color: hsl($hue, $saturation * 1%, $lightness * 1%);
+    $result: map.set($result, $lightness, $color);
+  }
+
+  @return $result;
+}
+
+$colors: map.merge(
+  $colors,
+  (
+    'gray': generate-gray-color-variants(),
+    'primary': generate-color-variants(30),
+    'success': generate-color-variants(140),
+    'warning': generate-color-variants(45),
+    'danger': generate-color-variants(355)
+  )
+);
+
+@debug $colors;
+
+$color-primary: map.get($colors, 'primary', 50);
+
+// ---- 文字颜色 ----
+$color-text-primary: map.get($colors, 'gray', 90);
+$color-text-secondary: map.get($colors, 'gray', 70);
+$color-text-tertiary: map.get($colors, 'gray', 50);
+$color-text-placeholder: map.get($colors, 'gray', 40);
+$color-text-disabled: map.get($colors, 'gray', 40);
+$color-text-success: map.get($colors, 'success', 50);
+$color-text-warning: map.get($colors, 'warning', 50);
+$color-text-danger: map.get($colors, 'danger1', 50);
+
+// ---- 边框颜色 ----
+$color-border-primary: map.get($colors, 'gray', 90);
+$color-border-secondary: map.get($colors, 'gray', 70);
+$color-border-tertiary: map.get($colors, 'gray', 50);
+$color-border-placeholder: map.get($colors, 'gray', 40);
+$color-border-disabled: map.get($colors, 'gray', 40);
+$color-border-success: map.get($colors, 'success', 20);
+$color-border-warning: map.get($colors, 'warning', 20);
+$color-border-danger: map.get($colors, 'danger1', 20);
+
+// ---- 背景颜色 ----
+$color-bg-page: map.get($colors, 'gray', 5);
+$color-bg-surface: map.get($colors, 'gray', 10);
+$color-bg-elevated: map.get($colors, 'gray', 15);
+$color-bg-mask: rgb(0 0 0 / 60%);
+
+// 间距
+$spacing-4: 4px;
+$spacing-8: 8px;
+$spacing-16: 16px;
+$spacing-24: 24px;
+
+// 圆角
+$radius-4: 4px;
+$radius-8: 8px;
+$radius-16: 16px;
+$radius-24: 24px;
+$radius-full: 1000px;
+
+// 字体大小
+$font-size-10: 10px;
+$font-size-12: 12px;
+$font-size-14: 14px;
+$font-size-16: 16px;
+$font-size-18: 18px;
 
 // 主色调
 // 接近蜂蜜琥珀色与蜜蜂身体橘黄的中间调，不刺眼且具有自然亲和力。
@@ -17,10 +122,6 @@ $color-primary-600: #da8030;
 $color-primary-700: #aa611e;
 $color-primary-800: #804300;
 $color-primary-900: #5e2600;
-
-// 主题颜色
-// #da8030，接近蜂蜜琥珀色与蜜蜂身体橘黄的中间调，不刺眼且具有自然亲和力。
-$color-primary: $color-primary-600;
 
 // 接近蜂蜜琥珀色与蜜蜂身体橘黄的中间调，不刺眼且具有自然亲和力。
 // $primary-color: rgb(218, 128, 48);
@@ -96,28 +197,6 @@ $border-tertiary: $bee-tertiary;
 $border-hover: $bee-hover;
 $border-active: $bee-primary;
 $border-disabled: #ffffff32;
-
-// 间距
-$spacing-xs: 4px;
-$spacing-sm: 8px;
-$spacing-md: 12px;
-$spacing-lg: 16px;
-$spacing-xl: 24px;
-
-// 圆角
-$radius-xs: 4px;
-$radius-sm: 8px;
-$radius-md: 12px;
-$radius-lg: 16px;
-$radius-xl: 24px;
-$radius-full: 1000px;
-
-// 字体大小
-$font-size-xs: 11px;
-$font-size-sm: 12px;
-$font-size-base: 14px;
-$font-size-lg: 16px;
-$font-size-xl: 18px;
 
 // 动画定义
 @keyframes fade-slide-in {

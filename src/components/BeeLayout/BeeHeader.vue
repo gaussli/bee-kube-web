@@ -1,7 +1,7 @@
 <template>
   <header class="bee-header">
     <div class="header-left">
-      <BeeRadioSearch :default="currentTab" :options="tabOptions" @select="handleTabChange" />
+      <BeeSegmentedControl v-model="currentTab" :options="tabOptions" @select="handleTabChange" />
     </div>
 
     <div class="header-title">
@@ -10,54 +10,29 @@
     </div>
 
     <div class="header-right">
-      <BeeTooltip label="帮助" placement="top">
-        <BeeIcon class="icon-button" name="basic-help" :size="20" />
-      </BeeTooltip>
-      <BeeTooltip label="全屏" placement="top">
-        <BeeIcon class="icon-button" v-if="!isFullscreen" name="basic-fullscreen" :size="20" @click="toggleFullscreen" />
-        <BeeIcon class="icon-button" v-else name="basic-close" :size="20" @click="toggleFullscreen" />
-      </BeeTooltip>
+      <BeeCircleButton icon="basic-help" :border="false" tooltip="帮助" />
+      <BeeCircleButton :icon="fullscreenIcon" :tooltip="fullscreenTooltip" :border="false" @click="toggleFullscreen" />
       <BeeDropdown :options="dropdownOptions" @change="handleDropdownChange">
-        <span class="user-dropdown">
-          <el-avatar :size="32" :src="currentUser?.avatarId || defaultAvatar" />
-          <span class="username">{{ currentUser?.nickname || currentUser?.username || 'Admin' }}</span>
-          <el-icon class="arrow-icon"><ArrowDown /></el-icon>
-        </span>
+        <BeeHeaderUserInfo :img="currentUser?.avatarId" :nickname="currentUser?.nickname || ''" :username="currentUser?.username || ''" />
       </BeeDropdown>
     </div>
-
-    <!-- 修改密码弹窗 -->
-    <el-dialog v-model="passwordDialogVisible" title="修改密码" width="400px">
-      <el-form ref="passwordFormRef" :model="passwordForm" :rules="passwordRules" label-width="80px">
-        <el-form-item label="原密码" prop="oldPassword">
-          <el-input v-model="passwordForm.oldPassword" type="password" show-password />
-        </el-form-item>
-        <el-form-item label="新密码" prop="newPassword">
-          <el-input v-model="passwordForm.newPassword" type="password" show-password />
-        </el-form-item>
-        <el-form-item label="确认密码" prop="confirmPassword">
-          <el-input v-model="passwordForm.confirmPassword" type="password" show-password />
-        </el-form-item>
-      </el-form>
-      <template #footer>
-        <el-button @click="passwordDialogVisible = false">取消</el-button>
-        <el-button type="primary" @click="handlePasswordSubmit">确定</el-button>
-      </template>
-    </el-dialog>
   </header>
 </template>
 
 <script setup lang="ts">
-import { computed, ref } from 'vue'
+/**
+ * 顶部导航栏组件
+ * @module components/BeeLayout/BeeHeader
+ */
+import { computed, ref, onMounted, onUnmounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { ElMessage, ElMessageBox } from 'element-plus'
-import { ArrowDown } from '@element-plus/icons-vue'
 import type { TabType } from '@/stores/app'
 import { logout } from '@/api/auth/auth'
+import BeeCircleButton from '@/components/BeeCircleButton/index.vue'
 import BeeDropdown from '@/components/BeeDropdown/index.vue'
-import BeeIcon from '@/components/BeeIcon/index.vue'
-import BeeRadioSearch from '@/components/BeeRadioSearch/index.vue'
-import BeeTooltip from '@/components/BeeTooltip/index.vue'
+import BeeHeaderUserInfo from '@/components/BeeHeaderUserInfo/index.vue'
+import BeeSegmentedControl from '@/components/BeeSegmentedControl/index.vue'
 import { useAppStore, useKubernetesStore, useUserStore } from '@/stores'
 
 defineOptions({ name: 'BeeHeader' })
@@ -68,11 +43,11 @@ const userStore = useUserStore()
 const kubernetesStore = useKubernetesStore()
 
 const isFullscreen = ref(false)
-const passwordDialogVisible = ref(false)
-const passwordFormRef = ref()
 
-const defaultAvatar = 'https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png'
-
+/** 全屏按钮图标，根据全屏状态动态切换 */
+const fullscreenIcon = computed(() => (isFullscreen.value ? 'basic-close' : 'basic-fullscreen'))
+/** 全屏按钮 tooltip 提示文字 */
+const fullscreenTooltip = computed(() => (isFullscreen.value ? '退出全屏' : '全屏'))
 const currentUser = computed(() => userStore.getCurrentUser())
 const currentMenus = computed(() => userStore.getCurrentMenus())
 
@@ -86,15 +61,16 @@ const activeClusterId = computed(() => kubernetesStore.activeClusterId)
 // tabOptions 从用户菜单第一层获取，label 对应 name，value 对应 code
 const tabOptions = computed(
   () =>
-    currentMenus.value.map(menu => ({
+    currentMenus.value?.map(menu => ({
       label: menu.name,
-      value: menu.code
+      value: menu.code,
+      icon: menu.icon
     })) ?? []
 )
 
-const dropdownOptions = [
+/** 用户下拉菜单选项 */
+const dropdownOptions: { label: string; value: string; icon: string; divided?: boolean }[] = [
   { label: '用户信息', value: 'profile', icon: 'basic-userinfo' },
-  { label: '修改密码', value: 'password', icon: 'basic-password' },
   { label: '系统设置', value: 'setting', icon: 'basic-system-setting' },
   { label: '退出登录', value: 'logout', icon: 'basic-logout', divided: true }
 ]
@@ -102,7 +78,6 @@ const dropdownOptions = [
 function handleTabChange(tab?: string | number) {
   if (tab) {
     appStore.setCurrentTab(tab as TabType)
-    console.log(activeClusterId.value)
     if (activeClusterId.value || tab !== 'kubernetes') {
       router.push({ name: tab as string })
     } else {
@@ -111,39 +86,24 @@ function handleTabChange(tab?: string | number) {
   }
 }
 
-const passwordForm = ref({
-  oldPassword: '',
-  newPassword: '',
-  confirmPassword: ''
+/** 监听全屏状态变化（覆盖 ESC 退出等非按钮触发场景） */
+function onFullscreenChange() {
+  isFullscreen.value = !!document.fullscreenElement
+}
+
+onMounted(() => {
+  document.addEventListener('fullscreenchange', onFullscreenChange)
 })
 
-const validateConfirmPassword = (_rule: any, value: string, callback: any) => {
-  if (value !== passwordForm.value.newPassword) {
-    callback(new Error('两次输入的密码不一致'))
-  } else {
-    callback()
-  }
-}
-
-const passwordRules = {
-  oldPassword: [{ required: true, message: '请输入原密码', trigger: 'blur' }],
-  newPassword: [
-    { required: true, message: '请输入新密码', trigger: 'blur' },
-    { min: 6, max: 20, message: '密码长度为6-20位', trigger: 'blur' }
-  ],
-  confirmPassword: [
-    { required: true, message: '请确认密码', trigger: 'blur' },
-    { validator: validateConfirmPassword, trigger: 'blur' }
-  ]
-}
+onUnmounted(() => {
+  document.removeEventListener('fullscreenchange', onFullscreenChange)
+})
 
 function toggleFullscreen() {
   if (!document.fullscreenElement) {
     document.documentElement.requestFullscreen()
-    isFullscreen.value = true
   } else {
     document.exitFullscreen()
-    isFullscreen.value = false
   }
 }
 
@@ -151,9 +111,6 @@ async function handleDropdownChange(command: string | number) {
   switch (command) {
     case 'profile':
       ElMessage.info('用户信息功能开发中')
-      break
-    case 'password':
-      passwordDialogVisible.value = true
       break
     case 'setting':
       ElMessage.info('系统设置功能开发中')
@@ -176,15 +133,6 @@ async function handleLogout() {
   router.push('/login')
 }
 
-function handlePasswordSubmit() {
-  passwordFormRef.value?.validate(async (valid: boolean) => {
-    if (valid) {
-      ElMessage.success('密码修改成功')
-      passwordDialogVisible.value = false
-      passwordForm.value = { oldPassword: '', newPassword: '', confirmPassword: '' }
-    }
-  })
-}
 </script>
 
 <style lang="scss" scoped>
@@ -194,22 +142,34 @@ function handlePasswordSubmit() {
   align-items: center;
   justify-content: space-between;
   width: 100%;
-  height: 60px;
-  padding: 0 $spacing-md;
-  background: none;
+  height: 64px;
+  padding: $spacing-8 $spacing-16;
+  background: $color-bg-page;
+
+  &::after {
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    height: 1px;
+    background: linear-gradient(to right, $color-bg-page 10%, $color-primary 50%, $color-bg-page 90%);
+    content: '';
+  }
 
   .header-left {
     display: flex;
-    gap: $spacing-md;
+    gap: $spacing-16;
     align-items: center;
+    height: 100%;
   }
 
   .header-title {
     position: absolute;
     left: 50%;
     display: flex;
-    gap: $spacing-sm;
+    gap: $spacing-8;
     align-items: center;
+    height: 100%;
     transform: translateX(-50%);
 
     img {
@@ -224,50 +184,9 @@ function handlePasswordSubmit() {
 
   .header-right {
     display: flex;
-    gap: $spacing-md;
+    gap: $spacing-16;
     align-items: center;
-
-    .header-icon {
-      font-size: 20px;
-      color: $text-regular;
-      cursor: pointer;
-
-      &:hover {
-        color: $color-primary;
-      }
-    }
-
-    .user-dropdown {
-      display: flex;
-      gap: $spacing-sm;
-      align-items: center;
-      padding: 4px 8px;
-      border-radius: 4px;
-      cursor: pointer;
-      transition: background 0.3s;
-
-      &:hover {
-        background: rgb(0 0 0 / 5%);
-      }
-
-      .username {
-        font-size: 14px;
-        color: $text-primary;
-      }
-
-      .arrow-icon {
-        font-size: 12px;
-        color: $text-secondary;
-      }
-    }
-
-    .icon-button {
-      cursor: pointer;
-
-      &:hover {
-        color: $color-primary;
-      }
-    }
+    height: 100%;
   }
 }
 </style>

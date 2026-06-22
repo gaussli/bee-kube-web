@@ -6,7 +6,7 @@
           <!-- Header -->
           <div class="dialog-header">
             <span class="dialog-title">{{ title }}</span>
-            <BeeButton :border="false" @click="handleClose">
+            <BeeButton @click="handleClose">
               <template #icon><Close /></template>
             </BeeButton>
           </div>

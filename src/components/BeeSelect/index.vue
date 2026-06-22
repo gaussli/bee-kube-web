@@ -171,13 +171,13 @@ export default {
 
   &__trigger {
     display: flex;
-    gap: $spacing-sm;
+    gap: $spacing-8;
     align-items: center;
     height: 32px;
     min-width: 120px;
-    padding: $spacing-sm $spacing-md;
+    padding: $spacing-8 $spacing-16;
     border-radius: $radius-full;
-    font-size: $font-size-sm;
+    font-size: $font-size-12;
     color: $text-secondary;
     background: $bg-color;
     cursor: pointer;
@@ -204,7 +204,7 @@ export default {
     position: relative;
     z-index: 1000;
     min-width: 120px;
-    border-radius: $radius-sm;
+    border-radius: $radius-8;
     background: $bg-overlay;
     box-shadow: 0 4px 12px rgb(0 0 0 / 30%);
   }
@@ -222,13 +222,13 @@ export default {
     position: relative;
     z-index: 1;
     display: flex;
-    gap: $spacing-sm;
+    gap: $spacing-8;
     align-items: center;
     justify-content: space-between;
-    padding: $spacing-sm $spacing-md;
-    margin: $spacing-sm;
+    padding: $spacing-8 $spacing-16;
+    margin: $spacing-8;
     border-radius: $radius-full;
-    font-size: $font-size-sm;
+    font-size: $font-size-12;
     color: $text-regular;
     cursor: pointer;
     transition: background 0.2s;

@@ -29,7 +29,7 @@ const props = withDefaults(
 <style lang="scss" scoped>
 .bee-icon-label {
   display: inline-flex;
-  gap: $spacing-xs;
+  gap: $spacing-4;
   align-items: center;
   justify-content: center;
   font-size: v-bind(size);

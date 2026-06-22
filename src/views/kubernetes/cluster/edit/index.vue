@@ -2,7 +2,7 @@
   <div class="cluster-edit">
     <!-- 表单头部 -->
     <div class="form-header">
-      <BeeButton :border="false" @click="handleBack">
+      <BeeButton @click="handleBack">
         <template #icon><ArrowLeft /></template>
         返回
       </BeeButton>

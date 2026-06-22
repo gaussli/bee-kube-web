@@ -15,10 +15,10 @@
       <div class="table-query">
         <div class="table-query-left">
           <BeeInputSearch v-model="searchKey" placeholder="按 ID、名称或 IP 搜索" @search="handleSearch" />
-          <BeeRadioSearch v-model="queryForm.status" :options="statusOptions" @select="handleSelect" />
+          <BeeSegmentedControl v-model="queryForm.status" :options="statusOptions" @select="handleSelect" />
         </div>
         <div class="table-query-right">
-          <BeeButton type="info" icon="basic-refresh" @click="handleReset"> 刷新 </BeeButton>
+          <BeeButton icon="basic-refresh" @click="handleReset"> 刷新 </BeeButton>
         </div>
       </div>
 
@@ -109,10 +109,10 @@
               <BeeIconLabel icon="basic-operation" label="操作" />
             </template>
             <template #default="{ row }">
-              <BeeButton v-if="hasPermission('kubernetes:node:edit')" icon="basic-edit" type="info" tooltip="编辑" @click="handleEdit(row)" />
-              <BeeButton icon="basic-view" type="info" tooltip="详情" @click="handleViewDetail(row)" />
+              <BeeCircleButton v-if="hasPermission('kubernetes:node:edit')" icon="basic-edit" type="info" tooltip="编辑" @click="handleEdit(row)" />
+              <BeeCircleButton icon="basic-view" type="info" tooltip="详情" @click="handleViewDetail(row)" />
               <BeeDropdown v-if="hasPermission('kubernetes:node:edit')" trigger="click">
-                <BeeButton icon="basic-more" type="info" tooltip="更多" />
+                <BeeCircleButton icon="basic-more" type="info" tooltip="更多" />
                 <template #dropdown>
                   <BeeDropdownItem v-if="row.schedulable !== false" value="stopScheduler" label="停止调度" icon="basic-stop" @click="handleCordon(row, true)" />
                   <BeeDropdownItem v-else value="enableScheduler" label="允许调度" icon="basic-right" @click="handleCordon(row, false)" />
@@ -141,6 +141,7 @@ import type { NodeQueryReq, NodeResp } from '@/types/kubernetes/node'
 import { getNodePage, cordonNode, drainNode } from '@/api/kubernetes/node'
 import AuditCell from '@/components/AuditCell/index.vue'
 import BeeButton from '@/components/BeeButton/index.vue'
+import BeeCircleButton from '@/components/BeeCircleButton/index.vue'
 import BeeCard from '@/components/BeeCard/index.vue'
 import BeeDropdown from '@/components/BeeDropdown/index.vue'
 import BeeDropdownItem from '@/components/BeeDropdownItem/index.vue'
@@ -151,7 +152,7 @@ import BeeLabelGroup from '@/components/BeeLabelGroup/index.vue'
 import BeePage from '@/components/BeePage/index.vue'
 import BeePageTitle from '@/components/BeePageTitle/index.vue'
 import BeePagination from '@/components/BeePagination/index.vue'
-import BeeRadioSearch from '@/components/BeeRadioSearch/index.vue'
+import BeeSegmentedControl from '@/components/BeeSegmentedControl/index.vue'
 import BeeStatus from '@/components/BeeStatus/index.vue'
 import BeeTag from '@/components/BeeTag/index.vue'
 import BeeTooltip from '@/components/BeeTooltip/index.vue'
@@ -307,18 +308,18 @@ onMounted(() => {
       display: flex;
       align-items: center;
       justify-content: space-between;
-      padding: $spacing-md 0;
+      padding: $spacing-16 0;
 
       .table-query-left {
         display: flex;
-        gap: $spacing-sm;
+        gap: $spacing-8;
         flex-direction: row;
         align-items: center;
       }
 
       .table-query-right {
         display: flex;
-        gap: $spacing-sm;
+        gap: $spacing-8;
         flex-direction: row;
         align-items: center;
       }
@@ -332,13 +333,13 @@ onMounted(() => {
         height: 100%;
 
         th.el-table__cell {
-          padding: $spacing-md 0;
+          padding: $spacing-16 0;
         }
 
         .bee-table-category {
           .cell {
             display: flex;
-            gap: $spacing-sm;
+            gap: $spacing-8;
             flex-flow: row wrap;
           }
         }
@@ -346,7 +347,7 @@ onMounted(() => {
         .bee-table-operation {
           .cell {
             display: flex;
-            gap: $spacing-sm;
+            gap: $spacing-8;
             flex-direction: row;
           }
         }
@@ -380,7 +381,7 @@ onMounted(() => {
       display: flex;
       align-items: center;
       justify-content: space-between;
-      padding: $spacing-md 0;
+      padding: $spacing-16 0;
     }
   }
 }

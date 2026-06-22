@@ -23,10 +23,10 @@ withDefaults(
   align-items: center;
   justify-content: center;
   height: 24px;
-  padding: 0 $spacing-sm;
+  padding: 0 $spacing-8;
   border: 1px solid;
   border-radius: $radius-full;
-  font-size: $font-size-sm;
+  font-size: $font-size-12;
   white-space: nowrap;
 
   &--primary {

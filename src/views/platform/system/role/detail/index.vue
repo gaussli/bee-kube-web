@@ -2,7 +2,7 @@
   <div class="role-detail">
     <!-- 详情头部 -->
     <div class="detail-header">
-      <BeeButton :border="false" @click="handleBack">
+      <BeeButton @click="handleBack">
         <template #icon><ArrowLeft /></template>
         返回
       </BeeButton>

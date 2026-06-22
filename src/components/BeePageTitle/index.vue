@@ -29,7 +29,7 @@ defineProps<Props>()
   --height: 64px;
 
   display: flex;
-  gap: $spacing-md;
+  gap: $spacing-16;
   flex-direction: row;
   justify-content: center;
   width: 100%;

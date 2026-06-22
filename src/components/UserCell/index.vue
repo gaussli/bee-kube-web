@@ -33,7 +33,7 @@ const genderText = computed(() => {
 <style lang="scss" scoped>
 .user-profile {
   display: flex;
-  gap: $spacing-sm;
+  gap: $spacing-8;
   align-items: center;
   height: 42px;
 

@@ -3,7 +3,18 @@
  * @module api/kubernetes/workload/deployment
  */
 import type { PageResp } from '@/types/common'
-import type { DeploymentQueryReq, DeploymentResp, DeploymentReq, DeploymentLabelsReq, DeploymentAnnotationsReq, DeploymentScaleReq, DeploymentYamlReq } from '@/types/kubernetes/workload/deployment'
+import type {
+  DeploymentAdvancedResp,
+  DeploymentAnnotationsReq,
+  DeploymentLabelsReq,
+  DeploymentListResp,
+  DeploymentOverviewResp,
+  DeploymentQueryReq,
+  DeploymentReq,
+  DeploymentScaleReq,
+  DeploymentScheduleResp,
+  DeploymentYamlReq
+} from '@/types/kubernetes/workload/deployment'
 import { request } from '@/utils'
 
 /**
@@ -13,8 +24,8 @@ import { request } from '@/utils'
  * @param params - 查询参数
  * @returns 分页后的 Deployment 列表
  */
-export function getDeploymentPage(clusterId: string, namespace: string, params: Partial<DeploymentQueryReq>): Promise<PageResp<DeploymentResp>> {
-  return request.get<PageResp<DeploymentResp>>(`/kubernetes/clusters/${clusterId}/namespaces/${namespace}/deployments`, { params: params })
+export function getDeploymentPage(clusterId: string, namespace: string, params: Partial<DeploymentQueryReq>): Promise<PageResp<DeploymentListResp>> {
+  return request.get<PageResp<DeploymentListResp>>(`/kubernetes/clusters/${clusterId}/namespaces/${namespace}/deployments`, { params: params })
 }
 
 /**
@@ -24,8 +35,30 @@ export function getDeploymentPage(clusterId: string, namespace: string, params: 
  * @param name - Deployment 名称
  * @returns Deployment 详情
  */
-export function getDeploymentDetail(clusterId: string, namespace: string, name: string): Promise<DeploymentResp> {
-  return request.get<DeploymentResp>(`/kubernetes/clusters/${clusterId}/namespaces/${namespace}/deployments/${name}`)
+export function getDeploymentDetail(clusterId: string, namespace: string, name: string): Promise<DeploymentOverviewResp> {
+  return request.get<DeploymentOverviewResp>(`/kubernetes/clusters/${clusterId}/namespaces/${namespace}/deployments/${name}`)
+}
+
+/**
+ * 获取 Deployment 调度策略
+ * @param clusterId - 集群ID
+ * @param namespace - 命名空间名称
+ * @param name - Deployment 名称
+ * @returns Deployment 调度策略
+ */
+export function getDeploymentSchedule(clusterId: string, namespace: string, name: string): Promise<DeploymentScheduleResp> {
+  return request.get<DeploymentScheduleResp>(`/kubernetes/clusters/${clusterId}/namespaces/${namespace}/deployments/${name}/schedule`)
+}
+
+/**
+ * 获取 Deployment 高级配置
+ * @param clusterId - 集群ID
+ * @param namespace - 命名空间名称
+ * @param name - Deployment 名称
+ * @returns Deployment 高级配置
+ */
+export function getDeploymentAdvanced(clusterId: string, namespace: string, name: string): Promise<DeploymentAdvancedResp> {
+  return request.get<DeploymentAdvancedResp>(`/kubernetes/clusters/${clusterId}/namespaces/${namespace}/deployments/${name}/advanced`)
 }
 
 /**

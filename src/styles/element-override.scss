@@ -15,7 +15,7 @@
 
   .el-menu-item,
   .el-sub-menu__title {
-    margin-top: $spacing-xs;
+    margin-top: $spacing-4;
     border-radius: $radius-full;
 
     &:hover {
@@ -57,7 +57,7 @@
 }
 
 .el-pagination {
-  --el-pagination-font-size: #{$font-size-sm};
+  --el-pagination-font-size: #{$font-size-12};
 
   .el-pagination__total,
   .el-pagination__jump {
@@ -68,7 +68,7 @@
     --el-input-text-color: #{$text-primary};
 
     border-radius: 16px;
-    font-size: #{$font-size-sm};
+    font-size: #{$font-size-12};
     background-color: #{$bg-color};
     box-shadow: none;
 
@@ -95,7 +95,7 @@
       --el-input-border-radius: 16px;
       --el-input-hover-border-color: #{$bg-selected};
 
-      font-size: #{$font-size-sm};
+      font-size: #{$font-size-12};
     }
   }
 }
@@ -113,7 +113,7 @@
   --el-button-hover-text-color: #{$text-regular};
   --el-button-text-color: #{$text-primary};
 
-  font-size: #{$font-size-sm};
+  font-size: #{$font-size-12};
 }
 
 .el-input {

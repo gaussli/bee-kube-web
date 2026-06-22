@@ -15,10 +15,10 @@
       <div class="table-query">
         <div class="table-query-left">
           <BeeInputSearch v-model="searchKey" placeholder="按名称搜索" @search="handleSearch" />
-          <BeeRadioSearch v-model="queryForm.status" :options="statusOptions" @select="handleSelect" />
+          <BeeSegmentedControl v-model="queryForm.status" :options="statusOptions" @select="handleSelect" />
         </div>
         <div class="table-query-right">
-          <BeeButton type="info" icon="basic-refresh" @click="handleReset"> 刷新 </BeeButton>
+          <BeeButton icon="basic-refresh" @click="handleReset"> 刷新 </BeeButton>
           <BeeDivider v-if="hasPermission('kubernetes:namespace:create')" direction="vertical" length="12px" />
           <BeeButton v-if="hasPermission('kubernetes:namespace:create')" type="primary" icon="basic-create" @click="handleCreate"> 新增 </BeeButton>
         </div>
@@ -148,7 +148,7 @@ import BeeIconLabel from '@/components/BeeIconLabel/index.vue'
 import BeeInputSearch from '@/components/BeeInputSearch/index.vue'
 import BeePage from '@/components/BeePage/index.vue'
 import BeePageTitle from '@/components/BeePageTitle/index.vue'
-import BeeRadioSearch from '@/components/BeeRadioSearch/index.vue'
+import BeeSegmentedControl from '@/components/BeeSegmentedControl/index.vue'
 import BeeTag from '@/components/BeeTag/index.vue'
 import { useClipboard } from '@/composables/useClipboard'
 import { usePermission } from '@/composables/usePermission'
@@ -325,18 +325,18 @@ onMounted(() => {
       display: flex;
       align-items: center;
       justify-content: space-between;
-      padding: $spacing-md 0;
+      padding: $spacing-16 0;
 
       .table-query-left {
         display: flex;
-        gap: $spacing-sm;
+        gap: $spacing-8;
         flex-direction: row;
         align-items: center;
       }
 
       .table-query-right {
         display: flex;
-        gap: $spacing-sm;
+        gap: $spacing-8;
         flex-direction: row;
         align-items: center;
       }

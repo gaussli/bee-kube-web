@@ -32,11 +32,11 @@ async function handleCopy() {
 <style lang="scss" scoped>
 .bee-label-copyable {
   display: inline-flex;
-  gap: $spacing-sm;
+  gap: $spacing-8;
   align-items: center;
 
   .bee-label-copyable__label {
-    font-size: $font-size-sm;
+    font-size: $font-size-12;
   }
 
   .bee-label-copyable__copy {
