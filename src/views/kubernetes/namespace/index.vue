@@ -14,7 +14,7 @@
       <!-- 查询表单 -->
       <div class="table-query">
         <div class="table-query-left">
-          <BeeInputSearch v-model="searchKey" placeholder="按名称搜索" @search="handleSearch" />
+          <BeeInputSearch v-model="searchKey" placeholder="按名称搜索" />
           <BeeSegmentedControl v-model="queryForm.status" :options="statusOptions" @select="handleSelect" />
         </div>
         <div class="table-query-right">
@@ -221,12 +221,6 @@ async function loadData() {
   } finally {
     loading.value = false
   }
-}
-
-function handleSearch() {
-  queryForm.name = searchKey.value
-  pagination.page = 1
-  loadData()
 }
 
 function handleSelect(selectValue?: string | number) {

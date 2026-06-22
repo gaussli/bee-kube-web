@@ -160,7 +160,7 @@ onMounted(() => {
   display: flex;
   flex-direction: column;
   height: 100%;
-  background-color: $bg-page;
+  background-color: $color-bg-surface;
 }
 
 .assign-header {
@@ -210,7 +210,7 @@ onMounted(() => {
   align-items: center;
   padding: 24px;
   border-radius: 12px;
-  background-color: $bg-color;
+  background-color: $color-bg-page;
 
   .role-icon {
     display: flex;

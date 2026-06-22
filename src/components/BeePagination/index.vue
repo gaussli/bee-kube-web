@@ -218,7 +218,7 @@ function handlePageInputFilter(event: Event) {
     padding: 0 $spacing-16;
     border: 1px solid transparent;
     border-radius: $radius-full;
-    background: $bg-color;
+    background: $color-bg-page;
     transition: border-color 0.2s;
 
     &:hover,

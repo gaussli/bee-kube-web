@@ -26,12 +26,13 @@ defineProps<Props>()
 
 <style lang="scss" scoped>
 .bee-page-title {
-  --height: 64px;
+  --bee-page-title-icon-size: 64px;
 
   display: flex;
   gap: $spacing-16;
   flex-direction: row;
   justify-content: center;
+  box-sizing: border-box;
   width: 100%;
   padding: 32px 0;
 
@@ -39,34 +40,33 @@ defineProps<Props>()
     display: flex;
     align-items: center;
     justify-content: center;
-    width: var(--height);
-    height: var(--height);
-    border-radius: calc(var(--height) / 2) 0 calc(var(--height) / 2) calc(var(--height) / 2);
+    width: var(--bee-page-title-icon-size);
+    height: var(--bee-page-title-icon-size);
+    border-radius: 50% 0 50% 50%;
     color: $color-primary;
-    background: $bg-cover;
+    background: $color-bg-elevated;
   }
 
   .title-content {
     display: flex;
-    gap: 4px;
+    gap: $spacing-4;
     flex-direction: column;
     flex: 1;
     justify-content: center;
-    height: var(--height);
 
     .title-text {
       margin: 0;
       font-size: 24px;
       font-weight: 600;
       line-height: 32px;
-      color: $text-primary;
+      color: $color-text-primary;
     }
 
     .title-desc {
       margin: 0;
-      font-size: 14px;
+      font-size: $font-size-14;
       line-height: 22px;
-      color: $text-secondary;
+      color: $color-text-secondary;
     }
   }
 }

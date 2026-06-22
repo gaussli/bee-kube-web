@@ -121,7 +121,7 @@ function handleClick(index: number) {
     padding-top: 8px;
     border-radius: 0 0 9px 9px;
     overflow: hidden;
-    background-color: $bg-color;
+    background-color: $color-bg-page;
   }
 }
 </style>

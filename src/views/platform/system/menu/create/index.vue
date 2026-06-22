@@ -68,7 +68,7 @@ async function handleCreate() {
   display: flex;
   flex-direction: column;
   height: 100%;
-  background-color: $bg-page;
+  background-color: $color-bg-surface;
 }
 
 .form-header {

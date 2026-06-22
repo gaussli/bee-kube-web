@@ -39,7 +39,7 @@ function handleGoBack() {
   align-items: center;
   justify-content: center;
   height: 100%;
-  background-color: $bg-page;
+  background-color: $color-bg-surface;
 
   .no-permission-content {
     text-align: center;

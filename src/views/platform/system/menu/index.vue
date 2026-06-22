@@ -4,7 +4,7 @@
     <div class="table-header">
       <div class="query-form">
         <div class="query-form-left">
-          <BeeInputSearch v-model="searchKey" placeholder="按 ID / 菜单名称 / 编码 搜索" @search="handleSearch" />
+          <BeeInputSearch v-model="searchKey" placeholder="按 ID / 菜单名称 / 编码 搜索" />
           <BeeSegmentedControl v-model="queryForm.status" :options="statusOptions" @select="handleSelect" />
           <BeeSegmentedControl v-model="queryForm.type" :options="typeOptions" @select="handleTypeSelect" />
         </div>
@@ -278,16 +278,6 @@ async function loadData() {
   }
 }
 
-function handleSearch() {
-  const key = searchKey.value
-  queryForm.id = key
-  queryForm.name = key
-  queryForm.code = key
-  pagination.page = 1
-  pagination.pageSize = 10
-  loadData()
-}
-
 function handleSelect(selectValue?: string | number) {
   queryForm.status = selectValue as number | undefined
   pagination.page = 1
@@ -399,7 +389,7 @@ onMounted(() => {
   display: flex;
   flex-direction: column;
   height: 100%;
-  background-color: $bg-page;
+  background-color: $color-bg-surface;
 }
 
 .table-header {

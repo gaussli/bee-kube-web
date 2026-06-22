@@ -107,7 +107,7 @@ onMounted(() => {
   flex-shrink: 0;
   padding: 16px 20px 0;
   margin-bottom: 16px;
-  background-color: $bg-page;
+  background-color: $color-bg-surface;
 }
 
 .page-body {
@@ -115,7 +115,7 @@ onMounted(() => {
   min-height: 0;
   padding: 0 20px;
   overflow-y: auto;
-  background-color: $bg-page;
+  background-color: $color-bg-surface;
 }
 
 .page-footer {
@@ -123,7 +123,7 @@ onMounted(() => {
   flex-shrink: 0;
   justify-content: space-between;
   padding: 16px 20px;
-  background-color: $bg-page;
+  background-color: $color-bg-surface;
 }
 
 .edit-form {

@@ -1,17 +1,18 @@
 <template>
-  <div class="bee-input-search" :class="`bee-input-search--${size}`">
-    <div class="search-input-wrap">
-      <input ref="inputRef" v-model="inputValue" :placeholder="placeholder" :name="name" class="search-input" @keyup.enter="handleSearch" />
-    </div>
-    <button class="search-btn" @click="handleSearch">
-      <Search />
-    </button>
+  <div class="bee-input-search">
+    <BeeIcon name="basic-search" :size="14" class="bee-input-search__icon" />
+    <input v-model="inputValue" :placeholder="placeholder" class="bee-input-search__input" />
   </div>
 </template>
 
 <script setup lang="ts">
-import { computed, ref } from 'vue'
-import { Search } from '@element-plus/icons-vue'
+/**
+ * 搜索输入框组件
+ * 左侧图标 + 输入框，支持 v-model 双向绑定
+ * @module components/BeeInputSearch
+ */
+import { computed } from 'vue'
+import BeeIcon from '@/components/BeeIcon/index.vue'
 
 defineOptions({ name: 'BeeInputSearch' })
 
@@ -19,146 +20,63 @@ const props = withDefaults(
   defineProps<{
     modelValue?: string
     placeholder?: string
-    size?: 'large' | 'default' | 'small'
-    name?: string
   }>(),
   {
     modelValue: '',
-    placeholder: '搜索',
-    size: 'default',
-    name: 'bee-input-search'
+    placeholder: '搜索'
   }
 )
 
 const emit = defineEmits<{
   'update:modelValue': [value: string]
-  'search': [value: string]
 }>()
 
-const inputRef = ref<HTMLInputElement>()
 const inputValue = computed({
   get: () => props.modelValue,
   set: val => emit('update:modelValue', val)
 })
-
-function handleSearch() {
-  emit('search', inputValue.value)
-  emit('update:modelValue', inputValue.value)
-}
-
-function search() {
-  handleSearch()
-}
-
-function focus() {
-  inputRef.value?.focus()
-}
-
-defineExpose({
-  search,
-  focus
-})
 </script>
 
 <style lang="scss" scoped>
+@use 'sass:map';
+
 .bee-input-search {
-  display: inline-flex;
+  --bee-input-search-bg: transparent;
+
+  display: flex;
+  gap: $spacing-8;
   align-items: center;
-  border: 1px solid rgba($text-secondary, 0.1);
-  border-radius: 16px;
-  overflow: hidden;
-  background-color: $bg-color;
-  transition: all 0.3s;
+  box-sizing: border-box;
+  width: 100%;
+  height: 32px;
+  padding: 0 $spacing-16;
+  border: 1px solid map.get($colors, 'gray', 90);
+  border-radius: $radius-full;
+  background: var(--bee-input-search-bg);
+  transition: border-color 0.2s ease;
 
   &:focus-within {
-    border-color: $color-primary;
+    border-color: map.get($colors, 'primary', 50);
   }
 
-  &--large {
-    width: 240px;
-    height: 40px;
-    padding: 0 12px;
+  &__icon {
+    flex-shrink: 0;
+    color: $color-text-placeholder;
+  }
 
-    .search-input {
-      height: 32px;
-      font-size: 12px;
+  &__input {
+    flex: 1;
+    min-width: 0;
+    padding: 0;
+    border: none;
+    font-size: $font-size-14;
+    color: $color-text-primary;
+    background: transparent;
+    outline: none;
+
+    &::placeholder {
+      color: $color-text-placeholder;
     }
-
-    .search-btn {
-      svg {
-        width: 16px;
-        height: 16px;
-      }
-    }
-  }
-
-  &--default {
-    width: 200px;
-    height: 32px;
-    padding: 0 10px;
-
-    .search-input {
-      height: 28px;
-      font-size: 12px;
-    }
-  }
-
-  &--small {
-    width: 160px;
-    height: 24px;
-    padding: 0 8px;
-
-    .search-input {
-      height: 24px;
-      font-size: 12px;
-    }
-
-    .search-btn {
-      svg {
-        width: 12px;
-        height: 12px;
-      }
-    }
-  }
-}
-
-.search-input-wrap {
-  flex: 1;
-}
-
-.search-input {
-  width: 100%;
-  padding: 0;
-  border: none;
-  color: inherit;
-  background: transparent;
-  outline: none;
-
-  &::placeholder {
-    color: $text-placeholder;
-  }
-}
-
-.search-btn {
-  display: flex;
-  flex-shrink: 0;
-  align-items: center;
-  justify-content: center;
-  padding: 2px;
-  border: none;
-  border-radius: 4px;
-  color: $text-secondary;
-  background: transparent;
-  cursor: pointer;
-  transition: all 0.2s;
-
-  &:hover {
-    color: $color-primary;
-  }
-
-  svg {
-    width: 14px;
-    height: 14px;
   }
 }
 </style>

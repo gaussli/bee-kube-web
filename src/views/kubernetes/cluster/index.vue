@@ -1,89 +1,64 @@
 <template>
   <BeePage class="cluster-page">
     <!-- 页面标题 -->
-    <BeeCard class="page-header">
+    <BeeCard class="cluster-page__header">
       <BeeAlert type="primary" label="在进行集群管理之前，需要先选择一个集群。" />
       <BeePageTitle icon="kubernetes-cluster" title="集群管理" description="对多集群以及每个集群的基础资源、服务组件及相关应用资源等的统一管理。" />
     </BeeCard>
 
     <!-- 页面内容 -->
-    <BeeCard class="page-body">
+    <BeeCard class="cluster-page__body">
       <!-- 查询表单 -->
-      <div class="table-query">
-        <div class="table-query-left">
-          <BeeInputSearch v-model="searchKey" placeholder="按 ID / 名称 搜索" @search="handleSearch" />
-          <BeeSegmentedControl v-model="queryForm.status" :options="statusOptions" @select="handleSelect" />
-        </div>
-        <div class="table-query-right">
-          <BeeButton icon="basic-refresh" @click="handleReset"> 刷新 </BeeButton>
-          <BeeDivider v-if="hasPermission('kubernetes:cluster:create')" direction="vertical" length="12px" />
-          <BeeButton v-if="hasPermission('kubernetes:cluster:create')" type="primary" icon="basic-create" @click="handleCreate"> 新增 </BeeButton>
-        </div>
+      <div class="table-toolbar">
+        <BeeInputSearch v-model="searchKey" placeholder="按 ID / 名称 搜索" class="table-toolbar__search" />
+        <BeeSegmentedControl v-model="queryForm.status" :options="statusOptions" @select="handleSelect" />
+        <BeeButton icon="basic-search" @click="handleSearch"> 搜索 </BeeButton>
+        <BeeButton icon="basic-refresh" @click="handleReset"> 重置 </BeeButton>
+        <BeeDivider v-if="hasPermission('kubernetes:cluster:create')" direction="vertical" length="12px" />
+        <BeeButton v-if="hasPermission('kubernetes:cluster:create')" type="primary" icon="basic-create" @click="handleCreate"> 纳管 </BeeButton>
       </div>
 
       <!-- 表格主体 -->
       <div class="table-body">
-        <el-table v-loading="loading" :data="tableData" height="100%" @selection-change="handleSelectionChange">
-          <el-table-column type="selection" width="60" align="center" />
-          <el-table-column prop="id" width="280" class-name="bee-table-cell-id">
-            <template #header>
-              <BeeIconLabel icon="basic-id" label="ID" :size="tableHeaderFontSize" :color="tableHeaderColor" :font-weight="tableHeaderFontWeight" />
-            </template>
+        <BeeTable :data="tableData" :loading="loading" @selection-change="handleSelectionChange">
+          <BeeTableColumn width="280">
             <template #default="{ row }">
               <BeeLabelCopyable :label="row.id" />
             </template>
-          </el-table-column>
-          <el-table-column width="300" class-name="bee-table-cell-name">
-            <template #header>
-              <BeeIconLabel icon="kubernetes-cluster" label="名称" :size="tableHeaderFontSize" :color="tableHeaderColor" :font-weight="tableHeaderFontWeight" />
-            </template>
+          </BeeTableColumn>
+          <BeeTableColumn width="300">
             <template #default="{ row }">
               <BeeLabelGroup :mainLabel="row.name" :subLabel="row.description" subIcon="basic-description" :subColor="color.textSecondary" />
             </template>
-          </el-table-column>
-          <el-table-column min-width="260">
-            <template #header>
-              <BeeIconLabel icon="basic-url" label="API Server" :size="tableHeaderFontSize" :color="tableHeaderColor" :font-weight="tableHeaderFontWeight" />
-            </template>
+          </BeeTableColumn>
+          <BeeTableColumn min-width="560">
             <template #default="{ row }">
               {{ row.apiServer }}
             </template>
-          </el-table-column>
-          <el-table-column prop="status" width="100">
-            <template #header>
-              <BeeIconLabel icon="basic-status" label="状态" :size="tableHeaderFontSize" :color="tableHeaderColor" :font-weight="tableHeaderFontWeight" />
-            </template>
+          </BeeTableColumn>
+          <BeeTableColumn prop="status" width="100">
             <template #default="{ row }">
               <BeeStatus :status="row.status" :config="ClusterStatusConfig" />
             </template>
-          </el-table-column>
-          <el-table-column width="180">
-            <template #header>
-              <BeeIconLabel icon="basic-audit" label="创建" :size="tableHeaderFontSize" :color="tableHeaderColor" :font-weight="tableHeaderFontWeight" />
-            </template>
+          </BeeTableColumn>
+          <BeeTableColumn width="180">
             <template #default="{ row }">
               <AuditCell :user="row.createBy" :time="row.createAt" />
             </template>
-          </el-table-column>
-          <el-table-column width="180">
-            <template #header>
-              <BeeIconLabel icon="basic-audit" label="更新" :size="tableHeaderFontSize" :color="tableHeaderColor" :font-weight="tableHeaderFontWeight" />
-            </template>
+          </BeeTableColumn>
+          <BeeTableColumn width="180">
             <template #default="{ row }">
               <AuditCell :user="row.updateBy" :time="row.updateAt" />
             </template>
-          </el-table-column>
-          <el-table-column width="150" fixed="right" class-name="bee-table-cell-operation">
-            <template #header>
-              <BeeIconLabel icon="basic-operation" label="操作" :size="tableHeaderFontSize" :color="tableHeaderColor" :font-weight="tableHeaderFontWeight" />
-            </template>
+          </BeeTableColumn>
+          <BeeTableColumn width="150" fixed="right">
             <template #default="{ row }">
-              <BeeCircleButton v-if="hasPermission('kubernetes:cluster:edit')" icon="basic-edit" type="info" tooltip="编辑" @click="handleEdit(row)" />
-              <BeeCircleButton v-if="hasPermission('kubernetes:cluster:edit')" icon="basic-switch" type="info" tooltip="切换集群" @click="handleSelectCluster(row)" />
+              <BeeCircleButton v-if="hasPermission('kubernetes:cluster:edit')" icon="basic-edit" tooltip="编辑" @click="handleEdit(row)" />
+              <BeeCircleButton v-if="hasPermission('kubernetes:cluster:edit')" icon="basic-switch" tooltip="切换集群" @click="handleSelectCluster(row)" />
               <BeeCircleButton v-if="hasPermission('kubernetes:cluster:delete')" icon="basic-delete" type="danger" tooltip="删除" @click="handleDelete(row)" />
             </template>
-          </el-table-column>
-        </el-table>
+          </BeeTableColumn>
+        </BeeTable>
       </div>
 
       <!-- 表格底部 -->
@@ -135,7 +110,6 @@ import BeeCard from '@/components/BeeCard/index.vue'
 import BeeCircleButton from '@/components/BeeCircleButton/index.vue'
 import BeeDialog from '@/components/BeeDialog/index.vue'
 import BeeDivider from '@/components/BeeDivider/index.vue'
-import BeeIconLabel from '@/components/BeeIconLabel/index.vue'
 import BeeInputSearch from '@/components/BeeInputSearch/index.vue'
 import BeeLabelCopyable from '@/components/BeeLabelCopyable/index.vue'
 import BeeLabelGroup from '@/components/BeeLabelGroup/index.vue'
@@ -144,6 +118,8 @@ import BeePageTitle from '@/components/BeePageTitle/index.vue'
 import BeePagination from '@/components/BeePagination/index.vue'
 import BeeSegmentedControl from '@/components/BeeSegmentedControl/index.vue'
 import BeeStatus from '@/components/BeeStatus/index.vue'
+import BeeTableColumn from '@/components/BeeTable/BeeTableColumn.vue'
+import BeeTable from '@/components/BeeTable/index.vue'
 import BeeTag from '@/components/BeeTag/index.vue'
 import { usePermission } from '@/composables/usePermission'
 import { color } from '@/config/color'
@@ -157,10 +133,6 @@ const { hasPermission } = usePermission()
 
 const router = useRouter()
 const kubernetesStore = useKubernetesStore()
-
-const tableHeaderFontSize = ref<string>('14px')
-const tableHeaderColor = ref<string>('#7e8184')
-const tableHeaderFontWeight = ref<number>(400)
 
 const loading = ref(false)
 
@@ -200,19 +172,18 @@ async function loadData() {
   }
 }
 
-function handleSearch() {
-  const key = searchKey.value
-  queryForm.id = key
-  queryForm.name = key
+function handleSelect(selectValue?: string | number) {
+  queryForm.status = selectValue as number | undefined
   pagination.page = 1
   pagination.pageSize = 10
   loadData()
 }
 
-function handleSelect(selectValue?: string | number) {
-  queryForm.status = selectValue as number | undefined
+function handleSearch() {
+  const key = searchKey.value
+  queryForm.id = key
+  queryForm.name = key
   pagination.page = 1
-  pagination.pageSize = 10
   loadData()
 }
 
@@ -228,8 +199,8 @@ function handleReset() {
   loadData()
 }
 
-function handleSelectionChange(rows: ClusterResp[]) {
-  selectedRows.value = rows
+function handleSelectionChange(rows: Record<string, unknown>[]) {
+  selectedRows.value = rows as unknown as ClusterResp[]
 }
 
 function handleCreate() {
@@ -287,74 +258,34 @@ onMounted(() => {
 
 <style lang="scss" scoped>
 .cluster-page {
-  .page-header {
+  .cluster-page__header {
     .bee-alert {
       margin-top: $spacing-16;
     }
   }
 
-  .page-body {
+  .cluster-page__body {
     display: flex;
     flex-direction: column;
     flex: 1;
     min-height: 0;
     overflow: hidden;
 
-    .table-query {
+    .table-toolbar {
       display: flex;
+      gap: $spacing-8;
       align-items: center;
-      justify-content: space-between;
       padding: $spacing-16 0;
 
-      .table-query-left {
-        display: flex;
-        gap: $spacing-8;
-        flex-direction: row;
-        align-items: center;
-      }
-
-      .table-query-right {
-        display: flex;
-        gap: $spacing-8;
-        flex-direction: row;
-        align-items: center;
+      &__search {
+        flex: 1;
+        min-width: 0;
       }
     }
 
     .table-body {
       flex: 1;
       min-height: 0;
-
-      :deep(.el-table) {
-        height: 100%;
-
-        th.el-table__cell {
-          padding: $spacing-16 0;
-        }
-
-        .el-table__body-wrapper {
-          .bee-table-cell-id {
-            font-family: monospace;
-          }
-
-          .bee-table-cell-name {
-            .bee-icon-label__label {
-              max-width: 250px;
-              overflow: hidden;
-              text-overflow: ellipsis;
-              white-space: nowrap;
-            }
-          }
-
-          .bee-table-cell-operation {
-            .cell {
-              display: flex;
-              gap: $spacing-8;
-              flex-direction: row;
-            }
-          }
-        }
-      }
     }
 
     .table-footer {

@@ -179,7 +179,7 @@ export default {
     border-radius: $radius-full;
     font-size: $font-size-12;
     color: $text-secondary;
-    background: $bg-color;
+    background: $color-bg-page;
     cursor: pointer;
   }
 

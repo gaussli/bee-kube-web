@@ -30,25 +30,25 @@
 }
 
 .el-card {
-  --el-card-bg-color: #{$bg-page};
+  --el-card-bg-color: #{$color-bg-surface};
 
   border: none;
 }
 
 .el-table {
-  --el-table-bg-color: #{$bg-page};
+  --el-table-bg-color: #{$color-bg-surface};
   --el-table-border-color: #{$bg-selected};
-  --el-table-header-bg-color: #{$bg-page};
+  --el-table-header-bg-color: #{$color-bg-surface};
   --el-table-header-text-color: #{$text-primary};
 
   // row hover
   --el-table-row-hover-bg-color: #{$bg_hover};
   --el-table-text-color: #{$text-primary};
-  --el-table-tr-bg-color: #{$bg-page};
+  --el-table-tr-bg-color: #{$color-bg-surface};
 }
 
 .el-loading-mask {
-  --el-mask-color: #{$bg-page};
+  --el-mask-color: #{$color-bg-surface};
   --el-table-text-color: #{$text-primary};
 
   .el-loading-spinner .circular .path {
@@ -69,7 +69,7 @@
 
     border-radius: 16px;
     font-size: #{$font-size-12};
-    background-color: #{$bg-color};
+    background-color: #{$color-bg-page};
     box-shadow: none;
 
     &.is-hovering:not(.is-focused) {
@@ -90,7 +90,7 @@
 
   .el-pagination__jump {
     .el-input {
-      --el-input-bg-color: #{$bg-color};
+      --el-input-bg-color: #{$color-bg-page};
       --el-input-border-color: none;
       --el-input-border-radius: 16px;
       --el-input-hover-border-color: #{$bg-selected};
@@ -118,12 +118,12 @@
 
 .el-input {
   --el-color-info: #{$text-primary};
-  --el-fill-color-light: #{$bg-color};
+  --el-fill-color-light: #{$color-bg-page};
   --el-input-text-color: #{$text-primary};
   --el-text-color-placeholder: #{$text-placeholder};
 
   .el-input__wrapper {
-    --el-input-bg-color: #{$bg-color};
+    --el-input-bg-color: #{$color-bg-page};
   }
 }
 

@@ -14,7 +14,7 @@
       <!-- 查询表单 -->
       <div class="table-query">
         <div class="table-query-left">
-          <BeeInputSearch v-model="searchKey" placeholder="按 ID、名称或 IP 搜索" @search="handleSearch" />
+          <BeeInputSearch v-model="searchKey" placeholder="按 ID、名称或 IP 搜索" />
           <BeeSegmentedControl v-model="queryForm.status" :options="statusOptions" @select="handleSelect" />
         </div>
         <div class="table-query-right">
@@ -228,15 +228,6 @@ async function loadData() {
   } finally {
     loading.value = false
   }
-}
-
-function handleSearch() {
-  const key = searchKey.value.trim()
-  queryForm.id = key
-  queryForm.name = key
-  queryForm.ip = key
-  pagination.page = 1
-  loadData()
 }
 
 function handleSelect(selectValue?: string | number) {

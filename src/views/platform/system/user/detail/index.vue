@@ -213,7 +213,7 @@ onMounted(() => {
   display: flex;
   flex-direction: column;
   height: 100%;
-  background-color: $bg-page;
+  background-color: $color-bg-surface;
 }
 
 .detail-header {
@@ -246,7 +246,7 @@ onMounted(() => {
   align-items: center;
   padding: 24px;
   border-radius: 12px;
-  background-color: $bg-color;
+  background-color: $color-bg-page;
 
   .user-meta {
     display: flex;
@@ -281,7 +281,7 @@ onMounted(() => {
   .info-section {
     padding: 20px;
     border-radius: 12px;
-    background-color: $bg-color;
+    background-color: $color-bg-page;
 
     &-full {
       grid-column: 1 / -1;

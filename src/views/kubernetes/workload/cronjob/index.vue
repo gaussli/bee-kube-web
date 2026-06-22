@@ -10,7 +10,7 @@
       <!-- 查询表单 -->
       <div class="table-query">
         <div class="table-query-left">
-          <BeeInputSearch v-model="searchKey" placeholder="按名称搜索" @search="handleSearch" />
+          <BeeInputSearch v-model="searchKey" placeholder="按名称搜索" />
           <BeeSelect v-model="queryForm.namespace" placeholder="选择命名空间" :options="namespaceOptions" @change="handleNamespaceChange" />
         </div>
         <div class="table-query-right">
@@ -237,12 +237,6 @@ async function loadData() {
   }
 }
 
-function handleSearch() {
-  queryForm.name = searchKey.value || undefined
-  pagination.page = 1
-  loadData()
-}
-
 function handleNamespaceChange(value: string) {
   queryForm.namespace = value || undefined
   pagination.page = 1
@@ -338,7 +332,7 @@ onMounted(() => {
   flex-shrink: 0;
   padding: 0 20px;
   margin-bottom: 16px;
-  background-color: $bg-page;
+  background-color: $color-bg-surface;
 }
 
 .page-body {
@@ -347,7 +341,7 @@ onMounted(() => {
   flex: 1;
   min-height: 0;
   overflow: hidden;
-  background-color: $bg-page;
+  background-color: $color-bg-surface;
 }
 
 .table-query {
