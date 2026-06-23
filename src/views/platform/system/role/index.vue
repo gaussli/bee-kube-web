@@ -64,7 +64,7 @@
             <BeeIconLabel icon="clock" label="创建" />
           </template>
           <template #default="{ row }">
-            <AuditCell :user="row.createBy" :time="row.createAt" />
+            <BeeAuditCell :username="row.createBy" :datetime="row.createAt" />
           </template>
         </el-table-column>
         <el-table-column width="180">
@@ -72,7 +72,7 @@
             <BeeIconLabel icon="edit-pen" label="更新" />
           </template>
           <template #default="{ row }">
-            <AuditCell :user="row.updateBy" :time="row.updateAt" />
+            <BeeAuditCell :username="row.updateBy" :datetime="row.updateAt" />
           </template>
         </el-table-column>
         <el-table-column width="200" fixed="right">
@@ -183,7 +183,7 @@ import { ElMessage } from 'element-plus'
 import { CircleCheck, CircleClose, Delete, EditPen, MoreFilled, Plus, Refresh, Setting, User, View } from '@element-plus/icons-vue'
 import type { RoleQueryReq, RoleResp } from '@/types/platform/role'
 import { changeRoleStatus, getRolePage, removeRole, batchRemoveRoles } from '@/api/platform/role'
-import AuditCell from '@/components/AuditCell/index.vue'
+import BeeAuditCell from '@/components/BeeAuditCell/index.vue'
 import BeeButton from '@/components/BeeButton/index.vue'
 import BeeDialog from '@/components/BeeDialog/index.vue'
 import BeeIconLabel from '@/components/BeeIconLabel/index.vue'

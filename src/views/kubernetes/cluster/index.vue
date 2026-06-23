@@ -36,14 +36,14 @@
               <BeeStatus :status="row.status" :config="ClusterStatusConfig" />
             </template>
           </BeeTableColumn>
-          <BeeTableColumn :width="180">
+          <BeeTableColumn :width="200">
             <template #default="{ row }">
-              <AuditCell :user="row.createBy" :time="row.createAt" />
+              <BeeAuditCell :username="row.createBy" :datetime="row.createAt" prop-name="创建人 / 时间" />
             </template>
           </BeeTableColumn>
-          <BeeTableColumn :width="180">
+          <BeeTableColumn :width="200">
             <template #default="{ row }">
-              <AuditCell :user="row.updateBy" :time="row.updateAt" />
+              <BeeAuditCell :username="row.updateBy" :datetime="row.updateAt" prop-name="更新人 / 时间" />
             </template>
           </BeeTableColumn>
           <BeeTableColumn :width="150" fixed="right">
@@ -98,8 +98,8 @@ import { useRouter } from 'vue-router'
 import { ElMessage } from 'element-plus'
 import type { ClusterQueryReq, ClusterResp } from '@/types/kubernetes/cluster'
 import { getClusterPage, deleteCluster, deleteClusters } from '@/api/kubernetes/cluster'
-import AuditCell from '@/components/AuditCell/index.vue'
 import BeeAlert from '@/components/BeeAlert/index.vue'
+import BeeAuditCell from '@/components/BeeAuditCell/index.vue'
 import BeeButton from '@/components/BeeButton/index.vue'
 import BeeCard from '@/components/BeeCard/index.vue'
 import BeeCircleButton from '@/components/BeeCircleButton/index.vue'
@@ -111,9 +111,9 @@ import BeePage from '@/components/BeePage/index.vue'
 import BeePageTitle from '@/components/BeePageTitle/index.vue'
 import BeePagination from '@/components/BeePagination/index.vue'
 import BeeSegmentedControl from '@/components/BeeSegmentedControl/index.vue'
-import BeeTableCommonCell from '@/components/BeeTable/BeeTableCommonCell.vue'
 import BeeStatus from '@/components/BeeStatus/index.vue'
 import BeeTableColumn from '@/components/BeeTable/BeeTableColumn.vue'
+import BeeTableCommonCell from '@/components/BeeTable/BeeTableCommonCell.vue'
 import BeeTable from '@/components/BeeTable/index.vue'
 import BeeTag from '@/components/BeeTag/index.vue'
 import { usePermission } from '@/composables/usePermission'

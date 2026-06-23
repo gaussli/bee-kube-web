@@ -101,7 +101,7 @@
               <BeeIconLabel icon="basic-audit" label="创建" />
             </template>
             <template #default="{ row }">
-              <AuditCell :user="row.createBy" :time="row.createAt" />
+              <BeeAuditCell :username="row.createBy" :datetime="row.createAt" />
             </template>
           </el-table-column>
           <el-table-column width="150" fixed="right" class-name="bee-table-operation">
@@ -139,7 +139,7 @@ import { useRouter } from 'vue-router'
 import { ElMessage } from 'element-plus'
 import type { NodeQueryReq, NodeResp } from '@/types/kubernetes/node'
 import { getNodePage, cordonNode, drainNode } from '@/api/kubernetes/node'
-import AuditCell from '@/components/AuditCell/index.vue'
+import BeeAuditCell from '@/components/BeeAuditCell/index.vue'
 import BeeButton from '@/components/BeeButton/index.vue'
 import BeeCard from '@/components/BeeCard/index.vue'
 import BeeCircleButton from '@/components/BeeCircleButton/index.vue'
