@@ -1,27 +1,33 @@
 <template>
   <div class="bee-page-title">
-    <div class="title-icon">
+    <div class="bee-page-title__icon">
       <BeeIcon :name="icon" :size="38" />
     </div>
-    <div class="title-content">
-      <span class="title-text">{{ title }}</span>
-      <span class="title-desc">{{ description }}</span>
+    <div class="bee-page-title__content">
+      <span class="bee-page-title__text">{{ title }}</span>
+      <span class="bee-page-title__desc">{{ description }}</span>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
+/**
+ * 页面标题组件
+ * 左侧图标 + 右侧标题和描述的横向布局
+ * @module components/BeePageTitle
+ */
 import BeeIcon from '@/components/BeeIcon/index.vue'
-
-interface Props {
-  icon: string
-  title: string
-  description: string
-}
 
 defineOptions({ name: 'BeePageTitle' })
 
-defineProps<Props>()
+defineProps<{
+  /** 图标名称 */
+  icon: string
+  /** 页面标题 */
+  title: string
+  /** 页面描述 */
+  description: string
+}>()
 </script>
 
 <style lang="scss" scoped>
@@ -34,9 +40,9 @@ defineProps<Props>()
   justify-content: center;
   box-sizing: border-box;
   width: 100%;
-  padding: 32px 0;
+  padding: 24px 0;
 
-  .title-icon {
+  &__icon {
     display: flex;
     align-items: center;
     justify-content: center;
@@ -47,27 +53,26 @@ defineProps<Props>()
     background: $color-bg-elevated;
   }
 
-  .title-content {
+  &__content {
     display: flex;
     gap: $spacing-4;
     flex-direction: column;
     flex: 1;
     justify-content: center;
+    min-width: 0;
+  }
 
-    .title-text {
-      margin: 0;
-      font-size: 24px;
-      font-weight: 600;
-      line-height: 32px;
-      color: $color-text-primary;
-    }
+  &__text {
+    font-size: 24px;
+    font-weight: 600;
+    line-height: 32px;
+    color: $color-text-primary;
+  }
 
-    .title-desc {
-      margin: 0;
-      font-size: $font-size-14;
-      line-height: 22px;
-      color: $color-text-secondary;
-    }
+  &__desc {
+    font-size: $font-size-14;
+    line-height: 22px;
+    color: $color-text-secondary;
   }
 }
 </style>
