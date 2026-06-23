@@ -28,7 +28,7 @@
           </BeeTableColumn>
           <BeeTableColumn :min-width="300">
             <template #default="{ row }">
-              {{ row.apiServer }}
+              <BeeTableCommonCell :text="row.apiServer" subtext="API Server" />
             </template>
           </BeeTableColumn>
           <BeeTableColumn prop="status" :width="100">
@@ -111,6 +111,7 @@ import BeePage from '@/components/BeePage/index.vue'
 import BeePageTitle from '@/components/BeePageTitle/index.vue'
 import BeePagination from '@/components/BeePagination/index.vue'
 import BeeSegmentedControl from '@/components/BeeSegmentedControl/index.vue'
+import BeeTableCommonCell from '@/components/BeeTable/BeeTableCommonCell.vue'
 import BeeStatus from '@/components/BeeStatus/index.vue'
 import BeeTableColumn from '@/components/BeeTable/BeeTableColumn.vue'
 import BeeTable from '@/components/BeeTable/index.vue'

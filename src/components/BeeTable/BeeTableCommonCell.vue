@@ -24,19 +24,19 @@ defineProps<{
 <style lang="scss" scoped>
 .bee-table-common-cell {
   display: flex;
-  gap: 4px;
+  gap: $spacing-8;
   flex-direction: column;
   width: 100%;
   height: auto;
 
   &__text {
-    font-size: 14px;
+    font-size: $font-size-14;
     color: $color-text-primary;
     white-space: nowrap;
   }
 
   &__subtext {
-    font-size: 12px;
+    font-size: $font-size-12;
     color: $color-text-tertiary;
     white-space: nowrap;
   }
