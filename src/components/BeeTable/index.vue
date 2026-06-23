@@ -288,6 +288,7 @@ function getColumnStyle(col: ColumnConfig, index: number) {
     box-sizing: border-box;
     width: 100%;
     height: 100%;
+    border-radius: $radius-8;
     overflow: auto;
   }
 
@@ -297,6 +298,7 @@ function getColumnStyle(col: ColumnConfig, index: number) {
     flex-direction: column;
     width: 100%;
     min-width: fit-content;
+    border-radius: $radius-8;
   }
 
   // ---- 表体（纵向 flex，gap 为行间距） ----
@@ -304,6 +306,7 @@ function getColumnStyle(col: ColumnConfig, index: number) {
     display: flex;
     flex-direction: column;
     width: 100%;
+    border-radius: $radius-8;
   }
 
   // ---- 行通用 ----

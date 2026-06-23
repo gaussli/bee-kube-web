@@ -23,7 +23,7 @@
         <BeeTable :data="tableData" :loading="loading" selectable @selection-change="handleSelectionChange">
           <BeeTableColumn :width="500">
             <template #default="{ row }">
-              <BeeClusterColumn :name="row.name" :cluster-id="row.id" :description="row.description" />
+              <BeeClusterInfoCell :name="row.name" :id="row.id" :description="row.description" />
             </template>
           </BeeTableColumn>
           <BeeTableColumn :min-width="300">
@@ -103,7 +103,7 @@ import BeeAlert from '@/components/BeeAlert/index.vue'
 import BeeButton from '@/components/BeeButton/index.vue'
 import BeeCard from '@/components/BeeCard/index.vue'
 import BeeCircleButton from '@/components/BeeCircleButton/index.vue'
-import BeeClusterColumn from '@/components/BeeClusterColumn/index.vue'
+import BeeClusterInfoCell from '@/components/BeeClusterInfoCell/index.vue'
 import BeeDialog from '@/components/BeeDialog/index.vue'
 import BeeDivider from '@/components/BeeDivider/index.vue'
 import BeeInputSearch from '@/components/BeeInputSearch/index.vue'

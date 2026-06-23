@@ -42,7 +42,7 @@ const inputValue = computed({
 
 .bee-input-search {
   --bee-input-search-bg: transparent;
-  --bee-input-search-border-color: #{map.get($colors, 'gray', 90)};
+  --bee-input-search-border-color: #{$color-text-secondary};
   --bee-input-search-border-color-focus: #{map.get($colors, 'primary', 50)};
 
   display: flex;

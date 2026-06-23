@@ -54,12 +54,12 @@ defineExpose({ loading })
   // 类型颜色 CSS 变量（使用者可覆盖）
   /* stylelint-disable order/custom-properties-alphabetical-order */
   // ---- default 类型 ----
-  --bee-button-color-default: #{map.get($colors, 'gray', 90)};
-  --bee-button-color-default-hover: #{map.get($colors, 'primary', 90)};
-  --bee-button-color-default-active: #{map.get($colors, 'primary', 70)};
-  --bee-button-color-default-disabled: #{rgba(map.get($colors, 'gray', 90), 0.3)};
-  --bee-button-bg-default-hover: #{rgba(map.get($colors, 'gray', 90), 0.1)};
-  --bee-button-bg-default-active: #{rgba(map.get($colors, 'gray', 90), 0.2)};
+  --bee-button-color-default: #{$color-text-secondary};
+  --bee-button-color-default-hover: #{$color-text-secondary};
+  --bee-button-color-default-active: #{$color-text-primary};
+  --bee-button-color-default-disabled: #{rgba($color-text-secondary, 0.3)};
+  --bee-button-bg-default-hover: #{rgba($color-text-secondary, 0.1)};
+  --bee-button-bg-default-active: #{rgba($color-text-secondary, 0.2)};
 
   // ---- primary 类型 ----
   --bee-button-color-primary: #{map.get($colors, 'primary', 50)};

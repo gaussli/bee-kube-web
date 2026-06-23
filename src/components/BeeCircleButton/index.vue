@@ -85,8 +85,8 @@ defineExpose({ loading })
   // 类型颜色 CSS 变量（使用者可覆盖）
   /* stylelint-disable order/custom-properties-alphabetical-order */
   // ---- 通用 ----
-  --bee-circle-button-color: #{$color-text-primary};
-  --bee-circle-button-color-disabled: #{rgba($color-text-primary, 0.3)};
+  --bee-circle-button-color: #{$color-text-secondary};
+  --bee-circle-button-color-disabled: #{rgba($color-text-secondary, 0.3)};
 
   // ---- primary 类型 ----
   --bee-circle-button-color-primary-hover: #{map.get($colors, 'primary', 50)};

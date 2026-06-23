@@ -364,7 +364,7 @@ watch(
     z-index: 1000;
     min-width: 140px;
     padding: 10px 12px;
-    border: 1px solid $border-primary;
+    border: 1px solid $color-border-primary;
     border-radius: 6px;
     background: $bg-overlay;
     box-shadow: 0 4px 12px rgb(0 0 0 / 30%);
