@@ -388,7 +388,7 @@ watch(
         font-size: 12px;
 
         .tooltip-label {
-          color: $text-secondary;
+          color: $color-text-secondary;
         }
 
         .tooltip-value {

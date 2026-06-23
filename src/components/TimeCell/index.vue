@@ -61,6 +61,6 @@ function formatRelative(time?: string): string {
 
 .relative-text {
   font-size: 12px;
-  color: $text-secondary;
+  color: $color-text-secondary;
 }
 </style>

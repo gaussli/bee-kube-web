@@ -389,7 +389,7 @@ onMounted(() => {
       .status-en {
         font-size: 12px;
         line-height: 1.2;
-        color: $text-secondary;
+        color: $color-text-secondary;
       }
     }
   }
@@ -397,7 +397,7 @@ onMounted(() => {
   .time-text {
     font-family: monospace;
     font-size: 12px;
-    color: $text-secondary;
+    color: $color-text-secondary;
   }
 
   .namespace-cell {
@@ -426,7 +426,7 @@ onMounted(() => {
     .namespace-desc {
       overflow: hidden;
       font-size: 12px;
-      color: $text-secondary;
+      color: $color-text-secondary;
       text-overflow: ellipsis;
       white-space: nowrap;
     }

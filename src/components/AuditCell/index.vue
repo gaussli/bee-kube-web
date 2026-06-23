@@ -35,7 +35,7 @@ defineProps<{
     align-items: center;
 
     .el-icon {
-      color: $text-secondary;
+      color: $color-text-secondary;
     }
 
     span {

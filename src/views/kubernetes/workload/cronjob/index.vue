@@ -411,7 +411,7 @@ onMounted(() => {
     .desc-text {
       overflow: hidden;
       font-size: 12px;
-      color: $text-secondary;
+      color: $color-text-secondary;
       text-overflow: ellipsis;
       white-space: nowrap;
     }
@@ -422,14 +422,14 @@ onMounted(() => {
     border-radius: 4px;
     font-family: monospace;
     font-size: 12px;
-    color: $text-secondary;
+    color: $color-text-secondary;
     background-color: var(--el-fill-color-light);
   }
 
   .time-text {
     font-family: monospace;
     font-size: 12px;
-    color: $text-secondary;
+    color: $color-text-secondary;
   }
 }
 

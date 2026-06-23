@@ -192,11 +192,11 @@ onMounted(() => {
   align-items: center;
   height: 48px;
   padding: 0 8px;
-  border-bottom: 1px solid rgba($text-secondary, 0.1);
+  border-bottom: 1px solid rgba($color-text-secondary, 0.1);
 
   .header-title {
     font-weight: 600;
-    color: $text-secondary;
+    color: $color-text-secondary;
   }
 }
 
@@ -218,7 +218,7 @@ onMounted(() => {
   align-items: center;
   justify-content: flex-end;
   padding: 16px 20px;
-  border-top: 1px solid rgba($text-secondary, 0.1);
+  border-top: 1px solid rgba($color-text-secondary, 0.1);
 }
 
 .role-header {
@@ -262,7 +262,7 @@ onMounted(() => {
     .role-code {
       font-family: 'SF Mono', Consolas, monospace;
       font-size: 12px;
-      color: $text-secondary;
+      color: $color-text-secondary;
     }
   }
 }
@@ -281,9 +281,9 @@ onMounted(() => {
     gap: 8px;
     align-items: center;
     padding: 12px 16px;
-    border-bottom: 1px solid rgba($text-secondary, 0.1);
+    border-bottom: 1px solid rgba($color-text-secondary, 0.1);
     font-weight: 500;
-    color: $text-secondary;
+    color: $color-text-secondary;
   }
 
   .panel-body {

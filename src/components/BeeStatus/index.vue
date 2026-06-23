@@ -53,7 +53,7 @@ const currentColor = computed(() => currentConfig.value.color)
   &__label-en {
     font-size: $font-size-12;
     font-weight: 200;
-    color: $text-secondary;
+    color: $color-text-secondary;
   }
 }
 </style>

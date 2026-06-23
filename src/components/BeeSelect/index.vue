@@ -178,7 +178,7 @@ export default {
     padding: $spacing-8 $spacing-16;
     border-radius: $radius-full;
     font-size: $font-size-12;
-    color: $text-secondary;
+    color: $color-text-secondary;
     background: $color-bg-page;
     cursor: pointer;
   }
@@ -245,7 +245,7 @@ export default {
 
   &__menu-icon {
     flex-shrink: 0;
-    color: $text-secondary;
+    color: $color-text-secondary;
   }
 }
 

@@ -173,11 +173,11 @@ onMounted(() => {
   align-items: center;
   height: 48px;
   padding: 0 8px;
-  border-bottom: 1px solid rgba($text-secondary, 0.1);
+  border-bottom: 1px solid rgba($color-text-secondary, 0.1);
 
   .header-title {
     font-weight: 600;
-    color: $text-secondary;
+    color: $color-text-secondary;
   }
 }
 
@@ -205,7 +205,7 @@ onMounted(() => {
   align-items: center;
   justify-content: flex-end;
   padding: 16px 20px;
-  border-top: 1px solid rgba($text-secondary, 0.1);
+  border-top: 1px solid rgba($color-text-secondary, 0.1);
 }
 
 .user-header {
@@ -236,7 +236,7 @@ onMounted(() => {
 
     .user-id {
       font-size: 12px;
-      color: $text-secondary;
+      color: $color-text-secondary;
     }
   }
 }
@@ -292,7 +292,7 @@ onMounted(() => {
   margin-top: 2px;
   font-family: 'SF Mono', Consolas, monospace;
   font-size: 12px;
-  color: $text-secondary;
+  color: $color-text-secondary;
 
   .el-icon {
     font-size: 12px;
@@ -308,7 +308,7 @@ onMounted(() => {
   margin-top: 2px;
   font-family: 'SF Mono', Consolas, monospace;
   font-size: 12px;
-  color: $text-secondary;
+  color: $color-text-secondary;
 
   .el-icon {
     font-size: 12px;

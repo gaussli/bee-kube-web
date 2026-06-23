@@ -147,7 +147,7 @@ onMounted(() => {
   }
 
   .separator {
-    color: $text-secondary;
+    color: $color-text-secondary;
   }
 }
 </style>

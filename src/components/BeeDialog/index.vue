@@ -101,7 +101,7 @@ function handleConfirm() {
   justify-content: space-between;
   padding: 8px 16px;
 
-  // border-bottom: 1px solid rgba($text-secondary, 0.1);
+  // border-bottom: 1px solid rgba($color-text-secondary, 0.1);
 
   .dialog-title {
     font-size: 14px;
@@ -122,7 +122,7 @@ function handleConfirm() {
   justify-content: flex-end;
   padding: 16px;
 
-  // border-top: 1px solid rgba($text-secondary, 0.1);
+  // border-top: 1px solid rgba($color-text-secondary, 0.1);
 }
 
 // 动画

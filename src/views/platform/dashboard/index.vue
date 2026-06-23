@@ -91,7 +91,7 @@ defineOptions({ name: 'Dashboard' })
       .stat-label {
         margin-top: 4px;
         font-size: 14px;
-        color: $text-secondary;
+        color: $color-text-secondary;
       }
     }
   }

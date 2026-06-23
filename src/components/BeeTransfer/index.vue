@@ -216,7 +216,7 @@ function handleMoveToLeft() {
   flex: 1;
   height: 100%;
   min-width: 200px;
-  border: 1px solid rgba($text-secondary, 0.1);
+  border: 1px solid rgba($color-text-secondary, 0.1);
   border-radius: 8px;
   overflow: hidden;
   background-color: $bg-overlay;
@@ -227,7 +227,7 @@ function handleMoveToLeft() {
   gap: 8px;
   align-items: center;
   padding: 12px 16px;
-  border-bottom: 1px solid rgba($text-secondary, 0.1);
+  border-bottom: 1px solid rgba($color-text-secondary, 0.1);
 }
 
 .header-title {
@@ -241,7 +241,7 @@ function handleMoveToLeft() {
   flex-shrink: 0;
   margin-left: 8px;
   font-size: 12px;
-  color: $text-secondary;
+  color: $color-text-secondary;
 }
 
 .header-search {
@@ -281,7 +281,7 @@ function handleMoveToLeft() {
   }
 
   &:hover {
-    background-color: rgba($text-secondary, 0.05);
+    background-color: rgba($color-text-secondary, 0.05);
   }
 
   &.is-checked {
@@ -304,7 +304,7 @@ function handleMoveToLeft() {
   justify-content: center;
   height: 100px;
   font-size: 13px;
-  color: $text-secondary;
+  color: $color-text-secondary;
 }
 
 .transfer-operate {

@@ -211,11 +211,11 @@ onMounted(() => {
   align-items: center;
   height: 48px;
   padding: 0 8px;
-  border-bottom: 1px solid rgba($text-secondary, 0.1);
+  border-bottom: 1px solid rgba($color-text-secondary, 0.1);
 
   .header-title {
     font-weight: 600;
-    color: $text-secondary;
+    color: $color-text-secondary;
   }
 }
 
@@ -292,7 +292,7 @@ onMounted(() => {
     align-items: center;
     padding-bottom: 12px;
     margin-bottom: 20px;
-    border-bottom: 1px solid rgba($text-secondary, 0.1);
+    border-bottom: 1px solid rgba($color-text-secondary, 0.1);
     font-size: 16px;
     font-weight: 600;
     color: $color-text-primary;
@@ -332,7 +332,7 @@ onMounted(() => {
     color: $text-tertiary;
 
     .label-zh {
-      color: $text-secondary;
+      color: $color-text-secondary;
     }
 
     .label-en {
@@ -353,7 +353,7 @@ onMounted(() => {
   justify-content: flex-end;
   padding: 20px 0;
   margin-top: 24px;
-  border-top: 1px solid rgba($text-secondary, 0.1);
+  border-top: 1px solid rgba($color-text-secondary, 0.1);
 }
 
 // 渐入渐出动画

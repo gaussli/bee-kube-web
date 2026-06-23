@@ -141,8 +141,8 @@ import type { NodeQueryReq, NodeResp } from '@/types/kubernetes/node'
 import { getNodePage, cordonNode, drainNode } from '@/api/kubernetes/node'
 import AuditCell from '@/components/AuditCell/index.vue'
 import BeeButton from '@/components/BeeButton/index.vue'
-import BeeCircleButton from '@/components/BeeCircleButton/index.vue'
 import BeeCard from '@/components/BeeCard/index.vue'
+import BeeCircleButton from '@/components/BeeCircleButton/index.vue'
 import BeeDropdown from '@/components/BeeDropdown/index.vue'
 import BeeDropdownItem from '@/components/BeeDropdownItem/index.vue'
 import BeeIcon from '@/components/BeeIcon/index.vue'
@@ -348,7 +348,7 @@ onMounted(() => {
       .resource-text {
         font-family: monospace;
         font-size: 12px;
-        color: $text-secondary;
+        color: $color-text-secondary;
       }
 
       .status-cell {

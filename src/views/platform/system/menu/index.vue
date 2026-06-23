@@ -482,7 +482,7 @@ onMounted(() => {
   .parent-code {
     font-size: 12px;
     line-height: 1.2;
-    color: $text-secondary;
+    color: $color-text-secondary;
   }
 }
 </style>

@@ -227,7 +227,7 @@ async function handleSubmit() {
   }
 
   .separator {
-    color: $text-secondary;
+    color: $color-text-secondary;
   }
 }
 </style>

@@ -5,13 +5,7 @@
       <span class="bee-submenu__label">{{ label }}</span>
       <BeeIcon name="basic-arrow-down" :size="14" class="bee-submenu__arrow" :class="{ 'is-expanded': isExpanded }" />
     </div>
-    <Transition
-      name="bee-submenu-collapse"
-      @enter="onEnter"
-      @after-enter="onAfterEnter"
-      @leave="onLeave"
-      @after-leave="onAfterLeave"
-    >
+    <Transition name="bee-submenu-collapse" @enter="onEnter" @after-enter="onAfterEnter" @leave="onLeave" @after-leave="onAfterLeave">
       <div v-if="isExpanded" class="bee-submenu__content">
         <slot />
       </div>
@@ -111,7 +105,7 @@ function onAfterLeave(el: Element) {
     border: 1px solid transparent;
     border-radius: $radius-full;
     font-size: 14px;
-    color: $text-secondary;
+    color: $color-text-secondary;
     cursor: pointer;
     user-select: none;
     transition:
@@ -147,8 +141,8 @@ function onAfterLeave(el: Element) {
 
   &__content {
     display: flex;
-    flex-direction: column;
     gap: $spacing-8;
+    flex-direction: column;
     padding: $spacing-8 0 0 20px;
   }
 }

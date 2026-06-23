@@ -193,13 +193,13 @@ defineExpose({ validate, resetFields })
   flex-shrink: 0;
   align-items: center;
   width: 100px;
-  color: $text-secondary;
+  color: $color-text-secondary;
   white-space: nowrap;
 
   .el-icon {
     margin-right: 4px;
     font-size: 14px;
-    color: $text-secondary;
+    color: $color-text-secondary;
   }
 }
 
@@ -221,7 +221,7 @@ defineExpose({ validate, resetFields })
 
 :deep(.el-input__wrapper) {
   padding: 4px 12px;
-  border: 1px solid rgba($text-secondary, 0.15);
+  border: 1px solid rgba($color-text-secondary, 0.15);
   border-radius: 8px;
   box-shadow: none;
 
@@ -240,7 +240,7 @@ defineExpose({ validate, resetFields })
 }
 
 :deep(.el-textarea__inner) {
-  border: 1px solid rgba($text-secondary, 0.15);
+  border: 1px solid rgba($color-text-secondary, 0.15);
   border-radius: 8px;
   color: $color-text-primary;
   background: rgba($color-bg-page, 0.6);
@@ -250,7 +250,7 @@ defineExpose({ validate, resetFields })
   }
 
   &:hover {
-    border-color: rgba($text-secondary, 0.3);
+    border-color: rgba($color-text-secondary, 0.3);
   }
 
   &:focus {
@@ -271,7 +271,7 @@ defineExpose({ validate, resetFields })
 }
 
 :deep(.el-radio__inner) {
-  border-color: rgba($text-secondary, 0.3);
+  border-color: rgba($color-text-secondary, 0.3);
   background: rgba($color-bg-page, 0.6);
 }
 
@@ -304,7 +304,7 @@ defineExpose({ validate, resetFields })
 }
 
 :deep(.el-date-editor .el-input__wrapper) {
-  border: 1px solid rgba($text-secondary, 0.15);
+  border: 1px solid rgba($color-text-secondary, 0.15);
   border-radius: 8px;
   background: rgba($color-bg-page, 0.6);
 }

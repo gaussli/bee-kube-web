@@ -165,7 +165,7 @@ onMounted(() => {
 .detail-label {
   min-width: 100px;
   font-size: 14px;
-  color: $text-secondary;
+  color: $color-text-secondary;
 }
 
 .detail-value {

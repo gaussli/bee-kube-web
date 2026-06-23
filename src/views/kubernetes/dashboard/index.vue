@@ -317,7 +317,7 @@ onMounted(() => {
       .cluster-desc {
         margin-top: 4px;
         font-size: 14px;
-        color: $text-secondary;
+        color: $color-text-secondary;
       }
 
       .cluster-meta {
@@ -331,7 +331,7 @@ onMounted(() => {
           gap: 4px;
           align-items: center;
           font-size: 12px;
-          color: $text-secondary;
+          color: $color-text-secondary;
         }
       }
     }
@@ -351,7 +351,7 @@ onMounted(() => {
 
         .detail-label {
           font-size: 12px;
-          color: $text-secondary;
+          color: $color-text-secondary;
         }
 
         .detail-value {
@@ -379,7 +379,7 @@ onMounted(() => {
 
       .status-label {
         font-size: 12px;
-        color: $text-secondary;
+        color: $color-text-secondary;
       }
     }
   }
@@ -484,7 +484,7 @@ onMounted(() => {
           .col-label {
             font-size: 12px;
             line-height: 1;
-            color: $text-secondary;
+            color: $color-text-secondary;
           }
         }
       }
@@ -528,7 +528,7 @@ onMounted(() => {
 
           .node-desc {
             font-size: 12px;
-            color: $text-secondary;
+            color: $color-text-secondary;
           }
         }
 
@@ -545,7 +545,7 @@ onMounted(() => {
 
             .usage-label {
               font-size: 11px;
-              color: $text-secondary;
+              color: $color-text-secondary;
             }
 
             .usage-track {

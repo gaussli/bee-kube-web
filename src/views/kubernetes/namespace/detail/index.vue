@@ -203,7 +203,7 @@ onMounted(() => {
 .detail-label {
   min-width: 100px;
   font-size: 14px;
-  color: $text-secondary;
+  color: $color-text-secondary;
 }
 
 .detail-value {
@@ -229,7 +229,7 @@ onMounted(() => {
 
   .annotation-value {
     font-size: 13px;
-    color: $text-secondary;
+    color: $color-text-secondary;
     word-break: break-all;
   }
 }

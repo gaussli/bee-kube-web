@@ -50,8 +50,8 @@ function handleClick() {
 .bee-menu-item {
   position: relative;
   display: flex;
-  flex-shrink: 0;
   gap: $spacing-8;
+  flex-shrink: 0;
   align-items: center;
   box-sizing: border-box;
   height: 40px;
@@ -59,7 +59,7 @@ function handleClick() {
   border: 1px solid transparent;
   border-radius: $radius-full;
   font-size: 14px;
-  color: $text-secondary;
+  color: $color-text-secondary;
   cursor: pointer;
   user-select: none;
   transition:
@@ -72,9 +72,9 @@ function handleClick() {
   }
 
   &.is-active {
+    border-color: map.get($colors, 'primary', 50);
     color: map.get($colors, 'primary', 50);
     background: rgba(map.get($colors, 'primary', 50), 0.1);
-    border-color: map.get($colors, 'primary', 50);
   }
 
   &__icon {

@@ -192,13 +192,13 @@ function handlePageInputFilter(event: Event) {
 
   &__total {
     font-size: $font-size-12;
-    color: $text-secondary;
+    color: $color-text-secondary;
     white-space: nowrap;
   }
 
   &__total-pages {
     font-size: $font-size-12;
-    color: $text-secondary;
+    color: $color-text-secondary;
   }
 
   &__size-selector {
@@ -230,7 +230,7 @@ function handlePageInputFilter(event: Event) {
   &__page-separator {
     margin: 0 $spacing-4;
     font-size: $font-size-12;
-    color: $text-secondary;
+    color: $color-text-secondary;
   }
 
   &__btn {
@@ -242,7 +242,7 @@ function handlePageInputFilter(event: Event) {
     padding: 0;
     border: none;
     border-radius: $radius-4;
-    color: $text-secondary;
+    color: $color-text-secondary;
     background: transparent;
     cursor: pointer;
     transition:
@@ -279,7 +279,7 @@ function handlePageInputFilter(event: Event) {
     padding: 0;
     border: none;
     font-size: $font-size-12;
-    color: $text-secondary;
+    color: $color-text-secondary;
     text-align: center;
     background: transparent;
     outline: none;

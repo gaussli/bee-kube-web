@@ -71,7 +71,7 @@ const iconComponent = computed(() => {
       overflow: hidden;
       font-size: 12px;
       line-height: 1.2;
-      color: $text-secondary;
+      color: $color-text-secondary;
       text-overflow: ellipsis;
       white-space: nowrap;
     }

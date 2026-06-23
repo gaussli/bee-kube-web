@@ -74,7 +74,7 @@ function handleGoBack() {
     .hint {
       margin: 0 0 32px;
       font-size: 14px;
-      color: $text-secondary;
+      color: $color-text-secondary;
     }
 
     .actions {
