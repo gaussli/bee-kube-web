@@ -1,4 +1,4 @@
-import type { StatusConfig } from '@/components/BeeStatus/types'
+import type { StatusConfig } from '@/components/BeeStatusCell/types'
 
 export const ClusterStatusConfig: StatusConfig[] = [
   { value: 1, label: '健康', labelEn: 'Healthy', color: '#22c55e' },

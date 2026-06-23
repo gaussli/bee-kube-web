@@ -40,7 +40,7 @@
             </template>
             <template #default="{ row }">
               <div class="status-cell">
-                <BeeStatus :status="row.status" :config="nodeStatusConfig" />
+                <BeeStatusCell :status="row.status" :config="nodeStatusConfig" />
                 <BeeTooltip v-if="row.schedulable === false" label="节点已被设置为不可调度，不会分配新的 Pod" placement="top">
                   <BeeIcon name="basic-warning-filled" :size="14" />
                 </BeeTooltip>
@@ -153,7 +153,7 @@ import BeePage from '@/components/BeePage/index.vue'
 import BeePageTitle from '@/components/BeePageTitle/index.vue'
 import BeePagination from '@/components/BeePagination/index.vue'
 import BeeSegmentedControl from '@/components/BeeSegmentedControl/index.vue'
-import BeeStatus from '@/components/BeeStatus/index.vue'
+import BeeStatusCell from '@/components/BeeStatusCell/index.vue'
 import BeeTag from '@/components/BeeTag/index.vue'
 import BeeTooltip from '@/components/BeeTooltip/index.vue'
 import { usePermission } from '@/composables/usePermission'

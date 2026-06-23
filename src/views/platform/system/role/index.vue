@@ -56,7 +56,7 @@
             <BeeIconLabel icon="circle-check" label="状态" />
           </template>
           <template #default="{ row }">
-            <BeeStatus :status="row.status" :config="roleStatusConfig" />
+            <BeeStatusCell :status="row.status" :config="roleStatusConfig" />
           </template>
         </el-table-column>
         <el-table-column width="180">
@@ -190,7 +190,7 @@ import BeeIconLabel from '@/components/BeeIconLabel/index.vue'
 import BeeInputSearch from '@/components/BeeInputSearch/index.vue'
 import BeeLabelCopyable from '@/components/BeeLabelCopyable/index.vue'
 import BeeSegmentedControl from '@/components/BeeSegmentedControl/index.vue'
-import BeeStatus from '@/components/BeeStatus/index.vue'
+import BeeStatusCell from '@/components/BeeStatusCell/index.vue'
 import BeeTag from '@/components/BeeTag/index.vue'
 import RoleCell from '@/components/RoleCell/index.vue'
 import { usePermission } from '@/composables/usePermission'

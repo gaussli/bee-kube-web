@@ -33,7 +33,7 @@
           </BeeTableColumn>
           <BeeTableColumn prop="status" :width="100">
             <template #default="{ row }">
-              <BeeStatus :status="row.status" :config="ClusterStatusConfig" />
+              <BeeStatusCell :status="row.status" :config="ClusterStatusConfig" msg="测试中文测试中文测试中文测试中文" />
             </template>
           </BeeTableColumn>
           <BeeTableColumn :width="200">
@@ -111,7 +111,7 @@ import BeePage from '@/components/BeePage/index.vue'
 import BeePageTitle from '@/components/BeePageTitle/index.vue'
 import BeePagination from '@/components/BeePagination/index.vue'
 import BeeSegmentedControl from '@/components/BeeSegmentedControl/index.vue'
-import BeeStatus from '@/components/BeeStatus/index.vue'
+import BeeStatusCell from '@/components/BeeStatusCell/index.vue'
 import BeeTableColumn from '@/components/BeeTable/BeeTableColumn.vue'
 import BeeTableCommonCell from '@/components/BeeTable/BeeTableCommonCell.vue'
 import BeeTable from '@/components/BeeTable/index.vue'

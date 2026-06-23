@@ -1,18 +1,18 @@
 <template>
   <div class="bee-audit-cell">
-    <div class="bee-audit-cell__user">
+    <div class="bee-audit-cell__value">
       <img v-if="userAvatar" :src="userAvatar" class="bee-audit-cell__avatar" />
       <BeeIcon v-else name="basic-id" :size="16" class="bee-audit-cell__icon" />
-      <span class="bee-audit-cell__name">{{ username || '-' }}</span>
+      <span class="bee-audit-cell__datetime">{{ username || '-' }}</span>
     </div>
-    <span class="bee-audit-cell__time">{{ datetime || '-' }}</span>
+    <span class="bee-audit-cell__key">{{ datetime || '-' }}</span>
   </div>
 </template>
 
 <script setup lang="ts">
 /**
  * 审计信息单元格组件
- * 上下结构展示操作用户和操作时间
+ * 上下结构：上方展示操作用户（头像+用户名），下方展示属性名称
  * @module components/BeeAuditCell
  */
 import BeeIcon from '@/components/BeeIcon/index.vue'
@@ -22,7 +22,7 @@ defineOptions({ name: 'BeeAuditCell' })
 defineProps<{
   /** 操作用户名 */
   username?: string
-  /** 操作用户头像地址 */
+  /** 操作用户头像地址，存在时显示头像图片，否则显示默认图标 */
   userAvatar?: string
   /** 操作时间 */
   datetime?: string
@@ -39,7 +39,7 @@ defineProps<{
   width: 100%;
   height: auto;
 
-  &__user {
+  &__value {
     display: flex;
     gap: 4px;
     align-items: center;
@@ -58,7 +58,7 @@ defineProps<{
     color: $color-text-secondary;
   }
 
-  &__name {
+  &__datetime {
     overflow: hidden;
     font-size: 14px;
     color: $color-text-primary;
@@ -66,7 +66,7 @@ defineProps<{
     white-space: nowrap;
   }
 
-  &__time {
+  &__key {
     font-size: 12px;
     color: $color-text-tertiary;
     white-space: nowrap;
