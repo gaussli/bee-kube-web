@@ -7,7 +7,7 @@
       <div class="bee-cluster-column__top">
         <span class="bee-cluster-column__name">{{ name }}</span>
         <BeeTooltip :label="clusterId">
-          <BeeTag type="info">UID</BeeTag>
+          <BeeTag type="primary" size="tiny">UID</BeeTag>
         </BeeTooltip>
       </div>
       <div class="bee-cluster-column__bottom">
