@@ -471,7 +471,7 @@ onMounted(() => {
         font-size: 14px;
         font-weight: 500;
         line-height: 1.2;
-        color: $text-regular;
+        color: $color-text-regular;
       }
 
       .status-en {
@@ -496,7 +496,7 @@ onMounted(() => {
     .name-text {
       font-size: 14px;
       font-weight: 500;
-      color: $text-regular;
+      color: $color-text-regular;
     }
 
     .copy-icon {

@@ -60,6 +60,7 @@ $colors: map.merge(
 $color-primary: map.get($colors, 'primary', 50);
 
 // ---- 文字颜色 ----
+$color-text-regular: map.get($colors, 'gray', 100);
 $color-text-primary: map.get($colors, 'gray', 90);
 $color-text-secondary: map.get($colors, 'gray', 70);
 $color-text-tertiary: map.get($colors, 'gray', 50);
@@ -175,8 +176,7 @@ $bee-disabled: #5f6267;
 // $bee-disabled: rgb(60, 62, 66);
 
 // 文字颜色
-$text-regular: $bee-regular;
-$color-text-primary: $bee-primary;
+$color-text-regular: $bee-regular;
 $text-secondary: $bee-secondary;
 $text-tertiary: $bee-tertiary;
 $text-placeholder: $bee-secondary;

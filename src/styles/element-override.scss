@@ -6,7 +6,7 @@
 }
 
 .el-menu {
-  --el-menu-active-color: #{$text-regular};
+  --el-menu-active-color: #{$color-text-regular};
   --el-menu-item-height: 46px;
   --el-menu-sub-item-height: 46px;
   --el-menu-text-color: #{$text-secondary};
@@ -103,14 +103,14 @@
 .el-button {
   --el-button-active-bg-color: #{$color-primary-400};
   --el-button-active-border-color: #{$color-primary};
-  --el-button-active-color: #{$text-regular};
-  --el-button-active-text-color: #{$text-regular};
+  --el-button-active-color: #{$color-text-regular};
+  --el-button-active-text-color: #{$color-text-regular};
   --el-button-bg-color: none;
   --el-button-border-color: #{$text-secondary};
   --el-button-hover-bg-color: #{$color-primary};
   --el-button-hover-border-color: #{$color-primary};
   --el-button-hover-link-text-color: #{$color-primary-400};
-  --el-button-hover-text-color: #{$text-regular};
+  --el-button-hover-text-color: #{$color-text-regular};
   --el-button-text-color: #{$color-text-primary};
 
   font-size: #{$font-size-12};

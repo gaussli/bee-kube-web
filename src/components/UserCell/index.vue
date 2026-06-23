@@ -52,7 +52,7 @@ const genderText = computed(() => {
       font-size: 14px;
       font-weight: 600;
       line-height: 1.2;
-      color: $text-regular;
+      color: $color-text-regular;
       text-overflow: ellipsis;
       white-space: nowrap;
 

@@ -152,7 +152,7 @@ export default {
   padding: $spacing-8 $spacing-16;
   border-radius: $radius-4;
   font-size: $font-size-10;
-  color: $text-regular;
+  color: $color-text-regular;
   background: $color-primary-600;
   cursor: default;
   user-select: text; // 允许选中文本

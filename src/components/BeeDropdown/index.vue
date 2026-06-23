@@ -235,7 +235,7 @@ defineExpose({
     margin: $spacing-8;
     border-radius: $radius-full;
     font-size: $font-size-12;
-    color: $text-regular;
+    color: $color-text-regular;
     cursor: pointer;
     transition: background 0.2s;
 

@@ -407,7 +407,7 @@ onMounted(() => {
     .name-text {
       font-size: 14px;
       font-weight: 500;
-      color: $text-regular;
+      color: $color-text-regular;
     }
 
     .copy-icon {

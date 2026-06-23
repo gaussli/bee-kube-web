@@ -64,18 +64,18 @@
   --el-table-bg-color: rgb(25.5, 25.5, 25.5);
   --el-table-border-color: #2b2e31;
   --el-table-header-bg-color: rgb(25.5, 25.5, 25.5);
-  --el-table-header-text-color: #bbbdc1;
+  --el-table-header-text-color: rgb(229.5, 229.5, 229.5);
   --el-table-row-hover-bg-color: #26292c;
-  --el-table-text-color: #bbbdc1;
+  --el-table-text-color: rgb(229.5, 229.5, 229.5);
   --el-table-tr-bg-color: rgb(25.5, 25.5, 25.5);
 }
 
 .el-loading-mask {
   --el-mask-color: rgb(25.5, 25.5, 25.5);
-  --el-table-text-color: #bbbdc1;
+  --el-table-text-color: rgb(229.5, 229.5, 229.5);
 }
 .el-loading-mask .el-loading-spinner .circular .path {
-  stroke: #bbbdc1;
+  stroke: rgb(229.5, 229.5, 229.5);
 }
 
 .el-pagination {
@@ -83,10 +83,10 @@
 }
 .el-pagination .el-pagination__total,
 .el-pagination .el-pagination__jump {
-  --el-text-color-regular: #bbbdc1;
+  --el-text-color-regular: rgb(229.5, 229.5, 229.5);
 }
 .el-pagination .el-select__wrapper {
-  --el-input-text-color: #bbbdc1;
+  --el-input-text-color: rgb(229.5, 229.5, 229.5);
   border-radius: 16px;
   font-size: 12px;
   background-color: rgb(12.75, 12.75, 12.75);
@@ -98,7 +98,7 @@
 .el-pagination :is(.btn-prev, .btn-next, .el-pager li) {
   --el-pagination-bg-color: none;
   --el-pagination-button-color: #7e8184;
-  --el-pagination-hover-color: #bbbdc1;
+  --el-pagination-hover-color: rgb(229.5, 229.5, 229.5);
 }
 .el-pagination :is(.btn-prev:disabled, .btn-prev.is-disabled, .btn-next:disabled, .btn-next.is-disabled) {
   --el-pagination-button-disabled-bg-color: none;
@@ -123,14 +123,14 @@
   --el-button-hover-border-color: hsl(30, 70%, 50%);
   --el-button-hover-link-text-color: #f4bf99;
   --el-button-hover-text-color: white;
-  --el-button-text-color: #bbbdc1;
+  --el-button-text-color: rgb(229.5, 229.5, 229.5);
   font-size: 12px;
 }
 
 .el-input {
-  --el-color-info: #bbbdc1;
+  --el-color-info: rgb(229.5, 229.5, 229.5);
   --el-fill-color-light: rgb(12.75, 12.75, 12.75);
-  --el-input-text-color: #bbbdc1;
+  --el-input-text-color: rgb(229.5, 229.5, 229.5);
   --el-text-color-placeholder: #7e8184;
 }
 .el-input .el-input__wrapper {
