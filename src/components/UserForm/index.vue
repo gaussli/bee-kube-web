@@ -235,7 +235,7 @@ defineExpose({ validate, resetFields })
   color: $color-text-primary;
 
   &::placeholder {
-    color: $text-placeholder;
+    color: $color-text-placeholder;
   }
 }
 
@@ -246,7 +246,7 @@ defineExpose({ validate, resetFields })
   background: rgba($color-bg-page, 0.6);
 
   &::placeholder {
-    color: $text-placeholder;
+    color: $color-text-placeholder;
   }
 
   &:hover {

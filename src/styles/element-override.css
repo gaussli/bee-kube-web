@@ -38,7 +38,7 @@
   --el-menu-active-color: white;
   --el-menu-item-height: 46px;
   --el-menu-sub-item-height: 46px;
-  --el-menu-text-color: #7e8184;
+  --el-menu-text-color: rgb(178.5, 178.5, 178.5);
   background-color: transparent;
 }
 .el-menu .el-menu-item,
@@ -97,7 +97,7 @@
 }
 .el-pagination :is(.btn-prev, .btn-next, .el-pager li) {
   --el-pagination-bg-color: none;
-  --el-pagination-button-color: #7e8184;
+  --el-pagination-button-color: rgb(178.5, 178.5, 178.5);
   --el-pagination-hover-color: rgb(229.5, 229.5, 229.5);
 }
 .el-pagination :is(.btn-prev:disabled, .btn-prev.is-disabled, .btn-next:disabled, .btn-next.is-disabled) {
@@ -118,7 +118,7 @@
   --el-button-active-color: white;
   --el-button-active-text-color: white;
   --el-button-bg-color: none;
-  --el-button-border-color: #7e8184;
+  --el-button-border-color: rgb(178.5, 178.5, 178.5);
   --el-button-hover-bg-color: hsl(30, 70%, 50%);
   --el-button-hover-border-color: hsl(30, 70%, 50%);
   --el-button-hover-link-text-color: #f4bf99;
@@ -131,7 +131,7 @@
   --el-color-info: rgb(229.5, 229.5, 229.5);
   --el-fill-color-light: rgb(12.75, 12.75, 12.75);
   --el-input-text-color: rgb(229.5, 229.5, 229.5);
-  --el-text-color-placeholder: #7e8184;
+  --el-text-color-placeholder: #666666;
 }
 .el-input .el-input__wrapper {
   --el-input-bg-color: rgb(12.75, 12.75, 12.75);
@@ -139,7 +139,7 @@
 
 .el-checkbox {
   --el-border: var(--el-border-width) var(--el-border-style) var(--el-border-color);
-  --el-border-color: #7e8184;
+  --el-border-color: rgb(178.5, 178.5, 178.5);
   --el-checkbox-bg-color: transparent;
   --el-checkbox-checked-bg-color: transparent;
   --el-checkbox-checked-icon-color: hsl(30, 70%, 50%);

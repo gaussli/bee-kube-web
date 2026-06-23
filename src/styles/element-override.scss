@@ -85,7 +85,7 @@
 
   :is(.btn-prev:disabled, .btn-prev.is-disabled, .btn-next:disabled, .btn-next.is-disabled) {
     --el-pagination-button-disabled-bg-color: none;
-    --el-pagination-button-disabled-color: #{$text-disabled};
+    --el-pagination-button-disabled-color: #{$color-text-disabled};
   }
 
   .el-pagination__jump {
@@ -120,7 +120,7 @@
   --el-color-info: #{$color-text-primary};
   --el-fill-color-light: #{$color-bg-page};
   --el-input-text-color: #{$color-text-primary};
-  --el-text-color-placeholder: #{$text-placeholder};
+  --el-text-color-placeholder: #{$color-text-placeholder};
 
   .el-input__wrapper {
     --el-input-bg-color: #{$color-bg-page};

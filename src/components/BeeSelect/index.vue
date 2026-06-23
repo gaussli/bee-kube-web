@@ -187,7 +187,7 @@ export default {
     flex: 1;
 
     &:empty::before {
-      color: $text-placeholder;
+      color: $color-text-placeholder;
       content: attr(data-placeholder);
     }
   }
