@@ -3,20 +3,18 @@
     <Transition name="dialog-fade">
       <div v-if="modelValue" class="bee-dialog-mask">
         <div class="bee-dialog" :style="dialogStyle">
-          <!-- Header -->
+          <!-- 头部：标题 + 关闭按钮 -->
           <div class="dialog-header">
             <span class="dialog-title">{{ title }}</span>
-            <BeeButton @click="handleClose">
-              <template #icon><Close /></template>
-            </BeeButton>
+            <BeeCircleButton icon="basic-close" tooltip="关闭" :border="false" size="small" @click="handleClose" />
           </div>
 
-          <!-- Body -->
+          <!-- 内容区：优先渲染 slot -->
           <div class="dialog-body">
             <slot>{{ content }}</slot>
           </div>
 
-          <!-- Footer -->
+          <!-- 底部：取消 + 确定 -->
           <div class="dialog-footer">
             <BeeButton @click="handleCancel">取消</BeeButton>
             <BeeButton type="success" @click="handleConfirm">确定</BeeButton>
@@ -28,17 +26,28 @@
 </template>
 
 <script setup lang="ts">
+/**
+ * BeeDialog - 通用对话框组件
+ * @module components/BeeDialog
+ * @description 基于 Teleport 的模态对话框，支持标题、自定义内容、确认/取消操作
+ */
 import { computed } from 'vue'
-import { Close } from '@element-plus/icons-vue'
 import BeeButton from '@/components/BeeButton/index.vue'
+import BeeCircleButton from '@/components/BeeCircleButton/index.vue'
 
 defineOptions({ name: 'BeeDialog' })
 
+// ==================== Props ====================
+
 const props = withDefaults(
   defineProps<{
+    /** 控制对话框显示/隐藏（v-model） */
     modelValue: boolean
+    /** 对话框标题 */
     title?: string
+    /** 对话框默认文本内容（slot 优先） */
     content?: string
+    /** 对话框宽度，支持 number（px）或 string */
     width?: number | string
   }>(),
   {
@@ -48,12 +57,20 @@ const props = withDefaults(
   }
 )
 
+// ==================== Emits ====================
+
 const emit = defineEmits<{
+  /** 更新 v-model 值 */
   'update:modelValue': [value: boolean]
+  /** 取消/关闭事件 */
   'cancel': []
+  /** 确认事件 */
   'confirm': []
 }>()
 
+// ==================== Computed ====================
+
+/** 对话框动态样式，将 width 转换为 CSS 变量 */
 const dialogStyle = computed(() => {
   const widthValue = typeof props.width === 'number' ? `${props.width}px` : props.width
   return {
@@ -61,22 +78,28 @@ const dialogStyle = computed(() => {
   }
 })
 
+// ==================== Methods ====================
+
+/** 关闭对话框（点击关闭按钮） */
 function handleClose() {
   emit('update:modelValue', false)
   emit('cancel')
 }
 
+/** 取消操作 */
 function handleCancel() {
   emit('update:modelValue', false)
   emit('cancel')
 }
 
+/** 确认操作 */
 function handleConfirm() {
   emit('confirm')
 }
 </script>
 
 <style lang="scss" scoped>
+// ==================== 遮罩层 ====================
 .bee-dialog-mask {
   position: fixed;
   inset: 0;
@@ -84,48 +107,49 @@ function handleConfirm() {
   display: flex;
   align-items: center;
   justify-content: center;
-  background-color: rgb(0 0 0 / 60%);
+  background-color: $color-bg-mask;
 }
 
+// ==================== 对话框容器 ====================
 .bee-dialog {
   width: var(--dialog-width);
   border-radius: 12px;
   overflow: hidden;
-  background-color: $bg-overlay;
-  box-shadow: 0 8px 32px rgb(0 0 0 / 40%);
+  background-color: $color-bg-elevated;
+  box-shadow: 0 8 32px rgb(0 0 0 / 40%);
 }
 
+// ==================== 头部 ====================
 .dialog-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 8px 16px;
-
-  // border-bottom: 1px solid rgba($color-text-secondary, 0.1);
+  padding: $spacing-8 $spacing-16;
 
   .dialog-title {
-    font-size: 14px;
+    font-size: $font-size-16;
     font-weight: 600;
-    color: $color-text-regular;
+    color: $color-text-primary;
   }
 }
 
+// ==================== 内容区 ====================
 .dialog-body {
-  padding: 8px 16px;
-  font-size: 14px;
+  padding: $spacing-8 $spacing-16;
+  font-size: $font-size-14;
   line-height: 1.6;
   color: $color-text-primary;
 }
 
+// ==================== 底部操作区 ====================
 .dialog-footer {
   display: flex;
+  gap: $spacing-8;
   justify-content: flex-end;
-  padding: 16px;
-
-  // border-top: 1px solid rgba($color-text-secondary, 0.1);
+  padding: $spacing-16;
 }
 
-// 动画
+// ==================== 过渡动画 ====================
 .dialog-fade-enter-active {
   animation: dialog-fade-in 0.25s ease-out;
 }

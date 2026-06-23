@@ -71,12 +71,12 @@
 
     <!-- 批量删除 Dialog -->
     <BeeDialog v-model="batchDeleteDialogVisible" title="确认删除" @confirm="handleConfirmBatchDelete">
-      <div class="dialog-content">
+      <div class="batch-delete-dialog__content">
         <p>
           确定要删除选中的 <strong>{{ selectedRows.length }}</strong> 个集群吗？
         </p>
-        <div class="delete-cluster-tags">
-          <BeeTag v-for="row in selectedRows" :key="row.id">
+        <div class="batch-delete-dialog__tags">
+          <BeeTag v-for="row in selectedRows" :key="row.id" size="small">
             {{ row.name }}
           </BeeTag>
         </div>
@@ -85,11 +85,7 @@
 
     <!-- 单个删除 Dialog -->
     <BeeDialog v-model="deleteDialogVisible" title="确认删除" @confirm="handleConfirmDelete">
-      <div class="dialog-content">
-        <p>
-          确定要删除集群 <strong>{{ currentTargetRow?.name }}</strong> 吗？
-        </p>
-      </div>
+      确定要删除集群 <strong>{{ currentTargetRow?.name }}</strong> 吗？
     </BeeDialog>
   </BeePage>
 </template>
@@ -337,5 +333,18 @@ onMounted(() => {
       padding: $spacing-16 0;
     }
   }
+}
+
+// ==================== 批量删除 Dialog ====================
+.batch-delete-dialog__content {
+  display: flex;
+  gap: $spacing-8;
+  flex-direction: column;
+}
+
+.batch-delete-dialog__tags {
+  display: flex;
+  gap: $spacing-8;
+  flex-wrap: wrap;
 }
 </style>
