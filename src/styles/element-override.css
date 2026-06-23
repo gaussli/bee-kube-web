@@ -56,22 +56,22 @@
 }
 
 .el-card {
-  --el-card-bg-color: #1e1f23;
+  --el-card-bg-color: rgb(25.5, 25.5, 25.5);
   border: none;
 }
 
 .el-table {
-  --el-table-bg-color: #1e1f23;
+  --el-table-bg-color: rgb(25.5, 25.5, 25.5);
   --el-table-border-color: #2b2e31;
-  --el-table-header-bg-color: #1e1f23;
+  --el-table-header-bg-color: rgb(25.5, 25.5, 25.5);
   --el-table-header-text-color: #bbbdc1;
   --el-table-row-hover-bg-color: #26292c;
   --el-table-text-color: #bbbdc1;
-  --el-table-tr-bg-color: #1e1f23;
+  --el-table-tr-bg-color: rgb(25.5, 25.5, 25.5);
 }
 
 .el-loading-mask {
-  --el-mask-color: #1e1f23;
+  --el-mask-color: rgb(25.5, 25.5, 25.5);
   --el-table-text-color: #bbbdc1;
 }
 .el-loading-mask .el-loading-spinner .circular .path {

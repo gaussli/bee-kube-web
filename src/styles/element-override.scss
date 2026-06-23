@@ -39,20 +39,20 @@
   --el-table-bg-color: #{$color-bg-surface};
   --el-table-border-color: #{$bg-selected};
   --el-table-header-bg-color: #{$color-bg-surface};
-  --el-table-header-text-color: #{$text-primary};
+  --el-table-header-text-color: #{$color-text-primary};
 
   // row hover
   --el-table-row-hover-bg-color: #{$bg_hover};
-  --el-table-text-color: #{$text-primary};
+  --el-table-text-color: #{$color-text-primary};
   --el-table-tr-bg-color: #{$color-bg-surface};
 }
 
 .el-loading-mask {
   --el-mask-color: #{$color-bg-surface};
-  --el-table-text-color: #{$text-primary};
+  --el-table-text-color: #{$color-text-primary};
 
   .el-loading-spinner .circular .path {
-    stroke: $text-primary;
+    stroke: $color-text-primary;
   }
 }
 
@@ -61,11 +61,11 @@
 
   .el-pagination__total,
   .el-pagination__jump {
-    --el-text-color-regular: #{$text-primary};
+    --el-text-color-regular: #{$color-text-primary};
   }
 
   .el-select__wrapper {
-    --el-input-text-color: #{$text-primary};
+    --el-input-text-color: #{$color-text-primary};
 
     border-radius: 16px;
     font-size: #{$font-size-12};
@@ -80,7 +80,7 @@
   :is(.btn-prev, .btn-next, .el-pager li) {
     --el-pagination-bg-color: none;
     --el-pagination-button-color: #{$text-secondary};
-    --el-pagination-hover-color: #{$text-primary};
+    --el-pagination-hover-color: #{$color-text-primary};
   }
 
   :is(.btn-prev:disabled, .btn-prev.is-disabled, .btn-next:disabled, .btn-next.is-disabled) {
@@ -111,15 +111,15 @@
   --el-button-hover-border-color: #{$color-primary};
   --el-button-hover-link-text-color: #{$color-primary-400};
   --el-button-hover-text-color: #{$text-regular};
-  --el-button-text-color: #{$text-primary};
+  --el-button-text-color: #{$color-text-primary};
 
   font-size: #{$font-size-12};
 }
 
 .el-input {
-  --el-color-info: #{$text-primary};
+  --el-color-info: #{$color-text-primary};
   --el-fill-color-light: #{$color-bg-page};
-  --el-input-text-color: #{$text-primary};
+  --el-input-text-color: #{$color-text-primary};
   --el-text-color-placeholder: #{$text-placeholder};
 
   .el-input__wrapper {

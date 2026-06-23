@@ -476,7 +476,7 @@ onMounted(() => {
   .parent-name {
     font-size: 14px;
     line-height: 1.2;
-    color: $text-primary;
+    color: $color-text-primary;
   }
 
   .parent-code {

@@ -255,7 +255,7 @@ onMounted(() => {
       .role-name {
         font-size: 20px;
         font-weight: 600;
-        color: $text-primary;
+        color: $color-text-primary;
       }
     }
 
@@ -307,7 +307,7 @@ onMounted(() => {
 
     .menu-name {
       font-size: 14px;
-      color: $text-primary;
+      color: $color-text-primary;
     }
 
     .menu-code {

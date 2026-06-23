@@ -262,7 +262,7 @@ onMounted(() => {
       .user-name {
         font-size: 20px;
         font-weight: 600;
-        color: $text-primary;
+        color: $color-text-primary;
       }
     }
 
@@ -296,7 +296,7 @@ onMounted(() => {
       border-bottom: 1px solid $bg-selected;
       font-size: 14px;
       font-weight: 600;
-      color: $text-primary;
+      color: $color-text-primary;
 
       .el-icon {
         font-size: 16px;
@@ -348,7 +348,7 @@ onMounted(() => {
         .info-value {
           overflow: hidden;
           font-size: 14px;
-          color: $text-primary;
+          color: $color-text-primary;
           text-align: right;
           text-overflow: ellipsis;
           white-space: nowrap;

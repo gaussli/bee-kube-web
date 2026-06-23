@@ -114,7 +114,7 @@ function handleConfirm() {
   padding: 8px 16px;
   font-size: 14px;
   line-height: 1.6;
-  color: $text-primary;
+  color: $color-text-primary;
 }
 
 .dialog-footer {

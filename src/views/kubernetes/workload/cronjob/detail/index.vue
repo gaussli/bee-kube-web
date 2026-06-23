@@ -163,7 +163,7 @@ onMounted(() => {
 
 .detail-value {
   font-size: 14px;
-  color: $text-primary;
+  color: $color-text-primary;
 }
 
 .schedule-code {

@@ -171,7 +171,7 @@ function handleContentClick() {
     flex: 1;
     min-width: 0;
     font-size: 14px;
-    color: $text-primary;
+    color: $color-text-primary;
   }
 
   &__children {

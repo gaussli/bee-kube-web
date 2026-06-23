@@ -228,7 +228,7 @@ onMounted(() => {
 
 .detail-value {
   font-size: 14px;
-  color: $text-primary;
+  color: $color-text-primary;
 }
 
 .replicas-ready {
@@ -252,7 +252,7 @@ onMounted(() => {
   .annotation-key {
     margin-bottom: 4px;
     font-weight: 500;
-    color: $text-primary;
+    color: $color-text-primary;
   }
 
   .annotation-value {

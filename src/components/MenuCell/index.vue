@@ -62,7 +62,7 @@ const iconComponent = computed(() => {
       font-size: 14px;
       font-weight: 600;
       line-height: 1.2;
-      color: $text-primary;
+      color: $color-text-primary;
       text-overflow: ellipsis;
       white-space: nowrap;
     }

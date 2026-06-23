@@ -1,6 +1,6 @@
 <template>
   <div class="bee-tag" :class="[`bee-tag--${type}`]">
-    <span> <slot /></span>
+    <span><slot /></span>
   </div>
 </template>
 

@@ -259,7 +259,7 @@ onMounted(() => {
       .permission-name {
         font-size: 24px;
         font-weight: 600;
-        color: $text-primary;
+        color: $color-text-primary;
       }
     }
 
@@ -295,7 +295,7 @@ onMounted(() => {
     border-bottom: 1px solid rgba($text-secondary, 0.1);
     font-size: 16px;
     font-weight: 600;
-    color: $text-primary;
+    color: $color-text-primary;
 
     .section-title-en {
       font-size: 13px;
@@ -343,7 +343,7 @@ onMounted(() => {
   .info-value {
     font-size: 14px;
     font-weight: 500;
-    color: $text-primary;
+    color: $color-text-primary;
   }
 }
 

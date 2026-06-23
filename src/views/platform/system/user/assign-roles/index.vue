@@ -230,7 +230,7 @@ onMounted(() => {
       .user-name {
         font-size: 20px;
         font-weight: 600;
-        color: $text-primary;
+        color: $color-text-primary;
       }
     }
 
@@ -282,7 +282,7 @@ onMounted(() => {
   font-size: 14px;
   font-weight: 500;
   line-height: 1.4;
-  color: $text-primary;
+  color: $color-text-primary;
 }
 
 .role-desc {

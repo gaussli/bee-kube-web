@@ -85,7 +85,7 @@ defineOptions({ name: 'Dashboard' })
       .stat-value {
         font-size: 24px;
         font-weight: bold;
-        color: $text-primary;
+        color: $color-text-primary;
       }
 
       .stat-label {

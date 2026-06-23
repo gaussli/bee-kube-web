@@ -111,7 +111,7 @@ function handleClick(index: number, value?: string | number) {
   /* stylelint-disable order/custom-properties-alphabetical-order */
   // ---- 通用 ----
   --bee-segmented-bg: transparent;
-  --bee-segmented-color: #{$text-primary};
+  --bee-segmented-color: #{$color-text-primary};
   --bee-segmented-hover-bg: #{rgba(map.get($colors, 'primary', 50), 0.1)};
 
   // ---- 选中 ----

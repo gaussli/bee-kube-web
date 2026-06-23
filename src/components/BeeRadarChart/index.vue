@@ -376,7 +376,7 @@ watch(
       border-bottom: 1px solid $border-secondary;
       font-size: 14px;
       font-weight: 500;
-      color: $text-primary;
+      color: $color-text-primary;
     }
 
     .tooltip-content {

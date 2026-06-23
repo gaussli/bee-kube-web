@@ -91,7 +91,7 @@ const ringStyle = computed(() => {
     .ring-value {
       font-size: 12px;
       font-weight: 600;
-      color: $text-primary;
+      color: $color-text-primary;
     }
   }
 }

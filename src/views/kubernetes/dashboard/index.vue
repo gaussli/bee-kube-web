@@ -155,8 +155,8 @@ import { Refresh, Monitor, Clock } from '@element-plus/icons-vue'
 import BeeButton from '@/components/BeeButton/index.vue'
 import BeeIcon from '@/components/BeeIcon/index.vue'
 import BeeRadarChart from '@/components/BeeRadarChart/index.vue'
-import BeeSegmentedControl from '@/components/BeeSegmentedControl/index.vue'
 import BeeRingChart from '@/components/BeeRingChart/index.vue'
+import BeeSegmentedControl from '@/components/BeeSegmentedControl/index.vue'
 import BeeTag from '@/components/BeeTag/index.vue'
 
 defineOptions({ name: 'ClusterOverview' })
@@ -311,7 +311,7 @@ onMounted(() => {
         font-size: 18px;
         font-weight: 600;
         line-height: 1.4;
-        color: $text-primary;
+        color: $color-text-primary;
       }
 
       .cluster-desc {
@@ -357,7 +357,7 @@ onMounted(() => {
         .detail-value {
           font-size: 14px;
           font-weight: 500;
-          color: $text-primary;
+          color: $color-text-primary;
 
           &.api-url {
             font-family: monospace;
@@ -478,7 +478,7 @@ onMounted(() => {
             font-size: 14px;
             font-weight: 600;
             line-height: 1;
-            color: $text-primary;
+            color: $color-text-primary;
           }
 
           .col-label {
@@ -523,7 +523,7 @@ onMounted(() => {
           .node-name {
             font-size: 14px;
             font-weight: 500;
-            color: $text-primary;
+            color: $color-text-primary;
           }
 
           .node-desc {
@@ -564,7 +564,7 @@ onMounted(() => {
             .usage-value {
               font-size: 11px;
               font-weight: 500;
-              color: $text-primary;
+              color: $color-text-primary;
               text-align: right;
             }
           }

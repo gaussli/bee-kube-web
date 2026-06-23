@@ -62,13 +62,13 @@ function handleGoBack() {
       font-size: 72px;
       font-weight: 700;
       line-height: 1;
-      color: $text-primary;
+      color: $color-text-primary;
     }
 
     .description {
       margin: 0 0 8px;
       font-size: 20px;
-      color: $text-primary;
+      color: $color-text-primary;
     }
 
     .hint {

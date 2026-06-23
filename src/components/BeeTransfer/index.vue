@@ -234,7 +234,7 @@ function handleMoveToLeft() {
   flex-shrink: 0;
   font-size: 14px;
   font-weight: 500;
-  color: $text-primary;
+  color: $color-text-primary;
 }
 
 .header-count {
@@ -293,7 +293,7 @@ function handleMoveToLeft() {
   flex: 1;
   overflow: hidden;
   font-size: 14px;
-  color: $text-primary;
+  color: $color-text-primary;
   text-overflow: ellipsis;
   white-space: nowrap;
 }

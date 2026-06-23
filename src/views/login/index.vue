@@ -86,7 +86,7 @@ async function handleLogin() {
   .card-header {
     font-size: $font-size-16;
     font-weight: bold;
-    color: $text-primary;
+    color: $color-text-primary;
     text-align: center;
   }
 
