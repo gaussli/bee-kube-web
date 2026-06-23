@@ -7,42 +7,47 @@
  * @module components/BeeTable/BeeTableColumn
  */
 import { getCurrentInstance, inject, onMounted, onUnmounted, useSlots } from 'vue'
-import type { PropType } from 'vue'
+import type { ColumnConfig } from '@/components/BeeTable/index.vue'
 
 defineOptions({ name: 'BeeTableColumn' })
 
-const props = defineProps({
+const props = defineProps<{
   /** 列标识，对应数据字段名 */
-  prop: { type: String, default: '' },
-  /** 表头文本（header 插槽未提供时使用） */
-  label: { type: String, default: '' },
-  /** 列宽度 */
-  width: { type: [String, Number] as PropType<string | number>, default: undefined },
-  /** 列最小宽度 */
-  minWidth: { type: [String, Number] as PropType<string | number>, default: undefined },
+  prop?: string
+  /** 列宽度(px) */
+  width?: number
+  /** 列最小宽度(px) */
+  minWidth?: number
   /** 固定列 */
-  fixed: { type: String as PropType<'left' | 'right'>, default: undefined }
-})
+  fixed?: 'left' | 'right'
+}>()
 
+/** 当前实例的插槽集合 */
 const slots = useSlots()
+/** 组件实例 */
 const instance = getCurrentInstance()
-const id = `bee-col-${instance!.uid}`
+/** 列唯一标识，基于组件 uid 生成 */
+const id = `bee-col-${instance?.uid ?? Math.random().toString(36).slice(2)}`
 
+/** BeeTable 提供的注册上下文 */
 interface RegisterContext {
-  registerColumn: (col: Record<string, unknown>) => void
+  /** 注册列配置 */
+  registerColumn: (col: ColumnConfig) => void
+  /** 注销列配置 */
   unregisterColumn: (id: string) => void
 }
 
+/** 通过 inject 获取父级 BeeTable 的注册能力 */
 const tableContext = inject<RegisterContext>('BeeTableContext')
 
-const columnConfig = {
+/** 列配置对象，组件挂载时注册到 BeeTable */
+const columnConfig: ColumnConfig = {
   id,
-  label: props.label,
-  prop: props.prop,
+  prop: props.prop || '',
   width: props.width,
   minWidth: props.minWidth,
   fixed: props.fixed,
-  slots: { ...slots }
+  slots: { ...slots } as ColumnConfig['slots']
 }
 
 onMounted(() => {
