@@ -21,32 +21,32 @@
       <!-- 表格主体 -->
       <div class="table-body">
         <BeeTable :data="tableData" :loading="loading" selectable @selection-change="handleSelectionChange">
-          <BeeTableColumn width="500">
+          <BeeTableColumn :width="500">
             <template #default="{ row }">
               <BeeClusterColumn :name="row.name" :cluster-id="row.id" :description="row.description" />
             </template>
           </BeeTableColumn>
-          <BeeTableColumn min-width="300">
+          <BeeTableColumn :min-width="300">
             <template #default="{ row }">
               {{ row.apiServer }}
             </template>
           </BeeTableColumn>
-          <BeeTableColumn prop="status" width="100">
+          <BeeTableColumn prop="status" :width="100">
             <template #default="{ row }">
               <BeeStatus :status="row.status" :config="ClusterStatusConfig" />
             </template>
           </BeeTableColumn>
-          <BeeTableColumn width="180">
+          <BeeTableColumn :width="180">
             <template #default="{ row }">
               <AuditCell :user="row.createBy" :time="row.createAt" />
             </template>
           </BeeTableColumn>
-          <BeeTableColumn width="180">
+          <BeeTableColumn :width="180">
             <template #default="{ row }">
               <AuditCell :user="row.updateBy" :time="row.updateAt" />
             </template>
           </BeeTableColumn>
-          <BeeTableColumn width="150" fixed="right">
+          <BeeTableColumn :width="150" fixed="right">
             <template #default="{ row }">
               <BeeCircleButton v-if="hasPermission('kubernetes:cluster:edit')" icon="basic-edit" tooltip="编辑" @click="handleEdit(row)" />
               <BeeCircleButton v-if="hasPermission('kubernetes:cluster:edit')" icon="basic-switch" tooltip="切换集群" @click="handleSelectCluster(row)" />
