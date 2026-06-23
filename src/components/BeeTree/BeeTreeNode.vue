@@ -151,7 +151,7 @@ function handleContentClick() {
     width: 24px;
     height: 24px;
     font-size: 12px;
-    color: $text-tertiary;
+    color: $color-text-tertiary;
     transition: transform 0.3s ease;
 
     &.is-leaf {
@@ -209,8 +209,8 @@ function handleContentClick() {
 
   &.is-disabled {
     .el-checkbox__inner {
-      border-color: rgba($text-tertiary, 0.3);
-      background-color: rgba($text-tertiary, 0.2);
+      border-color: rgba($color-text-tertiary, 0.3);
+      background-color: rgba($color-text-tertiary, 0.2);
     }
   }
 }

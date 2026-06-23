@@ -300,7 +300,7 @@ onMounted(() => {
     .section-title-en {
       font-size: 13px;
       font-weight: 400;
-      color: $text-tertiary;
+      color: $color-text-tertiary;
     }
   }
 }
@@ -329,7 +329,7 @@ onMounted(() => {
     gap: 8px;
     align-items: center;
     font-size: 13px;
-    color: $text-tertiary;
+    color: $color-text-tertiary;
 
     .label-zh {
       color: $color-text-secondary;

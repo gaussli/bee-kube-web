@@ -302,7 +302,7 @@ onMounted(() => {
         margin-left: 4px;
         font-size: 12px;
         font-weight: 400;
-        color: $text-tertiary;
+        color: $color-text-tertiary;
       }
     }
 
@@ -325,7 +325,7 @@ onMounted(() => {
           .el-icon {
             flex-shrink: 0;
             font-size: 14px;
-            color: $text-tertiary;
+            color: $color-text-tertiary;
           }
 
           .label-zh {
@@ -336,7 +336,7 @@ onMounted(() => {
           .label-en {
             margin-left: 2px;
             font-size: 12px;
-            color: $text-tertiary;
+            color: $color-text-tertiary;
           }
         }
 

@@ -255,7 +255,7 @@ function handlePageInputFilter(event: Event) {
     }
 
     &.is-disabled {
-      color: $text-tertiary;
+      color: $color-text-tertiary;
       opacity: 0.5;
       cursor: not-allowed;
     }
