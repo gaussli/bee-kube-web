@@ -48,9 +48,11 @@
           </BeeTableColumn>
           <BeeTableColumn :width="150" fixed="right">
             <template #default="{ row }">
-              <BeeCircleButton v-if="hasPermission('kubernetes:cluster:edit')" icon="basic-edit" tooltip="编辑" @click="handleEdit(row)" />
-              <BeeCircleButton v-if="hasPermission('kubernetes:cluster:edit')" icon="basic-switch" tooltip="切换集群" @click="handleSelectCluster(row)" />
-              <BeeCircleButton v-if="hasPermission('kubernetes:cluster:delete')" icon="basic-delete" type="danger" tooltip="删除" @click="handleDelete(row)" />
+              <div class="table-action">
+                <BeeCircleButton v-if="hasPermission('kubernetes:cluster:edit')" icon="basic-edit" tooltip="编辑" @click="handleEdit(row)" />
+                <BeeCircleButton v-if="hasPermission('kubernetes:cluster:edit')" icon="basic-switch" tooltip="切换集群" @click="handleSelectCluster(row)" />
+                <BeeCircleButton v-if="hasPermission('kubernetes:cluster:delete')" icon="basic-delete" type="danger" tooltip="删除" @click="handleDelete(row)" />
+              </div>
             </template>
           </BeeTableColumn>
         </BeeTable>
@@ -93,6 +95,11 @@
 </template>
 
 <script setup lang="ts">
+/**
+ * Kubernetes 集群管理页面
+ * 支持集群的查看、搜索、纳管、编辑、切换及删除等操作
+ * @module views/kubernetes/cluster
+ */
 import { onMounted, reactive, ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { ElMessage } from 'element-plus'
@@ -122,43 +129,46 @@ import { useKubernetesStore } from '@/stores'
 
 defineOptions({ name: 'ClusterManage' })
 
-// 权限校验
+// ---- 权限 & 路由 ----
 const { hasPermission } = usePermission()
-
 const router = useRouter()
 const kubernetesStore = useKubernetesStore()
 
-const loading = ref(false)
-
+// ---- 查询 & 分页 ----
 const searchKey = ref('')
-const tableData = ref<ClusterResp[]>([])
-const selectedRows = ref<ClusterResp[]>([])
-const batchDeleteDialogVisible = ref(false)
-const deleteDialogVisible = ref(false)
-const currentTargetRow = ref<ClusterResp | null>(null)
 const queryForm = reactive<Partial<ClusterQueryReq>>({
   id: undefined,
   name: undefined,
-  status: undefined,
-  page: 1,
-  pageSize: 10
+  status: undefined
 })
-const pagination = reactive({
-  page: 1,
-  pageSize: 10,
-  total: 0
-})
-
+const pagination = reactive({ page: 1, pageSize: 10, total: 0 })
 const statusOptions = [
   { label: '所有', value: undefined },
   { label: '正常', value: 1 },
   { label: '异常', value: 0 }
 ]
 
+// ---- 表格数据 ----
+const loading = ref(false)
+const tableData = ref<ClusterResp[]>([])
+const selectedRows = ref<ClusterResp[]>([])
+
+// ---- 删除 Dialog ----
+const batchDeleteDialogVisible = ref(false)
+const deleteDialogVisible = ref(false)
+const currentTargetRow = ref<ClusterResp | null>(null)
+
+/**
+ * 加载集群分页数据
+ */
 async function loadData() {
   loading.value = true
   try {
-    const resp = await getClusterPage({ ...queryForm, page: pagination.page, pageSize: pagination.pageSize })
+    const resp = await getClusterPage({
+      ...queryForm,
+      page: pagination.page,
+      pageSize: pagination.pageSize
+    })
     tableData.value = resp.list
     pagination.total = resp.total
   } finally {
@@ -166,6 +176,9 @@ async function loadData() {
   }
 }
 
+/**
+ * 状态筛选切换
+ */
 function handleSelect(selectValue?: string | number) {
   queryForm.status = selectValue as number | undefined
   pagination.page = 1
@@ -173,6 +186,9 @@ function handleSelect(selectValue?: string | number) {
   loadData()
 }
 
+/**
+ * 搜索
+ */
 function handleSearch() {
   const key = searchKey.value
   queryForm.id = key
@@ -181,40 +197,59 @@ function handleSearch() {
   loadData()
 }
 
+/**
+ * 重置搜索条件
+ */
 function handleReset() {
   queryForm.id = undefined
   queryForm.name = undefined
   queryForm.status = undefined
-  queryForm.page = 1
-  queryForm.pageSize = 10
   pagination.page = 1
   pagination.pageSize = 10
   searchKey.value = ''
   loadData()
 }
 
+/**
+ * 表格选中行变化
+ */
 function handleSelectionChange(rows: Record<string, unknown>[]) {
   selectedRows.value = rows as unknown as ClusterResp[]
 }
 
+/**
+ * 跳转纳管页面
+ */
 function handleCreate() {
   router.push({ name: 'kubernetes:cluster:create' })
 }
 
+/**
+ * 跳转编辑页面
+ */
 function handleEdit(row: ClusterResp) {
   router.push({ name: 'kubernetes:cluster:edit', query: { id: row.id } })
 }
 
+/**
+ * 切换集群
+ */
 function handleSelectCluster(row: ClusterResp) {
   kubernetesStore.setActiveClusterId(row.id)
   router.push({ name: 'kubernetes:dashboard' })
 }
 
+/**
+ * 打开删除确认 Dialog
+ */
 function handleDelete(row: ClusterResp) {
   currentTargetRow.value = row
   deleteDialogVisible.value = true
 }
 
+/**
+ * 确认单个删除
+ */
 async function handleConfirmDelete() {
   if (!currentTargetRow.value) return
   try {
@@ -224,14 +259,20 @@ async function handleConfirmDelete() {
     currentTargetRow.value = null
     loadData()
   } catch {
-    // 失败处理
+    // 删除失败，接口层已提示
   }
 }
 
+/**
+ * 打开批量删除确认 Dialog
+ */
 function handleBatchDelete() {
   batchDeleteDialogVisible.value = true
 }
 
+/**
+ * 确认批量删除
+ */
 async function handleConfirmBatchDelete() {
   const ids = selectedRows.value.map(row => row.id)
   try {
@@ -241,7 +282,7 @@ async function handleConfirmBatchDelete() {
     selectedRows.value = []
     loadData()
   } catch {
-    // 失败处理
+    // 删除失败，接口层已提示
   }
 }
 
@@ -280,6 +321,13 @@ onMounted(() => {
     .table-body {
       flex: 1;
       min-height: 0;
+    }
+
+    .table-action {
+      display: flex;
+      gap: $spacing-8;
+      width: 100%;
+      height: auto;
     }
 
     .table-footer {

@@ -3,9 +3,9 @@
     <div class="bee-audit-cell__value">
       <img v-if="userAvatar" :src="userAvatar" class="bee-audit-cell__avatar" />
       <BeeIcon v-else name="basic-id" :size="16" class="bee-audit-cell__icon" />
-      <span class="bee-audit-cell__datetime">{{ username || '-' }}</span>
+      <span class="bee-audit-cell__datetime">{{ datetime || '-' }}</span>
     </div>
-    <span class="bee-audit-cell__key">{{ datetime || '-' }}</span>
+    <span class="bee-audit-cell__key">{{ propName || '-' }}</span>
   </div>
 </template>
 
