@@ -75,6 +75,7 @@ defineProps<{
     display: flex;
     gap: $spacing-8;
     align-items: center;
+    height: 24px;
   }
 
   &__name {
@@ -87,6 +88,7 @@ defineProps<{
     display: flex;
     gap: $spacing-4;
     align-items: center;
+    height: 24px;
     min-width: 0;
 
     :deep(.bee-tooltip-trigger) {
