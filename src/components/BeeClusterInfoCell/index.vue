@@ -12,11 +12,11 @@
       </div>
       <div class="bee-cluster-info-cell__bottom">
         <BeeIcon name="basic-description" :size="14" class="bee-cluster-info-cell__desc-icon" />
-        <BeeTooltip>
+        <BeeTooltip :disabled="!isDescTruncated">
           <template #label>
             <span class="bee-cluster-info-cell__desc-tooltip">{{ description }}</span>
           </template>
-          <span class="bee-cluster-info-cell__desc">{{ description }}</span>
+          <span ref="descRef" class="bee-cluster-info-cell__desc">{{ description }}</span>
         </BeeTooltip>
       </div>
     </div>
@@ -29,6 +29,7 @@
  * 上下结构展示集群名称+UID标签 和 描述信息
  * @module components/BeeClusterInfoCell
  */
+import { ref, onMounted, onUnmounted } from 'vue'
 import BeeIcon from '@/components/BeeIcon/index.vue'
 import BeeTag from '@/components/BeeTag/index.vue'
 import BeeTooltip from '@/components/BeeTooltip/index.vue'
@@ -43,6 +44,34 @@ defineProps<{
   /** 集群描述 */
   description?: string
 }>()
+
+// ==================== 描述文本溢出检测 ====================
+
+/** 描述文本元素引用 */
+const descRef = ref<HTMLElement>()
+/** 描述文本是否被截断（出现省略号） */
+const isDescTruncated = ref(false)
+
+let resizeObserver: ResizeObserver | null = null
+
+onMounted(() => {
+  const el = descRef.value
+  if (!el) return
+
+  /** 检测并更新截断状态 */
+  const check = () => {
+    isDescTruncated.value = el.scrollWidth > el.clientWidth
+  }
+
+  check()
+  resizeObserver = new ResizeObserver(check)
+  resizeObserver.observe(el)
+})
+
+onUnmounted(() => {
+  resizeObserver?.disconnect()
+  resizeObserver = null
+})
 </script>
 
 <style lang="scss" scoped>

@@ -46,11 +46,14 @@ const props = withDefaults(
     placement?: 'top' | 'bottom' | 'left' | 'right'
     /** 大小：large（字号14/圆角16）、default（字号12/圆角8）、small（字号10/圆角4） */
     size?: 'large' | 'default' | 'small'
+    /** 禁用 Tooltip，hover 时不显示 */
+    disabled?: boolean
   }>(),
   {
     label: '',
     placement: 'top',
-    size: 'default'
+    size: 'default',
+    disabled: false
   }
 )
 
@@ -121,8 +124,9 @@ const arrowStyle = computed(() => {
 
 // ==================== Methods: 显示/隐藏 ====================
 
-/** 立即显示 tooltip，取消待处理的隐藏定时器 */
+/** 立即显示 tooltip，取消待处理的隐藏定时器。disabled 时直接忽略。 */
 function show() {
+  if (props.disabled) return
   if (hideTimeout) {
     clearTimeout(hideTimeout)
     hideTimeout = null
