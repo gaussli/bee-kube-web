@@ -12,7 +12,10 @@
       </div>
       <div class="bee-cluster-info-cell__bottom">
         <BeeIcon name="basic-description" :size="14" class="bee-cluster-info-cell__desc-icon" />
-        <BeeTooltip :label="description">
+        <BeeTooltip>
+          <template #label>
+            <span class="bee-cluster-info-cell__desc-tooltip">{{ description }}</span>
+          </template>
           <span class="bee-cluster-info-cell__desc">{{ description }}</span>
         </BeeTooltip>
       </div>
@@ -112,5 +115,15 @@ defineProps<{
     text-overflow: ellipsis;
     white-space: nowrap;
   }
+}
+</style>
+
+<style lang="scss">
+// BeeTooltip label slot 内容样式（Teleport 到 body，需全局样式）
+.bee-cluster-info-cell__desc-tooltip {
+  display: inline-block;
+  max-width: 400px;
+  word-break: break-all;
+  white-space: normal;
 }
 </style>

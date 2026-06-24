@@ -6,9 +6,9 @@
     </div>
     <div class="bee-status-cell__bottom">
       <span class="bee-status-cell__label-en">{{ currentConfig.labelEn || '-' }}</span>
-      <el-tooltip v-if="msg" :content="msg" placement="top">
+      <BeeTooltip v-if="msg" :label="msg" placement="top">
         <BeeIcon name="basic-help" :size="12" class="bee-status-cell__help-icon" />
-      </el-tooltip>
+      </BeeTooltip>
     </div>
   </div>
 </template>
@@ -22,6 +22,7 @@
 import { computed } from 'vue'
 import type { StatusConfig } from './types'
 import BeeIcon from '@/components/BeeIcon/index.vue'
+import BeeTooltip from '@/components/BeeTooltip/index.vue'
 
 defineOptions({ name: 'BeeStatusCell' })
 
