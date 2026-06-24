@@ -1,5 +1,5 @@
 <template>
-  <BeeTooltip :label="tooltip" placement="top">
+  <BeeTooltip :label="tooltip" placement="top" size="small">
     <button
       class="bee-circle-button"
       :class="[`bee-circle-button--${type}`, `bee-circle-button--${size}`, { 'bee-circle-button--bordered': border, 'is-disabled': disabled, 'is-loading': loading }]"

@@ -11,6 +11,7 @@
         v-if="visible"
         ref="floatingRef"
         class="bee-tooltip"
+        :class="[size !== 'default' && `bee-tooltip--${size}`]"
         role="tooltip"
         :style="floatingStyles"
         :data-popper-placement="dataPlacement"
@@ -43,10 +44,13 @@ const props = withDefaults(
     label?: string
     /** 弹出方向，flip 中间件可能自动翻转 */
     placement?: 'top' | 'bottom' | 'left' | 'right'
+    /** 大小：large（字号14/圆角16）、default（字号12/圆角8）、small（字号10/圆角4） */
+    size?: 'large' | 'default' | 'small'
   }>(),
   {
     label: '',
-    placement: 'top'
+    placement: 'top',
+    size: 'default'
   }
 )
 
@@ -207,6 +211,17 @@ $tooltip-bg: map.get($colors, 'gray', 25);
   box-shadow: var(--bee-tooltip-box-shadow);
   cursor: default;
   user-select: text;
+
+  // ==================== 尺寸变体 ====================
+  &--large {
+    border-radius: $radius-16;
+    font-size: $font-size-14;
+  }
+
+  &--small {
+    border-radius: $radius-4;
+    font-size: $font-size-10;
+  }
 
   &__arrow {
     position: absolute;
