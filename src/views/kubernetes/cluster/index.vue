@@ -11,7 +11,7 @@
       <!-- 查询表单 -->
       <div class="table-toolbar">
         <BeeInputSearch v-model="searchKey" placeholder="按 ID / 名称 搜索" class="table-toolbar__search" />
-        <BeeSegmentedControl v-model="queryForm.status" :options="statusOptions" @select="handleSelect" />
+        <BeeSelect v-model="queryForm.status" :options="statusOptions" placeholder="状态筛选" />
         <BeeButton icon="basic-search" @click="handleSearch"> 搜索 </BeeButton>
         <BeeButton icon="basic-refresh" @click="handleReset"> 重置 </BeeButton>
         <BeeDivider v-if="hasPermission('kubernetes:cluster:create')" direction="vertical" length="12px" />
@@ -113,7 +113,7 @@ import BeeInputSearch from '@/components/BeeInputSearch/index.vue'
 import BeePage from '@/components/BeePage/index.vue'
 import BeePageTitle from '@/components/BeePageTitle/index.vue'
 import BeePagination from '@/components/BeePagination/index.vue'
-import BeeSegmentedControl from '@/components/BeeSegmentedControl/index.vue'
+import BeeSelect from '@/components/BeeSelect/index.vue'
 import BeeStatusCell from '@/components/BeeStatusCell/index.vue'
 import BeeTableColumn from '@/components/BeeTable/BeeTableColumn.vue'
 import BeeTableCommonCell from '@/components/BeeTable/BeeTableCommonCell.vue'
@@ -139,8 +139,8 @@ const queryForm = reactive<Partial<ClusterQueryReq>>({
 })
 const pagination = reactive({ page: 1, pageSize: 10, total: 0 })
 const statusOptions = [
-  { label: '所有', value: undefined },
-  { label: '正常', value: 1 },
+  { label: '所有状态', value: undefined },
+  { label: '健康', value: 1 },
   { label: '异常', value: 0 }
 ]
 
@@ -170,16 +170,6 @@ async function loadData() {
   } finally {
     loading.value = false
   }
-}
-
-/**
- * 状态筛选切换
- */
-function handleSelect(selectValue?: string | number) {
-  queryForm.status = selectValue as number | undefined
-  pagination.page = 1
-  pagination.pageSize = 10
-  loadData()
 }
 
 /**

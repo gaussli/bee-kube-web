@@ -3,7 +3,7 @@ export interface SelectOption {
   /** 选项标签 */
   label: string
   /** 选项值 */
-  value: string | number
+  value: string | number | undefined
   /** 选项图标 */
   icon?: string
 }
