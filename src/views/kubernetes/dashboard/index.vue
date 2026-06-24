@@ -1,7 +1,7 @@
 <template>
   <div class="cluster-overview">
     <!-- 集群信息 -->
-    <div class="card cluster-info-card">
+    <BeeCard class="cluster-info-card">
       <div class="cluster-main">
         <div class="cluster-icon">
           <BeeIcon name="kubernetes-cluster" :size="48" />
@@ -39,14 +39,14 @@
           {{ clusterInfo.status }}
         </el-tag>
       </div>
-    </div>
+    </BeeCard>
 
     <!-- 可滚动内容区域 -->
     <div class="scroll-content">
       <!-- 资源雷达图 + 节点列表 -->
       <div class="top-row">
         <!-- 资源雷达图 -->
-        <div class="card radar-card">
+        <BeeCard class="radar-card">
           <div class="card-header">
             <span>资源用量</span>
             <div class="header-actions">
@@ -77,10 +77,10 @@
               </div>
             </div>
           </div>
-        </div>
+        </BeeCard>
 
         <!-- 节点列表 -->
-        <div class="card node-card">
+        <BeeCard class="node-card">
           <div class="card-header">
             <span>节点用量</span>
             <div class="header-actions">
@@ -118,11 +118,11 @@
               </div>
             </div>
           </div>
-        </div>
+        </BeeCard>
       </div>
 
       <!-- 最近事件 -->
-      <div class="card events-card">
+      <BeeCard class="events-card">
         <div class="card-header">
           <span>最近事件</span>
           <BeeButton size="small" @click="loadEvents">
@@ -144,7 +144,7 @@
             <el-table-column prop="time" label="时间" width="180" />
           </el-table>
         </div>
-      </div>
+      </BeeCard>
     </div>
   </div>
 </template>
@@ -153,6 +153,7 @@
 import { ref, computed, onMounted } from 'vue'
 import { Refresh, Monitor, Clock } from '@element-plus/icons-vue'
 import BeeButton from '@/components/BeeButton/index.vue'
+import BeeCard from '@/components/BeeCard/index.vue'
 import BeeIcon from '@/components/BeeIcon/index.vue'
 import BeeRadarChart from '@/components/BeeRadarChart/index.vue'
 import BeeRingChart from '@/components/BeeRingChart/index.vue'
@@ -384,9 +385,7 @@ onMounted(() => {
     }
   }
 
-  .card {
-    background-color: $bg_page;
-
+  .bee-card {
     .card-header {
       display: flex;
       align-items: center;
@@ -410,27 +409,8 @@ onMounted(() => {
     display: flex;
     gap: 16px;
 
-    .card {
+    .bee-card {
       flex: 1;
-      background-color: $bg_page;
-
-      .card-header {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        padding: 12px 20px;
-        font-weight: 500;
-
-        .header-actions {
-          display: flex;
-          gap: 8px;
-          align-items: center;
-        }
-      }
-
-      .card-body {
-        padding: 0 16px 16px;
-      }
     }
 
     .radar-card {
