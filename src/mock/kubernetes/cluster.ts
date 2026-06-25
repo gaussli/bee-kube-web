@@ -3,7 +3,7 @@
  * @module mock/kubernetes/cluster
  */
 import type { PageResp } from '@/types/common'
-import type { ClusterDetailResp, ClusterListResp, ClusterQueryReq, ClusterRegistrationReq, ClusterReq } from '@/types/kubernetes/cluster'
+import type { ClusterDetailResp, ClusterListResp, ClusterQueryReq, ClusterRegistrationReq, ClusterReq, ClusterResourceResp } from '@/types/kubernetes/cluster'
 import { generateId } from '@/mock/utils'
 
 /**
@@ -14,8 +14,9 @@ import { generateId } from '@/mock/utils'
  * - POST /kubernetes/clusters - 创建集群
  * - POST /kubernetes/clusters/register - 注册集群
  * - PUT /kubernetes/clusters/:id - 更新集群
+ * - GET /kubernetes/clusters/:id/resource - 获取集群资源用量
  * - DELETE /kubernetes/clusters/:id - 删除集群
- * - DELETE /kubernetes/clusters/batch - 批量删除集
+ * - DELETE /kubernetes/clusters/batch - 批量删除集群
  */
 export default [
   {
@@ -27,6 +28,11 @@ export default [
     method: 'get',
     url: '/kubernetes/clusters/:id',
     handler: (pathParams: Record<string, string>): ClusterDetailResp => getClusterDetail(pathParams.id)
+  },
+  {
+    method: 'get',
+    url: '/kubernetes/clusters/:id/resource',
+    handler: (pathParams: Record<string, string>): ClusterResourceResp => getClusterResource(pathParams.id)
   },
   {
     method: 'post',
@@ -98,6 +104,38 @@ function getClusterDetail(id: string): ClusterDetailResp {
   return {
     ...cluster,
     certExpireAt: '2026-12-31 23:59:59'
+  }
+}
+
+/**
+ * 获取集群资源用量
+ * @param id - 集群ID
+ * @returns 集群资源用量数据
+ */
+function getClusterResource(id: string): ClusterResourceResp {
+  const cluster = mockClusters.find(c => c.id === id)
+  if (!cluster) {
+    console.error('[getClusterResource] can not find cluster:', id)
+  }
+  const totalCpu = 32 + Math.floor(Math.random() * 96)
+  // 内存范围约 128 MiB ~ 4 TiB（Bytes），覆盖 Mi/Gi/Ti 三种量级
+  const totalMemory = Math.floor(Math.pow(2, 27) + Math.random() * Math.pow(2, 42))
+  // 磁盘范围约 1 GiB ~ 8 TiB（Bytes），覆盖 Gi/Ti 两种量级
+  const totalStorage = Math.floor(Math.pow(2, 30) + Math.random() * Math.pow(2, 43))
+  const totalPod = 100 + Math.floor(Math.random() * 200)
+  return {
+    total: {
+      cpu: totalCpu,
+      memory: totalMemory,
+      storage: totalStorage,
+      pod: totalPod
+    },
+    usage: {
+      cpu: Math.floor(totalCpu * (0.1 + Math.random() * 0.7)),
+      memory: Math.floor(totalMemory * (0.1 + Math.random() * 0.7)),
+      storage: Math.floor(totalStorage * (0.1 + Math.random() * 0.7)),
+      pod: Math.floor(totalPod * (0.1 + Math.random() * 0.7))
+    }
   }
 }
 

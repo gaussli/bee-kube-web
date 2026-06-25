@@ -4,8 +4,8 @@
       <defs>
         <!-- 数据区域径向渐变：从中心向外越来越浅 -->
         <radialGradient :id="`radar-area-gradient-${uid}`" cx="50%" cy="50%" gradientUnits="userSpaceOnUse" :fx="center" :fy="center" :fr="0" :r="radius">
-          <stop offset="0%" :stop-color="color" stop-opacity="0.6" />
-          <stop offset="100%" :stop-color="color" stop-opacity="0.15" />
+          <stop offset="0%" :stop-color="color" stop-opacity="1" />
+          <stop offset="100%" :stop-color="color" stop-opacity="0.2" />
         </radialGradient>
       </defs>
 
@@ -320,6 +320,8 @@ watch(
 </script>
 
 <style lang="scss" scoped>
+@use 'sass:map';
+
 .bee-radar-chart {
   position: relative;
   display: inline-block;
@@ -363,17 +365,15 @@ watch(
     position: absolute;
     z-index: 1000;
     min-width: 140px;
-    padding: 10px 12px;
-    border: 1px solid $color-border-primary;
-    border-radius: 6px;
-    background: $bg-overlay;
+    padding: 8px;
+    border-radius: 4px;
+    background: map.get($colors, 'gray', 25);
     box-shadow: 0 4px 12px rgb(0 0 0 / 30%);
     pointer-events: none;
 
     .tooltip-header {
-      padding-bottom: 6px;
-      margin-bottom: 8px;
-      border-bottom: 1px solid $border-secondary;
+      padding-bottom: 8px;
+      border-bottom: 1px solid $color-border-tertiary;
       font-size: 14px;
       font-weight: 500;
       color: $color-text-primary;
@@ -384,7 +384,7 @@ watch(
         display: flex;
         align-items: center;
         justify-content: space-between;
-        margin-top: 4px;
+        padding-top: 8px;
         font-size: 12px;
 
         .tooltip-label {
@@ -393,7 +393,7 @@ watch(
 
         .tooltip-value {
           font-weight: 500;
-          color: $color-primary;
+          color: map.get($colors, 'primary', 50);
         }
       }
     }

@@ -37,7 +37,7 @@ defineProps<{
   width: var(--bee-fieldcard-width);
   height: 100%;
   padding: $spacing-16;
-  border-radius: $radius-16;
+  border-radius: $radius-8;
   background: var(--bee-fieldcard-bg);
 
   &__header {

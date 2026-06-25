@@ -1,15 +1,16 @@
 <template>
   <BeeCard class="bee-cluster-overview-resource">
     <div class="bee-cluster-overview-resource__header">
-      <span>资源用量</span>
+      <div class="bee-cluster-overview-resource__title">
+        <BeeIcon name="basic-id" :size="14" />
+        资源用量
+      </div>
       <div class="bee-cluster-overview-resource__actions">
-        <BeeButton size="small" @click="loadRadarData">
-          <template #icon><Refresh /></template>
-        </BeeButton>
+        <BeeCircleButton icon="basic-refresh" size="small" :border="false" tooltip="刷新" @click="loadData" />
       </div>
     </div>
     <div class="bee-cluster-overview-resource__body">
-      <BeeRadarChart :data="radarData" :size="280" color="#da8030" />
+      <BeeRadarChart :data="radarData" :size="200" color="#da8030" />
       <div class="bee-cluster-overview-resource__legend">
         <div v-for="item in radarData" :key="item.label" class="bee-cluster-overview-resource__legend-row">
           <div class="bee-cluster-overview-resource__legend-ring">
@@ -34,60 +35,76 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed } from 'vue'
-import { Refresh } from '@element-plus/icons-vue'
-import BeeButton from '@/components/BeeButton/index.vue'
+import { onMounted, ref } from 'vue'
+import { formatCpu, formatDisk, formatMemory } from '@/utils/kubernetes'
+import { getClusterResource } from '@/api/kubernetes/cluster'
+import { useKubernetesStore } from '@/stores/kubernetes'
 import BeeCard from '@/components/BeeCard/index.vue'
+import BeeCircleButton from '@/components/BeeCircleButton/index.vue'
+import BeeIcon from '@/components/BeeIcon/index.vue'
 import BeeRadarChart from '@/components/BeeRadarChart/index.vue'
 import BeeRingChart from '@/components/BeeRingChart/index.vue'
 
 defineOptions({ name: 'BeeClusterOverviewResource' })
 
-/**
- * CPU 使用率
- */
-const cpuUsed = ref(12)
-const cpuTotal = ref(32)
-const cpuUsage = computed(() => Math.round((cpuUsed.value / cpuTotal.value) * 100))
+const kubernetesStore = useKubernetesStore()
 
-/**
- * 内存使用率
- */
-const memoryUsed = ref('48 Gi')
-const memoryTotal = ref('64 Gi')
-const memoryUsage = ref(75)
-
-/**
- * 磁盘使用率
- */
-const diskUsed = ref('320 Gi')
-const diskTotal = ref('500 Gi')
-const diskUsage = ref(64)
-
-/**
- * 容器数使用率
- */
-const containerUsed = ref(42)
-const containerTotal = ref(60)
-const containerUsage = computed(() => Math.round((containerUsed.value / containerTotal.value) * 100))
-
-/**
- * 雷达图数据
- */
-const radarData = computed(() => [
-  { label: 'CPU', value: cpuUsage.value, used: `${cpuUsed.value} 核`, total: `${cpuTotal.value} 核` },
-  { label: '内存', value: memoryUsage.value, used: memoryUsed.value, total: memoryTotal.value },
-  { label: '磁盘', value: diskUsage.value, used: diskUsed.value, total: diskTotal.value },
-  { label: '容器数', value: containerUsage.value, used: `${containerUsed.value} 个`, total: `${containerTotal.value} 个` }
+/** 雷达图数据 */
+const radarData = ref([
+  { label: 'CPU', value: 0, used: '0', total: '0' },
+  { label: '内存', value: 0, used: '0', total: '0' },
+  { label: '磁盘', value: 0, used: '0', total: '0' },
+  { label: '容器数', value: 0, used: '0 个', total: '0 个' }
 ])
 
 /**
- * 刷新资源用量数据
+ * 计算使用百分比
+ * @param used - 已用量
+ * @param total - 总量
+ * @returns 百分比（0-100），总量为 0 时返回 0
  */
-function loadRadarData() {
-  // TODO: 加载真实资源用量数据
-  console.log('Loading radar data...')
+function calcPercentage(used: number, total: number): number {
+  if (total <= 0) return 0
+  return Math.round((used / total) * 100)
 }
+
+/**
+ * 加载资源用量数据并构建雷达图数据
+ */
+async function loadData() {
+  if (!kubernetesStore.activeClusterId) return
+  const res = await getClusterResource(kubernetesStore.activeClusterId)
+  radarData.value = [
+    {
+      label: 'CPU',
+      value: calcPercentage(res.usage.cpu, res.total.cpu),
+      used: formatCpu(res.usage.cpu),
+      total: formatCpu(res.total.cpu)
+    },
+    {
+      label: '内存',
+      value: calcPercentage(res.usage.memory, res.total.memory),
+      used: formatMemory(res.usage.memory, 'B'),
+      total: formatMemory(res.total.memory, 'B')
+    },
+    {
+      label: '磁盘',
+      value: calcPercentage(res.usage.storage, res.total.storage),
+      used: formatDisk(res.usage.storage, 'B'),
+      total: formatDisk(res.total.storage, 'B')
+    },
+    {
+      label: '容器数',
+      value: calcPercentage(res.usage.pod, res.total.pod),
+      used: `${res.usage.pod} 个`,
+      total: `${res.total.pod} 个`
+    }
+  ]
+}
+
+onMounted(() => {
+  loadData()
+})
 </script>
 
 <style lang="scss" scoped>
@@ -96,8 +113,9 @@ function loadRadarData() {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 12px 20px;
-    font-weight: 500;
+    width: 100%;
+    height: 64px;
+    font-weight: 600;
 
     &-actions {
       display: flex;
@@ -106,12 +124,19 @@ function loadRadarData() {
     }
   }
 
+  &__title {
+    display: flex;
+    gap: 4px;
+    align-items: center;
+  }
+
   &__body {
     display: flex;
     gap: 16px;
     flex-direction: row;
-    align-items: flex-start;
-    padding: 0 16px 16px;
+    align-items: center;
+    width: 100%;
+    padding: 0 0 16px 8px;
   }
 
   &__legend {
@@ -123,20 +148,20 @@ function loadRadarData() {
 
     &-row {
       display: grid;
-      gap: 12px;
+      gap: 4px;
       grid-template-columns: 48px 1fr 1fr 1fr;
       align-items: center;
       padding: 8px 16px;
       border-radius: 8px;
-      background: $bg-selected;
+      background: $color-bg-elevated;
     }
 
     &-ring {
       display: flex;
       align-items: center;
       justify-content: center;
-      width: 48px;
-      height: 48px;
+      width: 40px;
+      height: 40px;
     }
 
     &-col {

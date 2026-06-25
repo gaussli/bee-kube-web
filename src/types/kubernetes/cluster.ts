@@ -55,6 +55,34 @@ export interface ClusterDetailResp extends BaseEntity {
 }
 
 /**
+ * 集群资源用量数据
+ */
+export interface ClusterResourceResp {
+  /** 资源总量 */
+  total: {
+    /** CPU 核心数 */
+    cpu: number
+    /** 内存，单位 Byte */
+    memory: number
+    /** 存储，单位 Byte */
+    storage: number
+    /** Pod 最大数量 */
+    pod: number
+  }
+  /** 资源已用量 */
+  usage: {
+    /** CPU 核心数 */
+    cpu: number
+    /** 内存，单位 Byte */
+    memory: number
+    /** 存储，单位 Byte */
+    storage: number
+    /** Pod 已用数量 */
+    pod: number
+  }
+}
+
+/**
  * 集群创建/更新请求参数
  */
 export interface ClusterReq {
