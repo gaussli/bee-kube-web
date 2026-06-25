@@ -3,7 +3,7 @@
  * @module api/kubernetes/cluster
  */
 import type { PageResp } from '@/types/common'
-import type { ClusterQueryReq, ClusterRegistrationReq, ClusterReq, ClusterResp } from '@/types/kubernetes/cluster'
+import type { ClusterListResp, ClusterQueryReq, ClusterRegistrationReq, ClusterReq } from '@/types/kubernetes/cluster'
 import { request } from '@/utils'
 
 /**
@@ -11,8 +11,8 @@ import { request } from '@/utils'
  * @param params - 查询参数
  * @returns 分页后的集群列表
  */
-export function getClusterPage(params: Partial<ClusterQueryReq>): Promise<PageResp<ClusterResp>> {
-  return request.get<PageResp<ClusterResp>>('/kubernetes/clusters', { params: params })
+export function getClusterPage(params: Partial<ClusterQueryReq>): Promise<PageResp<ClusterListResp>> {
+  return request.get<PageResp<ClusterListResp>>('/kubernetes/clusters', { params: params })
 }
 
 /**
@@ -20,8 +20,8 @@ export function getClusterPage(params: Partial<ClusterQueryReq>): Promise<PageRe
  * @param id - 集群 ID
  * @returns 集群详情信息
  */
-export function getClusterDetail(id: string): Promise<ClusterResp> {
-  return request.get<ClusterResp>(`/kubernetes/clusters/${id}`)
+export function getClusterDetail(id: string): Promise<ClusterListResp> {
+  return request.get<ClusterListResp>(`/kubernetes/clusters/${id}`)
 }
 
 /**

@@ -5,9 +5,9 @@
 import type { BaseEntity, PageReq } from '@/types/common'
 
 /**
- * 集群响应数据
+ * 集群列表响应数据
  */
-export interface ClusterResp extends BaseEntity {
+export interface ClusterListResp extends BaseEntity {
   /** 集群名称 */
   name: string
   /** 集群描述 */
@@ -16,6 +16,8 @@ export interface ClusterResp extends BaseEntity {
   apiServer: string
   /** 集群状态 */
   status: number
+  /** 集群状态描述 */
+  statusMsg?: string
   /** Kubernetes 版本 */
   k8sVersion: string
 }

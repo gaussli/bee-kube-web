@@ -54,7 +54,7 @@
             <BeeIconLabel icon="clock" label="创建" />
           </template>
           <template #default="{ row }">
-            <BeeAuditCell :username="row.createBy" :datetime="row.createAt" />
+            <BeeAuditCell :username="row.createBy" :datetime="row.createAt" field-name="创建人 / 时间" />
           </template>
         </el-table-column>
         <el-table-column width="180">
@@ -62,7 +62,7 @@
             <BeeIconLabel icon="clock" label="更新" />
           </template>
           <template #default="{ row }">
-            <BeeAuditCell :username="row.updateBy" :datetime="row.updateAt" />
+            <BeeAuditCell :username="row.updateBy" :datetime="row.updateAt" field-name="更新人 / 时间" />
           </template>
         </el-table-column>
         <el-table-column width="150" fixed="right">

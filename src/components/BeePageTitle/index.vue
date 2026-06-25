@@ -1,7 +1,7 @@
 <template>
   <div class="bee-page-title">
     <div class="bee-page-title__icon">
-      <BeeIcon :name="icon" :size="38" />
+      <BeeIcon :name="icon" :size="40" />
     </div>
     <div class="bee-page-title__content">
       <span class="bee-page-title__text">{{ title }}</span>

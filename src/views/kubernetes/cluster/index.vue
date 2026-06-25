@@ -11,7 +11,7 @@
       <!-- 查询表单 -->
       <div class="table-toolbar">
         <BeeInputSearch v-model="searchKey" placeholder="按 ID / 名称 搜索" class="table-toolbar__search" />
-        <BeeSelect v-model="queryForm.status" :options="statusOptions" placeholder="状态筛选" />
+        <BeeSelect v-model="queryForm.status" :options="CLUSTER_STATUS_CONFIG" placeholder="状态筛选" />
         <BeeButton icon="basic-search" @click="handleSearch"> 搜索 </BeeButton>
         <BeeButton icon="basic-refresh" @click="handleReset"> 重置 </BeeButton>
         <BeeDivider v-if="hasPermission('kubernetes:cluster:create')" direction="vertical" length="12px" />
@@ -33,17 +33,17 @@
           </BeeTableColumn>
           <BeeTableColumn prop="status" :width="100">
             <template #default="{ row }">
-              <BeeStatusCell :status="row.status" :config="ClusterStatusConfig" msg="测试中文测试中文测试中文测试中文" />
+              <BeeStatusCell :config="CLUSTER_STATUS_CONFIG" :status="row.status" :status-msg="row.statusMsg" />
             </template>
           </BeeTableColumn>
           <BeeTableColumn :width="200">
             <template #default="{ row }">
-              <BeeAuditCell :username="row.createBy" :datetime="row.createAt" prop-name="创建人 / 时间" />
+              <BeeAuditCell :username="row.createBy" :datetime="row.createAt" field-name="创建人 / 时间" />
             </template>
           </BeeTableColumn>
           <BeeTableColumn :width="200">
             <template #default="{ row }">
-              <BeeAuditCell :username="row.updateBy" :datetime="row.updateAt" prop-name="更新人 / 时间" />
+              <BeeAuditCell :username="row.updateBy" :datetime="row.updateAt" field-name="更新人 / 时间" />
             </template>
           </BeeTableColumn>
           <BeeTableColumn :width="150" fixed="right">
@@ -99,7 +99,7 @@
 import { onMounted, reactive, ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { ElMessage } from 'element-plus'
-import type { ClusterQueryReq, ClusterResp } from '@/types/kubernetes/cluster'
+import type { ClusterListResp, ClusterQueryReq } from '@/types/kubernetes/cluster'
 import { getClusterPage, deleteCluster, deleteClusters } from '@/api/kubernetes/cluster'
 import BeeAlert from '@/components/BeeAlert/index.vue'
 import BeeAuditCell from '@/components/BeeAuditCell/index.vue'
@@ -120,7 +120,7 @@ import BeeTableCommonCell from '@/components/BeeTable/BeeTableCommonCell.vue'
 import BeeTable from '@/components/BeeTable/index.vue'
 import BeeTag from '@/components/BeeTag/index.vue'
 import { usePermission } from '@/composables/usePermission'
-import { ClusterStatusConfig } from '@/config/kubernetes'
+import { CLUSTER_STATUS_CONFIG } from '@/config/kubernetes'
 import { useKubernetesStore } from '@/stores'
 
 defineOptions({ name: 'ClusterManage' })
@@ -138,21 +138,16 @@ const queryForm = reactive<Partial<ClusterQueryReq>>({
   status: undefined
 })
 const pagination = reactive({ page: 1, pageSize: 10, total: 0 })
-const statusOptions = [
-  { label: '所有状态', value: undefined },
-  { label: '健康', value: 1 },
-  { label: '异常', value: 0 }
-]
 
 // ---- 表格数据 ----
 const loading = ref(false)
-const tableData = ref<ClusterResp[]>([])
-const selectedRows = ref<ClusterResp[]>([])
+const tableData = ref<ClusterListResp[]>([])
+const selectedRows = ref<ClusterListResp[]>([])
 
 // ---- 删除 Dialog ----
 const batchDeleteDialogVisible = ref(false)
 const deleteDialogVisible = ref(false)
-const currentTargetRow = ref<ClusterResp | null>(null)
+const currentTargetRow = ref<ClusterListResp | null>(null)
 
 /**
  * 加载集群分页数据
@@ -200,7 +195,7 @@ function handleReset() {
  * 表格选中行变化
  */
 function handleSelectionChange(rows: Record<string, unknown>[]) {
-  selectedRows.value = rows as unknown as ClusterResp[]
+  selectedRows.value = rows as unknown as ClusterListResp[]
 }
 
 /**
@@ -213,14 +208,14 @@ function handleCreate() {
 /**
  * 跳转编辑页面
  */
-function handleEdit(row: ClusterResp) {
+function handleEdit(row: ClusterListResp) {
   router.push({ name: 'kubernetes:cluster:edit', query: { id: row.id } })
 }
 
 /**
  * 切换集群
  */
-function handleSelectCluster(row: ClusterResp) {
+function handleSelectCluster(row: ClusterListResp) {
   kubernetesStore.setActiveClusterId(row.id)
   router.push({ name: 'kubernetes:dashboard' })
 }
@@ -228,7 +223,7 @@ function handleSelectCluster(row: ClusterResp) {
 /**
  * 打开删除确认 Dialog
  */
-function handleDelete(row: ClusterResp) {
+function handleDelete(row: ClusterListResp) {
   currentTargetRow.value = row
   deleteDialogVisible.value = true
 }

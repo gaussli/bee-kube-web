@@ -5,7 +5,7 @@
       <BeeIcon v-else name="basic-id" :size="16" class="bee-audit-cell__icon" />
       <span class="bee-audit-cell__datetime">{{ datetime || '-' }}</span>
     </div>
-    <span class="bee-audit-cell__key">{{ propName || '-' }}</span>
+    <span class="bee-audit-cell__key">{{ fieldName }}</span>
   </div>
 </template>
 
@@ -21,13 +21,13 @@ defineOptions({ name: 'BeeAuditCell' })
 
 defineProps<{
   /** 操作用户名 */
-  username?: string
+  username: string
   /** 操作用户头像地址，存在时显示头像图片，否则显示默认图标 */
   userAvatar?: string
   /** 操作时间 */
-  datetime?: string
+  datetime: string
   /** 属性名称 */
-  propName?: string
+  fieldName: string
 }>()
 </script>
 

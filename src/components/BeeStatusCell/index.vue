@@ -6,7 +6,7 @@
     </div>
     <div class="bee-status-cell__bottom">
       <span class="bee-status-cell__label-en">{{ currentConfig.labelEn || '-' }}</span>
-      <BeeTooltip v-if="msg" :label="msg" placement="top">
+      <BeeTooltip v-if="statusMsg" :label="statusMsg" placement="top">
         <BeeIcon name="basic-help" :size="12" class="bee-status-cell__help-icon" />
       </BeeTooltip>
     </div>
@@ -20,7 +20,7 @@
  * @module components/BeeStatusCell
  */
 import { computed } from 'vue'
-import type { StatusConfig } from './types'
+import type { StatusConfig } from '@/config/kubernetes'
 import BeeIcon from '@/components/BeeIcon/index.vue'
 import BeeTooltip from '@/components/BeeTooltip/index.vue'
 
@@ -32,7 +32,7 @@ const props = defineProps<{
   /** 状态配置数组 */
   config: StatusConfig[]
   /** 帮助提示信息，存在时在 labelEn 旁显示帮助图标 */
-  msg?: string
+  statusMsg?: string
 }>()
 
 /** 当前匹配的状态配置，未匹配时返回默认"未知"配置 */

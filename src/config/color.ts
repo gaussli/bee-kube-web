@@ -1,3 +1,11 @@
-export const color: Record<string, string> = {
-  textSecondary: '#7e8184'
-}
+export const COLOR_PRIMARY = 'hsl(30, 70%, 50%)'
+export const COLOR_SUCCESS = 'hsl(140, 70%, 50%)'
+export const COLOR_SUCCESS_40 = 'hsl(140, 75%, 40%)'
+export const COLOR_SUCCESS_30 = 'hsl(140, 80%, 30%)'
+export const COLOR_SUCCESS_20 = 'hsl(140, 85%, 20%)'
+export const COLOR_SUCCESS_10 = 'hsl(140, 90%, 10%)'
+export const COLOR_WARNING = 'hsl(45, 70%, 50%)'
+export const COLOR_DANGER = 'hsl(355, 70%, 50%)'
+export const COLOR_GRAY_90 = 'hsl(0, 0%, 90%)'
+export const COLOR_GRAY_70 = 'hsl(0, 0%, 70%)'
+export const COLOR_GRAY_50 = 'hsl(0, 0%, 50%)'

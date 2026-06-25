@@ -101,7 +101,7 @@
               <BeeIconLabel icon="basic-audit" label="创建" />
             </template>
             <template #default="{ row }">
-              <BeeAuditCell :username="row.createBy" :datetime="row.createAt" />
+              <BeeAuditCell :username="row.createBy" :datetime="row.createAt" field-name="创建人 / 时间" />
             </template>
           </el-table-column>
           <el-table-column width="150" fixed="right" class-name="bee-table-operation">
