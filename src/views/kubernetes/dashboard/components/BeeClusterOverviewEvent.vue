@@ -1,34 +1,56 @@
 <template>
   <BeeCard class="bee-cluster-overview-event">
     <div class="bee-cluster-overview-event__header">
-      <span>最近事件</span>
-      <BeeButton size="small" @click="loadEvents">
-        <template #icon><Refresh /></template>
-      </BeeButton>
+      <div class="bee-cluster-overview-event__title">
+        <BeeIcon name="basic-id" :size="14" />
+        最近事件
+      </div>
+      <div class="bee-cluster-overview-event__actions">
+        <BeeCircleButton icon="basic-refresh" size="small" :border="false" tooltip="刷新" @click="loadEvents" />
+      </div>
     </div>
     <div class="bee-cluster-overview-event__body">
-      <el-table :data="recentEvents">
-        <el-table-column prop="type" label="类型" width="100">
+      <BeeTable :data="recentEvents">
+        <BeeTableColumn :width="100">
           <template #default="{ row }">
-            <BeeTag :type="row.type === 'Warning' ? 'warning' : 'default'">
+            <BeeTag :type="row.type === 'Warning' ? 'warning' : 'default'" size="small">
               {{ row.type }}
             </BeeTag>
           </template>
-        </el-table-column>
-        <el-table-column prop="reason" label="原因" width="150" />
-        <el-table-column prop="object" label="对象" min-width="200" />
-        <el-table-column prop="message" label="消息" min-width="300" show-overflow-tooltip />
-        <el-table-column prop="time" label="时间" width="180" />
-      </el-table>
+        </BeeTableColumn>
+        <BeeTableColumn :width="180">
+          <template #default="{ row }">
+            <BeeTableCommonCell :text="row.reason" subtext="原因" />
+          </template>
+        </BeeTableColumn>
+        <BeeTableColumn :min-width="200">
+          <template #default="{ row }">
+            <BeeTableCommonCell :text="row.object" subtext="关联资源" />
+          </template>
+        </BeeTableColumn>
+        <BeeTableColumn :min-width="300">
+          <template #default="{ row }">
+            <BeeTableCommonCell :text="row.message" subtext="事件信息" />
+          </template>
+        </BeeTableColumn>
+        <BeeTableColumn :width="180">
+          <template #default="{ row }">
+            <BeeTableCommonCell :text="row.time" subtext="最后触发时间" />
+          </template>
+        </BeeTableColumn>
+      </BeeTable>
     </div>
   </BeeCard>
 </template>
 
 <script setup lang="ts">
 import { ref } from 'vue'
-import { Refresh } from '@element-plus/icons-vue'
-import BeeButton from '@/components/BeeButton/index.vue'
 import BeeCard from '@/components/BeeCard/index.vue'
+import BeeCircleButton from '@/components/BeeCircleButton/index.vue'
+import BeeIcon from '@/components/BeeIcon/index.vue'
+import BeeTableColumn from '@/components/BeeTable/BeeTableColumn.vue'
+import BeeTableCommonCell from '@/components/BeeTable/BeeTableCommonCell.vue'
+import BeeTable from '@/components/BeeTable/index.vue'
 import BeeTag from '@/components/BeeTag/index.vue'
 
 defineOptions({ name: 'BeeClusterOverviewEvent' })
@@ -68,12 +90,24 @@ function loadEvents() {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 12px 20px;
+    height: 64px;
     font-weight: 500;
   }
 
+  &__title {
+    display: flex;
+    gap: 4px;
+    align-items: center;
+  }
+
+  &__actions {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+  }
+
   &__body {
-    padding: 0;
+    padding-bottom: 16px;
   }
 }
 </style>
