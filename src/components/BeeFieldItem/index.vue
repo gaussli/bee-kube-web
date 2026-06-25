@@ -4,7 +4,7 @@
       <BeeIcon v-if="icon" :name="icon" :size="12" />
       <span class="bee-fielditem__label">{{ fieldName }}</span>
     </div>
-    <span class="bee-fielditem__value">{{ fieldValue }}</span>
+    <span class="bee-fielditem__value">{{ fieldValue || '-' }}</span>
   </div>
 </template>
 
@@ -17,7 +17,7 @@ defineProps<{
   /** 字段名称 */
   fieldName: string
   /** 字段值 */
-  fieldValue: string
+  fieldValue?: string
   /** 图标名称 */
   icon?: string
 }>()

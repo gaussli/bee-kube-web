@@ -1,4 +1,4 @@
-import { COLOR_DANGER, COLOR_PRIMARY, COLOR_SUCCESS } from '@/config/color'
+import { COLOR_DANGER, COLOR_GRAY_70, COLOR_PRIMARY, COLOR_SUCCESS } from '@/config/color'
 
 /**
  * 状态配置项
@@ -17,6 +17,7 @@ export interface StatusConfig {
 
 export const CLUSTER_STATUS_CONFIG: StatusConfig[] = [
   { value: undefined, label: '所有状态', labelEn: 'ALL', color: COLOR_SUCCESS },
+  { value: 0, label: '未知', labelEn: 'Unknown', color: COLOR_GRAY_70 },
   { value: 1, label: '健康', labelEn: 'Healthy', color: COLOR_SUCCESS },
   { value: 2, label: '异常', labelEn: 'Unhealthy', color: COLOR_DANGER },
   { value: 3, label: '纳管中', labelEn: 'Registering', color: COLOR_PRIMARY },

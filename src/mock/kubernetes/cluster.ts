@@ -3,7 +3,7 @@
  * @module mock/kubernetes/cluster
  */
 import type { PageResp } from '@/types/common'
-import type { ClusterListResp, ClusterQueryReq, ClusterRegistrationReq, ClusterReq } from '@/types/kubernetes/cluster'
+import type { ClusterDetailResp, ClusterListResp, ClusterQueryReq, ClusterRegistrationReq, ClusterReq } from '@/types/kubernetes/cluster'
 import { generateId } from '@/mock/utils'
 
 /**
@@ -26,7 +26,7 @@ export default [
   {
     method: 'get',
     url: '/kubernetes/clusters/:id',
-    handler: (pathParams: Record<string, string>): ClusterListResp => getClusterDetail(pathParams.id)
+    handler: (pathParams: Record<string, string>): ClusterDetailResp => getClusterDetail(pathParams.id)
   },
   {
     method: 'post',
@@ -86,13 +86,19 @@ function getClusterPage(params: Partial<ClusterQueryReq>): PageResp<ClusterListR
  * @param id - 集群ID
  * @returns 集群详情对象
  */
-function getClusterDetail(id: string): ClusterListResp {
+function getClusterDetail(id: string): ClusterDetailResp {
   const cluster = mockClusters.find(c => c.id === id)
   if (!cluster) {
     console.error('[getClusterDetail] can not find cluster:', id)
-    return mockClusters[0]
+    return {
+      ...mockClusters[0],
+      certExpireAt: '2026-12-31 23:59:59'
+    }
   }
-  return cluster
+  return {
+    ...cluster,
+    certExpireAt: '2026-12-31 23:59:59'
+  }
 }
 
 /**

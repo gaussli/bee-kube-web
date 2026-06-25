@@ -1,7 +1,7 @@
 <template>
   <BeePage class="cluster-overview">
     <!-- 集群信息 -->
-    <BeeClusterOverviewInfo :data="clusterOverviewData" />
+    <BeeClusterOverviewInfo :data="clusterOverviewInfoData" />
 
     <!-- 资源雷达图 + 节点列表 -->
     <div class="cluster-overview__metrics-row">
@@ -19,6 +19,8 @@
 <script setup lang="ts">
 import { onMounted, ref } from 'vue'
 import type { ClusterOverviewInfoData } from './components/BeeClusterOverviewInfo.vue'
+import { getClusterDetail } from '@/api/kubernetes/cluster'
+import { useKubernetesStore } from '@/stores/kubernetes'
 import BeePage from '@/components/BeePage/index.vue'
 import BeeClusterOverviewEvent from './components/BeeClusterOverviewEvent.vue'
 import BeeClusterOverviewInfo from './components/BeeClusterOverviewInfo.vue'
@@ -27,20 +29,39 @@ import BeeClusterOverviewResource from './components/BeeClusterOverviewResource.
 
 defineOptions({ name: 'ClusterOverview' })
 
-/** 集群概览 mock 数据，后期替换为 API 接口数据 */
-const clusterOverviewData = ref<ClusterOverviewInfoData>({
-  name: 'prod-cluster',
-  description:
-    '生产环境集群生产环境集群生产环境集群生产环境集群生产环境集群生产环境集群生产环境集群生产环境集群生产环境集群生产环境集群生产环境集群生产环境集群生产环境集群生产环境集群生产环境集群生产环境集群生产环境集群',
-  status: 1,
-  createdAt: '2023-06-15 23:43:12',
-  k8sVersion: 'v1.28.0',
-  apiServer: 'https://api.production.local:6443',
-  certExpireAt: '2026-07-20 23:45:23'
+const kubernetesStore = useKubernetesStore()
+
+/** 集群概览数据 */
+const clusterOverviewInfoData = ref<ClusterOverviewInfoData>({
+  name: '',
+  description: '',
+  status: 0,
+  createdAt: '',
+  k8sVersion: '',
+  apiServer: '',
+  certExpireAt: ''
 })
 
+/**
+ * 加载集群概览数据
+ * @remarks 从 API 获取集群详情，转换为 ClusterOverviewInfoData 格式
+ */
+async function loadClusterOverview() {
+  if (!kubernetesStore.activeClusterId) return
+  const detail = await getClusterDetail(kubernetesStore.activeClusterId)
+  clusterOverviewInfoData.value = {
+    name: detail.name,
+    description: detail.description,
+    status: detail.status,
+    createdAt: detail.createAt || '',
+    k8sVersion: detail.k8sVersion,
+    apiServer: detail.apiServer,
+    certExpireAt: detail.certExpireAt
+  }
+}
+
 onMounted(() => {
-  // TODO: 加载真实统计数据
+  loadClusterOverview()
 })
 </script>
 

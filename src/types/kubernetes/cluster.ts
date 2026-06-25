@@ -5,6 +5,18 @@
 import type { BaseEntity, PageReq } from '@/types/common'
 
 /**
+ * 集群查询请求参数
+ */
+export interface ClusterQueryReq extends PageReq {
+  /** 集群ID */
+  id: string
+  /** 集群名称 */
+  name: string
+  /** 集群状态 */
+  status: number
+}
+
+/**
  * 集群列表响应数据
  */
 export interface ClusterListResp extends BaseEntity {
@@ -23,15 +35,23 @@ export interface ClusterListResp extends BaseEntity {
 }
 
 /**
- * 集群查询请求参数
+ * 集群详情响应数据
  */
-export interface ClusterQueryReq extends PageReq {
-  /** 集群ID */
-  id: string
+export interface ClusterDetailResp extends BaseEntity {
   /** 集群名称 */
   name: string
+  /** API Server 地址 */
+  apiServer: string
+  /** 集群描述 */
+  description?: string
   /** 集群状态 */
   status: number
+  /** 集群状态描述 */
+  statusMsg?: string
+  /** Kubernetes 版本 */
+  k8sVersion: string
+  /** 证书过期时间 */
+  certExpireAt: string
 }
 
 /**

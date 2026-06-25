@@ -1,11 +1,11 @@
 <template>
   <div class="bee-fieldcard">
     <div class="bee-fieldcard__header">
-      <span class="bee-fieldcard__prop-name">{{ propName }}</span>
+      <span class="bee-fieldcard__field-name">{{ fieldName }}</span>
     </div>
     <div class="bee-fieldcard__body">
-      <span class="bee-fieldcard__text">{{ text }}</span>
-      <span v-if="subtext" class="bee-fieldcard__subtext">{{ subtext }}</span>
+      <span class="bee-fieldcard__field-value">{{ fieldValue || '-' }}</span>
+      <span v-if="fieldSubValue" class="bee-fieldcard__field-sub-value">{{ fieldSubValue }}</span>
     </div>
   </div>
 </template>
@@ -14,12 +14,12 @@
 defineOptions({ name: 'BeeFieldCard' })
 
 defineProps<{
-  /** 属性名称 */
-  propName: string
-  /** 主文本 */
-  text: string
-  /** 副文本 */
-  subtext: string
+  /** 字段名称 */
+  fieldName: string
+  /** 字段主值 */
+  fieldValue?: string
+  /** 字段副值 */
+  fieldSubValue?: string
 }>()
 </script>
 
@@ -45,7 +45,7 @@ defineProps<{
     justify-content: flex-end;
   }
 
-  &__prop-name {
+  &__field-name {
     font-size: $font-size-12;
     color: $color-text-tertiary;
   }
@@ -59,12 +59,12 @@ defineProps<{
     line-height: 1;
   }
 
-  &__text {
+  &__field-value {
     font-size: $font-size-14;
     color: var(--bee-fieldcard-text-color);
   }
 
-  &__subtext {
+  &__field-sub-value {
     font-size: $font-size-12;
     color: var(--bee-fieldcard-subtext-color);
   }
