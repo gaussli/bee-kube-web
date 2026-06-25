@@ -3,14 +3,16 @@
  * @module mock/kubernetes/node
  */
 import type { PageResp } from '@/types/common'
-import type { NodeQueryReq, NodeReq, NodeResp, NodeCordonReq, NodeLabelsReq, NodeAnnotationsReq, NodeTaintsReq } from '@/types/kubernetes/node'
+import type { NodeQueryReq, NodeReq, NodeListResp, NodeCordonReq, NodeLabelsReq, NodeAnnotationsReq, NodeTaintsReq, NodeResourceResp } from '@/types/kubernetes/node'
 import { generateId } from '@/mock/utils'
 
 /**
  * 节点路由配置
  * @remarks
  * - GET /kubernetes/clusters/:clusterId/nodes - 获取节点分页列表（getNodePage）
+ * - GET /kubernetes/clusters/:clusterId/nodes/topn - 获取节点 TopN 排行（getNodeTopN）
  * - GET /kubernetes/clusters/:clusterId/nodes/:name - 获取节点详情（getNodeDetail）
+ * - GET /kubernetes/clusters/:clusterId/nodes/:name/resource - 获取节点资源用量（getNodeResource）
  * - PUT /kubernetes/clusters/:clusterId/nodes/:name - 更新节点（updateNode）
  * - POST /kubernetes/clusters/:clusterId/nodes/:name/drain - 驱逐节点（drainNode）
  * - POST /kubernetes/clusters/:clusterId/nodes/:name/cordon - 设置可调度状态（cordonNode）
@@ -22,12 +24,22 @@ export default [
   {
     method: 'get',
     url: '/kubernetes/clusters/:clusterId/nodes',
-    handler: (pathParams: Record<string, string>, params: Partial<NodeQueryReq>): PageResp<NodeResp> => getNodePage(pathParams.clusterId, params)
+    handler: (pathParams: Record<string, string>, params: Partial<NodeQueryReq>): PageResp<NodeListResp> => getNodePage(pathParams.clusterId, params)
+  },
+  {
+    method: 'get',
+    url: '/kubernetes/clusters/:clusterId/nodes/topn',
+    handler: (pathParams: Record<string, string>, params: Partial<{ metric: string; count: number }>): NodeListResp[] => getNodeTopN(pathParams.clusterId, params)
   },
   {
     method: 'get',
     url: '/kubernetes/clusters/:clusterId/nodes/:name',
-    handler: (pathParams: Record<string, string>): NodeResp => getNodeDetail(pathParams.clusterId, pathParams.name)
+    handler: (pathParams: Record<string, string>): NodeListResp => getNodeDetail(pathParams.clusterId, pathParams.name)
+  },
+  {
+    method: 'get',
+    url: '/kubernetes/clusters/:clusterId/nodes/:name/resource',
+    handler: (pathParams: Record<string, string>): NodeResourceResp => getNodeResource(pathParams.clusterId, pathParams.name)
   },
   {
     method: 'put',
@@ -42,7 +54,7 @@ export default [
   {
     method: 'post',
     url: '/kubernetes/clusters/:clusterId/nodes/:name/cordon',
-    handler: (pathParams: Record<string, string>, data: Partial<NodeCordonReq>): void => cordonNode(pathParams.clusterId, pathParams.name, data)
+    handler: (pathParams: Record<string, string>, data: NodeCordonReq): void => cordonNode(pathParams.clusterId, pathParams.name, data)
   },
   {
     method: 'post',
@@ -67,7 +79,7 @@ export default [
  * @param params - 查询参数
  * @returns 分页数据
  */
-function getNodePage(clusterId: string, params: Partial<NodeQueryReq>): PageResp<NodeResp> {
+function getNodePage(clusterId: string, params: Partial<NodeQueryReq>): PageResp<NodeListResp> {
   const { id, name, ip, status, page = 1, pageSize = 10 } = params || {}
 
   let filtered = mockNodes.filter(n => n.clusterId === clusterId)
@@ -97,13 +109,34 @@ function getNodePage(clusterId: string, params: Partial<NodeQueryReq>): PageResp
  * @param name - 节点名称
  * @returns 节点详情
  */
-function getNodeDetail(clusterId: string, name: string): NodeResp {
+function getNodeDetail(clusterId: string, name: string): NodeListResp {
   const node = mockNodes.find(n => n.clusterId === clusterId && n.name === name)
   if (!node) {
     console.error('[getNodeDetail] can not find node:', clusterId, name)
     return mockNodes[0]
   }
   return node
+}
+
+/**
+ * 获取节点资源用量
+ * @param clusterId - 集群ID
+ * @param name - 节点名称
+ * @returns 节点资源用量数据
+ */
+function getNodeResource(clusterId: string, name: string): NodeResourceResp {
+  return generateNodeResources()
+}
+
+/**
+ * 获取节点 TopN 排行
+ * @param _clusterId - 集群ID（mock 中未使用）
+ * @param params - 查询参数
+ * @returns 随机选取的 TopN 节点列表
+ */
+function getNodeTopN(_clusterId: string, params: Partial<{ metric: string; count: number }>): NodeListResp[] {
+  const { count = 5 } = params || {}
+  return mockNodes.sort(() => Math.random() - 0.5).slice(0, count)
 }
 
 /**
@@ -132,17 +165,7 @@ function updateNode(clusterId: string, name: string, data: Partial<NodeReq>): vo
  * @param clusterId - 集群ID
  * @param name - 节点名称
  */
-function drainNode(clusterId: string, name: string): void {
-  const node = mockNodes.find(n => n.clusterId === clusterId && n.name === name)
-  if (!node) {
-    console.error('[drainNode] can not find node:', clusterId, name)
-    return
-  }
-  const slashIndex = node.pods.indexOf('/')
-  if (slashIndex !== -1) {
-    node.pods = '0' + node.pods.substring(slashIndex)
-  }
-}
+function drainNode(clusterId: string, name: string): void {}
 
 /**
  * 设置节点可调度/不可调度
@@ -150,13 +173,13 @@ function drainNode(clusterId: string, name: string): void {
  * @param name - 节点名称
  * @param data - 调度配置
  */
-function cordonNode(clusterId: string, name: string, data: Partial<NodeCordonReq>): void {
+function cordonNode(clusterId: string, name: string, data: NodeCordonReq): void {
   const node = mockNodes.find(n => n.clusterId === clusterId && n.name === name)
   if (!node) {
     console.error('[cordonNode] can not find node:', clusterId, name)
     return
   }
-  node.schedulable = data.cordon ?? false
+  node.unschedulable = data.cordon
 }
 
 /**
@@ -165,25 +188,7 @@ function cordonNode(clusterId: string, name: string, data: Partial<NodeCordonReq
  * @param name - 节点名称
  * @param data - 标签配置
  */
-function manageNodeLabels(clusterId: string, name: string, data: Partial<NodeLabelsReq>): void {
-  const node = mockNodes.find(n => n.clusterId === clusterId && n.name === name)
-  if (!node) {
-    console.error('[manageNodeLabels] can not find node:', clusterId, name)
-    return
-  }
-  node.labels = node.labels || {}
-  switch (data.operation) {
-    case 1: // 新增
-      Object.assign(node.labels, data.labels)
-      break
-    case 2: // 移除
-      Object.keys(data.labels || {}).forEach(key => delete node.labels?.[key])
-      break
-    case 3: // 全量替换
-      node.labels = data.labels || {}
-      break
-  }
-}
+function manageNodeLabels(clusterId: string, name: string, data: Partial<NodeLabelsReq>): void {}
 
 /**
  * 更新节点注解配置
@@ -191,25 +196,7 @@ function manageNodeLabels(clusterId: string, name: string, data: Partial<NodeLab
  * @param name - 节点名称
  * @param data - 注解配置
  */
-function manageNodeAnnotations(clusterId: string, name: string, data: Partial<NodeAnnotationsReq>): void {
-  const node = mockNodes.find(n => n.clusterId === clusterId && n.name === name)
-  if (!node) {
-    console.error('[manageNodeAnnotations] can not find node:', clusterId, name)
-    return
-  }
-  node.annotations = node.annotations || {}
-  switch (data.operation) {
-    case 1: // 新增
-      Object.assign(node.annotations, data.annotations)
-      break
-    case 2: // 移除
-      Object.keys(data.annotations || {}).forEach(key => delete node.annotations?.[key])
-      break
-    case 3: // 全量替换
-      node.annotations = data.annotations || {}
-      break
-  }
-}
+function manageNodeAnnotations(clusterId: string, name: string, data: Partial<NodeAnnotationsReq>): void {}
 
 /**
  * 更新节点污点配置
@@ -223,643 +210,364 @@ function manageNodeTaints(clusterId: string, name: string, data: Partial<NodeTai
     console.error('[manageNodeTaints] can not find node:', clusterId, name)
     return
   }
-  // 污点配置模拟，实际污点存储需要扩展 NodeResp 类型
+  // 污点配置模拟，实际污点存储需要扩展 NodeListResp 类型
   console.log('[manageNodeTaints] update taints:', clusterId, name, data)
+}
+
+function generateNodeResources() {
+  // 单节点 CPU 4~16 核
+  const capacityCpu = 4 + Math.floor(Math.random() * 13)
+  // 内存 8~64 GiB（Bytes）
+  const capacityMemory = Math.floor(Math.pow(2, 33) + Math.random() * Math.pow(2, 36))
+  // 磁盘 50~500 GiB（Bytes）
+  const capacityStorage = Math.floor(Math.pow(2, 29) * 50 + Math.random() * Math.pow(2, 29) * 900)
+  // Pod 50~200
+  const capacityPod = 50 + Math.floor(Math.random() * 151)
+  return {
+    capacity: {
+      cpu: capacityCpu,
+      memory: capacityMemory,
+      storage: capacityStorage,
+      pod: capacityPod
+    },
+    allocation: {
+      // Kubernetes 可分配容量略低于物理容量，模拟操作系统预留
+      cpu: Math.floor(capacityCpu * (0.9 + Math.random() * 0.08)),
+      memory: Math.floor(capacityMemory * (0.88 + Math.random() * 0.1)),
+      storage: Math.floor(capacityStorage * (0.85 + Math.random() * 0.12)),
+      pod: Math.floor(capacityPod * (0.9 + Math.random() * 0.08))
+    },
+    usage: {
+      cpu: Math.floor(capacityCpu * (0.1 + Math.random() * 0.7)),
+      memory: Math.floor(capacityMemory * (0.1 + Math.random() * 0.7)),
+      storage: Math.floor(capacityStorage * (0.1 + Math.random() * 0.7)),
+      pod: Math.floor(capacityPod * (0.1 + Math.random() * 0.7))
+    }
+  }
 }
 
 /**
  * 模拟节点数据
  */
-const mockNodes: NodeResp[] = [
+const mockNodes: NodeListResp[] = [
   {
     id: generateId(),
+    uid: generateId(),
     name: 'master-01',
     description: '生产集群主控制节点，负责集群调度和管理',
-    clusterId: 'cls-001-prod',
+    clusterId: generateId(),
     clusterName: 'prod-cluster',
     status: 'Ready',
-    roles: ['control-plane', 'master'],
-    version: 'v1.28.3',
-    os: 'Ubuntu 22.04.3 LTS',
-    architecture: 'amd64',
     ip: '192.168.1.10',
-    cpu: '3/16',
-    memory: '8Gi/32Gi',
-    pods: '30/110',
+    unschedulable: false,
     createBy: 'admin',
     createAt: '2024-01-15 10:30:25',
     updateBy: 'admin',
     updateAt: '2024-01-15 10:30:25',
-    allocatedCpu: '1.2',
-    allocatedMemory: '4Gi',
-    labels: {
-      'node-role.kubernetes.io/master': '',
-      'kubernetes.io/os': 'linux'
-    },
-    annotations: {
-      'kubeadm.alpha.kubernetes.io/cri-socket': 'unix:///var/run/containerd/containerd.sock'
-    },
-    schedulable: false
+    resource: generateNodeResources()
   },
   {
     id: generateId(),
+    uid: generateId(),
     name: 'worker-01',
-    description: '生产集群计算节点，运行有状态服务和中间件',
-    clusterId: 'cls-001-prod',
+    description: '生产集群工作节点，运行业务应用 Pod',
+    clusterId: generateId(),
     clusterName: 'prod-cluster',
     status: 'Ready',
-    roles: ['worker'],
-    version: 'v1.28.3',
-    os: 'Ubuntu 22.04.3 LTS',
-    architecture: 'amd64',
     ip: '192.168.1.11',
-    cpu: '18/24',
-    memory: '48Gi/64Gi',
-    pods: '82/110',
+    unschedulable: false,
     createBy: 'admin',
-    createAt: '2024-01-15 10:35:10',
+    createAt: '2024-01-15 11:00:12',
     updateBy: 'admin',
-    updateAt: '2024-02-20 14:22:35',
-    allocatedCpu: '14.5',
-    allocatedMemory: '38Gi',
-    labels: {
-      'node-role.kubernetes.io/worker': '',
-      'kubernetes.io/os': 'linux'
-    },
-    schedulable: true
+    updateAt: '2024-03-20 09:15:30',
+    resource: generateNodeResources()
   },
   {
     id: generateId(),
+    uid: generateId(),
     name: 'worker-02',
-    description: '生产集群计算节点，主要运行无状态Web服务',
-    clusterId: 'cls-001-prod',
+    description: '生产集群工作节点，承担高并发业务流量',
+    clusterId: generateId(),
     clusterName: 'prod-cluster',
     status: 'Ready',
-    roles: ['worker'],
-    version: 'v1.28.3',
-    os: 'Ubuntu 22.04.3 LTS',
-    architecture: 'amd64',
     ip: '192.168.1.12',
-    cpu: '20/24',
-    memory: '58Gi/64Gi',
-    pods: '95/110',
+    unschedulable: false,
     createBy: 'admin',
-    createAt: '2024-01-15 10:40:05',
+    createAt: '2024-01-15 11:10:45',
     updateBy: 'admin',
-    updateAt: '2024-03-10 09:15:42',
-    allocatedCpu: '18.8',
-    allocatedMemory: '52Gi',
-    labels: {
-      'node-role.kubernetes.io/worker': '',
-      'kubernetes.io/os': 'linux'
-    },
-    schedulable: true
+    updateAt: '2024-05-10 14:22:08',
+    resource: generateNodeResources()
   },
   {
     id: generateId(),
-    name: 'master-01',
-    description: '预发集群主控制节点',
-    clusterId: 'cls-002-staging',
-    clusterName: 'staging-cluster',
-    status: 'Ready',
-    roles: ['control-plane', 'master'],
-    version: 'v1.28.3',
-    os: 'Ubuntu 22.04.3 LTS',
-    architecture: 'amd64',
-    ip: '10.0.1.10',
-    cpu: '1/8',
-    memory: '4Gi/16Gi',
-    pods: '12/110',
-    createBy: 'developer',
-    createAt: '2024-02-10 09:15:00',
-    updateBy: 'developer',
-    updateAt: '2024-02-10 09:15:00',
-    allocatedCpu: '0.5',
-    allocatedMemory: '2Gi',
-    labels: {
-      'node-role.kubernetes.io/master': ''
-    },
-    schedulable: false
-  },
-  {
-    id: generateId(),
-    name: 'worker-01',
-    description: '预发集群计算节点，承载预发测试流量',
-    clusterId: 'cls-002-staging',
-    clusterName: 'staging-cluster',
-    status: 'NotReady',
-    roles: ['worker'],
-    version: 'v1.28.3',
-    os: 'Ubuntu 22.04.3 LTS',
-    architecture: 'amd64',
-    ip: '10.0.1.11',
-    cpu: '2/8',
-    memory: '6Gi/16Gi',
-    pods: '8/110',
-    createBy: 'developer',
-    createAt: '2024-02-10 09:20:00',
-    updateBy: 'developer',
-    updateAt: '2024-04-05 16:30:18',
-    allocatedCpu: '1.0',
-    allocatedMemory: '3Gi',
-    labels: {
-      'node-role.kubernetes.io/worker': ''
-    },
-    schedulable: true
-  },
-  {
-    id: generateId(),
-    name: 'worker-02',
-    description: '预发集群计算节点',
-    clusterId: 'cls-002-staging',
-    clusterName: 'staging-cluster',
-    status: 'Ready',
-    roles: ['worker'],
-    version: 'v1.28.3',
-    os: 'Ubuntu 22.04.3 LTS',
-    architecture: 'amd64',
-    ip: '10.0.1.12',
-    cpu: '6/8',
-    memory: '12Gi/16Gi',
-    pods: '65/110',
-    createBy: 'developer',
-    createAt: '2024-02-10 09:25:00',
-    updateBy: 'developer',
-    updateAt: '2024-03-28 11:45:22',
-    allocatedCpu: '5.2',
-    allocatedMemory: '10Gi',
-    labels: {
-      'node-role.kubernetes.io/worker': '',
-      'kubernetes.io/os': 'linux'
-    },
-    schedulable: true
-  },
-  {
-    id: generateId(),
-    name: 'dev-node-01',
-    description: '开发集群混合节点，同时运行所有类型工作负载',
-    clusterId: 'cls-003-dev',
-    clusterName: 'dev-cluster',
-    status: 'Ready',
-    roles: ['control-plane', 'master', 'worker'],
-    version: 'v1.27.5',
-    os: 'Ubuntu 20.04.6 LTS',
-    architecture: 'amd64',
-    ip: '172.16.1.10',
-    cpu: '6/8',
-    memory: '14Gi/16Gi',
-    pods: '102/110',
-    createBy: 'devops',
-    createAt: '2024-02-25 14:20:10',
-    updateBy: 'devops',
-    updateAt: '2024-02-25 14:20:10',
-    allocatedCpu: '5.8',
-    allocatedMemory: '13Gi',
-    labels: {
-      'node-role.kubernetes.io/master': ''
-    },
-    schedulable: false
-  },
-  {
-    id: generateId(),
+    uid: generateId(),
     name: 'worker-03',
-    description: '生产集群存储优化节点，配备SSD磁盘',
-    clusterId: 'cls-001-prod',
+    description: '生产集群工作节点，用于数据持久化服务',
+    clusterId: generateId(),
     clusterName: 'prod-cluster',
     status: 'Ready',
-    roles: ['worker'],
-    version: 'v1.28.3',
-    os: 'Ubuntu 22.04.3 LTS',
-    architecture: 'amd64',
     ip: '192.168.1.13',
-    cpu: '4/24',
-    memory: '8Gi/64Gi',
-    pods: '18/110',
+    unschedulable: false,
     createBy: 'admin',
     createAt: '2024-01-16 08:00:00',
-    updateBy: 'admin',
-    updateAt: '2024-01-30 10:12:55',
-    allocatedCpu: '2.5',
-    allocatedMemory: '5Gi',
-    labels: {
-      'node-role.kubernetes.io/worker': '',
-      'kubernetes.io/os': 'linux',
-      'disk-type': 'ssd'
-    },
-    schedulable: true
+    updateBy: 'ops',
+    updateAt: '2024-06-01 10:00:00',
+    resource: generateNodeResources()
   },
   {
     id: generateId(),
+    uid: generateId(),
     name: 'worker-04',
-    description: '生产集群节点，状态异常待排查',
-    clusterId: 'cls-001-prod',
+    description: '生产集群工作节点，GPU 计算节点',
+    clusterId: generateId(),
     clusterName: 'prod-cluster',
-    status: 'Unknown',
-    roles: ['worker'],
-    version: 'v1.28.3',
-    os: 'Ubuntu 22.04.3 LTS',
-    architecture: 'amd64',
+    status: 'Ready',
     ip: '192.168.1.14',
-    cpu: '0/16',
-    memory: '0Gi/32Gi',
-    pods: '0/110',
+    unschedulable: false,
     createBy: 'admin',
-    createAt: '2024-03-01 10:00:00',
+    createAt: '2024-02-20 09:30:00',
     updateBy: 'admin',
-    updateAt: '2024-04-15 08:30:00',
-    allocatedCpu: '0',
-    allocatedMemory: '0Gi',
-    labels: {
-      'node-role.kubernetes.io/worker': '',
-      'kubernetes.io/os': 'linux'
-    },
-    schedulable: false
+    updateAt: '2024-02-20 09:30:00',
+    resource: generateNodeResources()
   },
   {
     id: generateId(),
+    uid: generateId(),
     name: 'worker-05',
-    description: '生产集群高性能计算节点',
-    clusterId: 'cls-001-prod',
+    description: '生产集群工作节点，日志和监控服务节点',
+    clusterId: generateId(),
     clusterName: 'prod-cluster',
-    status: 'Ready',
-    roles: ['worker'],
-    version: 'v1.28.3',
-    os: 'Ubuntu 22.04.3 LTS',
-    architecture: 'amd64',
+    status: 'NotReady',
     ip: '192.168.1.15',
-    cpu: '22/24',
-    memory: '62Gi/64Gi',
-    pods: '108/110',
+    unschedulable: false,
     createBy: 'admin',
-    createAt: '2024-01-17 09:00:00',
-    updateBy: 'admin',
-    updateAt: '2024-04-10 14:55:30',
-    allocatedCpu: '21.2',
-    allocatedMemory: '60Gi',
-    labels: {
-      'node-role.kubernetes.io/worker': '',
-      'kubernetes.io/os': 'linux',
-      'workload-type': 'compute-intensive'
-    },
-    schedulable: false
-  },
-  {
-    id: generateId(),
-    name: 'worker-06',
-    description: '预发集群GPU计算节点，用于AI推理任务',
-    clusterId: 'cls-002-staging',
-    clusterName: 'staging-cluster',
-    status: 'Ready',
-    roles: ['worker'],
-    version: 'v1.28.3',
-    os: 'Ubuntu 22.04.3 LTS',
-    architecture: 'amd64',
-    ip: '10.0.1.13',
-    cpu: '8/16',
-    memory: '32Gi/64Gi',
-    pods: '45/110',
-    createBy: 'developer',
-    createAt: '2024-03-15 14:20:00',
-    updateBy: 'developer',
-    updateAt: '2024-03-15 14:20:00',
-    allocatedCpu: '6.5',
-    allocatedMemory: '28Gi',
-    labels: {
-      'node-role.kubernetes.io/worker': '',
-      'kubernetes.io/os': 'linux',
-      'gpu-type': 'nvidia-t4'
-    },
-    schedulable: true
-  },
-  {
-    id: generateId(),
-    name: 'master-02',
-    description: '生产集群高可用控制节点',
-    clusterId: 'cls-001-prod',
-    clusterName: 'prod-cluster',
-    status: 'Ready',
-    roles: ['control-plane', 'master'],
-    version: 'v1.28.3',
-    os: 'Ubuntu 22.04.3 LTS',
-    architecture: 'amd64',
-    ip: '192.168.1.16',
-    cpu: '4/16',
-    memory: '12Gi/32Gi',
-    pods: '28/110',
-    createBy: 'admin',
-    createAt: '2024-01-20 11:00:00',
-    updateBy: 'admin',
-    updateAt: '2024-01-20 11:00:00',
-    allocatedCpu: '2.0',
-    allocatedMemory: '6Gi',
-    labels: {
-      'node-role.kubernetes.io/master': '',
-      'kubernetes.io/os': 'linux'
-    },
-    schedulable: false
-  },
-  {
-    id: generateId(),
-    name: 'worker-07',
-    description: '生产集群内存优化节点',
-    clusterId: 'cls-001-prod',
-    clusterName: 'prod-cluster',
-    status: 'Ready',
-    roles: ['worker'],
-    version: 'v1.28.3',
-    os: 'Ubuntu 22.04.3 LTS',
-    architecture: 'amd64',
-    ip: '192.168.1.17',
-    cpu: '12/32',
-    memory: '120Gi/128Gi',
-    pods: '85/110',
-    createBy: 'admin',
-    createAt: '2024-02-05 09:30:00',
-    updateBy: 'admin',
-    updateAt: '2024-02-05 09:30:00',
-    allocatedCpu: '10.5',
-    allocatedMemory: '110Gi',
-    labels: {
-      'node-role.kubernetes.io/worker': '',
-      'kubernetes.io/os': 'linux',
-      'memory-optimized': 'true'
-    },
-    schedulable: true
-  },
-  {
-    id: generateId(),
-    name: 'dev-worker-01',
-    description: '开发集群通用工作节点',
-    clusterId: 'cls-003-dev',
-    clusterName: 'dev-cluster',
-    status: 'Ready',
-    roles: ['worker'],
-    version: 'v1.27.5',
-    os: 'Ubuntu 20.04.6 LTS',
-    architecture: 'amd64',
-    ip: '172.16.1.11',
-    cpu: '4/8',
-    memory: '8Gi/16Gi',
-    pods: '55/110',
-    createBy: 'devops',
     createAt: '2024-03-01 10:00:00',
-    updateBy: 'devops',
-    updateAt: '2024-03-01 10:00:00',
-    allocatedCpu: '3.2',
-    allocatedMemory: '6Gi',
-    labels: {
-      'node-role.kubernetes.io/worker': ''
-    },
-    schedulable: true
-  },
-  {
-    id: generateId(),
-    name: 'worker-08',
-    description: '生产集群网络优化节点',
-    clusterId: 'cls-001-prod',
-    clusterName: 'prod-cluster',
-    status: 'Ready',
-    roles: ['worker'],
-    version: 'v1.28.3',
-    os: 'Ubuntu 22.04.3 LTS',
-    architecture: 'amd64',
-    ip: '192.168.1.18',
-    cpu: '8/16',
-    memory: '16Gi/32Gi',
-    pods: '42/110',
-    createBy: 'admin',
-    createAt: '2024-02-12 15:45:00',
     updateBy: 'admin',
-    updateAt: '2024-02-12 15:45:00',
-    allocatedCpu: '5.8',
-    allocatedMemory: '12Gi',
-    labels: {
-      'node-role.kubernetes.io/worker': '',
-      'kubernetes.io/os': 'linux',
-      'network-optimized': 'true'
-    },
-    schedulable: false
+    updateAt: '2024-06-15 16:45:00',
+    resource: generateNodeResources()
   },
   {
     id: generateId(),
-    name: 'edge-node-01',
-    description: '边缘计算节点，部署在区域机房',
-    clusterId: 'cls-001-prod',
-    clusterName: 'prod-cluster',
-    status: 'Ready',
-    roles: ['worker'],
-    version: 'v1.28.3',
-    os: 'Ubuntu 22.04.3 LTS',
-    architecture: 'arm64',
+    uid: generateId(),
+    name: 'staging-master-01',
+    description: '预发布集群主控制节点',
+    clusterId: generateId(),
+    clusterName: 'staging-cluster',
+    status: 'Unknown',
     ip: '192.168.2.10',
-    cpu: '4/8',
-    memory: '8Gi/16Gi',
-    pods: '35/110',
+    unschedulable: true,
     createBy: 'admin',
-    createAt: '2024-03-10 08:00:00',
+    createAt: '2024-02-10 10:30:25',
     updateBy: 'admin',
-    updateAt: '2024-03-10 08:00:00',
-    allocatedCpu: '3.0',
-    allocatedMemory: '6Gi',
-    labels: {
-      'node-role.kubernetes.io/worker': '',
-      'kubernetes.io/os': 'linux',
-      'edge-node': 'true'
-    },
-    schedulable: true
+    updateAt: '2024-02-10 10:30:25',
+    resource: generateNodeResources()
   },
   {
     id: generateId(),
-    name: 'edge-node-02',
-    description: '边缘计算节点，部署在区域机房',
-    clusterId: 'cls-001-prod',
-    clusterName: 'prod-cluster',
-    status: 'Ready',
-    roles: ['worker'],
-    version: 'v1.28.3',
-    os: 'Ubuntu 22.04.3 LTS',
-    architecture: 'arm64',
-    ip: '192.168.2.11',
-    cpu: '4/8',
-    memory: '8Gi/16Gi',
-    pods: '28/110',
-    createBy: 'admin',
-    createAt: '2024-03-10 08:15:00',
-    updateBy: 'admin',
-    updateAt: '2024-03-10 08:15:00',
-    allocatedCpu: '2.5',
-    allocatedMemory: '5Gi',
-    labels: {
-      'node-role.kubernetes.io/worker': '',
-      'kubernetes.io/os': 'linux',
-      'edge-node': 'true'
-    },
-    schedulable: true
-  },
-  {
-    id: generateId(),
-    name: 'preempt-worker-01',
-    description: '预发集群可抢占式计算节点',
-    clusterId: 'cls-002-staging',
+    uid: generateId(),
+    name: 'staging-worker-01',
+    description: '预发布集群工作节点，用于上线前验证',
+    clusterId: generateId(),
     clusterName: 'staging-cluster',
     status: 'Ready',
-    roles: ['worker'],
-    version: 'v1.28.3',
-    os: 'Ubuntu 22.04.3 LTS',
-    architecture: 'amd64',
-    ip: '10.0.1.14',
-    cpu: '4/8',
-    memory: '8Gi/16Gi',
-    pods: '38/110',
-    createBy: 'developer',
-    createAt: '2024-03-20 11:30:00',
-    updateBy: 'developer',
-    updateAt: '2024-03-20 11:30:00',
-    allocatedCpu: '3.2',
-    allocatedMemory: '6Gi',
-    labels: {
-      'node-role.kubernetes.io/worker': '',
-      'kubernetes.io/os': 'linux',
-      'preemptible': 'true'
-    },
-    schedulable: true
-  },
-  {
-    id: generateId(),
-    name: 'db-worker-01',
-    description: '数据库专用计算节点，运行有状态数据库集群',
-    clusterId: 'cls-001-prod',
-    clusterName: 'prod-cluster',
-    status: 'Ready',
-    roles: ['worker'],
-    version: 'v1.28.3',
-    os: 'Ubuntu 22.04.3 LTS',
-    architecture: 'amd64',
-    ip: '192.168.1.19',
-    cpu: '16/32',
-    memory: '64Gi/128Gi',
-    pods: '12/110',
+    ip: '192.168.2.11',
+    unschedulable: false,
     createBy: 'admin',
-    createAt: '2024-02-28 14:00:00',
-    updateBy: 'admin',
-    updateAt: '2024-02-28 14:00:00',
-    allocatedCpu: '12.0',
-    allocatedMemory: '56Gi',
-    labels: {
-      'node-role.kubernetes.io/worker': '',
-      'kubernetes.io/os': 'linux',
-      'workload-type': 'database'
-    },
-    schedulable: true
+    createAt: '2024-02-10 11:00:00',
+    updateBy: 'qa',
+    updateAt: '2024-04-15 13:25:10',
+    resource: generateNodeResources()
   },
   {
     id: generateId(),
-    name: 'ci-worker-01',
-    description: 'CI/CD专用构建节点',
-    clusterId: 'cls-003-dev',
+    uid: generateId(),
+    name: 'staging-worker-02',
+    description: '预发布集群工作节点，压力测试专用',
+    clusterId: generateId(),
+    clusterName: 'staging-cluster',
+    status: 'Ready',
+    ip: '192.168.2.12',
+    unschedulable: false,
+    createBy: 'admin',
+    createAt: '2024-02-10 11:10:00',
+    updateBy: 'qa',
+    updateAt: '2024-05-20 10:00:00',
+    resource: generateNodeResources()
+  },
+  {
+    id: generateId(),
+    uid: generateId(),
+    name: 'staging-worker-03',
+    description: '预发布集群工作节点',
+    clusterId: generateId(),
+    clusterName: 'staging-cluster',
+    status: 'Ready',
+    ip: '192.168.2.13',
+    unschedulable: true,
+    createBy: 'admin',
+    createAt: '2024-03-15 14:00:00',
+    updateBy: 'ops',
+    updateAt: '2024-06-10 12:00:00',
+    resource: generateNodeResources()
+  },
+  {
+    id: generateId(),
+    uid: generateId(),
+    name: 'dev-master-01',
+    description: '开发集群控制节点，用于日常开发调试',
+    clusterId: generateId(),
     clusterName: 'dev-cluster',
     status: 'Ready',
-    roles: ['worker'],
-    version: 'v1.27.5',
-    os: 'Ubuntu 20.04.6 LTS',
-    architecture: 'amd64',
-    ip: '172.16.1.12',
-    cpu: '6/8',
-    memory: '12Gi/16Gi',
-    pods: '48/110',
+    ip: '192.168.3.10',
+    unschedulable: false,
     createBy: 'devops',
-    createAt: '2024-03-25 09:00:00',
+    createAt: '2024-01-10 09:00:00',
     updateBy: 'devops',
-    updateAt: '2024-03-25 09:00:00',
-    allocatedCpu: '4.5',
-    allocatedMemory: '9Gi',
-    labels: {
-      'node-role.kubernetes.io/worker': '',
-      'kubernetes.io/os': 'linux',
-      'workload-type': 'ci-runner'
-    },
-    schedulable: true
+    updateAt: '2024-03-18 16:00:00',
+    resource: generateNodeResources()
   },
   {
     id: generateId(),
-    name: 'monitor-node-01',
-    description: '监控和日志采集专用节点',
-    clusterId: 'cls-001-prod',
-    clusterName: 'prod-cluster',
+    uid: generateId(),
+    name: 'dev-worker-01',
+    description: '开发集群工作节点，承载开发环境服务',
+    clusterId: generateId(),
+    clusterName: 'dev-cluster',
     status: 'Ready',
-    roles: ['worker'],
-    version: 'v1.28.3',
-    os: 'Ubuntu 22.04.3 LTS',
-    architecture: 'amd64',
-    ip: '192.168.1.20',
-    cpu: '4/16',
-    memory: '16Gi/32Gi',
-    pods: '22/110',
-    createBy: 'admin',
-    createAt: '2024-01-25 10:00:00',
-    updateBy: 'admin',
-    updateAt: '2024-01-25 10:00:00',
-    allocatedCpu: '2.8',
-    allocatedMemory: '12Gi',
-    labels: {
-      'node-role.kubernetes.io/worker': '',
-      'kubernetes.io/os': 'linux',
-      'workload-type': 'monitoring'
-    },
-    schedulable: true
+    ip: '192.168.3.11',
+    unschedulable: false,
+    createBy: 'devops',
+    createAt: '2024-01-10 09:30:00',
+    updateBy: 'dev1',
+    updateAt: '2024-04-02 11:30:00',
+    resource: generateNodeResources()
   },
   {
     id: generateId(),
-    name: 'cache-worker-01',
-    description: '缓存服务专用节点，运行Redis集群',
-    clusterId: 'cls-001-prod',
-    clusterName: 'prod-cluster',
-    status: 'Ready',
-    roles: ['worker'],
-    version: 'v1.28.3',
-    os: 'Ubuntu 22.04.3 LTS',
-    architecture: 'amd64',
-    ip: '192.168.1.21',
-    cpu: '8/16',
-    memory: '28Gi/32Gi',
-    pods: '8/110',
-    createBy: 'admin',
-    createAt: '2024-02-08 13:30:00',
-    updateBy: 'admin',
-    updateAt: '2024-02-08 13:30:00',
-    allocatedCpu: '6.5',
-    allocatedMemory: '24Gi',
-    labels: {
-      'node-role.kubernetes.io/worker': '',
-      'kubernetes.io/os': 'linux',
-      'workload-type': 'cache'
-    },
-    schedulable: true
-  },
-  {
-    id: generateId(),
+    uid: generateId(),
     name: 'dev-worker-02',
-    description: '开发集群备用工作节点',
-    clusterId: 'cls-003-dev',
+    description: '开发集群工作节点，CI/CD 构建节点',
+    clusterId: generateId(),
     clusterName: 'dev-cluster',
     status: 'Ready',
-    roles: ['worker'],
-    version: 'v1.27.5',
-    os: 'Ubuntu 20.04.6 LTS',
-    architecture: 'amd64',
-    ip: '172.16.1.13',
-    cpu: '2/8',
-    memory: '4Gi/16Gi',
-    pods: '30/110',
+    ip: '192.168.3.12',
+    unschedulable: false,
     createBy: 'devops',
-    createAt: '2024-04-01 10:30:00',
+    createAt: '2024-01-10 10:00:00',
     updateBy: 'devops',
-    updateAt: '2024-04-01 10:30:00',
-    allocatedCpu: '1.5',
-    allocatedMemory: '2.5Gi',
-    labels: {
-      'node-role.kubernetes.io/worker': ''
-    },
-    schedulable: true
+    updateAt: '2024-05-05 08:45:00',
+    resource: generateNodeResources()
+  },
+  {
+    id: generateId(),
+    uid: generateId(),
+    name: 'dev-worker-03',
+    description: '开发集群工作节点',
+    clusterId: generateId(),
+    clusterName: 'dev-cluster',
+    status: 'NotReady',
+    ip: '192.168.3.13',
+    unschedulable: false,
+    createBy: 'devops',
+    createAt: '2024-01-20 10:00:00',
+    updateBy: 'devops',
+    updateAt: '2024-06-18 15:00:00',
+    resource: generateNodeResources()
+  },
+  {
+    id: generateId(),
+    uid: generateId(),
+    name: 'test-master-01',
+    description: '测试集群主节点，集成测试环境',
+    clusterId: generateId(),
+    clusterName: 'test-cluster',
+    status: 'Ready',
+    ip: '192.168.4.10',
+    unschedulable: false,
+    createBy: 'qa',
+    createAt: '2024-02-01 09:00:00',
+    updateBy: 'qa',
+    updateAt: '2024-02-01 09:00:00',
+    resource: generateNodeResources()
+  },
+  {
+    id: generateId(),
+    uid: generateId(),
+    name: 'test-worker-01',
+    description: '测试集群工作节点',
+    clusterId: generateId(),
+    clusterName: 'test-cluster',
+    status: 'Ready',
+    ip: '192.168.4.11',
+    unschedulable: false,
+    createBy: 'qa',
+    createAt: '2024-02-01 09:30:00',
+    updateBy: 'qa',
+    updateAt: '2024-03-10 14:00:00',
+    resource: generateNodeResources()
+  },
+  {
+    id: generateId(),
+    uid: generateId(),
+    name: 'test-worker-02',
+    description: '测试集群工作节点，自动化测试运行节点',
+    clusterId: generateId(),
+    clusterName: 'test-cluster',
+    status: 'Ready',
+    ip: '192.168.4.12',
+    unschedulable: false,
+    createBy: 'qa',
+    createAt: '2024-02-01 10:00:00',
+    updateBy: 'qa',
+    updateAt: '2024-05-22 09:20:00',
+    resource: generateNodeResources()
+  },
+  {
+    id: generateId(),
+    uid: generateId(),
+    name: 'prod-edge-01',
+    description: '生产集群边缘节点，用于就近接入和低延迟服务',
+    clusterId: generateId(),
+    clusterName: 'prod-cluster',
+    status: 'Ready',
+    ip: '10.0.1.10',
+    unschedulable: false,
+    createBy: 'admin',
+    createAt: '2024-04-01 10:00:00',
+    updateBy: 'admin',
+    updateAt: '2024-04-01 10:00:00',
+    resource: generateNodeResources()
+  },
+  {
+    id: generateId(),
+    uid: generateId(),
+    name: 'prod-edge-02',
+    description: '生产集群边缘节点，异地灾备节点',
+    clusterId: generateId(),
+    clusterName: 'prod-cluster',
+    status: 'Ready',
+    ip: '10.0.2.10',
+    unschedulable: false,
+    createBy: 'admin',
+    createAt: '2024-04-01 10:30:00',
+    updateBy: 'admin',
+    updateAt: '2024-06-12 11:00:00',
+    resource: generateNodeResources()
+  },
+  {
+    id: generateId(),
+    uid: generateId(),
+    name: 'staging-worker-05',
+    description: '预发布集群工作节点，性能基准测试节点',
+    clusterId: generateId(),
+    clusterName: 'staging-cluster',
+    status: 'Ready',
+    ip: '192.168.2.14',
+    unschedulable: false,
+    createBy: 'admin',
+    createAt: '2024-03-20 10:00:00',
+    updateBy: 'qa',
+    updateAt: '2024-05-28 16:30:00',
+    resource: generateNodeResources()
   }
 ]

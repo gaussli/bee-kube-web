@@ -26,6 +26,7 @@
 
 <script setup lang="ts">
 import { computed } from 'vue'
+import { COLOR_GRAY_50, COLOR_PRIMARY } from '@/config/color'
 
 defineOptions({ name: 'BeeRingChart' })
 
@@ -40,9 +41,9 @@ const props = withDefaults(
   }>(),
   {
     size: 60,
-    strokeWidth: 6,
-    color: '#409eff',
-    bgColor: '#ebeef5',
+    strokeWidth: 4,
+    color: COLOR_PRIMARY,
+    bgColor: COLOR_GRAY_50,
     showAnimation: true
   }
 )
@@ -91,7 +92,7 @@ const ringStyle = computed(() => {
     .ring-value {
       font-size: 12px;
       font-weight: 600;
-      color: $color-text-primary;
+      color: $color-text-tertiary;
     }
   }
 }

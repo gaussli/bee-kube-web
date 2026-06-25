@@ -124,11 +124,18 @@ function getClusterResource(id: string): ClusterResourceResp {
   const totalStorage = Math.floor(Math.pow(2, 30) + Math.random() * Math.pow(2, 43))
   const totalPod = 100 + Math.floor(Math.random() * 200)
   return {
-    total: {
+    capacity: {
       cpu: totalCpu,
       memory: totalMemory,
       storage: totalStorage,
       pod: totalPod
+    },
+    allocation: {
+      // Kubernetes 可分配容量略低于物理容量，模拟操作系统预留
+      cpu: Math.floor(totalCpu * (0.9 + Math.random() * 0.08)),
+      memory: Math.floor(totalMemory * (0.88 + Math.random() * 0.1)),
+      storage: Math.floor(totalStorage * (0.85 + Math.random() * 0.12)),
+      pod: Math.floor(totalPod * (0.9 + Math.random() * 0.08))
     },
     usage: {
       cpu: Math.floor(totalCpu * (0.1 + Math.random() * 0.7)),

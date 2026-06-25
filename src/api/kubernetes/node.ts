@@ -3,7 +3,7 @@
  * @module api/kubernetes/node
  */
 import type { PageResp } from '@/types/common'
-import type { NodeQueryReq, NodeResp, NodeReq, NodeCordonReq, NodeLabelsReq, NodeAnnotationsReq, NodeTaintsReq } from '@/types/kubernetes/node'
+import type { NodeQueryReq, NodeListResp, NodeReq, NodeCordonReq, NodeLabelsReq, NodeAnnotationsReq, NodeTaintsReq, NodeResourceResp } from '@/types/kubernetes/node'
 import { request } from '@/utils'
 
 /**
@@ -12,8 +12,8 @@ import { request } from '@/utils'
  * @param params - 查询参数
  * @returns 分页后的节点列表
  */
-export function getNodePage(clusterId: string, params: Partial<NodeQueryReq>): Promise<PageResp<NodeResp>> {
-  return request.get<PageResp<NodeResp>>(`/kubernetes/clusters/${clusterId}/nodes`, { params: params })
+export function getNodePage(clusterId: string, params: Partial<NodeQueryReq>): Promise<PageResp<NodeListResp>> {
+  return request.get<PageResp<NodeListResp>>(`/kubernetes/clusters/${clusterId}/nodes`, { params: params })
 }
 
 /**
@@ -22,8 +22,28 @@ export function getNodePage(clusterId: string, params: Partial<NodeQueryReq>): P
  * @param name - 节点名称
  * @returns 节点详情
  */
-export function getNodeDetail(clusterId: string, name: string): Promise<NodeResp> {
-  return request.get<NodeResp>(`/kubernetes/clusters/${clusterId}/nodes/${name}`)
+export function getNodeDetail(clusterId: string, name: string): Promise<NodeListResp> {
+  return request.get<NodeListResp>(`/kubernetes/clusters/${clusterId}/nodes/${name}`)
+}
+
+/**
+ * 获取节点资源用量
+ * @param clusterId - 集群ID
+ * @param name - 节点名称
+ * @returns 节点资源用量数据
+ */
+export function getNodeResource(clusterId: string, name: string): Promise<NodeResourceResp> {
+  return request.get<NodeResourceResp>(`/kubernetes/clusters/${clusterId}/nodes/${name}/resource`)
+}
+
+/**
+ * 获取节点 TopN 排行
+ * @param clusterId - 集群ID
+ * @param params - 查询参数（metric 排序指标，count 返回数量）
+ * @returns TopN 节点列表
+ */
+export function getNodeTopN(clusterId: string, params: Partial<{ metric: string; count: number }>): Promise<NodeListResp[]> {
+  return request.get<NodeListResp[]>(`/kubernetes/clusters/${clusterId}/nodes/topn`, { params: params })
 }
 
 /**
@@ -53,7 +73,7 @@ export function drainNode(clusterId: string, name: string): Promise<void> {
  * @param name - 节点名称
  * @param data - 调度配置
  */
-export function cordonNode(clusterId: string, name: string, data: Partial<NodeCordonReq>): Promise<void> {
+export function cordonNode(clusterId: string, name: string, data: NodeCordonReq): Promise<void> {
   return request.post(`/kubernetes/clusters/${clusterId}/nodes/${name}/cordon`, { data: data })
 }
 

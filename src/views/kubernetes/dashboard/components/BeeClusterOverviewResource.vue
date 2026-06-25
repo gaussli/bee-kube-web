@@ -10,11 +10,11 @@
       </div>
     </div>
     <div class="bee-cluster-overview-resource__body">
-      <BeeRadarChart :data="radarData" :size="200" color="#da8030" />
+      <BeeRadarChart :data="radarData" :size="200" />
       <div class="bee-cluster-overview-resource__legend">
         <div v-for="item in radarData" :key="item.label" class="bee-cluster-overview-resource__legend-row">
           <div class="bee-cluster-overview-resource__legend-ring">
-            <BeeRingChart :percentage="item.value" :size="48" color="#da8030" />
+            <BeeRingChart :percentage="item.value" :size="40" />
           </div>
           <div class="bee-cluster-overview-resource__legend-col">
             <span class="bee-cluster-overview-resource__col-value">{{ item.value }}%</span>
@@ -77,27 +77,27 @@ async function loadData() {
   radarData.value = [
     {
       label: 'CPU',
-      value: calcPercentage(res.usage.cpu, res.total.cpu),
+      value: calcPercentage(res.usage.cpu, res.allocation.cpu),
       used: formatCpu(res.usage.cpu),
-      total: formatCpu(res.total.cpu)
+      total: formatCpu(res.allocation.cpu)
     },
     {
       label: '内存',
-      value: calcPercentage(res.usage.memory, res.total.memory),
+      value: calcPercentage(res.usage.memory, res.allocation.memory),
       used: formatMemory(res.usage.memory, 'B'),
-      total: formatMemory(res.total.memory, 'B')
+      total: formatMemory(res.allocation.memory, 'B')
     },
     {
       label: '磁盘',
-      value: calcPercentage(res.usage.storage, res.total.storage),
+      value: calcPercentage(res.usage.storage, res.allocation.storage),
       used: formatDisk(res.usage.storage, 'B'),
-      total: formatDisk(res.total.storage, 'B')
+      total: formatDisk(res.allocation.storage, 'B')
     },
     {
       label: '容器数',
-      value: calcPercentage(res.usage.pod, res.total.pod),
+      value: calcPercentage(res.usage.pod, res.allocation.pod),
       used: `${res.usage.pod} 个`,
-      total: `${res.total.pod} 个`
+      total: `${res.allocation.pod} 个`
     }
   ]
 }
@@ -151,7 +151,7 @@ onMounted(() => {
       gap: 4px;
       grid-template-columns: 48px 1fr 1fr 1fr;
       align-items: center;
-      padding: 8px 16px;
+      padding: 16px;
       border-radius: 8px;
       background: $color-bg-elevated;
     }
@@ -160,17 +160,16 @@ onMounted(() => {
       display: flex;
       align-items: center;
       justify-content: center;
-      width: 40px;
-      height: 40px;
     }
 
     &-col {
       display: flex;
-      gap: 4px;
+      gap: 8px;
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      height: 48px;
+
+      // height: 48px;
     }
   }
 
@@ -178,14 +177,12 @@ onMounted(() => {
     &-value {
       font-size: 14px;
       font-weight: 600;
-      line-height: 1;
       color: $color-text-primary;
     }
 
     &-label {
       font-size: 12px;
-      line-height: 1;
-      color: $color-text-secondary;
+      color: $color-text-tertiary;
     }
   }
 }

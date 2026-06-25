@@ -88,6 +88,7 @@
 </template>
 <script setup lang="ts">
 import { ref, computed, onMounted, watch, nextTick } from 'vue'
+import { COLOR_GRAY_50, COLOR_PRIMARY } from '@/config/color'
 
 // 组件名称配置
 defineOptions({ name: 'BeeRadarChart' })
@@ -120,8 +121,8 @@ const props = withDefaults(
   }>(),
   {
     size: 300, // 图表尺寸，默认300px
-    color: '#da8030', // 数据区域颜色
-    gridColor: '#6b6e72', // 网格颜色
+    color: COLOR_PRIMARY, // 数据区域颜色
+    gridColor: COLOR_GRAY_50, // 网格颜色
     showAnimation: true, // 是否显示动画
     animationDuration: 1500 // 动画持续时间（毫秒）
   }

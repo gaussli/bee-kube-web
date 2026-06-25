@@ -127,7 +127,7 @@
 import { ref, onMounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { Box, ArrowLeft, EditPen } from '@element-plus/icons-vue'
-import type { NodeResp } from '@/types/kubernetes/node'
+import type { NodeListResp } from '@/types/kubernetes/node'
 import { getNodeDetail } from '@/api/kubernetes/node'
 import BeeButton from '@/components/BeeButton/index.vue'
 import BeePageTitle from '@/components/BeePageTitle/index.vue'
@@ -143,7 +143,7 @@ const router = useRouter()
 const clusterId = ref(route.query.clusterId as string)
 const nodeName = ref(route.query.name as string)
 const loading = ref(false)
-const nodeData = ref<NodeResp>()
+const nodeData = ref<NodeListResp>()
 const activeTab = ref('basic')
 
 function getStatusType(status?: string) {

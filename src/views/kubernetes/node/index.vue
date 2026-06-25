@@ -137,7 +137,7 @@
 import { onMounted, reactive, ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { ElMessage } from 'element-plus'
-import type { NodeQueryReq, NodeResp } from '@/types/kubernetes/node'
+import type { NodeQueryReq, NodeListResp } from '@/types/kubernetes/node'
 import { getNodePage, cordonNode, drainNode } from '@/api/kubernetes/node'
 import BeeAuditCell from '@/components/BeeAuditCell/index.vue'
 import BeeButton from '@/components/BeeButton/index.vue'
@@ -169,8 +169,8 @@ const kubernetesStore = useKubernetesStore()
 const searchKey = ref('')
 
 const loading = ref(false)
-const tableData = ref<NodeResp[]>([])
-const selectedRows = ref<NodeResp[]>([])
+const tableData = ref<NodeListResp[]>([])
+const selectedRows = ref<NodeListResp[]>([])
 const queryForm = reactive<Partial<NodeQueryReq>>({
   id: undefined,
   name: undefined,
@@ -249,19 +249,19 @@ function handleReset() {
   loadData()
 }
 
-function handleSelectionChange(rows: NodeResp[]) {
+function handleSelectionChange(rows: NodeListResp[]) {
   selectedRows.value = rows
 }
 
-function handleViewDetail(row: NodeResp) {
+function handleViewDetail(row: NodeListResp) {
   router.push({ name: 'kubernetes:node:detail', query: { clusterId: row.clusterId, name: row.name } })
 }
 
-function handleEdit(row: NodeResp) {
+function handleEdit(row: NodeListResp) {
   router.push({ name: 'kubernetes:node:edit', query: { clusterId: row.clusterId, name: row.name } })
 }
 
-async function handleCordon(row: NodeResp, unschedulable: boolean) {
+async function handleCordon(row: NodeListResp, unschedulable: boolean) {
   try {
     await cordonNode(row.clusterId, row.name, unschedulable)
     ElMessage.success(unschedulable ? '已设置为不可调度' : '已设置为可调度')
@@ -271,7 +271,7 @@ async function handleCordon(row: NodeResp, unschedulable: boolean) {
   }
 }
 
-async function handleDrain(row: NodeResp) {
+async function handleDrain(row: NodeListResp) {
   try {
     await drainNode(row.clusterId, row.name)
     ElMessage.success('已开始驱逐节点上的 Pod')

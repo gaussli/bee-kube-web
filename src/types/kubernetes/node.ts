@@ -3,7 +3,7 @@
  * @module types/kubernetes/node
  */
 import type { BaseEntity, PageReq } from '@/types/common'
-import type { MetadataAnnotationReq, MetadataLabelReq } from './comomn'
+import type { MetadataAnnotationReq, MetadataLabelReq, ResourceResp } from './comomn'
 import type { Condition, Event, Metadata, Taint } from './types'
 
 /**
@@ -28,7 +28,7 @@ export type NodeConditionType = 'Ready' | 'MemoryPressure' | 'DiskPressure' | 'P
  * 节点响应数据
  * @extends BaseEntity 继承基础实体（含 id, createAt, createBy, updateAt, updateBy）
  */
-export interface NodeResp extends BaseEntity {
+export interface NodeListResp extends BaseEntity {
   /** 资源 UID */
   uid: string
   /** 所属集群 ID */
@@ -45,22 +45,8 @@ export interface NodeResp extends BaseEntity {
   ip: string
   /** 是否不可调度 */
   unschedulable: boolean
-  /** CPU 分配 */
-  cpuAllocation: string
-  /** CPU 使用 */
-  cpuUsage: string
-  /** 内存分配 */
-  memoryAllocation: string
-  /** 内存使用 */
-  memoryUsage: string
-  /** 存储分配 */
-  storageAllocation: string
-  /** 存储使用 */
-  storageUsage: string
-  /** Pod 分配 */
-  podAllocation: string
-  /** Pod 使用 */
-  podUsage: string
+  /** 节点资源（容量/可分配/已用） */
+  resource: NodeResourceResp
 }
 
 /**
@@ -109,34 +95,9 @@ export interface NodeOverviewResp extends BaseEntity {
 }
 
 /**
- * 节点运行状态响应数据
+ * 节点资源用量响应数据
  */
-export interface NodeMonitorResp {
-  /** CPU 容量 */
-  cpuCapacity: string
-  /** CPU 分配 */
-  cpuAllocation: string
-  /** CPU 使用 */
-  cpuUsage: string
-  /** 内存容量 */
-  memoryCapacity: string
-  /** 内存分配 */
-  memoryAllocation: string
-  /** 内存使用 */
-  memoryUsage: string
-  /** 存储容量 */
-  storageCapacity: string
-  /** 存储分配 */
-  storageAllocation: string
-  /** 存储使用 */
-  storageUsage: string
-  /** Pod 容量 */
-  podCapacity: string
-  /** Pod 分配 */
-  podAllocation: string
-  /** Pod 使用 */
-  podUsage: string
-}
+export interface NodeResourceResp extends ResourceResp {}
 
 /**
  * 节点元数据响应数据

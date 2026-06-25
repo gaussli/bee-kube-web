@@ -81,7 +81,7 @@ import { ref, onMounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { ElMessage, type FormInstance } from 'element-plus'
 import { Box, Plus, Delete, Close, Check } from '@element-plus/icons-vue'
-import type { NodeResp, NodeReq } from '@/types/kubernetes/node'
+import type { NodeListResp, NodeReq } from '@/types/kubernetes/node'
 import { getNodeDetail, updateNode } from '@/api/kubernetes/node'
 import BeeButton from '@/components/BeeButton/index.vue'
 import BeePageTitle from '@/components/BeePageTitle/index.vue'
@@ -96,7 +96,7 @@ const clusterId = ref(route.query.clusterId as string)
 const nodeName = ref(route.query.name as string)
 const loading = ref(false)
 const submitting = ref(false)
-const nodeData = ref<NodeResp>()
+const nodeData = ref<NodeListResp>()
 
 const formData = ref<NodeReq>({
   labels: {},

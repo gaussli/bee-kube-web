@@ -1,7 +1,10 @@
 <template>
   <BeeCard class="bee-cluster-overview-node">
     <div class="bee-cluster-overview-node__header">
-      <span>节点用量</span>
+      <div class="bee-cluster-overview-node__title">
+        <BeeIcon name="basic-id" :size="14" />
+        节点用量
+      </div>
       <div class="bee-cluster-overview-node__actions">
         <BeeSegmentedControl v-model="sortKey" :options="sortOptions" @select="handleSortChange" />
         <el-divider direction="vertical" />
@@ -9,30 +12,28 @@
       </div>
     </div>
     <div class="bee-cluster-overview-node__body">
-      <div class="bee-cluster-overview-node__items">
-        <div v-for="node in sortedNodeList" :key="node.name" class="bee-cluster-overview-node__item">
-          <div class="bee-cluster-overview-node__item-icon">
-            <el-icon :size="24"><Monitor /></el-icon>
-          </div>
-          <div class="bee-cluster-overview-node__item-info">
-            <span class="bee-cluster-overview-node__item-name">{{ node.name }}</span>
-            <span class="bee-cluster-overview-node__item-desc">{{ node.description }}</span>
-          </div>
-          <div class="bee-cluster-overview-node__item-usage">
-            <div class="bee-cluster-overview-node__usage-bar">
-              <span class="bee-cluster-overview-node__usage-label">CPU</span>
-              <div class="bee-cluster-overview-node__usage-track">
-                <div class="bee-cluster-overview-node__usage-fill" :style="{ width: node.cpuUsage + '%', background: getUsageColor(node.cpuUsage) }"></div>
-              </div>
-              <span class="bee-cluster-overview-node__usage-value">{{ node.cpuUsage }}%</span>
+      <div v-for="node in nodeListData" :key="node.name" class="bee-cluster-overview-node__item">
+        <div class="bee-cluster-overview-node__item-icon">
+          <BeeIcon name="basic-id" :size="24" />
+        </div>
+        <div class="bee-cluster-overview-node__item-info">
+          <span class="bee-cluster-overview-node__item-name">{{ node.name }}</span>
+          <span class="bee-cluster-overview-node__item-desc">{{ node.description }}</span>
+        </div>
+        <div class="bee-cluster-overview-node__item-usage">
+          <div class="bee-cluster-overview-node__usage-bar">
+            <span class="bee-cluster-overview-node__usage-label">CPU</span>
+            <div class="bee-cluster-overview-node__usage-track">
+              <div class="bee-cluster-overview-node__usage-fill" :style="{ width: node.cpuUsage + '%', background: getUsageColor(node.cpuUsage) }"></div>
             </div>
-            <div class="bee-cluster-overview-node__usage-bar">
-              <span class="bee-cluster-overview-node__usage-label">内存</span>
-              <div class="bee-cluster-overview-node__usage-track">
-                <div class="bee-cluster-overview-node__usage-fill" :style="{ width: node.memoryUsage + '%', background: getUsageColor(node.memoryUsage) }"></div>
-              </div>
-              <span class="bee-cluster-overview-node__usage-value">{{ node.memoryUsage }}%</span>
+            <span class="bee-cluster-overview-node__usage-value">{{ node.cpuUsage }}%</span>
+          </div>
+          <div class="bee-cluster-overview-node__usage-bar">
+            <span class="bee-cluster-overview-node__usage-label">内存</span>
+            <div class="bee-cluster-overview-node__usage-track">
+              <div class="bee-cluster-overview-node__usage-fill" :style="{ width: node.memoryUsage + '%', background: getUsageColor(node.memoryUsage) }"></div>
             </div>
+            <span class="bee-cluster-overview-node__usage-value">{{ node.memoryUsage }}%</span>
           </div>
         </div>
       </div>
@@ -41,13 +42,18 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed } from 'vue'
-import { Monitor } from '@element-plus/icons-vue'
+import { computed, onMounted, ref } from 'vue'
+import type { NodeListResp } from '@/types/kubernetes/node'
+import { getNodeTopN } from '@/api/kubernetes/node'
+import { useKubernetesStore } from '@/stores/kubernetes'
 import BeeButton from '@/components/BeeButton/index.vue'
 import BeeCard from '@/components/BeeCard/index.vue'
+import BeeIcon from '@/components/BeeIcon/index.vue'
 import BeeSegmentedControl from '@/components/BeeSegmentedControl/index.vue'
 
 defineOptions({ name: 'BeeClusterOverviewNode' })
+
+const kubernetesStore = useKubernetesStore()
 
 /**
  * 节点排序
@@ -61,34 +67,54 @@ const sortOptions = [
 
 /**
  * 排序切换
+ * @param value - 排序指标
  */
 function handleSortChange(value?: string | number) {
   sortKey.value = (value as SortKey) || 'cpu'
+  loadData()
+}
+
+/** TopN 节点原始数据 */
+const topNNodes = ref<NodeListResp[]>([])
+
+/**
+ * 计算使用百分比
+ * @param used - 已用量
+ * @param total - 总量
+ * @returns 百分比（0-100），总量为 0 时返回 0
+ */
+function calcPercentage(used: number, total: number): number {
+  if (total <= 0) return 0
+  return Math.round((used / total) * 100)
 }
 
 /**
- * 节点数据
+ * 加载节点 TopN 数据
  */
-const nodeList = ref([
-  { name: 'node-1', description: 'Master节点', cpuUsage: 85, memoryUsage: 72 },
-  { name: 'node-2', description: 'Worker节点', cpuUsage: 45, memoryUsage: 58 },
-  { name: 'node-3', description: 'Worker节点', cpuUsage: 62, memoryUsage: 81 },
-  { name: 'node-4', description: 'Worker节点', cpuUsage: 30, memoryUsage: 45 },
-  { name: 'node-5', description: 'Worker节点', cpuUsage: 78, memoryUsage: 65 },
-  { name: 'node-6', description: 'Worker节点', cpuUsage: 55, memoryUsage: 70 },
-  { name: 'node-7', description: 'Worker节点', cpuUsage: 40, memoryUsage: 52 }
-])
+async function loadData() {
+  if (!kubernetesStore.activeClusterId) return
+  topNNodes.value = await getNodeTopN(kubernetesStore.activeClusterId, {
+    metric: sortKey.value,
+    count: 5
+  })
+}
 
 /**
- * 排序后的节点列表（Top 5）
+ * 模板使用的节点列表数据（含百分比计算）
  */
-const sortedNodeList = computed(() => {
-  const key = (sortKey.value + 'Usage') as 'cpuUsage' | 'memoryUsage'
-  return [...nodeList.value].sort((a, b) => b[key] - a[key]).slice(0, 5)
+const nodeListData = computed(() => {
+  return topNNodes.value.map(node => ({
+    name: node.name,
+    description: node.description || '',
+    cpuUsage: calcPercentage(node.resource.usage.cpu, node.resource.allocation.cpu),
+    memoryUsage: calcPercentage(node.resource.usage.memory, node.resource.allocation.memory)
+  }))
 })
 
 /**
  * 获取使用率颜色
+ * @param usage - 使用率百分比
+ * @returns 颜色值
  */
 function getUsageColor(usage: number) {
   if (usage < 60) return '#67c23a'
@@ -103,16 +129,31 @@ function handleViewMore() {
   // TODO: 跳转到节点列表页面
   console.log('View more nodes...')
 }
+
+onMounted(() => {
+  loadData()
+})
 </script>
 
 <style lang="scss" scoped>
 .bee-cluster-overview-node {
+  display: flex;
+  flex-direction: column;
+  padding-bottom: 16px;
+
   &__header {
     display: flex;
+    flex: 0 0 auto;
     align-items: center;
     justify-content: space-between;
-    padding: 12px 20px;
+    height: 64px;
     font-weight: 500;
+  }
+
+  &__title {
+    display: flex;
+    gap: 4px;
+    align-items: center;
   }
 
   &__actions {
@@ -122,14 +163,11 @@ function handleViewMore() {
   }
 
   &__body {
-    padding: 0 16px 16px;
-  }
-
-  &__items {
     display: flex;
     gap: 8px;
     flex-direction: column;
-    overflow-y: auto;
+    justify-content: space-between;
+    height: 100%;
   }
 
   &__item {
@@ -137,20 +175,20 @@ function handleViewMore() {
     gap: 16px;
     grid-template-columns: 32px 1fr 140px;
     align-items: center;
-    padding: 8px 12px;
-    border-radius: 6px;
-    background: $bg-selected;
+    padding: 8px 16px;
+    border-radius: 8px;
+    background: $color-bg-elevated;
 
     &-icon {
       display: flex;
       align-items: center;
       justify-content: center;
-      color: $color-primary;
+      color: $color-text-primary;
     }
 
     &-info {
       display: flex;
-      gap: 2px;
+      gap: 6px;
       flex-direction: column;
       min-width: 0;
     }
@@ -163,7 +201,7 @@ function handleViewMore() {
 
     &-desc {
       font-size: 12px;
-      color: $color-text-secondary;
+      color: $color-text-tertiary;
     }
 
     &-usage {
