@@ -4,6 +4,7 @@
  */
 import type { BaseEntity, PageReq } from '@/types/common'
 import type { ResourceResp } from '@/types/kubernetes/comomn'
+import type { Event, EventSource, EventType, ObjectReference } from './types'
 
 /**
  * 集群查询请求参数
@@ -59,6 +60,45 @@ export interface ClusterDetailResp extends BaseEntity {
  * 集群资源用量数据
  */
 export interface ClusterResourceResp extends ResourceResp {}
+
+/**
+ * 集群事件响应数据
+ * @extends BaseEntity 继承基础实体（含 id, createAt, createBy, updateAt, updateBy）
+ * @extends Event 继承事件基础类型（含 type, reason, message 等）
+ */
+export interface ClusterEventResp extends BaseEntity, Event {
+  /** 事件类型（Normal: 正常事件；Warning: 警告事件） */
+  type: EventType
+  /** 事件原因 */
+  reason: string
+  /** 事件消息 */
+  message: string
+  /** 关联的资源对象 */
+  involvedObject: ObjectReference
+  /** 事件来源 */
+  source: EventSource
+  /** 事件发生次数 */
+  count: number
+  /** 首次发生时间 */
+  firstTimestamp: string
+  /** 最后发生时间 */
+  lastTimestamp: string
+}
+
+/**
+ * 集群事件查询请求参数
+ * @extends PageReq 继承分页请求（含 page, pageSize）
+ */
+export interface ClusterEventQueryReq extends PageReq {
+  /** 事件类型 */
+  type?: EventType
+  /** 事件原因（模糊匹配） */
+  reason?: string
+  /** 关联资源名称（模糊匹配） */
+  involvedObjectName?: string
+  /** 关联资源类型 */
+  involvedObjectKind?: string
+}
 
 /**
  * 集群创建/更新请求参数

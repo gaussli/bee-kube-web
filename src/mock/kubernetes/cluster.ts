@@ -3,7 +3,7 @@
  * @module mock/kubernetes/cluster
  */
 import type { PageResp } from '@/types/common'
-import type { ClusterDetailResp, ClusterListResp, ClusterQueryReq, ClusterRegistrationReq, ClusterReq, ClusterResourceResp } from '@/types/kubernetes/cluster'
+import type { ClusterDetailResp, ClusterEventQueryReq, ClusterEventResp, ClusterListResp, ClusterQueryReq, ClusterRegistrationReq, ClusterReq, ClusterResourceResp } from '@/types/kubernetes/cluster'
 import { generateId } from '@/mock/utils'
 
 /**
@@ -17,6 +17,7 @@ import { generateId } from '@/mock/utils'
  * - GET /kubernetes/clusters/:id/resource - 获取集群资源用量
  * - DELETE /kubernetes/clusters/:id - 删除集群
  * - DELETE /kubernetes/clusters/batch - 批量删除集群
+ * - GET /kubernetes/clusters/:id/events - 获取集群事件分页列表
  */
 export default [
   {
@@ -58,6 +59,11 @@ export default [
     method: 'delete',
     url: '/kubernetes/clusters/batch',
     handler: (data: string[]): void => deleteClusters(data)
+  },
+  {
+    method: 'get',
+    url: '/kubernetes/clusters/:id/events',
+    handler: (pathParams: Record<string, string>, params: Partial<ClusterEventQueryReq>): PageResp<ClusterEventResp> => getClusterEventPage(pathParams.id, params)
   }
 ]
 
@@ -236,6 +242,223 @@ function deleteClusters(ids: string[]): void {
     }
   })
 }
+
+/**
+ * 获取集群事件分页列表
+ * @param clusterId - 集群 ID
+ * @param params - 查询参数
+ * @returns 分页后的集群事件数据
+ */
+function getClusterEventPage(clusterId: string, params: Partial<ClusterEventQueryReq>): PageResp<ClusterEventResp> {
+  const { type, reason, involvedObjectName, involvedObjectKind, page = 1, pageSize = 10 } = params || {}
+
+  let filtered = [...mockClusterEvents]
+  if (type) {
+    filtered = filtered.filter(e => e.type === type)
+  }
+  if (reason) {
+    filtered = filtered.filter(e => e.reason.includes(reason))
+  }
+  if (involvedObjectName) {
+    filtered = filtered.filter(e => e.involvedObject.name.includes(involvedObjectName))
+  }
+  if (involvedObjectKind) {
+    filtered = filtered.filter(e => e.involvedObject.kind === involvedObjectKind)
+  }
+
+  const total = filtered.length
+  const start = (page - 1) * pageSize
+  const end = start + pageSize
+  const list = filtered.slice(start, end)
+  return { list, total, page, pageSize }
+}
+
+/**
+ * 模拟集群事件数据
+ * @remarks 包含多种 Kubernetes 事件类型，覆盖 Normal 和 Warning 事件
+ */
+const mockClusterEvents: ClusterEventResp[] = [
+  {
+    id: generateId(),
+    type: 'Normal',
+    reason: 'Scheduled',
+    message: 'Successfully assigned pod/nginx-deployment-7fb96c846b-xk2p9 to node-1',
+    involvedObject: { kind: 'Pod', name: 'nginx-deployment-7fb96c846b-xk2p9', namespace: 'default', uid: generateId() },
+    source: { component: 'default-scheduler', host: 'node-1' },
+    count: 1,
+    firstTimestamp: '2024-01-15 10:30:25',
+    lastTimestamp: '2024-01-15 10:30:25',
+    createBy: 'system',
+    createAt: '2024-01-15 10:30:25',
+    updateBy: 'system',
+    updateAt: '2024-01-15 10:30:25'
+  },
+  {
+    id: generateId(),
+    type: 'Warning',
+    reason: 'FailedScheduling',
+    message: '0/5 nodes are available: 2 Insufficient memory, 3 node(s) were rescheduled.',
+    involvedObject: { kind: 'Pod', name: 'app-pod-5d8f9c7b4-m8n2p', namespace: 'default', uid: generateId() },
+    source: { component: 'default-scheduler', host: '' },
+    count: 3,
+    firstTimestamp: '2024-01-15 10:28:14',
+    lastTimestamp: '2024-01-15 10:32:18',
+    createBy: 'system',
+    createAt: '2024-01-15 10:28:14',
+    updateBy: 'system',
+    updateAt: '2024-01-15 10:32:18'
+  },
+  {
+    id: generateId(),
+    type: 'Normal',
+    reason: 'Pulled',
+    message: 'Container image "redis:7" already present on machine',
+    involvedObject: { kind: 'Pod', name: 'redis-master-0', namespace: 'default', uid: generateId() },
+    source: { component: 'kubelet', host: 'node-2' },
+    count: 1,
+    firstTimestamp: '2024-01-15 10:25:33',
+    lastTimestamp: '2024-01-15 10:25:33',
+    createBy: 'system',
+    createAt: '2024-01-15 10:25:33',
+    updateBy: 'system',
+    updateAt: '2024-01-15 10:25:33'
+  },
+  {
+    id: generateId(),
+    type: 'Normal',
+    reason: 'Created',
+    message: 'Created container redis',
+    involvedObject: { kind: 'Pod', name: 'redis-master-0', namespace: 'default', uid: generateId() },
+    source: { component: 'kubelet', host: 'node-2' },
+    count: 1,
+    firstTimestamp: '2024-01-15 10:25:34',
+    lastTimestamp: '2024-01-15 10:25:34',
+    createBy: 'system',
+    createAt: '2024-01-15 10:25:34',
+    updateBy: 'system',
+    updateAt: '2024-01-15 10:25:34'
+  },
+  {
+    id: generateId(),
+    type: 'Normal',
+    reason: 'Started',
+    message: 'Started container redis',
+    involvedObject: { kind: 'Pod', name: 'redis-master-0', namespace: 'default', uid: generateId() },
+    source: { component: 'kubelet', host: 'node-2' },
+    count: 1,
+    firstTimestamp: '2024-01-15 10:25:35',
+    lastTimestamp: '2024-01-15 10:25:35',
+    createBy: 'system',
+    createAt: '2024-01-15 10:25:35',
+    updateBy: 'system',
+    updateAt: '2024-01-15 10:25:35'
+  },
+  {
+    id: generateId(),
+    type: 'Warning',
+    reason: 'BackOff',
+    message: 'Back-off restarting failed container',
+    involvedObject: { kind: 'Pod', name: 'failing-app-6d9f8c5b4-l3k7j', namespace: 'default', uid: generateId() },
+    source: { component: 'kubelet', host: 'node-3' },
+    count: 12,
+    firstTimestamp: '2024-01-15 10:22:18',
+    lastTimestamp: '2024-01-15 10:45:22',
+    createBy: 'system',
+    createAt: '2024-01-15 10:22:18',
+    updateBy: 'system',
+    updateAt: '2024-01-15 10:45:22'
+  },
+  {
+    id: generateId(),
+    type: 'Normal',
+    reason: 'ScalingReplicaSet',
+    message: 'Scaled up replica set nginx-deployment-7fb96c846b to 3',
+    involvedObject: { kind: 'Deployment', name: 'nginx-deployment', namespace: 'default', uid: generateId() },
+    source: { component: 'deployment-controller', host: '' },
+    count: 1,
+    firstTimestamp: '2024-01-15 09:15:00',
+    lastTimestamp: '2024-01-15 09:15:00',
+    createBy: 'system',
+    createAt: '2024-01-15 09:15:00',
+    updateBy: 'system',
+    updateAt: '2024-01-15 09:15:00'
+  },
+  {
+    id: generateId(),
+    type: 'Warning',
+    reason: 'NodeMemoryPressure',
+    message: 'Node is under memory pressure',
+    involvedObject: { kind: 'Node', name: 'node-3', uid: generateId() },
+    source: { component: 'kubelet', host: 'node-3' },
+    count: 5,
+    firstTimestamp: '2024-01-15 08:45:22',
+    lastTimestamp: '2024-01-15 10:50:15',
+    createBy: 'system',
+    createAt: '2024-01-15 08:45:22',
+    updateBy: 'system',
+    updateAt: '2024-01-15 10:50:15'
+  },
+  {
+    id: generateId(),
+    type: 'Normal',
+    reason: 'SuccessfulCreate',
+    message: 'Created pod: nginx-deployment-7fb96c846b-xk2p9',
+    involvedObject: { kind: 'ReplicaSet', name: 'nginx-deployment-7fb96c846b', namespace: 'default', uid: generateId() },
+    source: { component: 'replicaset-controller', host: '' },
+    count: 1,
+    firstTimestamp: '2024-01-15 10:30:20',
+    lastTimestamp: '2024-01-15 10:30:20',
+    createBy: 'system',
+    createAt: '2024-01-15 10:30:20',
+    updateBy: 'system',
+    updateAt: '2024-01-15 10:30:20'
+  },
+  {
+    id: generateId(),
+    type: 'Warning',
+    reason: 'Failed',
+    message: 'Error: ImagePullBackOff',
+    involvedObject: { kind: 'Pod', name: 'broken-app-8f9c7b5d-2k4m', namespace: 'staging', uid: generateId() },
+    source: { component: 'kubelet', host: 'node-1' },
+    count: 20,
+    firstTimestamp: '2024-01-15 06:12:00',
+    lastTimestamp: '2024-01-15 10:55:30',
+    createBy: 'system',
+    createAt: '2024-01-15 06:12:00',
+    updateBy: 'system',
+    updateAt: '2024-01-15 10:55:30'
+  },
+  {
+    id: generateId(),
+    type: 'Normal',
+    reason: 'Killing',
+    message: 'Stopping container nginx',
+    involvedObject: { kind: 'Pod', name: 'nginx-deployment-7fb96c846b-abc12', namespace: 'default', uid: generateId() },
+    source: { component: 'kubelet', host: 'node-1' },
+    count: 1,
+    firstTimestamp: '2024-01-15 10:00:00',
+    lastTimestamp: '2024-01-15 10:00:00',
+    createBy: 'system',
+    createAt: '2024-01-15 10:00:00',
+    updateBy: 'system',
+    updateAt: '2024-01-15 10:00:00'
+  },
+  {
+    id: generateId(),
+    type: 'Warning',
+    reason: 'Unhealthy',
+    message: 'Readiness probe failed: Get "http://10.0.1.15:8080/health": dial tcp 10.0.1.15:8080: connect: connection refused',
+    involvedObject: { kind: 'Pod', name: 'api-service-6d9f8c5b4-l3k7j', namespace: 'production', uid: generateId() },
+    source: { component: 'kubelet', host: 'node-2' },
+    count: 8,
+    firstTimestamp: '2024-01-15 09:30:00',
+    lastTimestamp: '2024-01-15 10:58:00',
+    createBy: 'system',
+    createAt: '2024-01-15 09:30:00',
+    updateBy: 'system',
+    updateAt: '2024-01-15 10:58:00'
+  }
+]
 
 /**
  * 模拟集群数据

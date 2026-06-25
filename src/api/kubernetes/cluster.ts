@@ -3,7 +3,7 @@
  * @module api/kubernetes/cluster
  */
 import type { PageResp } from '@/types/common'
-import type { ClusterDetailResp, ClusterListResp, ClusterQueryReq, ClusterRegistrationReq, ClusterReq, ClusterResourceResp } from '@/types/kubernetes/cluster'
+import type { ClusterDetailResp, ClusterEventQueryReq, ClusterEventResp, ClusterListResp, ClusterQueryReq, ClusterRegistrationReq, ClusterReq, ClusterResourceResp } from '@/types/kubernetes/cluster'
 import { request } from '@/utils'
 
 /**
@@ -31,6 +31,16 @@ export function getClusterDetail(id: string): Promise<ClusterDetailResp> {
  */
 export function getClusterResource(id: string): Promise<ClusterResourceResp> {
   return request.get<ClusterResourceResp>(`/kubernetes/clusters/${id}/resource`)
+}
+
+/**
+ * 获取集群事件分页列表
+ * @param clusterId - 集群 ID
+ * @param params - 查询参数
+ * @returns 分页后的集群事件列表
+ */
+export function getClusterEventPage(clusterId: string, params: Partial<ClusterEventQueryReq>): Promise<PageResp<ClusterEventResp>> {
+  return request.get<PageResp<ClusterEventResp>>(`/kubernetes/clusters/${clusterId}/events`, { params: params })
 }
 
 /**
