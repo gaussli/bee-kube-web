@@ -13,13 +13,7 @@
     </div>
     <div class="bee-cluster-overview-node__body">
       <div v-for="node in nodeListData" :key="node.name" class="bee-cluster-overview-node__item">
-        <div class="bee-cluster-overview-node__item-icon">
-          <BeeIcon name="basic-id" :size="24" />
-        </div>
-        <div class="bee-cluster-overview-node__item-info">
-          <span class="bee-cluster-overview-node__item-name">{{ node.name }}</span>
-          <span class="bee-cluster-overview-node__item-desc">{{ node.description }}</span>
-        </div>
+        <BeeNodeInfoCell class="bee-cluster-overview-node__item-info" :name="node.name" :id="node.id" :description="node.description" :icon-size="32" />
         <div class="bee-cluster-overview-node__item-usage">
           <div class="bee-cluster-overview-node__usage-bar">
             <span class="bee-cluster-overview-node__usage-label">CPU</span>
@@ -49,6 +43,7 @@ import { useKubernetesStore } from '@/stores/kubernetes'
 import BeeButton from '@/components/BeeButton/index.vue'
 import BeeCard from '@/components/BeeCard/index.vue'
 import BeeIcon from '@/components/BeeIcon/index.vue'
+import BeeNodeInfoCell from '@/components/BeeNodeInfoCell/index.vue'
 import BeeSegmentedControl from '@/components/BeeSegmentedControl/index.vue'
 
 defineOptions({ name: 'BeeClusterOverviewNode' })
@@ -104,6 +99,7 @@ async function loadData() {
  */
 const nodeListData = computed(() => {
   return topNNodes.value.map(node => ({
+    id: node.id,
     name: node.name,
     description: node.description || '',
     cpuUsage: calcPercentage(node.resource.usage.cpu, node.resource.allocation.cpu),
@@ -173,35 +169,15 @@ onMounted(() => {
   &__item {
     display: grid;
     gap: 16px;
-    grid-template-columns: 32px 1fr 140px;
+    grid-template-columns: 1fr 140px;
     align-items: center;
     padding: 8px 16px;
     border-radius: 8px;
     background: $color-bg-elevated;
 
-    &-icon {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: $color-text-primary;
-    }
-
     &-info {
       display: flex;
-      gap: 6px;
-      flex-direction: column;
       min-width: 0;
-    }
-
-    &-name {
-      font-size: 14px;
-      font-weight: 500;
-      color: $color-text-primary;
-    }
-
-    &-desc {
-      font-size: 12px;
-      color: $color-text-tertiary;
     }
 
     &-usage {

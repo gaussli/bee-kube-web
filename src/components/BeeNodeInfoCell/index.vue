@@ -1,22 +1,22 @@
 <template>
-  <div class="bee-cluster-info-cell">
-    <div class="bee-cluster-info-cell__cluster-icon">
-      <BeeIcon name="kubernetes-cluster" :size="48" />
+  <div class="bee-node-info-cell">
+    <div class="bee-node-info-cell__node-icon" :style="{ height: iconSize + 'px' }">
+      <BeeIcon name="kubernetes-node" :size="iconSize ?? 48" />
     </div>
-    <div class="bee-cluster-info-cell__content">
-      <div class="bee-cluster-info-cell__top">
-        <span class="bee-cluster-info-cell__name">{{ name }}</span>
+    <div class="bee-node-info-cell__content">
+      <div class="bee-node-info-cell__top">
+        <span class="bee-node-info-cell__name">{{ name }}</span>
         <BeeTooltip :label="id">
           <BeeTag type="primary" size="tiny">UID</BeeTag>
         </BeeTooltip>
       </div>
-      <div class="bee-cluster-info-cell__bottom">
-        <BeeIcon name="basic-description" :size="14" class="bee-cluster-info-cell__desc-icon" />
+      <div class="bee-node-info-cell__bottom">
+        <BeeIcon name="basic-description" :size="14" class="bee-node-info-cell__desc-icon" />
         <BeeTooltip :disabled="!isDescTruncated">
           <template #label>
-            <span class="bee-cluster-info-cell__desc-tooltip">{{ description }}</span>
+            <span class="bee-node-info-cell__desc-tooltip">{{ description }}</span>
           </template>
-          <span ref="descRef" class="bee-cluster-info-cell__desc">{{ description }}</span>
+          <span ref="descRef" class="bee-node-info-cell__desc">{{ description }}</span>
         </BeeTooltip>
       </div>
     </div>
@@ -25,23 +25,25 @@
 
 <script setup lang="ts">
 /**
- * 集群信息单元格组件
- * 上下结构展示集群名称+UID标签 和 描述信息
- * @module components/BeeClusterInfoCell
+ * 节点信息单元格组件
+ * 上下结构展示节点名称+UID标签 和 描述信息
+ * @module components/BeeNodeInfoCell
  */
 import { ref, onMounted, onUnmounted } from 'vue'
 import BeeIcon from '@/components/BeeIcon/index.vue'
 import BeeTag from '@/components/BeeTag/index.vue'
 import BeeTooltip from '@/components/BeeTooltip/index.vue'
 
-defineOptions({ name: 'BeeClusterInfoCell' })
+defineOptions({ name: 'BeeNodeInfoCell' })
 
 defineProps<{
-  /** 集群名称 */
+  /** 左侧图标大小 */
+  iconSize?: number
+  /** 节点名称 */
   name: string
-  /** 集群 ID，hover UID 标签时显示 */
+  /** 节点 ID，hover UID 标签时显示 */
   id: string
-  /** 集群描述 */
+  /** 节点描述 */
   description?: string
 }>()
 
@@ -75,7 +77,7 @@ onUnmounted(() => {
 </script>
 
 <style lang="scss" scoped>
-.bee-cluster-info-cell {
+.bee-node-info-cell {
   display: flex;
   gap: $spacing-8;
   flex-direction: row;
@@ -83,7 +85,7 @@ onUnmounted(() => {
   width: 100%;
   height: auto;
 
-  &__cluster-icon {
+  &__node-icon {
     color: var(--bee-row-selected-icon-color, $color-text-secondary);
   }
 
@@ -99,8 +101,6 @@ onUnmounted(() => {
     display: flex;
     gap: $spacing-8;
     align-items: center;
-
-    // height: 24px;
   }
 
   &__name {
@@ -113,8 +113,6 @@ onUnmounted(() => {
     display: flex;
     gap: $spacing-4;
     align-items: center;
-
-    // height: 24px;
     min-width: 0;
 
     :deep(.bee-tooltip-trigger) {
@@ -140,7 +138,7 @@ onUnmounted(() => {
 
 <style lang="scss">
 // BeeTooltip label slot 内容样式（Teleport 到 body，需全局样式）
-.bee-cluster-info-cell__desc-tooltip {
+.bee-node-info-cell__desc-tooltip {
   display: inline-block;
   max-width: 400px;
   word-break: break-all;
