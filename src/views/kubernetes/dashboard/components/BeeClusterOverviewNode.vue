@@ -14,22 +14,8 @@
     <div class="bee-cluster-overview-node__body">
       <div v-for="node in nodeListData" :key="node.name" class="bee-cluster-overview-node__item">
         <BeeNodeInfoCell class="bee-cluster-overview-node__item-info" :name="node.name" :id="node.id" :description="node.description" :icon-size="32" />
-        <div class="bee-cluster-overview-node__item-usage">
-          <div class="bee-cluster-overview-node__usage-bar">
-            <span class="bee-cluster-overview-node__usage-label">CPU</span>
-            <div class="bee-cluster-overview-node__usage-track">
-              <div class="bee-cluster-overview-node__usage-fill" :style="{ width: node.cpuUsage + '%', background: getUsageColor(node.cpuUsage) }"></div>
-            </div>
-            <span class="bee-cluster-overview-node__usage-value">{{ node.cpuUsage }}%</span>
-          </div>
-          <div class="bee-cluster-overview-node__usage-bar">
-            <span class="bee-cluster-overview-node__usage-label">内存</span>
-            <div class="bee-cluster-overview-node__usage-track">
-              <div class="bee-cluster-overview-node__usage-fill" :style="{ width: node.memoryUsage + '%', background: getUsageColor(node.memoryUsage) }"></div>
-            </div>
-            <span class="bee-cluster-overview-node__usage-value">{{ node.memoryUsage }}%</span>
-          </div>
-        </div>
+        <BeeResourceUsageCell :percentage="node.cpuUsagePercentage" field-name="CPU" />
+        <BeeResourceUsageCell :percentage="node.memoryUsagePercentage" field-name="内存" />
       </div>
     </div>
   </BeeCard>
@@ -44,6 +30,7 @@ import BeeButton from '@/components/BeeButton/index.vue'
 import BeeCard from '@/components/BeeCard/index.vue'
 import BeeIcon from '@/components/BeeIcon/index.vue'
 import BeeNodeInfoCell from '@/components/BeeNodeInfoCell/index.vue'
+import BeeResourceUsageCell from '@/components/BeeResourceUsageCell/index.vue'
 import BeeSegmentedControl from '@/components/BeeSegmentedControl/index.vue'
 
 defineOptions({ name: 'BeeClusterOverviewNode' })
@@ -102,21 +89,10 @@ const nodeListData = computed(() => {
     id: node.id,
     name: node.name,
     description: node.description || '',
-    cpuUsage: calcPercentage(node.resource.usage.cpu, node.resource.allocation.cpu),
-    memoryUsage: calcPercentage(node.resource.usage.memory, node.resource.allocation.memory)
+    cpuUsagePercentage: calcPercentage(node.resource.usage.cpu, node.resource.allocation.cpu),
+    memoryUsagePercentage: calcPercentage(node.resource.usage.memory, node.resource.allocation.memory)
   }))
 })
-
-/**
- * 获取使用率颜色
- * @param usage - 使用率百分比
- * @returns 颜色值
- */
-function getUsageColor(usage: number) {
-  if (usage < 60) return '#67c23a'
-  if (usage < 80) return '#e6a23c'
-  return '#f56c6c'
-}
 
 /**
  * 查看更多节点
@@ -167,57 +143,16 @@ onMounted(() => {
   }
 
   &__item {
-    display: grid;
+    display: flex;
     gap: 16px;
-    grid-template-columns: 1fr 140px;
     align-items: center;
     padding: 8px 16px;
     border-radius: 8px;
     background: $color-bg-elevated;
 
     &-info {
-      display: flex;
+      flex: 1;
       min-width: 0;
-    }
-
-    &-usage {
-      display: flex;
-      gap: 6px;
-      flex-direction: column;
-    }
-  }
-
-  &__usage {
-    &-bar {
-      display: grid;
-      gap: 8px;
-      grid-template-columns: 32px 1fr 36px;
-      align-items: center;
-    }
-
-    &-label {
-      font-size: 11px;
-      color: $color-text-secondary;
-    }
-
-    &-track {
-      height: 6px;
-      border-radius: 3px;
-      overflow: hidden;
-      background: #e4e7ed;
-    }
-
-    &-fill {
-      height: 100%;
-      border-radius: 3px;
-      transition: width 0.3s ease;
-    }
-
-    &-value {
-      font-size: 11px;
-      font-weight: 500;
-      color: $color-text-primary;
-      text-align: right;
     }
   }
 }
