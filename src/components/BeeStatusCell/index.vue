@@ -20,7 +20,7 @@
  * @module components/BeeStatusCell
  */
 import { computed } from 'vue'
-import type { StatusConfig } from '@/config/kubernetes'
+import type { StatusOption } from '@/config/kubernetes'
 import BeeIcon from '@/components/BeeIcon/index.vue'
 import BeeTooltip from '@/components/BeeTooltip/index.vue'
 
@@ -29,15 +29,15 @@ defineOptions({ name: 'BeeStatusCell' })
 const props = defineProps<{
   /** 当前状态值 */
   status?: string | number
-  /** 状态配置数组 */
-  config: StatusConfig[]
   /** 帮助提示信息，存在时在 labelEn 旁显示帮助图标 */
   statusMsg?: string
+  /** 状态配置数组 */
+  options: StatusOption[]
 }>()
 
 /** 当前匹配的状态配置，未匹配时返回默认"未知"配置 */
 const currentConfig = computed(() => {
-  const found = props.config.find(item => item.value === props.status)
+  const found = props.options.find(item => item.value === props.status)
   if (found) return found
   return { label: '未知', color: '#da8030', labelEn: 'unknown' }
 })

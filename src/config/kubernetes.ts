@@ -4,7 +4,7 @@ import { COLOR_DANGER, COLOR_GRAY_70, COLOR_PRIMARY, COLOR_SUCCESS } from '@/con
  * 状态配置项
  * @module config/kubernetes
  */
-export interface StatusConfig {
+export interface StatusOption {
   /** 状态匹配值 */
   value: string | number | undefined
   /** 状态中文标签 */
@@ -15,7 +15,7 @@ export interface StatusConfig {
   color: string
 }
 
-export const CLUSTER_STATUS_CONFIG: StatusConfig[] = [
+export const CLUSTER_STATUS_OPTIONS: StatusOption[] = [
   { value: undefined, label: '所有状态', labelEn: 'ALL', color: COLOR_SUCCESS },
   { value: 0, label: '未知', labelEn: 'Unknown', color: COLOR_GRAY_70 },
   { value: 1, label: '健康', labelEn: 'Healthy', color: COLOR_SUCCESS },
@@ -24,7 +24,12 @@ export const CLUSTER_STATUS_CONFIG: StatusConfig[] = [
   { value: 4, label: '失败', labelEn: 'Failed', color: COLOR_DANGER }
 ]
 
-export const NODE_STATUS_CONFIG: StatusConfig[] = []
+export const NODE_STATUS_OPTIONS: StatusOption[] = [
+  { value: undefined, label: '所有状态', labelEn: 'ALL', color: COLOR_SUCCESS },
+  { value: 'Ready', label: '就绪', labelEn: 'Ready', color: COLOR_SUCCESS },
+  { value: 'NotReady', label: '未就绪', labelEn: 'NotReady', color: COLOR_DANGER },
+  { value: 'Unknown', label: '未知', labelEn: 'Unknown', color: COLOR_GRAY_70 }
+]
 
 /** 证书即将过期告警阈值（天） */
 export const CERT_EXPIRE_WARNING_DAYS = 30

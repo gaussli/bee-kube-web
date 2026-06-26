@@ -38,7 +38,7 @@ import BeeCard from '@/components/BeeCard/index.vue'
 import BeeFieldCard from '@/components/BeeFieldCard/index.vue'
 import BeeFieldItem from '@/components/BeeFieldItem/index.vue'
 import BeeIcon from '@/components/BeeIcon/index.vue'
-import { CERT_EXPIRE_WARNING_DAYS, CLUSTER_STATUS_CONFIG } from '@/config/kubernetes'
+import { CERT_EXPIRE_WARNING_DAYS, CLUSTER_STATUS_OPTIONS } from '@/config/kubernetes'
 
 defineOptions({ name: 'BeeClusterOverviewInfo' })
 
@@ -72,9 +72,9 @@ const clusterUptime = computed(() => formatTimeElapsed(props.data.createdAt))
 /** 证书剩余天数 */
 const certRemainDays = computed(() => calcRemainDays(props.data.certExpireAt))
 
-/** 集群状态配置，通过 CLUSTER_STATUS_CONFIG 匹配 status 值获取 */
+/** 集群状态配置，通过 CLUSTER_STATUS_OPTIONS 匹配 status 值获取 */
 const statusConfig = computed(() => {
-  const found = CLUSTER_STATUS_CONFIG.find(c => c.value === props.data.status)
+  const found = CLUSTER_STATUS_OPTIONS.find(c => c.value === props.data.status)
   if (!found) {
     throw new Error(`[BeeClusterOverviewInfo] 未知集群状态: ${props.data.status}`)
   }

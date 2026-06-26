@@ -11,7 +11,7 @@
       <!-- 查询表单 -->
       <div class="table-toolbar">
         <BeeInputSearch v-model="searchKey" placeholder="按 ID / 名称 搜索" class="table-toolbar__search" />
-        <BeeSelect v-model="queryForm.status" :options="CLUSTER_STATUS_CONFIG" placeholder="状态筛选" />
+        <BeeSelect v-model="queryForm.status" :options="CLUSTER_STATUS_OPTIONS" placeholder="状态筛选" />
         <BeeButton icon="basic-search" @click="handleSearch"> 搜索 </BeeButton>
         <BeeButton icon="basic-refresh" @click="handleReset"> 重置 </BeeButton>
         <BeeDivider v-if="hasPermission('kubernetes:cluster:create')" direction="vertical" length="12px" />
@@ -33,7 +33,7 @@
           </BeeTableColumn>
           <BeeTableColumn prop="status" :width="100">
             <template #default="{ row }">
-              <BeeStatusCell :config="CLUSTER_STATUS_CONFIG" :status="row.status" :status-msg="row.statusMsg" />
+              <BeeStatusCell :options="CLUSTER_STATUS_OPTIONS" :status="row.status" :status-msg="row.statusMsg" />
             </template>
           </BeeTableColumn>
           <BeeTableColumn :width="200">
@@ -120,7 +120,7 @@ import BeeTableCommonCell from '@/components/BeeTable/BeeTableCommonCell.vue'
 import BeeTable from '@/components/BeeTable/index.vue'
 import BeeTag from '@/components/BeeTag/index.vue'
 import { usePermission } from '@/composables/usePermission'
-import { CLUSTER_STATUS_CONFIG } from '@/config/kubernetes'
+import { CLUSTER_STATUS_OPTIONS } from '@/config/kubernetes'
 import { useKubernetesStore } from '@/stores'
 
 defineOptions({ name: 'ClusterManage' })

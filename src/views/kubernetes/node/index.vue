@@ -1,7 +1,7 @@
 <template>
   <BeePage class="node-page">
     <!-- 页面标题 -->
-    <BeeCard class="page-header">
+    <BeeCard class="node-page__header">
       <BeePageTitle
         icon="kubernetes-node"
         title="节点管理"
@@ -10,123 +10,95 @@
     </BeeCard>
 
     <!-- 页面内容 -->
-    <BeeCard class="page-body">
+    <BeeCard class="node-page__body">
       <!-- 查询表单 -->
-      <div class="table-query">
-        <div class="table-query-left">
-          <BeeInputSearch v-model="searchKey" placeholder="按 ID、名称或 IP 搜索" />
-          <BeeSegmentedControl v-model="queryForm.status" :options="statusOptions" @select="handleSelect" />
-        </div>
-        <div class="table-query-right">
-          <BeeButton icon="basic-refresh" @click="handleReset"> 刷新 </BeeButton>
-        </div>
+      <div class="table-toolbar">
+        <BeeInputSearch v-model="searchKey" placeholder="按 ID、名称或 IP 搜索" class="table-toolbar__search" />
+        <BeeSelect v-model="queryForm.status" :options="NODE_STATUS_OPTIONS" placeholder="状态筛选" />
+        <BeeButton icon="basic-search" @click="handleSearch"> 搜索 </BeeButton>
+        <BeeButton icon="basic-refresh" @click="handleReset"> 重置 </BeeButton>
       </div>
 
       <!-- 表格主体 -->
       <div class="table-body">
-        <el-table v-loading="loading" :data="tableData" height="100%" @selection-change="handleSelectionChange">
-          <el-table-column type="selection" width="60" align="center" />
-          <el-table-column min-width="180">
-            <template #header>
-              <BeeIconLabel icon="kubernetes-node" label="名称" />
-            </template>
+        <BeeTable :data="tableData" :loading="loading" selectable @selection-change="handleSelectionChange">
+          <BeeTableColumn :min-width="180">
             <template #default="{ row }">
-              <BeeLabelGroup :main="row.name" :sub="row.internalIp" />
+              <BeeTableCommonCell :text="row.name" :subtext="row.internalIp" />
             </template>
-          </el-table-column>
-          <el-table-column width="130">
-            <template #header>
-              <BeeIconLabel icon="basic-status" label="状态" />
-            </template>
+          </BeeTableColumn>
+          <BeeTableColumn :width="130">
             <template #default="{ row }">
               <div class="status-cell">
-                <BeeStatusCell :status="row.status" :config="nodeStatusConfig" />
+                <BeeStatusCell :status="row.status" :options="NODE_STATUS_OPTIONS" />
                 <BeeTooltip v-if="row.schedulable === false" label="节点已被设置为不可调度，不会分配新的 Pod" placement="top">
                   <BeeIcon name="basic-warning-filled" :size="14" />
                 </BeeTooltip>
               </div>
             </template>
-          </el-table-column>
-          <el-table-column min-width="150" class-name="bee-table-category">
-            <template #header>
-              <BeeIconLabel icon="basic-category" label="角色" />
-            </template>
+          </BeeTableColumn>
+          <BeeTableColumn :min-width="150">
             <template #default="{ row }">
-              <BeeTag v-for="role in row.roles" :key="role" size="small">{{ role }}</BeeTag>
+              <div class="role-tags">
+                <BeeTag v-for="role in row.roles" :key="role" size="small">{{ role }}</BeeTag>
+              </div>
             </template>
-          </el-table-column>
-          <el-table-column min-width="120">
-            <template #header>
-              <BeeIconLabel icon="kubernetes-version" label="版本" />
-            </template>
+          </BeeTableColumn>
+          <BeeTableColumn :min-width="120">
             <template #default="{ row }">
               <span class="version-text">{{ row.version }}</span>
             </template>
-          </el-table-column>
-          <el-table-column width="140">
-            <template #header>
-              <BeeIconLabel icon="kubernetes-cpu" label="CPU" />
-            </template>
+          </BeeTableColumn>
+          <BeeTableColumn :width="140">
             <template #default="{ row }">
               <div class="resource-cell">
                 <span class="resource-text">{{ row.cpu }}</span>
-                <el-progress :percentage="calcPercentage(row.cpu)" :stroke-width="4" :show-text="false" :color="getResourceColor(row.cpu)" />
+                <div class="resource-bar" :style="{ background: getResourceBarBg(calcPercentage(row.cpu)), width: calcPercentage(row.cpu) + '%' }" />
               </div>
             </template>
-          </el-table-column>
-          <el-table-column width="140">
-            <template #header>
-              <BeeIconLabel icon="kubernetes-memory" label="内存" />
-            </template>
+          </BeeTableColumn>
+          <BeeTableColumn :width="140">
             <template #default="{ row }">
               <div class="resource-cell">
                 <span class="resource-text">{{ row.memory }}</span>
-                <el-progress :percentage="calcPercentage(row.memory)" :stroke-width="4" :show-text="false" :color="getResourceColor(row.memory)" />
+                <div class="resource-bar" :style="{ background: getResourceBarBg(calcPercentage(row.memory)), width: calcPercentage(row.memory) + '%' }" />
               </div>
             </template>
-          </el-table-column>
-          <el-table-column width="140">
-            <template #header>
-              <BeeIconLabel icon="kubernetes-pod" label="Pods" />
-            </template>
+          </BeeTableColumn>
+          <BeeTableColumn :width="140">
             <template #default="{ row }">
               <div class="resource-cell">
                 <span class="resource-text">{{ row.pods }}</span>
-                <el-progress :percentage="calcPercentage(row.pods)" :stroke-width="4" :show-text="false" :color="getResourceColor(row.pods)" />
+                <div class="resource-bar" :style="{ background: getResourceBarBg(calcPercentage(row.pods)), width: calcPercentage(row.pods) + '%' }" />
               </div>
             </template>
-          </el-table-column>
-          <el-table-column width="180">
-            <template #header>
-              <BeeIconLabel icon="basic-audit" label="创建" />
-            </template>
+          </BeeTableColumn>
+          <BeeTableColumn :width="180">
             <template #default="{ row }">
               <BeeAuditCell :username="row.createBy" :datetime="row.createAt" field-name="创建人 / 时间" />
             </template>
-          </el-table-column>
-          <el-table-column width="150" fixed="right" class-name="bee-table-operation">
-            <template #header>
-              <BeeIconLabel icon="basic-operation" label="操作" />
-            </template>
+          </BeeTableColumn>
+          <BeeTableColumn :width="150" fixed="right">
             <template #default="{ row }">
-              <BeeCircleButton v-if="hasPermission('kubernetes:node:edit')" icon="basic-edit" type="info" tooltip="编辑" @click="handleEdit(row)" />
-              <BeeCircleButton icon="basic-view" type="info" tooltip="详情" @click="handleViewDetail(row)" />
-              <BeeDropdown v-if="hasPermission('kubernetes:node:edit')" trigger="click">
-                <BeeCircleButton icon="basic-more" type="info" tooltip="更多" />
-                <template #dropdown>
-                  <BeeDropdownItem v-if="row.schedulable !== false" value="stopScheduler" label="停止调度" icon="basic-stop" @click="handleCordon(row, true)" />
-                  <BeeDropdownItem v-else value="enableScheduler" label="允许调度" icon="basic-right" @click="handleCordon(row, false)" />
-                  <BeeDropdownItem value="drainPod" label="驱逐Pod" icon="kubernetes-drain" @click="handleDrain(row)" />
-                </template>
-              </BeeDropdown>
+              <div class="table-action">
+                <BeeCircleButton v-if="hasPermission('kubernetes:node:edit')" icon="basic-edit" tooltip="编辑" @click="handleEdit(row)" />
+                <BeeCircleButton icon="basic-view" tooltip="详情" @click="handleViewDetail(row)" />
+                <BeeDropdown v-if="hasPermission('kubernetes:node:edit')" trigger="click">
+                  <BeeCircleButton icon="basic-more" tooltip="更多" />
+                  <template #dropdown>
+                    <BeeDropdownItem v-if="row.schedulable !== false" value="stopScheduler" label="停止调度" icon="basic-stop" @click="handleCordon(row, true)" />
+                    <BeeDropdownItem v-else value="enableScheduler" label="允许调度" icon="basic-right" @click="handleCordon(row, false)" />
+                    <BeeDropdownItem value="drainPod" label="驱逐Pod" icon="kubernetes-drain" @click="handleDrain(row)" />
+                  </template>
+                </BeeDropdown>
+              </div>
             </template>
-          </el-table-column>
-        </el-table>
+          </BeeTableColumn>
+        </BeeTable>
       </div>
 
       <!-- 表格底部 -->
       <div class="table-footer">
-        <div></div>
         <BeePagination v-model="pagination.page" v-model:pageSize="pagination.pageSize" :total="pagination.total" :page-sizes="[10, 20, 50]" @change="loadData" />
       </div>
     </BeeCard>
@@ -146,17 +118,19 @@ import BeeCircleButton from '@/components/BeeCircleButton/index.vue'
 import BeeDropdown from '@/components/BeeDropdown/index.vue'
 import BeeDropdownItem from '@/components/BeeDropdownItem/index.vue'
 import BeeIcon from '@/components/BeeIcon/index.vue'
-import BeeIconLabel from '@/components/BeeIconLabel/index.vue'
 import BeeInputSearch from '@/components/BeeInputSearch/index.vue'
-import BeeLabelGroup from '@/components/BeeLabelGroup/index.vue'
 import BeePage from '@/components/BeePage/index.vue'
 import BeePageTitle from '@/components/BeePageTitle/index.vue'
 import BeePagination from '@/components/BeePagination/index.vue'
-import BeeSegmentedControl from '@/components/BeeSegmentedControl/index.vue'
+import BeeSelect from '@/components/BeeSelect/index.vue'
 import BeeStatusCell from '@/components/BeeStatusCell/index.vue'
+import BeeTableColumn from '@/components/BeeTable/BeeTableColumn.vue'
+import BeeTableCommonCell from '@/components/BeeTable/BeeTableCommonCell.vue'
+import BeeTable from '@/components/BeeTable/index.vue'
 import BeeTag from '@/components/BeeTag/index.vue'
 import BeeTooltip from '@/components/BeeTooltip/index.vue'
 import { usePermission } from '@/composables/usePermission'
+import { NODE_STATUS_OPTIONS } from '@/config/kubernetes'
 import { useKubernetesStore } from '@/stores'
 
 defineOptions({ name: 'NodeManage' })
@@ -172,7 +146,6 @@ const loading = ref(false)
 const tableData = ref<NodeListResp[]>([])
 const selectedRows = ref<NodeListResp[]>([])
 const queryForm = reactive<Partial<NodeQueryReq>>({
-  id: undefined,
   name: undefined,
   ip: undefined,
   status: undefined,
@@ -185,19 +158,6 @@ const pagination = reactive({
   total: 0
 })
 
-const statusOptions = [
-  { label: '所有', value: undefined },
-  { label: '就绪', value: 'Ready' },
-  { label: '未就绪', value: 'NotReady' },
-  { label: '未知', value: 'Unknown' }
-]
-
-const nodeStatusConfig = [
-  { value: 'Ready', label: '就绪', color: 'rgb(103, 194, 58)' },
-  { value: 'NotReady', label: '未就绪', color: 'rgb(245, 108, 108)' },
-  { value: 'Unknown', label: '未知', color: 'rgb(144, 147, 153)' }
-]
-
 function calcPercentage(value: string) {
   if (!value || typeof value !== 'string') return 0
   const parts = value.split('/')
@@ -208,8 +168,12 @@ function calcPercentage(value: string) {
   return Math.min(Math.round((used / total) * 100), 100)
 }
 
-function getResourceColor(value: string) {
-  const percent = calcPercentage(value)
+/**
+ * 根据使用百分比获取进度条颜色
+ * @param percent - 使用百分比
+ * @returns CSS 颜色值
+ */
+function getResourceBarBg(percent: number) {
   if (percent >= 90) return '#f56c6c'
   if (percent >= 70) return '#e6a23c'
   return '#67c23a'
@@ -230,27 +194,36 @@ async function loadData() {
   }
 }
 
-function handleSelect(selectValue?: string | number) {
-  queryForm.status = selectValue as string | undefined
+/**
+ * 搜索
+ * @remarks 将 searchKey 同时映射到 name/ip 字段进行模糊匹配
+ */
+function handleSearch() {
+  const key = searchKey.value
+  queryForm.name = key
+  queryForm.ip = key
   pagination.page = 1
   loadData()
 }
 
+/**
+ * 重置搜索条件
+ */
 function handleReset() {
-  queryForm.id = undefined
   queryForm.name = undefined
   queryForm.ip = undefined
   queryForm.status = undefined
-  queryForm.page = 1
-  queryForm.pageSize = 10
   pagination.page = 1
   pagination.pageSize = 10
   searchKey.value = ''
   loadData()
 }
 
-function handleSelectionChange(rows: NodeListResp[]) {
-  selectedRows.value = rows
+/**
+ * 表格选中行变化
+ */
+function handleSelectionChange(rows: Record<string, unknown>[]) {
+  selectedRows.value = rows as unknown as NodeListResp[]
 }
 
 function handleViewDetail(row: NodeListResp) {
@@ -288,61 +261,28 @@ onMounted(() => {
 
 <style lang="scss" scoped>
 .node-page {
-  .page-body {
+  .node-page__body {
     display: flex;
     flex-direction: column;
     flex: 1;
     min-height: 0;
     overflow: hidden;
 
-    .table-query {
+    .table-toolbar {
       display: flex;
+      gap: $spacing-8;
       align-items: center;
-      justify-content: space-between;
       padding: $spacing-16 0;
 
-      .table-query-left {
-        display: flex;
-        gap: $spacing-8;
-        flex-direction: row;
-        align-items: center;
-      }
-
-      .table-query-right {
-        display: flex;
-        gap: $spacing-8;
-        flex-direction: row;
-        align-items: center;
+      &__search {
+        flex: 1;
+        min-width: 0;
       }
     }
 
     .table-body {
       flex: 1;
       min-height: 0;
-
-      :deep(.el-table) {
-        height: 100%;
-
-        th.el-table__cell {
-          padding: $spacing-16 0;
-        }
-
-        .bee-table-category {
-          .cell {
-            display: flex;
-            gap: $spacing-8;
-            flex-flow: row wrap;
-          }
-        }
-
-        .bee-table-operation {
-          .cell {
-            display: flex;
-            gap: $spacing-8;
-            flex-direction: row;
-          }
-        }
-      }
 
       .version-text,
       .resource-text {
@@ -357,21 +297,37 @@ onMounted(() => {
         align-items: center;
       }
 
+      .role-tags {
+        display: flex;
+        gap: $spacing-8;
+        flex-flow: row wrap;
+      }
+
       .resource-cell {
         display: flex;
         gap: 4px;
         flex-direction: column;
 
-        .el-progress {
+        .resource-bar {
           width: 100%;
+          height: 4px;
+          border-radius: 2px;
+          transition: width 0.3s ease;
         }
       }
+    }
+
+    .table-action {
+      display: flex;
+      gap: $spacing-8;
+      width: 100%;
+      height: auto;
     }
 
     .table-footer {
       display: flex;
       align-items: center;
-      justify-content: space-between;
+      justify-content: flex-end;
       padding: $spacing-16 0;
     }
   }

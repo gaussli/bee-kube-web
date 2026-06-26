@@ -85,7 +85,7 @@
             <BeeIconLabel icon="circle-check" label="状态" />
           </template>
           <template #default="{ row }">
-            <BeeStatusCell :status="row.status" :config="menuStatusConfig" />
+            <BeeStatusCell :status="row.status" :options="menuStatusConfig" />
           </template>
         </el-table-column>
         <el-table-column width="180">

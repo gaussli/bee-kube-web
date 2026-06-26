@@ -56,7 +56,7 @@
             <BeeIconLabel icon="circle-check" label="状态" />
           </template>
           <template #default="{ row }">
-            <BeeStatusCell :status="row.status" :config="roleStatusConfig" />
+            <BeeStatusCell :status="row.status" :options="roleStatusConfig" />
           </template>
         </el-table-column>
         <el-table-column width="180">
