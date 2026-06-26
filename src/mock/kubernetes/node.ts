@@ -80,9 +80,10 @@ export default [
  * @returns 分页数据
  */
 function getNodePage(clusterId: string, params: Partial<NodeQueryReq>): PageResp<NodeListResp> {
+  console.log(params)
   const { id, name, ip, status, page = 1, pageSize = 10 } = params || {}
 
-  let filtered = mockNodes.filter(n => n.clusterId === clusterId)
+  let filtered = [...mockNodes]
   if (id) {
     filtered = filtered.filter(n => n.id === id)
   }
@@ -136,7 +137,7 @@ function getNodeResource(clusterId: string, name: string): NodeResourceResp {
  */
 function getNodeTopN(_clusterId: string, params: Partial<{ metric: string; count: number }>): NodeListResp[] {
   const { count = 5 } = params || {}
-  return mockNodes.sort(() => Math.random() - 0.5).slice(0, count)
+  return [...mockNodes].sort(() => Math.random() - 0.5).slice(0, count)
 }
 
 /**
@@ -254,7 +255,7 @@ const mockNodes: NodeListResp[] = [
     id: generateId(),
     uid: generateId(),
     name: 'master-01',
-    description: '生产集群主控制节点，负责集群调度和管理',
+    description: '生产集群主控制节点，负责集群调度和管理。生产集群主控制节点，负责集群调度和管理。生产集群主控制节点，负责集群调度和管理。',
     clusterId: generateId(),
     clusterName: 'prod-cluster',
     status: 'Ready',

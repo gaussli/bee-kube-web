@@ -22,60 +22,44 @@
       <!-- 表格主体 -->
       <div class="table-body">
         <BeeTable :data="tableData" :loading="loading" selectable @selection-change="handleSelectionChange">
-          <BeeTableColumn :min-width="180">
+          <BeeTableColumn :width="500">
             <template #default="{ row }">
-              <BeeTableCommonCell :text="row.name" :subtext="row.internalIp" />
+              <BeeNodeInfoCell :name="row.name" :id="row.id" :description="row.description" :icon-size="32" />
             </template>
           </BeeTableColumn>
           <BeeTableColumn :width="130">
             <template #default="{ row }">
-              <div class="status-cell">
-                <BeeStatusCell :status="row.status" :options="NODE_STATUS_OPTIONS" />
-                <BeeTooltip v-if="row.schedulable === false" label="节点已被设置为不可调度，不会分配新的 Pod" placement="top">
-                  <BeeIcon name="basic-warning-filled" :size="14" />
-                </BeeTooltip>
-              </div>
-            </template>
-          </BeeTableColumn>
-          <BeeTableColumn :min-width="150">
-            <template #default="{ row }">
-              <div class="role-tags">
-                <BeeTag v-for="role in row.roles" :key="role" size="small">{{ role }}</BeeTag>
-              </div>
-            </template>
-          </BeeTableColumn>
-          <BeeTableColumn :min-width="120">
-            <template #default="{ row }">
-              <span class="version-text">{{ row.version }}</span>
+              <BeeStatusCell :status="row.status" :status-msg="row.statusMsg" :options="NODE_STATUS_OPTIONS" />
             </template>
           </BeeTableColumn>
           <BeeTableColumn :width="140">
             <template #default="{ row }">
-              <div class="resource-cell">
-                <span class="resource-text">{{ row.cpu }}</span>
-                <div class="resource-bar" :style="{ background: getResourceBarBg(calcPercentage(row.cpu)), width: calcPercentage(row.cpu) + '%' }" />
-              </div>
+              <BeeResourceUsageCell :percentage="calcPercentage(row.resource.usage.cpu, row.resource.allocation.cpu)" field-name="CPU" />
             </template>
           </BeeTableColumn>
           <BeeTableColumn :width="140">
             <template #default="{ row }">
-              <div class="resource-cell">
-                <span class="resource-text">{{ row.memory }}</span>
-                <div class="resource-bar" :style="{ background: getResourceBarBg(calcPercentage(row.memory)), width: calcPercentage(row.memory) + '%' }" />
-              </div>
+              <BeeResourceUsageCell :percentage="calcPercentage(row.resource.usage.memory, row.resource.allocation.memory)" field-name="内存" />
             </template>
           </BeeTableColumn>
           <BeeTableColumn :width="140">
             <template #default="{ row }">
-              <div class="resource-cell">
-                <span class="resource-text">{{ row.pods }}</span>
-                <div class="resource-bar" :style="{ background: getResourceBarBg(calcPercentage(row.pods)), width: calcPercentage(row.pods) + '%' }" />
-              </div>
+              <BeeResourceUsageCell :percentage="calcPercentage(row.resource.usage.storage, row.resource.allocation.storage)" field-name="磁盘" />
             </template>
           </BeeTableColumn>
-          <BeeTableColumn :width="180">
+          <BeeTableColumn :width="140">
+            <template #default="{ row }">
+              <BeeResourceUsageCell :percentage="calcPercentage(row.resource.usage.pod, row.resource.allocation.pod)" field-name="容器数" />
+            </template>
+          </BeeTableColumn>
+          <BeeTableColumn :width="200">
             <template #default="{ row }">
               <BeeAuditCell :username="row.createBy" :datetime="row.createAt" field-name="创建人 / 时间" />
+            </template>
+          </BeeTableColumn>
+          <BeeTableColumn :width="200">
+            <template #default="{ row }">
+              <BeeAuditCell :username="row.updateBy" :datetime="row.updateAt" field-name="更新人 / 时间" />
             </template>
           </BeeTableColumn>
           <BeeTableColumn :width="150" fixed="right">
@@ -117,18 +101,16 @@ import BeeCard from '@/components/BeeCard/index.vue'
 import BeeCircleButton from '@/components/BeeCircleButton/index.vue'
 import BeeDropdown from '@/components/BeeDropdown/index.vue'
 import BeeDropdownItem from '@/components/BeeDropdownItem/index.vue'
-import BeeIcon from '@/components/BeeIcon/index.vue'
 import BeeInputSearch from '@/components/BeeInputSearch/index.vue'
+import BeeNodeInfoCell from '@/components/BeeNodeInfoCell/index.vue'
 import BeePage from '@/components/BeePage/index.vue'
 import BeePageTitle from '@/components/BeePageTitle/index.vue'
 import BeePagination from '@/components/BeePagination/index.vue'
+import BeeResourceUsageCell from '@/components/BeeResourceUsageCell/index.vue'
 import BeeSelect from '@/components/BeeSelect/index.vue'
 import BeeStatusCell from '@/components/BeeStatusCell/index.vue'
 import BeeTableColumn from '@/components/BeeTable/BeeTableColumn.vue'
-import BeeTableCommonCell from '@/components/BeeTable/BeeTableCommonCell.vue'
 import BeeTable from '@/components/BeeTable/index.vue'
-import BeeTag from '@/components/BeeTag/index.vue'
-import BeeTooltip from '@/components/BeeTooltip/index.vue'
 import { usePermission } from '@/composables/usePermission'
 import { NODE_STATUS_OPTIONS } from '@/config/kubernetes'
 import { useKubernetesStore } from '@/stores'
@@ -158,25 +140,15 @@ const pagination = reactive({
   total: 0
 })
 
-function calcPercentage(value: string) {
-  if (!value || typeof value !== 'string') return 0
-  const parts = value.split('/')
-  if (parts.length !== 2) return 0
-  const used = parseFloat(parts[0])
-  const total = parseFloat(parts[1])
-  if (isNaN(used) || isNaN(total) || total === 0) return 0
-  return Math.min(Math.round((used / total) * 100), 100)
-}
-
 /**
- * 根据使用百分比获取进度条颜色
- * @param percent - 使用百分比
- * @returns CSS 颜色值
+ * 计算使用百分比
+ * @param used - 已用量
+ * @param total - 总量
+ * @returns 百分比（0-100），总量为 0 时返回 0
  */
-function getResourceBarBg(percent: number) {
-  if (percent >= 90) return '#f56c6c'
-  if (percent >= 70) return '#e6a23c'
-  return '#67c23a'
+function calcPercentage(used: number, total: number): number {
+  if (total <= 0) return 0
+  return Math.round((used / total) * 100)
 }
 
 async function loadData() {
@@ -284,8 +256,7 @@ onMounted(() => {
       flex: 1;
       min-height: 0;
 
-      .version-text,
-      .resource-text {
+      .version-text {
         font-family: monospace;
         font-size: 12px;
         color: $color-text-secondary;
@@ -301,19 +272,6 @@ onMounted(() => {
         display: flex;
         gap: $spacing-8;
         flex-flow: row wrap;
-      }
-
-      .resource-cell {
-        display: flex;
-        gap: 4px;
-        flex-direction: column;
-
-        .resource-bar {
-          width: 100%;
-          height: 4px;
-          border-radius: 2px;
-          transition: width 0.3s ease;
-        }
       }
     }
 

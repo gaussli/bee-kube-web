@@ -144,14 +144,13 @@ export interface NodeVolumesResp {
  * @extends PageReq 继承分页请求（含 page, pageSize）
  */
 export interface NodeQueryReq extends PageReq {
+  id: string
   /** 节点名称（模糊匹配） */
-  name?: string
+  name: string
   /** IP 地址 */
-  ip?: string
+  ip: string
   /** 状态 */
-  status?: NodeType
-  /** 标签选择器 */
-  labelSelector?: string
+  status: NodeType
 }
 
 /**
