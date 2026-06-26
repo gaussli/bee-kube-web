@@ -10,7 +10,7 @@
  * 提供菜单上下文，管理激活项与子菜单展开状态
  * @module components/BeeMenu/BeeMenu
  */
-import { ref, provide, readonly } from 'vue'
+import { ref, provide, readonly, watch } from 'vue'
 import { MenuContextKey } from './types'
 
 defineOptions({ name: 'BeeMenu' })
@@ -30,6 +30,18 @@ const emit = defineEmits<{
 
 /** 当前激活的菜单项 index */
 const activeIndex = ref<string | number | undefined>(props.defaultActive)
+
+/**
+ * 同步外部传入的 defaultActive 到内部 activeIndex
+ * @remarks 用于 URL 直接访问或路由切换时自动高亮对应菜单项
+ */
+watch(
+  () => props.defaultActive,
+  val => {
+    activeIndex.value = val
+  }
+)
+
 /** 当前展开的子菜单 index（最多 1 个） */
 const expandedKey = ref<string | number | undefined>()
 

@@ -37,7 +37,9 @@ const CLUSTER_ROUTE = 'kubernetes:cluster' as const
 const CLUSTER_DASHBOARD_ROUTE = 'kubernetes:dashboard' as const
 
 /** 当前激活的菜单项，优先使用路由 meta.activeCode，回退到 route.name */
-const defaultActive = computed(() => (route.meta.activeCode ?? route.name) as string | undefined)
+const defaultActive = computed(() => {
+  return (route.meta.activeCode ?? route.name) as string | undefined
+})
 
 /** 根据当前 tab 获取菜单列表，无匹配时返回空数组 */
 const currentMenuList = computed(() => {
