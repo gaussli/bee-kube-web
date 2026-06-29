@@ -3,7 +3,7 @@
  * @module api/kubernetes/namespace
  */
 import type { PageResp } from '@/types/common'
-import type { NamespaceQueryReq, NamespaceListResp, NamespaceLabelsReq, NamespaceReq, NamespaceAnnotationsReq, NamespaceQuotaReq, NamespaceImportReq } from '@/types/kubernetes/namespace'
+import type { NamespaceQueryReq, NamespaceListResp, NamespaceDetailResp, NamespaceLabelsReq, NamespaceReq, NamespaceAnnotationsReq, NamespaceQuotaReq, NamespaceImportReq } from '@/types/kubernetes/namespace'
 import { request } from '@/utils'
 
 /**
@@ -22,8 +22,8 @@ export function getNamespacePage(clusterId: string, params: Partial<NamespaceQue
  * @param name - 命名空间名称
  * @returns 命名空间详情
  */
-export function getNamespaceDetail(clusterId: string, name: string): Promise<NamespaceListResp> {
-  return request.get<NamespaceListResp>(`/kubernetes/clusters/${clusterId}/namespaces/${name}`)
+export function getNamespaceDetail(clusterId: string, name: string): Promise<NamespaceDetailResp> {
+  return request.get<NamespaceDetailResp>(`/kubernetes/clusters/${clusterId}/namespaces/${name}`)
 }
 
 /**

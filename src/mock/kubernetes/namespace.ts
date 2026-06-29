@@ -3,7 +3,7 @@
  * @module mock/kubernetes/namespace
  */
 import type { PageResp } from '@/types/common'
-import type { NamespaceQueryReq, NamespaceReq, NamespaceListResp, NamespaceLabelsReq, NamespaceAnnotationsReq, NamespaceQuotaReq, NamespaceImportReq } from '@/types/kubernetes/namespace'
+import type { NamespaceQueryReq, NamespaceReq, NamespaceListResp, NamespaceDetailResp, NamespaceLabelsReq, NamespaceAnnotationsReq, NamespaceQuotaReq, NamespaceImportReq } from '@/types/kubernetes/namespace'
 import { generateId } from '@/mock/utils'
 
 /**
@@ -33,7 +33,7 @@ export default [
   {
     method: 'get',
     url: '/kubernetes/clusters/:clusterId/namespaces/:name',
-    handler: (pathParams: Record<string, string>): NamespaceListResp => getNamespaceDetail(pathParams.clusterId, pathParams.name)
+    handler: (pathParams: Record<string, string>): NamespaceDetailResp => getNamespaceDetail(pathParams.clusterId, pathParams.name)
   },
   {
     method: 'get',
@@ -145,12 +145,38 @@ function getNamespacePage(_clusterId: string, params: Partial<NamespaceQueryReq>
  * @param name - 命名空间名称
  * @returns 命名空间详情
  */
-function getNamespaceDetail(clusterId: string, name: string): NamespaceListResp {
+function getNamespaceDetail(clusterId: string, name: string): NamespaceDetailResp {
   const ns = mockNamespaces.find(n => n.clusterId === clusterId && n.name === name)
   if (!ns) {
     console.error('[Get Namespace Detail] can not find namespace:', clusterId, name)
   }
-  return ns!
+  return {
+    ...ns!,
+    labels: { 'app.kubernetes.io/name': ns!.name },
+    annotations: { 'description': ns!.description || '' },
+    resourceQuota: {
+      requestsCpu: 4,
+      requestsMemory: '8Gi',
+      limitsCpu: 8,
+      limitsMemory: '16Gi',
+      persistentvolumeclaims: 10,
+      servicesLoadbalancers: 2,
+      countDeploymentsApps: 20,
+      countPods: 50
+    },
+    limitRange: {
+      container: {
+        defaultCpu: 0.5,
+        defaultMemory: 512,
+        defaultRequestCpu: 0.25,
+        defaultRequestMemory: 256,
+        maxCpu: 2,
+        maxMemory: 4096,
+        minCpu: 0.1,
+        minMemory: 128
+      }
+    }
+  }
 }
 
 /**
@@ -198,33 +224,7 @@ status:
  * @param data - 创建参数
  */
 function createNamespace(clusterId: string, data: Partial<NamespaceReq>): void {
-  const created: NamespaceListResp = {
-    id: data.id || generateId(),
-    name: data.name || '',
-    description: data.description,
-    clusterId: clusterId,
-    clusterName: data.clusterName || '',
-    status: 'Active',
-    labels: data.labels || {},
-    annotations: data.annotations || {},
-    resourceQuota: data.resourceQuota || {
-      requestsCpu: 0,
-      requestsMemory: '0Gi',
-      limitsCpu: 0,
-      limitsMemory: '0Gi',
-      persistentvolumeclaims: 0,
-      servicesLoadbalancers: 0,
-      countDeploymentsApps: 0,
-      countPods: 0
-    },
-    limitRange: data.limitRange || {},
-    deletable: true,
-    createBy: 'admin',
-    createAt: new Date().toLocaleString(),
-    updateBy: 'admin',
-    updateAt: new Date().toLocaleString()
-  }
-  mockNamespaces.push(created)
+  console.log('[Create Namespace]', clusterId, data)
 }
 
 /**
@@ -234,17 +234,7 @@ function createNamespace(clusterId: string, data: Partial<NamespaceReq>): void {
  * @param data - 更新参数
  */
 function updateNamespace(clusterId: string, name: string, data: Partial<NamespaceReq>): void {
-  const index = mockNamespaces.findIndex(n => n.clusterId === clusterId && n.name === name)
-  if (index === -1) {
-    console.error('[Update Namespace] can not find namespace:', clusterId, name)
-    return
-  }
-  mockNamespaces[index] = {
-    ...mockNamespaces[index],
-    ...data,
-    updateBy: 'admin',
-    updateAt: new Date().toLocaleString()
-  }
+  console.log('[Update Namespace]', clusterId, name, data)
 }
 
 /**
@@ -254,26 +244,7 @@ function updateNamespace(clusterId: string, name: string, data: Partial<Namespac
  * @param data - 标签数据
  */
 function manageNamespaceLabels(clusterId: string, name: string, data: Partial<NamespaceLabelsReq>): void {
-  const index = mockNamespaces.findIndex(n => n.clusterId === clusterId && n.name === name)
-  if (index === -1) {
-    console.error('[Manage Namespace Labels] can not find namespace:', clusterId, name)
-    return
-  }
-
-  const currentLabels = mockNamespaces[index].labels || {}
-
-  if (data.operation === 1) {
-    mockNamespaces[index].labels = { ...currentLabels, ...data.labels }
-  } else if (data.operation === 2) {
-    const newLabels = { ...currentLabels }
-    Object.keys(data.labels || {}).forEach(key => delete newLabels[key])
-    mockNamespaces[index].labels = newLabels
-  } else if (data.operation === 3) {
-    mockNamespaces[index].labels = data.labels || {}
-  }
-
-  mockNamespaces[index].updateBy = 'admin'
-  mockNamespaces[index].updateAt = new Date().toLocaleString()
+  console.log('[Manage Namespace Labels]', clusterId, name, data)
 }
 
 /**
@@ -283,26 +254,7 @@ function manageNamespaceLabels(clusterId: string, name: string, data: Partial<Na
  * @param data - 注解数据
  */
 function manageNamespaceAnnotations(clusterId: string, name: string, data: Partial<NamespaceAnnotationsReq>): void {
-  const index = mockNamespaces.findIndex(n => n.clusterId === clusterId && n.name === name)
-  if (index === -1) {
-    console.error('[Manage Namespace Annotations] can not find namespace:', clusterId, name)
-    return
-  }
-
-  const currentAnnotations = mockNamespaces[index].annotations || {}
-
-  if (data.operation === 1) {
-    mockNamespaces[index].annotations = { ...currentAnnotations, ...data.annotations }
-  } else if (data.operation === 2) {
-    const newAnnotations = { ...currentAnnotations }
-    Object.keys(data.annotations || {}).forEach(key => delete newAnnotations[key])
-    mockNamespaces[index].annotations = newAnnotations
-  } else if (data.operation === 3) {
-    mockNamespaces[index].annotations = data.annotations || {}
-  }
-
-  mockNamespaces[index].updateBy = 'admin'
-  mockNamespaces[index].updateAt = new Date().toLocaleString()
+  console.log('[Manage Namespace Annotations]', clusterId, name, data)
 }
 
 /**
@@ -311,12 +263,7 @@ function manageNamespaceAnnotations(clusterId: string, name: string, data: Parti
  * @param name - 命名空间名称
  */
 function deleteNamespace(clusterId: string, name: string): void {
-  const index = mockNamespaces.findIndex(n => n.clusterId === clusterId && n.name === name)
-  if (index === -1) {
-    console.error('[Delete Namespace] can not find namespace:', clusterId, name)
-    return
-  }
-  mockNamespaces.splice(index, 1)
+  console.log('[Delete Namespace]', clusterId, name)
 }
 
 /**
@@ -325,14 +272,7 @@ function deleteNamespace(clusterId: string, name: string): void {
  * @param names - 命名空间名称数组
  */
 function deleteNamespaces(clusterId: string, names: string[]): void {
-  names.forEach((name: string) => {
-    const index = mockNamespaces.findIndex(n => n.clusterId === clusterId && n.name === name)
-    if (index === -1) {
-      console.error('[Delete Namespaces] can not find namespace:', name)
-    } else {
-      mockNamespaces.splice(index, 1)
-    }
-  })
+  console.log('[Delete Namespaces]', clusterId, names)
 }
 
 /**
@@ -341,36 +281,7 @@ function deleteNamespaces(clusterId: string, names: string[]): void {
  * @param params - 查询参数
  */
 function exportNamespaces(clusterId: string, params: Partial<NamespaceQueryReq>): void {
-  const { name, status } = params || {}
-
-  let namespaces = mockNamespaces.filter(ns => ns.clusterId === clusterId)
-
-  if (name) {
-    namespaces = namespaces.filter(ns => ns.name.toLowerCase().includes(name.toLowerCase()))
-  }
-  if (status) {
-    namespaces = namespaces.filter(ns => ns.status === status)
-  }
-
-  const headers = ['名称', '集群名称', '状态', '标签', '描述', '资源配额', '限制范围', '创建时间', '创建人', '更新时间', '更新人']
-  const rows = namespaces.map(ns => [
-    ns.name,
-    ns.clusterName,
-    ns.status,
-    Object.entries(ns.labels || {})
-      .map(([k, v]) => `${k}=${v}`)
-      .join(';'),
-    ns.description || '',
-    ns.resourceQuota ? JSON.stringify(ns.resourceQuota) : '',
-    ns.limitRange ? JSON.stringify(ns.limitRange) : '',
-    ns.createAt,
-    ns.createBy,
-    ns.updateAt,
-    ns.updateBy
-  ])
-
-  const csvContent = [headers.join(','), ...rows.map(row => row.map(cell => `"${cell}"`).join(','))].join('\n')
-  console.log('[Export Namespaces CSV]', csvContent)
+  console.log('[Export Namespaces]', clusterId, params)
 }
 
 /**
@@ -379,40 +290,7 @@ function exportNamespaces(clusterId: string, params: Partial<NamespaceQueryReq>)
  * @param data - 导入配置
  */
 function importNamespaces(clusterId: string, data: Partial<NamespaceImportReq>): void {
-  if (!data.items || data.items.length === 0) {
-    console.error('[Import Namespaces] no items to import')
-    return
-  }
-
-  const created: NamespaceListResp[] = []
-  for (const item of data.items) {
-    const exists = mockNamespaces.find(ns => ns.clusterId === clusterId && ns.name === item.name)
-    if (exists) {
-      console.log('[Import Namespaces] namespace already exists:', item.name)
-      continue
-    }
-
-    const ns: NamespaceListResp = {
-      id: generateId(),
-      name: item.name,
-      clusterId: clusterId,
-      clusterName: 'prod-cluster',
-      status: 'Active',
-      labels: item.labels || {},
-      annotations: item.annotations || {},
-      description: item.description || '',
-      resourceQuota: item.resourceQuota,
-      limitRange: item.limitRange,
-      createBy: 'admin',
-      createAt: new Date().toLocaleString(),
-      updateBy: 'admin',
-      updateAt: new Date().toLocaleString()
-    }
-    mockNamespaces.push(ns)
-    created.push(ns)
-  }
-
-  console.log('[Import Namespaces] created:', created.length, 'namespaces')
+  console.log('[Import Namespaces]', clusterId, data)
 }
 
 /**
@@ -422,15 +300,7 @@ function importNamespaces(clusterId: string, data: Partial<NamespaceImportReq>):
  * @param data - 配额配置
  */
 function createNamespaceQuota(clusterId: string, name: string, data: Partial<NamespaceQuotaReq>): void {
-  const index = mockNamespaces.findIndex(n => n.clusterId === clusterId && n.name === name)
-  if (index === -1) {
-    console.error('[Create Namespace Quota] can not find namespace:', clusterId, name)
-    return
-  }
-  mockNamespaces[index].resourceQuota = data.resouceQuota || mockNamespaces[index].resourceQuota
-  mockNamespaces[index].limitRange = data.limitRange || mockNamespaces[index].limitRange
-  mockNamespaces[index].updateBy = 'admin'
-  mockNamespaces[index].updateAt = new Date().toLocaleString()
+  console.log('[Create Namespace Quota]', clusterId, name, data)
 }
 
 /**
@@ -440,15 +310,7 @@ function createNamespaceQuota(clusterId: string, name: string, data: Partial<Nam
  * @param data - 配额配置
  */
 function updateNamespaceQuota(clusterId: string, name: string, data: Partial<NamespaceQuotaReq>): void {
-  const index = mockNamespaces.findIndex(n => n.clusterId === clusterId && n.name === name)
-  if (index === -1) {
-    console.error('[Update Namespace Quota] can not find namespace:', clusterId, name)
-    return
-  }
-  mockNamespaces[index].resourceQuota = data.resouceQuota || mockNamespaces[index].resourceQuota
-  mockNamespaces[index].limitRange = data.limitRange || mockNamespaces[index].limitRange
-  mockNamespaces[index].updateBy = 'admin'
-  mockNamespaces[index].updateAt = new Date().toLocaleString()
+  console.log('[Update Namespace Quota]', clusterId, name, data)
 }
 
 /**
@@ -457,24 +319,7 @@ function updateNamespaceQuota(clusterId: string, name: string, data: Partial<Nam
  * @param name - 命名空间名称
  */
 function deleteNamespaceQuota(clusterId: string, name: string): void {
-  const index = mockNamespaces.findIndex(n => n.clusterId === clusterId && n.name === name)
-  if (index === -1) {
-    console.error('[Delete Namespace Quota] can not find namespace:', clusterId, name)
-    return
-  }
-  mockNamespaces[index].resourceQuota = {
-    requestsCpu: 0,
-    requestsMemory: '0Gi',
-    limitsCpu: 0,
-    limitsMemory: '0Gi',
-    persistentvolumeclaims: 0,
-    servicesLoadbalancers: 0,
-    countDeploymentsApps: 0,
-    countPods: 0
-  }
-  mockNamespaces[index].limitRange = {}
-  mockNamespaces[index].updateBy = 'admin'
-  mockNamespaces[index].updateAt = new Date().toLocaleString()
+  console.log('[Delete Namespace Quota]', clusterId, name)
 }
 
 /**

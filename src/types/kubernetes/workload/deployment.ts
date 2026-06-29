@@ -21,23 +21,6 @@ import type { NodeAffinity, PodAffinity, PodAntiAffinity, RestartPolicy, Revisio
  * - Unknown: 未知状态
  */
 export type DeploymentStatus = 'Running' | 'Available' | 'Stopped' | 'Creating' | 'Updating' | 'Terminating' | 'CreateTimeout' | 'UpdateTimeout' | 'Failed' | 'Unknown'
-
-/**
- * Deployment 状态中文映射表
- */
-export const DeploymentStatusRecord: Record<string, string> = {
-  Running: '运行中',
-  Available: '部分就绪',
-  Stopped: '已停止',
-  Creating: '创建中',
-  Updating: '更新中',
-  Terminating: '终止中',
-  CreateTimeout: '创建超时',
-  UpdateTimeout: '更新超时',
-  Failed: '失败异常',
-  Unknown: '未知'
-}
-
 /**
  * Deployment 条件类型枚举
  * - Available: Deployment 至少有一个可用副本
@@ -80,6 +63,43 @@ export interface DeploymentListResp extends BaseEntity {
   availableReplicas: number
   /** 更新策略 */
   strategyType: DeploymentStrategyType
+}
+
+/**
+ * Deployment 详情响应数据
+ * @extends BaseEntity 继承基础实体（含 id, createAt, createBy, updateAt, updateBy）
+ */
+export interface DeploymentDetailResp extends BaseEntity {
+  /** 资源 UID */
+  uid: string
+  /** 所属集群 ID */
+  clusterId: string
+  /** 所属集群名称 */
+  clusterName: string
+  /** 所属命名空间 */
+  namespace: string
+  /** Deployment 名称 */
+  name: string
+  /** 描述信息 */
+  description?: string
+  /** 状态 */
+  status: DeploymentStatus
+  /** 状态描述信息（如异常原因） */
+  statusMessage?: string
+  /** 期望副本数 */
+  replicas: number
+  /** 可用副本数 */
+  availableReplicas: number
+  /** 更新策略 */
+  strategyType: DeploymentStrategyType
+  /** 标签选择器 */
+  selector: Record<string, string>
+  /** 标签 */
+  labels?: Record<string, string>
+  /** 注解 */
+  annotations?: Record<string, string>
+  /** 容器配置列表 */
+  containers: Container[]
 }
 
 /**

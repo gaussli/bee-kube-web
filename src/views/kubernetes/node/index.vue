@@ -27,7 +27,7 @@
               <BeeNodeInfoCell :name="row.name" :id="row.id" :ip="row.ip" :description="row.description" :icon-size="32" />
             </template>
           </BeeTableColumn>
-          <BeeTableColumn :width="130">
+          <BeeTableColumn :width="160">
             <template #default="{ row }">
               <BeeStatusCell :status="row.status" :status-msg="row.statusMsg" :options="NODE_STATUS_OPTIONS" />
             </template>

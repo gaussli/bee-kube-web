@@ -6,7 +6,8 @@ import type { PageResp } from '@/types/common'
 import type {
   StatefulSetQueryReq,
   StatefulSetReq,
-  StatefulSetResp,
+  StatefulSetListResp,
+  StatefulSetDetailResp,
   StatefulSetLabelsReq,
   StatefulSetAnnotationsReq,
   StatefulSetScaleReq,
@@ -17,7 +18,7 @@ import { generateId } from '@/mock/utils'
 /**
  * StatefulSet 路由配置
  * @remarks
- * - GET /kubernetes/clusters/:clusterId/namespaces/:namespace/statefulsets - 获取 StatefulSet 分页列表
+ * - GET /kubernetes/clusters/:clusterId/statefulsets - 获取 StatefulSet 分页列表
  * - GET /kubernetes/clusters/:clusterId/namespaces/:namespace/statefulsets/:name - 获取 StatefulSet 详情
  * - GET /kubernetes/clusters/:clusterId/namespaces/:namespace/statefulsets/:name/yaml - 查看 YAML
  * - POST /kubernetes/clusters/:clusterId/namespaces/:namespace/statefulsets - 创建 StatefulSet
@@ -35,13 +36,13 @@ import { generateId } from '@/mock/utils'
 export default [
   {
     method: 'get',
-    url: '/kubernetes/clusters/:clusterId/namespaces/:namespace/statefulsets',
-    handler: (pathParams: Record<string, string>, params: Partial<StatefulSetQueryReq>): PageResp<StatefulSetResp> => getStatefulSetPage(pathParams.clusterId, pathParams.namespace, params)
+    url: '/kubernetes/clusters/:clusterId/statefulsets',
+    handler: (pathParams: Record<string, string>, params: Partial<StatefulSetQueryReq>): PageResp<StatefulSetListResp> => getStatefulSetPage(pathParams.clusterId, params)
   },
   {
     method: 'get',
     url: '/kubernetes/clusters/:clusterId/namespaces/:namespace/statefulsets/:name',
-    handler: (pathParams: Record<string, string>): StatefulSetResp => getStatefulSetDetail(pathParams.clusterId, pathParams.namespace, pathParams.name)
+    handler: (pathParams: Record<string, string>): StatefulSetDetailResp => getStatefulSetDetail(pathParams.clusterId, pathParams.namespace, pathParams.name)
   },
   {
     method: 'get',
@@ -107,21 +108,37 @@ export default [
 
 /**
  * 获取 StatefulSet 分页列表
- * @param clusterId - 集群ID
- * @param namespace - 命名空间
+ * @param _clusterId - 集群ID（mock 中未使用）
  * @param params - 查询参数
  * @returns 分页数据
  */
-function getStatefulSetPage(clusterId: string, namespace: string, params: Partial<StatefulSetQueryReq>): PageResp<StatefulSetResp> {
-  const { name, status, page = 1, pageSize = 10 } = params || {}
+function getStatefulSetPage(_clusterId: string, params: Partial<StatefulSetQueryReq>): PageResp<StatefulSetListResp> {
+  const { id, name, namespace, status, page = 1, pageSize = 10 } = params || {}
 
-  let filtered = mockStatefulSets.filter(s => s.clusterId === clusterId && s.namespace === namespace)
+  let filtered = [...mockStatefulSets]
 
-  if (name) {
-    filtered = filtered.filter(s => s.name.toLowerCase().includes(name.toLowerCase()))
-  }
   if (status) {
     filtered = filtered.filter(s => s.status === status)
+  }
+  if (namespace) {
+    filtered = filtered.filter(s => s.namespace === namespace)
+  }
+
+  if (id || name) {
+    let searchFiltered: StatefulSetListResp[] = []
+    if (id) {
+      searchFiltered = [...searchFiltered, ...filtered.filter(s => s.id === id)]
+    }
+    if (name) {
+      searchFiltered = [...searchFiltered, ...filtered.filter(s => s.name.toLowerCase().includes(name.toLowerCase()))]
+    }
+    // searchFiltered 基于 id 去重
+    const seenIds = new Set<string>()
+    filtered = searchFiltered.filter(s => {
+      if (seenIds.has(s.id)) return false
+      seenIds.add(s.id)
+      return true
+    })
   }
 
   const total = filtered.length
@@ -139,12 +156,35 @@ function getStatefulSetPage(clusterId: string, namespace: string, params: Partia
  * @param name - StatefulSet 名称
  * @returns StatefulSet 详情
  */
-function getStatefulSetDetail(clusterId: string, namespace: string, name: string): StatefulSetResp {
+function getStatefulSetDetail(clusterId: string, namespace: string, name: string): StatefulSetDetailResp {
   const statefulSet = mockStatefulSets.find(s => s.clusterId === clusterId && s.namespace === namespace && s.name === name)
   if (!statefulSet) {
     console.error('[Get StatefulSet Detail] can not find statefulset:', clusterId, namespace, name)
   }
-  return statefulSet!
+  return {
+    ...statefulSet!,
+    selector: { app: statefulSet!.name },
+    labels: { app: statefulSet!.name },
+    annotations: { description: statefulSet!.description || '' },
+    containers: [
+      {
+        name: statefulSet!.name,
+        image: `${statefulSet!.name}:latest`
+      }
+    ],
+    volumeClaimTemplates: [
+      {
+        name: 'data',
+        storageClassName: 'standard',
+        accessModes: ['ReadWriteOnce'],
+        resources: {
+          requests: {
+            storage: '10Gi'
+          }
+        }
+      }
+    ]
+  }
 }
 
 /**
@@ -161,18 +201,31 @@ function getStatefulSetYaml(clusterId: string, namespace: string, name: string):
     return ''
   }
 
-  const labels = Object.entries(statefulSet.labels || {})
-    .map(([key, value]) => `      ${key}: "${value}"`)
-    .join('\n')
-
-  const annotations = Object.entries(statefulSet.annotations || {})
-    .map(([key, value]) => `      ${key}: "${value}"`)
-    .join('\n')
-
-  const containers = statefulSet.images
-    .map((image, index) => {
-      return `      - name: ${statefulSet.name}-container-${index}
-        image: ${image}
+  const yaml = `apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: ${statefulSet.name}
+  namespace: ${statefulSet.namespace}
+  creationTimestamp: "${statefulSet.createAt}"
+  resourceVersion: "${generateId()}"
+  uid: "${statefulSet.uid}"
+spec:
+  serviceName: ${statefulSet.serviceName}
+  replicas: ${statefulSet.replicas}
+  podManagementPolicy: ${statefulSet.podManagementPolicy}
+  updateStrategy:
+    type: ${statefulSet.updateStrategy}
+  selector:
+    matchLabels:
+      app: "${statefulSet.name}"
+  template:
+    metadata:
+      labels:
+        app: "${statefulSet.name}"
+    spec:
+      containers:
+      - name: ${statefulSet.name}
+        image: ${statefulSet.name}:latest
         ports:
         - containerPort: 8080
         resources:
@@ -181,62 +234,14 @@ function getStatefulSetYaml(clusterId: string, namespace: string, name: string):
             memory: "512Mi"
           requests:
             cpu: "100m"
-            memory: "128Mi"`
-    })
-    .join('\n')
-
-  const volumeClaimTemplates = (statefulSet.volumeClaimTemplates || [])
-    .map(vct => {
-      return `  - metadata:
-      name: ${vct.name}
-    spec:
-      accessModes: [${(vct.accessModes || ['ReadWriteOnce']).map(m => `"${m}"`).join(', ')}]
-      storageClassName: ${vct.storageClassName || ''}
-      resources:
-        requests:
-          storage: ${vct.resources?.requests?.storage || '10Gi'}`
-    })
-    .join('\n')
-
-  const yaml = `apiVersion: apps/v1
-kind: StatefulSet
-metadata:
-  name: ${statefulSet.name}
-  namespace: ${statefulSet.namespace}
-  labels:
-${labels}
-  annotations:
-${annotations}
-  creationTimestamp: "${statefulSet.createAt}"
-  resourceVersion: "${generateId()}"
-  uid: "${generateId()}"
-spec:
-  serviceName: ${statefulSet.serviceName}
-  replicas: ${statefulSet.replicas}
-  selector:
-    matchLabels:
-      ${Object.entries(statefulSet.selector || {})[0] ? `${Object.entries(statefulSet.selector || {})[0][0]}: "${Object.entries(statefulSet.selector || {})[0][1]}"` : ''}
-  podManagementPolicy: ${statefulSet.podManagementPolicy || 'OrderedReady'}
-  updateStrategy:
-    type: ${statefulSet.updateStrategy || 'RollingUpdate'}
-  template:
-    metadata:
-      creationTimestamp: "${statefulSet.createAt}"
-      labels:
-${labels}
-    spec:
-      containers:
-${containers}
+            memory: "128Mi"
       dnsPolicy: ClusterFirst
       restartPolicy: Always
       terminationGracePeriodSeconds: 30
-  volumeClaimTemplates:
-${volumeClaimTemplates}
 status:
   observedGeneration: 1
   replicas: ${statefulSet.replicas}
-  readyReplicas: ${statefulSet.readyReplicas}
-  currentReplicas: ${statefulSet.currentReplicas}`
+  readyReplicas: ${statefulSet.readyReplicas}`
 
   return yaml
 }
@@ -248,31 +253,7 @@ status:
  * @param data - 创建参数
  */
 function createStatefulSet(clusterId: string, namespace: string, data: Partial<StatefulSetReq>): void {
-  const created: StatefulSetResp = {
-    id: generateId(),
-    name: data.name || '',
-    namespace: namespace,
-    clusterId: clusterId,
-    clusterName: 'prod-cluster',
-    status: 'Available',
-    replicas: data.replicas || 1,
-    readyReplicas: data.replicas || 1,
-    currentReplicas: data.replicas || 1,
-    serviceName: data.serviceName || '',
-    updateStrategy: data.updateStrategy || 'RollingUpdate',
-    podManagementPolicy: data.podManagementPolicy || 'OrderedReady',
-    images: data.containers?.map(c => c.image) || [],
-    selector: data.selector || {},
-    labels: data.labels || {},
-    annotations: data.annotations || {},
-    volumeClaimTemplates: data.volumeClaimTemplates,
-    deletable: true,
-    createBy: 'admin',
-    createAt: new Date().toLocaleString(),
-    updateBy: 'admin',
-    updateAt: new Date().toLocaleString()
-  }
-  mockStatefulSets.push(created)
+  console.log('[Create StatefulSet]', clusterId, namespace, data)
 }
 
 /**
@@ -283,20 +264,7 @@ function createStatefulSet(clusterId: string, namespace: string, data: Partial<S
  * @param data - 更新参数
  */
 function updateStatefulSet(clusterId: string, namespace: string, name: string, data: Partial<StatefulSetReq>): void {
-  const index = mockStatefulSets.findIndex(s => s.clusterId === clusterId && s.namespace === namespace && s.name === name)
-  if (index === -1) {
-    console.error('[Update StatefulSet] can not find statefulset:', clusterId, namespace, name)
-    return
-  }
-
-  const updated = {
-    ...mockStatefulSets[index],
-    ...data,
-    images: data.containers?.map(c => c.image) || mockStatefulSets[index].images,
-    updateBy: 'admin',
-    updateAt: new Date().toLocaleString()
-  }
-  mockStatefulSets[index] = updated
+  console.log('[Update StatefulSet]', clusterId, namespace, name, data)
 }
 
 /**
@@ -307,20 +275,7 @@ function updateStatefulSet(clusterId: string, namespace: string, name: string, d
  * @param data - 扩缩容参数
  */
 function scaleStatefulSet(clusterId: string, namespace: string, name: string, data: Partial<StatefulSetScaleReq>): void {
-  const index = mockStatefulSets.findIndex(s => s.clusterId === clusterId && s.namespace === namespace && s.name === name)
-  if (index === -1) {
-    console.error('[Scale StatefulSet] can not find statefulset:', clusterId, namespace, name)
-    return
-  }
-
-  mockStatefulSets[index] = {
-    ...mockStatefulSets[index],
-    replicas: data.replicas ?? mockStatefulSets[index].replicas,
-    readyReplicas: data.replicas ?? mockStatefulSets[index].replicas,
-    currentReplicas: data.replicas ?? mockStatefulSets[index].replicas,
-    updateBy: 'admin',
-    updateAt: new Date().toLocaleString()
-  }
+  console.log('[Scale StatefulSet]', clusterId, namespace, name, data)
 }
 
 /**
@@ -330,14 +285,7 @@ function scaleStatefulSet(clusterId: string, namespace: string, name: string, da
  * @param name - StatefulSet 名称
  */
 function restartStatefulSet(clusterId: string, namespace: string, name: string): void {
-  const index = mockStatefulSets.findIndex(s => s.clusterId === clusterId && s.namespace === namespace && s.name === name)
-  if (index === -1) {
-    console.error('[Restart StatefulSet] can not find statefulset:', clusterId, namespace, name)
-    return
-  }
-  console.log('[Restart StatefulSet] restart:', clusterId, namespace, name)
-  mockStatefulSets[index].updateAt = new Date().toLocaleString()
-  mockStatefulSets[index].updateBy = 'admin'
+  console.log('[Restart StatefulSet]', clusterId, namespace, name)
 }
 
 /**
@@ -347,14 +295,7 @@ function restartStatefulSet(clusterId: string, namespace: string, name: string):
  * @param name - StatefulSet 名称
  */
 function rollbackStatefulSet(clusterId: string, namespace: string, name: string): void {
-  const index = mockStatefulSets.findIndex(s => s.clusterId === clusterId && s.namespace === namespace && s.name === name)
-  if (index === -1) {
-    console.error('[Rollback StatefulSet] can not find statefulset:', clusterId, namespace, name)
-    return
-  }
-  console.log('[Rollback StatefulSet] rollback:', clusterId, namespace, name)
-  mockStatefulSets[index].updateAt = new Date().toLocaleString()
-  mockStatefulSets[index].updateBy = 'admin'
+  console.log('[Rollback StatefulSet]', clusterId, namespace, name)
 }
 
 /**
@@ -365,26 +306,7 @@ function rollbackStatefulSet(clusterId: string, namespace: string, name: string)
  * @param data - 标签数据
  */
 function manageStatefulSetLabels(clusterId: string, namespace: string, name: string, data: Partial<StatefulSetLabelsReq>): void {
-  const index = mockStatefulSets.findIndex(s => s.clusterId === clusterId && s.namespace === namespace && s.name === name)
-  if (index === -1) {
-    console.error('[Manage StatefulSet Labels] can not find statefulset:', clusterId, namespace, name)
-    return
-  }
-
-  const currentLabels = mockStatefulSets[index].labels || {}
-
-  if (data.operation === 1) {
-    mockStatefulSets[index].labels = { ...currentLabels, ...data.labels }
-  } else if (data.operation === 2) {
-    const newLabels = { ...currentLabels }
-    Object.keys(data.labels).forEach(key => delete newLabels[key])
-    mockStatefulSets[index].labels = newLabels
-  } else if (data.operation === 3) {
-    mockStatefulSets[index].labels = data.labels
-  }
-
-  mockStatefulSets[index].updateBy = 'admin'
-  mockStatefulSets[index].updateAt = new Date().toLocaleString()
+  console.log('[Manage StatefulSet Labels]', clusterId, namespace, name, data)
 }
 
 /**
@@ -395,26 +317,7 @@ function manageStatefulSetLabels(clusterId: string, namespace: string, name: str
  * @param data - 注解数据
  */
 function manageStatefulSetAnnotations(clusterId: string, namespace: string, name: string, data: Partial<StatefulSetAnnotationsReq>): void {
-  const index = mockStatefulSets.findIndex(s => s.clusterId === clusterId && s.namespace === namespace && s.name === name)
-  if (index === -1) {
-    console.error('[Manage StatefulSet Annotations] can not find statefulset:', clusterId, namespace, name)
-    return
-  }
-
-  const currentAnnotations = mockStatefulSets[index].annotations || {}
-
-  if (data.operation === 1) {
-    mockStatefulSets[index].annotations = { ...currentAnnotations, ...data.annotations }
-  } else if (data.operation === 2) {
-    const newAnnotations = { ...currentAnnotations }
-    Object.keys(data.annotations).forEach(key => delete newAnnotations[key])
-    mockStatefulSets[index].annotations = newAnnotations
-  } else if (data.operation === 3) {
-    mockStatefulSets[index].annotations = data.annotations
-  }
-
-  mockStatefulSets[index].updateBy = 'admin'
-  mockStatefulSets[index].updateAt = new Date().toLocaleString()
+  console.log('[Manage StatefulSet Annotations]', clusterId, namespace, name, data)
 }
 
 /**
@@ -424,13 +327,7 @@ function manageStatefulSetAnnotations(clusterId: string, namespace: string, name
  * @param name - StatefulSet 名称
  */
 function deleteStatefulSet(clusterId: string, namespace: string, name: string): void {
-  const index = mockStatefulSets.findIndex(s => s.clusterId === clusterId && s.namespace === namespace && s.name === name)
-  if (index === -1) {
-    console.error('[Delete StatefulSet] can not find statefulset:', clusterId, namespace, name)
-    return
-  }
-
-  mockStatefulSets.splice(index, 1)
+  console.log('[Delete StatefulSet]', clusterId, namespace, name)
 }
 
 /**
@@ -440,14 +337,7 @@ function deleteStatefulSet(clusterId: string, namespace: string, name: string): 
  * @param names - StatefulSet 名称数组
  */
 function deleteStatefulSets(clusterId: string, namespace: string, names: string[]): void {
-  names.forEach(name => {
-    const index = mockStatefulSets.findIndex(s => s.clusterId === clusterId && s.namespace === namespace && s.name === name)
-    if (index === -1) {
-      console.error('[Delete StatefulSets] can not find statefulset:', clusterId, namespace, name)
-    } else {
-      mockStatefulSets.splice(index, 1)
-    }
-  })
+  console.log('[Delete StatefulSets]', clusterId, namespace, names)
 }
 
 /**
@@ -457,41 +347,7 @@ function deleteStatefulSets(clusterId: string, namespace: string, names: string[
  * @param params - 查询参数
  */
 function exportStatefulSet(clusterId: string, namespace: string, params: Partial<StatefulSetQueryReq>): void {
-  const { name, status } = params || {}
-
-  let statefulSets = mockStatefulSets.filter(s => s.clusterId === clusterId && s.namespace === namespace)
-
-  if (name) {
-    statefulSets = statefulSets.filter(s => s.name.toLowerCase().includes(name.toLowerCase()))
-  }
-  if (status) {
-    statefulSets = statefulSets.filter(s => s.status === status)
-  }
-
-  const headers = ['名称', '命名空间', '集群名称', '状态', '期望副本数', '就绪副本数', '当前副本数', '服务名', '更新策略', 'Pod管理策略', '镜像', '标签', '创建时间', '创建人', '更新时间', '更新人']
-  const rows = statefulSets.map(s => [
-    s.name,
-    s.namespace,
-    s.clusterName,
-    s.status,
-    s.replicas,
-    s.readyReplicas,
-    s.currentReplicas,
-    s.serviceName,
-    s.updateStrategy,
-    s.podManagementPolicy,
-    s.images.join(';'),
-    Object.entries(s.labels || {})
-      .map(([k, v]) => `${k}=${v}`)
-      .join(';'),
-    s.createAt,
-    s.createBy,
-    s.updateAt,
-    s.updateBy
-  ])
-
-  const csvContent = [headers.join(','), ...rows.map(row => row.map(cell => `"${cell}"`).join(','))].join('\n')
-  console.log('[Export StatefulSet CSV]', csvContent)
+  console.log('[Export StatefulSet]', clusterId, namespace, params)
 }
 
 /**
@@ -501,39 +357,29 @@ function exportStatefulSet(clusterId: string, namespace: string, params: Partial
  * @param data - YAML 配置
  */
 function importStatefulSet(clusterId: string, namespace: string, data: Partial<StatefulSetYamlReq>): void {
-  console.log('[Import StatefulSet]', clusterId, namespace, data.yaml)
+  console.log('[Import StatefulSet]', clusterId, namespace, data)
 }
 
 /**
  * 模拟 StatefulSet 数据
+ * @remarks 20 条数据覆盖全部 10 种状态
  */
-const mockStatefulSets: StatefulSetResp[] = [
+const mockStatefulSets: StatefulSetListResp[] = [
+  // ==================== Running（运行中）- 3 条 ====================
   {
     id: generateId(),
+    uid: generateId(),
     name: 'mysql-primary',
     namespace: 'data',
     clusterId: generateId(),
     clusterName: 'prod-cluster',
-    status: 'Available',
+    description: 'MySQL 主库集群，负责核心业务数据的读写操作',
+    status: 'Running',
     replicas: 3,
     readyReplicas: 3,
-    currentReplicas: 3,
     serviceName: 'mysql-primary-headless',
     updateStrategy: 'RollingUpdate',
     podManagementPolicy: 'OrderedReady',
-    images: ['mysql:8.0'],
-    selector: { app: 'mysql-primary' },
-    labels: { app: 'mysql-primary', tier: 'database', env: 'production' },
-    annotations: { description: 'MySQL 主库集群' },
-    volumeClaimTemplates: [
-      {
-        name: 'data-volume',
-        storageClassName: 'ssd-storage',
-        resources: { requests: { storage: '100Gi' } },
-        accessModes: ['ReadWriteOnce']
-      }
-    ],
-    deletable: true,
     createBy: 'admin',
     createAt: '2024-01-20 10:00:00',
     updateBy: 'admin',
@@ -541,61 +387,18 @@ const mockStatefulSets: StatefulSetResp[] = [
   },
   {
     id: generateId(),
-    name: 'mysql-replica',
-    namespace: 'data',
-    clusterId: generateId(),
-    clusterName: 'prod-cluster',
-    status: 'Available',
-    replicas: 3,
-    readyReplicas: 3,
-    currentReplicas: 3,
-    serviceName: 'mysql-replica-headless',
-    updateStrategy: 'RollingUpdate',
-    podManagementPolicy: 'OrderedReady',
-    images: ['mysql:8.0'],
-    selector: { app: 'mysql-replica' },
-    labels: { app: 'mysql-replica', tier: 'database', env: 'production' },
-    annotations: { description: 'MySQL 从库集群' },
-    volumeClaimTemplates: [
-      {
-        name: 'data-volume',
-        storageClassName: 'ssd-storage',
-        resources: { requests: { storage: '100Gi' } },
-        accessModes: ['ReadWriteOnce']
-      }
-    ],
-    deletable: true,
-    createBy: 'admin',
-    createAt: '2024-01-20 10:05:00',
-    updateBy: 'admin',
-    updateAt: '2024-03-15 14:05:00'
-  },
-  {
-    id: generateId(),
+    uid: generateId(),
     name: 'mongodb',
     namespace: 'data',
     clusterId: generateId(),
     clusterName: 'prod-cluster',
-    status: 'Available',
+    description: 'MongoDB 副本集，承载文档型业务数据存储',
+    status: 'Running',
     replicas: 3,
     readyReplicas: 3,
-    currentReplicas: 3,
     serviceName: 'mongodb-headless',
     updateStrategy: 'RollingUpdate',
     podManagementPolicy: 'OrderedReady',
-    images: ['mongo:7.0'],
-    selector: { app: 'mongodb' },
-    labels: { app: 'mongodb', tier: 'database', env: 'production' },
-    annotations: { description: 'MongoDB 副本集' },
-    volumeClaimTemplates: [
-      {
-        name: 'data-volume',
-        storageClassName: 'ssd-storage',
-        resources: { requests: { storage: '50Gi' } },
-        accessModes: ['ReadWriteOnce']
-      }
-    ],
-    deletable: true,
     createBy: 'admin',
     createAt: '2024-02-01 09:00:00',
     updateBy: 'admin',
@@ -603,30 +406,57 @@ const mockStatefulSets: StatefulSetResp[] = [
   },
   {
     id: generateId(),
+    uid: generateId(),
+    name: 'kafka',
+    namespace: 'middleware',
+    clusterId: generateId(),
+    clusterName: 'prod-cluster',
+    description: 'Kafka 消息队列集群，处理异步消息和事件流',
+    status: 'Running',
+    replicas: 3,
+    readyReplicas: 3,
+    serviceName: 'kafka-headless',
+    updateStrategy: 'RollingUpdate',
+    podManagementPolicy: 'OrderedReady',
+    createBy: 'admin',
+    createAt: '2024-02-15 10:00:00',
+    updateBy: 'admin',
+    updateAt: '2024-03-15 12:00:00'
+  },
+  // ==================== Available（部分就绪）- 3 条 ====================
+  {
+    id: generateId(),
+    uid: generateId(),
+    name: 'mysql-replica',
+    namespace: 'data',
+    clusterId: generateId(),
+    clusterName: 'prod-cluster',
+    description: 'MySQL 从库集群，提供读写分离的读流量承载',
+    status: 'Available',
+    replicas: 3,
+    readyReplicas: 3,
+    serviceName: 'mysql-replica-headless',
+    updateStrategy: 'RollingUpdate',
+    podManagementPolicy: 'OrderedReady',
+    createBy: 'admin',
+    createAt: '2024-01-20 10:05:00',
+    updateBy: 'admin',
+    updateAt: '2024-03-15 14:05:00'
+  },
+  {
+    id: generateId(),
+    uid: generateId(),
     name: 'redis-cluster',
     namespace: 'data',
     clusterId: generateId(),
     clusterName: 'prod-cluster',
+    description: 'Redis Cluster 集群，提供分布式缓存服务',
     status: 'Available',
     replicas: 6,
     readyReplicas: 6,
-    currentReplicas: 6,
     serviceName: 'redis-cluster-headless',
     updateStrategy: 'RollingUpdate',
     podManagementPolicy: 'OrderedReady',
-    images: ['redis:7.2-cluster'],
-    selector: { app: 'redis-cluster' },
-    labels: { app: 'redis-cluster', tier: 'cache', env: 'production' },
-    annotations: { description: 'Redis Cluster 集群' },
-    volumeClaimTemplates: [
-      {
-        name: 'data-volume',
-        storageClassName: 'ssd-storage',
-        resources: { requests: { storage: '20Gi' } },
-        accessModes: ['ReadWriteOnce']
-      }
-    ],
-    deletable: true,
     createBy: 'admin',
     createAt: '2024-02-05 14:00:00',
     updateBy: 'admin',
@@ -634,30 +464,39 @@ const mockStatefulSets: StatefulSetResp[] = [
   },
   {
     id: generateId(),
+    uid: generateId(),
+    name: 'minio',
+    namespace: 'storage',
+    clusterId: generateId(),
+    clusterName: 'prod-cluster',
+    description: 'MinIO 对象存储集群，提供 S3 兼容的文件存储',
+    status: 'Available',
+    replicas: 4,
+    readyReplicas: 4,
+    serviceName: 'minio-headless',
+    updateStrategy: 'RollingUpdate',
+    podManagementPolicy: 'Parallel',
+    createBy: 'admin',
+    createAt: '2024-02-20 11:00:00',
+    updateBy: 'admin',
+    updateAt: '2024-03-18 15:00:00'
+  },
+  // ==================== Stopped（已停止）- 2 条 ====================
+  {
+    id: generateId(),
+    uid: generateId(),
     name: 'zookeeper',
     namespace: 'middleware',
     clusterId: generateId(),
     clusterName: 'prod-cluster',
-    status: 'Available',
+    description: 'Zookeeper 分布式协调服务，已缩容停止',
+    status: 'Stopped',
+    statusMessage: '副本已缩容至 0，服务已停止',
     replicas: 3,
-    readyReplicas: 3,
-    currentReplicas: 3,
+    readyReplicas: 0,
     serviceName: 'zookeeper-headless',
     updateStrategy: 'RollingUpdate',
     podManagementPolicy: 'OrderedReady',
-    images: ['zookeeper:3.9'],
-    selector: { app: 'zookeeper' },
-    labels: { app: 'zookeeper', tier: 'middleware', env: 'production' },
-    annotations: { description: 'Zookeeper 集群' },
-    volumeClaimTemplates: [
-      {
-        name: 'data-volume',
-        storageClassName: 'standard-storage',
-        resources: { requests: { storage: '10Gi' } },
-        accessModes: ['ReadWriteOnce']
-      }
-    ],
-    deletable: true,
     createBy: 'admin',
     createAt: '2024-02-10 08:00:00',
     updateBy: 'admin',
@@ -665,95 +504,309 @@ const mockStatefulSets: StatefulSetResp[] = [
   },
   {
     id: generateId(),
-    name: 'kafka',
+    uid: generateId(),
+    name: 'nexus-oss',
     namespace: 'middleware',
     clusterId: generateId(),
     clusterName: 'prod-cluster',
-    status: 'Available',
-    replicas: 3,
-    readyReplicas: 3,
-    currentReplicas: 3,
-    serviceName: 'kafka-headless',
+    description: 'Nexus 私有制品仓库，暂不使用时缩容停止',
+    status: 'Stopped',
+    statusMessage: '维护窗口期间暂停服务',
+    replicas: 1,
+    readyReplicas: 0,
+    serviceName: 'nexus-headless',
     updateStrategy: 'RollingUpdate',
     podManagementPolicy: 'OrderedReady',
-    images: ['confluentinc/cp-kafka:7.6.0'],
-    selector: { app: 'kafka' },
-    labels: { app: 'kafka', tier: 'middleware', env: 'production' },
-    annotations: { description: 'Kafka 消息队列集群' },
-    volumeClaimTemplates: [
-      {
-        name: 'data-volume',
-        storageClassName: 'ssd-storage',
-        resources: { requests: { storage: '200Gi' } },
-        accessModes: ['ReadWriteOnce']
-      }
-    ],
-    deletable: true,
     createBy: 'admin',
-    createAt: '2024-02-15 10:00:00',
+    createAt: '2024-03-10 10:00:00',
     updateBy: 'admin',
-    updateAt: '2024-03-15 12:00:00'
+    updateAt: '2024-03-20 09:30:00'
   },
+  // ==================== Creating（创建中）- 2 条 ====================
   {
     id: generateId(),
-    name: 'minio',
-    namespace: 'storage',
+    uid: generateId(),
+    name: 'clickhouse',
+    namespace: 'data',
     clusterId: generateId(),
     clusterName: 'prod-cluster',
-    status: 'Available',
-    replicas: 4,
-    readyReplicas: 4,
-    currentReplicas: 4,
-    serviceName: 'minio-headless',
+    description: 'ClickHouse 分析型数据库，用于实时 OLAP 查询',
+    status: 'Creating',
+    statusMessage: 'Pod 正在创建中，等待持久卷绑定',
+    replicas: 3,
+    readyReplicas: 0,
+    serviceName: 'clickhouse-headless',
     updateStrategy: 'RollingUpdate',
-    podManagementPolicy: 'Parallel',
-    images: ['minio/minio:RELEASE.2024-01-16T16-07-38Z'],
-    selector: { app: 'minio' },
-    labels: { app: 'minio', tier: 'storage', env: 'production' },
-    annotations: { description: 'MinIO 对象存储集群' },
-    volumeClaimTemplates: [
-      {
-        name: 'data-volume',
-        storageClassName: 'ssd-storage',
-        resources: { requests: { storage: '500Gi' } },
-        accessModes: ['ReadWriteOnce']
-      }
-    ],
-    deletable: true,
+    podManagementPolicy: 'OrderedReady',
     createBy: 'admin',
-    createAt: '2024-02-20 11:00:00',
+    createAt: '2024-03-19 16:00:00',
     updateBy: 'admin',
-    updateAt: '2024-03-18 15:00:00'
+    updateAt: '2024-03-19 16:00:00'
   },
   {
     id: generateId(),
+    uid: generateId(),
+    name: 'postgresql-primary',
+    namespace: 'data',
+    clusterId: generateId(),
+    clusterName: 'prod-cluster',
+    description: 'PostgreSQL 主数据库集群，迁移中新建',
+    status: 'Creating',
+    statusMessage: '容器镜像拉取中，等待数据库初始化完成',
+    replicas: 3,
+    readyReplicas: 0,
+    serviceName: 'postgresql-headless',
+    updateStrategy: 'RollingUpdate',
+    podManagementPolicy: 'OrderedReady',
+    createBy: 'admin',
+    createAt: '2024-03-20 14:00:00',
+    updateBy: 'admin',
+    updateAt: '2024-03-20 14:00:00'
+  },
+  // ==================== Updating（更新中）- 2 条 ====================
+  {
+    id: generateId(),
+    uid: generateId(),
     name: 'elasticsearch',
     namespace: 'logging',
     clusterId: generateId(),
     clusterName: 'prod-cluster',
-    status: 'Degraded',
+    description: 'Elasticsearch 日志存储和全文检索集群',
+    status: 'Updating',
+    statusMessage: '滚动更新进行中，旧版本 Pod 正在被逐步替换',
     replicas: 3,
-    readyReplicas: 2,
-    currentReplicas: 2,
+    readyReplicas: 1,
     serviceName: 'elasticsearch-headless',
     updateStrategy: 'RollingUpdate',
     podManagementPolicy: 'OrderedReady',
-    images: ['elasticsearch:8.12.0'],
-    selector: { app: 'elasticsearch' },
-    labels: { app: 'elasticsearch', tier: 'logging', env: 'production' },
-    annotations: { description: 'Elasticsearch 日志存储集群' },
-    volumeClaimTemplates: [
-      {
-        name: 'data-volume',
-        storageClassName: 'ssd-storage',
-        resources: { requests: { storage: '300Gi' } },
-        accessModes: ['ReadWriteOnce']
-      }
-    ],
-    deletable: true,
     createBy: 'admin',
     createAt: '2024-03-01 09:00:00',
     updateBy: 'admin',
     updateAt: '2024-03-19 16:00:00'
+  },
+  {
+    id: generateId(),
+    uid: generateId(),
+    name: 'nacos-cluster',
+    namespace: 'middleware',
+    clusterId: generateId(),
+    clusterName: 'prod-cluster',
+    description: 'Nacos 注册中心和配置管理集群',
+    status: 'Updating',
+    statusMessage: '正在升级至 2.3.0 版本，数据库迁移进行中',
+    replicas: 3,
+    readyReplicas: 2,
+    serviceName: 'nacos-headless',
+    updateStrategy: 'RollingUpdate',
+    podManagementPolicy: 'OrderedReady',
+    createBy: 'admin',
+    createAt: '2024-02-28 10:00:00',
+    updateBy: 'admin',
+    updateAt: '2024-03-20 10:00:00'
+  },
+  // ==================== Terminating（终止中）- 2 条 ====================
+  {
+    id: generateId(),
+    uid: generateId(),
+    name: 'neo4j',
+    namespace: 'data',
+    clusterId: generateId(),
+    clusterName: 'prod-cluster',
+    description: 'Neo4j 图数据库，用于知识图谱存储',
+    status: 'Terminating',
+    statusMessage: '正在删除 Pod，等待数据备份完成',
+    replicas: 3,
+    readyReplicas: 0,
+    serviceName: 'neo4j-headless',
+    updateStrategy: 'RollingUpdate',
+    podManagementPolicy: 'OrderedReady',
+    createBy: 'admin',
+    createAt: '2024-01-15 09:00:00',
+    updateBy: 'admin',
+    updateAt: '2024-03-20 11:00:00'
+  },
+  {
+    id: generateId(),
+    uid: generateId(),
+    name: 'jaeger',
+    namespace: 'monitoring',
+    clusterId: generateId(),
+    clusterName: 'prod-cluster',
+    description: 'Jaeger 分布式链路追踪后端存储',
+    status: 'Terminating',
+    statusMessage: 'Finalizer 清理延迟，等待存储卷回收',
+    replicas: 2,
+    readyReplicas: 0,
+    serviceName: 'jaeger-headless',
+    updateStrategy: 'OnDelete',
+    podManagementPolicy: 'OrderedReady',
+    createBy: 'admin',
+    createAt: '2024-02-05 08:00:00',
+    updateBy: 'admin',
+    updateAt: '2024-03-18 10:00:00'
+  },
+  // ==================== CreateTimeout（创建超时）- 2 条 ====================
+  {
+    id: generateId(),
+    uid: generateId(),
+    name: 'cassandra',
+    namespace: 'data',
+    clusterId: generateId(),
+    clusterName: 'prod-cluster',
+    description: 'Cassandra 分布式 NoSQL 数据库集群',
+    status: 'CreateTimeout',
+    statusMessage: '创建超时：节点资源不足，Pod 无法完成调度',
+    replicas: 3,
+    readyReplicas: 0,
+    serviceName: 'cassandra-headless',
+    updateStrategy: 'RollingUpdate',
+    podManagementPolicy: 'OrderedReady',
+    createBy: 'admin',
+    createAt: '2024-03-20 08:30:00',
+    updateBy: 'admin',
+    updateAt: '2024-03-20 09:00:00'
+  },
+  {
+    id: generateId(),
+    uid: generateId(),
+    name: 'timescaledb',
+    namespace: 'data',
+    clusterId: generateId(),
+    clusterName: 'dev-cluster',
+    description: 'TimescaleDB 时序数据库，用于 IoT 数据存储',
+    status: 'CreateTimeout',
+    statusMessage: '超过 15 分钟未完成创建，存储类配置不匹配',
+    replicas: 2,
+    readyReplicas: 0,
+    serviceName: 'timescaledb-headless',
+    updateStrategy: 'RollingUpdate',
+    podManagementPolicy: 'OrderedReady',
+    createBy: 'developer',
+    createAt: '2024-03-19 10:00:00',
+    updateBy: 'developer',
+    updateAt: '2024-03-19 10:15:00'
+  },
+  // ==================== UpdateTimeout（更新超时）- 2 条 ====================
+  {
+    id: generateId(),
+    uid: generateId(),
+    name: 'hadoop-datanode',
+    namespace: 'data',
+    clusterId: generateId(),
+    clusterName: 'prod-cluster',
+    description: 'Hadoop DataNode 集群，负责 HDFS 数据存储',
+    status: 'UpdateTimeout',
+    statusMessage: '滚动更新超时，数据块迁移耗时长于预期',
+    replicas: 5,
+    readyReplicas: 3,
+    serviceName: 'hadoop-datanode-headless',
+    updateStrategy: 'OnDelete',
+    podManagementPolicy: 'Parallel',
+    createBy: 'admin',
+    createAt: '2024-01-10 09:00:00',
+    updateBy: 'admin',
+    updateAt: '2024-03-20 13:00:00'
+  },
+  {
+    id: generateId(),
+    uid: generateId(),
+    name: 'etcd-cluster',
+    namespace: 'middleware',
+    clusterId: generateId(),
+    clusterName: 'prod-cluster',
+    description: 'Etcd 分布式键值存储，Kubernetes 控制面依赖',
+    status: 'UpdateTimeout',
+    statusMessage: '更新超时：raft 共识协议导致滚动更新超过预期窗口',
+    replicas: 5,
+    readyReplicas: 4,
+    serviceName: 'etcd-headless',
+    updateStrategy: 'OnDelete',
+    podManagementPolicy: 'OrderedReady',
+    createBy: 'system',
+    createAt: '2024-01-01 00:00:00',
+    updateBy: 'admin',
+    updateAt: '2024-03-20 15:30:00'
+  },
+  // ==================== Failed（失败异常）- 2 条 ====================
+  {
+    id: generateId(),
+    uid: generateId(),
+    name: 'rabbitmq',
+    namespace: 'middleware',
+    clusterId: generateId(),
+    clusterName: 'prod-cluster',
+    description: 'RabbitMQ 消息队列集群，处理业务异步任务',
+    status: 'Failed',
+    statusMessage: 'Pod 启动失败：磁盘空间不足，持久卷写入异常',
+    replicas: 3,
+    readyReplicas: 0,
+    serviceName: 'rabbitmq-headless',
+    updateStrategy: 'RollingUpdate',
+    podManagementPolicy: 'OrderedReady',
+    createBy: 'admin',
+    createAt: '2024-02-10 14:00:00',
+    updateBy: 'admin',
+    updateAt: '2024-03-19 08:00:00'
+  },
+  {
+    id: generateId(),
+    uid: generateId(),
+    name: 'influxdb',
+    namespace: 'monitoring',
+    clusterId: generateId(),
+    clusterName: 'prod-cluster',
+    description: 'InfluxDB 时间序列数据库，存储监控指标数据',
+    status: 'Failed',
+    statusMessage: 'OOMKilled：内存配置不足导致所有 Pod 被杀死',
+    replicas: 2,
+    readyReplicas: 0,
+    serviceName: 'influxdb-headless',
+    updateStrategy: 'RollingUpdate',
+    podManagementPolicy: 'OrderedReady',
+    createBy: 'admin',
+    createAt: '2024-02-20 10:00:00',
+    updateBy: 'admin',
+    updateAt: '2024-03-18 06:00:00'
+  },
+  // ==================== Unknown（未知）- 2 条 ====================
+  {
+    id: generateId(),
+    uid: generateId(),
+    name: 'consul',
+    namespace: 'middleware',
+    clusterId: generateId(),
+    clusterName: 'prod-cluster',
+    description: 'Consul 服务发现和配置中心集群',
+    status: 'Unknown',
+    statusMessage: '无法获取 StatefulSet 状态，集群网络分区可能中断',
+    replicas: 3,
+    readyReplicas: 0,
+    serviceName: 'consul-headless',
+    updateStrategy: 'RollingUpdate',
+    podManagementPolicy: 'OrderedReady',
+    createBy: 'admin',
+    createAt: '2024-01-05 09:00:00',
+    updateBy: 'admin',
+    updateAt: '2024-03-20 16:30:00'
+  },
+  {
+    id: generateId(),
+    uid: generateId(),
+    name: 'greenplum',
+    namespace: 'data',
+    clusterId: generateId(),
+    clusterName: 'prod-cluster',
+    description: 'Greenplum MPP 数据仓库集群',
+    status: 'Unknown',
+    statusMessage: 'Master Pod 失联，暂时无法确认集群整体状态',
+    replicas: 4,
+    readyReplicas: 0,
+    serviceName: 'greenplum-headless',
+    updateStrategy: 'OnDelete',
+    podManagementPolicy: 'Parallel',
+    createBy: 'admin',
+    createAt: '2024-04-01 10:00:00',
+    updateBy: 'admin',
+    updateAt: '2024-04-01 10:00:00'
   }
 ]

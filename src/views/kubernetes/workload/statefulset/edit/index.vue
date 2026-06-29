@@ -26,7 +26,7 @@ import { ref, onMounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { ElMessage, type FormInstance } from 'element-plus'
 import { Collection, Close, Check } from '@element-plus/icons-vue'
-import type { StatefulSetResp } from '@/types/kubernetes/workload/statefulset'
+import type { StatefulSetListResp } from '@/types/kubernetes/workload/statefulset'
 import { getStatefulSetDetail, updateStatefulSet } from '@/api/kubernetes/workload/statefulset'
 import BeeButton from '@/components/BeeButton/index.vue'
 import BeePageTitle from '@/components/BeePageTitle/index.vue'
@@ -40,7 +40,7 @@ const namespace = ref(route.query.namespace as string)
 const statefulsetName = ref(route.query.name as string)
 const loading = ref(false)
 const submitting = ref(false)
-const formData = ref<Partial<StatefulSetResp>>({ replicas: 1 })
+const formData = ref<Partial<StatefulSetListResp>>({ replicas: 1 })
 const formRules = { replicas: [{ required: true, message: '请输入副本数量', trigger: 'blur' }] }
 async function loadData() {
   if (!clusterId.value || !namespace.value || !statefulsetName.value) return

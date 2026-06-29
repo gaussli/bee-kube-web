@@ -7,6 +7,7 @@ import type {
   DeploymentQueryReq,
   DeploymentReq,
   DeploymentListResp,
+  DeploymentDetailResp,
   DeploymentLabelsReq,
   DeploymentAnnotationsReq,
   DeploymentScaleReq,
@@ -41,7 +42,7 @@ export default [
   {
     method: 'get',
     url: '/kubernetes/clusters/:clusterId/namespaces/:namespace/deployments/:name',
-    handler: (pathParams: Record<string, string>): DeploymentListResp => getDeploymentDetail(pathParams.clusterId, pathParams.namespace, pathParams.name)
+    handler: (pathParams: Record<string, string>): DeploymentDetailResp => getDeploymentDetail(pathParams.clusterId, pathParams.namespace, pathParams.name)
   },
   {
     method: 'get',
@@ -157,12 +158,23 @@ function getDeploymentPage(_clusterId: string, params: Partial<DeploymentQueryRe
  * @param name - Deployment 名称
  * @returns Deployment 详情
  */
-function getDeploymentDetail(clusterId: string, namespace: string, name: string): DeploymentResp {
+function getDeploymentDetail(clusterId: string, namespace: string, name: string): DeploymentDetailResp {
   const deployment = mockDeployments.find(d => d.clusterId === clusterId && d.namespace === namespace && d.name === name)
   if (!deployment) {
     console.error('[Get Deployment Detail] can not find deployment:', clusterId, namespace, name)
   }
-  return deployment!
+  return {
+    ...deployment!,
+    selector: { app: deployment!.name },
+    labels: { app: deployment!.name },
+    annotations: { 'description': deployment!.description || '' },
+    containers: [
+      {
+        name: deployment!.name,
+        image: `${deployment!.name}:latest`
+      }
+    ]
+  }
 }
 
 /**
@@ -307,29 +319,7 @@ status:
  * @param data - 创建参数
  */
 function createDeployment(clusterId: string, namespace: string, data: Partial<DeploymentReq>): void {
-  const created: DeploymentResp = {
-    id: generateId(),
-    name: data.name || '',
-    namespace: namespace,
-    clusterId: clusterId,
-    clusterName: 'prod-cluster',
-    status: 'Available',
-    replicas: data.replicas || 1,
-    readyReplicas: data.replicas || 1,
-    availableReplicas: data.replicas || 1,
-    revision: 1,
-    strategy: data.strategy || 'RollingUpdate',
-    images: data.containers?.map(c => c.image) || [],
-    selector: data.selector || {},
-    labels: data.labels || {},
-    annotations: data.annotations || {},
-    deletable: true,
-    createBy: 'admin',
-    createAt: new Date().toLocaleString(),
-    updateBy: 'admin',
-    updateAt: new Date().toLocaleString()
-  }
-  mockDeployments.push(created)
+  console.log('[Create Deployment]', clusterId, namespace, data)
 }
 
 /**
@@ -340,19 +330,7 @@ function createDeployment(clusterId: string, namespace: string, data: Partial<De
  * @param data - 更新参数
  */
 function updateDeployment(clusterId: string, namespace: string, name: string, data: Partial<DeploymentReq>): void {
-  const index = mockDeployments.findIndex(d => d.clusterId === clusterId && d.namespace === namespace && d.name === name)
-  if (index === -1) {
-    console.error('[Update Deployment] can not find deployment:', clusterId, namespace, name)
-    return
-  }
-  mockDeployments[index] = {
-    ...mockDeployments[index],
-    ...data,
-    images: data.containers?.map(c => c.image) || mockDeployments[index].images,
-    revision: mockDeployments[index].revision + 1,
-    updateBy: 'admin',
-    updateAt: new Date().toLocaleString()
-  }
+  console.log('[Update Deployment]', clusterId, namespace, name, data)
 }
 
 /**
@@ -363,19 +341,7 @@ function updateDeployment(clusterId: string, namespace: string, name: string, da
  * @param data - 扩缩容参数
  */
 function scaleDeployment(clusterId: string, namespace: string, name: string, data: Partial<DeploymentScaleReq>): void {
-  const index = mockDeployments.findIndex(d => d.clusterId === clusterId && d.namespace === namespace && d.name === name)
-  if (index === -1) {
-    console.error('[Scale Deployment] can not find deployment:', clusterId, namespace, name)
-    return
-  }
-  mockDeployments[index] = {
-    ...mockDeployments[index],
-    replicas: data.replicas,
-    readyReplicas: data.replicas,
-    availableReplicas: data.replicas,
-    updateBy: 'admin',
-    updateAt: new Date().toLocaleString()
-  }
+  console.log('[Scale Deployment]', clusterId, namespace, name, data)
 }
 
 /**
@@ -385,16 +351,7 @@ function scaleDeployment(clusterId: string, namespace: string, name: string, dat
  * @param name - Deployment 名称
  */
 function restartDeployment(clusterId: string, namespace: string, name: string): void {
-  const index = mockDeployments.findIndex(d => d.clusterId === clusterId && d.namespace === namespace && d.name === name)
-  if (index === -1) {
-    console.error('[Restart Deployment] can not find deployment:', clusterId, namespace, name)
-    return
-  }
-  mockDeployments[index] = {
-    ...mockDeployments[index],
-    updateBy: 'admin',
-    updateAt: new Date().toLocaleString()
-  }
+  console.log('[Restart Deployment]', clusterId, namespace, name)
 }
 
 /**
@@ -404,17 +361,7 @@ function restartDeployment(clusterId: string, namespace: string, name: string): 
  * @param name - Deployment 名称
  */
 function rollbackDeployment(clusterId: string, namespace: string, name: string): void {
-  const index = mockDeployments.findIndex(d => d.clusterId === clusterId && d.namespace === namespace && d.name === name)
-  if (index === -1) {
-    console.error('[Rollback Deployment] can not find deployment:', clusterId, namespace, name)
-    return
-  }
-  mockDeployments[index] = {
-    ...mockDeployments[index],
-    revision: Math.max(1, mockDeployments[index].revision - 1),
-    updateBy: 'admin',
-    updateAt: new Date().toLocaleString()
-  }
+  console.log('[Rollback Deployment]', clusterId, namespace, name)
 }
 
 /**
@@ -425,26 +372,7 @@ function rollbackDeployment(clusterId: string, namespace: string, name: string):
  * @param data - 标签数据
  */
 function manageDeploymentLabels(clusterId: string, namespace: string, name: string, data: Partial<DeploymentLabelsReq>): void {
-  const index = mockDeployments.findIndex(d => d.clusterId === clusterId && d.namespace === namespace && d.name === name)
-  if (index === -1) {
-    console.error('[Manage Deployment Labels] can not find deployment:', clusterId, namespace, name)
-    return
-  }
-
-  const currentLabels = mockDeployments[index].labels || {}
-
-  if (data.operation === 1) {
-    mockDeployments[index].labels = { ...currentLabels, ...data.labels }
-  } else if (data.operation === 2) {
-    const newLabels = { ...currentLabels }
-    Object.keys(data.labels || {}).forEach(key => delete newLabels[key])
-    mockDeployments[index].labels = newLabels
-  } else if (data.operation === 3) {
-    mockDeployments[index].labels = data.labels || {}
-  }
-
-  mockDeployments[index].updateBy = 'admin'
-  mockDeployments[index].updateAt = new Date().toLocaleString()
+  console.log('[Manage Deployment Labels]', clusterId, namespace, name, data)
 }
 
 /**
@@ -455,26 +383,7 @@ function manageDeploymentLabels(clusterId: string, namespace: string, name: stri
  * @param data - 注解数据
  */
 function manageDeploymentAnnotations(clusterId: string, namespace: string, name: string, data: Partial<DeploymentAnnotationsReq>): void {
-  const index = mockDeployments.findIndex(d => d.clusterId === clusterId && d.namespace === namespace && d.name === name)
-  if (index === -1) {
-    console.error('[Manage Deployment Annotations] can not find deployment:', clusterId, namespace, name)
-    return
-  }
-
-  const currentAnnotations = mockDeployments[index].annotations || {}
-
-  if (data.operation === 1) {
-    mockDeployments[index].annotations = { ...currentAnnotations, ...data.annotations }
-  } else if (data.operation === 2) {
-    const newAnnotations = { ...currentAnnotations }
-    Object.keys(data.annotations || {}).forEach(key => delete newAnnotations[key])
-    mockDeployments[index].annotations = newAnnotations
-  } else if (data.operation === 3) {
-    mockDeployments[index].annotations = data.annotations || {}
-  }
-
-  mockDeployments[index].updateBy = 'admin'
-  mockDeployments[index].updateAt = new Date().toLocaleString()
+  console.log('[Manage Deployment Annotations]', clusterId, namespace, name, data)
 }
 
 /**
@@ -484,12 +393,7 @@ function manageDeploymentAnnotations(clusterId: string, namespace: string, name:
  * @param name - Deployment 名称
  */
 function deleteDeployment(clusterId: string, namespace: string, name: string): void {
-  const index = mockDeployments.findIndex(d => d.clusterId === clusterId && d.namespace === namespace && d.name === name)
-  if (index === -1) {
-    console.error('[Delete Deployment] can not find deployment:', clusterId, namespace, name)
-    return
-  }
-  mockDeployments.splice(index, 1)
+  console.log('[Delete Deployment]', clusterId, namespace, name)
 }
 
 /**
@@ -499,14 +403,7 @@ function deleteDeployment(clusterId: string, namespace: string, name: string): v
  * @param names - Deployment 名称数组
  */
 function deleteDeployments(clusterId: string, namespace: string, names: string[]): void {
-  names.forEach((name: string) => {
-    const index = mockDeployments.findIndex(d => d.clusterId === clusterId && d.namespace === namespace && d.name === name)
-    if (index === -1) {
-      console.error('[Delete Deployments] can not find deployment:', name)
-    } else {
-      mockDeployments.splice(index, 1)
-    }
-  })
+  console.log('[Delete Deployments]', clusterId, namespace, names)
 }
 
 /**
@@ -516,31 +413,7 @@ function deleteDeployments(clusterId: string, namespace: string, names: string[]
  * @param params - 查询参数
  */
 function exportDeployment(clusterId: string, namespace: string, params: Partial<DeploymentQueryReq>): void {
-  const deployments = mockDeployments.filter(d => d.clusterId === clusterId && d.namespace === namespace)
-
-  const headers = ['名称', '命名空间', '集群名称', '状态', '期望副本数', '就绪副本数', '可用副本数', '版本', '更新策略', '镜像', '标签', '创建时间', '创建人', '更新时间', '更新人']
-  const rows = deployments.map(d => [
-    d.name,
-    d.namespace,
-    d.clusterName,
-    d.status,
-    d.replicas,
-    d.readyReplicas,
-    d.availableReplicas,
-    d.revision,
-    d.strategy,
-    d.images.join(';'),
-    Object.entries(d.labels)
-      .map(([k, v]) => `${k}=${v}`)
-      .join(';'),
-    d.createAt,
-    d.createBy,
-    d.updateAt,
-    d.updateBy
-  ])
-
-  const csvContent = [headers.join(','), ...rows.map(row => row.map(cell => `"${cell}"`).join(','))].join('\n')
-  console.log('[Export Deployment CSV]', csvContent)
+  console.log('[Export Deployment]', clusterId, namespace, params)
 }
 
 /**

@@ -31,7 +31,7 @@
               <BeeTableCommonCell :text="row.apiServer" subtext="API Server" />
             </template>
           </BeeTableColumn>
-          <BeeTableColumn prop="status" :width="100">
+          <BeeTableColumn prop="status" :width="160">
             <template #default="{ row }">
               <BeeStatusCell :options="CLUSTER_STATUS_OPTIONS" :status="row.status" :status-msg="row.statusMsg" />
             </template>

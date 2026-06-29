@@ -25,12 +25,12 @@
               <BeeWorkloadInfoCell :uid="row.uid" :name="row.name" :description="row.description" :icon-size="32" />
             </template>
           </BeeTableColumn>
-          <BeeTableColumn>
+          <BeeTableColumn :width="200">
             <template #default="{ row }">
               <BeeTableCommonCell :text="row.namespace" subtext="命名空间" />
             </template>
           </BeeTableColumn>
-          <BeeTableColumn :width="130">
+          <BeeTableColumn :width="160">
             <template #default="{ row }">
               <BeeStatusCell :status="row.status" :status-msg="row.statusMessage" :options="DEPLOYMENT_STATUS_OPTIONS" />
             </template>
@@ -38,6 +38,11 @@
           <BeeTableColumn :width="120">
             <template #default="{ row }">
               <BeeTableCommonCell :text="`${row.availableReplicas} / ${row.replicas}`" subtext="副本数" />
+            </template>
+          </BeeTableColumn>
+          <BeeTableColumn :width="160">
+            <template #default="{ row }">
+              <BeeTableCommonCell :text="row.strategyType" :subtext="strategyTypeLabel(row.strategyType)" />
             </template>
           </BeeTableColumn>
           <BeeTableColumn :width="200">
@@ -120,7 +125,7 @@
 import { onMounted, reactive, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { ElMessage } from 'element-plus'
-import type { DeploymentQueryReq, DeploymentListResp } from '@/types/kubernetes/workload/deployment'
+import type { DeploymentQueryReq, DeploymentListResp, DeploymentStrategyType } from '@/types/kubernetes/workload/deployment'
 import { getDeploymentPage, deleteDeployment, deleteDeployments } from '@/api/kubernetes/workload/deployment'
 import BeeAuditCell from '@/components/BeeAuditCell/index.vue'
 import BeeButton from '@/components/BeeButton/index.vue'
@@ -178,6 +183,21 @@ const namespaceOptions = ref([
   { label: 'app-backend', value: 'app-backend' },
   { label: 'kube-system', value: 'kube-system' }
 ])
+
+/** 更新策略中文映射 */
+const STRATEGY_TYPE_LABEL: Record<DeploymentStrategyType, string> = {
+  RollingUpdate: '滚动更新',
+  Recreate: '重建'
+}
+
+/**
+ * 获取更新策略中文名称
+ * @param type - 更新策略枚举值
+ * @returns 中文名称
+ */
+function strategyTypeLabel(type: DeploymentStrategyType): string {
+  return STRATEGY_TYPE_LABEL[type] || type
+}
 
 /**
  * 加载 Deployment 列表数据

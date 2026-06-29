@@ -1,7 +1,7 @@
 <template>
   <div class="bee-workload-info-cell">
     <div class="bee-workload-info-cell__icon">
-      <BeeIcon name="kubernetes-namespace" :size="iconSize" />
+      <BeeIcon :name="icon" :size="iconSize" />
     </div>
     <div class="bee-workload-info-cell__content">
       <div class="bee-workload-info-cell__top">
@@ -33,6 +33,8 @@ defineOptions({ name: 'BeeWorkloadInfoCell' })
 
 const props = withDefaults(
   defineProps<{
+    /** 左侧图标名称 */
+    icon?: string
     /** 左侧图标大小 */
     iconSize?: number
     /** Kubernetes 资源 UID，hover UID 标签时显示完整 UID */
@@ -43,6 +45,7 @@ const props = withDefaults(
     description?: string
   }>(),
   {
+    icon: 'kubernetes-deployment',
     iconSize: 48
   }
 )

@@ -53,6 +53,37 @@ export interface NamespaceListResp extends BaseEntity {
 }
 
 /**
+ * 命名空间详情响应数据
+ * @extends BaseEntity 继承基础实体（含 id, createAt, createBy, updateAt, updateBy）
+ */
+export interface NamespaceDetailResp extends BaseEntity {
+  /** 资源 UID */
+  uid: string
+  /** 所属集群 ID */
+  clusterId: string
+  /** 所属集群名称 */
+  clusterName: string
+  /** 命名空间名称 */
+  name: string
+  /** 描述信息 */
+  description?: string
+  /** 状态 */
+  status: string
+  /** 状态描述信息 */
+  statusMsg?: string
+  /** 命名空间类型 */
+  type: NamespaceType
+  /** 标签 */
+  labels?: Record<string, string>
+  /** 注解 */
+  annotations?: Record<string, string>
+  /** 资源配额 */
+  resourceQuota?: NamespaceResourceQuota
+  /** 资源限制范围 */
+  limitRange?: NamespaceLimitRange
+}
+
+/**
  * 命名空间概览响应数据
  * @extends BaseEntity 继承基础实体（含 id, createAt, createBy, updateAt, updateBy）
  */

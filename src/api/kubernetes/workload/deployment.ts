@@ -6,6 +6,7 @@ import type { PageResp } from '@/types/common'
 import type {
   DeploymentAdvancedResp,
   DeploymentAnnotationsReq,
+  DeploymentDetailResp,
   DeploymentLabelsReq,
   DeploymentListResp,
   DeploymentOverviewResp,
@@ -34,8 +35,8 @@ export function getDeploymentPage(clusterId: string, params: Partial<DeploymentQ
  * @param name - Deployment 名称
  * @returns Deployment 详情
  */
-export function getDeploymentDetail(clusterId: string, namespace: string, name: string): Promise<DeploymentOverviewResp> {
-  return request.get<DeploymentOverviewResp>(`/kubernetes/clusters/${clusterId}/namespaces/${namespace}/deployments/${name}`)
+export function getDeploymentDetail(clusterId: string, namespace: string, name: string): Promise<DeploymentDetailResp> {
+  return request.get<DeploymentDetailResp>(`/kubernetes/clusters/${clusterId}/namespaces/${namespace}/deployments/${name}`)
 }
 
 /**

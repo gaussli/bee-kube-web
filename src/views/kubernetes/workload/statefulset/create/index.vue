@@ -42,7 +42,7 @@ import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { ElMessage, type FormInstance } from 'element-plus'
 import { Collection, Close, Check } from '@element-plus/icons-vue'
-import type { StatefulSetResp } from '@/types/kubernetes/workload/statefulset'
+import type { StatefulSetListResp } from '@/types/kubernetes/workload/statefulset'
 import { createStatefulSet } from '@/api/kubernetes/workload/statefulset'
 import BeeButton from '@/components/BeeButton/index.vue'
 import BeePageTitle from '@/components/BeePageTitle/index.vue'
@@ -51,7 +51,7 @@ defineOptions({ name: 'StatefulSetCreate' })
 const router = useRouter()
 const formRef = ref<FormInstance>()
 const submitting = ref(false)
-const formData = ref<Partial<StatefulSetResp>>({
+const formData = ref<Partial<StatefulSetListResp>>({
   name: '',
   namespace: 'default',
   clusterId: 'default',
