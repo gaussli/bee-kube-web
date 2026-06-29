@@ -114,16 +114,6 @@ export interface NodeMetadataResp extends Metadata {
 export interface NodeEventResp extends Event {}
 
 /**
- * 节点镜像响应数据
- */
-export interface NodeImageResp {
-  /** 镜像名称列表 */
-  names: string[]
-  /** 镜像大小（字节） */
-  sizeBytes: number
-}
-
-/**
  * 节点卷响应数据
  */
 export interface NodeVolumesResp {

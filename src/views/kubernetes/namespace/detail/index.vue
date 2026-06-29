@@ -85,7 +85,7 @@
 import { ref, onMounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { FolderOpened, ArrowLeft, EditPen } from '@element-plus/icons-vue'
-import type { NamespaceResp } from '@/types/kubernetes/namespace'
+import type { NamespaceListResp } from '@/types/kubernetes/namespace'
 import { getNamespaceDetail } from '@/api/kubernetes/namespace'
 import BeeButton from '@/components/BeeButton/index.vue'
 import BeePageTitle from '@/components/BeePageTitle/index.vue'
@@ -101,7 +101,7 @@ const router = useRouter()
 const clusterId = ref(route.params.clusterId as string)
 const namespaceName = ref(route.query.name as string)
 const loading = ref(false)
-const namespaceData = ref<NamespaceResp>()
+const namespaceData = ref<NamespaceListResp>()
 const activeTab = ref('basic')
 
 function getStatusType(status?: string) {

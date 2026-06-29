@@ -31,5 +31,11 @@ export const NODE_STATUS_OPTIONS: StatusOption[] = [
   { value: 'Unknown', label: '未知', labelEn: 'Unknown', color: COLOR_GRAY_70 }
 ]
 
+export const NAMESPACE_STATUS_OPTIONS: StatusOption[] = [
+  { value: undefined, label: '所有状态', labelEn: 'ALL', color: COLOR_SUCCESS },
+  { value: 'Active', label: '活跃', labelEn: 'Active', color: COLOR_SUCCESS },
+  { value: 'Terminating', label: '终止中', labelEn: 'Terminating', color: COLOR_DANGER }
+]
+
 /** 证书即将过期告警阈值（天） */
 export const CERT_EXPIRE_WARNING_DAYS = 30

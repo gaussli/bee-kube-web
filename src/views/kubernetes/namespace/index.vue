@@ -1,7 +1,7 @@
 <template>
   <BeePage class="namespace-page">
-    <!-- 提示信息和页面标题 -->
-    <BeeCard class="page-header">
+    <!-- 页面标题 -->
+    <BeeCard class="namespace-page__header">
       <BeePageTitle
         icon="kubernetes-namespace"
         title="命名空间管理"
@@ -10,99 +10,65 @@
     </BeeCard>
 
     <!-- 页面内容 -->
-    <BeeCard class="page-body">
+    <BeeCard class="namespace-page__body">
       <!-- 查询表单 -->
-      <div class="table-query">
-        <div class="table-query-left">
-          <BeeInputSearch v-model="searchKey" placeholder="按名称搜索" />
-          <BeeSegmentedControl v-model="queryForm.status" :options="statusOptions" @select="handleSelect" />
-        </div>
-        <div class="table-query-right">
-          <BeeButton icon="basic-refresh" @click="handleReset"> 刷新 </BeeButton>
-          <BeeDivider v-if="hasPermission('kubernetes:namespace:create')" direction="vertical" length="12px" />
-          <BeeButton v-if="hasPermission('kubernetes:namespace:create')" type="primary" icon="basic-create" @click="handleCreate"> 新增 </BeeButton>
-        </div>
+      <div class="table-toolbar">
+        <BeeInputSearch v-model="searchKey" placeholder="按名称搜索" class="table-toolbar__search" />
+        <BeeSelect v-model="queryForm.status" :options="NAMESPACE_STATUS_OPTIONS" placeholder="状态筛选" />
+        <BeeButton icon="basic-search" @click="handleSearch"> 搜索 </BeeButton>
+        <BeeButton icon="basic-refresh" @click="handleReset"> 重置 </BeeButton>
+        <BeeButton v-if="hasPermission('kubernetes:namespace:create')" type="primary" icon="basic-create" @click="handleCreate"> 新增 </BeeButton>
       </div>
 
       <!-- 表格主体 -->
       <div class="table-body">
-        <el-table v-loading="loading" :data="tableData" height="100%" @selection-change="handleSelectionChange">
-          <el-table-column type="selection" width="60" align="center" />
-          <el-table-column min-width="180">
-            <template #header>
-              <BeeIconLabel icon="folder-opened" label="名称" />
-            </template>
+        <BeeTable :data="tableData" :loading="loading" selectable @selection-change="handleSelectionChange">
+          <BeeTableColumn>
             <template #default="{ row }">
-              <div class="namespace-cell">
-                <div class="namespace-name-row">
-                  <span class="namespace-name">{{ row.name }}</span>
-                  <el-icon class="copy-icon" @click="handleCopy(row.name)"><DocumentCopy /></el-icon>
-                </div>
-                <div class="namespace-desc">{{ row.description || '-' }}</div>
+              <BeeNamespaceInfoCell :name="row.name" :description="row.description" :icon-size="32" />
+            </template>
+          </BeeTableColumn>
+          <BeeTableColumn :width="130">
+            <template #default="{ row }">
+              <BeeStatusCell :status="row.status" :options="NAMESPACE_STATUS_OPTIONS" />
+            </template>
+          </BeeTableColumn>
+          <BeeTableColumn :width="200">
+            <template #default="{ row }">
+              <BeeAuditCell :username="row.createBy" :datetime="row.createAt" field-name="创建人 / 时间" />
+            </template>
+          </BeeTableColumn>
+          <BeeTableColumn :width="200">
+            <template #default="{ row }">
+              <BeeAuditCell :username="row.updateBy" :datetime="row.updateAt" field-name="更新人 / 时间" />
+            </template>
+          </BeeTableColumn>
+          <BeeTableColumn :width="150" fixed="right">
+            <template #default="{ row }">
+              <div class="table-action">
+                <BeeCircleButton v-if="hasPermission('kubernetes:namespace:edit')" icon="basic-edit" tooltip="编辑" @click="handleEdit(row)" />
+                <BeeCircleButton icon="basic-view" tooltip="详情" @click="handleViewDetail(row)" />
+                <BeeDropdown trigger="click">
+                  <BeeCircleButton icon="basic-more" tooltip="更多" />
+                  <template #dropdown>
+                    <BeeDropdownItem value="resourceQuota" label="资源配额" icon="kubernetes-quota" @click="handleResourceQuota(row)" />
+                    <BeeDropdownItem v-if="hasPermission('kubernetes:namespace:delete') && row.deletable !== false" value="delete" label="删除" icon="basic-delete" @click="handleDelete(row)" />
+                  </template>
+                </BeeDropdown>
               </div>
             </template>
-          </el-table-column>
-          <el-table-column width="130">
-            <template #header>
-              <BeeIconLabel icon="circle-check" label="状态" />
-            </template>
-            <template #default="{ row }">
-              <div class="status-cell">
-                <div class="status-dot" :style="{ backgroundColor: getStatusColor(row.status) }"></div>
-                <div class="status-info">
-                  <div class="status-label">{{ getStatusLabel(row.status) }}</div>
-                  <div class="status-en">{{ row.status }}</div>
-                </div>
-              </div>
-            </template>
-          </el-table-column>
-          <el-table-column width="180">
-            <template #header>
-              <BeeIconLabel icon="clock" label="创建时间" />
-            </template>
-            <template #default="{ row }">
-              <span class="time-text">{{ formatTime(row.createAt) }}</span>
-            </template>
-          </el-table-column>
-          <el-table-column width="200" fixed="right">
-            <template #header>
-              <BeeIconLabel icon="edit-pen" label="操作" />
-            </template>
-            <template #default="{ row }">
-              <el-tooltip content="编辑" placement="top">
-                <el-button v-if="hasPermission('kubernetes:namespace:edit')" circle :icon="EditPen" size="default" @click="handleEdit(row)" />
-              </el-tooltip>
-              <el-tooltip content="详情" placement="top">
-                <el-button circle :icon="View" size="default" @click="handleViewDetail(row)" />
-              </el-tooltip>
-              <el-tooltip content="资源配额" placement="top">
-                <el-button circle :icon="Document" size="default" @click="handleResourceQuota(row)" />
-              </el-tooltip>
-              <el-tooltip v-if="hasPermission('kubernetes:namespace:delete') && row.deletable !== false" content="删除" placement="top">
-                <el-button circle :icon="Delete" size="default" @click="handleDelete(row)" />
-              </el-tooltip>
-            </template>
-          </el-table-column>
-        </el-table>
+          </BeeTableColumn>
+        </BeeTable>
       </div>
 
       <!-- 表格底部 -->
       <div class="table-footer">
         <div>
           <BeeButton v-if="hasPermission('kubernetes:namespace:delete')" type="danger" :disabled="selectedRows.length === 0" @click="handleBatchDelete">
-            <template #icon><Delete /></template>
             批量删除 ({{ selectedRows.length }})
           </BeeButton>
         </div>
-        <el-pagination
-          v-model:current-page="pagination.page"
-          v-model:page-size="pagination.pageSize"
-          :total="pagination.total"
-          :page-sizes="[10, 20, 50]"
-          layout="total, sizes, prev, pager, next, jumper"
-          @size-change="loadData"
-          @current-change="loadData"
-        />
+        <BeePagination v-model="pagination.page" v-model:pageSize="pagination.pageSize" :total="pagination.total" :page-sizes="[10, 20, 50]" @change="loadData" />
       </div>
     </BeeCard>
 
@@ -135,43 +101,47 @@
 
 <script setup lang="ts">
 import { onMounted, reactive, ref } from 'vue'
-import { useRouter } from 'vue-router'
+import { useRoute, useRouter } from 'vue-router'
 import { ElMessage } from 'element-plus'
-import { EditPen, Delete, View, Document, DocumentCopy } from '@element-plus/icons-vue'
-import type { NamespaceQueryReq, NamespaceResp } from '@/types/kubernetes/namespace'
+import type { NamespaceQueryReq, NamespaceListResp } from '@/types/kubernetes/namespace'
 import { getNamespacePage, deleteNamespace, deleteNamespaces } from '@/api/kubernetes/namespace'
+import BeeAuditCell from '@/components/BeeAuditCell/index.vue'
 import BeeButton from '@/components/BeeButton/index.vue'
 import BeeCard from '@/components/BeeCard/index.vue'
+import BeeCircleButton from '@/components/BeeCircleButton/index.vue'
 import BeeDialog from '@/components/BeeDialog/index.vue'
-import BeeDivider from '@/components/BeeDivider/index.vue'
-import BeeIconLabel from '@/components/BeeIconLabel/index.vue'
+import BeeDropdown from '@/components/BeeDropdown/index.vue'
+import BeeDropdownItem from '@/components/BeeDropdownItem/index.vue'
 import BeeInputSearch from '@/components/BeeInputSearch/index.vue'
+import BeeNamespaceInfoCell from '@/components/BeeNamespaceInfoCell/index.vue'
 import BeePage from '@/components/BeePage/index.vue'
 import BeePageTitle from '@/components/BeePageTitle/index.vue'
-import BeeSegmentedControl from '@/components/BeeSegmentedControl/index.vue'
+import BeePagination from '@/components/BeePagination/index.vue'
+import BeeSelect from '@/components/BeeSelect/index.vue'
+import BeeStatusCell from '@/components/BeeStatusCell/index.vue'
+import BeeTableColumn from '@/components/BeeTable/BeeTableColumn.vue'
+import BeeTable from '@/components/BeeTable/index.vue'
 import BeeTag from '@/components/BeeTag/index.vue'
-import { useClipboard } from '@/composables/useClipboard'
 import { usePermission } from '@/composables/usePermission'
-import { useKubernetesStore } from '@/stores'
+import { NAMESPACE_STATUS_OPTIONS } from '@/config/kubernetes'
 
 defineOptions({ name: 'NamespaceManage' })
 
 const { hasPermission } = usePermission()
-const { copy } = useClipboard()
+const route = useRoute()
 const router = useRouter()
-const kubernetesStore = useKubernetesStore()
 const searchKey = ref('')
+const clusterId = ref(route.params.clusterId as string)
 
 const loading = ref(false)
-const tableData = ref<NamespaceResp[]>([])
-const selectedRows = ref<NamespaceResp[]>([])
+const tableData = ref<NamespaceListResp[]>([])
+const selectedRows = ref<NamespaceListResp[]>([])
 const deleteDialogVisible = ref(false)
 const batchDeleteDialogVisible = ref(false)
-const currentTargetRow = ref<NamespaceResp | null>(null)
+const currentTargetRow = ref<NamespaceListResp | null>(null)
 
-const queryForm = reactive<NamespaceQueryReq>({
+const queryForm = reactive<Partial<NamespaceQueryReq>>({
   name: undefined,
-  clusterId: kubernetesStore.activeClusterId || undefined,
   status: undefined,
   page: 1,
   pageSize: 10
@@ -182,40 +152,14 @@ const pagination = reactive({
   total: 0
 })
 
-const statusOptions = [
-  { label: '所有', value: undefined },
-  { label: '活跃', value: 'Active' },
-  { label: '终止中', value: 'Terminating' }
-]
-
-const namespaceStatusConfig = [
-  { value: 'Active', label: '活跃', color: 'rgb(103, 194, 58)' },
-  { value: 'Terminating', label: '终止中', color: 'rgb(230, 162, 60)' }
-]
-
-function getStatusColor(status: string) {
-  const config = namespaceStatusConfig.find(item => item.value === status)
-  return config?.color || 'rgb(144, 147, 153)'
-}
-
-function getStatusLabel(status: string) {
-  const config = namespaceStatusConfig.find(item => item.value === status)
-  return config?.label || status || '-'
-}
-
-function formatTime(time: string) {
-  if (!time) return '-'
-  return time.replace('T', ' ').slice(0, 19)
-}
-
 async function loadData() {
-  if (!queryForm.clusterId) {
+  if (!clusterId.value) {
     tableData.value = []
     return
   }
   loading.value = true
   try {
-    const resp = await getNamespacePage({ ...queryForm, page: pagination.page, pageSize: pagination.pageSize })
+    const resp = await getNamespacePage(clusterId.value, { ...queryForm, page: pagination.page, pageSize: pagination.pageSize })
     tableData.value = resp.list
     pagination.total = resp.total
   } finally {
@@ -223,48 +167,53 @@ async function loadData() {
   }
 }
 
-function handleSelect(selectValue?: string | number) {
-  queryForm.status = selectValue as string | undefined
+/**
+ * 搜索
+ * @remarks 将 searchKey 映射到 name 字段进行模糊匹配
+ */
+function handleSearch() {
+  queryForm.name = searchKey.value
   pagination.page = 1
+  console.log(queryForm)
   loadData()
 }
 
+/**
+ * 重置搜索条件
+ */
 function handleReset() {
   queryForm.name = undefined
   queryForm.status = undefined
-  queryForm.page = 1
-  queryForm.pageSize = 10
   pagination.page = 1
   pagination.pageSize = 10
   searchKey.value = ''
   loadData()
 }
 
-function handleSelectionChange(rows: NamespaceResp[]) {
-  selectedRows.value = rows
+/**
+ * 表格选中行变化
+ */
+function handleSelectionChange(rows: Record<string, unknown>[]) {
+  selectedRows.value = rows as unknown as NamespaceListResp[]
 }
 
 function handleCreate() {
-  router.push({ name: 'kubernetes:namespace:create', params: { clusterId: kubernetesStore.activeClusterId } })
+  router.push({ name: 'kubernetes:namespace:create', params: { clusterId: clusterId.value } })
 }
 
-function handleEdit(row: NamespaceResp) {
+function handleEdit(row: NamespaceListResp) {
   router.push({ name: 'kubernetes:namespace:edit', params: { clusterId: row.clusterId }, query: { name: row.name } })
 }
 
-function handleViewDetail(row: NamespaceResp) {
+function handleViewDetail(row: NamespaceListResp) {
   router.push({ name: 'kubernetes:namespace:detail', params: { clusterId: row.clusterId }, query: { name: row.name } })
 }
 
-function handleCopy(text: string) {
-  copy(text)
-}
-
-function handleResourceQuota(row: NamespaceResp) {
+function handleResourceQuota(row: NamespaceListResp) {
   router.push({ name: 'kubernetes:resourcequota:list', query: { clusterId: row.clusterId, namespace: row.name } })
 }
 
-function handleDelete(row: NamespaceResp) {
+function handleDelete(row: NamespaceListResp) {
   currentTargetRow.value = row
   deleteDialogVisible.value = true
 }
@@ -288,10 +237,10 @@ function handleBatchDelete() {
 
 async function handleConfirmBatchDelete() {
   if (selectedRows.value.length === 0) return
-  const clusterId = selectedRows.value[0].clusterId
+  const targetClusterId = selectedRows.value[0].clusterId
   const names = selectedRows.value.map(row => row.name)
   try {
-    await deleteNamespaces(clusterId, names)
+    await deleteNamespaces(targetClusterId, names)
     ElMessage.success(`成功删除 ${names.length} 个命名空间`)
     batchDeleteDialogVisible.value = false
     selectedRows.value = []
@@ -308,137 +257,44 @@ onMounted(() => {
 
 <style lang="scss" scoped>
 .namespace-page {
-  .page-body {
+  .namespace-page__body {
     display: flex;
     flex-direction: column;
     flex: 1;
     min-height: 0;
     overflow: hidden;
 
-    .table-query {
+    .table-toolbar {
+      display: flex;
+      gap: $spacing-8;
+      align-items: center;
+      padding: $spacing-16 0;
+
+      &__search {
+        flex: 1;
+        min-width: 0;
+      }
+    }
+
+    .table-body {
+      flex: 1;
+      min-height: 0;
+    }
+
+    .table-action {
+      display: flex;
+      gap: $spacing-8;
+      width: 100%;
+      height: auto;
+    }
+
+    .table-footer {
       display: flex;
       align-items: center;
       justify-content: space-between;
       padding: $spacing-16 0;
-
-      .table-query-left {
-        display: flex;
-        gap: $spacing-8;
-        flex-direction: row;
-        align-items: center;
-      }
-
-      .table-query-right {
-        display: flex;
-        gap: $spacing-8;
-        flex-direction: row;
-        align-items: center;
-      }
     }
   }
-}
-
-.table-body {
-  flex: 1;
-  min-height: 0;
-
-  :deep(.el-table) {
-    height: 100%;
-
-    th.el-table__cell {
-      padding: 12px 0;
-    }
-
-    td.el-table__cell {
-      padding: 16px 0;
-    }
-
-    .el-table__body tr {
-      height: 56px;
-    }
-
-    .el-button + .el-button {
-      margin-left: 8px;
-    }
-  }
-
-  .status-cell {
-    display: flex;
-    gap: 8px;
-    align-items: center;
-
-    .status-dot {
-      flex-shrink: 0;
-      width: 8px;
-      height: 8px;
-      border-radius: 50%;
-    }
-
-    .status-info {
-      display: flex;
-      gap: 1px;
-      flex-direction: column;
-
-      .status-label {
-        font-size: 14px;
-        font-weight: 500;
-        line-height: 1.2;
-        color: $color-text-regular;
-      }
-
-      .status-en {
-        font-size: 12px;
-        line-height: 1.2;
-        color: $color-text-secondary;
-      }
-    }
-  }
-
-  .time-text {
-    font-family: monospace;
-    font-size: 12px;
-    color: $color-text-secondary;
-  }
-
-  .namespace-cell {
-    display: flex;
-    gap: 2px;
-    flex-direction: column;
-
-    .namespace-name-row {
-      display: flex;
-      gap: 4px;
-      align-items: center;
-    }
-
-    .namespace-name {
-      font-size: 14px;
-      font-weight: 500;
-      color: $color-text-regular;
-    }
-
-    .copy-icon {
-      font-size: 14px;
-      color: $color-primary;
-      cursor: pointer;
-    }
-
-    .namespace-desc {
-      overflow: hidden;
-      font-size: 12px;
-      color: $color-text-secondary;
-      text-overflow: ellipsis;
-      white-space: nowrap;
-    }
-  }
-}
-
-.table-footer {
-  display: flex;
-  flex-shrink: 0;
-  align-items: center;
-  justify-content: space-between;
-  padding: 16px 20px;
 }
 
 .dialog-content {

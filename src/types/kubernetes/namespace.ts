@@ -33,7 +33,7 @@ export type NamespaceConditionType = 'NamespaceContentRemaining' | 'NamespaceDel
  * 命名空间响应数据
  * @extends BaseEntity 继承基础实体（含 id, createAt, createBy, updateAt, updateBy）
  */
-export interface NamespaceResp extends BaseEntity {
+export interface NamespaceListResp extends BaseEntity {
   /** 资源 UID */
   uid: string
   /** 所属集群 ID */

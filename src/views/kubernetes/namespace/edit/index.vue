@@ -59,7 +59,7 @@ import { ref, onMounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { ElMessage, type FormInstance } from 'element-plus'
 import { FolderOpened, Plus, Delete, Close, Check } from '@element-plus/icons-vue'
-import type { NamespaceResp, NamespaceReq } from '@/types/kubernetes/namespace'
+import type { NamespaceListResp, NamespaceReq } from '@/types/kubernetes/namespace'
 import { getNamespaceDetail, updateNamespace } from '@/api/kubernetes/namespace'
 import BeeButton from '@/components/BeeButton/index.vue'
 import BeePageTitle from '@/components/BeePageTitle/index.vue'
@@ -74,7 +74,7 @@ const clusterId = ref(route.params.clusterId as string)
 const namespaceName = ref(route.query.name as string)
 const loading = ref(false)
 const submitting = ref(false)
-const namespaceData = ref<NamespaceResp>()
+const namespaceData = ref<NamespaceListResp>()
 
 const formData = ref<NamespaceReq>({
   labels: {},

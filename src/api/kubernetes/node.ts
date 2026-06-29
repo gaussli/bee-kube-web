@@ -13,7 +13,7 @@ import { request } from '@/utils'
  * @returns 分页后的节点列表
  */
 export function getNodePage(clusterId: string, params: Partial<NodeQueryReq>): Promise<PageResp<NodeListResp>> {
-  return request.get<PageResp<NodeListResp>>(`/kubernetes/clusters/${clusterId}/nodes`, { params: params })
+  return request.get<PageResp<NodeListResp>>(`/kubernetes/clusters/${clusterId}/nodes`, params)
 }
 
 /**
@@ -43,7 +43,7 @@ export function getNodeResource(clusterId: string, name: string): Promise<NodeRe
  * @returns TopN 节点列表
  */
 export function getNodeTopN(clusterId: string, params: Partial<{ metric: string; count: number }>): Promise<NodeListResp[]> {
-  return request.get<NodeListResp[]>(`/kubernetes/clusters/${clusterId}/nodes/topn`, { params: params })
+  return request.get<NodeListResp[]>(`/kubernetes/clusters/${clusterId}/nodes/topn`, params)
 }
 
 /**
@@ -54,7 +54,7 @@ export function getNodeTopN(clusterId: string, params: Partial<{ metric: string;
  * @returns 更新后的节点ID
  */
 export function updateNode(clusterId: string, name: string, data: Partial<NodeReq>): Promise<string> {
-  return request.put<string>(`/kubernetes/clusters/${clusterId}/nodes/${name}`, { data: data })
+  return request.put<string>(`/kubernetes/clusters/${clusterId}/nodes/${name}`, data)
 }
 
 /**
@@ -74,7 +74,7 @@ export function drainNode(clusterId: string, name: string): Promise<void> {
  * @param data - 调度配置
  */
 export function cordonNode(clusterId: string, name: string, data: NodeCordonReq): Promise<void> {
-  return request.post(`/kubernetes/clusters/${clusterId}/nodes/${name}/cordon`, { data: data })
+  return request.post(`/kubernetes/clusters/${clusterId}/nodes/${name}/cordon`, data)
 }
 
 /**
@@ -84,7 +84,7 @@ export function cordonNode(clusterId: string, name: string, data: NodeCordonReq)
  * @param data - 标签配置
  */
 export function manageNodeLabels(clusterId: string, name: string, data: Partial<NodeLabelsReq>): Promise<void> {
-  return request.post(`/kubernetes/clusters/${clusterId}/nodes/${name}/labels`, { data: data })
+  return request.post(`/kubernetes/clusters/${clusterId}/nodes/${name}/labels`, data)
 }
 
 /**
@@ -94,7 +94,7 @@ export function manageNodeLabels(clusterId: string, name: string, data: Partial<
  * @param data - 注解配置
  */
 export function manageNodeAnnotations(clusterId: string, name: string, data: Partial<NodeAnnotationsReq>): Promise<void> {
-  return request.post(`/kubernetes/clusters/${clusterId}/nodes/${name}/annotations`, { data: data })
+  return request.post(`/kubernetes/clusters/${clusterId}/nodes/${name}/annotations`, data)
 }
 
 /**
@@ -104,5 +104,5 @@ export function manageNodeAnnotations(clusterId: string, name: string, data: Par
  * @param data - 污点配置
  */
 export function manageNodeTaints(clusterId: string, name: string, data: Partial<NodeTaintsReq>): Promise<void> {
-  return request.post(`/kubernetes/clusters/${clusterId}/nodes/${name}/taints`, { data: data })
+  return request.post(`/kubernetes/clusters/${clusterId}/nodes/${name}/taints`, data)
 }

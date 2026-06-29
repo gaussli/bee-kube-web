@@ -3,7 +3,7 @@
  * @module mock/kubernetes/namespace
  */
 import type { PageResp } from '@/types/common'
-import type { NamespaceQueryReq, NamespaceReq, NamespaceResp, NamespaceLabelsReq, NamespaceAnnotationsReq, NamespaceQuotaReq, NamespaceImportReq } from '@/types/kubernetes/namespace'
+import type { NamespaceQueryReq, NamespaceReq, NamespaceListResp, NamespaceLabelsReq, NamespaceAnnotationsReq, NamespaceQuotaReq, NamespaceImportReq } from '@/types/kubernetes/namespace'
 import { generateId } from '@/mock/utils'
 
 /**
@@ -28,12 +28,12 @@ export default [
   {
     method: 'get',
     url: '/kubernetes/clusters/:clusterId/namespaces',
-    handler: (pathParams: Record<string, string>, params: Partial<NamespaceQueryReq>): PageResp<NamespaceResp> => getNamespacePage(pathParams.clusterId, params)
+    handler: (pathParams: Record<string, string>, params: Partial<NamespaceQueryReq>): PageResp<NamespaceListResp> => getNamespacePage(pathParams.clusterId, params)
   },
   {
     method: 'get',
     url: '/kubernetes/clusters/:clusterId/namespaces/:name',
-    handler: (pathParams: Record<string, string>): NamespaceResp => getNamespaceDetail(pathParams.clusterId, pathParams.name)
+    handler: (pathParams: Record<string, string>): NamespaceListResp => getNamespaceDetail(pathParams.clusterId, pathParams.name)
   },
   {
     method: 'get',
@@ -103,14 +103,11 @@ export default [
  * @param params - 查询参数
  * @returns 分页数据
  */
-function getNamespacePage(clusterId: string, params: Partial<NamespaceQueryReq>): PageResp<NamespaceResp> {
+function getNamespacePage(clusterId: string, params: Partial<NamespaceQueryReq>): PageResp<NamespaceListResp> {
   const { name, status, page = 1, pageSize = 10 } = params || {}
 
   let filtered = [...mockNamespaces]
 
-  if (clusterId) {
-    filtered = filtered.filter(ns => ns.clusterId === clusterId)
-  }
   if (name) {
     filtered = filtered.filter(ns => ns.name.toLowerCase().includes(name.toLowerCase()))
   }
@@ -122,7 +119,6 @@ function getNamespacePage(clusterId: string, params: Partial<NamespaceQueryReq>)
   const start = (page - 1) * pageSize
   const end = start + pageSize
   const list = filtered.slice(start, end)
-
   return { list, total, page, pageSize }
 }
 
@@ -132,7 +128,7 @@ function getNamespacePage(clusterId: string, params: Partial<NamespaceQueryReq>)
  * @param name - 命名空间名称
  * @returns 命名空间详情
  */
-function getNamespaceDetail(clusterId: string, name: string): NamespaceResp {
+function getNamespaceDetail(clusterId: string, name: string): NamespaceListResp {
   const ns = mockNamespaces.find(n => n.clusterId === clusterId && n.name === name)
   if (!ns) {
     console.error('[Get Namespace Detail] can not find namespace:', clusterId, name)
@@ -185,7 +181,7 @@ status:
  * @param data - 创建参数
  */
 function createNamespace(clusterId: string, data: Partial<NamespaceReq>): void {
-  const created: NamespaceResp = {
+  const created: NamespaceListResp = {
     id: data.id || generateId(),
     name: data.name || '',
     description: data.description,
@@ -371,7 +367,7 @@ function importNamespaces(clusterId: string, data: Partial<NamespaceImportReq>):
     return
   }
 
-  const created: NamespaceResp[] = []
+  const created: NamespaceListResp[] = []
   for (const item of data.items) {
     const exists = mockNamespaces.find(ns => ns.clusterId === clusterId && ns.name === item.name)
     if (exists) {
@@ -379,7 +375,7 @@ function importNamespaces(clusterId: string, data: Partial<NamespaceImportReq>):
       continue
     }
 
-    const ns: NamespaceResp = {
+    const ns: NamespaceListResp = {
       id: generateId(),
       name: item.name,
       clusterId: clusterId,
@@ -468,27 +464,15 @@ function deleteNamespaceQuota(clusterId: string, name: string): void {
  * 模拟命名空间数据
  * @remarks 包含系统命名空间、应用命名空间、监控命名空间等
  */
-const mockNamespaces: NamespaceResp[] = [
+const mockNamespaces: NamespaceListResp[] = [
   {
     id: generateId(),
+    uid: generateId(),
     name: 'default',
     clusterId: 'cls-001-prod',
     clusterName: 'prod-cluster',
     status: 'Active',
-    labels: {},
-    annotations: {},
-    resourceQuota: {
-      requestsCpu: 0,
-      requestsMemory: '0Gi',
-      limitsCpu: 0,
-      limitsMemory: '0Gi',
-      persistentvolumeclaims: 0,
-      servicesLoadbalancers: 0,
-      countDeploymentsApps: 0,
-      countPods: 0
-    },
-    limitRange: {},
-    deletable: false,
+    type: 0,
     createBy: 'system',
     createAt: '2024-01-15 10:30:25',
     updateBy: 'system',
@@ -496,26 +480,12 @@ const mockNamespaces: NamespaceResp[] = [
   },
   {
     id: generateId(),
+    uid: generateId(),
     name: 'kube-system',
     clusterId: 'cls-001-prod',
     clusterName: 'prod-cluster',
     status: 'Active',
-    labels: {
-      'kubernetes.io/metadata.name': 'kube-system'
-    },
-    annotations: {},
-    resourceQuota: {
-      requestsCpu: 0,
-      requestsMemory: '0Gi',
-      limitsCpu: 0,
-      limitsMemory: '0Gi',
-      persistentvolumeclaims: 0,
-      servicesLoadbalancers: 0,
-      countDeploymentsApps: 0,
-      countPods: 0
-    },
-    limitRange: {},
-    deletable: false,
+    type: 0,
     createBy: 'system',
     createAt: '2024-01-15 10:30:30',
     updateBy: 'system',
@@ -523,24 +493,12 @@ const mockNamespaces: NamespaceResp[] = [
   },
   {
     id: generateId(),
+    uid: generateId(),
     name: 'kube-public',
     clusterId: 'cls-001-prod',
     clusterName: 'prod-cluster',
     status: 'Active',
-    labels: {},
-    annotations: {},
-    resourceQuota: {
-      requestsCpu: 0,
-      requestsMemory: '0Gi',
-      limitsCpu: 0,
-      limitsMemory: '0Gi',
-      persistentvolumeclaims: 0,
-      servicesLoadbalancers: 0,
-      countDeploymentsApps: 0,
-      countPods: 0
-    },
-    limitRange: {},
-    deletable: false,
+    type: 0,
     createBy: 'system',
     createAt: '2024-01-15 10:30:35',
     updateBy: 'system',
@@ -548,24 +506,12 @@ const mockNamespaces: NamespaceResp[] = [
   },
   {
     id: generateId(),
+    uid: generateId(),
     name: 'kube-node-lease',
     clusterId: 'cls-001-prod',
     clusterName: 'prod-cluster',
     status: 'Active',
-    labels: {},
-    annotations: {},
-    resourceQuota: {
-      requestsCpu: 0,
-      requestsMemory: '0Gi',
-      limitsCpu: 0,
-      limitsMemory: '0Gi',
-      persistentvolumeclaims: 0,
-      servicesLoadbalancers: 0,
-      countDeploymentsApps: 0,
-      countPods: 0
-    },
-    limitRange: {},
-    deletable: false,
+    type: 0,
     createBy: 'system',
     createAt: '2024-01-15 10:30:40',
     updateBy: 'system',
@@ -573,35 +519,51 @@ const mockNamespaces: NamespaceResp[] = [
   },
   {
     id: generateId(),
+    uid: generateId(),
+    name: 'istio-system',
+    clusterId: 'cls-001-prod',
+    clusterName: 'prod-cluster',
+    status: 'Active',
+    type: 0,
+    createBy: 'system',
+    createAt: '2024-01-20 09:00:00',
+    updateBy: 'system',
+    updateAt: '2024-03-10 11:20:00'
+  },
+  {
+    id: generateId(),
+    uid: generateId(),
+    name: 'cert-manager',
+    clusterId: 'cls-001-prod',
+    clusterName: 'prod-cluster',
+    status: 'Active',
+    type: 0,
+    createBy: 'system',
+    createAt: '2024-02-01 10:00:00',
+    updateBy: 'system',
+    updateAt: '2024-02-01 10:00:00'
+  },
+  {
+    id: generateId(),
+    uid: generateId(),
+    name: 'ingress-nginx',
+    clusterId: 'cls-001-prod',
+    clusterName: 'prod-cluster',
+    status: 'Active',
+    type: 0,
+    createBy: 'system',
+    createAt: '2024-01-18 14:00:00',
+    updateBy: 'system',
+    updateAt: '2024-05-10 08:30:00'
+  },
+  {
+    id: generateId(),
+    uid: generateId(),
     name: 'app-frontend',
     clusterId: 'cls-001-prod',
     clusterName: 'prod-cluster',
-    description: '前端应用命名空间',
     status: 'Active',
-    labels: {
-      env: 'production',
-      app: 'frontend'
-    },
-    annotations: {},
-    resourceQuota: {
-      requestsCpu: 10,
-      requestsMemory: '20Gi',
-      limitsCpu: 20,
-      limitsMemory: '40Gi',
-      persistentvolumeclaims: 10,
-      servicesLoadbalancers: 5,
-      countDeploymentsApps: 20,
-      countPods: 50
-    },
-    limitRange: {
-      container: {
-        defaultRequestCpu: 100,
-        defaultRequestMemory: '256Mi',
-        defaultCpu: 500,
-        defaultMemory: '512Mi'
-      }
-    },
-    deletable: true,
+    type: 1,
     createBy: 'admin',
     createAt: '2024-02-01 08:00:00',
     updateBy: 'admin',
@@ -609,35 +571,12 @@ const mockNamespaces: NamespaceResp[] = [
   },
   {
     id: generateId(),
+    uid: generateId(),
     name: 'app-backend',
     clusterId: 'cls-001-prod',
     clusterName: 'prod-cluster',
-    description: '后端应用命名空间',
     status: 'Active',
-    labels: {
-      env: 'production',
-      app: 'backend'
-    },
-    annotations: {},
-    resourceQuota: {
-      requestsCpu: 20,
-      requestsMemory: '40Gi',
-      limitsCpu: 40,
-      limitsMemory: '80Gi',
-      persistentvolumeclaims: 20,
-      servicesLoadbalancers: 10,
-      countDeploymentsApps: 30,
-      countPods: 100
-    },
-    limitRange: {
-      container: {
-        defaultRequestCpu: 200,
-        defaultRequestMemory: '512Mi',
-        defaultCpu: 1000,
-        defaultMemory: '1Gi'
-      }
-    },
-    deletable: true,
+    type: 1,
     createBy: 'admin',
     createAt: '2024-02-01 08:05:00',
     updateBy: 'admin',
@@ -645,27 +584,103 @@ const mockNamespaces: NamespaceResp[] = [
   },
   {
     id: generateId(),
+    uid: generateId(),
+    name: 'app-gateway',
+    clusterId: 'cls-001-prod',
+    clusterName: 'prod-cluster',
+    status: 'Active',
+    type: 1,
+    createBy: 'admin',
+    createAt: '2024-02-05 09:00:00',
+    updateBy: 'devops',
+    updateAt: '2024-04-12 16:45:00'
+  },
+  {
+    id: generateId(),
+    uid: generateId(),
+    name: 'app-auth',
+    clusterId: 'cls-001-prod',
+    clusterName: 'prod-cluster',
+    status: 'Active',
+    type: 1,
+    createBy: 'devops',
+    createAt: '2024-02-08 10:30:00',
+    updateBy: 'devops',
+    updateAt: '2024-05-01 09:00:00'
+  },
+  {
+    id: generateId(),
+    uid: generateId(),
+    name: 'app-notification',
+    clusterId: 'cls-001-prod',
+    clusterName: 'prod-cluster',
+    status: 'Active',
+    type: 1,
+    createBy: 'admin',
+    createAt: '2024-02-12 08:00:00',
+    updateBy: 'admin',
+    updateAt: '2024-03-25 14:10:00'
+  },
+  {
+    id: generateId(),
+    uid: generateId(),
+    name: 'app-payment',
+    clusterId: 'cls-001-prod',
+    clusterName: 'prod-cluster',
+    status: 'Active',
+    type: 1,
+    createBy: 'devops',
+    createAt: '2024-02-15 11:00:00',
+    updateBy: 'devops',
+    updateAt: '2024-05-20 10:30:00'
+  },
+  {
+    id: generateId(),
+    uid: generateId(),
+    name: 'app-order',
+    clusterId: 'cls-001-prod',
+    clusterName: 'prod-cluster',
+    status: 'Active',
+    type: 1,
+    createBy: 'admin',
+    createAt: '2024-02-18 09:30:00',
+    updateBy: 'admin',
+    updateAt: '2024-04-28 17:00:00'
+  },
+  {
+    id: generateId(),
+    uid: generateId(),
+    name: 'app-user',
+    clusterId: 'cls-001-prod',
+    clusterName: 'prod-cluster',
+    status: 'Active',
+    type: 1,
+    createBy: 'devops',
+    createAt: '2024-02-20 08:15:00',
+    updateBy: 'devops',
+    updateAt: '2024-05-05 13:40:00'
+  },
+  {
+    id: generateId(),
+    uid: generateId(),
+    name: 'app-analytics',
+    clusterId: 'cls-001-prod',
+    clusterName: 'prod-cluster',
+    status: 'Active',
+    type: 1,
+    createBy: 'admin',
+    createAt: '2024-03-01 10:00:00',
+    updateBy: 'admin',
+    updateAt: '2024-05-15 11:20:00'
+  },
+  {
+    id: generateId(),
+    uid: generateId(),
     name: 'monitoring',
     clusterId: 'cls-001-prod',
     clusterName: 'prod-cluster',
-    description: '监控组件命名空间',
     status: 'Active',
-    labels: {
-      env: 'production'
-    },
-    annotations: {},
-    resourceQuota: {
-      requestsCpu: 8,
-      requestsMemory: '16Gi',
-      limitsCpu: 16,
-      limitsMemory: '32Gi',
-      persistentvolumeclaims: 5,
-      servicesLoadbalancers: 2,
-      countDeploymentsApps: 10,
-      countPods: 30
-    },
-    limitRange: {},
-    deletable: true,
+    type: 1,
     createBy: 'admin',
     createAt: '2024-02-10 14:20:00',
     updateBy: 'admin',
@@ -673,25 +688,12 @@ const mockNamespaces: NamespaceResp[] = [
   },
   {
     id: generateId(),
+    uid: generateId(),
     name: 'logging',
     clusterId: 'cls-001-prod',
     clusterName: 'prod-cluster',
-    description: '日志收集命名空间',
     status: 'Terminating',
-    labels: {},
-    annotations: {},
-    resourceQuota: {
-      requestsCpu: 0,
-      requestsMemory: '0Gi',
-      limitsCpu: 0,
-      limitsMemory: '0Gi',
-      persistentvolumeclaims: 0,
-      servicesLoadbalancers: 0,
-      countDeploymentsApps: 0,
-      countPods: 0
-    },
-    limitRange: {},
-    deletable: true,
+    type: 1,
     createBy: 'admin',
     createAt: '2024-02-15 09:00:00',
     updateBy: 'admin',
@@ -699,34 +701,38 @@ const mockNamespaces: NamespaceResp[] = [
   },
   {
     id: generateId(),
+    uid: generateId(),
+    name: 'data-pipeline',
+    clusterId: 'cls-001-prod',
+    clusterName: 'prod-cluster',
+    status: 'Active',
+    type: 1,
+    createBy: 'developer',
+    createAt: '2024-03-05 08:00:00',
+    updateBy: 'developer',
+    updateAt: '2024-06-01 09:30:00'
+  },
+  {
+    id: generateId(),
+    uid: generateId(),
+    name: 'ml-training',
+    clusterId: 'cls-001-prod',
+    clusterName: 'prod-cluster',
+    status: 'Active',
+    type: 1,
+    createBy: 'developer',
+    createAt: '2024-03-10 14:00:00',
+    updateBy: 'developer',
+    updateAt: '2024-06-10 16:45:00'
+  },
+  {
+    id: generateId(),
+    uid: generateId(),
     name: 'staging-app',
     clusterId: 'cls-002-staging',
     clusterName: 'staging-cluster',
-    description: '预发布环境命名空间',
     status: 'Active',
-    labels: {
-      env: 'staging'
-    },
-    annotations: {},
-    resourceQuota: {
-      requestsCpu: 5,
-      requestsMemory: '10Gi',
-      limitsCpu: 10,
-      limitsMemory: '20Gi',
-      persistentvolumeclaims: 5,
-      servicesLoadbalancers: 3,
-      countDeploymentsApps: 10,
-      countPods: 30
-    },
-    limitRange: {
-      container: {
-        defaultRequestCpu: 100,
-        defaultRequestMemory: '256Mi',
-        defaultCpu: 500,
-        defaultMemory: '512Mi'
-      }
-    },
-    deletable: true,
+    type: 1,
     createBy: 'admin',
     createAt: '2024-02-15 10:00:00',
     updateBy: 'admin',
@@ -734,37 +740,41 @@ const mockNamespaces: NamespaceResp[] = [
   },
   {
     id: generateId(),
+    uid: generateId(),
+    name: 'qa-automation',
+    clusterId: 'cls-002-staging',
+    clusterName: 'staging-cluster',
+    status: 'Active',
+    type: 1,
+    createBy: 'developer',
+    createAt: '2024-03-15 09:00:00',
+    updateBy: 'developer',
+    updateAt: '2024-04-20 11:00:00'
+  },
+  {
+    id: generateId(),
+    uid: generateId(),
     name: 'dev-test',
     clusterId: 'cls-003-dev',
     clusterName: 'dev-cluster',
-    description: '开发测试环境',
     status: 'Active',
-    labels: {
-      env: 'development'
-    },
-    annotations: {},
-    resourceQuota: {
-      requestsCpu: 2,
-      requestsMemory: '4Gi',
-      limitsCpu: 4,
-      limitsMemory: '8Gi',
-      persistentvolumeclaims: 5,
-      servicesLoadbalancers: 2,
-      countDeploymentsApps: 10,
-      countPods: 20
-    },
-    limitRange: {
-      container: {
-        defaultRequestCpu: 50,
-        defaultRequestMemory: '128Mi',
-        defaultCpu: 200,
-        defaultMemory: '256Mi'
-      }
-    },
-    deletable: true,
+    type: 1,
     createBy: 'admin',
     createAt: '2024-03-01 09:00:00',
     updateBy: 'admin',
     updateAt: '2024-03-01 09:00:00'
+  },
+  {
+    id: generateId(),
+    uid: generateId(),
+    name: 'dev-sandbox',
+    clusterId: 'cls-003-dev',
+    clusterName: 'dev-cluster',
+    status: 'Terminating',
+    type: 1,
+    createBy: 'developer',
+    createAt: '2024-04-01 08:00:00',
+    updateBy: 'developer',
+    updateAt: '2024-05-20 18:00:00'
   }
 ]
