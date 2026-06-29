@@ -3,18 +3,17 @@
  * @module api/kubernetes/config/secret
  */
 import type { PageResp } from '@/types/common'
-import type { SecretQueryReq, SecretResp, SecretReq, SecretDataReq, SecretLabelsReq, SecretAnnotationsReq } from '@/types/kubernetes/config/secret'
+import type { SecretListResp, SecretDetailResp, SecretQueryReq, SecretReq, SecretDataReq, SecretLabelsReq, SecretAnnotationsReq } from '@/types/kubernetes/config/secret'
 import { request } from '@/utils'
 
 /**
  * 获取 Secret 分页列表
  * @param clusterId - 集群ID
- * @param namespace - 命名空间名称
- * @param params - 查询参数
+ * @param params - 查询参数（含 namespace 筛选）
  * @returns 分页后的 Secret 列表
  */
-export function getSecretPage(clusterId: string, namespace: string, params: Partial<SecretQueryReq>): Promise<PageResp<SecretResp>> {
-  return request.get(`/kubernetes/clusters/${clusterId}/namespaces/${namespace}/secrets`, params)
+export function getSecretPage(clusterId: string, params: Partial<SecretQueryReq>): Promise<PageResp<SecretListResp>> {
+  return request.get(`/kubernetes/clusters/${clusterId}/secrets`, params)
 }
 
 /**
@@ -24,7 +23,7 @@ export function getSecretPage(clusterId: string, namespace: string, params: Part
  * @param name - Secret 名称
  * @returns Secret 详情
  */
-export function getSecretDetail(clusterId: string, namespace: string, name: string): Promise<SecretResp> {
+export function getSecretDetail(clusterId: string, namespace: string, name: string): Promise<SecretDetailResp> {
   return request.get(`/kubernetes/clusters/${clusterId}/namespaces/${namespace}/secrets/${name}`)
 }
 
