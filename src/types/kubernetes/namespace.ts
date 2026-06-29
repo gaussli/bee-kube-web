@@ -46,6 +46,8 @@ export interface NamespaceListResp extends BaseEntity {
   description?: string
   /** 状态 */
   status: string
+  /** 状态描述信息 */
+  statusMsg?: string
   /** 命名空间类型 */
   type: NamespaceType
 }

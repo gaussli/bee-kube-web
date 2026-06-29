@@ -25,12 +25,12 @@
         <BeeTable :data="tableData" :loading="loading" selectable @selection-change="handleSelectionChange">
           <BeeTableColumn>
             <template #default="{ row }">
-              <BeeNamespaceInfoCell :name="row.name" :description="row.description" :icon-size="32" />
+              <BeeNamespaceInfoCell :name="row.name" :id="row.id" :description="row.description" :icon-size="32" />
             </template>
           </BeeTableColumn>
           <BeeTableColumn :width="130">
             <template #default="{ row }">
-              <BeeStatusCell :status="row.status" :options="NAMESPACE_STATUS_OPTIONS" />
+              <BeeStatusCell :status="row.status" :status-msg="row.statusMsg" :options="NAMESPACE_STATUS_OPTIONS" />
             </template>
           </BeeTableColumn>
           <BeeTableColumn :width="200">

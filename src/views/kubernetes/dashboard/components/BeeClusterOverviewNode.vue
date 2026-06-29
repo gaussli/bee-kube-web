@@ -13,7 +13,7 @@
     </div>
     <div class="bee-cluster-overview-node__body">
       <div v-for="node in nodeListData" :key="node.name" class="bee-cluster-overview-node__item">
-        <BeeNodeInfoCell class="bee-cluster-overview-node__item-info" :name="node.name" :id="node.id" :description="node.description" :icon-size="32" />
+        <BeeNodeInfoCell class="bee-cluster-overview-node__item-info" :name="node.name" :id="node.id" :ip="node.ip" :description="node.description" :icon-size="32" />
         <BeeResourceUsageCell :percentage="node.cpuUsagePercentage" field-name="CPU" />
         <BeeResourceUsageCell :percentage="node.memoryUsagePercentage" field-name="内存" />
       </div>

@@ -20,12 +20,11 @@ import { request } from '@/utils'
 /**
  * 获取 Deployment 分页列表
  * @param clusterId - 集群ID
- * @param namespace - 命名空间名称
  * @param params - 查询参数
  * @returns 分页后的 Deployment 列表
  */
-export function getDeploymentPage(clusterId: string, namespace: string, params: Partial<DeploymentQueryReq>): Promise<PageResp<DeploymentListResp>> {
-  return request.get<PageResp<DeploymentListResp>>(`/kubernetes/clusters/${clusterId}/namespaces/${namespace}/deployments`, { params: params })
+export function getDeploymentPage(clusterId: string, params: Partial<DeploymentQueryReq>): Promise<PageResp<DeploymentListResp>> {
+  return request.get<PageResp<DeploymentListResp>>(`/kubernetes/clusters/${clusterId}/deployments`, params)
 }
 
 /**
@@ -68,7 +67,7 @@ export function getDeploymentAdvanced(clusterId: string, namespace: string, name
  * @param data - 创建参数
  */
 export function createDeployment(clusterId: string, namespace: string, data: Partial<DeploymentReq>): Promise<void> {
-  return request.post(`/kubernetes/clusters/${clusterId}/namespaces/${namespace}/deployments`, { data: data })
+  return request.post(`/kubernetes/clusters/${clusterId}/namespaces/${namespace}/deployments`, data)
 }
 
 /**
@@ -79,7 +78,7 @@ export function createDeployment(clusterId: string, namespace: string, data: Par
  * @param data - 更新参数
  */
 export function updateDeployment(clusterId: string, namespace: string, name: string, data: Partial<DeploymentReq>): Promise<void> {
-  return request.put(`/kubernetes/clusters/${clusterId}/namespaces/${namespace}/deployments/${name}`, { data: data })
+  return request.put(`/kubernetes/clusters/${clusterId}/namespaces/${namespace}/deployments/${name}`, data)
 }
 
 /**
@@ -90,7 +89,7 @@ export function updateDeployment(clusterId: string, namespace: string, name: str
  * @param data - 扩缩容参数
  */
 export function scaleDeployment(clusterId: string, namespace: string, name: string, data: Partial<DeploymentScaleReq>): Promise<void> {
-  return request.post(`/kubernetes/clusters/${clusterId}/namespaces/${namespace}/deployments/${name}/scale`, { data: data })
+  return request.post(`/kubernetes/clusters/${clusterId}/namespaces/${namespace}/deployments/${name}/scale`, data)
 }
 
 /**
@@ -121,7 +120,7 @@ export function rollbackDeployment(clusterId: string, namespace: string, name: s
  * @param data - 标签数据
  */
 export function manageDeploymentLabels(clusterId: string, namespace: string, name: string, data: Partial<DeploymentLabelsReq>): Promise<void> {
-  return request.post(`/kubernetes/clusters/${clusterId}/namespaces/${namespace}/deployments/${name}/labels`, { data: data })
+  return request.post(`/kubernetes/clusters/${clusterId}/namespaces/${namespace}/deployments/${name}/labels`, data)
 }
 
 /**
@@ -132,7 +131,7 @@ export function manageDeploymentLabels(clusterId: string, namespace: string, nam
  * @param data - 注解数据
  */
 export function manageDeploymentAnnotations(clusterId: string, namespace: string, name: string, data: Partial<DeploymentAnnotationsReq>): Promise<void> {
-  return request.post(`/kubernetes/clusters/${clusterId}/namespaces/${namespace}/deployments/${name}/annotations`, { data: data })
+  return request.post(`/kubernetes/clusters/${clusterId}/namespaces/${namespace}/deployments/${name}/annotations`, data)
 }
 
 /**
@@ -183,5 +182,5 @@ export function exportDeployment(clusterId: string, namespace: string, params: P
  * @param data - YAML 配置
  */
 export function importDeployment(clusterId: string, namespace: string, data: Partial<DeploymentYamlReq>): Promise<void> {
-  return request.post(`/kubernetes/clusters/${clusterId}/namespaces/${namespace}/deployments/import`, { data: data })
+  return request.post(`/kubernetes/clusters/${clusterId}/namespaces/${namespace}/deployments/import`, data)
 }

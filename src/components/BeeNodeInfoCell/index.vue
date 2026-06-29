@@ -5,10 +5,14 @@
     </div>
     <div class="bee-node-info-cell__content">
       <div class="bee-node-info-cell__top">
-        <span class="bee-node-info-cell__name">{{ name }}</span>
         <BeeTooltip :label="id">
           <BeeTag type="primary" size="tiny">UID</BeeTag>
         </BeeTooltip>
+        <BeeTooltip :label="ip">
+          <BeeTag type="primary" size="tiny">IP</BeeTag>
+        </BeeTooltip>
+        <span class="bee-node-info-cell__name">{{ name }}</span>
+        <BeeIcon name="basic-copy" :size="14" class="bee-node-info-cell__copy-icon" @click="useClipboard().copy(props.name)" />
       </div>
       <div class="bee-node-info-cell__bottom">
         <BeeIcon name="basic-description" :size="14" class="bee-node-info-cell__desc-icon" />
@@ -33,16 +37,19 @@ import { ref, onMounted, onUnmounted } from 'vue'
 import BeeIcon from '@/components/BeeIcon/index.vue'
 import BeeTag from '@/components/BeeTag/index.vue'
 import BeeTooltip from '@/components/BeeTooltip/index.vue'
+import { useClipboard } from '@/composables/useClipboard'
 
 defineOptions({ name: 'BeeNodeInfoCell' })
 
-defineProps<{
+const props = defineProps<{
   /** 左侧图标大小 */
   iconSize?: number
   /** 节点名称 */
   name: string
   /** 节点 ID，hover UID 标签时显示 */
   id: string
+  /** 节点 IP 地址，hover IP 标签时显示 */
+  ip: string
   /** 节点描述 */
   description?: string
 }>()
@@ -107,6 +114,22 @@ onUnmounted(() => {
     font-size: $font-size-14;
     color: $color-text-primary;
     white-space: nowrap;
+  }
+
+  &__copy-icon {
+    flex-shrink: 0;
+    color: $color-text-tertiary;
+    opacity: 0;
+    cursor: pointer;
+    transition: opacity 0.15s;
+
+    &:hover {
+      color: $color-primary;
+    }
+  }
+
+  &:hover &__copy-icon {
+    opacity: 1;
   }
 
   &__bottom {

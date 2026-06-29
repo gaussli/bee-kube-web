@@ -80,8 +80,6 @@ export interface DeploymentListResp extends BaseEntity {
   availableReplicas: number
   /** 更新策略 */
   strategyType: DeploymentStrategyType
-  /** 触发删除时间 */
-  deletionAt?: string
 }
 
 /**
@@ -210,17 +208,13 @@ export interface DeploymentAdvancedResp {
  */
 export interface DeploymentQueryReq extends PageReq {
   /** Deployment ID */
-  id?: string
+  id: string
   /** Deployment 名称（模糊匹配） */
-  name?: string
+  name: string
   /** 命名空间名称 */
-  namespace?: string
-  /** 集群 ID */
-  clusterId?: string
+  namespace: string
   /** Deployment 状态 */
-  status?: string
-  /** 标签选择器（key=value 格式，多个用逗号分隔） */
-  labelSelector?: string
+  status: string
 }
 
 /**

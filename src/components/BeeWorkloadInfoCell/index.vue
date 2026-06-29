@@ -1,18 +1,18 @@
 <template>
-  <div class="bee-namespace-info-cell">
-    <div class="bee-namespace-info-cell__icon">
+  <div class="bee-workload-info-cell">
+    <div class="bee-workload-info-cell__icon">
       <BeeIcon name="kubernetes-namespace" :size="iconSize" />
     </div>
-    <div class="bee-namespace-info-cell__content">
-      <div class="bee-namespace-info-cell__top">
-        <BeeTooltip :label="id">
+    <div class="bee-workload-info-cell__content">
+      <div class="bee-workload-info-cell__top">
+        <BeeTooltip :label="uid">
           <BeeTag type="primary" size="tiny">UID</BeeTag>
         </BeeTooltip>
-        <span class="bee-namespace-info-cell__name">{{ name }}</span>
-        <BeeIcon name="basic-copy" :size="14" class="bee-namespace-info-cell__copy-icon" @click="useClipboard().copy(props.name)" />
+        <span class="bee-workload-info-cell__name">{{ name }}</span>
+        <BeeIcon name="basic-copy" :size="14" class="bee-workload-info-cell__copy-icon" @click="useClipboard().copy(props.name)" />
       </div>
-      <div class="bee-namespace-info-cell__bottom">
-        <span class="bee-namespace-info-cell__desc">{{ description || '-' }}</span>
+      <div class="bee-workload-info-cell__bottom">
+        <span class="bee-workload-info-cell__desc">{{ description || '-' }}</span>
       </div>
     </div>
   </div>
@@ -20,26 +20,26 @@
 
 <script setup lang="ts">
 /**
- * 命名空间信息单元格组件
- * 上下结构展示命名空间名称（支持复制）和描述信息
- * @module components/BeeNamespaceInfoCell
+ * 工作负载信息单元格组件
+ * 上下结构展示工作负载名称（支持复制）和描述信息
+ * @module components/BeeWorkloadInfoCell
  */
 import BeeIcon from '@/components/BeeIcon/index.vue'
 import BeeTag from '@/components/BeeTag/index.vue'
 import BeeTooltip from '@/components/BeeTooltip/index.vue'
 import { useClipboard } from '@/composables/useClipboard'
 
-defineOptions({ name: 'BeeNamespaceInfoCell' })
+defineOptions({ name: 'BeeWorkloadInfoCell' })
 
 const props = withDefaults(
   defineProps<{
     /** 左侧图标大小 */
     iconSize?: number
-    /** 命名空间 ID，hover UID 标签时显示 */
-    id: string
-    /** 命名空间名称 */
+    /** Kubernetes 资源 UID，hover UID 标签时显示完整 UID */
+    uid: string
+    /** 工作负载名称 */
     name: string
-    /** 命名空间描述 */
+    /** 工作负载描述 */
     description?: string
   }>(),
   {
@@ -49,7 +49,7 @@ const props = withDefaults(
 </script>
 
 <style lang="scss" scoped>
-.bee-namespace-info-cell {
+.bee-workload-info-cell {
   display: flex;
   gap: $spacing-8;
   flex-direction: row;

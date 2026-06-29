@@ -41,6 +41,8 @@ export interface NodeListResp extends BaseEntity {
   description?: string
   /** 状态 */
   status: NodeType
+  /** 状态描述信息 */
+  statusMsg?: string
   /** IP 地址 */
   ip: string
   /** 是否不可调度 */
@@ -66,6 +68,8 @@ export interface NodeOverviewResp extends BaseEntity {
   description: string
   /** 状态 */
   status: NodeType
+  /** 状态描述信息 */
+  statusMsg?: string
   /** 角色列表 */
   roles: string[]
   /** IP 地址 */
@@ -141,6 +145,8 @@ export interface NodeQueryReq extends PageReq {
   ip: string
   /** 状态 */
   status: NodeType
+  /** 状态描述信息 */
+  statusMsg?: string
 }
 
 /**

@@ -1,5 +1,5 @@
 <template>
-  <div ref="triggerRef" class="bee-select" :class="{ 'is-open': isOpen }" @click="toggle">
+  <div ref="triggerRef" v-bind="$attrs" class="bee-select" :class="{ 'is-open': isOpen }" :style="widthStyle" @click="toggle">
     <div class="bee-select__trigger">
       <span class="bee-select__value" :class="{ 'is-placeholder': !selectedLabel }">{{ selectedLabel || placeholder }}</span>
       <BeeIcon class="bee-select__arrow-icon" :class="{ 'is-open': isOpen }" name="basic-arrow-down" :size="14" />
@@ -8,7 +8,7 @@
 
   <Teleport to="body" :disabled="!isOpen">
     <Transition name="bee-select">
-      <div v-if="isOpen" ref="floatingRef" class="bee-select__menu" :style="floatingStyles" @click.stop>
+      <div v-if="isOpen" ref="floatingRef" class="bee-select__menu" :style="[floatingStyles, widthStyle]" @click.stop>
         <div v-for="option in options" :key="option.value" class="bee-select__menu-item" :class="{ 'is-selected': option.value === modelValue }" @click="handleSelect(option)">
           <BeeIcon v-if="option.icon" class="bee-select__menu-icon" :name="option.icon" :size="14" />
           <span>{{ option.label }}</span>
@@ -30,7 +30,7 @@ import { arrow, flip, offset, shift, useFloating } from '@floating-ui/vue'
 import type { SelectOption } from './types'
 import BeeIcon from '@/components/BeeIcon/index.vue'
 
-defineOptions({ name: 'BeeSelect', inheritAttrs: false })
+defineOptions({ name: 'BeeSelect' })
 
 // ==================== Props ====================
 
@@ -42,11 +42,14 @@ const props = withDefaults(
     options?: SelectOption[]
     /** 占位文本 */
     placeholder?: string
+    /** 组件宽度（px） */
+    width?: number
   }>(),
   {
     modelValue: undefined,
     options: () => [],
-    placeholder: '请选择'
+    placeholder: '请选择',
+    width: 120
   }
 )
 
@@ -79,6 +82,9 @@ const selectedLabel = computed(() => {
   const selected = props.options.find(opt => opt.value === props.modelValue)
   return selected?.label ?? ''
 })
+
+/** 组件宽度样式 */
+const widthStyle = computed(() => ({ width: `${props.width}px` }))
 
 // ==================== Floating-UI 定位 ====================
 
@@ -174,7 +180,6 @@ defineExpose({
 
 .bee-select {
   display: inline-block;
-  width: var(--bee-select-width, 120px);
   height: 32px;
 
   &__trigger {
@@ -225,7 +230,6 @@ defineExpose({
 
   position: relative;
   z-index: 1000;
-  min-width: var(--bee-select-width, 120px);
   border-radius: $radius-8;
   background: var(--bee-select-menu-bg);
   box-shadow: var(--bee-select-menu-shadow);
