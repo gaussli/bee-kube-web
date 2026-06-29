@@ -36,8 +36,6 @@ export interface DaemonSetListResp extends BaseEntity {
   uid: string
   /** 所属集群 ID */
   clusterId: string
-  /** 所属集群名称 */
-  clusterName: string
   /** 所属命名空间 */
   namespace: string
   /** DaemonSet 名称 */
@@ -54,6 +52,8 @@ export interface DaemonSetListResp extends BaseEntity {
   numberReady: number
   /** 更新策略 */
   updateStrategy: DaemonSetUpdateStrategyType
+  /** 是否可删除 */
+  deletable?: boolean
 }
 
 /**
@@ -65,8 +65,6 @@ export interface DaemonSetDetailResp extends BaseEntity {
   uid: string
   /** 所属集群 ID */
   clusterId: string
-  /** 所属集群名称 */
-  clusterName: string
   /** 所属命名空间 */
   namespace: string
   /** DaemonSet 名称 */
@@ -99,15 +97,15 @@ export interface DaemonSetDetailResp extends BaseEntity {
  */
 export interface DaemonSetQueryReq extends PageReq {
   /** DaemonSet ID（精确匹配） */
-  id?: string
+  id: string
   /** DaemonSet 名称（模糊匹配） */
-  name?: string
+  name: string
   /** 命名空间名称 */
-  namespace?: string
+  namespace: string
   /** 集群 ID */
   clusterId: string
   /** 状态 */
-  status?: string
+  status: string
 }
 
 /**

@@ -262,7 +262,6 @@ const mockCronJobs: MockCronJob[] = [
     name: 'db-backup',
     namespace: 'data',
     clusterId: 'c1',
-    clusterName: 'prod-cluster',
     description: '数据库每日备份任务',
     status: 'Active',
     schedule: '0 2 * * *',
@@ -273,7 +272,8 @@ const mockCronJobs: MockCronJob[] = [
     createAt: '2024-01-20 10:00:00',
     createBy: 'admin',
     updateAt: '2024-03-15 14:00:00',
-    updateBy: 'admin'
+    updateBy: 'admin',
+    deletable: true,
   },
   {
     id: generateId(),
@@ -281,7 +281,6 @@ const mockCronJobs: MockCronJob[] = [
     name: 'log-rotate',
     namespace: 'logging',
     clusterId: 'c1',
-    clusterName: 'prod-cluster',
     description: '日志轮转任务',
     status: 'Active',
     statusMsg: '1 个 Job 正在执行',
@@ -292,7 +291,8 @@ const mockCronJobs: MockCronJob[] = [
     createAt: '2024-02-01 09:00:00',
     createBy: 'admin',
     updateAt: '2024-03-10 11:00:00',
-    updateBy: 'admin'
+    updateBy: 'admin',
+    deletable: true,
   },
   {
     id: generateId(),
@@ -300,7 +300,6 @@ const mockCronJobs: MockCronJob[] = [
     name: 'report-generator',
     namespace: 'analytics',
     clusterId: 'c1',
-    clusterName: 'prod-cluster',
     description: '周报生成任务',
     status: 'Active',
     schedule: '0 8 * * 1',
@@ -311,7 +310,8 @@ const mockCronJobs: MockCronJob[] = [
     createAt: '2024-02-15 14:00:00',
     createBy: 'admin',
     updateAt: '2024-03-12 16:00:00',
-    updateBy: 'admin'
+    updateBy: 'admin',
+    deletable: true,
   },
   {
     id: generateId(),
@@ -319,7 +319,6 @@ const mockCronJobs: MockCronJob[] = [
     name: 'cache-cleanup',
     namespace: 'middleware',
     clusterId: 'c1',
-    clusterName: 'prod-cluster',
     description: '缓存清理任务',
     status: 'Suspended',
     statusMsg: '已被管理员暂停',
@@ -330,6 +329,7 @@ const mockCronJobs: MockCronJob[] = [
     createAt: '2024-03-01 10:00:00',
     createBy: 'admin',
     updateAt: '2024-03-19 08:00:00',
-    updateBy: 'admin'
+    updateBy: 'admin',
+    deletable: true,
   }
 ]

@@ -22,8 +22,6 @@ export interface JobListResp extends BaseEntity {
   uid: string
   /** 所属集群 ID */
   clusterId: string
-  /** 所属集群名称 */
-  clusterName: string
   /** 所属命名空间 */
   namespace: string
   /** Job 名称 */
@@ -59,8 +57,6 @@ export interface JobDetailResp extends BaseEntity {
   uid: string
   /** 所属集群 ID */
   clusterId: string
-  /** 所属集群名称 */
-  clusterName: string
   /** 所属命名空间 */
   namespace: string
   /** Job 名称 */
@@ -111,11 +107,11 @@ export interface JobQueryReq extends PageReq {
   /** 资源 ID */
   id: string
   /** Job 名称（模糊匹配） */
-  name?: string
+  name: string
   /** 命名空间名称 */
-  namespace?: string
+  namespace: string
   /** 状态 */
-  status?: string
+  status: string
 }
 
 /**

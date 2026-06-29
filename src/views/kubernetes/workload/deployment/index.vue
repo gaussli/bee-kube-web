@@ -2,7 +2,11 @@
   <BeePage class="deployment-page">
     <!-- 页面标题 -->
     <BeeCard class="deployment-page__header">
-      <BeePageTitle icon="kubernetes-node" title="无状态应用" description="无状态应用（Deployment）是 Kubernetes 中用于管理无状态工作负载的控制器，支持应用的部署、扩缩容、滚动更新和回滚等操作。" />
+      <BeePageTitle
+        icon="kubernetes-namespace"
+        title="无状态应用"
+        description="无状态应用（Deployment）是 Kubernetes 中用于管理无状态工作负载的控制器，支持应用的部署、扩缩容、滚动更新和回滚等操作。"
+      />
     </BeeCard>
 
     <!-- 页面内容 -->
@@ -22,7 +26,7 @@
         <BeeTable :data="tableData" :loading="loading" selectable @selection-change="handleSelectionChange">
           <BeeTableColumn :width="500">
             <template #default="{ row }">
-              <BeeWorkloadInfoCell :uid="row.uid" :name="row.name" :description="row.description" :icon-size="32" />
+              <BeeWorkloadInfoCell :uid="row.uid" :name="row.name" :description="row.description" :icon-size="32" icon="kubernetes-namespace" />
             </template>
           </BeeTableColumn>
           <BeeTableColumn :width="200">

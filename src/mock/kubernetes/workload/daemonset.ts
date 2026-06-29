@@ -195,7 +195,7 @@ status:
  * @param data - 创建参数
  */
 function createDaemonSet(clusterId: string, namespace: string, data: Partial<DaemonSetReq>): void {
-  console.log('[Create DaemonSet]', clusterId, namespace, data)
+  console.log('[Mock] createDaemonSet', { clusterId, namespace, data })
 }
 
 /**
@@ -206,7 +206,7 @@ function createDaemonSet(clusterId: string, namespace: string, data: Partial<Dae
  * @param data - 更新参数
  */
 function updateDaemonSet(clusterId: string, namespace: string, name: string, data: Partial<DaemonSetReq>): void {
-  console.log('[Update DaemonSet]', clusterId, namespace, name, data)
+  console.log('[Mock] updateDaemonSet', { clusterId, namespace, name, data })
 }
 
 /**
@@ -216,7 +216,7 @@ function updateDaemonSet(clusterId: string, namespace: string, name: string, dat
  * @param name - DaemonSet 名称
  */
 function restartDaemonSet(clusterId: string, namespace: string, name: string): void {
-  console.log('[Restart DaemonSet]', clusterId, namespace, name)
+  console.log('[Mock] restartDaemonSet', { clusterId, namespace, name })
 }
 
 /**
@@ -227,7 +227,7 @@ function restartDaemonSet(clusterId: string, namespace: string, name: string): v
  * @param data - 标签数据
  */
 function manageDaemonSetLabels(clusterId: string, namespace: string, name: string, data: Partial<DaemonSetLabelsReq>): void {
-  console.log('[Manage DaemonSet Labels]', clusterId, namespace, name, data)
+  console.log('[Mock] manageDaemonSetLabels', { clusterId, namespace, name, data })
 }
 
 /**
@@ -238,7 +238,7 @@ function manageDaemonSetLabels(clusterId: string, namespace: string, name: strin
  * @param data - 注解数据
  */
 function manageDaemonSetAnnotations(clusterId: string, namespace: string, name: string, data: Partial<DaemonSetAnnotationsReq>): void {
-  console.log('[Manage DaemonSet Annotations]', clusterId, namespace, name, data)
+  console.log('[Mock] manageDaemonSetAnnotations', { clusterId, namespace, name, data })
 }
 
 /**
@@ -248,7 +248,7 @@ function manageDaemonSetAnnotations(clusterId: string, namespace: string, name: 
  * @param name - DaemonSet 名称
  */
 function deleteDaemonSet(clusterId: string, namespace: string, name: string): void {
-  console.log('[Delete DaemonSet]', clusterId, namespace, name)
+  console.log('[Mock] deleteDaemonSet', { clusterId, namespace, name })
 }
 
 /**
@@ -258,7 +258,7 @@ function deleteDaemonSet(clusterId: string, namespace: string, name: string): vo
  * @param names - DaemonSet 名称数组
  */
 function deleteDaemonSets(clusterId: string, namespace: string, names: string[]): void {
-  console.log('[Delete DaemonSets]', clusterId, namespace, names)
+  console.log('[Mock] deleteDaemonSets', { clusterId, namespace, names })
 }
 
 /**
@@ -268,7 +268,7 @@ function deleteDaemonSets(clusterId: string, namespace: string, names: string[])
  * @param data - YAML 配置
  */
 function importDaemonSet(clusterId: string, namespace: string, data: Partial<DaemonSetYamlReq>): void {
-  console.log('[Import DaemonSet]', clusterId, namespace, data)
+  console.log('[Mock] importDaemonSet', { clusterId, namespace, data })
 }
 
 /**
@@ -283,7 +283,6 @@ const mockDaemonSets: DaemonSetListResp[] = [
     name: 'fluentd-logging',
     namespace: 'kube-system',
     clusterId: generateId(),
-    clusterName: 'prod-cluster',
     description: 'Fluentd 日志采集 DaemonSet，在每个节点运行并采集容器日志发送到日志平台',
     status: 'Running',
     desiredNumberScheduled: 8,
@@ -292,7 +291,8 @@ const mockDaemonSets: DaemonSetListResp[] = [
     createAt: '2024-01-15 10:30:00',
     createBy: 'admin',
     updateAt: '2024-03-20 14:00:00',
-    updateBy: 'admin'
+    updateBy: 'admin',
+    deletable: false,
   },
   {
     id: generateId(),
@@ -300,7 +300,6 @@ const mockDaemonSets: DaemonSetListResp[] = [
     name: 'node-exporter',
     namespace: 'monitoring',
     clusterId: generateId(),
-    clusterName: 'prod-cluster',
     description: 'Prometheus Node Exporter，采集节点级别的 CPU、内存、磁盘等硬件指标',
     status: 'Running',
     desiredNumberScheduled: 8,
@@ -309,7 +308,8 @@ const mockDaemonSets: DaemonSetListResp[] = [
     createAt: '2024-01-20 09:00:00',
     createBy: 'admin',
     updateAt: '2024-03-19 16:30:00',
-    updateBy: 'admin'
+    updateBy: 'admin',
+    deletable: true,
   },
   {
     id: generateId(),
@@ -317,7 +317,6 @@ const mockDaemonSets: DaemonSetListResp[] = [
     name: 'kube-proxy',
     namespace: 'kube-system',
     clusterId: generateId(),
-    clusterName: 'prod-cluster',
     description: 'Kubernetes 网络代理组件，维护节点上的网络规则和 Service 流量转发',
     status: 'Running',
     desiredNumberScheduled: 8,
@@ -326,7 +325,8 @@ const mockDaemonSets: DaemonSetListResp[] = [
     createAt: '2024-01-15 10:35:00',
     createBy: 'system',
     updateAt: '2024-03-18 10:00:00',
-    updateBy: 'system'
+    updateBy: 'system',
+    deletable: false,
   },
   // ==================== Available（部分就绪）- 2 条 ====================
   {
@@ -335,7 +335,6 @@ const mockDaemonSets: DaemonSetListResp[] = [
     name: 'filebeat',
     namespace: 'logging',
     clusterId: generateId(),
-    clusterName: 'prod-cluster',
     description: 'Filebeat 日志采集器，将应用日志文件实时发送到 ElasticSearch',
     status: 'Available',
     statusMessage: '1 个节点上的 Pod 未就绪，正在等待节点资源',
@@ -345,7 +344,8 @@ const mockDaemonSets: DaemonSetListResp[] = [
     createAt: '2024-02-10 10:00:00',
     createBy: 'developer',
     updateAt: '2024-03-20 11:00:00',
-    updateBy: 'developer'
+    updateBy: 'developer',
+    deletable: true,
   },
   {
     id: generateId(),
@@ -353,7 +353,6 @@ const mockDaemonSets: DaemonSetListResp[] = [
     name: 'csi-driver',
     namespace: 'storage',
     clusterId: generateId(),
-    clusterName: 'prod-cluster',
     description: 'CSI 存储驱动插件，为每个节点提供持久化存储卷的挂载和管理能力',
     status: 'Available',
     statusMessage: '新增节点上 Pod 初始化中，存储卷尚未挂载完成',
@@ -363,7 +362,8 @@ const mockDaemonSets: DaemonSetListResp[] = [
     createAt: '2024-02-15 08:00:00',
     createBy: 'admin',
     updateAt: '2024-03-19 12:00:00',
-    updateBy: 'admin'
+    updateBy: 'admin',
+    deletable: true,
   },
   // ==================== Updating（更新中）- 2 条 ====================
   {
@@ -372,7 +372,6 @@ const mockDaemonSets: DaemonSetListResp[] = [
     name: 'datadog-agent',
     namespace: 'monitoring',
     clusterId: generateId(),
-    clusterName: 'prod-cluster',
     description: 'Datadog Agent，提供应用性能监控(APM)和基础设施监控能力',
     status: 'Updating',
     statusMessage: '滚动更新中，按节点逐个替换旧版本 Pod',
@@ -382,7 +381,8 @@ const mockDaemonSets: DaemonSetListResp[] = [
     createAt: '2024-02-20 14:00:00',
     createBy: 'developer',
     updateAt: '2024-03-20 16:00:00',
-    updateBy: 'developer'
+    updateBy: 'developer',
+    deletable: true,
   },
   {
     id: generateId(),
@@ -390,7 +390,6 @@ const mockDaemonSets: DaemonSetListResp[] = [
     name: 'calico-node',
     namespace: 'kube-system',
     clusterId: generateId(),
-    clusterName: 'prod-cluster',
     description: 'Calico 网络插件节点组件，管理 Pod 网络策略和路由',
     status: 'Updating',
     statusMessage: '版本升级进行中，网络策略迁移中',
@@ -400,7 +399,8 @@ const mockDaemonSets: DaemonSetListResp[] = [
     createAt: '2024-01-10 08:00:00',
     createBy: 'admin',
     updateAt: '2024-03-20 15:30:00',
-    updateBy: 'admin'
+    updateBy: 'admin',
+    deletable: false,
   },
   // ==================== Creating（创建中）- 1 条 ====================
   {
@@ -409,7 +409,6 @@ const mockDaemonSets: DaemonSetListResp[] = [
     name: 'gpu-device-plugin',
     namespace: 'kube-system',
     clusterId: generateId(),
-    clusterName: 'prod-cluster',
     description: 'NVIDIA GPU 设备插件，使 Kubernetes 能够发现和调度 GPU 资源',
     status: 'Creating',
     statusMessage: 'Pod 正在节点上创建，等待镜像拉取完成',
@@ -419,7 +418,8 @@ const mockDaemonSets: DaemonSetListResp[] = [
     createAt: '2024-03-19 15:00:00',
     createBy: 'admin',
     updateAt: '2024-03-19 15:00:00',
-    updateBy: 'admin'
+    updateBy: 'admin',
+    deletable: false,
   },
   // ==================== Failed（失败异常）- 1 条 ====================
   {
@@ -428,7 +428,6 @@ const mockDaemonSets: DaemonSetListResp[] = [
     name: 'network-monitor',
     namespace: 'monitoring',
     clusterId: generateId(),
-    clusterName: 'prod-cluster',
     description: '网络监控探针，检测节点间网络延迟和连通性',
     status: 'Failed',
     statusMessage: '部分节点 Pod 启动失败，CrashLoopBackOff',
@@ -438,7 +437,8 @@ const mockDaemonSets: DaemonSetListResp[] = [
     createAt: '2024-02-25 10:00:00',
     createBy: 'admin',
     updateAt: '2024-03-18 09:00:00',
-    updateBy: 'admin'
+    updateBy: 'admin',
+    deletable: true,
   },
   // ==================== Unknown（未知）- 1 条 ====================
   {
@@ -447,7 +447,6 @@ const mockDaemonSets: DaemonSetListResp[] = [
     name: 'auditbeat',
     namespace: 'logging',
     clusterId: generateId(),
-    clusterName: 'prod-cluster',
     description: 'Auditbeat 审计日志采集器，记录系统级别审计事件',
     status: 'Unknown',
     statusMessage: 'API Server 连接异常，无法获取 DaemonSet 状态',
@@ -457,6 +456,7 @@ const mockDaemonSets: DaemonSetListResp[] = [
     createAt: '2024-03-01 08:00:00',
     createBy: 'admin',
     updateAt: '2024-03-20 17:00:00',
-    updateBy: 'admin'
+    updateBy: 'admin',
+    deletable: true,
   }
 ]

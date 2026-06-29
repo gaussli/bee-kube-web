@@ -167,7 +167,7 @@ function getDeploymentDetail(clusterId: string, namespace: string, name: string)
     ...deployment!,
     selector: { app: deployment!.name },
     labels: { app: deployment!.name },
-    annotations: { 'description': deployment!.description || '' },
+    annotations: { description: deployment!.description || '' },
     containers: [
       {
         name: deployment!.name,
@@ -319,7 +319,7 @@ status:
  * @param data - 创建参数
  */
 function createDeployment(clusterId: string, namespace: string, data: Partial<DeploymentReq>): void {
-  console.log('[Create Deployment]', clusterId, namespace, data)
+  console.log('[Mock] createDeployment', { clusterId, namespace, data })
 }
 
 /**
@@ -330,7 +330,7 @@ function createDeployment(clusterId: string, namespace: string, data: Partial<De
  * @param data - 更新参数
  */
 function updateDeployment(clusterId: string, namespace: string, name: string, data: Partial<DeploymentReq>): void {
-  console.log('[Update Deployment]', clusterId, namespace, name, data)
+  console.log('[Mock] updateDeployment', { clusterId, namespace, name, data })
 }
 
 /**
@@ -341,7 +341,7 @@ function updateDeployment(clusterId: string, namespace: string, name: string, da
  * @param data - 扩缩容参数
  */
 function scaleDeployment(clusterId: string, namespace: string, name: string, data: Partial<DeploymentScaleReq>): void {
-  console.log('[Scale Deployment]', clusterId, namespace, name, data)
+  console.log('[Mock] scaleDeployment', { clusterId, namespace, name, data })
 }
 
 /**
@@ -351,7 +351,7 @@ function scaleDeployment(clusterId: string, namespace: string, name: string, dat
  * @param name - Deployment 名称
  */
 function restartDeployment(clusterId: string, namespace: string, name: string): void {
-  console.log('[Restart Deployment]', clusterId, namespace, name)
+  console.log('[Mock] restartDeployment', { clusterId, namespace, name })
 }
 
 /**
@@ -361,7 +361,7 @@ function restartDeployment(clusterId: string, namespace: string, name: string): 
  * @param name - Deployment 名称
  */
 function rollbackDeployment(clusterId: string, namespace: string, name: string): void {
-  console.log('[Rollback Deployment]', clusterId, namespace, name)
+  console.log('[Mock] rollbackDeployment', { clusterId, namespace, name })
 }
 
 /**
@@ -372,7 +372,7 @@ function rollbackDeployment(clusterId: string, namespace: string, name: string):
  * @param data - 标签数据
  */
 function manageDeploymentLabels(clusterId: string, namespace: string, name: string, data: Partial<DeploymentLabelsReq>): void {
-  console.log('[Manage Deployment Labels]', clusterId, namespace, name, data)
+  console.log('[Mock] manageDeploymentLabels', { clusterId, namespace, name, data })
 }
 
 /**
@@ -383,7 +383,7 @@ function manageDeploymentLabels(clusterId: string, namespace: string, name: stri
  * @param data - 注解数据
  */
 function manageDeploymentAnnotations(clusterId: string, namespace: string, name: string, data: Partial<DeploymentAnnotationsReq>): void {
-  console.log('[Manage Deployment Annotations]', clusterId, namespace, name, data)
+  console.log('[Mock] manageDeploymentAnnotations', { clusterId, namespace, name, data })
 }
 
 /**
@@ -393,7 +393,7 @@ function manageDeploymentAnnotations(clusterId: string, namespace: string, name:
  * @param name - Deployment 名称
  */
 function deleteDeployment(clusterId: string, namespace: string, name: string): void {
-  console.log('[Delete Deployment]', clusterId, namespace, name)
+  console.log('[Mock] deleteDeployment', { clusterId, namespace, name })
 }
 
 /**
@@ -403,7 +403,7 @@ function deleteDeployment(clusterId: string, namespace: string, name: string): v
  * @param names - Deployment 名称数组
  */
 function deleteDeployments(clusterId: string, namespace: string, names: string[]): void {
-  console.log('[Delete Deployments]', clusterId, namespace, names)
+  console.log('[Mock] deleteDeployments', { clusterId, namespace, names })
 }
 
 /**
@@ -413,7 +413,7 @@ function deleteDeployments(clusterId: string, namespace: string, names: string[]
  * @param params - 查询参数
  */
 function exportDeployment(clusterId: string, namespace: string, params: Partial<DeploymentQueryReq>): void {
-  console.log('[Export Deployment]', clusterId, namespace, params)
+  console.log('[Mock] exportDeployment', { clusterId, namespace, params })
 }
 
 /**
@@ -423,7 +423,7 @@ function exportDeployment(clusterId: string, namespace: string, params: Partial<
  * @param data - YAML 配置
  */
 function importDeployment(clusterId: string, namespace: string, data: Partial<DeploymentYamlReq>): void {
-  console.log('[Import Deployment]', clusterId, namespace, data)
+  console.log('[Mock] importDeployment', { clusterId, namespace, data })
 }
 
 /**
@@ -438,7 +438,6 @@ const mockDeployments: DeploymentListResp[] = [
     name: 'nginx-ingress-controller',
     namespace: 'kube-system',
     clusterId: generateId(),
-    clusterName: 'prod-cluster',
     description: 'Kubernetes Ingress 控制器，管理集群七层流量入口和路由规则',
     status: 'Running',
     replicas: 3,
@@ -447,7 +446,8 @@ const mockDeployments: DeploymentListResp[] = [
     createAt: '2024-01-15 10:30:25',
     createBy: 'admin',
     updateAt: '2024-03-20 14:22:18',
-    updateBy: 'admin'
+    updateBy: 'admin',
+    deletable: true
   },
   {
     id: generateId(),
@@ -455,7 +455,6 @@ const mockDeployments: DeploymentListResp[] = [
     name: 'coredns',
     namespace: 'kube-system',
     clusterId: generateId(),
-    clusterName: 'prod-cluster',
     description: 'Kubernetes 集群 DNS 服务，负责集群内部域名解析',
     status: 'Running',
     replicas: 2,
@@ -464,7 +463,8 @@ const mockDeployments: DeploymentListResp[] = [
     createAt: '2024-01-15 10:30:30',
     createBy: 'system',
     updateAt: '2024-03-19 16:45:30',
-    updateBy: 'admin'
+    updateBy: 'admin',
+    deletable: true
   },
   {
     id: generateId(),
@@ -472,7 +472,6 @@ const mockDeployments: DeploymentListResp[] = [
     name: 'metrics-server',
     namespace: 'kube-system',
     clusterId: generateId(),
-    clusterName: 'prod-cluster',
     description: 'Kubernetes 资源指标采集服务，为 HPA 和 kubectl top 提供 CPU/内存数据',
     status: 'Running',
     replicas: 1,
@@ -481,7 +480,8 @@ const mockDeployments: DeploymentListResp[] = [
     createAt: '2024-01-20 11:00:00',
     createBy: 'admin',
     updateAt: '2024-03-18 14:00:00',
-    updateBy: 'admin'
+    updateBy: 'admin',
+    deletable: true
   },
   // ==================== Available（部分就绪）- 3 条 ====================
   {
@@ -490,7 +490,6 @@ const mockDeployments: DeploymentListResp[] = [
     name: 'frontend-app',
     namespace: 'app-frontend',
     clusterId: generateId(),
-    clusterName: 'prod-cluster',
     description: '前端应用服务，承载 Web 前端页面和 H5 渲染',
     status: 'Available',
     replicas: 5,
@@ -499,7 +498,8 @@ const mockDeployments: DeploymentListResp[] = [
     createAt: '2024-02-01 08:00:00',
     createBy: 'developer',
     updateAt: '2024-03-20 10:00:00',
-    updateBy: 'developer'
+    updateBy: 'admin',
+    deletable: true
   },
   {
     id: generateId(),
@@ -507,7 +507,6 @@ const mockDeployments: DeploymentListResp[] = [
     name: 'backend-api',
     namespace: 'app-backend',
     clusterId: generateId(),
-    clusterName: 'prod-cluster',
     description: '后端 API 服务，提供核心业务逻辑和数据接口',
     status: 'Available',
     replicas: 10,
@@ -516,7 +515,8 @@ const mockDeployments: DeploymentListResp[] = [
     createAt: '2024-02-01 08:05:00',
     createBy: 'developer',
     updateAt: '2024-03-20 11:00:00',
-    updateBy: 'developer'
+    updateBy: 'admin',
+    deletable: true
   },
   {
     id: generateId(),
@@ -524,7 +524,6 @@ const mockDeployments: DeploymentListResp[] = [
     name: 'order-service',
     namespace: 'app-backend',
     clusterId: generateId(),
-    clusterName: 'prod-cluster',
     description: '订单服务，管理订单的创建、流转和履约',
     status: 'Available',
     replicas: 6,
@@ -533,7 +532,8 @@ const mockDeployments: DeploymentListResp[] = [
     createAt: '2024-02-15 10:05:00',
     createBy: 'developer',
     updateAt: '2024-03-18 14:00:00',
-    updateBy: 'developer'
+    updateBy: 'admin',
+    deletable: true
   },
   // ==================== Stopped（已停止）- 2 条 ====================
   {
@@ -542,7 +542,6 @@ const mockDeployments: DeploymentListResp[] = [
     name: 'staging-frontend',
     namespace: 'staging-app',
     clusterId: generateId(),
-    clusterName: 'staging-cluster',
     description: '预发布前端应用，用于生产上线前的集成验证',
     status: 'Stopped',
     statusMessage: '副本已缩容至 0，服务已停止',
@@ -552,7 +551,8 @@ const mockDeployments: DeploymentListResp[] = [
     createAt: '2024-02-15 10:20:00',
     createBy: 'developer',
     updateAt: '2024-03-19 15:00:00',
-    updateBy: 'developer'
+    updateBy: 'admin',
+    deletable: true
   },
   {
     id: generateId(),
@@ -560,7 +560,6 @@ const mockDeployments: DeploymentListResp[] = [
     name: 'dev-app',
     namespace: 'dev-test',
     clusterId: generateId(),
-    clusterName: 'dev-cluster',
     description: '开发环境应用，用于日常开发和单元测试',
     status: 'Stopped',
     statusMessage: '开发环境已暂停，副本缩容为 0',
@@ -570,7 +569,8 @@ const mockDeployments: DeploymentListResp[] = [
     createAt: '2024-03-01 09:00:00',
     createBy: 'developer',
     updateAt: '2024-03-20 16:00:00',
-    updateBy: 'developer'
+    updateBy: 'admin',
+    deletable: true
   },
   // ==================== Creating（创建中）- 2 条 ====================
   {
@@ -579,7 +579,6 @@ const mockDeployments: DeploymentListResp[] = [
     name: 'api-gateway',
     namespace: 'app-backend',
     clusterId: generateId(),
-    clusterName: 'prod-cluster',
     description: 'API 网关服务，统一管理和路由所有后端接口请求',
     status: 'Creating',
     statusMessage: 'Pod 正在创建中，等待容器就绪',
@@ -589,7 +588,8 @@ const mockDeployments: DeploymentListResp[] = [
     createAt: '2024-03-19 14:00:00',
     createBy: 'developer',
     updateAt: '2024-03-19 14:00:00',
-    updateBy: 'developer'
+    updateBy: 'admin',
+    deletable: true
   },
   {
     id: generateId(),
@@ -597,7 +597,6 @@ const mockDeployments: DeploymentListResp[] = [
     name: 'search-service',
     namespace: 'app-backend',
     clusterId: generateId(),
-    clusterName: 'prod-cluster',
     description: '全文检索服务，基于 Elasticsearch 提供高性能搜索能力',
     status: 'Creating',
     statusMessage: '容器镜像正在拉取，Pod 初始化中',
@@ -607,7 +606,8 @@ const mockDeployments: DeploymentListResp[] = [
     createAt: '2024-03-20 09:30:00',
     createBy: 'developer',
     updateAt: '2024-03-20 09:30:00',
-    updateBy: 'developer'
+    updateBy: 'admin',
+    deletable: true
   },
   // ==================== Updating（更新中）- 2 条 ====================
   {
@@ -616,7 +616,6 @@ const mockDeployments: DeploymentListResp[] = [
     name: 'user-service',
     namespace: 'app-backend',
     clusterId: generateId(),
-    clusterName: 'prod-cluster',
     description: '用户服务，管理用户资料、会员和账户信息',
     status: 'Updating',
     statusMessage: '滚动更新进行中，旧版本 Pod 正在被逐步替换',
@@ -626,7 +625,8 @@ const mockDeployments: DeploymentListResp[] = [
     createAt: '2024-02-15 10:00:00',
     createBy: 'developer',
     updateAt: '2024-03-19 16:00:00',
-    updateBy: 'developer'
+    updateBy: 'admin',
+    deletable: true
   },
   {
     id: generateId(),
@@ -634,7 +634,6 @@ const mockDeployments: DeploymentListResp[] = [
     name: 'notification-service',
     namespace: 'app-backend',
     clusterId: generateId(),
-    clusterName: 'prod-cluster',
     description: '消息推送服务，处理短信、邮件和站内信的批量发送',
     status: 'Updating',
     statusMessage: '更新中，新版本 Pod 健康检查尚未通过',
@@ -644,7 +643,8 @@ const mockDeployments: DeploymentListResp[] = [
     createAt: '2024-02-20 09:00:00',
     createBy: 'developer',
     updateAt: '2024-03-20 15:30:00',
-    updateBy: 'developer'
+    updateBy: 'admin',
+    deletable: true
   },
   // ==================== Terminating（终止中）- 2 条 ====================
   {
@@ -653,7 +653,6 @@ const mockDeployments: DeploymentListResp[] = [
     name: 'prometheus',
     namespace: 'monitoring',
     clusterId: generateId(),
-    clusterName: 'prod-cluster',
     description: 'Prometheus 监控系统，采集和存储集群与应用指标数据',
     status: 'Terminating',
     statusMessage: '正在删除 Pod，等待资源回收',
@@ -663,7 +662,8 @@ const mockDeployments: DeploymentListResp[] = [
     createAt: '2024-02-10 14:20:00',
     createBy: 'admin',
     updateAt: '2024-03-15 09:30:00',
-    updateBy: 'admin'
+    updateBy: 'admin',
+    deletable: true
   },
   {
     id: generateId(),
@@ -671,7 +671,6 @@ const mockDeployments: DeploymentListResp[] = [
     name: 'grafana',
     namespace: 'monitoring',
     clusterId: generateId(),
-    clusterName: 'prod-cluster',
     description: 'Grafana 可视化平台，提供监控面板和告警图表展示',
     status: 'Terminating',
     statusMessage: 'Finalizer 未清理，删除流程阻塞中',
@@ -681,7 +680,8 @@ const mockDeployments: DeploymentListResp[] = [
     createAt: '2024-02-10 14:25:00',
     createBy: 'admin',
     updateAt: '2024-03-15 09:35:00',
-    updateBy: 'admin'
+    updateBy: 'admin',
+    deletable: true
   },
   // ==================== CreateTimeout（创建超时）- 2 条 ====================
   {
@@ -690,7 +690,6 @@ const mockDeployments: DeploymentListResp[] = [
     name: 'config-center',
     namespace: 'staging-app',
     clusterId: generateId(),
-    clusterName: 'staging-cluster',
     description: '配置中心服务，统一管理各应用的运行时配置',
     status: 'CreateTimeout',
     statusMessage: '创建超时：节点资源不足，Pod 无法调度',
@@ -700,7 +699,8 @@ const mockDeployments: DeploymentListResp[] = [
     createAt: '2024-03-20 08:00:00',
     createBy: 'developer',
     updateAt: '2024-03-20 10:30:00',
-    updateBy: 'developer'
+    updateBy: 'admin',
+    deletable: true
   },
   {
     id: generateId(),
@@ -708,7 +708,6 @@ const mockDeployments: DeploymentListResp[] = [
     name: 'data-sync',
     namespace: 'staging-app',
     clusterId: generateId(),
-    clusterName: 'staging-cluster',
     description: '数据同步服务，负责跨环境数据定时同步和校验',
     status: 'CreateTimeout',
     statusMessage: '超过 10 分钟未完成创建，镜像仓库连接超时',
@@ -718,7 +717,8 @@ const mockDeployments: DeploymentListResp[] = [
     createAt: '2024-03-19 17:00:00',
     createBy: 'developer',
     updateAt: '2024-03-19 17:12:00',
-    updateBy: 'developer'
+    updateBy: 'admin',
+    deletable: true
   },
   // ==================== UpdateTimeout（更新超时）- 2 条 ====================
   {
@@ -727,7 +727,6 @@ const mockDeployments: DeploymentListResp[] = [
     name: 'payment-service',
     namespace: 'app-backend',
     clusterId: generateId(),
-    clusterName: 'prod-cluster',
     description: '支付服务，处理交易、退款和对账流程',
     status: 'UpdateTimeout',
     statusMessage: '滚动更新超时，新版本 Pod 健康检查持续失败',
@@ -737,7 +736,8 @@ const mockDeployments: DeploymentListResp[] = [
     createAt: '2024-02-15 10:10:00',
     createBy: 'developer',
     updateAt: '2024-03-20 08:00:00',
-    updateBy: 'developer'
+    updateBy: 'admin',
+    deletable: true
   },
   {
     id: generateId(),
@@ -745,7 +745,6 @@ const mockDeployments: DeploymentListResp[] = [
     name: 'redis-cache',
     namespace: 'app-backend',
     clusterId: generateId(),
-    clusterName: 'prod-cluster',
     description: 'Redis 缓存服务，提供高性能内存数据缓存',
     status: 'UpdateTimeout',
     statusMessage: '更新超时：持久化数据迁移耗时超过预期',
@@ -755,7 +754,8 @@ const mockDeployments: DeploymentListResp[] = [
     createAt: '2024-02-15 10:15:00',
     createBy: 'developer',
     updateAt: '2024-03-17 11:00:00',
-    updateBy: 'developer'
+    updateBy: 'admin',
+    deletable: true
   },
   // ==================== Failed（失败异常）- 2 条 ====================
   {
@@ -764,7 +764,6 @@ const mockDeployments: DeploymentListResp[] = [
     name: 'log-collector',
     namespace: 'monitoring',
     clusterId: generateId(),
-    clusterName: 'prod-cluster',
     description: '日志采集服务，统一收集和转发各应用日志到日志平台',
     status: 'Failed',
     statusMessage: '所有 Pod 启动失败，CrashLoopBackOff',
@@ -774,7 +773,8 @@ const mockDeployments: DeploymentListResp[] = [
     createAt: '2024-02-28 08:00:00',
     createBy: 'admin',
     updateAt: '2024-03-20 16:00:00',
-    updateBy: 'admin'
+    updateBy: 'admin',
+    deletable: true
   },
   {
     id: generateId(),
@@ -782,7 +782,6 @@ const mockDeployments: DeploymentListResp[] = [
     name: 'staging-backend',
     namespace: 'staging-app',
     clusterId: generateId(),
-    clusterName: 'staging-cluster',
     description: '预发布后端应用，用于接口联调和回归测试',
     status: 'Failed',
     statusMessage: '部署失败：OOMKilled，内存不足导致 Pod 被杀死',
@@ -792,7 +791,8 @@ const mockDeployments: DeploymentListResp[] = [
     createAt: '2024-02-15 10:25:00',
     createBy: 'developer',
     updateAt: '2024-03-19 15:05:00',
-    updateBy: 'developer'
+    updateBy: 'admin',
+    deletable: true
   },
   // ==================== Unknown（未知）- 2 条 ====================
   {
@@ -801,7 +801,6 @@ const mockDeployments: DeploymentListResp[] = [
     name: 'report-service',
     namespace: 'app-backend',
     clusterId: generateId(),
-    clusterName: 'prod-cluster',
     description: '报表服务，定时生成和导出业务数据报表',
     status: 'Unknown',
     statusMessage: '无法获取 Deployment 状态，API Server 连接异常',
@@ -811,7 +810,8 @@ const mockDeployments: DeploymentListResp[] = [
     createAt: '2024-01-20 10:00:00',
     createBy: 'developer',
     updateAt: '2024-03-20 17:00:00',
-    updateBy: 'developer'
+    updateBy: 'admin',
+    deletable: true
   },
   {
     id: generateId(),
@@ -819,7 +819,6 @@ const mockDeployments: DeploymentListResp[] = [
     name: 'sentinel-dashboard',
     namespace: 'monitoring',
     clusterId: generateId(),
-    clusterName: 'prod-cluster',
     description: 'Sentinel 流量控制面板，提供限流、熔断规则管理',
     status: 'Unknown',
     statusMessage: '状态信息丢失，可能与 Etcd 连接中断有关',
@@ -829,6 +828,7 @@ const mockDeployments: DeploymentListResp[] = [
     createAt: '2024-03-01 14:00:00',
     createBy: 'admin',
     updateAt: '2024-03-20 10:00:00',
-    updateBy: 'admin'
+    updateBy: 'admin',
+    deletable: true
   }
 ]

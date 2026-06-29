@@ -36,6 +36,17 @@ export function getDaemonSetDetail(clusterId: string, namespace: string, name: s
 }
 
 /**
+ * 查看 DaemonSet YAML
+ * @param clusterId - 集群ID
+ * @param namespace - 命名空间名称
+ * @param name - DaemonSet 名称
+ * @returns DaemonSet YAML 配置
+ */
+export function getDaemonSetYaml(clusterId: string, namespace: string, name: string): Promise<string> {
+  return request.get<string>(`/kubernetes/clusters/${clusterId}/namespaces/${namespace}/daemonsets/${name}/yaml`)
+}
+
+/**
  * 创建 DaemonSet
  * @param clusterId - 集群ID
  * @param namespace - 命名空间名称
@@ -106,17 +117,6 @@ export function deleteDaemonSet(clusterId: string, namespace: string, name: stri
  */
 export function deleteDaemonSets(clusterId: string, namespace: string, names: string[]): Promise<void> {
   return request.delete(`/kubernetes/clusters/${clusterId}/namespaces/${namespace}/daemonsets/batch`, { data: names })
-}
-
-/**
- * 查看 DaemonSet YAML
- * @param clusterId - 集群ID
- * @param namespace - 命名空间名称
- * @param name - DaemonSet 名称
- * @returns DaemonSet YAML 配置
- */
-export function getDaemonSetYaml(clusterId: string, namespace: string, name: string): Promise<string> {
-  return request.get<string>(`/kubernetes/clusters/${clusterId}/namespaces/${namespace}/daemonsets/${name}/yaml`)
 }
 
 /**

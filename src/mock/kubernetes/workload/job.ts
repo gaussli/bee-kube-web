@@ -142,7 +142,7 @@ function getJobDetail(clusterId: string, namespace: string, name: string): JobDe
  * @param data - 创建数据
  */
 function createJob(clusterId: string, namespace: string, data: Partial<JobReq>): void {
-  console.log('[Create Job]', clusterId, namespace, data)
+  console.log('[Mock] createJob', { clusterId, namespace, data })
 }
 
 /**
@@ -153,7 +153,7 @@ function createJob(clusterId: string, namespace: string, data: Partial<JobReq>):
  * @param data - 更新数据
  */
 function updateJob(clusterId: string, namespace: string, name: string, data: Partial<JobReq>): void {
-  console.log('[Update Job]', clusterId, namespace, name, data)
+  console.log('[Mock] updateJob', { clusterId, namespace, name, data })
 }
 
 /**
@@ -164,7 +164,7 @@ function updateJob(clusterId: string, namespace: string, name: string, data: Par
  * @param data - 标签数据
  */
 function manageJobLabels(clusterId: string, namespace: string, name: string, data: Partial<JobLabelsReq>): void {
-  console.log('[Manage Job Labels]', clusterId, namespace, name, data)
+  console.log('[Mock] manageJobLabels', { clusterId, namespace, name, data })
 }
 
 /**
@@ -175,7 +175,7 @@ function manageJobLabels(clusterId: string, namespace: string, name: string, dat
  * @param data - 注解数据
  */
 function manageJobAnnotations(clusterId: string, namespace: string, name: string, data: Partial<JobAnnotationsReq>): void {
-  console.log('[Manage Job Annotations]', clusterId, namespace, name, data)
+  console.log('[Mock] manageJobAnnotations', { clusterId, namespace, name, data })
 }
 
 /**
@@ -185,12 +185,7 @@ function manageJobAnnotations(clusterId: string, namespace: string, name: string
  * @param name - Job 名称
  */
 function deleteJob(clusterId: string, namespace: string, name: string): void {
-  const index = mockJobs.findIndex(j => j.clusterId === clusterId && j.namespace === namespace && j.name === name)
-  if (index === -1) {
-    console.error('[Delete Job] can not find job:', clusterId, namespace, name)
-    return
-  }
-  mockJobs.splice(index, 1)
+  console.log('[Mock] deleteJob', { clusterId, namespace, name })
 }
 
 /**
@@ -200,10 +195,7 @@ function deleteJob(clusterId: string, namespace: string, name: string): void {
  * @param names - Job 名称数组
  */
 function deleteJobs(clusterId: string, namespace: string, names: string[]): void {
-  names.forEach(name => {
-    const index = mockJobs.findIndex(j => j.clusterId === clusterId && j.namespace === namespace && j.name === name)
-    if (index !== -1) mockJobs.splice(index, 1)
-  })
+  console.log('[Mock] deleteJobs', { clusterId, namespace, names })
 }
 
 /**
@@ -217,7 +209,6 @@ const mockJobs: JobListResp[] = [
     name: 'db-backup-20240320',
     namespace: 'data',
     clusterId: 'c1',
-    clusterName: 'prod-cluster',
     description: '每日数据库全量备份任务',
     status: 'Succeeded',
     statusMessage: '备份完成，共 2.3GB',
@@ -230,7 +221,8 @@ const mockJobs: JobListResp[] = [
     createAt: '2024-03-20 02:00:00',
     createBy: 'system',
     updateAt: '2024-03-20 02:15:00',
-    updateBy: 'system'
+    updateBy: 'system',
+    deletable: true,
   },
   {
     id: generateId(),
@@ -238,7 +230,6 @@ const mockJobs: JobListResp[] = [
     name: 'data-import-001',
     namespace: 'etl',
     clusterId: 'c1',
-    clusterName: 'prod-cluster',
     description: '外部数据源批量导入任务',
     status: 'Failed',
     statusMessage: '数据源连接失败，超过最大重试次数',
@@ -251,7 +242,8 @@ const mockJobs: JobListResp[] = [
     createAt: '2024-03-19 10:00:00',
     createBy: 'developer',
     updateAt: '2024-03-19 10:30:00',
-    updateBy: 'system'
+    updateBy: 'system',
+    deletable: true,
   },
   {
     id: generateId(),
@@ -259,7 +251,6 @@ const mockJobs: JobListResp[] = [
     name: 'model-training',
     namespace: 'ml',
     clusterId: 'c1',
-    clusterName: 'prod-cluster',
     description: 'PyTorch 分布式模型训练任务',
     status: 'Active',
     statusMessage: '训练进行中，当前 epoch: 45/100',
@@ -272,7 +263,8 @@ const mockJobs: JobListResp[] = [
     createAt: '2024-03-20 08:00:00',
     createBy: 'ml-engineer',
     updateAt: '2024-03-20 08:00:00',
-    updateBy: 'ml-engineer'
+    updateBy: 'ml-engineer',
+    deletable: true,
   },
   {
     id: generateId(),
@@ -280,7 +272,6 @@ const mockJobs: JobListResp[] = [
     name: 'cache-warmup',
     namespace: 'middleware',
     clusterId: 'c1',
-    clusterName: 'prod-cluster',
     description: 'Redis 缓存预热脚本',
     status: 'Succeeded',
     statusMessage: '缓存预热完成，已加载 50000 个 key',
@@ -293,7 +284,8 @@ const mockJobs: JobListResp[] = [
     createAt: '2024-03-19 00:00:00',
     createBy: 'system',
     updateAt: '2024-03-19 00:10:00',
-    updateBy: 'system'
+    updateBy: 'system',
+    deletable: true,
   },
   {
     id: generateId(),
@@ -301,7 +293,6 @@ const mockJobs: JobListResp[] = [
     name: 'log-cleanup-daily',
     namespace: 'logging',
     clusterId: 'c1',
-    clusterName: 'prod-cluster',
     description: '每日日志归档与清理',
     status: 'Succeeded',
     statusMessage: '已清理 15 天前的日志，释放 8.5GB 空间',
@@ -314,7 +305,8 @@ const mockJobs: JobListResp[] = [
     createAt: '2024-03-21 01:00:00',
     createBy: 'system',
     updateAt: '2024-03-21 01:08:00',
-    updateBy: 'system'
+    updateBy: 'system',
+    deletable: true,
   },
   {
     id: generateId(),
@@ -322,7 +314,6 @@ const mockJobs: JobListResp[] = [
     name: 'report-generate-q1',
     namespace: 'analytics',
     clusterId: 'c1',
-    clusterName: 'prod-cluster',
     description: 'Q1 季度财务报表生成',
     status: 'Active',
     statusMessage: '正在生成报表，已完成 3/12 个维度',
@@ -335,7 +326,8 @@ const mockJobs: JobListResp[] = [
     createAt: '2024-03-21 09:30:00',
     createBy: 'analyst',
     updateAt: '2024-03-21 09:30:00',
-    updateBy: 'analyst'
+    updateBy: 'analyst',
+    deletable: true,
   },
   {
     id: generateId(),
@@ -343,7 +335,6 @@ const mockJobs: JobListResp[] = [
     name: 'ssl-cert-renewal',
     namespace: 'kube-system',
     clusterId: 'c1',
-    clusterName: 'prod-cluster',
     description: 'SSL 证书自动续期',
     status: 'Failed',
     statusMessage: '证书签发接口返回 500，重试已达上限',
@@ -356,7 +347,8 @@ const mockJobs: JobListResp[] = [
     createAt: '2024-03-20 23:00:00',
     createBy: 'system',
     updateAt: '2024-03-20 23:05:00',
-    updateBy: 'system'
+    updateBy: 'system',
+    deletable: false,
   },
   {
     id: generateId(),
@@ -364,7 +356,6 @@ const mockJobs: JobListResp[] = [
     name: 'index-rebuild',
     namespace: 'search',
     clusterId: 'c1',
-    clusterName: 'prod-cluster',
     description: 'Elasticsearch 索引重建',
     status: 'Succeeded',
     statusMessage: '索引重建完成，共处理 120 万文档',
@@ -377,6 +368,7 @@ const mockJobs: JobListResp[] = [
     createAt: '2024-03-20 03:00:00',
     createBy: 'devops',
     updateAt: '2024-03-20 04:45:00',
-    updateBy: 'devops'
+    updateBy: 'devops',
+    deletable: true,
   }
 ]

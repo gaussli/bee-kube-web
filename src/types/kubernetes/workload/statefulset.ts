@@ -55,8 +55,6 @@ export interface StatefulSetListResp extends BaseEntity {
   namespace: string
   /** 所属集群 ID */
   clusterId: string
-  /** 所属集群名称 */
-  clusterName: string
   /** 描述信息 */
   description?: string
   /** 状态 */
@@ -73,6 +71,8 @@ export interface StatefulSetListResp extends BaseEntity {
   updateStrategy: StatefulSetUpdateStrategyType
   /** Pod 管理策略 */
   podManagementPolicy: PodManagementPolicyType
+  /** 是否可删除 */
+  deletable?: boolean
 }
 
 /**
@@ -88,8 +88,6 @@ export interface StatefulSetDetailResp extends BaseEntity {
   namespace: string
   /** 所属集群 ID */
   clusterId: string
-  /** 所属集群名称 */
-  clusterName: string
   /** 描述信息 */
   description?: string
   /** 状态 */
@@ -124,17 +122,17 @@ export interface StatefulSetDetailResp extends BaseEntity {
  */
 export interface StatefulSetQueryReq extends PageReq {
   /** StatefulSet ID（精确匹配） */
-  id?: string
+  id: string
   /** StatefulSet 名称（模糊匹配） */
-  name?: string
+  name: string
   /** 命名空间名称 */
-  namespace?: string
+  namespace: string
   /** 集群 ID */
   clusterId: string
   /** 状态 */
-  status?: string
+  status: string
   /** 标签选择器 */
-  labelSelector?: string
+  labelSelector: string
 }
 
 /**

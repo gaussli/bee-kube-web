@@ -253,7 +253,7 @@ status:
  * @param data - 创建参数
  */
 function createStatefulSet(clusterId: string, namespace: string, data: Partial<StatefulSetReq>): void {
-  console.log('[Create StatefulSet]', clusterId, namespace, data)
+  console.log('[Mock] createStatefulSet', { clusterId, namespace, data })
 }
 
 /**
@@ -264,7 +264,7 @@ function createStatefulSet(clusterId: string, namespace: string, data: Partial<S
  * @param data - 更新参数
  */
 function updateStatefulSet(clusterId: string, namespace: string, name: string, data: Partial<StatefulSetReq>): void {
-  console.log('[Update StatefulSet]', clusterId, namespace, name, data)
+  console.log('[Mock] updateStatefulSet', { clusterId, namespace, name, data })
 }
 
 /**
@@ -275,7 +275,7 @@ function updateStatefulSet(clusterId: string, namespace: string, name: string, d
  * @param data - 扩缩容参数
  */
 function scaleStatefulSet(clusterId: string, namespace: string, name: string, data: Partial<StatefulSetScaleReq>): void {
-  console.log('[Scale StatefulSet]', clusterId, namespace, name, data)
+  console.log('[Mock] scaleStatefulSet', { clusterId, namespace, name, data })
 }
 
 /**
@@ -285,7 +285,7 @@ function scaleStatefulSet(clusterId: string, namespace: string, name: string, da
  * @param name - StatefulSet 名称
  */
 function restartStatefulSet(clusterId: string, namespace: string, name: string): void {
-  console.log('[Restart StatefulSet]', clusterId, namespace, name)
+  console.log('[Mock] restartStatefulSet', { clusterId, namespace, name })
 }
 
 /**
@@ -295,7 +295,7 @@ function restartStatefulSet(clusterId: string, namespace: string, name: string):
  * @param name - StatefulSet 名称
  */
 function rollbackStatefulSet(clusterId: string, namespace: string, name: string): void {
-  console.log('[Rollback StatefulSet]', clusterId, namespace, name)
+  console.log('[Mock] rollbackStatefulSet', { clusterId, namespace, name })
 }
 
 /**
@@ -306,7 +306,7 @@ function rollbackStatefulSet(clusterId: string, namespace: string, name: string)
  * @param data - 标签数据
  */
 function manageStatefulSetLabels(clusterId: string, namespace: string, name: string, data: Partial<StatefulSetLabelsReq>): void {
-  console.log('[Manage StatefulSet Labels]', clusterId, namespace, name, data)
+  console.log('[Mock] manageStatefulSetLabels', { clusterId, namespace, name, data })
 }
 
 /**
@@ -317,7 +317,7 @@ function manageStatefulSetLabels(clusterId: string, namespace: string, name: str
  * @param data - 注解数据
  */
 function manageStatefulSetAnnotations(clusterId: string, namespace: string, name: string, data: Partial<StatefulSetAnnotationsReq>): void {
-  console.log('[Manage StatefulSet Annotations]', clusterId, namespace, name, data)
+  console.log('[Mock] manageStatefulSetAnnotations', { clusterId, namespace, name, data })
 }
 
 /**
@@ -327,7 +327,7 @@ function manageStatefulSetAnnotations(clusterId: string, namespace: string, name
  * @param name - StatefulSet 名称
  */
 function deleteStatefulSet(clusterId: string, namespace: string, name: string): void {
-  console.log('[Delete StatefulSet]', clusterId, namespace, name)
+  console.log('[Mock] deleteStatefulSet', { clusterId, namespace, name })
 }
 
 /**
@@ -337,7 +337,7 @@ function deleteStatefulSet(clusterId: string, namespace: string, name: string): 
  * @param names - StatefulSet 名称数组
  */
 function deleteStatefulSets(clusterId: string, namespace: string, names: string[]): void {
-  console.log('[Delete StatefulSets]', clusterId, namespace, names)
+  console.log('[Mock] deleteStatefulSets', { clusterId, namespace, names })
 }
 
 /**
@@ -347,7 +347,7 @@ function deleteStatefulSets(clusterId: string, namespace: string, names: string[
  * @param params - 查询参数
  */
 function exportStatefulSet(clusterId: string, namespace: string, params: Partial<StatefulSetQueryReq>): void {
-  console.log('[Export StatefulSet]', clusterId, namespace, params)
+  console.log('[Mock] exportStatefulSet', { clusterId, namespace, params })
 }
 
 /**
@@ -357,7 +357,7 @@ function exportStatefulSet(clusterId: string, namespace: string, params: Partial
  * @param data - YAML 配置
  */
 function importStatefulSet(clusterId: string, namespace: string, data: Partial<StatefulSetYamlReq>): void {
-  console.log('[Import StatefulSet]', clusterId, namespace, data)
+  console.log('[Mock] importStatefulSet', { clusterId, namespace, data })
 }
 
 /**
@@ -372,7 +372,6 @@ const mockStatefulSets: StatefulSetListResp[] = [
     name: 'mysql-primary',
     namespace: 'data',
     clusterId: generateId(),
-    clusterName: 'prod-cluster',
     description: 'MySQL 主库集群，负责核心业务数据的读写操作',
     status: 'Running',
     replicas: 3,
@@ -383,6 +382,7 @@ const mockStatefulSets: StatefulSetListResp[] = [
     createBy: 'admin',
     createAt: '2024-01-20 10:00:00',
     updateBy: 'admin',
+    deletable: true,
     updateAt: '2024-03-15 14:00:00'
   },
   {
@@ -391,7 +391,6 @@ const mockStatefulSets: StatefulSetListResp[] = [
     name: 'mongodb',
     namespace: 'data',
     clusterId: generateId(),
-    clusterName: 'prod-cluster',
     description: 'MongoDB 副本集，承载文档型业务数据存储',
     status: 'Running',
     replicas: 3,
@@ -402,6 +401,7 @@ const mockStatefulSets: StatefulSetListResp[] = [
     createBy: 'admin',
     createAt: '2024-02-01 09:00:00',
     updateBy: 'admin',
+    deletable: true,
     updateAt: '2024-03-10 11:00:00'
   },
   {
@@ -410,7 +410,6 @@ const mockStatefulSets: StatefulSetListResp[] = [
     name: 'kafka',
     namespace: 'middleware',
     clusterId: generateId(),
-    clusterName: 'prod-cluster',
     description: 'Kafka 消息队列集群，处理异步消息和事件流',
     status: 'Running',
     replicas: 3,
@@ -421,6 +420,7 @@ const mockStatefulSets: StatefulSetListResp[] = [
     createBy: 'admin',
     createAt: '2024-02-15 10:00:00',
     updateBy: 'admin',
+    deletable: true,
     updateAt: '2024-03-15 12:00:00'
   },
   // ==================== Available（部分就绪）- 3 条 ====================
@@ -430,7 +430,6 @@ const mockStatefulSets: StatefulSetListResp[] = [
     name: 'mysql-replica',
     namespace: 'data',
     clusterId: generateId(),
-    clusterName: 'prod-cluster',
     description: 'MySQL 从库集群，提供读写分离的读流量承载',
     status: 'Available',
     replicas: 3,
@@ -441,6 +440,7 @@ const mockStatefulSets: StatefulSetListResp[] = [
     createBy: 'admin',
     createAt: '2024-01-20 10:05:00',
     updateBy: 'admin',
+    deletable: true,
     updateAt: '2024-03-15 14:05:00'
   },
   {
@@ -449,7 +449,6 @@ const mockStatefulSets: StatefulSetListResp[] = [
     name: 'redis-cluster',
     namespace: 'data',
     clusterId: generateId(),
-    clusterName: 'prod-cluster',
     description: 'Redis Cluster 集群，提供分布式缓存服务',
     status: 'Available',
     replicas: 6,
@@ -460,6 +459,7 @@ const mockStatefulSets: StatefulSetListResp[] = [
     createBy: 'admin',
     createAt: '2024-02-05 14:00:00',
     updateBy: 'admin',
+    deletable: true,
     updateAt: '2024-03-12 10:00:00'
   },
   {
@@ -468,7 +468,6 @@ const mockStatefulSets: StatefulSetListResp[] = [
     name: 'minio',
     namespace: 'storage',
     clusterId: generateId(),
-    clusterName: 'prod-cluster',
     description: 'MinIO 对象存储集群，提供 S3 兼容的文件存储',
     status: 'Available',
     replicas: 4,
@@ -479,6 +478,7 @@ const mockStatefulSets: StatefulSetListResp[] = [
     createBy: 'admin',
     createAt: '2024-02-20 11:00:00',
     updateBy: 'admin',
+    deletable: true,
     updateAt: '2024-03-18 15:00:00'
   },
   // ==================== Stopped（已停止）- 2 条 ====================
@@ -488,7 +488,6 @@ const mockStatefulSets: StatefulSetListResp[] = [
     name: 'zookeeper',
     namespace: 'middleware',
     clusterId: generateId(),
-    clusterName: 'prod-cluster',
     description: 'Zookeeper 分布式协调服务，已缩容停止',
     status: 'Stopped',
     statusMessage: '副本已缩容至 0，服务已停止',
@@ -500,6 +499,7 @@ const mockStatefulSets: StatefulSetListResp[] = [
     createBy: 'admin',
     createAt: '2024-02-10 08:00:00',
     updateBy: 'admin',
+    deletable: true,
     updateAt: '2024-03-08 09:00:00'
   },
   {
@@ -508,7 +508,6 @@ const mockStatefulSets: StatefulSetListResp[] = [
     name: 'nexus-oss',
     namespace: 'middleware',
     clusterId: generateId(),
-    clusterName: 'prod-cluster',
     description: 'Nexus 私有制品仓库，暂不使用时缩容停止',
     status: 'Stopped',
     statusMessage: '维护窗口期间暂停服务',
@@ -520,6 +519,7 @@ const mockStatefulSets: StatefulSetListResp[] = [
     createBy: 'admin',
     createAt: '2024-03-10 10:00:00',
     updateBy: 'admin',
+    deletable: true,
     updateAt: '2024-03-20 09:30:00'
   },
   // ==================== Creating（创建中）- 2 条 ====================
@@ -529,7 +529,6 @@ const mockStatefulSets: StatefulSetListResp[] = [
     name: 'clickhouse',
     namespace: 'data',
     clusterId: generateId(),
-    clusterName: 'prod-cluster',
     description: 'ClickHouse 分析型数据库，用于实时 OLAP 查询',
     status: 'Creating',
     statusMessage: 'Pod 正在创建中，等待持久卷绑定',
@@ -541,6 +540,7 @@ const mockStatefulSets: StatefulSetListResp[] = [
     createBy: 'admin',
     createAt: '2024-03-19 16:00:00',
     updateBy: 'admin',
+    deletable: true,
     updateAt: '2024-03-19 16:00:00'
   },
   {
@@ -549,7 +549,6 @@ const mockStatefulSets: StatefulSetListResp[] = [
     name: 'postgresql-primary',
     namespace: 'data',
     clusterId: generateId(),
-    clusterName: 'prod-cluster',
     description: 'PostgreSQL 主数据库集群，迁移中新建',
     status: 'Creating',
     statusMessage: '容器镜像拉取中，等待数据库初始化完成',
@@ -561,6 +560,7 @@ const mockStatefulSets: StatefulSetListResp[] = [
     createBy: 'admin',
     createAt: '2024-03-20 14:00:00',
     updateBy: 'admin',
+    deletable: true,
     updateAt: '2024-03-20 14:00:00'
   },
   // ==================== Updating（更新中）- 2 条 ====================
@@ -570,7 +570,6 @@ const mockStatefulSets: StatefulSetListResp[] = [
     name: 'elasticsearch',
     namespace: 'logging',
     clusterId: generateId(),
-    clusterName: 'prod-cluster',
     description: 'Elasticsearch 日志存储和全文检索集群',
     status: 'Updating',
     statusMessage: '滚动更新进行中，旧版本 Pod 正在被逐步替换',
@@ -582,6 +581,7 @@ const mockStatefulSets: StatefulSetListResp[] = [
     createBy: 'admin',
     createAt: '2024-03-01 09:00:00',
     updateBy: 'admin',
+    deletable: true,
     updateAt: '2024-03-19 16:00:00'
   },
   {
@@ -590,7 +590,6 @@ const mockStatefulSets: StatefulSetListResp[] = [
     name: 'nacos-cluster',
     namespace: 'middleware',
     clusterId: generateId(),
-    clusterName: 'prod-cluster',
     description: 'Nacos 注册中心和配置管理集群',
     status: 'Updating',
     statusMessage: '正在升级至 2.3.0 版本，数据库迁移进行中',
@@ -602,6 +601,7 @@ const mockStatefulSets: StatefulSetListResp[] = [
     createBy: 'admin',
     createAt: '2024-02-28 10:00:00',
     updateBy: 'admin',
+    deletable: true,
     updateAt: '2024-03-20 10:00:00'
   },
   // ==================== Terminating（终止中）- 2 条 ====================
@@ -611,7 +611,6 @@ const mockStatefulSets: StatefulSetListResp[] = [
     name: 'neo4j',
     namespace: 'data',
     clusterId: generateId(),
-    clusterName: 'prod-cluster',
     description: 'Neo4j 图数据库，用于知识图谱存储',
     status: 'Terminating',
     statusMessage: '正在删除 Pod，等待数据备份完成',
@@ -623,6 +622,7 @@ const mockStatefulSets: StatefulSetListResp[] = [
     createBy: 'admin',
     createAt: '2024-01-15 09:00:00',
     updateBy: 'admin',
+    deletable: true,
     updateAt: '2024-03-20 11:00:00'
   },
   {
@@ -631,7 +631,6 @@ const mockStatefulSets: StatefulSetListResp[] = [
     name: 'jaeger',
     namespace: 'monitoring',
     clusterId: generateId(),
-    clusterName: 'prod-cluster',
     description: 'Jaeger 分布式链路追踪后端存储',
     status: 'Terminating',
     statusMessage: 'Finalizer 清理延迟，等待存储卷回收',
@@ -643,6 +642,7 @@ const mockStatefulSets: StatefulSetListResp[] = [
     createBy: 'admin',
     createAt: '2024-02-05 08:00:00',
     updateBy: 'admin',
+    deletable: true,
     updateAt: '2024-03-18 10:00:00'
   },
   // ==================== CreateTimeout（创建超时）- 2 条 ====================
@@ -652,7 +652,6 @@ const mockStatefulSets: StatefulSetListResp[] = [
     name: 'cassandra',
     namespace: 'data',
     clusterId: generateId(),
-    clusterName: 'prod-cluster',
     description: 'Cassandra 分布式 NoSQL 数据库集群',
     status: 'CreateTimeout',
     statusMessage: '创建超时：节点资源不足，Pod 无法完成调度',
@@ -664,6 +663,7 @@ const mockStatefulSets: StatefulSetListResp[] = [
     createBy: 'admin',
     createAt: '2024-03-20 08:30:00',
     updateBy: 'admin',
+    deletable: true,
     updateAt: '2024-03-20 09:00:00'
   },
   {
@@ -672,7 +672,6 @@ const mockStatefulSets: StatefulSetListResp[] = [
     name: 'timescaledb',
     namespace: 'data',
     clusterId: generateId(),
-    clusterName: 'dev-cluster',
     description: 'TimescaleDB 时序数据库，用于 IoT 数据存储',
     status: 'CreateTimeout',
     statusMessage: '超过 15 分钟未完成创建，存储类配置不匹配',
@@ -684,6 +683,7 @@ const mockStatefulSets: StatefulSetListResp[] = [
     createBy: 'developer',
     createAt: '2024-03-19 10:00:00',
     updateBy: 'developer',
+    deletable: true,
     updateAt: '2024-03-19 10:15:00'
   },
   // ==================== UpdateTimeout（更新超时）- 2 条 ====================
@@ -693,7 +693,6 @@ const mockStatefulSets: StatefulSetListResp[] = [
     name: 'hadoop-datanode',
     namespace: 'data',
     clusterId: generateId(),
-    clusterName: 'prod-cluster',
     description: 'Hadoop DataNode 集群，负责 HDFS 数据存储',
     status: 'UpdateTimeout',
     statusMessage: '滚动更新超时，数据块迁移耗时长于预期',
@@ -705,6 +704,7 @@ const mockStatefulSets: StatefulSetListResp[] = [
     createBy: 'admin',
     createAt: '2024-01-10 09:00:00',
     updateBy: 'admin',
+    deletable: true,
     updateAt: '2024-03-20 13:00:00'
   },
   {
@@ -713,7 +713,6 @@ const mockStatefulSets: StatefulSetListResp[] = [
     name: 'etcd-cluster',
     namespace: 'middleware',
     clusterId: generateId(),
-    clusterName: 'prod-cluster',
     description: 'Etcd 分布式键值存储，Kubernetes 控制面依赖',
     status: 'UpdateTimeout',
     statusMessage: '更新超时：raft 共识协议导致滚动更新超过预期窗口',
@@ -725,6 +724,7 @@ const mockStatefulSets: StatefulSetListResp[] = [
     createBy: 'system',
     createAt: '2024-01-01 00:00:00',
     updateBy: 'admin',
+    deletable: true,
     updateAt: '2024-03-20 15:30:00'
   },
   // ==================== Failed（失败异常）- 2 条 ====================
@@ -734,7 +734,6 @@ const mockStatefulSets: StatefulSetListResp[] = [
     name: 'rabbitmq',
     namespace: 'middleware',
     clusterId: generateId(),
-    clusterName: 'prod-cluster',
     description: 'RabbitMQ 消息队列集群，处理业务异步任务',
     status: 'Failed',
     statusMessage: 'Pod 启动失败：磁盘空间不足，持久卷写入异常',
@@ -746,6 +745,7 @@ const mockStatefulSets: StatefulSetListResp[] = [
     createBy: 'admin',
     createAt: '2024-02-10 14:00:00',
     updateBy: 'admin',
+    deletable: true,
     updateAt: '2024-03-19 08:00:00'
   },
   {
@@ -754,7 +754,6 @@ const mockStatefulSets: StatefulSetListResp[] = [
     name: 'influxdb',
     namespace: 'monitoring',
     clusterId: generateId(),
-    clusterName: 'prod-cluster',
     description: 'InfluxDB 时间序列数据库，存储监控指标数据',
     status: 'Failed',
     statusMessage: 'OOMKilled：内存配置不足导致所有 Pod 被杀死',
@@ -766,6 +765,7 @@ const mockStatefulSets: StatefulSetListResp[] = [
     createBy: 'admin',
     createAt: '2024-02-20 10:00:00',
     updateBy: 'admin',
+    deletable: true,
     updateAt: '2024-03-18 06:00:00'
   },
   // ==================== Unknown（未知）- 2 条 ====================
@@ -775,7 +775,6 @@ const mockStatefulSets: StatefulSetListResp[] = [
     name: 'consul',
     namespace: 'middleware',
     clusterId: generateId(),
-    clusterName: 'prod-cluster',
     description: 'Consul 服务发现和配置中心集群',
     status: 'Unknown',
     statusMessage: '无法获取 StatefulSet 状态，集群网络分区可能中断',
@@ -787,6 +786,7 @@ const mockStatefulSets: StatefulSetListResp[] = [
     createBy: 'admin',
     createAt: '2024-01-05 09:00:00',
     updateBy: 'admin',
+    deletable: true,
     updateAt: '2024-03-20 16:30:00'
   },
   {
@@ -795,7 +795,6 @@ const mockStatefulSets: StatefulSetListResp[] = [
     name: 'greenplum',
     namespace: 'data',
     clusterId: generateId(),
-    clusterName: 'prod-cluster',
     description: 'Greenplum MPP 数据仓库集群',
     status: 'Unknown',
     statusMessage: 'Master Pod 失联，暂时无法确认集群整体状态',
@@ -807,6 +806,7 @@ const mockStatefulSets: StatefulSetListResp[] = [
     createBy: 'admin',
     createAt: '2024-04-01 10:00:00',
     updateBy: 'admin',
+    deletable: true,
     updateAt: '2024-04-01 10:00:00'
   }
 ]

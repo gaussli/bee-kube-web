@@ -39,6 +39,17 @@ export function getDeploymentDetail(clusterId: string, namespace: string, name: 
 }
 
 /**
+ * 查看 Deployment YAML
+ * @param clusterId - 集群ID
+ * @param namespace - 命名空间名称
+ * @param name - Deployment 名称
+ * @returns Deployment YAML 配置
+ */
+export function getDeploymentYaml(clusterId: string, namespace: string, name: string): Promise<string> {
+  return request.get<string>(`/kubernetes/clusters/${clusterId}/namespaces/${namespace}/deployments/${name}/yaml`)
+}
+
+/**
  * 获取 Deployment 调度策略
  * @param clusterId - 集群ID
  * @param namespace - 命名空间名称
@@ -152,17 +163,6 @@ export function deleteDeployment(clusterId: string, namespace: string, name: str
  */
 export function deleteDeployments(clusterId: string, namespace: string, names: string[]): Promise<void> {
   return request.delete(`/kubernetes/clusters/${clusterId}/namespaces/${namespace}/deployments/batch`, { data: names })
-}
-
-/**
- * 查看 Deployment YAML
- * @param clusterId - 集群ID
- * @param namespace - 命名空间名称
- * @param name - Deployment 名称
- * @returns Deployment YAML 配置
- */
-export function getDeploymentYaml(clusterId: string, namespace: string, name: string): Promise<string> {
-  return request.get<string>(`/kubernetes/clusters/${clusterId}/namespaces/${namespace}/deployments/${name}/yaml`)
 }
 
 /**

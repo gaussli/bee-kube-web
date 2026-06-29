@@ -49,8 +49,6 @@ export interface CronJobListResp extends BaseEntity {
   uid: string
   /** 所属集群 ID */
   clusterId: string
-  /** 所属集群名称 */
-  clusterName?: string
   /** 所属命名空间 */
   namespace: string
   /** CronJob 名称 */
@@ -73,9 +71,31 @@ export interface CronJobListResp extends BaseEntity {
 
 /**
  * CronJob 详情响应数据
- * @extends CronJobListResp 继承列表响应（含 id, uid, clusterId, namespace, name 等）
+ * @extends BaseEntity 继承基础实体（含 id, createAt, createBy, updateAt, updateBy）
  */
-export interface CronJobDetailResp extends CronJobListResp {
+export interface CronJobDetailResp extends BaseEntity {
+  /** 资源 UID */
+  uid: string
+  /** 所属集群 ID */
+  clusterId: string
+  /** 所属命名空间 */
+  namespace: string
+  /** CronJob 名称 */
+  name: string
+  /** 描述信息 */
+  description?: string
+  /** 状态 */
+  status: CronJobStatus
+  /** 状态信息 */
+  statusMsg?: string
+  /** 调度表达式 */
+  schedule: string
+  /** 最近一次调度时间 */
+  lastSuccessfulTime?: string
+  /** 活动 Job 数量 */
+  activeJobs: number
+  /** 是否可删除 */
+  deletable?: boolean
   /** 并发策略 */
   concurrencyPolicy: 'Allow' | 'Forbid' | 'Replace'
   /** 是否暂停 */
@@ -104,11 +124,11 @@ export interface CronJobQueryReq extends PageReq {
   /** 资源 ID */
   id: string
   /** CronJob 名称（模糊匹配） */
-  name?: string
+  name: string
   /** 命名空间（可选，不传则查询所有命名空间） */
-  namespace?: string
+  namespace: string
   /** 状态 */
-  status?: CronJobStatus
+  status: CronJobStatus
 }
 
 /**

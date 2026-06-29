@@ -37,6 +37,17 @@ export function getStatefulSetDetail(clusterId: string, namespace: string, name:
 }
 
 /**
+ * 查看 StatefulSet YAML
+ * @param clusterId - 集群ID
+ * @param namespace - 命名空间名称
+ * @param name - StatefulSet 名称
+ * @returns StatefulSet YAML 配置
+ */
+export function getStatefulSetYaml(clusterId: string, namespace: string, name: string): Promise<string> {
+  return request.get<string>(`/kubernetes/clusters/${clusterId}/namespaces/${namespace}/statefulsets/${name}/yaml`)
+}
+
+/**
  * 创建 StatefulSet
  * @param clusterId - 集群ID
  * @param namespace - 命名空间名称
@@ -128,17 +139,6 @@ export function deleteStatefulSet(clusterId: string, namespace: string, name: st
  */
 export function deleteStatefulSets(clusterId: string, namespace: string, names: string[]): Promise<void> {
   return request.delete(`/kubernetes/clusters/${clusterId}/namespaces/${namespace}/statefulsets/batch`, { data: names })
-}
-
-/**
- * 查看 StatefulSet YAML
- * @param clusterId - 集群ID
- * @param namespace - 命名空间名称
- * @param name - StatefulSet 名称
- * @returns StatefulSet YAML 配置
- */
-export function getStatefulSetYaml(clusterId: string, namespace: string, name: string): Promise<string> {
-  return request.get<string>(`/kubernetes/clusters/${clusterId}/namespaces/${namespace}/statefulsets/${name}/yaml`)
 }
 
 /**

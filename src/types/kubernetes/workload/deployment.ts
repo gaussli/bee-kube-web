@@ -3,7 +3,7 @@
  * @module types/kubernetes/workload/deployment
  */
 import type { BaseEntity, PageReq } from '@/types/common'
-import type { Condition, ContainerResource, Event, Metadata } from '../types'
+import type { Condition, Container, ContainerResource, Event, Metadata } from '../types'
 import type { NodeAffinity, PodAffinity, PodAntiAffinity, RestartPolicy, Revision, Toleration } from './types'
 
 /**
@@ -45,8 +45,6 @@ export interface DeploymentListResp extends BaseEntity {
   uid: string
   /** 所属集群 ID */
   clusterId: string
-  /** 所属集群名称 */
-  clusterName: string
   /** 所属命名空间 */
   namespace: string
   /** Deployment 名称 */
@@ -63,6 +61,8 @@ export interface DeploymentListResp extends BaseEntity {
   availableReplicas: number
   /** 更新策略 */
   strategyType: DeploymentStrategyType
+  /** 是否可删除 */
+  deletable?: boolean
 }
 
 /**
@@ -74,8 +74,6 @@ export interface DeploymentDetailResp extends BaseEntity {
   uid: string
   /** 所属集群 ID */
   clusterId: string
-  /** 所属集群名称 */
-  clusterName: string
   /** 所属命名空间 */
   namespace: string
   /** Deployment 名称 */
@@ -294,18 +292,4 @@ export interface DeploymentScaleReq {
 export interface DeploymentYamlReq {
   /** YAML 配置内容 */
   yaml: string
-}
-
-/**
- * Deployment 副本状态
- */
-export interface DeploymentReplicaStatus {
-  /** 期望副本数 */
-  replicas: number
-  /** 就绪副本数 */
-  readyReplicas: number
-  /** 可用副本数 */
-  availableReplicas: number
-  /** 已更新副本数 */
-  updatedReplicas: number
 }
