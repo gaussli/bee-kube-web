@@ -3,13 +3,19 @@
  * @module mock/kubernetes/workload/cronjob
  */
 import type { PageResp } from '@/types/common'
-import type { CronJobQueryReq, CronJobResp, CronJobReq, CronJobLabelsReq, CronJobAnnotationsReq } from '@/types/kubernetes/workload/cronjob'
+import type { CronJobQueryReq, CronJobListResp, CronJobDetailResp, CronJobReq, CronJobLabelsReq, CronJobAnnotationsReq } from '@/types/kubernetes/workload/cronjob'
 import { generateId } from '@/mock/utils'
+
+/** mock 内部使用的 CronJob 数据，同时包含列表与详情共有的字段 */
+interface MockCronJob extends CronJobListResp {
+  concurrencyPolicy: 'Allow' | 'Forbid' | 'Replace'
+  suspend: boolean
+}
 
 /**
  * CronJob 路由配置
  * @remarks
- * - GET /kubernetes/clusters/:clusterId/namespaces/:namespace/cronjobs - 获取 CronJob 分页列表
+ * - GET /kubernetes/clusters/:clusterId/cronjobs - 获取 CronJob 分页列表（namespace 通过 query 参数传递，可选）
  * - GET /kubernetes/clusters/:clusterId/namespaces/:namespace/cronjobs/:name - 获取 CronJob 详情
  * - POST /kubernetes/clusters/:clusterId/namespaces/:namespace/cronjobs - 创建 CronJob
  * - PUT /kubernetes/clusters/:clusterId/namespaces/:namespace/cronjobs/:name - 更新 CronJob
@@ -24,13 +30,13 @@ import { generateId } from '@/mock/utils'
 export default [
   {
     method: 'get',
-    url: '/kubernetes/clusters/:clusterId/namespaces/:namespace/cronjobs',
-    handler: (pathParams: Record<string, string>, params: Partial<CronJobQueryReq>): PageResp<CronJobResp> => getCronJobPage(pathParams.clusterId, pathParams.namespace, params)
+    url: '/kubernetes/clusters/:clusterId/cronjobs',
+    handler: (pathParams: Record<string, string>, params: Partial<CronJobQueryReq>): PageResp<CronJobListResp> => getCronJobPage(pathParams.clusterId, params)
   },
   {
     method: 'get',
     url: '/kubernetes/clusters/:clusterId/namespaces/:namespace/cronjobs/:name',
-    handler: (pathParams: Record<string, string>): CronJobResp => getCronJobDetail(pathParams.clusterId, pathParams.namespace, pathParams.name)
+    handler: (pathParams: Record<string, string>): CronJobDetailResp => getCronJobDetail(pathParams.clusterId, pathParams.namespace, pathParams.name)
   },
   {
     method: 'post',
@@ -75,23 +81,51 @@ export default [
   {
     method: 'delete',
     url: '/kubernetes/clusters/:clusterId/namespaces/:namespace/cronjobs/batch',
-    handler: (_pathParams: Record<string, string>, _params: any, data: string[]): void => deleteCronJobs(_pathParams.clusterId, _pathParams.namespace, data)
+    handler: (pathParams: Record<string, string>, data: string[]): void => deleteCronJobs(pathParams.clusterId, pathParams.namespace, data)
   }
 ]
 
 /**
  * 获取 CronJob 分页列表
- * @param clusterId - 集群ID
- * @param namespace - 命名空间名称
- * @param params - 查询参数
+ * @param _clusterId - 集群ID（mock 中暂未使用，保留以对齐 API 签名）
+ * @param params - 查询参数（namespace 可选，不传则查询所有命名空间）
  * @returns 分页数据
  */
-function getCronJobPage(clusterId: string, namespace: string, params: Partial<CronJobQueryReq>): PageResp<CronJobResp> {
-  const { name, status, page = 1, pageSize = 10 } = params || {}
-  let filtered = mockCronJobs.filter(c => c.clusterId === clusterId && c.namespace === namespace)
-  if (name) filtered = filtered.filter(c => c.name.toLowerCase().includes(name.toLowerCase()))
-  if (status) filtered = filtered.filter(c => c.status === status)
-  return { list: filtered.slice((page - 1) * pageSize, page * pageSize), total: filtered.length, page, pageSize }
+function getCronJobPage(_clusterId: string, params: Partial<CronJobQueryReq>): PageResp<CronJobListResp> {
+  const { id, name, namespace, status, page = 1, pageSize = 10 } = params || {}
+
+  let filtered = [...mockCronJobs]
+
+  if (status) {
+    filtered = filtered.filter(c => c.status === status)
+  }
+  if (namespace) {
+    filtered = filtered.filter(c => c.namespace === namespace)
+  }
+
+  if (id || name) {
+    let searchFiltered: MockCronJob[] = []
+    if (id) {
+      searchFiltered = [...searchFiltered, ...filtered.filter(c => c.id === id)]
+    }
+    if (name) {
+      searchFiltered = [...searchFiltered, ...filtered.filter(c => c.name.toLowerCase().includes(name.toLowerCase()))]
+    }
+    // searchFiltered 基于 id 去重
+    const seenIds = new Set<string>()
+    filtered = searchFiltered.filter(c => {
+      if (seenIds.has(c.id)) return false
+      seenIds.add(c.id)
+      return true
+    })
+  }
+
+  const total = filtered.length
+  const start = (page - 1) * pageSize
+  const end = start + pageSize
+  const list = filtered.slice(start, end)
+
+  return { list, total, page, pageSize }
 }
 
 /**
@@ -101,8 +135,27 @@ function getCronJobPage(clusterId: string, namespace: string, params: Partial<Cr
  * @param name - CronJob 名称
  * @returns CronJob 详情
  */
-function getCronJobDetail(clusterId: string, namespace: string, name: string): CronJobResp {
-  return mockCronJobs.find(c => c.clusterId === clusterId && c.namespace === namespace && c.name === name) || (null as any)
+function getCronJobDetail(clusterId: string, namespace: string, name: string): CronJobDetailResp {
+  const job = mockCronJobs.find(c => c.clusterId === clusterId && c.namespace === namespace && c.name === name)
+  if (!job) {
+    console.error('[Get CronJob Detail] can not find cronjob:', clusterId, namespace, name)
+    return null as unknown as CronJobDetailResp
+  }
+  return {
+    ...job,
+    images: ['busybox:latest'],
+    labels: job.name === 'db-backup' ? { app: 'db-backup', env: 'production' } : { app: job.name },
+    annotations: {},
+    containers: [
+      {
+        name: job.name,
+        image: 'busybox:latest',
+        resources: { requests: { cpu: '100m', memory: '128Mi' }, limits: { cpu: '500m', memory: '512Mi' } },
+        command: ['/bin/sh', '-c'],
+        args: [`echo "Running ${job.name}"`]
+      }
+    ]
+  }
 }
 
 /**
@@ -112,26 +165,7 @@ function getCronJobDetail(clusterId: string, namespace: string, name: string): C
  * @param data - 创建数据
  */
 function createCronJob(clusterId: string, namespace: string, data: Partial<CronJobReq>): void {
-  const newCj: CronJobResp = {
-    id: generateId(),
-    name: data.name || '',
-    namespace,
-    clusterId,
-    clusterName: 'prod-cluster',
-    status: 'Active',
-    schedule: data.schedule || '0 * * * *',
-    concurrencyPolicy: data.concurrencyPolicy || 'Allow',
-    suspend: data.suspend || false,
-    activeJobs: 0,
-    images: data.containers?.map(c => c.image) || [],
-    labels: data.labels,
-    annotations: data.annotations,
-    createAt: new Date().toLocaleString(),
-    createBy: 'admin',
-    updateAt: new Date().toLocaleString(),
-    updateBy: 'admin'
-  }
-  mockCronJobs.push(newCj)
+  console.log('[Mock] createCronJob', { clusterId, namespace, data })
 }
 
 /**
@@ -142,16 +176,7 @@ function createCronJob(clusterId: string, namespace: string, data: Partial<CronJ
  * @param data - 更新数据
  */
 function updateCronJob(clusterId: string, namespace: string, name: string, data: Partial<CronJobReq>): void {
-  const index = mockCronJobs.findIndex(c => c.clusterId === clusterId && c.namespace === namespace && c.name === name)
-  if (index === -1) return
-  const updated = {
-    ...mockCronJobs[index],
-    ...data,
-    images: data.containers?.map(c => c.image) || mockCronJobs[index].images,
-    updateAt: new Date().toLocaleString(),
-    updateBy: 'admin'
-  }
-  mockCronJobs[index] = updated
+  console.log('[Mock] updateCronJob', { clusterId, namespace, name, data })
 }
 
 /**
@@ -161,9 +186,7 @@ function updateCronJob(clusterId: string, namespace: string, name: string, data:
  * @param name - CronJob 名称
  */
 function suspendCronJob(clusterId: string, namespace: string, name: string): void {
-  const index = mockCronJobs.findIndex(c => c.clusterId === clusterId && c.namespace === namespace && c.name === name)
-  if (index === -1) return
-  mockCronJobs[index].suspend = true
+  console.log('[Mock] suspendCronJob', { clusterId, namespace, name })
 }
 
 /**
@@ -173,9 +196,7 @@ function suspendCronJob(clusterId: string, namespace: string, name: string): voi
  * @param name - CronJob 名称
  */
 function resumeCronJob(clusterId: string, namespace: string, name: string): void {
-  const index = mockCronJobs.findIndex(c => c.clusterId === clusterId && c.namespace === namespace && c.name === name)
-  if (index === -1) return
-  mockCronJobs[index].suspend = false
+  console.log('[Mock] resumeCronJob', { clusterId, namespace, name })
 }
 
 /**
@@ -185,9 +206,7 @@ function resumeCronJob(clusterId: string, namespace: string, name: string): void
  * @param name - CronJob 名称
  */
 function triggerCronJob(clusterId: string, namespace: string, name: string): void {
-  const index = mockCronJobs.findIndex(c => c.clusterId === clusterId && c.namespace === namespace && c.name === name)
-  if (index === -1) return
-  mockCronJobs[index].activeJobs += 1
+  console.log('[Mock] triggerCronJob', { clusterId, namespace, name })
 }
 
 /**
@@ -198,15 +217,7 @@ function triggerCronJob(clusterId: string, namespace: string, name: string): voi
  * @param data - 标签数据
  */
 function manageCronJobLabels(clusterId: string, namespace: string, name: string, data: Partial<CronJobLabelsReq>): void {
-  const index = mockCronJobs.findIndex(c => c.clusterId === clusterId && c.namespace === namespace && c.name === name)
-  if (index === -1) return
-  const currentLabels = mockCronJobs[index].labels || {}
-  if (data.operation === 1) mockCronJobs[index].labels = { ...currentLabels, ...data.labels }
-  else if (data.operation === 2) {
-    const newLabels = { ...currentLabels }
-    Object.keys(data.labels || {}).forEach(key => delete newLabels[key])
-    mockCronJobs[index].labels = newLabels
-  } else if (data.operation === 3) mockCronJobs[index].labels = data.labels
+  console.log('[Mock] manageCronJobLabels', { clusterId, namespace, name, data })
 }
 
 /**
@@ -217,15 +228,7 @@ function manageCronJobLabels(clusterId: string, namespace: string, name: string,
  * @param data - 注解数据
  */
 function manageCronJobAnnotations(clusterId: string, namespace: string, name: string, data: Partial<CronJobAnnotationsReq>): void {
-  const index = mockCronJobs.findIndex(c => c.clusterId === clusterId && c.namespace === namespace && c.name === name)
-  if (index === -1) return
-  const currentAnnotations = mockCronJobs[index].annotations || {}
-  if (data.operation === 1) mockCronJobs[index].annotations = { ...currentAnnotations, ...data.annotations }
-  else if (data.operation === 2) {
-    const newAnnotations = { ...currentAnnotations }
-    Object.keys(data.annotations || {}).forEach(key => delete newAnnotations[key])
-    mockCronJobs[index].annotations = newAnnotations
-  } else if (data.operation === 3) mockCronJobs[index].annotations = data.annotations
+  console.log('[Mock] manageCronJobAnnotations', { clusterId, namespace, name, data })
 }
 
 /**
@@ -235,9 +238,7 @@ function manageCronJobAnnotations(clusterId: string, namespace: string, name: st
  * @param name - CronJob 名称
  */
 function deleteCronJob(clusterId: string, namespace: string, name: string): void {
-  const index = mockCronJobs.findIndex(c => c.clusterId === clusterId && c.namespace === namespace && c.name === name)
-  if (index === -1) return
-  mockCronJobs.splice(index, 1)
+  console.log('[Mock] deleteCronJob', { clusterId, namespace, name })
 }
 
 /**
@@ -247,30 +248,28 @@ function deleteCronJob(clusterId: string, namespace: string, name: string): void
  * @param names - CronJob 名称数组
  */
 function deleteCronJobs(clusterId: string, namespace: string, names: string[]): void {
-  names.forEach(name => {
-    const index = mockCronJobs.findIndex(c => c.clusterId === clusterId && c.namespace === namespace && c.name === name)
-    if (index !== -1) mockCronJobs.splice(index, 1)
-  })
+  console.log('[Mock] deleteCronJobs', { clusterId, namespace, names })
 }
 
 /**
  * 模拟 CronJob 数据
+ * @remarks 包含生产环境中常见的定时任务数据
  */
-const mockCronJobs: CronJobResp[] = [
+const mockCronJobs: MockCronJob[] = [
   {
     id: generateId(),
+    uid: generateId(),
     name: 'db-backup',
     namespace: 'data',
-    clusterId: generateId(),
+    clusterId: 'c1',
     clusterName: 'prod-cluster',
+    description: '数据库每日备份任务',
     status: 'Active',
     schedule: '0 2 * * *',
     concurrencyPolicy: 'Allow',
     suspend: false,
+    lastSuccessfulTime: '2024-03-20 02:00:00',
     activeJobs: 0,
-    images: ['mysql:8.0', 'minio/mc:latest'],
-    labels: { app: 'db-backup', env: 'production' },
-    annotations: { description: '数据库每日备份任务' },
     createAt: '2024-01-20 10:00:00',
     createBy: 'admin',
     updateAt: '2024-03-15 14:00:00',
@@ -278,17 +277,18 @@ const mockCronJobs: CronJobResp[] = [
   },
   {
     id: generateId(),
+    uid: generateId(),
     name: 'log-rotate',
     namespace: 'logging',
-    clusterId: generateId(),
+    clusterId: 'c1',
     clusterName: 'prod-cluster',
+    description: '日志轮转任务',
     status: 'Active',
+    statusMsg: '1 个 Job 正在执行',
     schedule: '0 0 * * *',
     concurrencyPolicy: 'Forbid',
     suspend: false,
     activeJobs: 1,
-    images: ['busybox:latest'],
-    labels: { app: 'log-rotate' },
     createAt: '2024-02-01 09:00:00',
     createBy: 'admin',
     updateAt: '2024-03-10 11:00:00',
@@ -296,18 +296,18 @@ const mockCronJobs: CronJobResp[] = [
   },
   {
     id: generateId(),
+    uid: generateId(),
     name: 'report-generator',
     namespace: 'analytics',
-    clusterId: generateId(),
+    clusterId: 'c1',
     clusterName: 'prod-cluster',
+    description: '周报生成任务',
     status: 'Active',
     schedule: '0 8 * * 1',
     concurrencyPolicy: 'Allow',
     suspend: false,
+    lastSuccessfulTime: '2024-03-18 08:00:00',
     activeJobs: 0,
-    images: ['report-service:v2.1.0'],
-    labels: { app: 'report-generator', env: 'production' },
-    annotations: { description: '周报生成任务' },
     createAt: '2024-02-15 14:00:00',
     createBy: 'admin',
     updateAt: '2024-03-12 16:00:00',
@@ -315,17 +315,18 @@ const mockCronJobs: CronJobResp[] = [
   },
   {
     id: generateId(),
+    uid: generateId(),
     name: 'cache-cleanup',
     namespace: 'middleware',
-    clusterId: generateId(),
+    clusterId: 'c1',
     clusterName: 'prod-cluster',
+    description: '缓存清理任务',
     status: 'Suspended',
+    statusMsg: '已被管理员暂停',
     schedule: '0 */6 * * *',
     concurrencyPolicy: 'Replace',
     suspend: true,
     activeJobs: 0,
-    images: ['redis:7.2-alpine'],
-    labels: { app: 'cache-cleanup' },
     createAt: '2024-03-01 10:00:00',
     createBy: 'admin',
     updateAt: '2024-03-19 08:00:00',

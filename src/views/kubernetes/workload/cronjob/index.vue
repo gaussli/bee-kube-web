@@ -1,142 +1,93 @@
 <template>
-  <div class="cronjob-table">
+  <BeePage class="cronjob-page">
     <!-- 页面标题 -->
-    <div class="page-header">
-      <BeePageTitle :icon="Timer" title="定时任务" description="定时任务（CronJob）用于定时运行任务，按照 Cron 表达式调度 Job 执行。" />
-    </div>
+    <BeeCard class="cronjob-page__header">
+      <BeePageTitle icon="kubernetes-namespace" title="定时任务" description="定时任务（CronJob）用于定时运行任务，按照 Cron 表达式调度 Job 执行。" />
+    </BeeCard>
 
     <!-- 页面内容 -->
-    <div class="page-body">
+    <BeeCard class="cronjob-page__body">
       <!-- 查询表单 -->
-      <div class="table-query">
-        <div class="table-query-left">
-          <BeeInputSearch v-model="searchKey" placeholder="按名称搜索" />
-          <BeeSelect v-model="queryForm.namespace" placeholder="选择命名空间" :options="namespaceOptions" @change="handleNamespaceChange" />
-        </div>
-        <div class="table-query-right">
-          <BeeButton @click="handleReset">
-            <template #icon><Refresh /></template>
-            刷新
-          </BeeButton>
-          <el-divider v-if="hasPermission('kubernetes:workload:cronjob:create')" direction="vertical" />
-          <BeeButton v-if="hasPermission('kubernetes:workload:cronjob:create')" type="primary" @click="handleCreate">
-            <template #icon><Plus /></template>
-            新增
-          </BeeButton>
-        </div>
+      <div class="table-toolbar">
+        <BeeInputSearch v-model="searchKey" placeholder="按 ID / 名称搜索" class="table-toolbar__search" />
+        <BeeSelect v-model="queryForm.namespace" placeholder="命名空间选择" :options="namespaceOptions" :width="300" />
+        <BeeSelect v-model="queryForm.status" placeholder="状态筛选" :options="CRONJOB_STATUS_OPTIONS" />
+        <BeeButton icon="basic-search" @click="handleSearch"> 搜索 </BeeButton>
+        <BeeButton icon="basic-refresh" @click="handleReset"> 重置 </BeeButton>
+        <BeeButton v-if="hasPermission('kubernetes:workload:cronjob:create')" type="primary" icon="basic-create" @click="handleCreate"> 新增 </BeeButton>
       </div>
 
       <!-- 表格主体 -->
       <div class="table-body">
-        <el-table v-loading="loading" :data="tableData" height="100%" @selection-change="handleSelectionChange">
-          <el-table-column type="selection" width="60" align="center" />
-          <el-table-column min-width="200">
-            <template #header>
-              <BeeIconLabel icon="timer" label="名称" />
-            </template>
+        <BeeTable :data="tableData" :loading="loading" selectable @selection-change="handleSelectionChange">
+          <BeeTableColumn :width="400">
             <template #default="{ row }">
-              <div class="name-cell">
-                <div class="name-row">
-                  <span class="name-text">{{ row.name }}</span>
-                  <el-icon class="copy-icon" @click="handleCopy(row.name)"><DocumentCopy /></el-icon>
-                </div>
-                <div class="desc-text">{{ row.labels?.description || '-' }}</div>
+              <BeeWorkloadInfoCell :uid="row.uid" :name="row.name" :description="row.description" :icon-size="32" icon="kubernetes-namespace" />
+            </template>
+          </BeeTableColumn>
+          <BeeTableColumn :width="200">
+            <template #default="{ row }">
+              <BeeTableCommonCell :text="row.namespace" subtext="命名空间" />
+            </template>
+          </BeeTableColumn>
+          <BeeTableColumn :width="160">
+            <template #default="{ row }">
+              <BeeStatusCell :status="row.status" :status-msg="row.statusMsg" :options="CRONJOB_STATUS_OPTIONS" />
+            </template>
+          </BeeTableColumn>
+          <BeeTableColumn :width="160">
+            <template #default="{ row }">
+              <BeeTableCommonCell :text="row.schedule" subtext="调度规则" />
+            </template>
+          </BeeTableColumn>
+          <BeeTableColumn :width="120">
+            <template #default="{ row }">
+              <BeeTableCommonCell :text="String(row.activeJobs)" subtext="活跃 Job" />
+            </template>
+          </BeeTableColumn>
+          <BeeTableColumn :width="200">
+            <template #default="{ row }">
+              <BeeTableCommonCell :text="formatTime(row.lastSuccessfulTime)" subtext="上次调度" />
+            </template>
+          </BeeTableColumn>
+          <BeeTableColumn :width="200">
+            <template #default="{ row }">
+              <BeeAuditCell :username="row.createBy" :datetime="row.createAt" field-name="创建人 / 时间" />
+            </template>
+          </BeeTableColumn>
+          <BeeTableColumn :width="200">
+            <template #default="{ row }">
+              <BeeAuditCell :username="row.updateBy" :datetime="row.updateAt" field-name="更新人 / 时间" />
+            </template>
+          </BeeTableColumn>
+          <BeeTableColumn :width="150" fixed="right">
+            <template #default="{ row }">
+              <div class="table-action">
+                <BeeCircleButton v-if="hasPermission('kubernetes:workload:cronjob:edit')" icon="basic-edit" tooltip="编辑" @click="handleEdit(row)" />
+                <BeeCircleButton icon="basic-view" tooltip="详情" @click="handleViewDetail(row)" />
+                <BeeDropdown trigger="click">
+                  <BeeCircleButton icon="basic-more" tooltip="更多" />
+                  <template #dropdown>
+                    <BeeDropdownItem value="yamledit" label="编辑 YAML" icon="basic-code" @click="handleEditYaml(row)" />
+                    <BeeDropdownItem v-if="hasPermission('kubernetes:workload:cronjob:delete') && row.deletable !== false" value="delete" label="删除" icon="basic-delete" @click="handleDelete(row)" />
+                  </template>
+                </BeeDropdown>
               </div>
             </template>
-          </el-table-column>
-          <el-table-column min-width="120">
-            <template #header>
-              <BeeIconLabel icon="folder-opened" label="命名空间" />
-            </template>
-            <template #default="{ row }">
-              <span>{{ row.namespace }}</span>
-            </template>
-          </el-table-column>
-          <el-table-column min-width="150">
-            <template #header>
-              <BeeIconLabel icon="timer" label="调度规则" />
-            </template>
-            <template #default="{ row }">
-              <code class="schedule-code">{{ row.schedule }}</code>
-            </template>
-          </el-table-column>
-          <el-table-column width="100">
-            <template #header>
-              <BeeIconLabel icon="info-filled" label="暂停" />
-            </template>
-            <template #default="{ row }">
-              <el-tag :type="row.suspend ? 'warning' : 'success'" size="small">{{ row.suspend ? '是' : '否' }}</el-tag>
-            </template>
-          </el-table-column>
-          <el-table-column width="100">
-            <template #header>
-              <BeeIconLabel icon="cpu" label="活跃" />
-            </template>
-            <template #default="{ row }">
-              <span>{{ row.active }}</span>
-            </template>
-          </el-table-column>
-          <el-table-column width="180">
-            <template #header>
-              <BeeIconLabel icon="clock" label="上次调度" />
-            </template>
-            <template #default="{ row }">
-              <span class="time-text">{{ formatTime(row.lastScheduleTime) }}</span>
-            </template>
-          </el-table-column>
-          <el-table-column width="200" fixed="right">
-            <template #header>
-              <BeeIconLabel icon="edit-pen" label="操作" />
-            </template>
-            <template #default="{ row }">
-              <el-tooltip content="编辑" placement="top">
-                <el-button v-if="hasPermission('kubernetes:workload:cronjob:edit')" circle :icon="EditPen" size="default" @click="handleEdit(row)" />
-              </el-tooltip>
-              <el-tooltip content="详情" placement="top">
-                <el-button circle :icon="View" size="default" @click="handleViewDetail(row)" />
-              </el-tooltip>
-
-              <el-tooltip content="更多" placement="top">
-                <el-dropdown trigger="click">
-                  <template #default>
-                    <el-button circle :icon="MoreFilled" size="default" />
-                  </template>
-                  <template #dropdown>
-                    <el-dropdown-menu>
-                      <el-dropdown-item @click="handleEditYaml(row)">
-                        <el-icon><DocumentChecked /></el-icon> 编辑 YAML
-                      </el-dropdown-item>
-                      <el-dropdown-item v-if="hasPermission('kubernetes:workload:cronjob:delete') && row.deletable !== false" divided @click="handleDelete(row)">
-                        <el-icon><Delete /></el-icon> 删除
-                      </el-dropdown-item>
-                    </el-dropdown-menu>
-                  </template>
-                </el-dropdown>
-              </el-tooltip>
-            </template>
-          </el-table-column>
-        </el-table>
+          </BeeTableColumn>
+        </BeeTable>
       </div>
 
       <!-- 表格底部 -->
       <div class="table-footer">
         <div>
           <BeeButton v-if="hasPermission('kubernetes:workload:cronjob:delete')" type="danger" :disabled="selectedRows.length === 0" @click="handleBatchDelete">
-            <template #icon><Delete /></template>
             批量删除 ({{ selectedRows.length }})
           </BeeButton>
         </div>
-        <el-pagination
-          v-model:current-page="pagination.page"
-          v-model:page-size="pagination.pageSize"
-          :total="pagination.total"
-          :page-sizes="[10, 20, 50]"
-          layout="total, sizes, prev, pager, next, jumper"
-          @size-change="loadData"
-          @current-change="loadData"
-        />
+        <BeePagination v-model="pagination.page" v-model:pageSize="pagination.pageSize" :total="pagination.total" :page-sizes="[10, 20, 50]" @change="loadData" />
       </div>
-    </div>
+    </BeeCard>
 
     <!-- 单个删除 Dialog -->
     <BeeDialog v-model="deleteDialogVisible" title="确认删除" @confirm="handleConfirmDelete">
@@ -160,48 +111,59 @@
         </div>
       </div>
     </BeeDialog>
-  </div>
+  </BeePage>
 </template>
 
 <script setup lang="ts">
+/**
+ * CronJob 管理页面
+ * @module views/kubernetes/workload/cronjob
+ */
 import { onMounted, reactive, ref } from 'vue'
-import { useRouter } from 'vue-router'
+import { useRoute, useRouter } from 'vue-router'
 import { ElMessage } from 'element-plus'
-import { Timer, Refresh, Plus, EditPen, Delete, View, DocumentCopy, DocumentChecked, MoreFilled } from '@element-plus/icons-vue'
-import type { CronJobQueryReq, CronJobResp } from '@/types/kubernetes/workload/cronjob'
+import type { CronJobQueryReq, CronJobListResp } from '@/types/kubernetes/workload/cronjob'
 import { getCronJobPage, deleteCronJob, deleteCronJobs } from '@/api/kubernetes/workload/cronjob'
+import BeeAuditCell from '@/components/BeeAuditCell/index.vue'
 import BeeButton from '@/components/BeeButton/index.vue'
+import BeeCard from '@/components/BeeCard/index.vue'
+import BeeCircleButton from '@/components/BeeCircleButton/index.vue'
 import BeeDialog from '@/components/BeeDialog/index.vue'
-import BeeIconLabel from '@/components/BeeIconLabel/index.vue'
+import BeeDropdown from '@/components/BeeDropdown/index.vue'
+import BeeDropdownItem from '@/components/BeeDropdownItem/index.vue'
 import BeeInputSearch from '@/components/BeeInputSearch/index.vue'
+import BeePage from '@/components/BeePage/index.vue'
 import BeePageTitle from '@/components/BeePageTitle/index.vue'
+import BeePagination from '@/components/BeePagination/index.vue'
 import BeeSelect from '@/components/BeeSelect/index.vue'
+import BeeStatusCell from '@/components/BeeStatusCell/index.vue'
+import BeeTableColumn from '@/components/BeeTable/BeeTableColumn.vue'
+import BeeTableCommonCell from '@/components/BeeTable/BeeTableCommonCell.vue'
+import BeeTable from '@/components/BeeTable/index.vue'
 import BeeTag from '@/components/BeeTag/index.vue'
-import { useClipboard } from '@/composables/useClipboard'
+import BeeWorkloadInfoCell from '@/components/BeeWorkloadInfoCell/index.vue'
 import { usePermission } from '@/composables/usePermission'
-import { useKubernetesStore } from '@/stores'
+import { CRONJOB_STATUS_OPTIONS } from '@/config/kubernetes'
 
 defineOptions({ name: 'CronJobManage' })
 
 const { hasPermission } = usePermission()
-const { copy } = useClipboard()
+const route = useRoute()
 const router = useRouter()
-const kubernetesStore = useKubernetesStore()
 const searchKey = ref('')
+const clusterId = ref(route.params.clusterId as string)
 
 const loading = ref(false)
-const tableData = ref<CronJobResp[]>([])
-const selectedRows = ref<CronJobResp[]>([])
+const tableData = ref<CronJobListResp[]>([])
+const selectedRows = ref<CronJobListResp[]>([])
 const deleteDialogVisible = ref(false)
 const batchDeleteDialogVisible = ref(false)
-const currentTargetRow = ref<CronJobResp | null>(null)
+const currentTargetRow = ref<CronJobListResp | null>(null)
 
-const queryForm = reactive<CronJobQueryReq>({
+const queryForm = reactive<Partial<CronJobQueryReq>>({
   name: undefined,
-  clusterId: kubernetesStore.activeClusterId || undefined,
   namespace: undefined,
-  page: 1,
-  pageSize: 10
+  status: undefined
 })
 const pagination = reactive({
   page: 1,
@@ -209,27 +171,45 @@ const pagination = reactive({
   total: 0
 })
 
+/** 命名空间选项（CronJob 为命名空间级资源，可选筛选） */
 const namespaceOptions = ref([
   { label: '全部命名空间', value: undefined },
   { label: 'default', value: 'default' },
-  { label: 'app-frontend', value: 'app-frontend' },
-  { label: 'app-backend', value: 'app-backend' },
-  { label: 'kube-system', value: 'kube-system' }
+  { label: 'kube-system', value: 'kube-system' },
+  { label: 'data', value: 'data' },
+  { label: 'middleware', value: 'middleware' },
+  { label: 'logging', value: 'logging' },
+  { label: 'analytics', value: 'analytics' }
 ])
 
-function formatTime(time: string) {
+/**
+ * 格式化时间
+ * @param time - 时间字符串
+ * @returns 格式化后的时间
+ */
+function formatTime(time?: string): string {
   if (!time) return '-'
   return time.replace('T', ' ').slice(0, 19)
 }
 
+/**
+ * 加载 CronJob 列表数据
+ * @remarks 根据当前查询条件与分页参数获取 CronJob 分页数据
+ */
 async function loadData() {
-  if (!queryForm.clusterId) {
+  if (!clusterId.value) {
     tableData.value = []
     return
   }
   loading.value = true
   try {
-    const resp = await getCronJobPage({ ...queryForm, page: pagination.page, pageSize: pagination.pageSize })
+    const resp = await getCronJobPage(clusterId.value, {
+      name: queryForm.name,
+      namespace: queryForm.namespace || undefined,
+      status: queryForm.status,
+      page: pagination.page,
+      pageSize: pagination.pageSize
+    })
     tableData.value = resp.list
     pagination.total = resp.total
   } finally {
@@ -237,52 +217,64 @@ async function loadData() {
   }
 }
 
-function handleNamespaceChange(value: string) {
-  queryForm.namespace = value || undefined
+/**
+ * 搜索
+ * @remarks 将 searchKey 映射到 name 字段进行模糊匹配
+ */
+function handleSearch() {
+  queryForm.name = searchKey.value
   pagination.page = 1
   loadData()
 }
 
+/**
+ * 重置搜索条件
+ */
 function handleReset() {
   queryForm.name = undefined
   queryForm.namespace = undefined
-  queryForm.page = 1
-  queryForm.pageSize = 10
+  queryForm.status = undefined
   pagination.page = 1
   pagination.pageSize = 10
   searchKey.value = ''
   loadData()
 }
 
-function handleSelectionChange(rows: CronJobResp[]) {
-  selectedRows.value = rows
+/**
+ * 表格选中行变化
+ * @remarks BeeTable 的 selection-change 事件固定返回 Record<string, unknown>[]，需通过 unknown 桥接断言为目标类型
+ */
+function handleSelectionChange(rows: Record<string, unknown>[]) {
+  selectedRows.value = rows as unknown as CronJobListResp[]
 }
 
+/** 跳转创建页面 */
 function handleCreate() {
-  router.push({ name: 'kubernetes:workload:cronjob:create', params: { clusterId: kubernetesStore.activeClusterId } })
+  router.push({ name: 'kubernetes:workload:cronjob:create', params: { clusterId: clusterId.value } })
 }
 
-function handleEdit(row: CronJobResp) {
+/** 跳转编辑页面 */
+function handleEdit(row: CronJobListResp) {
   router.push({ name: 'kubernetes:workload:cronjob:edit', params: { clusterId: row.clusterId }, query: { namespace: row.namespace, name: row.name } })
 }
 
-function handleViewDetail(row: CronJobResp) {
+/** 跳转详情页面 */
+function handleViewDetail(row: CronJobListResp) {
   router.push({ name: 'kubernetes:workload:cronjob:detail', params: { clusterId: row.clusterId }, query: { namespace: row.namespace, name: row.name } })
 }
 
-function handleEditYaml(row: CronJobResp) {
+/** 编辑 YAML */
+function handleEditYaml(row: CronJobListResp) {
   ElMessage.info(`编辑 YAML: ${row.name}`)
 }
 
-function handleCopy(text: string) {
-  copy(text)
-}
-
-function handleDelete(row: CronJobResp) {
+/** 打开删除确认弹窗 */
+function handleDelete(row: CronJobListResp) {
   currentTargetRow.value = row
   deleteDialogVisible.value = true
 }
 
+/** 确认单个删除 */
 async function handleConfirmDelete() {
   if (!currentTargetRow.value) return
   try {
@@ -291,28 +283,30 @@ async function handleConfirmDelete() {
     deleteDialogVisible.value = false
     currentTargetRow.value = null
     loadData()
-  } catch {
-    // 失败处理
+  } catch (err) {
+    console.error('[handleConfirmDelete]', err)
   }
 }
 
+/** 打开批量删除确认弹窗 */
 function handleBatchDelete() {
   batchDeleteDialogVisible.value = true
 }
 
+/** 确认批量删除 */
 async function handleConfirmBatchDelete() {
   if (selectedRows.value.length === 0) return
-  const clusterId = selectedRows.value[0].clusterId
-  const namespace = selectedRows.value[0].namespace
+  const targetClusterId = selectedRows.value[0].clusterId
+  const targetNamespace = selectedRows.value[0].namespace
   const names = selectedRows.value.map(row => row.name)
   try {
-    await deleteCronJobs(clusterId, namespace, names)
+    await deleteCronJobs(targetClusterId, targetNamespace, names)
     ElMessage.success(`成功删除 ${names.length} 个 CronJob`)
     batchDeleteDialogVisible.value = false
     selectedRows.value = []
     loadData()
-  } catch {
-    // 失败处理
+  } catch (err) {
+    console.error('[handleConfirmBatchDelete]', err)
   }
 }
 
@@ -322,123 +316,45 @@ onMounted(() => {
 </script>
 
 <style lang="scss" scoped>
-.cronjob-table {
-  display: flex;
-  flex-direction: column;
-  height: 100%;
-}
-
-.page-header {
-  flex-shrink: 0;
-  padding: 0 20px;
-  margin-bottom: 16px;
-  background-color: $color-bg-surface;
-}
-
-.page-body {
-  display: flex;
-  flex-direction: column;
-  flex: 1;
-  min-height: 0;
-  overflow: hidden;
-  background-color: $color-bg-surface;
-}
-
-.table-query {
-  display: flex;
-  gap: 12px;
-  flex-shrink: 0;
-  align-items: center;
-  justify-content: space-between;
-  padding: 16px 20px;
-
-  .table-query-left {
+.cronjob-page {
+  .cronjob-page__body {
     display: flex;
-    gap: 12px;
-    align-items: center;
-  }
-}
-
-.table-body {
-  flex: 1;
-  min-height: 0;
-  padding: 0 20px;
-  overflow-y: auto;
-
-  :deep(.el-table) {
-    height: 100%;
-
-    th.el-table__cell {
-      padding: 12px 0;
-    }
-
-    td.el-table__cell {
-      padding: 16px 0;
-    }
-
-    .el-table__body tr {
-      height: 56px;
-    }
-
-    .el-button + .el-button {
-      margin-left: 8px;
-    }
-  }
-
-  .name-cell {
-    display: flex;
-    gap: 2px;
     flex-direction: column;
+    flex: 1;
+    min-height: 0;
+    overflow: hidden;
 
-    .name-row {
+    .table-toolbar {
       display: flex;
-      gap: 4px;
+      gap: $spacing-8;
       align-items: center;
+      padding: $spacing-16 0;
+
+      &__search {
+        flex: 1;
+        min-width: 0;
+      }
     }
 
-    .name-text {
-      font-size: 14px;
-      font-weight: 500;
-      color: $color-text-regular;
+    .table-body {
+      flex: 1;
+      min-height: 0;
     }
 
-    .copy-icon {
-      font-size: 14px;
-      color: $color-primary;
-      cursor: pointer;
+    .table-action {
+      display: flex;
+      gap: $spacing-8;
+      width: 100%;
+      height: auto;
     }
 
-    .desc-text {
-      overflow: hidden;
-      font-size: 12px;
-      color: $color-text-secondary;
-      text-overflow: ellipsis;
-      white-space: nowrap;
+    .table-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: $spacing-16 0;
     }
   }
-
-  .schedule-code {
-    padding: 2px 6px;
-    border-radius: 4px;
-    font-family: monospace;
-    font-size: 12px;
-    color: $color-text-secondary;
-    background-color: var(--el-fill-color-light);
-  }
-
-  .time-text {
-    font-family: monospace;
-    font-size: 12px;
-    color: $color-text-secondary;
-  }
-}
-
-.table-footer {
-  display: flex;
-  flex-shrink: 0;
-  align-items: center;
-  justify-content: space-between;
-  padding: 16px 20px;
 }
 
 .dialog-content {
@@ -451,6 +367,6 @@ onMounted(() => {
   display: flex;
   gap: 8px;
   flex-wrap: wrap;
-  margin-top: 12px;
+  margin: 12px 0;
 }
 </style>

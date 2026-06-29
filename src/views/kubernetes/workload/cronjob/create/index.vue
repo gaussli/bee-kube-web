@@ -43,7 +43,7 @@ import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { ElMessage, type FormInstance } from 'element-plus'
 import { Clock, Close, Check, InfoFilled } from '@element-plus/icons-vue'
-import type { CronJobResp } from '@/types/kubernetes/workload/cronjob'
+import type { CronJobDetailResp } from '@/types/kubernetes/workload/cronjob'
 import { createCronJob } from '@/api/kubernetes/workload/cronjob'
 import BeeButton from '@/components/BeeButton/index.vue'
 import BeePageTitle from '@/components/BeePageTitle/index.vue'
@@ -52,7 +52,7 @@ defineOptions({ name: 'CronJobCreate' })
 const router = useRouter()
 const formRef = ref<FormInstance>()
 const submitting = ref(false)
-const formData = ref<Partial<CronJobResp>>({ name: '', namespace: 'default', clusterId: 'default', schedule: '*/5 * * * *', suspend: false })
+const formData = ref<Partial<CronJobDetailResp>>({ name: '', namespace: 'default', clusterId: 'default', schedule: '*/5 * * * *', suspend: false })
 const formRules = {
   clusterId: [{ required: true, message: '请选择集群', trigger: 'change' }],
   namespace: [{ required: true, message: '请选择命名空间', trigger: 'change' }],

@@ -3,20 +3,17 @@
  * @module api/kubernetes/workload/cronjob
  */
 import type { PageResp } from '@/types/common'
-import type { CronJobQueryReq, CronJobResp, CronJobReq, CronJobLabelsReq, CronJobAnnotationsReq } from '@/types/kubernetes/workload/cronjob'
+import type { CronJobQueryReq, CronJobListResp, CronJobDetailResp, CronJobReq, CronJobLabelsReq, CronJobAnnotationsReq } from '@/types/kubernetes/workload/cronjob'
 import { request } from '@/utils'
 
 /**
  * 获取 CronJob 分页列表
  * @param clusterId - 集群ID
- * @param namespace - 命名空间名称
- * @param params - 查询参数
+ * @param params - 查询参数（namespace 可选，默认查询所有命名空间）
  * @returns 分页后的 CronJob 列表
  */
-export function getCronJobPage(clusterId: string, namespace: string, params: Partial<CronJobQueryReq>): Promise<PageResp<CronJobResp>> {
-  return request.get(`/kubernetes/clusters/${clusterId}/namespaces/${namespace}/cronjobs`, {
-    params: params
-  })
+export function getCronJobPage(clusterId: string, params: Partial<CronJobQueryReq>): Promise<PageResp<CronJobListResp>> {
+  return request.get<PageResp<CronJobListResp>>(`/kubernetes/clusters/${clusterId}/cronjobs`, params)
 }
 
 /**
@@ -26,8 +23,8 @@ export function getCronJobPage(clusterId: string, namespace: string, params: Par
  * @param name - CronJob 名称
  * @returns CronJob 详情
  */
-export function getCronJobDetail(clusterId: string, namespace: string, name: string): Promise<CronJobResp> {
-  return request.get(`/kubernetes/clusters/${clusterId}/namespaces/${namespace}/cronjobs/${name}`)
+export function getCronJobDetail(clusterId: string, namespace: string, name: string): Promise<CronJobDetailResp> {
+  return request.get<CronJobDetailResp>(`/kubernetes/clusters/${clusterId}/namespaces/${namespace}/cronjobs/${name}`)
 }
 
 /**
@@ -37,9 +34,7 @@ export function getCronJobDetail(clusterId: string, namespace: string, name: str
  * @param data - 创建参数
  */
 export function createCronJob(clusterId: string, namespace: string, data: Partial<CronJobReq>): Promise<void> {
-  return request.post(`/kubernetes/clusters/${clusterId}/namespaces/${namespace}/cronjobs`, {
-    data: data
-  })
+  return request.post(`/kubernetes/clusters/${clusterId}/namespaces/${namespace}/cronjobs`, data)
 }
 
 /**
@@ -50,9 +45,7 @@ export function createCronJob(clusterId: string, namespace: string, data: Partia
  * @param data - 更新参数
  */
 export function updateCronJob(clusterId: string, namespace: string, name: string, data: Partial<CronJobReq>): Promise<void> {
-  return request.put(`/kubernetes/clusters/${clusterId}/namespaces/${namespace}/cronjobs/${name}`, {
-    data: data
-  })
+  return request.put(`/kubernetes/clusters/${clusterId}/namespaces/${namespace}/cronjobs/${name}`, data)
 }
 
 /**
@@ -93,7 +86,7 @@ export function triggerCronJob(clusterId: string, namespace: string, name: strin
  * @param data - 标签数据
  */
 export function manageCronJobLabels(clusterId: string, namespace: string, name: string, data: Partial<CronJobLabelsReq>): Promise<void> {
-  return request.put(`/kubernetes/clusters/${clusterId}/namespaces/${namespace}/cronjobs/${name}/labels`, { data: data })
+  return request.put(`/kubernetes/clusters/${clusterId}/namespaces/${namespace}/cronjobs/${name}/labels`, data)
 }
 
 /**
@@ -104,7 +97,7 @@ export function manageCronJobLabels(clusterId: string, namespace: string, name: 
  * @param data - 注解数据
  */
 export function manageCronJobAnnotations(clusterId: string, namespace: string, name: string, data: Partial<CronJobAnnotationsReq>): Promise<void> {
-  return request.put(`/kubernetes/clusters/${clusterId}/namespaces/${namespace}/cronjobs/${name}/annotations`, { data: data })
+  return request.put(`/kubernetes/clusters/${clusterId}/namespaces/${namespace}/cronjobs/${name}/annotations`, data)
 }
 
 /**
@@ -124,7 +117,5 @@ export function deleteCronJob(clusterId: string, namespace: string, name: string
  * @param names - CronJob 名称数组
  */
 export function deleteCronJobs(clusterId: string, namespace: string, names: string[]): Promise<void> {
-  return request.delete(`/kubernetes/clusters/${clusterId}/namespaces/${namespace}/cronjobs/batch`, {
-    data: names
-  })
+  return request.delete(`/kubernetes/clusters/${clusterId}/namespaces/${namespace}/cronjobs/batch`, names)
 }

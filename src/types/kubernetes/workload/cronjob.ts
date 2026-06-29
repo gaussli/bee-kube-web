@@ -4,6 +4,9 @@
  */
 import type { BaseEntity, PageReq } from '@/types/common'
 
+/** CronJob 状态 */
+export type CronJobStatus = 'Active' | 'Suspended' | 'Unknown'
+
 /**
  * CronJob 容器配置
  */
@@ -13,7 +16,7 @@ export interface CronJobContainer {
   /** 镜像 */
   image: string
   /** 镜像拉取策略 */
-  imagePullPolicy: string
+  imagePullPolicy?: string
   /** 资源请求 */
   resources?: {
     requests?: {
@@ -33,55 +36,64 @@ export interface CronJobContainer {
   env?: Array<{
     name: string
     value?: string
-    valueFrom?: {
-      fieldRef?: {
-        fieldPath: string
-      }
-      secretRef?: {
-        name: string
-        key: string
-      }
-      configMapRef?: {
-        name: string
-        key: string
-      }
-    }
+    valueFrom?: Record<string, unknown>
   }>
 }
 
 /**
- * CronJob 响应数据
+ * CronJob 列表响应数据
  * @extends BaseEntity 继承基础实体（含 id, createAt, createBy, updateAt, updateBy）
  */
-export interface CronJobResp extends BaseEntity {
-  /** CronJob 名称 */
-  name: string
-  /** 所属命名空间 */
-  namespace: string
+export interface CronJobListResp extends BaseEntity {
+  /** 资源 UID */
+  uid: string
   /** 所属集群 ID */
   clusterId: string
   /** 所属集群名称 */
   clusterName?: string
+  /** 所属命名空间 */
+  namespace: string
+  /** CronJob 名称 */
+  name: string
+  /** 描述信息 */
+  description?: string
   /** 状态 */
-  status: string
+  status: CronJobStatus
+  /** 状态信息 */
+  statusMsg?: string
   /** 调度表达式 */
   schedule: string
+  /** 最近一次调度时间 */
+  lastSuccessfulTime?: string
+  /** 活动 Job 数量 */
+  activeJobs: number
+  /** 是否可删除 */
+  deletable?: boolean
+}
+
+/**
+ * CronJob 详情响应数据
+ * @extends CronJobListResp 继承列表响应（含 id, uid, clusterId, namespace, name 等）
+ */
+export interface CronJobDetailResp extends CronJobListResp {
   /** 并发策略 */
   concurrencyPolicy: 'Allow' | 'Forbid' | 'Replace'
   /** 是否暂停 */
   suspend: boolean
-  /** 最后执行时间 */
-  lastSuccessfulTime?: string
-  /** 活动 Job 数量 */
-  activeJobs: number
-  /** 使用的镜像列表 */
-  images: string[]
   /** 标签 */
   labels?: Record<string, string>
   /** 注解 */
   annotations?: Record<string, string>
-  /** 是否可删除 */
-  deletable?: boolean
+  /** 使用的镜像列表 */
+  images: string[]
+  /** 成功 Job 保留数 */
+  successfulJobsHistoryLimit?: number
+  /** 失败 Job 保留数 */
+  failedJobsHistoryLimit?: number
+  /** 起始截止秒数 */
+  startingDeadlineSeconds?: number
+  /** 容器配置列表 */
+  containers: CronJobContainer[]
 }
 
 /**
@@ -89,12 +101,14 @@ export interface CronJobResp extends BaseEntity {
  * @extends PageReq 继承分页请求（含 page, pageSize）
  */
 export interface CronJobQueryReq extends PageReq {
+  /** 资源 ID */
+  id: string
   /** CronJob 名称（模糊匹配） */
   name?: string
+  /** 命名空间（可选，不传则查询所有命名空间） */
+  namespace?: string
   /** 状态 */
-  status?: string
-  /** 标签选择器 */
-  labelSelector?: string
+  status?: CronJobStatus
 }
 
 /**

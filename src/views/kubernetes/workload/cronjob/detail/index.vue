@@ -28,11 +28,11 @@
                 <span class="detail-label">暂停:</span><el-tag :type="cronjobData?.suspend ? 'warning' : 'success'" size="small">{{ cronjobData?.suspend ? '是' : '否' }}</el-tag>
               </div>
               <div class="detail-item">
-                <span class="detail-label">活跃任务:</span><span class="detail-value">{{ cronjobData?.active }}</span>
+                <span class="detail-label">活跃任务:</span><span class="detail-value">{{ cronjobData?.activeJobs }}</span>
               </div>
             </div>
             <div class="detail-row">
-              <div class="detail-item"><span class="detail-label">上次调度:</span><TimeCell :time="cronjobData?.lastScheduleTime" /></div>
+              <div class="detail-item"><span class="detail-label">上次调度:</span><TimeCell :time="cronjobData?.lastSuccessfulTime" /></div>
               <div class="detail-item">
                 <span class="detail-label">创建时间:</span><span class="detail-value">{{ cronjobData?.createAt }}</span>
               </div>
@@ -56,7 +56,7 @@
 import { ref, onMounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { Clock, ArrowLeft, EditPen } from '@element-plus/icons-vue'
-import type { CronJobResp } from '@/types/kubernetes/workload/cronjob'
+import type { CronJobDetailResp } from '@/types/kubernetes/workload/cronjob'
 import { getCronJobDetail } from '@/api/kubernetes/workload/cronjob'
 import BeeButton from '@/components/BeeButton/index.vue'
 import BeePageTitle from '@/components/BeePageTitle/index.vue'
@@ -71,7 +71,7 @@ const clusterId = ref(route.params.clusterId as string)
 const namespace = ref(route.query.namespace as string)
 const cronjobName = ref(route.query.name as string)
 const loading = ref(false)
-const cronjobData = ref<CronJobResp>()
+const cronjobData = ref<CronJobDetailResp>()
 const activeTab = ref('basic')
 async function loadData() {
   if (!clusterId.value || !namespace.value || !cronjobName.value) return

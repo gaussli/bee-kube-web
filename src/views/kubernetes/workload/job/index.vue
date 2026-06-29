@@ -2,11 +2,7 @@
   <BeePage class="job-page">
     <!-- 页面标题 -->
     <BeeCard class="job-page__header">
-      <BeePageTitle
-        icon="kubernetes-namespace"
-        title="任务"
-        description="任务（Job）用于运行一次性批量任务，任务完成后 Pod 会自动终止，适用于数据处理、备份、定时计算等场景。"
-      />
+      <BeePageTitle icon="kubernetes-namespace" title="任务" description="任务（Job）用于运行一次性批量任务，任务完成后 Pod 会自动终止，适用于数据处理、备份、定时计算等场景。" />
     </BeeCard>
 
     <!-- 页面内容 -->
@@ -73,13 +69,7 @@
                   <BeeCircleButton icon="basic-more" tooltip="更多" />
                   <template #dropdown>
                     <BeeDropdownItem value="yamledit" label="编辑 YAML" icon="basic-code" @click="handleEditYaml(row)" />
-                    <BeeDropdownItem
-                      v-if="hasPermission('kubernetes:workload:job:delete') && row.deletable !== false"
-                      value="delete"
-                      label="删除"
-                      icon="basic-delete"
-                      @click="handleDelete(row)"
-                    />
+                    <BeeDropdownItem v-if="hasPermission('kubernetes:workload:job:delete') && row.deletable !== false" value="delete" label="删除" icon="basic-delete" @click="handleDelete(row)" />
                   </template>
                 </BeeDropdown>
               </div>
@@ -183,7 +173,7 @@ const pagination = reactive({
 
 /** 命名空间选项（Job 为命名空间级资源，可选筛选） */
 const namespaceOptions = ref([
-  { label: '全部命名空间', value: '' },
+  { label: '全部命名空间', value: undefined },
   { label: 'default', value: 'default' },
   { label: 'kube-system', value: 'kube-system' },
   { label: 'data', value: 'data' },

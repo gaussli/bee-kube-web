@@ -45,7 +45,7 @@ import { ref, onMounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { ElMessage } from 'element-plus'
 import { Clock, Plus, Delete, Close, Check, InfoFilled } from '@element-plus/icons-vue'
-import type { CronJobResp } from '@/types/kubernetes/workload/cronjob'
+import type { CronJobDetailResp } from '@/types/kubernetes/workload/cronjob'
 import { getCronJobDetail, updateCronJob } from '@/api/kubernetes/workload/cronjob'
 import BeeButton from '@/components/BeeButton/index.vue'
 import BeePageTitle from '@/components/BeePageTitle/index.vue'
@@ -58,8 +58,8 @@ const namespace = ref(route.query.namespace as string)
 const cronjobName = ref(route.query.name as string)
 const loading = ref(false)
 const submitting = ref(false)
-const cronjobData = ref<CronJobResp>()
-const formData = ref<Partial<CronJobResp>>({ schedule: '', suspend: false })
+const cronjobData = ref<CronJobDetailResp>()
+const formData = ref<Partial<CronJobDetailResp>>({ schedule: '', suspend: false })
 const labelList = ref<Array<{ key: string; value: string }>>([])
 const formRules = { schedule: [{ required: true, message: '请输入调度规则', trigger: 'blur' }] }
 async function loadData() {

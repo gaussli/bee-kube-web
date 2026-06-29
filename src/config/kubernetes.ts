@@ -1,4 +1,4 @@
-import { COLOR_DANGER, COLOR_GRAY_70, COLOR_PRIMARY, COLOR_SUCCESS } from '@/config/color'
+import { COLOR_DANGER, COLOR_GRAY_70, COLOR_PRIMARY, COLOR_SUCCESS, COLOR_WARNING } from '@/config/color'
 
 /**
  * 状态配置项
@@ -88,6 +88,14 @@ export const JOB_STATUS_OPTIONS: StatusOption[] = [
   { value: 'Active', label: '运行中', labelEn: 'Active', color: COLOR_SUCCESS },
   { value: 'Succeeded', label: '已完成', labelEn: 'Succeeded', color: COLOR_SUCCESS },
   { value: 'Failed', label: '已失败', labelEn: 'Failed', color: COLOR_DANGER }
+]
+
+/** CronJob 状态配置选项 */
+export const CRONJOB_STATUS_OPTIONS: StatusOption[] = [
+  { value: undefined, label: '全部状态', labelEn: 'ALL', color: COLOR_SUCCESS },
+  { value: 'Active', label: '运行中', labelEn: 'Active', color: COLOR_SUCCESS },
+  { value: 'Suspended', label: '已暂停', labelEn: 'Suspended', color: COLOR_WARNING },
+  { value: 'Unknown', label: '未知', labelEn: 'Unknown', color: COLOR_GRAY_70 }
 ]
 
 /** 证书即将过期告警阈值（天） */
