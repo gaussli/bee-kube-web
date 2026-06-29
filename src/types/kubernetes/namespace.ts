@@ -146,6 +146,25 @@ export interface NamespaceMetadataResp extends Metadata {}
 export interface NamespaceEventResp extends Event {}
 
 /**
+ * 命名空间查询模式枚举
+ * - normal: 标准分页查询，返回完整字段
+ * - simple: 简化查询，不分页，仅返回 id、uid、name
+ */
+export type NamespaceMode = 'normal' | 'simple'
+
+/**
+ * 命名空间简化响应数据
+ */
+export interface NamespaceSimpleListResp {
+  /** 资源 ID */
+  id: string
+  /** 资源 UID */
+  uid: string
+  /** 命名空间名称 */
+  name: string
+}
+
+/**
  * 命名空间查询请求参数
  * @extends PageReq 继承分页请求（含 page, pageSize）
  */
@@ -156,6 +175,8 @@ export interface NamespaceQueryReq extends PageReq {
   name: string
   /** 状态 */
   status: string
+  /** 查询模式：normal-标准分页 / simple-不分页仅返回 id/uid/name */
+  mode?: NamespaceMode
 }
 
 /**

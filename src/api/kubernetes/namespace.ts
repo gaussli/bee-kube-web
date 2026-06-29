@@ -3,17 +3,27 @@
  * @module api/kubernetes/namespace
  */
 import type { PageResp } from '@/types/common'
-import type { NamespaceQueryReq, NamespaceListResp, NamespaceDetailResp, NamespaceLabelsReq, NamespaceReq, NamespaceAnnotationsReq, NamespaceQuotaReq, NamespaceImportReq } from '@/types/kubernetes/namespace'
+import type {
+  NamespaceQueryReq,
+  NamespaceListResp,
+  NamespaceDetailResp,
+  NamespaceSimpleListResp,
+  NamespaceLabelsReq,
+  NamespaceReq,
+  NamespaceAnnotationsReq,
+  NamespaceQuotaReq,
+  NamespaceImportReq
+} from '@/types/kubernetes/namespace'
 import { request } from '@/utils'
 
 /**
  * 获取命名空间分页列表
  * @param clusterId - 集群ID
- * @param params - 查询参数
- * @returns 分页后的命名空间列表
+ * @param params - 查询参数，mode 为 simple 时不翻页，仅返回 id/uid/name
+ * @returns 分页后的命名空间列表（normal）或简化列表（simple）
  */
-export function getNamespacePage(clusterId: string, params: Partial<NamespaceQueryReq>): Promise<PageResp<NamespaceListResp>> {
-  return request.get<PageResp<NamespaceListResp>>(`/kubernetes/clusters/${clusterId}/namespaces`, params)
+export function getNamespacePage(clusterId: string, params: Partial<NamespaceQueryReq>): Promise<PageResp<NamespaceListResp> | NamespaceSimpleListResp[]> {
+  return request.get<PageResp<NamespaceListResp> | NamespaceSimpleListResp[]>(`/kubernetes/clusters/${clusterId}/namespaces`, params)
 }
 
 /**

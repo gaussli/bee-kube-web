@@ -3,7 +3,7 @@
  * @module mock/kubernetes/namespace
  */
 import type { PageResp } from '@/types/common'
-import type { NamespaceQueryReq, NamespaceReq, NamespaceListResp, NamespaceDetailResp, NamespaceLabelsReq, NamespaceAnnotationsReq, NamespaceQuotaReq, NamespaceImportReq } from '@/types/kubernetes/namespace'
+import type { NamespaceQueryReq, NamespaceReq, NamespaceListResp, NamespaceDetailResp, NamespaceSimpleListResp, NamespaceLabelsReq, NamespaceAnnotationsReq, NamespaceQuotaReq, NamespaceImportReq } from '@/types/kubernetes/namespace'
 import { generateId } from '@/mock/utils'
 
 /**
@@ -28,7 +28,7 @@ export default [
   {
     method: 'get',
     url: '/kubernetes/clusters/:clusterId/namespaces',
-    handler: (pathParams: Record<string, string>, params: Partial<NamespaceQueryReq>): PageResp<NamespaceListResp> => getNamespacePage(pathParams.clusterId, params)
+    handler: (pathParams: Record<string, string>, params: Partial<NamespaceQueryReq>): PageResp<NamespaceListResp> | NamespaceSimpleListResp[] => getNamespacePage(pathParams.clusterId, params)
   },
   {
     method: 'get',
@@ -101,10 +101,10 @@ export default [
  * 获取命名空间分页列表
  * @param clusterId - 集群ID
  * @param params - 查询参数
- * @returns 分页数据
+ * @returns 分页数据（normal）或简化列表（simple）
  */
-function getNamespacePage(_clusterId: string, params: Partial<NamespaceQueryReq>): PageResp<NamespaceListResp> {
-  const { id, name, status, page = 1, pageSize = 10 } = params || {}
+function getNamespacePage(_clusterId: string, params: Partial<NamespaceQueryReq>): PageResp<NamespaceListResp> | NamespaceSimpleListResp[] {
+  const { id, name, status, mode = 'normal', page = 1, pageSize = 10 } = params || {}
 
   let filtered = [...mockNamespaces]
 
@@ -129,6 +129,15 @@ function getNamespacePage(_clusterId: string, params: Partial<NamespaceQueryReq>
       seenIds.add(n.id)
       return true
     })
+  }
+
+  // simple 模式：不分页，仅返回 id、uid、name
+  if (mode === 'simple') {
+    return filtered.map(ns => ({
+      id: ns.id,
+      uid: ns.uid,
+      name: ns.name
+    }))
   }
 
   const total = filtered.length

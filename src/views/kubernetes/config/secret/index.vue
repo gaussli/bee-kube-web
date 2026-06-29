@@ -118,7 +118,9 @@ import { onMounted, reactive, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { ElMessage } from 'element-plus'
 import type { SecretQueryReq, SecretListResp } from '@/types/kubernetes/config/secret'
+import type { NamespaceSimpleListResp } from '@/types/kubernetes/namespace'
 import { getSecretPage, deleteSecret, deleteSecrets } from '@/api/kubernetes/config/secret'
+import { getNamespacePage } from '@/api/kubernetes/namespace'
 import BeeAuditCell from '@/components/BeeAuditCell/index.vue'
 import BeeButton from '@/components/BeeButton/index.vue'
 import BeeCard from '@/components/BeeCard/index.vue'
@@ -161,13 +163,26 @@ const pagination = reactive({
 })
 
 /** 命名空间选项 */
-const namespaceOptions = ref([
-  { label: '全部命名空间', value: undefined },
-  { label: 'default', value: 'default' },
-  { label: 'app-frontend', value: 'app-frontend' },
-  { label: 'app-backend', value: 'app-backend' },
-  { label: 'monitoring', value: 'monitoring' }
+const namespaceOptions = ref<{ label: string; value: string | undefined }[]>([
+  { label: '全部命名空间', value: undefined }
 ])
+
+/**
+ * 加载命名空间选项
+ * @remarks 通过 getNamespacePage mode=simple 获取简化列表，转换后填充下拉选项
+ */
+async function loadNamespaceOptions() {
+  if (!clusterId.value) return
+  try {
+    const namespaces = await getNamespacePage(clusterId.value, { mode: 'simple' }) as NamespaceSimpleListResp[]
+    namespaceOptions.value = [
+      { label: '全部命名空间', value: undefined },
+      ...namespaces.map(ns => ({ label: ns.name, value: ns.name }))
+    ]
+  } catch {
+    // 加载失败时保留默认选项
+  }
+}
 
 /** Secret 类型选项 */
 const typeOptions = ref([
@@ -304,6 +319,7 @@ async function handleConfirmBatchDelete() {
 }
 
 onMounted(() => {
+  loadNamespaceOptions()
   loadData()
 })
 </script>
