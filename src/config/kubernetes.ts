@@ -82,5 +82,13 @@ export const DAEMONSET_STATUS_OPTIONS: StatusOption[] = [
   { value: 'Unknown', label: '未知', labelEn: 'Unknown', color: COLOR_GRAY_70 }
 ]
 
+/** Job 状态配置选项 */
+export const JOB_STATUS_OPTIONS: StatusOption[] = [
+  { value: undefined, label: '全部状态', labelEn: 'ALL', color: COLOR_SUCCESS },
+  { value: 'Active', label: '运行中', labelEn: 'Active', color: COLOR_SUCCESS },
+  { value: 'Succeeded', label: '已完成', labelEn: 'Succeeded', color: COLOR_SUCCESS },
+  { value: 'Failed', label: '已失败', labelEn: 'Failed', color: COLOR_DANGER }
+]
+
 /** 证书即将过期告警阈值（天） */
 export const CERT_EXPIRE_WARNING_DAYS = 30
