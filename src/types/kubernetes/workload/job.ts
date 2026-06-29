@@ -40,16 +40,12 @@ export interface JobListResp extends BaseEntity {
   completions: number
   /** 成功数 */
   succeeded: number
-  /** 失败数 */
-  failed: number
   /** 活动数 */
   active: number
   /** 开始时间 */
   startTime?: string
   /** 完成时间 */
   completionTime?: string
-  /** 使用的镜像列表 */
-  images: string[]
   /** 是否可删除 */
   deletable?: boolean
 }
