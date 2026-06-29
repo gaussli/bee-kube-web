@@ -4,12 +4,12 @@
  */
 import type { PageResp } from '@/types/common'
 import type {
-  StatefulSetQueryReq,
-  StatefulSetListResp,
-  StatefulSetDetailResp,
-  StatefulSetReq,
-  StatefulSetLabelsReq,
   StatefulSetAnnotationsReq,
+  StatefulSetDetailResp,
+  StatefulSetLabelsReq,
+  StatefulSetListResp,
+  StatefulSetQueryReq,
+  StatefulSetReq,
   StatefulSetScaleReq,
   StatefulSetYamlReq
 } from '@/types/kubernetes/workload/statefulset'
@@ -53,7 +53,7 @@ export function getStatefulSetYaml(clusterId: string, namespace: string, name: s
  * @param namespace - 命名空间名称
  * @param data - 创建参数
  */
-export function createStatefulSet(clusterId: string, namespace: string, data: Partial<StatefulSetReq>): Promise<void> {
+export function createStatefulSet(clusterId: string, namespace: string, data: StatefulSetReq): Promise<void> {
   return request.post(`/kubernetes/clusters/${clusterId}/namespaces/${namespace}/statefulsets`, data)
 }
 
@@ -69,44 +69,13 @@ export function updateStatefulSet(clusterId: string, namespace: string, name: st
 }
 
 /**
- * 扩缩容 StatefulSet
- * @param clusterId - 集群ID
- * @param namespace - 命名空间名称
- * @param name - StatefulSet 名称
- * @param data - 扩缩容参数
- */
-export function scaleStatefulSet(clusterId: string, namespace: string, name: string, data: Partial<StatefulSetScaleReq>): Promise<void> {
-  return request.post(`/kubernetes/clusters/${clusterId}/namespaces/${namespace}/statefulsets/${name}/scale`, data)
-}
-
-/**
- * 重启 StatefulSet
- * @param clusterId - 集群ID
- * @param namespace - 命名空间名称
- * @param name - StatefulSet 名称
- */
-export function restartStatefulSet(clusterId: string, namespace: string, name: string): Promise<void> {
-  return request.post(`/kubernetes/clusters/${clusterId}/namespaces/${namespace}/statefulsets/${name}/restart`)
-}
-
-/**
- * 回滚 StatefulSet
- * @param clusterId - 集群ID
- * @param namespace - 命名空间名称
- * @param name - StatefulSet 名称
- */
-export function rollbackStatefulSet(clusterId: string, namespace: string, name: string): Promise<void> {
-  return request.post(`/kubernetes/clusters/${clusterId}/namespaces/${namespace}/statefulsets/${name}/rollback`)
-}
-
-/**
  * 更新 StatefulSet 标签
  * @param clusterId - 集群ID
  * @param namespace - 命名空间名称
  * @param name - StatefulSet 名称
  * @param data - 标签数据
  */
-export function manageStatefulSetLabels(clusterId: string, namespace: string, name: string, data: Partial<StatefulSetLabelsReq>): Promise<void> {
+export function manageStatefulSetLabels(clusterId: string, namespace: string, name: string, data: StatefulSetLabelsReq): Promise<void> {
   return request.post(`/kubernetes/clusters/${clusterId}/namespaces/${namespace}/statefulsets/${name}/labels`, data)
 }
 
@@ -117,7 +86,7 @@ export function manageStatefulSetLabels(clusterId: string, namespace: string, na
  * @param name - StatefulSet 名称
  * @param data - 注解数据
  */
-export function manageStatefulSetAnnotations(clusterId: string, namespace: string, name: string, data: Partial<StatefulSetAnnotationsReq>): Promise<void> {
+export function manageStatefulSetAnnotations(clusterId: string, namespace: string, name: string, data: StatefulSetAnnotationsReq): Promise<void> {
   return request.post(`/kubernetes/clusters/${clusterId}/namespaces/${namespace}/statefulsets/${name}/annotations`, data)
 }
 
@@ -144,19 +113,48 @@ export function deleteStatefulSets(clusterId: string, namespace: string, names: 
 /**
  * 导出 StatefulSet CSV
  * @param clusterId - 集群ID
- * @param namespace - 命名空间名称
  * @param params - 查询参数
  */
-export function exportStatefulSet(clusterId: string, namespace: string, params: Partial<StatefulSetQueryReq>): Promise<void> {
-  return request.get(`/kubernetes/clusters/${clusterId}/namespaces/${namespace}/statefulsets/export`, { params: params, responseType: 'blob' })
+export function exportStatefulSet(clusterId: string, params: Partial<StatefulSetQueryReq>): Promise<void> {
+  return request.get(`/kubernetes/clusters/${clusterId}/statefulsets/export`, { params: params, responseType: 'blob' })
 }
 
 /**
  * 导入 StatefulSet
  * @param clusterId - 集群ID
- * @param namespace - 命名空间名称
  * @param data - YAML 配置
  */
-export function importStatefulSet(clusterId: string, namespace: string, data: Partial<StatefulSetYamlReq>): Promise<void> {
-  return request.post(`/kubernetes/clusters/${clusterId}/namespaces/${namespace}/statefulsets/import`, data)
+export function importStatefulSet(clusterId: string, data: StatefulSetYamlReq): Promise<void> {
+  return request.post(`/kubernetes/clusters/${clusterId}/statefulsets/import`, data)
+}
+
+/**
+ * 扩缩容 StatefulSet
+ * @param clusterId - 集群ID
+ * @param namespace - 命名空间名称
+ * @param name - StatefulSet 名称
+ * @param data - 扩缩容参数
+ */
+export function scaleStatefulSet(clusterId: string, namespace: string, name: string, data: StatefulSetScaleReq): Promise<void> {
+  return request.post(`/kubernetes/clusters/${clusterId}/namespaces/${namespace}/statefulsets/${name}/scale`, data)
+}
+
+/**
+ * 重启 StatefulSet
+ * @param clusterId - 集群ID
+ * @param namespace - 命名空间名称
+ * @param name - StatefulSet 名称
+ */
+export function restartStatefulSet(clusterId: string, namespace: string, name: string): Promise<void> {
+  return request.post(`/kubernetes/clusters/${clusterId}/namespaces/${namespace}/statefulsets/${name}/restart`)
+}
+
+/**
+ * 回滚 StatefulSet
+ * @param clusterId - 集群ID
+ * @param namespace - 命名空间名称
+ * @param name - StatefulSet 名称
+ */
+export function rollbackStatefulSet(clusterId: string, namespace: string, name: string): Promise<void> {
+  return request.post(`/kubernetes/clusters/${clusterId}/namespaces/${namespace}/statefulsets/${name}/rollback`)
 }

@@ -3,7 +3,7 @@
  * @module mock/kubernetes/workload/daemonset
  */
 import type { PageResp } from '@/types/common'
-import type { DaemonSetQueryReq, DaemonSetReq, DaemonSetListResp, DaemonSetDetailResp, DaemonSetLabelsReq, DaemonSetAnnotationsReq, DaemonSetYamlReq } from '@/types/kubernetes/workload/daemonset'
+import type { DaemonSetAnnotationsReq, DaemonSetDetailResp, DaemonSetLabelsReq, DaemonSetListResp, DaemonSetQueryReq, DaemonSetReq, DaemonSetYamlReq } from '@/types/kubernetes/workload/daemonset'
 import { generateId } from '@/mock/utils'
 
 /**
@@ -19,7 +19,8 @@ import { generateId } from '@/mock/utils'
  * - POST /kubernetes/clusters/:clusterId/namespaces/:namespace/daemonsets/:name/annotations - 更新注解
  * - DELETE /kubernetes/clusters/:clusterId/namespaces/:namespace/daemonsets/:name - 删除 DaemonSet
  * - DELETE /kubernetes/clusters/:clusterId/namespaces/:namespace/daemonsets/batch - 批量删除
- * - POST /kubernetes/clusters/:clusterId/namespaces/:namespace/daemonsets/import - 导入 DaemonSet
+ * - GET /kubernetes/clusters/:clusterId/daemonsets/export - 导出 CSV
+ * - POST /kubernetes/clusters/:clusterId/daemonsets/import - 导入 DaemonSet
  */
 export default [
   {
@@ -40,7 +41,7 @@ export default [
   {
     method: 'post',
     url: '/kubernetes/clusters/:clusterId/namespaces/:namespace/daemonsets',
-    handler: (pathParams: Record<string, string>, data: Partial<DaemonSetReq>): void => createDaemonSet(pathParams.clusterId, pathParams.namespace, data)
+    handler: (pathParams: Record<string, string>, data: DaemonSetReq): void => createDaemonSet(pathParams.clusterId, pathParams.namespace, data)
   },
   {
     method: 'put',
@@ -55,12 +56,12 @@ export default [
   {
     method: 'post',
     url: '/kubernetes/clusters/:clusterId/namespaces/:namespace/daemonsets/:name/labels',
-    handler: (pathParams: Record<string, string>, data: Partial<DaemonSetLabelsReq>): void => manageDaemonSetLabels(pathParams.clusterId, pathParams.namespace, pathParams.name, data)
+    handler: (pathParams: Record<string, string>, data: DaemonSetLabelsReq): void => manageDaemonSetLabels(pathParams.clusterId, pathParams.namespace, pathParams.name, data)
   },
   {
     method: 'post',
     url: '/kubernetes/clusters/:clusterId/namespaces/:namespace/daemonsets/:name/annotations',
-    handler: (pathParams: Record<string, string>, data: Partial<DaemonSetAnnotationsReq>): void => manageDaemonSetAnnotations(pathParams.clusterId, pathParams.namespace, pathParams.name, data)
+    handler: (pathParams: Record<string, string>, data: DaemonSetAnnotationsReq): void => manageDaemonSetAnnotations(pathParams.clusterId, pathParams.namespace, pathParams.name, data)
   },
   {
     method: 'delete',
@@ -73,9 +74,14 @@ export default [
     handler: (pathParams: Record<string, string>, data: string[]): void => deleteDaemonSets(pathParams.clusterId, pathParams.namespace, data)
   },
   {
+    method: 'get',
+    url: '/kubernetes/clusters/:clusterId/daemonsets/export',
+    handler: (pathParams: Record<string, string>, params: Partial<DaemonSetQueryReq>): void => exportDaemonSet(pathParams.clusterId, params)
+  },
+  {
     method: 'post',
-    url: '/kubernetes/clusters/:clusterId/namespaces/:namespace/daemonsets/import',
-    handler: (pathParams: Record<string, string>, data: Partial<DaemonSetYamlReq>): void => importDaemonSet(pathParams.clusterId, pathParams.namespace, data)
+    url: '/kubernetes/clusters/:clusterId/daemonsets/import',
+    handler: (pathParams: Record<string, string>, data: DaemonSetYamlReq): void => importDaemonSet(pathParams.clusterId, data)
   }
 ]
 
@@ -194,7 +200,7 @@ status:
  * @param namespace - 命名空间
  * @param data - 创建参数
  */
-function createDaemonSet(clusterId: string, namespace: string, data: Partial<DaemonSetReq>): void {
+function createDaemonSet(clusterId: string, namespace: string, data: DaemonSetReq): void {
   console.log('[Mock] createDaemonSet', { clusterId, namespace, data })
 }
 
@@ -226,7 +232,7 @@ function restartDaemonSet(clusterId: string, namespace: string, name: string): v
  * @param name - DaemonSet 名称
  * @param data - 标签数据
  */
-function manageDaemonSetLabels(clusterId: string, namespace: string, name: string, data: Partial<DaemonSetLabelsReq>): void {
+function manageDaemonSetLabels(clusterId: string, namespace: string, name: string, data: DaemonSetLabelsReq): void {
   console.log('[Mock] manageDaemonSetLabels', { clusterId, namespace, name, data })
 }
 
@@ -237,7 +243,7 @@ function manageDaemonSetLabels(clusterId: string, namespace: string, name: strin
  * @param name - DaemonSet 名称
  * @param data - 注解数据
  */
-function manageDaemonSetAnnotations(clusterId: string, namespace: string, name: string, data: Partial<DaemonSetAnnotationsReq>): void {
+function manageDaemonSetAnnotations(clusterId: string, namespace: string, name: string, data: DaemonSetAnnotationsReq): void {
   console.log('[Mock] manageDaemonSetAnnotations', { clusterId, namespace, name, data })
 }
 
@@ -262,13 +268,21 @@ function deleteDaemonSets(clusterId: string, namespace: string, names: string[])
 }
 
 /**
+ * 导出 DaemonSet CSV
+ * @param clusterId - 集群ID
+ * @param params - 查询参数
+ */
+function exportDaemonSet(clusterId: string, params: Partial<DaemonSetQueryReq>): void {
+  console.log('[Mock] exportDaemonSet', { clusterId, params })
+}
+
+/**
  * 导入 DaemonSet
  * @param clusterId - 集群ID
- * @param namespace - 命名空间
  * @param data - YAML 配置
  */
-function importDaemonSet(clusterId: string, namespace: string, data: Partial<DaemonSetYamlReq>): void {
-  console.log('[Mock] importDaemonSet', { clusterId, namespace, data })
+function importDaemonSet(clusterId: string, data: DaemonSetYamlReq): void {
+  console.log('[Mock] importDaemonSet', { clusterId, data })
 }
 
 /**

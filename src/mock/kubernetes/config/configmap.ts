@@ -3,7 +3,7 @@
  * @module mock/kubernetes/config/configmap
  */
 import type { PageResp } from '@/types/common'
-import type { ConfigMapListResp, ConfigMapDetailResp, ConfigMapQueryReq, ConfigMapReq, ConfigMapDataReq, ConfigMapLabelsReq, ConfigMapAnnotationsReq } from '@/types/kubernetes/config/configmap'
+import type { ConfigMapAnnotationsReq, ConfigMapDataReq, ConfigMapDetailResp, ConfigMapLabelsReq, ConfigMapListResp, ConfigMapQueryReq, ConfigMapReq, ConfigMapYamlReq } from '@/types/kubernetes/config/configmap'
 import { generateId } from '@/mock/utils'
 
 /**
@@ -11,6 +11,7 @@ import { generateId } from '@/mock/utils'
  * @remarks
  * - GET /kubernetes/clusters/:clusterId/configmaps - 获取 ConfigMap 分页列表
  * - GET /kubernetes/clusters/:clusterId/namespaces/:namespace/configmaps/:name - 获取 ConfigMap 详情
+ * - GET /kubernetes/clusters/:clusterId/namespaces/:namespace/configmaps/:name/yaml - 查看 YAML
  * - POST /kubernetes/clusters/:clusterId/namespaces/:namespace/configmaps - 创建 ConfigMap
  * - PUT /kubernetes/clusters/:clusterId/namespaces/:namespace/configmaps/:name - 更新 ConfigMap
  * - PUT /kubernetes/clusters/:clusterId/namespaces/:namespace/configmaps/:name/data - 更新数据
@@ -18,6 +19,8 @@ import { generateId } from '@/mock/utils'
  * - PUT /kubernetes/clusters/:clusterId/namespaces/:namespace/configmaps/:name/annotations - 更新注解
  * - DELETE /kubernetes/clusters/:clusterId/namespaces/:namespace/configmaps/:name - 删除 ConfigMap
  * - DELETE /kubernetes/clusters/:clusterId/namespaces/:namespace/configmaps/batch - 批量删除
+ * - GET /kubernetes/clusters/:clusterId/configmaps/export - 导出 CSV
+ * - POST /kubernetes/clusters/:clusterId/configmaps/import - 导入 ConfigMap
  */
 export default [
   {
@@ -31,9 +34,14 @@ export default [
     handler: (pathParams: Record<string, string>): ConfigMapDetailResp => getConfigMapDetail(pathParams.clusterId, pathParams.namespace, pathParams.name)
   },
   {
+    method: 'get',
+    url: '/kubernetes/clusters/:clusterId/namespaces/:namespace/configmaps/:name/yaml',
+    handler: (pathParams: Record<string, string>): string => getConfigMapYaml(pathParams.clusterId, pathParams.namespace, pathParams.name)
+  },
+  {
     method: 'post',
     url: '/kubernetes/clusters/:clusterId/namespaces/:namespace/configmaps',
-    handler: (pathParams: Record<string, string>, data: Partial<ConfigMapReq>): void => createConfigMap(pathParams.clusterId, pathParams.namespace, data)
+    handler: (pathParams: Record<string, string>, data: ConfigMapReq): void => createConfigMap(pathParams.clusterId, pathParams.namespace, data)
   },
   {
     method: 'put',
@@ -43,17 +51,17 @@ export default [
   {
     method: 'put',
     url: '/kubernetes/clusters/:clusterId/namespaces/:namespace/configmaps/:name/data',
-    handler: (pathParams: Record<string, string>, data: Partial<ConfigMapDataReq>): void => manageConfigMapData(pathParams.clusterId, pathParams.namespace, pathParams.name, data)
+    handler: (pathParams: Record<string, string>, data: ConfigMapDataReq): void => manageConfigMapData(pathParams.clusterId, pathParams.namespace, pathParams.name, data)
   },
   {
     method: 'put',
     url: '/kubernetes/clusters/:clusterId/namespaces/:namespace/configmaps/:name/labels',
-    handler: (pathParams: Record<string, string>, data: Partial<ConfigMapLabelsReq>): void => manageConfigMapLabels(pathParams.clusterId, pathParams.namespace, pathParams.name, data)
+    handler: (pathParams: Record<string, string>, data: ConfigMapLabelsReq): void => manageConfigMapLabels(pathParams.clusterId, pathParams.namespace, pathParams.name, data)
   },
   {
     method: 'put',
     url: '/kubernetes/clusters/:clusterId/namespaces/:namespace/configmaps/:name/annotations',
-    handler: (pathParams: Record<string, string>, data: Partial<ConfigMapAnnotationsReq>): void => manageConfigMapAnnotations(pathParams.clusterId, pathParams.namespace, pathParams.name, data)
+    handler: (pathParams: Record<string, string>, data: ConfigMapAnnotationsReq): void => manageConfigMapAnnotations(pathParams.clusterId, pathParams.namespace, pathParams.name, data)
   },
   {
     method: 'delete',
@@ -63,7 +71,17 @@ export default [
   {
     method: 'delete',
     url: '/kubernetes/clusters/:clusterId/namespaces/:namespace/configmaps/batch',
-    handler: (_pathParams: Record<string, string>, _params: any, data: string[]): void => deleteConfigMaps(_pathParams.clusterId, _pathParams.namespace, data)
+    handler: (pathParams: Record<string, string>, data: string[]): void => deleteConfigMaps(pathParams.clusterId, pathParams.namespace, data)
+  },
+  {
+    method: 'get',
+    url: '/kubernetes/clusters/:clusterId/configmaps/export',
+    handler: (pathParams: Record<string, string>, params: Partial<ConfigMapQueryReq>): void => exportConfigMap(pathParams.clusterId, params)
+  },
+  {
+    method: 'post',
+    url: '/kubernetes/clusters/:clusterId/configmaps/import',
+    handler: (pathParams: Record<string, string>, data: ConfigMapYamlReq): void => importConfigMap(pathParams.clusterId, data)
   }
 ]
 
@@ -128,12 +146,38 @@ function getConfigMapDetail(clusterId: string, namespace: string, name: string):
 }
 
 /**
+ * 查看 ConfigMap YAML
+ * @param clusterId - 集群ID
+ * @param namespace - 命名空间名称
+ * @param name - ConfigMap 名称
+ * @returns ConfigMap YAML 配置
+ */
+function getConfigMapYaml(clusterId: string, namespace: string, name: string): string {
+  const cm = mockConfigMaps.find(c => c.clusterId === clusterId && c.namespace === namespace && c.name === name)
+  if (!cm) {
+    console.error('[Get ConfigMap Yaml] can not find configmap:', clusterId, namespace, name)
+    return ''
+  }
+
+  return `apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: ${cm.name}
+  namespace: ${cm.namespace}
+  creationTimestamp: "${cm.createAt}"
+  uid: "${cm.uid}"
+data:
+  key1: value1
+  key2: value2`
+}
+
+/**
  * 创建 ConfigMap
  * @param clusterId - 集群ID
  * @param namespace - 命名空间名称
  * @param data - 创建数据
  */
-function createConfigMap(clusterId: string, namespace: string, data: Partial<ConfigMapReq>): void {
+function createConfigMap(clusterId: string, namespace: string, data: ConfigMapReq): void {
   console.log('[Mock] createConfigMap', { clusterId, namespace, data })
 }
 
@@ -155,7 +199,7 @@ function updateConfigMap(clusterId: string, namespace: string, name: string, dat
  * @param name - ConfigMap 名称
  * @param data - 数据参数
  */
-function manageConfigMapData(clusterId: string, namespace: string, name: string, data: Partial<ConfigMapDataReq>): void {
+function manageConfigMapData(clusterId: string, namespace: string, name: string, data: ConfigMapDataReq): void {
   console.log('[Mock] manageConfigMapData', { clusterId, namespace, name, data })
 }
 
@@ -166,7 +210,7 @@ function manageConfigMapData(clusterId: string, namespace: string, name: string,
  * @param name - ConfigMap 名称
  * @param data - 标签数据
  */
-function manageConfigMapLabels(clusterId: string, namespace: string, name: string, data: Partial<ConfigMapLabelsReq>): void {
+function manageConfigMapLabels(clusterId: string, namespace: string, name: string, data: ConfigMapLabelsReq): void {
   console.log('[Mock] manageConfigMapLabels', { clusterId, namespace, name, data })
 }
 
@@ -177,7 +221,7 @@ function manageConfigMapLabels(clusterId: string, namespace: string, name: strin
  * @param name - ConfigMap 名称
  * @param data - 注解数据
  */
-function manageConfigMapAnnotations(clusterId: string, namespace: string, name: string, data: Partial<ConfigMapAnnotationsReq>): void {
+function manageConfigMapAnnotations(clusterId: string, namespace: string, name: string, data: ConfigMapAnnotationsReq): void {
   console.log('[Mock] manageConfigMapAnnotations', { clusterId, namespace, name, data })
 }
 
@@ -199,6 +243,24 @@ function deleteConfigMap(clusterId: string, namespace: string, name: string): vo
  */
 function deleteConfigMaps(clusterId: string, namespace: string, names: string[]): void {
   console.log('[Mock] deleteConfigMaps', { clusterId, namespace, names })
+}
+
+/**
+ * 导出 ConfigMap CSV
+ * @param clusterId - 集群ID
+ * @param params - 查询参数
+ */
+function exportConfigMap(clusterId: string, params: Partial<ConfigMapQueryReq>): void {
+  console.log('[Mock] exportConfigMap', { clusterId, params })
+}
+
+/**
+ * 导入 ConfigMap
+ * @param clusterId - 集群ID
+ * @param data - YAML 配置
+ */
+function importConfigMap(clusterId: string, data: ConfigMapYamlReq): void {
+  console.log('[Mock] importConfigMap', { clusterId, data })
 }
 
 /**

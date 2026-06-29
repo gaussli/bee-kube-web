@@ -3,7 +3,7 @@
  * @module mock/kubernetes/config/secret
  */
 import type { PageResp } from '@/types/common'
-import type { SecretListResp, SecretDetailResp, SecretQueryReq, SecretReq, SecretDataReq, SecretLabelsReq, SecretAnnotationsReq } from '@/types/kubernetes/config/secret'
+import type { SecretAnnotationsReq, SecretDataReq, SecretDetailResp, SecretLabelsReq, SecretListResp, SecretQueryReq, SecretReq, SecretYamlReq } from '@/types/kubernetes/config/secret'
 import { generateId } from '@/mock/utils'
 
 /**
@@ -11,6 +11,7 @@ import { generateId } from '@/mock/utils'
  * @remarks
  * - GET /kubernetes/clusters/:clusterId/secrets - 获取 Secret 分页列表
  * - GET /kubernetes/clusters/:clusterId/namespaces/:namespace/secrets/:name - 获取 Secret 详情
+ * - GET /kubernetes/clusters/:clusterId/namespaces/:namespace/secrets/:name/yaml - 查看 YAML
  * - POST /kubernetes/clusters/:clusterId/namespaces/:namespace/secrets - 创建 Secret
  * - PUT /kubernetes/clusters/:clusterId/namespaces/:namespace/secrets/:name - 更新 Secret
  * - PUT /kubernetes/clusters/:clusterId/namespaces/:namespace/secrets/:name/data - 更新数据
@@ -18,6 +19,8 @@ import { generateId } from '@/mock/utils'
  * - PUT /kubernetes/clusters/:clusterId/namespaces/:namespace/secrets/:name/annotations - 更新注解
  * - DELETE /kubernetes/clusters/:clusterId/namespaces/:namespace/secrets/:name - 删除 Secret
  * - DELETE /kubernetes/clusters/:clusterId/namespaces/:namespace/secrets/batch - 批量删除
+ * - GET /kubernetes/clusters/:clusterId/secrets/export - 导出 CSV
+ * - POST /kubernetes/clusters/:clusterId/secrets/import - 导入 Secret
  */
 export default [
   {
@@ -31,9 +34,14 @@ export default [
     handler: (pathParams: Record<string, string>): SecretDetailResp => getSecretDetail(pathParams.clusterId, pathParams.namespace, pathParams.name)
   },
   {
+    method: 'get',
+    url: '/kubernetes/clusters/:clusterId/namespaces/:namespace/secrets/:name/yaml',
+    handler: (pathParams: Record<string, string>): string => getSecretYaml(pathParams.clusterId, pathParams.namespace, pathParams.name)
+  },
+  {
     method: 'post',
     url: '/kubernetes/clusters/:clusterId/namespaces/:namespace/secrets',
-    handler: (pathParams: Record<string, string>, data: Partial<SecretReq>): void => createSecret(pathParams.clusterId, pathParams.namespace, data)
+    handler: (pathParams: Record<string, string>, data: SecretReq): void => createSecret(pathParams.clusterId, pathParams.namespace, data)
   },
   {
     method: 'put',
@@ -43,17 +51,17 @@ export default [
   {
     method: 'put',
     url: '/kubernetes/clusters/:clusterId/namespaces/:namespace/secrets/:name/data',
-    handler: (pathParams: Record<string, string>, data: Partial<SecretDataReq>): void => manageSecretData(pathParams.clusterId, pathParams.namespace, pathParams.name, data)
+    handler: (pathParams: Record<string, string>, data: SecretDataReq): void => manageSecretData(pathParams.clusterId, pathParams.namespace, pathParams.name, data)
   },
   {
     method: 'put',
     url: '/kubernetes/clusters/:clusterId/namespaces/:namespace/secrets/:name/labels',
-    handler: (pathParams: Record<string, string>, data: Partial<SecretLabelsReq>): void => manageSecretLabels(pathParams.clusterId, pathParams.namespace, pathParams.name, data)
+    handler: (pathParams: Record<string, string>, data: SecretLabelsReq): void => manageSecretLabels(pathParams.clusterId, pathParams.namespace, pathParams.name, data)
   },
   {
     method: 'put',
     url: '/kubernetes/clusters/:clusterId/namespaces/:namespace/secrets/:name/annotations',
-    handler: (pathParams: Record<string, string>, data: Partial<SecretAnnotationsReq>): void => manageSecretAnnotations(pathParams.clusterId, pathParams.namespace, pathParams.name, data)
+    handler: (pathParams: Record<string, string>, data: SecretAnnotationsReq): void => manageSecretAnnotations(pathParams.clusterId, pathParams.namespace, pathParams.name, data)
   },
   {
     method: 'delete',
@@ -63,7 +71,17 @@ export default [
   {
     method: 'delete',
     url: '/kubernetes/clusters/:clusterId/namespaces/:namespace/secrets/batch',
-    handler: (_pathParams: Record<string, string>, _params: any, data: string[]): void => deleteSecrets(_pathParams.clusterId, _pathParams.namespace, data)
+    handler: (pathParams: Record<string, string>, data: string[]): void => deleteSecrets(pathParams.clusterId, pathParams.namespace, data)
+  },
+  {
+    method: 'get',
+    url: '/kubernetes/clusters/:clusterId/secrets/export',
+    handler: (pathParams: Record<string, string>, params: Partial<SecretQueryReq>): void => exportSecret(pathParams.clusterId, params)
+  },
+  {
+    method: 'post',
+    url: '/kubernetes/clusters/:clusterId/secrets/import',
+    handler: (pathParams: Record<string, string>, data: SecretYamlReq): void => importSecret(pathParams.clusterId, data)
   }
 ]
 
@@ -133,12 +151,39 @@ function getSecretDetail(clusterId: string, namespace: string, name: string): Se
 }
 
 /**
+ * 查看 Secret YAML
+ * @param clusterId - 集群ID
+ * @param namespace - 命名空间名称
+ * @param name - Secret 名称
+ * @returns Secret YAML 配置
+ */
+function getSecretYaml(clusterId: string, namespace: string, name: string): string {
+  const s = mockSecrets.find(sec => sec.clusterId === clusterId && sec.namespace === namespace && sec.name === name)
+  if (!s) {
+    console.error('[Get Secret Yaml] can not find secret:', clusterId, namespace, name)
+    return ''
+  }
+
+  return `apiVersion: v1
+kind: Secret
+metadata:
+  name: ${s.name}
+  namespace: ${s.namespace}
+  creationTimestamp: "${s.createAt}"
+  uid: "${s.uid}"
+type: ${s.type}
+data:
+  key1: dmFsdWUx
+  key2: dmFsdWUy`
+}
+
+/**
  * 创建 Secret
  * @param clusterId - 集群ID
  * @param namespace - 命名空间名称
  * @param data - 创建数据
  */
-function createSecret(clusterId: string, namespace: string, data: Partial<SecretReq>): void {
+function createSecret(clusterId: string, namespace: string, data: SecretReq): void {
   console.log('[Mock] createSecret', { clusterId, namespace, data })
 }
 
@@ -160,7 +205,7 @@ function updateSecret(clusterId: string, namespace: string, name: string, data: 
  * @param name - Secret 名称
  * @param data - 数据参数
  */
-function manageSecretData(clusterId: string, namespace: string, name: string, data: Partial<SecretDataReq>): void {
+function manageSecretData(clusterId: string, namespace: string, name: string, data: SecretDataReq): void {
   console.log('[Mock] manageSecretData', { clusterId, namespace, name, data })
 }
 
@@ -171,7 +216,7 @@ function manageSecretData(clusterId: string, namespace: string, name: string, da
  * @param name - Secret 名称
  * @param data - 标签数据
  */
-function manageSecretLabels(clusterId: string, namespace: string, name: string, data: Partial<SecretLabelsReq>): void {
+function manageSecretLabels(clusterId: string, namespace: string, name: string, data: SecretLabelsReq): void {
   console.log('[Mock] manageSecretLabels', { clusterId, namespace, name, data })
 }
 
@@ -182,7 +227,7 @@ function manageSecretLabels(clusterId: string, namespace: string, name: string, 
  * @param name - Secret 名称
  * @param data - 注解数据
  */
-function manageSecretAnnotations(clusterId: string, namespace: string, name: string, data: Partial<SecretAnnotationsReq>): void {
+function manageSecretAnnotations(clusterId: string, namespace: string, name: string, data: SecretAnnotationsReq): void {
   console.log('[Mock] manageSecretAnnotations', { clusterId, namespace, name, data })
 }
 
@@ -204,6 +249,24 @@ function deleteSecret(clusterId: string, namespace: string, name: string): void 
  */
 function deleteSecrets(clusterId: string, namespace: string, names: string[]): void {
   console.log('[Mock] deleteSecrets', { clusterId, namespace, names })
+}
+
+/**
+ * 导出 Secret CSV
+ * @param clusterId - 集群ID
+ * @param params - 查询参数
+ */
+function exportSecret(clusterId: string, params: Partial<SecretQueryReq>): void {
+  console.log('[Mock] exportSecret', { clusterId, params })
+}
+
+/**
+ * 导入 Secret
+ * @param clusterId - 集群ID
+ * @param data - YAML 配置
+ */
+function importSecret(clusterId: string, data: SecretYamlReq): void {
+  console.log('[Mock] importSecret', { clusterId, data })
 }
 
 /**

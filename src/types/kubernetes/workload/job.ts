@@ -159,6 +159,15 @@ export interface JobAnnotationsReq {
 }
 
 /**
+ * Job YAML 导入请求
+ * @remarks 通过 YAML 格式导入 Job 配置
+ */
+export interface JobYamlReq {
+  /** YAML 配置内容 */
+  yaml: string
+}
+
+/**
  * Job 容器配置
  */
 export interface JobContainer {

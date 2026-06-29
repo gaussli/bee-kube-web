@@ -114,6 +114,15 @@ export interface ConfigMapLabelsReq {
 }
 
 /**
+ * ConfigMap YAML 导入请求
+ * @remarks 通过 YAML 格式导入 ConfigMap 配置
+ */
+export interface ConfigMapYamlReq {
+  /** YAML 配置内容 */
+  yaml: string
+}
+
+/**
  * ConfigMap 注解更新请求
  */
 export interface ConfigMapAnnotationsReq {

@@ -4,13 +4,15 @@
  */
 import type { PageResp } from '@/types/common'
 import type {
-  DeploymentQueryReq,
-  DeploymentReq,
-  DeploymentListResp,
+  DeploymentAdvancedResp,
+  DeploymentAnnotationsReq,
   DeploymentDetailResp,
   DeploymentLabelsReq,
-  DeploymentAnnotationsReq,
+  DeploymentListResp,
+  DeploymentQueryReq,
+  DeploymentReq,
   DeploymentScaleReq,
+  DeploymentScheduleResp,
   DeploymentYamlReq
 } from '@/types/kubernetes/workload/deployment'
 import { generateId } from '@/mock/utils'
@@ -23,15 +25,17 @@ import { generateId } from '@/mock/utils'
  * - GET /kubernetes/clusters/:clusterId/namespaces/:namespace/deployments/:name/yaml - 查看 YAML
  * - POST /kubernetes/clusters/:clusterId/namespaces/:namespace/deployments - 创建 Deployment
  * - PUT /kubernetes/clusters/:clusterId/namespaces/:namespace/deployments/:name - 更新 Deployment
- * - POST /kubernetes/clusters/:clusterId/namespaces/:namespace/deployments/:name/scale - 扩缩容
- * - POST /kubernetes/clusters/:clusterId/namespaces/:namespace/deployments/:name/restart - 重启
- * - POST /kubernetes/clusters/:clusterId/namespaces/:namespace/deployments/:name/rollback - 回滚
  * - POST /kubernetes/clusters/:clusterId/namespaces/:namespace/deployments/:name/labels - 更新标签
  * - POST /kubernetes/clusters/:clusterId/namespaces/:namespace/deployments/:name/annotations - 更新注解
  * - DELETE /kubernetes/clusters/:clusterId/namespaces/:namespace/deployments/:name - 删除 Deployment
  * - DELETE /kubernetes/clusters/:clusterId/namespaces/:namespace/deployments/batch - 批量删除
- * - GET /kubernetes/clusters/:clusterId/namespaces/:namespace/deployments/export - 导出 CSV
- * - POST /kubernetes/clusters/:clusterId/namespaces/:namespace/deployments/import - 导入 Deployment
+ * - GET /kubernetes/clusters/:clusterId/deployments/export - 导出 CSV
+ * - POST /kubernetes/clusters/:clusterId/deployments/import - 导入 Deployment
+ * - GET /kubernetes/clusters/:clusterId/namespaces/:namespace/deployments/:name/schedule - 获取调度策略
+ * - GET /kubernetes/clusters/:clusterId/namespaces/:namespace/deployments/:name/advanced - 获取高级配置
+ * - POST /kubernetes/clusters/:clusterId/namespaces/:namespace/deployments/:name/scale - 扩缩容
+ * - POST /kubernetes/clusters/:clusterId/namespaces/:namespace/deployments/:name/restart - 重启
+ * - POST /kubernetes/clusters/:clusterId/namespaces/:namespace/deployments/:name/rollback - 回滚
  */
 export default [
   {
@@ -52,7 +56,7 @@ export default [
   {
     method: 'post',
     url: '/kubernetes/clusters/:clusterId/namespaces/:namespace/deployments',
-    handler: (pathParams: Record<string, string>, data: Partial<DeploymentReq>): void => createDeployment(pathParams.clusterId, pathParams.namespace, data)
+    handler: (pathParams: Record<string, string>, data: DeploymentReq): void => createDeployment(pathParams.clusterId, pathParams.namespace, data)
   },
   {
     method: 'put',
@@ -61,28 +65,13 @@ export default [
   },
   {
     method: 'post',
-    url: '/kubernetes/clusters/:clusterId/namespaces/:namespace/deployments/:name/scale',
-    handler: (pathParams: Record<string, string>, data: Partial<DeploymentScaleReq>): void => scaleDeployment(pathParams.clusterId, pathParams.namespace, pathParams.name, data)
-  },
-  {
-    method: 'post',
-    url: '/kubernetes/clusters/:clusterId/namespaces/:namespace/deployments/:name/restart',
-    handler: (pathParams: Record<string, string>): void => restartDeployment(pathParams.clusterId, pathParams.namespace, pathParams.name)
-  },
-  {
-    method: 'post',
-    url: '/kubernetes/clusters/:clusterId/namespaces/:namespace/deployments/:name/rollback',
-    handler: (pathParams: Record<string, string>): void => rollbackDeployment(pathParams.clusterId, pathParams.namespace, pathParams.name)
-  },
-  {
-    method: 'post',
     url: '/kubernetes/clusters/:clusterId/namespaces/:namespace/deployments/:name/labels',
-    handler: (pathParams: Record<string, string>, data: Partial<DeploymentLabelsReq>): void => manageDeploymentLabels(pathParams.clusterId, pathParams.namespace, pathParams.name, data)
+    handler: (pathParams: Record<string, string>, data: DeploymentLabelsReq): void => manageDeploymentLabels(pathParams.clusterId, pathParams.namespace, pathParams.name, data)
   },
   {
     method: 'post',
     url: '/kubernetes/clusters/:clusterId/namespaces/:namespace/deployments/:name/annotations',
-    handler: (pathParams: Record<string, string>, data: Partial<DeploymentAnnotationsReq>): void => manageDeploymentAnnotations(pathParams.clusterId, pathParams.namespace, pathParams.name, data)
+    handler: (pathParams: Record<string, string>, data: DeploymentAnnotationsReq): void => manageDeploymentAnnotations(pathParams.clusterId, pathParams.namespace, pathParams.name, data)
   },
   {
     method: 'delete',
@@ -96,13 +85,38 @@ export default [
   },
   {
     method: 'get',
-    url: '/kubernetes/clusters/:clusterId/namespaces/:namespace/deployments/export',
-    handler: (pathParams: Record<string, string>, params: Partial<DeploymentQueryReq>): void => exportDeployment(pathParams.clusterId, pathParams.namespace, params)
+    url: '/kubernetes/clusters/:clusterId/deployments/export',
+    handler: (pathParams: Record<string, string>, params: Partial<DeploymentQueryReq>): void => exportDeployment(pathParams.clusterId, params)
   },
   {
     method: 'post',
-    url: '/kubernetes/clusters/:clusterId/namespaces/:namespace/deployments/import',
-    handler: (pathParams: Record<string, string>, data: Partial<DeploymentYamlReq>): void => importDeployment(pathParams.clusterId, pathParams.namespace, data)
+    url: '/kubernetes/clusters/:clusterId/deployments/import',
+    handler: (pathParams: Record<string, string>, data: DeploymentYamlReq): void => importDeployment(pathParams.clusterId, data)
+  },
+  {
+    method: 'get',
+    url: '/kubernetes/clusters/:clusterId/namespaces/:namespace/deployments/:name/schedule',
+    handler: (pathParams: Record<string, string>): DeploymentScheduleResp => getDeploymentSchedule(pathParams.clusterId, pathParams.namespace, pathParams.name)
+  },
+  {
+    method: 'get',
+    url: '/kubernetes/clusters/:clusterId/namespaces/:namespace/deployments/:name/advanced',
+    handler: (pathParams: Record<string, string>): DeploymentAdvancedResp => getDeploymentAdvanced(pathParams.clusterId, pathParams.namespace, pathParams.name)
+  },
+  {
+    method: 'post',
+    url: '/kubernetes/clusters/:clusterId/namespaces/:namespace/deployments/:name/scale',
+    handler: (pathParams: Record<string, string>, data: DeploymentScaleReq): void => scaleDeployment(pathParams.clusterId, pathParams.namespace, pathParams.name, data)
+  },
+  {
+    method: 'post',
+    url: '/kubernetes/clusters/:clusterId/namespaces/:namespace/deployments/:name/restart',
+    handler: (pathParams: Record<string, string>): void => restartDeployment(pathParams.clusterId, pathParams.namespace, pathParams.name)
+  },
+  {
+    method: 'post',
+    url: '/kubernetes/clusters/:clusterId/namespaces/:namespace/deployments/:name/rollback',
+    handler: (pathParams: Record<string, string>): void => rollbackDeployment(pathParams.clusterId, pathParams.namespace, pathParams.name)
   }
 ]
 
@@ -313,12 +327,56 @@ status:
 }
 
 /**
+ * 获取 Deployment 调度策略
+ * @param clusterId - 集群ID
+ * @param namespace - 命名空间
+ * @param name - Deployment 名称
+ * @returns Deployment 调度策略
+ */
+function getDeploymentSchedule(clusterId: string, namespace: string, name: string): DeploymentScheduleResp {
+  const deployment = mockDeployments.find(d => d.clusterId === clusterId && d.namespace === namespace && d.name === name)
+  if (!deployment) {
+    console.error('[Get Deployment Schedule] can not find deployment:', clusterId, namespace, name)
+  }
+  return {
+    nodeSelector: { kubernetes: 'true' },
+    affinity: {
+      nodeAffinity: {},
+      podAffinity: {},
+      podAntiAffinity: {}
+    },
+    tolerations: []
+  }
+}
+
+/**
+ * 获取 Deployment 高级配置
+ * @param clusterId - 集群ID
+ * @param namespace - 命名空间
+ * @param name - Deployment 名称
+ * @returns Deployment 高级配置
+ */
+function getDeploymentAdvanced(clusterId: string, namespace: string, name: string): DeploymentAdvancedResp {
+  const deployment = mockDeployments.find(d => d.clusterId === clusterId && d.namespace === namespace && d.name === name)
+  if (!deployment) {
+    console.error('[Get Deployment Advanced] can not find deployment:', clusterId, namespace, name)
+  }
+  return {
+    revisionHistoryLimit: 10,
+    minReadySeconds: 0,
+    progressDeadlineSeconds: 600,
+    restartPolicy: 'Always' as const,
+    terminationGracePeriodSeconds: 30
+  }
+}
+
+/**
  * 创建 Deployment
  * @param clusterId - 集群ID
  * @param namespace - 命名空间
  * @param data - 创建参数
  */
-function createDeployment(clusterId: string, namespace: string, data: Partial<DeploymentReq>): void {
+function createDeployment(clusterId: string, namespace: string, data: DeploymentReq): void {
   console.log('[Mock] createDeployment', { clusterId, namespace, data })
 }
 
@@ -340,7 +398,7 @@ function updateDeployment(clusterId: string, namespace: string, name: string, da
  * @param name - Deployment 名称
  * @param data - 扩缩容参数
  */
-function scaleDeployment(clusterId: string, namespace: string, name: string, data: Partial<DeploymentScaleReq>): void {
+function scaleDeployment(clusterId: string, namespace: string, name: string, data: DeploymentScaleReq): void {
   console.log('[Mock] scaleDeployment', { clusterId, namespace, name, data })
 }
 
@@ -371,7 +429,7 @@ function rollbackDeployment(clusterId: string, namespace: string, name: string):
  * @param name - Deployment 名称
  * @param data - 标签数据
  */
-function manageDeploymentLabels(clusterId: string, namespace: string, name: string, data: Partial<DeploymentLabelsReq>): void {
+function manageDeploymentLabels(clusterId: string, namespace: string, name: string, data: DeploymentLabelsReq): void {
   console.log('[Mock] manageDeploymentLabels', { clusterId, namespace, name, data })
 }
 
@@ -382,7 +440,7 @@ function manageDeploymentLabels(clusterId: string, namespace: string, name: stri
  * @param name - Deployment 名称
  * @param data - 注解数据
  */
-function manageDeploymentAnnotations(clusterId: string, namespace: string, name: string, data: Partial<DeploymentAnnotationsReq>): void {
+function manageDeploymentAnnotations(clusterId: string, namespace: string, name: string, data: DeploymentAnnotationsReq): void {
   console.log('[Mock] manageDeploymentAnnotations', { clusterId, namespace, name, data })
 }
 
@@ -409,21 +467,19 @@ function deleteDeployments(clusterId: string, namespace: string, names: string[]
 /**
  * 导出 Deployment CSV
  * @param clusterId - 集群ID
- * @param namespace - 命名空间
  * @param params - 查询参数
  */
-function exportDeployment(clusterId: string, namespace: string, params: Partial<DeploymentQueryReq>): void {
-  console.log('[Mock] exportDeployment', { clusterId, namespace, params })
+function exportDeployment(clusterId: string, params: Partial<DeploymentQueryReq>): void {
+  console.log('[Mock] exportDeployment', { clusterId, params })
 }
 
 /**
  * 导入 Deployment
  * @param clusterId - 集群ID
- * @param namespace - 命名空间
  * @param data - YAML 配置
  */
-function importDeployment(clusterId: string, namespace: string, data: Partial<DeploymentYamlReq>): void {
-  console.log('[Mock] importDeployment', { clusterId, namespace, data })
+function importDeployment(clusterId: string, data: DeploymentYamlReq): void {
+  console.log('[Mock] importDeployment', { clusterId, data })
 }
 
 /**

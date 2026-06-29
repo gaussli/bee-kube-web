@@ -170,6 +170,15 @@ export interface CronJobLabelsReq {
 }
 
 /**
+ * CronJob YAML 导入请求
+ * @remarks 通过 YAML 格式导入 CronJob 配置
+ */
+export interface CronJobYamlReq {
+  /** YAML 配置内容 */
+  yaml: string
+}
+
+/**
  * CronJob 注解更新请求
  */
 export interface CronJobAnnotationsReq {

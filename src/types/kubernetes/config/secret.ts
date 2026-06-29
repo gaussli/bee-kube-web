@@ -144,6 +144,15 @@ export interface SecretLabelsReq {
 }
 
 /**
+ * Secret YAML 导入请求
+ * @remarks 通过 YAML 格式导入 Secret 配置
+ */
+export interface SecretYamlReq {
+  /** YAML 配置内容 */
+  yaml: string
+}
+
+/**
  * Secret 注解更新请求
  */
 export interface SecretAnnotationsReq {

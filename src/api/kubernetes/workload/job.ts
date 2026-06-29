@@ -3,7 +3,7 @@
  * @module api/kubernetes/workload/job
  */
 import type { PageResp } from '@/types/common'
-import type { JobQueryReq, JobListResp, JobDetailResp, JobReq, JobLabelsReq, JobAnnotationsReq } from '@/types/kubernetes/workload/job'
+import type { JobAnnotationsReq, JobDetailResp, JobLabelsReq, JobListResp, JobQueryReq, JobReq, JobYamlReq } from '@/types/kubernetes/workload/job'
 import { request } from '@/utils'
 
 /**
@@ -28,12 +28,23 @@ export function getJobDetail(clusterId: string, namespace: string, name: string)
 }
 
 /**
+ * 查看 Job YAML
+ * @param clusterId - 集群ID
+ * @param namespace - 命名空间名称
+ * @param name - Job 名称
+ * @returns Job YAML 配置
+ */
+export function getJobYaml(clusterId: string, namespace: string, name: string): Promise<string> {
+  return request.get<string>(`/kubernetes/clusters/${clusterId}/namespaces/${namespace}/jobs/${name}/yaml`)
+}
+
+/**
  * 创建 Job
  * @param clusterId - 集群ID
  * @param namespace - 命名空间名称
  * @param data - 创建参数
  */
-export function createJob(clusterId: string, namespace: string, data: Partial<JobReq>): Promise<void> {
+export function createJob(clusterId: string, namespace: string, data: JobReq): Promise<void> {
   return request.post(`/kubernetes/clusters/${clusterId}/namespaces/${namespace}/jobs`, data)
 }
 
@@ -55,7 +66,7 @@ export function updateJob(clusterId: string, namespace: string, name: string, da
  * @param name - Job 名称
  * @param data - 标签数据
  */
-export function manageJobLabels(clusterId: string, namespace: string, name: string, data: Partial<JobLabelsReq>): Promise<void> {
+export function manageJobLabels(clusterId: string, namespace: string, name: string, data: JobLabelsReq): Promise<void> {
   return request.put(`/kubernetes/clusters/${clusterId}/namespaces/${namespace}/jobs/${name}/labels`, data)
 }
 
@@ -66,7 +77,7 @@ export function manageJobLabels(clusterId: string, namespace: string, name: stri
  * @param name - Job 名称
  * @param data - 注解数据
  */
-export function manageJobAnnotations(clusterId: string, namespace: string, name: string, data: Partial<JobAnnotationsReq>): Promise<void> {
+export function manageJobAnnotations(clusterId: string, namespace: string, name: string, data: JobAnnotationsReq): Promise<void> {
   return request.put(`/kubernetes/clusters/${clusterId}/namespaces/${namespace}/jobs/${name}/annotations`, data)
 }
 
@@ -88,4 +99,22 @@ export function deleteJob(clusterId: string, namespace: string, name: string): P
  */
 export function deleteJobs(clusterId: string, namespace: string, names: string[]): Promise<void> {
   return request.delete(`/kubernetes/clusters/${clusterId}/namespaces/${namespace}/jobs/batch`, { data: names })
+}
+
+/**
+ * 导出 Job CSV
+ * @param clusterId - 集群ID
+ * @param params - 查询参数
+ */
+export function exportJob(clusterId: string, params: Partial<JobQueryReq>): Promise<void> {
+  return request.get(`/kubernetes/clusters/${clusterId}/jobs/export`, { params: params, responseType: 'blob' })
+}
+
+/**
+ * 导入 Job
+ * @param clusterId - 集群ID
+ * @param data - YAML 配置
+ */
+export function importJob(clusterId: string, data: JobYamlReq): Promise<void> {
+  return request.post(`/kubernetes/clusters/${clusterId}/jobs/import`, data)
 }
