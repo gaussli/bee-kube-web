@@ -140,7 +140,7 @@ const { hasPermission } = usePermission()
 const route = useRoute()
 const router = useRouter()
 
-const clusterId = ref(route.query.clusterId as string)
+const clusterId = ref(route.params.clusterId as string)
 const nodeName = ref(route.query.name as string)
 const loading = ref(false)
 const nodeData = ref<NodeListResp>()
@@ -172,7 +172,7 @@ function handleBack() {
 }
 
 function handleEdit() {
-  router.push({ name: 'kubernetes:node:edit', query: { clusterId: clusterId.value, name: nodeName.value } })
+  router.push({ name: 'kubernetes:node:edit', params: { clusterId: clusterId.value }, query: { name: nodeName.value } })
 }
 
 onMounted(() => {

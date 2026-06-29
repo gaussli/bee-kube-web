@@ -16,7 +16,7 @@ export const constantRoutes: RouteRecordRaw[] = [
   {
     path: '/',
     component: () => import('@/views/home/index.vue'),
-    redirect: '/kubernetes/dashboard',
+    redirect: '/kubernetes/cluster',
     children: [
       ...kubernetesRoutes,
       ...platformRoutes,

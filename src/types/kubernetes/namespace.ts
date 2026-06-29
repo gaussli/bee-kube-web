@@ -120,9 +120,9 @@ export interface NamespaceQueryReq extends PageReq {
   /** 命名空间ID */
   id: string
   /** 命名空间名称（模糊匹配） */
-  name?: string
+  name: string
   /** 状态 */
-  status?: string
+  status: string
 }
 
 /**
@@ -134,11 +134,11 @@ export interface NamespaceReq {
   /** 命名空间名称 */
   name: string
   /** 描述信息 */
-  description?: string
+  description: string
   /** 标签 */
-  labels?: Record<string, string>
+  labels: Record<string, string>
   /** 注解 */
-  annotations?: Record<string, string>
+  annotations: Record<string, string>
 }
 
 /**

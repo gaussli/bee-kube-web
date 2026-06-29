@@ -11,12 +11,12 @@ import { workloadRoutes } from './workload'
 
 export const kubernetesRoutes: RouteRecordRaw[] = [
   {
-    path: '/kubernetes',
+    path: '/kubernetes/clusters/:clusterId',
     name: 'kubernetes',
-    redirect: '/kubernetes/dashboard'
+    redirect: '/kubernetes/clusters/:clusterId/dashboard'
   },
   {
-    path: '/kubernetes/dashboard',
+    path: '/kubernetes/clusters/:clusterId/dashboard',
     name: 'kubernetes:dashboard',
     component: () => import('@/views/kubernetes/dashboard/index.vue'),
     meta: {

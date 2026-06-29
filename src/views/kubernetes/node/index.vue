@@ -90,8 +90,8 @@
 </template>
 
 <script setup lang="ts">
-import { onMounted, reactive, ref } from 'vue'
-import { useRouter } from 'vue-router'
+import { computed, onMounted, reactive, ref } from 'vue'
+import { useRoute, useRouter } from 'vue-router'
 import { ElMessage } from 'element-plus'
 import type { NodeQueryReq, NodeListResp } from '@/types/kubernetes/node'
 import { getNodePage, cordonNode, drainNode } from '@/api/kubernetes/node'
@@ -113,15 +113,15 @@ import BeeTableColumn from '@/components/BeeTable/BeeTableColumn.vue'
 import BeeTable from '@/components/BeeTable/index.vue'
 import { usePermission } from '@/composables/usePermission'
 import { NODE_STATUS_OPTIONS } from '@/config/kubernetes'
-import { useKubernetesStore } from '@/stores'
 
 defineOptions({ name: 'NodeManage' })
 
 // 权限校验
 const { hasPermission } = usePermission()
 
+const route = useRoute()
 const router = useRouter()
-const kubernetesStore = useKubernetesStore()
+const clusterId = computed(() => route.params.clusterId as string)
 const searchKey = ref('')
 
 const loading = ref(false)
@@ -152,13 +152,13 @@ function calcPercentage(used: number, total: number): number {
 }
 
 async function loadData() {
-  if (!kubernetesStore.activeClusterId) {
+  if (!clusterId.value) {
     tableData.value = []
     return
   }
   loading.value = true
   try {
-    const resp = await getNodePage(kubernetesStore.activeClusterId, { ...queryForm, page: pagination.page, pageSize: pagination.pageSize })
+    const resp = await getNodePage(clusterId.value, { ...queryForm, page: pagination.page, pageSize: pagination.pageSize })
     tableData.value = resp.list
     pagination.total = resp.total
   } finally {
@@ -199,11 +199,11 @@ function handleSelectionChange(rows: Record<string, unknown>[]) {
 }
 
 function handleViewDetail(row: NodeListResp) {
-  router.push({ name: 'kubernetes:node:detail', query: { clusterId: row.clusterId, name: row.name } })
+  router.push({ name: 'kubernetes:node:detail', params: { clusterId: clusterId.value }, query: { name: row.name } })
 }
 
 function handleEdit(row: NodeListResp) {
-  router.push({ name: 'kubernetes:node:edit', query: { clusterId: row.clusterId, name: row.name } })
+  router.push({ name: 'kubernetes:node:edit', params: { clusterId: clusterId.value }, query: { name: row.name } })
 }
 
 async function handleCordon(row: NodeListResp, unschedulable: boolean) {

@@ -217,7 +217,7 @@ function handleEdit(row: ClusterListResp) {
  */
 function handleSelectCluster(row: ClusterListResp) {
   kubernetesStore.setActiveClusterId(row.id)
-  router.push({ name: 'kubernetes:dashboard' })
+  router.push({ name: 'kubernetes:dashboard', params: { clusterId: row.id } })
 }
 
 /**
