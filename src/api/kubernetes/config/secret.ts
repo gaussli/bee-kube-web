@@ -14,9 +14,7 @@ import { request } from '@/utils'
  * @returns 分页后的 Secret 列表
  */
 export function getSecretPage(clusterId: string, namespace: string, params: Partial<SecretQueryReq>): Promise<PageResp<SecretResp>> {
-  return request.get(`/kubernetes/clusters/${clusterId}/namespaces/${namespace}/secrets`, {
-    params: params
-  })
+  return request.get(`/kubernetes/clusters/${clusterId}/namespaces/${namespace}/secrets`, params)
 }
 
 /**
@@ -37,9 +35,7 @@ export function getSecretDetail(clusterId: string, namespace: string, name: stri
  * @param data - 创建参数
  */
 export function createSecret(clusterId: string, namespace: string, data: Partial<SecretReq>): Promise<void> {
-  return request.post(`/kubernetes/clusters/${clusterId}/namespaces/${namespace}/secrets`, {
-    data: data
-  })
+  return request.post(`/kubernetes/clusters/${clusterId}/namespaces/${namespace}/secrets`, data)
 }
 
 /**
@@ -50,9 +46,7 @@ export function createSecret(clusterId: string, namespace: string, data: Partial
  * @param data - 更新参数
  */
 export function updateSecret(clusterId: string, namespace: string, name: string, data: Partial<SecretReq>): Promise<void> {
-  return request.put(`/kubernetes/clusters/${clusterId}/namespaces/${namespace}/secrets/${name}`, {
-    data: data
-  })
+  return request.put(`/kubernetes/clusters/${clusterId}/namespaces/${namespace}/secrets/${name}`, data)
 }
 
 /**
@@ -63,7 +57,7 @@ export function updateSecret(clusterId: string, namespace: string, name: string,
  * @param data - 数据参数
  */
 export function manageSecretData(clusterId: string, namespace: string, name: string, data: Partial<SecretDataReq>): Promise<void> {
-  return request.put(`/kubernetes/clusters/${clusterId}/namespaces/${namespace}/secrets/${name}/data`, { data: data })
+  return request.put(`/kubernetes/clusters/${clusterId}/namespaces/${namespace}/secrets/${name}/data`, data)
 }
 
 /**
@@ -74,7 +68,7 @@ export function manageSecretData(clusterId: string, namespace: string, name: str
  * @param data - 标签数据
  */
 export function manageSecretLabels(clusterId: string, namespace: string, name: string, data: Partial<SecretLabelsReq>): Promise<void> {
-  return request.put(`/kubernetes/clusters/${clusterId}/namespaces/${namespace}/secrets/${name}/labels`, { data: data })
+  return request.put(`/kubernetes/clusters/${clusterId}/namespaces/${namespace}/secrets/${name}/labels`, data)
 }
 
 /**
@@ -85,7 +79,7 @@ export function manageSecretLabels(clusterId: string, namespace: string, name: s
  * @param data - 注解数据
  */
 export function manageSecretAnnotations(clusterId: string, namespace: string, name: string, data: Partial<SecretAnnotationsReq>): Promise<void> {
-  return request.put(`/kubernetes/clusters/${clusterId}/namespaces/${namespace}/secrets/${name}/annotations`, { data: data })
+  return request.put(`/kubernetes/clusters/${clusterId}/namespaces/${namespace}/secrets/${name}/annotations`, data)
 }
 
 /**
@@ -105,7 +99,5 @@ export function deleteSecret(clusterId: string, namespace: string, name: string)
  * @param names - Secret 名称数组
  */
 export function deleteSecrets(clusterId: string, namespace: string, names: string[]): Promise<void> {
-  return request.delete(`/kubernetes/clusters/${clusterId}/namespaces/${namespace}/secrets/batch`, {
-    data: names
-  })
+  return request.delete(`/kubernetes/clusters/${clusterId}/namespaces/${namespace}/secrets/batch`, names)
 }

@@ -5,10 +5,35 @@
 import type { BaseEntity, PageReq } from '@/types/common'
 
 /**
- * ConfigMap 响应数据
+ * ConfigMap 列表响应数据
  * @extends BaseEntity 继承基础实体（含 id, createAt, createBy, updateAt, updateBy）
  */
-export interface ConfigMapResp extends BaseEntity {
+export interface ConfigMapListResp extends BaseEntity {
+  /** 资源 UID */
+  uid: string
+  /** ConfigMap 名称 */
+  name: string
+  /** 所属命名空间 */
+  namespace: string
+  /** 所属集群 ID */
+  clusterId: string
+  /** 描述信息 */
+  description?: string
+  /** 配置项数量 */
+  dataKeysCount?: number
+  /** 关联工作负载 ID 列表 */
+  refs?: string[]
+  /** 是否可删除 */
+  deletable?: boolean
+}
+
+/**
+ * ConfigMap 详情响应数据
+ * @extends BaseEntity 继承基础实体（含 id, createAt, createBy, updateAt, updateBy）
+ */
+export interface ConfigMapDetailResp extends BaseEntity {
+  /** 资源 UID */
+  uid: string
   /** ConfigMap 名称 */
   name: string
   /** 所属命名空间 */
@@ -17,6 +42,8 @@ export interface ConfigMapResp extends BaseEntity {
   clusterId: string
   /** 所属集群名称 */
   clusterName?: string
+  /** 描述信息 */
+  description?: string
   /** 数据键值对 */
   data?: Record<string, string>
   /** 二进制数据键值对（base64 编码） */
@@ -25,7 +52,9 @@ export interface ConfigMapResp extends BaseEntity {
   labels?: Record<string, string>
   /** 注解 */
   annotations?: Record<string, string>
-  /** 引用数 */
+  /** 配置项数量 */
+  dataKeysCount?: number
+  /** 关联工作负载 ID 列表 */
   refs?: string[]
   /** 是否可删除 */
   deletable?: boolean
@@ -36,10 +65,14 @@ export interface ConfigMapResp extends BaseEntity {
  * @extends PageReq 继承分页请求（含 page, pageSize）
  */
 export interface ConfigMapQueryReq extends PageReq {
+  /** ConfigMap ID（精确匹配） */
+  id: string
   /** ConfigMap 名称（模糊匹配） */
-  name?: string
+  name: string
+  /** 命名空间名称 */
+  namespace: string
   /** 标签选择器 */
-  labelSelector?: string
+  labelSelector: string
 }
 
 /**

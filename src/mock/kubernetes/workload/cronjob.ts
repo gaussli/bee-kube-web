@@ -6,12 +6,6 @@ import type { PageResp } from '@/types/common'
 import type { CronJobQueryReq, CronJobListResp, CronJobDetailResp, CronJobReq, CronJobLabelsReq, CronJobAnnotationsReq } from '@/types/kubernetes/workload/cronjob'
 import { generateId } from '@/mock/utils'
 
-/** mock 内部使用的 CronJob 数据，同时包含列表与详情共有的字段 */
-interface MockCronJob extends CronJobListResp {
-  concurrencyPolicy: 'Allow' | 'Forbid' | 'Replace'
-  suspend: boolean
-}
-
 /**
  * CronJob 路由配置
  * @remarks
@@ -104,7 +98,7 @@ function getCronJobPage(_clusterId: string, params: Partial<CronJobQueryReq>): P
   }
 
   if (id || name) {
-    let searchFiltered: MockCronJob[] = []
+    let searchFiltered: CronJobListResp[] = []
     if (id) {
       searchFiltered = [...searchFiltered, ...filtered.filter(c => c.id === id)]
     }
@@ -143,6 +137,8 @@ function getCronJobDetail(clusterId: string, namespace: string, name: string): C
   }
   return {
     ...job,
+    concurrencyPolicy: job.name === 'log-rotate' ? 'Forbid' : job.name === 'cache-cleanup' ? 'Replace' : 'Allow',
+    suspend: job.name === 'cache-cleanup',
     images: ['busybox:latest'],
     labels: job.name === 'db-backup' ? { app: 'db-backup', env: 'production' } : { app: job.name },
     annotations: {},
@@ -255,7 +251,7 @@ function deleteCronJobs(clusterId: string, namespace: string, names: string[]): 
  * 模拟 CronJob 数据
  * @remarks 包含生产环境中常见的定时任务数据
  */
-const mockCronJobs: MockCronJob[] = [
+const mockCronJobs: CronJobListResp[] = [
   {
     id: generateId(),
     uid: generateId(),
@@ -265,15 +261,13 @@ const mockCronJobs: MockCronJob[] = [
     description: '数据库每日备份任务',
     status: 'Active',
     schedule: '0 2 * * *',
-    concurrencyPolicy: 'Allow',
-    suspend: false,
     lastSuccessfulTime: '2024-03-20 02:00:00',
     activeJobs: 0,
     createAt: '2024-01-20 10:00:00',
     createBy: 'admin',
     updateAt: '2024-03-15 14:00:00',
     updateBy: 'admin',
-    deletable: true,
+    deletable: true
   },
   {
     id: generateId(),
@@ -285,14 +279,12 @@ const mockCronJobs: MockCronJob[] = [
     status: 'Active',
     statusMsg: '1 个 Job 正在执行',
     schedule: '0 0 * * *',
-    concurrencyPolicy: 'Forbid',
-    suspend: false,
     activeJobs: 1,
     createAt: '2024-02-01 09:00:00',
     createBy: 'admin',
     updateAt: '2024-03-10 11:00:00',
     updateBy: 'admin',
-    deletable: true,
+    deletable: true
   },
   {
     id: generateId(),
@@ -303,15 +295,13 @@ const mockCronJobs: MockCronJob[] = [
     description: '周报生成任务',
     status: 'Active',
     schedule: '0 8 * * 1',
-    concurrencyPolicy: 'Allow',
-    suspend: false,
     lastSuccessfulTime: '2024-03-18 08:00:00',
     activeJobs: 0,
     createAt: '2024-02-15 14:00:00',
     createBy: 'admin',
     updateAt: '2024-03-12 16:00:00',
     updateBy: 'admin',
-    deletable: true,
+    deletable: true
   },
   {
     id: generateId(),
@@ -323,13 +313,11 @@ const mockCronJobs: MockCronJob[] = [
     status: 'Suspended',
     statusMsg: '已被管理员暂停',
     schedule: '0 */6 * * *',
-    concurrencyPolicy: 'Replace',
-    suspend: true,
     activeJobs: 0,
     createAt: '2024-03-01 10:00:00',
     createBy: 'admin',
     updateAt: '2024-03-19 08:00:00',
     updateBy: 'admin',
-    deletable: true,
+    deletable: true
   }
 ]
