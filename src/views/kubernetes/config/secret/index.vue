@@ -11,6 +11,7 @@
       <div class="table-toolbar">
         <BeeInputSearch v-model="searchKey" placeholder="按 UID / 名称搜索" class="table-toolbar__search" />
         <BeeSelect v-model="queryForm.namespace" placeholder="命名空间筛选" :options="namespaceOptions" :width="300" />
+        <BeeSelect v-model="queryForm.type" placeholder="类型筛选" :options="typeOptions" :width="300" />
         <BeeButton icon="basic-search" @click="handleSearch"> 搜索 </BeeButton>
         <BeeButton icon="basic-refresh" @click="handleReset"> 重置 </BeeButton>
         <BeeButton v-if="hasPermission('kubernetes:config:secret:create')" type="primary" icon="basic-create" @click="handleCreate"> 新增 </BeeButton>
@@ -168,6 +169,19 @@ const namespaceOptions = ref([
   { label: 'monitoring', value: 'monitoring' }
 ])
 
+/** Secret 类型选项 */
+const typeOptions = ref([
+  { label: '全部类型', value: undefined },
+  { label: 'Opaque', value: 'Opaque' },
+  { label: 'kubernetes.io/tls', value: 'kubernetes.io/tls' },
+  { label: 'kubernetes.io/dockerconfigjson', value: 'kubernetes.io/dockerconfigjson' },
+  { label: 'kubernetes.io/basic-auth', value: 'kubernetes.io/basic-auth' },
+  { label: 'kubernetes.io/ssh-auth', value: 'kubernetes.io/ssh-auth' },
+  { label: 'kubernetes.io/service-account-token', value: 'kubernetes.io/service-account-token' },
+  { label: 'kubernetes.io/dockercfg', value: 'kubernetes.io/dockercfg' },
+  { label: 'kubernetes.io/boot-straph-token', value: 'kubernetes.io/boot-straph-token' }
+])
+
 /**
  * 加载 Secret 列表数据
  * @remarks 根据当前查询条件与分页参数获取 Secret 分页数据
@@ -182,6 +196,7 @@ async function loadData() {
     const resp = await getSecretPage(clusterId.value, {
       name: queryForm.name,
       namespace: queryForm.namespace || undefined,
+      type: queryForm.type || undefined,
       page: pagination.page,
       pageSize: pagination.pageSize
     })
@@ -210,6 +225,7 @@ function handleReset() {
   queryForm.id = undefined
   queryForm.name = undefined
   queryForm.namespace = undefined
+  queryForm.type = undefined
   queryForm.labelSelector = undefined
   pagination.page = 1
   pagination.pageSize = 10
