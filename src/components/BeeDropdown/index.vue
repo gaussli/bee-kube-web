@@ -1,5 +1,5 @@
 <template>
-  <div ref="triggerRef" class="bee-dropdown" @click="toggle">
+  <div ref="triggerRef" class="bee-dropdown" @click.capture="toggle">
     <slot />
   </div>
   <Teleport to="body">
@@ -230,7 +230,7 @@ defineExpose({
     display: flex;
     gap: $spacing-8;
     align-items: center;
-    justify-content: center;
+    justify-content: flex-start;
     padding: $spacing-8 $spacing-16;
     margin: $spacing-8;
     border-radius: $radius-full;

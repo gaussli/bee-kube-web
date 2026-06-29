@@ -57,17 +57,7 @@
           </BeeTableColumn>
           <BeeTableColumn :width="150" fixed="right">
             <template #default="{ row }">
-              <div class="table-action">
-                <BeeCircleButton v-if="hasPermission('kubernetes:config:secret:edit')" icon="basic-edit" tooltip="编辑" @click="handleEdit(row)" />
-                <BeeCircleButton icon="basic-view" tooltip="详情" @click="handleViewDetail(row)" />
-                <BeeDropdown trigger="click">
-                  <BeeCircleButton icon="basic-more" tooltip="更多" />
-                  <template #dropdown>
-                    <BeeDropdownItem value="yamledit" label="编辑 YAML" icon="basic-code" @click="handleEditYaml(row)" />
-                    <BeeDropdownItem v-if="hasPermission('kubernetes:config:secret:delete') && row.deletable !== false" value="delete" label="删除" icon="basic-delete" @click="handleDelete(row)" />
-                  </template>
-                </BeeDropdown>
-              </div>
+              <BeeActionCell :actions="getActions(row)" />
             </template>
           </BeeTableColumn>
         </BeeTable>
@@ -119,15 +109,14 @@ import { useRoute, useRouter } from 'vue-router'
 import { ElMessage } from 'element-plus'
 import type { SecretQueryReq, SecretListResp } from '@/types/kubernetes/config/secret'
 import type { NamespaceSimpleListResp } from '@/types/kubernetes/namespace'
+import type { ActionItem } from '@/components/BeeActionCell/index.vue'
 import { getSecretPage, deleteSecret, deleteSecrets } from '@/api/kubernetes/config/secret'
 import { getNamespacePage } from '@/api/kubernetes/namespace'
+import BeeActionCell from '@/components/BeeActionCell/index.vue'
 import BeeAuditCell from '@/components/BeeAuditCell/index.vue'
 import BeeButton from '@/components/BeeButton/index.vue'
 import BeeCard from '@/components/BeeCard/index.vue'
-import BeeCircleButton from '@/components/BeeCircleButton/index.vue'
 import BeeDialog from '@/components/BeeDialog/index.vue'
-import BeeDropdown from '@/components/BeeDropdown/index.vue'
-import BeeDropdownItem from '@/components/BeeDropdownItem/index.vue'
 import BeeInputSearch from '@/components/BeeInputSearch/index.vue'
 import BeePage from '@/components/BeePage/index.vue'
 import BeePageTitle from '@/components/BeePageTitle/index.vue'
@@ -325,6 +314,42 @@ async function handleConfirmBatchDelete() {
   }
 }
 
+// ==================== Row Actions ====================
+
+/** 页面级权限缓存，避免每个 row 都重复调用 hasPermission */
+const perm: Record<string, boolean> = {
+  edit: hasPermission('kubernetes:config:secret:edit'),
+  view: hasPermission('kubernetes:config:secret:view'),
+  delete: hasPermission('kubernetes:config:secret:delete')
+}
+
+/**
+ * 构建行操作数组
+ * @param row - 当前行数据
+ * @returns 操作项数组
+ * @remarks 按权限和 row.deletable 条件过滤，由调用方负责
+ */
+function getActions(row: SecretListResp): ActionItem[] {
+  const actions: ActionItem[] = []
+  // 查看权限
+  if (perm.view) {
+    actions.push({ value: 'view', label: '详情', icon: 'basic-view', handler: () => handleViewDetail(row) })
+  }
+  // 编辑权限：编辑、编辑 YAML
+  if (perm.edit) {
+    actions.push(
+      { value: 'edit', label: '编辑', icon: 'basic-edit', handler: () => handleEdit(row) },
+      { value: 'yamledit', label: '编辑 YAML', icon: 'basic-code', handler: () => handleEditYaml(row) }
+    )
+  }
+  // 删除权限 + deletable 条件
+  if (perm.delete && row.deletable !== false) {
+    actions.push({ value: 'delete', label: '删除', icon: 'basic-delete', handler: () => handleDelete(row) })
+  }
+
+  return actions
+}
+
 // ==================== Lifecycle ====================
 
 onMounted(() => {
@@ -357,13 +382,6 @@ onMounted(() => {
     .table-body {
       flex: 1;
       min-height: 0;
-    }
-
-    .table-action {
-      display: flex;
-      gap: $spacing-8;
-      width: 100%;
-      height: auto;
     }
 
     .table-footer {
