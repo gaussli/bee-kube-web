@@ -104,15 +104,31 @@ export default [
  * @returns 分页数据
  */
 function getNamespacePage(clusterId: string, params: Partial<NamespaceQueryReq>): PageResp<NamespaceListResp> {
-  const { name, status, page = 1, pageSize = 10 } = params || {}
+  const { id, name, status, page = 1, pageSize = 10 } = params || {}
 
   let filtered = [...mockNamespaces]
 
-  if (name) {
-    filtered = filtered.filter(ns => ns.name.toLowerCase().includes(name.toLowerCase()))
-  }
   if (status) {
     filtered = filtered.filter(ns => ns.status === status)
+  }
+
+  if (id || name) {
+    let searchFiltered: NamespaceListResp[] = []
+    if (id) {
+      searchFiltered = [...searchFiltered, ...filtered.filter(n => n.id === id)]
+      console.log(searchFiltered)
+    }
+    if (name) {
+      searchFiltered = [...searchFiltered, ...filtered.filter(n => n.name.toLowerCase().includes(name.toLowerCase()))]
+    }
+    console.log(searchFiltered)
+    // searchFiltered 基于 id 去重
+    const seenIds = new Set<string>()
+    filtered = searchFiltered.filter(n => {
+      if (seenIds.has(n.id)) return false
+      seenIds.add(n.id)
+      return true
+    })
   }
 
   const total = filtered.length

@@ -94,6 +94,7 @@ import { computed, onMounted, reactive, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { ElMessage } from 'element-plus'
 import type { NodeQueryReq, NodeListResp } from '@/types/kubernetes/node'
+import { calcPercentage } from '@/utils/kubernetes'
 import { getNodePage, cordonNode, drainNode } from '@/api/kubernetes/node'
 import BeeAuditCell from '@/components/BeeAuditCell/index.vue'
 import BeeButton from '@/components/BeeButton/index.vue'
@@ -128,11 +129,10 @@ const loading = ref(false)
 const tableData = ref<NodeListResp[]>([])
 const selectedRows = ref<NodeListResp[]>([])
 const queryForm = reactive<Partial<NodeQueryReq>>({
+  id: undefined,
   name: undefined,
   ip: undefined,
-  status: undefined,
-  page: 1,
-  pageSize: 10
+  status: undefined
 })
 const pagination = reactive({
   page: 1,
@@ -141,16 +141,9 @@ const pagination = reactive({
 })
 
 /**
- * 计算使用百分比
- * @param used - 已用量
- * @param total - 总量
- * @returns 百分比（0-100），总量为 0 时返回 0
+ * 加载节点列表数据
+ * @remarks 根据当前查询条件与分页参数获取节点分页数据
  */
-function calcPercentage(used: number, total: number): number {
-  if (total <= 0) return 0
-  return Math.round((used / total) * 100)
-}
-
 async function loadData() {
   if (!clusterId.value) {
     tableData.value = []
@@ -168,10 +161,11 @@ async function loadData() {
 
 /**
  * 搜索
- * @remarks 将 searchKey 同时映射到 name/ip 字段进行模糊匹配
+ * @remarks 将 searchKey 同时映射到 id/name/ip 字段进行模糊匹配
  */
 function handleSearch() {
   const key = searchKey.value
+  queryForm.id = key
   queryForm.name = key
   queryForm.ip = key
   pagination.page = 1
@@ -182,6 +176,7 @@ function handleSearch() {
  * 重置搜索条件
  */
 function handleReset() {
+  queryForm.id = undefined
   queryForm.name = undefined
   queryForm.ip = undefined
   queryForm.status = undefined
@@ -193,15 +188,24 @@ function handleReset() {
 
 /**
  * 表格选中行变化
+ * @remarks BeeTable 的 selection-change 事件固定返回 Record<string, unknown>[]，需通过 unknown 桥接断言为目标类型
  */
 function handleSelectionChange(rows: Record<string, unknown>[]) {
   selectedRows.value = rows as unknown as NodeListResp[]
 }
 
+/**
+ * 查看节点详情
+ * @param row - 当前行节点数据
+ */
 function handleViewDetail(row: NodeListResp) {
   router.push({ name: 'kubernetes:node:detail', params: { clusterId: clusterId.value }, query: { name: row.name } })
 }
 
+/**
+ * 编辑节点
+ * @param row - 当前行节点数据
+ */
 function handleEdit(row: NodeListResp) {
   router.push({ name: 'kubernetes:node:edit', params: { clusterId: clusterId.value }, query: { name: row.name } })
 }
@@ -211,8 +215,8 @@ async function handleCordon(row: NodeListResp, unschedulable: boolean) {
     await cordonNode(row.clusterId, row.name, unschedulable)
     ElMessage.success(unschedulable ? '已设置为不可调度' : '已设置为可调度')
     loadData()
-  } catch {
-    // 失败处理
+  } catch (err) {
+    console.error('[handleCordon]', err)
   }
 }
 
@@ -221,8 +225,8 @@ async function handleDrain(row: NodeListResp) {
     await drainNode(row.clusterId, row.name)
     ElMessage.success('已开始驱逐节点上的 Pod')
     loadData()
-  } catch {
-    // 失败处理
+  } catch (err) {
+    console.error('[handleDrain]', err)
   }
 }
 
@@ -255,24 +259,6 @@ onMounted(() => {
     .table-body {
       flex: 1;
       min-height: 0;
-
-      .version-text {
-        font-family: monospace;
-        font-size: 12px;
-        color: $color-text-secondary;
-      }
-
-      .status-cell {
-        display: flex;
-        gap: 4px;
-        align-items: center;
-      }
-
-      .role-tags {
-        display: flex;
-        gap: $spacing-8;
-        flex-flow: row wrap;
-      }
     }
 
     .table-action {

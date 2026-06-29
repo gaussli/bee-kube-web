@@ -79,22 +79,35 @@ export default [
  * @param params - 查询参数
  * @returns 分页数据
  */
-function getNodePage(clusterId: string, params: Partial<NodeQueryReq>): PageResp<NodeListResp> {
-  console.log(params)
+function getNodePage(_clusterId: string, params: Partial<NodeQueryReq>): PageResp<NodeListResp> {
   const { id, name, ip, status, page = 1, pageSize = 10 } = params || {}
 
   let filtered = [...mockNodes]
-  if (id) {
-    filtered = filtered.filter(n => n.id === id)
-  }
-  if (name) {
-    filtered = filtered.filter(n => n.name.toLowerCase().includes(name.toLowerCase()))
-  }
-  if (ip) {
-    filtered = filtered.filter(n => n.ip === ip)
-  }
+
   if (status) {
     filtered = filtered.filter(n => n.status === status)
+  }
+
+  if (id || name || ip) {
+    let searchFiltered: NodeListResp[] = []
+    if (id) {
+      searchFiltered = [...searchFiltered, ...filtered.filter(n => n.id === id)]
+      console.log(searchFiltered)
+    }
+    if (name) {
+      searchFiltered = [...searchFiltered, ...filtered.filter(n => n.name.toLowerCase().includes(name.toLowerCase()))]
+    }
+    if (ip) {
+      searchFiltered = [...searchFiltered, ...filtered.filter(n => n.ip === ip)]
+    }
+    console.log(searchFiltered)
+    // searchFiltered 基于 id 去重
+    const seenIds = new Set<string>()
+    filtered = searchFiltered.filter(n => {
+      if (seenIds.has(n.id)) return false
+      seenIds.add(n.id)
+      return true
+    })
   }
 
   const total = filtered.length
@@ -125,7 +138,7 @@ function getNodeDetail(clusterId: string, name: string): NodeListResp {
  * @param name - 节点名称
  * @returns 节点资源用量数据
  */
-function getNodeResource(clusterId: string, name: string): NodeResourceResp {
+function getNodeResource(_clusterId: string, _name: string): NodeResourceResp {
   return generateNodeResources()
 }
 
@@ -147,18 +160,7 @@ function getNodeTopN(_clusterId: string, params: Partial<{ metric: string; count
  * @param data - 更新数据
  */
 function updateNode(clusterId: string, name: string, data: Partial<NodeReq>): void {
-  const index = mockNodes.findIndex(n => n.clusterId === clusterId && n.name === name)
-  if (index === -1) {
-    console.error('[updateNode] can not find node:', clusterId, name)
-    return
-  }
-  const updated = {
-    ...mockNodes[index],
-    ...data,
-    updateBy: 'admin',
-    updateAt: new Date().toLocaleString()
-  }
-  mockNodes[index] = updated
+  console.debug('[updateNode] clusterId:', clusterId, 'name:', name, 'data:', data)
 }
 
 /**
@@ -166,7 +168,9 @@ function updateNode(clusterId: string, name: string, data: Partial<NodeReq>): vo
  * @param clusterId - 集群ID
  * @param name - 节点名称
  */
-function drainNode(clusterId: string, name: string): void {}
+function drainNode(clusterId: string, name: string): void {
+  console.debug('[drainNode] clusterId:', clusterId, 'name:', name)
+}
 
 /**
  * 设置节点可调度/不可调度
@@ -175,12 +179,7 @@ function drainNode(clusterId: string, name: string): void {}
  * @param data - 调度配置
  */
 function cordonNode(clusterId: string, name: string, data: NodeCordonReq): void {
-  const node = mockNodes.find(n => n.clusterId === clusterId && n.name === name)
-  if (!node) {
-    console.error('[cordonNode] can not find node:', clusterId, name)
-    return
-  }
-  node.unschedulable = data.cordon
+  console.debug('[cordonNode] clusterId:', clusterId, 'name:', name, 'data:', data)
 }
 
 /**
@@ -189,7 +188,9 @@ function cordonNode(clusterId: string, name: string, data: NodeCordonReq): void 
  * @param name - 节点名称
  * @param data - 标签配置
  */
-function manageNodeLabels(clusterId: string, name: string, data: Partial<NodeLabelsReq>): void {}
+function manageNodeLabels(clusterId: string, name: string, data: Partial<NodeLabelsReq>): void {
+  console.debug('[manageNodeLabels] clusterId:', clusterId, 'name:', name, 'data:', data)
+}
 
 /**
  * 更新节点注解配置
@@ -197,7 +198,9 @@ function manageNodeLabels(clusterId: string, name: string, data: Partial<NodeLab
  * @param name - 节点名称
  * @param data - 注解配置
  */
-function manageNodeAnnotations(clusterId: string, name: string, data: Partial<NodeAnnotationsReq>): void {}
+function manageNodeAnnotations(clusterId: string, name: string, data: Partial<NodeAnnotationsReq>): void {
+  console.debug('[manageNodeAnnotations] clusterId:', clusterId, 'name:', name, 'data:', data)
+}
 
 /**
  * 更新节点污点配置
@@ -206,13 +209,7 @@ function manageNodeAnnotations(clusterId: string, name: string, data: Partial<No
  * @param data - 污点配置
  */
 function manageNodeTaints(clusterId: string, name: string, data: Partial<NodeTaintsReq>): void {
-  const node = mockNodes.find(n => n.clusterId === clusterId && n.name === name)
-  if (!node) {
-    console.error('[manageNodeTaints] can not find node:', clusterId, name)
-    return
-  }
-  // 污点配置模拟，实际污点存储需要扩展 NodeListResp 类型
-  console.log('[manageNodeTaints] update taints:', clusterId, name, data)
+  console.debug('[manageNodeTaints] clusterId:', clusterId, 'name:', name, 'data:', data)
 }
 
 function generateNodeResources() {

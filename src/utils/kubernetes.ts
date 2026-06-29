@@ -11,6 +11,31 @@ type CapacityUnit = 'B' | (typeof CAPACITY_UNITS)[number]
 /** 容量单位基数 */
 const CAPACITY_BASE = 1024
 
+// ==================== 通用计算 ====================
+
+/**
+ * 计算使用百分比
+ *
+ * @remarks
+ * 根据已用量和总量计算百分比，总量小于等于 0 时返回 0。
+ *
+ * @param used - 已用量
+ * @param total - 总量
+ * @returns 百分比（0-100）
+ *
+ * @example
+ * ```ts
+ * calcPercentage(50, 100)   // 50
+ * calcPercentage(0, 100)    // 0
+ * calcPercentage(50, 0)     // 0
+ * calcPercentage(33, 100)   // 33
+ * ```
+ */
+export function calcPercentage(used: number, total: number): number {
+  if (total <= 0) return 0
+  return Math.round((used / total) * 100)
+}
+
 // ==================== CPU 转换 ====================
 
 /**

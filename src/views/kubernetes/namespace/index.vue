@@ -141,10 +141,9 @@ const batchDeleteDialogVisible = ref(false)
 const currentTargetRow = ref<NamespaceListResp | null>(null)
 
 const queryForm = reactive<Partial<NamespaceQueryReq>>({
+  id: undefined,
   name: undefined,
-  status: undefined,
-  page: 1,
-  pageSize: 10
+  status: undefined
 })
 const pagination = reactive({
   page: 1,
@@ -172,9 +171,9 @@ async function loadData() {
  * @remarks 将 searchKey 映射到 name 字段进行模糊匹配
  */
 function handleSearch() {
+  queryForm.id = searchKey.value
   queryForm.name = searchKey.value
   pagination.page = 1
-  console.log(queryForm)
   loadData()
 }
 
@@ -182,6 +181,7 @@ function handleSearch() {
  * 重置搜索条件
  */
 function handleReset() {
+  queryForm.id = undefined
   queryForm.name = undefined
   queryForm.status = undefined
   pagination.page = 1

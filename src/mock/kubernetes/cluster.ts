@@ -76,14 +76,28 @@ function getClusterPage(params: Partial<ClusterQueryReq>): PageResp<ClusterListR
   const { id, name, status, page = 1, pageSize = 10 } = params || {}
 
   let filtered = [...mockClusters]
-  if (id) {
-    filtered = filtered.filter(c => c.id.includes(id))
-  }
-  if (name) {
-    filtered = filtered.filter(c => c.name.includes(name))
-  }
+
   if (status) {
     filtered = filtered.filter(c => c.status === status)
+  }
+
+  if (id || name) {
+    let searchFiltered: ClusterListResp[] = []
+    if (id) {
+      searchFiltered = [...searchFiltered, ...filtered.filter(n => n.id === id)]
+      console.log(searchFiltered)
+    }
+    if (name) {
+      searchFiltered = [...searchFiltered, ...filtered.filter(n => n.name.toLowerCase().includes(name.toLowerCase()))]
+    }
+    console.log(searchFiltered)
+    // searchFiltered 基于 id 去重
+    const seenIds = new Set<string>()
+    filtered = searchFiltered.filter(n => {
+      if (seenIds.has(n.id)) return false
+      seenIds.add(n.id)
+      return true
+    })
   }
 
   const total = filtered.length
