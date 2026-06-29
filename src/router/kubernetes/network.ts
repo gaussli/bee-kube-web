@@ -2,7 +2,7 @@ import type { RouteRecordRaw } from 'vue-router'
 
 const serviceRoutes: RouteRecordRaw[] = [
   {
-    path: '/kubernetes/network/service',
+    path: '/kubernetes/clusters/:clusterId/network/service',
     name: 'kubernetes:network:service',
     component: () => import('@/views/kubernetes/network/service/index.vue'),
     meta: {
@@ -13,7 +13,7 @@ const serviceRoutes: RouteRecordRaw[] = [
     }
   },
   {
-    path: '/kubernetes/network/service/create',
+    path: '/kubernetes/clusters/:clusterId/network/service/create',
     name: 'kubernetes:network:service:create',
     component: () => import('@/views/kubernetes/network/service/create/index.vue'),
     meta: {
@@ -24,7 +24,7 @@ const serviceRoutes: RouteRecordRaw[] = [
     }
   },
   {
-    path: '/kubernetes/network/service/edit',
+    path: '/kubernetes/clusters/:clusterId/network/service/edit',
     name: 'kubernetes:network:service:edit',
     component: () => import('@/views/kubernetes/network/service/edit/index.vue'),
     meta: {
@@ -35,7 +35,7 @@ const serviceRoutes: RouteRecordRaw[] = [
     }
   },
   {
-    path: '/kubernetes/network/service/detail',
+    path: '/kubernetes/clusters/:clusterId/network/service/detail',
     name: 'kubernetes:network:service:detail',
     component: () => import('@/views/kubernetes/network/service/detail/index.vue'),
     meta: {
@@ -49,7 +49,7 @@ const serviceRoutes: RouteRecordRaw[] = [
 
 const ingressRoutes: RouteRecordRaw[] = [
   {
-    path: '/kubernetes/network/ingress',
+    path: '/kubernetes/clusters/:clusterId/network/ingress',
     name: 'kubernetes:network:ingress',
     component: () => import('@/views/kubernetes/network/ingress/index.vue'),
     meta: {
@@ -60,7 +60,7 @@ const ingressRoutes: RouteRecordRaw[] = [
     }
   },
   {
-    path: '/kubernetes/network/ingress/create',
+    path: '/kubernetes/clusters/:clusterId/network/ingress/create',
     name: 'kubernetes:network:ingress:create',
     component: () => import('@/views/kubernetes/network/ingress/create/index.vue'),
     meta: {
@@ -71,7 +71,7 @@ const ingressRoutes: RouteRecordRaw[] = [
     }
   },
   {
-    path: '/kubernetes/network/ingress/edit',
+    path: '/kubernetes/clusters/:clusterId/network/ingress/edit',
     name: 'kubernetes:network:ingress:edit',
     component: () => import('@/views/kubernetes/network/ingress/edit/index.vue'),
     meta: {
@@ -82,7 +82,7 @@ const ingressRoutes: RouteRecordRaw[] = [
     }
   },
   {
-    path: '/kubernetes/network/ingress/detail',
+    path: '/kubernetes/clusters/:clusterId/network/ingress/detail',
     name: 'kubernetes:network:ingress:detail',
     component: () => import('@/views/kubernetes/network/ingress/detail/index.vue'),
     meta: {
@@ -96,7 +96,7 @@ const ingressRoutes: RouteRecordRaw[] = [
 
 const networkPolicyRoutes: RouteRecordRaw[] = [
   {
-    path: '/kubernetes/network/networkpolicy',
+    path: '/kubernetes/clusters/:clusterId/network/networkpolicy',
     name: 'kubernetes:network:networkpolicy',
     component: () => import('@/views/kubernetes/network/networkpolicy/index.vue'),
     meta: {
@@ -107,7 +107,7 @@ const networkPolicyRoutes: RouteRecordRaw[] = [
     }
   },
   {
-    path: '/kubernetes/network/networkpolicy/create',
+    path: '/kubernetes/clusters/:clusterId/network/networkpolicy/create',
     name: 'kubernetes:network:networkpolicy:create',
     component: () => import('@/views/kubernetes/network/networkpolicy/create/index.vue'),
     meta: {
@@ -118,7 +118,7 @@ const networkPolicyRoutes: RouteRecordRaw[] = [
     }
   },
   {
-    path: '/kubernetes/network/networkpolicy/edit',
+    path: '/kubernetes/clusters/:clusterId/network/networkpolicy/edit',
     name: 'kubernetes:network:networkpolicy:edit',
     component: () => import('@/views/kubernetes/network/networkpolicy/edit/index.vue'),
     meta: {
@@ -129,7 +129,7 @@ const networkPolicyRoutes: RouteRecordRaw[] = [
     }
   },
   {
-    path: '/kubernetes/network/networkpolicy/detail',
+    path: '/kubernetes/clusters/:clusterId/network/networkpolicy/detail',
     name: 'kubernetes:network:networkpolicy:detail',
     component: () => import('@/views/kubernetes/network/networkpolicy/detail/index.vue'),
     meta: {
@@ -143,9 +143,9 @@ const networkPolicyRoutes: RouteRecordRaw[] = [
 
 export const networkRoutes: RouteRecordRaw[] = [
   {
-    path: '/kubernetes/network',
+    path: '/kubernetes/clusters/:clusterId/network',
     name: 'kubernetes:network',
-    redirect: '/kubernetes/network/service',
+    redirect: '/kubernetes/clusters/:clusterId/network/service',
     meta: {
       title: '网络',
       icon: 'Connection'

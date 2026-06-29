@@ -98,7 +98,7 @@ const { hasPermission } = usePermission()
 const route = useRoute()
 const router = useRouter()
 
-const clusterId = ref(route.query.clusterId as string)
+const clusterId = ref(route.params.clusterId as string)
 const namespaceName = ref(route.query.name as string)
 const loading = ref(false)
 const namespaceData = ref<NamespaceResp>()
@@ -130,7 +130,7 @@ function handleBack() {
 }
 
 function handleEdit() {
-  router.push({ name: 'kubernetes:namespace:edit', query: { clusterId: clusterId.value, name: namespaceName.value } })
+  router.push({ name: 'kubernetes:namespace:edit', params: { clusterId: clusterId.value }, query: { name: namespaceName.value } })
 }
 
 onMounted(() => {

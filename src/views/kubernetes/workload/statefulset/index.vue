@@ -255,15 +255,15 @@ function handleSelectionChange(rows: StatefulSetResp[]) {
 }
 
 function handleCreate() {
-  router.push({ name: 'kubernetes:workload:statefulset:create' })
+  router.push({ name: 'kubernetes:workload:statefulset:create', params: { clusterId: kubernetesStore.activeClusterId } })
 }
 
 function handleEdit(row: StatefulSetResp) {
-  router.push({ name: 'kubernetes:workload:statefulset:edit', query: { clusterId: row.clusterId, namespace: row.namespace, name: row.name } })
+  router.push({ name: 'kubernetes:workload:statefulset:edit', params: { clusterId: row.clusterId }, query: { namespace: row.namespace, name: row.name } })
 }
 
 function handleViewDetail(row: StatefulSetResp) {
-  router.push({ name: 'kubernetes:workload:statefulset:detail', query: { clusterId: row.clusterId, namespace: row.namespace, name: row.name } })
+  router.push({ name: 'kubernetes:workload:statefulset:detail', params: { clusterId: row.clusterId }, query: { namespace: row.namespace, name: row.name } })
 }
 
 function handleEditYaml(row: StatefulSetResp) {

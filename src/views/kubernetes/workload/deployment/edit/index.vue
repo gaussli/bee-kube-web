@@ -66,7 +66,7 @@ const route = useRoute()
 const router = useRouter()
 const formRef = ref<FormInstance>()
 
-const clusterId = ref(route.query.clusterId as string)
+const clusterId = ref(route.params.clusterId as string)
 const namespace = ref(route.query.namespace as string)
 const deploymentName = ref(route.query.name as string)
 const loading = ref(false)

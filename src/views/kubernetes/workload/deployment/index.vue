@@ -307,15 +307,15 @@ function handleSelectionChange(rows: DeploymentResp[]) {
 }
 
 function handleCreate() {
-  router.push({ name: 'kubernetes:workload:deployment:create' })
+  router.push({ name: 'kubernetes:workload:deployment:create', params: { clusterId: kubernetesStore.activeClusterId } })
 }
 
 function handleEdit(row: DeploymentResp) {
-  router.push({ name: 'kubernetes:workload:deployment:edit', query: { clusterId: row.clusterId, namespace: row.namespace, name: row.name } })
+  router.push({ name: 'kubernetes:workload:deployment:edit', params: { clusterId: row.clusterId }, query: { namespace: row.namespace, name: row.name } })
 }
 
 function handleViewDetail(row: DeploymentResp) {
-  router.push({ name: 'kubernetes:workload:deployment:detail', query: { clusterId: row.clusterId, namespace: row.namespace, name: row.name } })
+  router.push({ name: 'kubernetes:workload:deployment:detail', params: { clusterId: row.clusterId }, query: { namespace: row.namespace, name: row.name } })
 }
 
 function handleScale(row: DeploymentResp) {

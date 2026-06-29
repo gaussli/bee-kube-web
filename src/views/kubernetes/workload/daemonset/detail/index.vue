@@ -66,7 +66,7 @@ defineOptions({ name: 'DaemonSetDetail' })
 const { hasPermission } = usePermission()
 const route = useRoute()
 const router = useRouter()
-const clusterId = ref(route.query.clusterId as string)
+const clusterId = ref(route.params.clusterId as string)
 const namespace = ref(route.query.namespace as string)
 const daemonsetName = ref(route.query.name as string)
 const loading = ref(false)
@@ -85,7 +85,7 @@ function handleBack() {
   router.back()
 }
 function handleEdit() {
-  router.push({ name: 'kubernetes:workload:daemonset:edit', query: { clusterId: clusterId.value, namespace: namespace.value, name: daemonsetName.value } })
+  router.push({ name: 'kubernetes:workload:daemonset:edit', params: { clusterId: clusterId.value }, query: { namespace: namespace.value, name: daemonsetName.value } })
 }
 onMounted(() => {
   loadData()

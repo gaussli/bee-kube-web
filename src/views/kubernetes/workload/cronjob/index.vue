@@ -259,15 +259,15 @@ function handleSelectionChange(rows: CronJobResp[]) {
 }
 
 function handleCreate() {
-  router.push({ name: 'kubernetes:workload:cronjob:create' })
+  router.push({ name: 'kubernetes:workload:cronjob:create', params: { clusterId: kubernetesStore.activeClusterId } })
 }
 
 function handleEdit(row: CronJobResp) {
-  router.push({ name: 'kubernetes:workload:cronjob:edit', query: { clusterId: row.clusterId, namespace: row.namespace, name: row.name } })
+  router.push({ name: 'kubernetes:workload:cronjob:edit', params: { clusterId: row.clusterId }, query: { namespace: row.namespace, name: row.name } })
 }
 
 function handleViewDetail(row: CronJobResp) {
-  router.push({ name: 'kubernetes:workload:cronjob:detail', query: { clusterId: row.clusterId, namespace: row.namespace, name: row.name } })
+  router.push({ name: 'kubernetes:workload:cronjob:detail', params: { clusterId: row.clusterId }, query: { namespace: row.namespace, name: row.name } })
 }
 
 function handleEditYaml(row: CronJobResp) {

@@ -245,15 +245,15 @@ function handleSelectionChange(rows: NamespaceResp[]) {
 }
 
 function handleCreate() {
-  router.push({ name: 'kubernetes:namespace:create' })
+  router.push({ name: 'kubernetes:namespace:create', params: { clusterId: kubernetesStore.activeClusterId } })
 }
 
 function handleEdit(row: NamespaceResp) {
-  router.push({ name: 'kubernetes:namespace:edit', query: { clusterId: row.clusterId, name: row.name } })
+  router.push({ name: 'kubernetes:namespace:edit', params: { clusterId: row.clusterId }, query: { name: row.name } })
 }
 
 function handleViewDetail(row: NamespaceResp) {
-  router.push({ name: 'kubernetes:namespace:detail', query: { clusterId: row.clusterId, name: row.name } })
+  router.push({ name: 'kubernetes:namespace:detail', params: { clusterId: row.clusterId }, query: { name: row.name } })
 }
 
 function handleCopy(text: string) {

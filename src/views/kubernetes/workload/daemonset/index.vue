@@ -259,15 +259,15 @@ function handleSelectionChange(rows: DaemonSetResp[]) {
 }
 
 function handleCreate() {
-  router.push({ name: 'kubernetes:workload:daemonset:create' })
+  router.push({ name: 'kubernetes:workload:daemonset:create', params: { clusterId: kubernetesStore.activeClusterId } })
 }
 
 function handleEdit(row: DaemonSetResp) {
-  router.push({ name: 'kubernetes:workload:daemonset:edit', query: { clusterId: row.clusterId, namespace: row.namespace, name: row.name } })
+  router.push({ name: 'kubernetes:workload:daemonset:edit', params: { clusterId: row.clusterId }, query: { namespace: row.namespace, name: row.name } })
 }
 
 function handleViewDetail(row: DaemonSetResp) {
-  router.push({ name: 'kubernetes:workload:daemonset:detail', query: { clusterId: row.clusterId, namespace: row.namespace, name: row.name } })
+  router.push({ name: 'kubernetes:workload:daemonset:detail', params: { clusterId: row.clusterId }, query: { namespace: row.namespace, name: row.name } })
 }
 
 function handleEditYaml(row: DaemonSetResp) {

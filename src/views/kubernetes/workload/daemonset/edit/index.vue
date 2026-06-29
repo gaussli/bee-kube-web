@@ -42,7 +42,7 @@ import BeePageTitle from '@/components/BeePageTitle/index.vue'
 defineOptions({ name: 'DaemonSetEdit' })
 const route = useRoute()
 const router = useRouter()
-const clusterId = ref(route.query.clusterId as string)
+const clusterId = ref(route.params.clusterId as string)
 const namespace = ref(route.query.namespace as string)
 const daemonsetName = ref(route.query.name as string)
 const loading = ref(false)

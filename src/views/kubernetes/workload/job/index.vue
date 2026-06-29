@@ -259,15 +259,15 @@ function handleSelectionChange(rows: JobResp[]) {
 }
 
 function handleCreate() {
-  router.push({ name: 'kubernetes:workload:job:create' })
+  router.push({ name: 'kubernetes:workload:job:create', params: { clusterId: kubernetesStore.activeClusterId } })
 }
 
 function handleEdit(row: JobResp) {
-  router.push({ name: 'kubernetes:workload:job:edit', query: { clusterId: row.clusterId, namespace: row.namespace, name: row.name } })
+  router.push({ name: 'kubernetes:workload:job:edit', params: { clusterId: row.clusterId }, query: { namespace: row.namespace, name: row.name } })
 }
 
 function handleViewDetail(row: JobResp) {
-  router.push({ name: 'kubernetes:workload:job:detail', query: { clusterId: row.clusterId, namespace: row.namespace, name: row.name } })
+  router.push({ name: 'kubernetes:workload:job:detail', params: { clusterId: row.clusterId }, query: { namespace: row.namespace, name: row.name } })
 }
 
 function handleEditYaml(row: JobResp) {

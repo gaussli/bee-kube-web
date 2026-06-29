@@ -128,7 +128,7 @@ const { hasPermission } = usePermission()
 const route = useRoute()
 const router = useRouter()
 
-const clusterId = ref(route.query.clusterId as string)
+const clusterId = ref(route.params.clusterId as string)
 const namespace = ref(route.query.namespace as string)
 const deploymentName = ref(route.query.name as string)
 const loading = ref(false)
@@ -150,7 +150,7 @@ function handleBack() {
 }
 
 function handleEdit() {
-  router.push({ name: 'kubernetes:workload:deployment:edit', query: { clusterId: clusterId.value, namespace: namespace.value, name: deploymentName.value } })
+  router.push({ name: 'kubernetes:workload:deployment:edit', params: { clusterId: clusterId.value }, query: { namespace: namespace.value, name: deploymentName.value } })
 }
 
 onMounted(() => {

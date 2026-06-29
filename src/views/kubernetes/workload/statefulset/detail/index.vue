@@ -66,7 +66,7 @@ defineOptions({ name: 'StatefulSetDetail' })
 const { hasPermission } = usePermission()
 const route = useRoute()
 const router = useRouter()
-const clusterId = ref(route.query.clusterId as string)
+const clusterId = ref(route.params.clusterId as string)
 const namespace = ref(route.query.namespace as string)
 const statefulsetName = ref(route.query.name as string)
 const loading = ref(false)
@@ -85,7 +85,7 @@ function handleBack() {
   router.back()
 }
 function handleEdit() {
-  router.push({ name: 'kubernetes:workload:statefulset:edit', query: { clusterId: clusterId.value, namespace: namespace.value, name: statefulsetName.value } })
+  router.push({ name: 'kubernetes:workload:statefulset:edit', params: { clusterId: clusterId.value }, query: { namespace: namespace.value, name: statefulsetName.value } })
 }
 onMounted(() => {
   loadData()

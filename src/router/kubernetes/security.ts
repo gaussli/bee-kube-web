@@ -2,7 +2,7 @@ import type { RouteRecordRaw } from 'vue-router'
 
 const serviceAccountRoutes: RouteRecordRaw[] = [
   {
-    path: '/kubernetes/security/serviceaccount',
+    path: '/kubernetes/clusters/:clusterId/security/serviceaccount',
     name: 'kubernetes:security:serviceaccount',
     component: () => import('@/views/kubernetes/security/serviceaccount/index.vue'),
     meta: {
@@ -13,7 +13,7 @@ const serviceAccountRoutes: RouteRecordRaw[] = [
     }
   },
   {
-    path: '/kubernetes/security/serviceaccount/create',
+    path: '/kubernetes/clusters/:clusterId/security/serviceaccount/create',
     name: 'kubernetes:security:serviceaccount:create',
     component: () => import('@/views/kubernetes/security/serviceaccount/create/index.vue'),
     meta: {
@@ -24,7 +24,7 @@ const serviceAccountRoutes: RouteRecordRaw[] = [
     }
   },
   {
-    path: '/kubernetes/security/serviceaccount/edit',
+    path: '/kubernetes/clusters/:clusterId/security/serviceaccount/edit',
     name: 'kubernetes:security:serviceaccount:edit',
     component: () => import('@/views/kubernetes/security/serviceaccount/edit/index.vue'),
     meta: {
@@ -35,7 +35,7 @@ const serviceAccountRoutes: RouteRecordRaw[] = [
     }
   },
   {
-    path: '/kubernetes/security/serviceaccount/detail',
+    path: '/kubernetes/clusters/:clusterId/security/serviceaccount/detail',
     name: 'kubernetes:security:serviceaccount:detail',
     component: () => import('@/views/kubernetes/security/serviceaccount/detail/index.vue'),
     meta: {
@@ -49,7 +49,7 @@ const serviceAccountRoutes: RouteRecordRaw[] = [
 
 const clusteRoleRoutes: RouteRecordRaw[] = [
   {
-    path: '/kubernetes/security/clusterrole',
+    path: '/kubernetes/clusters/:clusterId/security/clusterrole',
     name: 'kubernetes:security:clusterrole',
     component: () => import('@/views/kubernetes/security/clusterrole/index.vue'),
     meta: {
@@ -60,7 +60,7 @@ const clusteRoleRoutes: RouteRecordRaw[] = [
     }
   },
   {
-    path: '/kubernetes/security/clusterrole/create',
+    path: '/kubernetes/clusters/:clusterId/security/clusterrole/create',
     name: 'kubernetes:security:clusterrole:create',
     component: () => import('@/views/kubernetes/security/clusterrole/create/index.vue'),
     meta: {
@@ -71,7 +71,7 @@ const clusteRoleRoutes: RouteRecordRaw[] = [
     }
   },
   {
-    path: '/kubernetes/security/clusterrole/edit',
+    path: '/kubernetes/clusters/:clusterId/security/clusterrole/edit',
     name: 'kubernetes:security:clusterrole:edit',
     component: () => import('@/views/kubernetes/security/clusterrole/edit/index.vue'),
     meta: {
@@ -82,7 +82,7 @@ const clusteRoleRoutes: RouteRecordRaw[] = [
     }
   },
   {
-    path: '/kubernetes/security/clusterrole/detail',
+    path: '/kubernetes/clusters/:clusterId/security/clusterrole/detail',
     name: 'kubernetes:security:clusterrole:detail',
     component: () => import('@/views/kubernetes/security/clusterrole/detail/index.vue'),
     meta: {
@@ -96,7 +96,7 @@ const clusteRoleRoutes: RouteRecordRaw[] = [
 
 const roleRoutes: RouteRecordRaw[] = [
   {
-    path: '/kubernetes/security/role',
+    path: '/kubernetes/clusters/:clusterId/security/role',
     name: 'kubernetes:security:role',
     component: () => import('@/views/kubernetes/security/role/index.vue'),
     meta: {
@@ -107,7 +107,7 @@ const roleRoutes: RouteRecordRaw[] = [
     }
   },
   {
-    path: '/kubernetes/security/role/create',
+    path: '/kubernetes/clusters/:clusterId/security/role/create',
     name: 'kubernetes:security:role:create',
     component: () => import('@/views/kubernetes/security/role/create/index.vue'),
     meta: {
@@ -118,7 +118,7 @@ const roleRoutes: RouteRecordRaw[] = [
     }
   },
   {
-    path: '/kubernetes/security/role/edit',
+    path: '/kubernetes/clusters/:clusterId/security/role/edit',
     name: 'kubernetes:security:role:edit',
     component: () => import('@/views/kubernetes/security/role/edit/index.vue'),
     meta: {
@@ -129,7 +129,7 @@ const roleRoutes: RouteRecordRaw[] = [
     }
   },
   {
-    path: '/kubernetes/security/role/detail',
+    path: '/kubernetes/clusters/:clusterId/security/role/detail',
     name: 'kubernetes:security:role:detail',
     component: () => import('@/views/kubernetes/security/role/detail/index.vue'),
     meta: {
@@ -143,7 +143,7 @@ const roleRoutes: RouteRecordRaw[] = [
 
 const clusteRoleBindingRoutes: RouteRecordRaw[] = [
   {
-    path: '/kubernetes/security/clusterrolebinding',
+    path: '/kubernetes/clusters/:clusterId/security/clusterrolebinding',
     name: 'kubernetes:security:clusterrolebinding',
     component: () => import('@/views/kubernetes/security/clusterrolebinding/index.vue'),
     meta: {
@@ -154,7 +154,7 @@ const clusteRoleBindingRoutes: RouteRecordRaw[] = [
     }
   },
   {
-    path: '/kubernetes/security/clusterrolebinding/create',
+    path: '/kubernetes/clusters/:clusterId/security/clusterrolebinding/create',
     name: 'kubernetes:security:clusterrolebinding:create',
     component: () => import('@/views/kubernetes/security/clusterrolebinding/create/index.vue'),
     meta: {
@@ -165,7 +165,7 @@ const clusteRoleBindingRoutes: RouteRecordRaw[] = [
     }
   },
   {
-    path: '/kubernetes/security/clusterrolebinding/edit',
+    path: '/kubernetes/clusters/:clusterId/security/clusterrolebinding/edit',
     name: 'kubernetes:security:clusterrolebinding:edit',
     component: () => import('@/views/kubernetes/security/clusterrolebinding/edit/index.vue'),
     meta: {
@@ -176,7 +176,7 @@ const clusteRoleBindingRoutes: RouteRecordRaw[] = [
     }
   },
   {
-    path: '/kubernetes/security/clusterrolebinding/detail',
+    path: '/kubernetes/clusters/:clusterId/security/clusterrolebinding/detail',
     name: 'kubernetes:security:clusterrolebinding:detail',
     component: () => import('@/views/kubernetes/security/clusterrolebinding/detail/index.vue'),
     meta: {
@@ -190,7 +190,7 @@ const clusteRoleBindingRoutes: RouteRecordRaw[] = [
 
 const roleBindingRoutes: RouteRecordRaw[] = [
   {
-    path: '/kubernetes/security/rolebinding',
+    path: '/kubernetes/clusters/:clusterId/security/rolebinding',
     name: 'kubernetes:security:rolebinding',
     component: () => import('@/views/kubernetes/security/rolebinding/index.vue'),
     meta: {
@@ -201,7 +201,7 @@ const roleBindingRoutes: RouteRecordRaw[] = [
     }
   },
   {
-    path: '/kubernetes/security/rolebinding/create',
+    path: '/kubernetes/clusters/:clusterId/security/rolebinding/create',
     name: 'kubernetes:security:rolebinding:create',
     component: () => import('@/views/kubernetes/security/rolebinding/create/index.vue'),
     meta: {
@@ -212,7 +212,7 @@ const roleBindingRoutes: RouteRecordRaw[] = [
     }
   },
   {
-    path: '/kubernetes/security/rolebinding/edit',
+    path: '/kubernetes/clusters/:clusterId/security/rolebinding/edit',
     name: 'kubernetes:security:rolebinding:edit',
     component: () => import('@/views/kubernetes/security/rolebinding/edit/index.vue'),
     meta: {
@@ -223,7 +223,7 @@ const roleBindingRoutes: RouteRecordRaw[] = [
     }
   },
   {
-    path: '/kubernetes/security/rolebinding/detail',
+    path: '/kubernetes/clusters/:clusterId/security/rolebinding/detail',
     name: 'kubernetes:security:rolebinding:detail',
     component: () => import('@/views/kubernetes/security/rolebinding/detail/index.vue'),
     meta: {
@@ -237,9 +237,9 @@ const roleBindingRoutes: RouteRecordRaw[] = [
 
 export const securityRoutes: RouteRecordRaw[] = [
   {
-    path: '/kubernetes/security',
+    path: '/kubernetes/clusters/:clusterId/security',
     name: 'kubernetes:security',
-    redirect: '/kubernetes/security/serviceaccount',
+    redirect: '/kubernetes/clusters/:clusterId/security/serviceaccount',
     meta: {
       title: '安全',
       icon: 'Key'
