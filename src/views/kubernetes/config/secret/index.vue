@@ -142,12 +142,16 @@ import { usePermission } from '@/composables/usePermission'
 
 defineOptions({ name: 'SecretManage' })
 
+// ==================== Composables & Route ====================
+
 const { hasPermission } = usePermission()
 const route = useRoute()
 const router = useRouter()
-const searchKey = ref('')
-const clusterId = ref(route.params.clusterId as string)
 
+// ==================== Reactive State ====================
+
+const clusterId = ref(route.params.clusterId as string)
+const searchKey = ref('')
 const loading = ref(false)
 const tableData = ref<SecretListResp[]>([])
 const selectedRows = ref<SecretListResp[]>([])
@@ -156,14 +160,27 @@ const batchDeleteDialogVisible = ref(false)
 const currentTargetRow = ref<SecretListResp | null>(null)
 
 const queryForm = reactive<Partial<SecretQueryReq>>({})
-const pagination = reactive({
-  page: 1,
-  pageSize: 10,
-  total: 0
-})
+const pagination = reactive({ page: 1, pageSize: 10, total: 0 })
+
+// ==================== Options ====================
 
 /** 命名空间选项 */
 const namespaceOptions = ref<{ label: string; value: string | undefined }[]>([{ label: '全部命名空间', value: undefined }])
+
+/** Secret 类型选项 */
+const typeOptions = ref([
+  { label: '全部类型', value: undefined },
+  { label: 'Opaque', value: 'Opaque' },
+  { label: 'kubernetes.io/tls', value: 'kubernetes.io/tls' },
+  { label: 'kubernetes.io/dockerconfigjson', value: 'kubernetes.io/dockerconfigjson' },
+  { label: 'kubernetes.io/basic-auth', value: 'kubernetes.io/basic-auth' },
+  { label: 'kubernetes.io/ssh-auth', value: 'kubernetes.io/ssh-auth' },
+  { label: 'kubernetes.io/service-account-token', value: 'kubernetes.io/service-account-token' },
+  { label: 'kubernetes.io/dockercfg', value: 'kubernetes.io/dockercfg' },
+  { label: 'kubernetes.io/boot-straph-token', value: 'kubernetes.io/boot-straph-token' }
+])
+
+// ==================== Data Loading ====================
 
 /**
  * 加载命名空间选项
@@ -178,19 +195,6 @@ async function loadNamespaceOptions() {
     // 加载失败时保留默认选项
   }
 }
-
-/** Secret 类型选项 */
-const typeOptions = ref([
-  { label: '全部类型', value: undefined },
-  { label: 'Opaque', value: 'Opaque' },
-  { label: 'kubernetes.io/tls', value: 'kubernetes.io/tls' },
-  { label: 'kubernetes.io/dockerconfigjson', value: 'kubernetes.io/dockerconfigjson' },
-  { label: 'kubernetes.io/basic-auth', value: 'kubernetes.io/basic-auth' },
-  { label: 'kubernetes.io/ssh-auth', value: 'kubernetes.io/ssh-auth' },
-  { label: 'kubernetes.io/service-account-token', value: 'kubernetes.io/service-account-token' },
-  { label: 'kubernetes.io/dockercfg', value: 'kubernetes.io/dockercfg' },
-  { label: 'kubernetes.io/boot-straph-token', value: 'kubernetes.io/boot-straph-token' }
-])
 
 /**
  * 加载 Secret 列表数据
@@ -216,6 +220,8 @@ async function loadData() {
     loading.value = false
   }
 }
+
+// ==================== Search & Reset ====================
 
 /**
  * 搜索
@@ -243,6 +249,8 @@ function handleReset() {
   loadData()
 }
 
+// ==================== Selection ====================
+
 /**
  * 表格选中行变化
  * @remarks BeeTable 的 selection-change 事件固定返回 Record<string, unknown>[]，需通过 unknown 桥接断言为目标类型
@@ -250,6 +258,8 @@ function handleReset() {
 function handleSelectionChange(rows: Record<string, unknown>[]) {
   selectedRows.value = rows as unknown as SecretListResp[]
 }
+
+// ==================== CRUD: Create / Edit / View ====================
 
 /** 跳转创建页面 */
 function handleCreate() {
@@ -270,6 +280,8 @@ function handleViewDetail(row: SecretListResp) {
 function handleEditYaml(row: SecretListResp) {
   ElMessage.info(`编辑 YAML: ${row.name}`)
 }
+
+// ==================== CRUD: Delete ====================
 
 /** 打开删除确认弹窗 */
 function handleDelete(row: SecretListResp) {
@@ -312,6 +324,8 @@ async function handleConfirmBatchDelete() {
     console.error('[handleConfirmBatchDelete]', err)
   }
 }
+
+// ==================== Lifecycle ====================
 
 onMounted(() => {
   loadNamespaceOptions()
