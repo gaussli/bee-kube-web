@@ -18,12 +18,13 @@
         <BeeSelect v-model="queryForm.status" placeholder="状态筛选" :options="DEPLOYMENT_STATUS_OPTIONS" />
         <BeeButton icon="basic-search" @click="handleSearch"> 搜索 </BeeButton>
         <BeeButton icon="basic-refresh" @click="handleReset"> 重置 </BeeButton>
-        <BeeButton v-if="hasPermission('kubernetes:workload:deployment:create')" type="primary" icon="basic-create" @click="handleCreate"> 新增 </BeeButton>
+        <BeeButton v-if="perm.create" type="primary" icon="basic-create" @click="handleCreate"> 新增 </BeeButton>
+        <BeeButton v-if="perm.create" type="primary" icon="basic-create" @click="handleCreateYaml"> YAML </BeeButton>
       </div>
 
       <!-- 表格主体 -->
       <div class="table-body">
-        <BeeTable :data="tableData" :loading="loading" selectable @selection-change="handleSelectionChange">
+        <BeeTable ref="tableRef" :data="tableData" :loading="loading" selectable @selection-change="handleSelectionChange">
           <BeeTableColumn :width="500">
             <template #default="{ row }">
               <BeeWorkloadInfoCell :uid="row.uid" :name="row.name" :description="row.description" :icon-size="32" icon="kubernetes-namespace" />
@@ -69,10 +70,11 @@
 
       <!-- 表格底部 -->
       <div class="table-footer">
-        <div>
-          <BeeButton v-if="hasPermission('kubernetes:workload:deployment:delete')" type="danger" :disabled="selectedRows.length === 0" @click="handleBatchDelete">
-            批量删除 ({{ selectedRows.length }})
-          </BeeButton>
+        <div class="table-footer__actions">
+          <BeeButton :disabled="selectedRows.length === 0" @click="handleClearSelection"> 取消选择 </BeeButton>
+          <BeeButton v-if="perm.delete" type="danger" :disabled="selectedRows.length === 0" @click="handleBatchDelete"> 批量删除 ({{ selectedRows.length }}) </BeeButton>
+          <BeeButton v-if="perm.view" icon="basic-create" @click="handleExport"> 导出 </BeeButton>
+          <BeeButton v-if="perm.create" icon="basic-create" @click="handleImport"> 导入 </BeeButton>
         </div>
         <BeePagination v-model="pagination.page" v-model:pageSize="pagination.pageSize" :total="pagination.total" :page-sizes="[10, 20, 50]" @change="loadData" />
       </div>
@@ -90,11 +92,20 @@
     <!-- 批量删除 Dialog -->
     <BeeDialog v-model="batchDeleteDialogVisible" title="确认删除" @confirm="handleConfirmBatchDelete">
       <div class="dialog-content">
-        <p>
-          确定要删除选中的 <strong>{{ selectedRows.length }}</strong> 个 Deployment 吗？
+        <template v-if="nonDeletableRows.length > 0">
+          <p class="dialog-content__warning">共选中 {{ selectedRows.length }} 个 Deployment，但以下 {{ nonDeletableRows.length }} 个 Deployment 不可删除，将从列表忽略：</p>
+          <div class="delete-deployment-tags">
+            <BeeTag v-for="row in nonDeletableRows" :key="row.id" type="warning">
+              {{ row.name }}
+            </BeeTag>
+          </div>
+        </template>
+        <p v-if="deletableRows.length > 0">
+          确定要删除选中的 <strong>{{ deletableRows.length }}</strong> 个 Deployment 吗？
         </p>
-        <div class="delete-deployment-tags">
-          <BeeTag v-for="row in selectedRows" :key="row.id">
+        <p v-else class="dialog-content__warning">所有选中的 Deployment 均不可删除。</p>
+        <div v-if="deletableRows.length > 0" class="delete-deployment-tags">
+          <BeeTag v-for="row in deletableRows" :key="row.id">
             {{ row.name }}
           </BeeTag>
         </div>
@@ -108,7 +119,7 @@
  * Deployment 管理页面
  * @module views/kubernetes/workload/deployment
  */
-import { onMounted, reactive, ref } from 'vue'
+import { computed, onMounted, reactive, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { ElMessage } from 'element-plus'
 import type { NamespaceSimpleListResp } from '@/types/kubernetes/namespace'
@@ -149,7 +160,15 @@ const clusterId = ref(route.params.clusterId as string)
 const searchKey = ref('')
 const loading = ref(false)
 const tableData = ref<DeploymentListResp[]>([])
+const tableRef = ref<InstanceType<typeof BeeTable>>()
 const selectedRows = ref<DeploymentListResp[]>([])
+
+/** 可删除的选中行 */
+const deletableRows = computed(() => selectedRows.value.filter(row => row.deletable !== false))
+
+/** 不可删除的选中行 */
+const nonDeletableRows = computed(() => selectedRows.value.filter(row => row.deletable === false))
+
 const deleteDialogVisible = ref(false)
 const batchDeleteDialogVisible = ref(false)
 const currentTargetRow = ref<DeploymentListResp | null>(null)
@@ -253,11 +272,31 @@ function handleSelectionChange(rows: Record<string, unknown>[]) {
   selectedRows.value = rows as unknown as DeploymentListResp[]
 }
 
+/** 取消全部选中 */
+function handleClearSelection() {
+  tableRef.value?.clearSelection()
+}
+
 // ==================== CRUD: Create / Edit / View ====================
 
 /** 跳转创建页面 */
 function handleCreate() {
   router.push({ name: 'kubernetes:workload:deployment:create', params: { clusterId: clusterId.value } })
+}
+
+/** YAML 方式创建（功能开发中） */
+function handleCreateYaml() {
+  ElMessage.info('功能开发中')
+}
+
+/** 导出 Deployment（功能开发中） */
+function handleExport() {
+  ElMessage.info('功能开发中')
+}
+
+/** 导入 Deployment（功能开发中） */
+function handleImport() {
+  ElMessage.info('功能开发中')
 }
 
 /** 跳转编辑页面 */
@@ -309,15 +348,19 @@ async function handleConfirmDelete() {
 
 /** 打开批量删除确认弹窗 */
 function handleBatchDelete() {
+  if (deletableRows.value.length === 0) {
+    ElMessage.warning('选中的 Deployment 均不可删除')
+    return
+  }
   batchDeleteDialogVisible.value = true
 }
 
 /** 确认批量删除 */
 async function handleConfirmBatchDelete() {
-  if (selectedRows.value.length === 0) return
-  const targetClusterId = selectedRows.value[0].clusterId
-  const targetNamespace = selectedRows.value[0].namespace
-  const names = selectedRows.value.map(row => row.name)
+  if (deletableRows.value.length === 0) return
+  const targetClusterId = deletableRows.value[0].clusterId
+  const targetNamespace = deletableRows.value[0].namespace
+  const names = deletableRows.value.map(row => row.name)
   try {
     await deleteDeployments(targetClusterId, targetNamespace, names)
     ElMessage.success(`成功删除 ${names.length} 个 Deployment`)
@@ -331,8 +374,9 @@ async function handleConfirmBatchDelete() {
 
 // ==================== Row Actions ====================
 
-/** 页面级权限缓存，避免每个 row 都重复调用 hasPermission */
+/** 页面级权限缓存，避免模板/循环中重复调用 hasPermission */
 const perm: Record<string, boolean> = {
+  create: hasPermission('kubernetes:workload:deployment:create'),
   edit: hasPermission('kubernetes:workload:deployment:edit'),
   view: hasPermission('kubernetes:workload:deployment:view'),
   delete: hasPermission('kubernetes:workload:deployment:delete')
@@ -400,6 +444,12 @@ onMounted(() => {
       align-items: center;
       justify-content: space-between;
       padding: $spacing-16 0;
+
+      &__actions {
+        display: flex;
+        gap: 8px;
+        align-items: center;
+      }
     }
   }
 }
@@ -407,6 +457,10 @@ onMounted(() => {
 .dialog-content {
   strong {
     color: $color-primary;
+  }
+
+  &__warning {
+    color: $color-danger;
   }
 }
 

@@ -503,7 +503,7 @@ const mockDeployments: DeploymentListResp[] = [
     createBy: 'admin',
     updateAt: '2024-03-20 14:22:18',
     updateBy: 'admin',
-    deletable: true
+    deletable: false
   },
   {
     id: generateId(),

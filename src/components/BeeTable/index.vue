@@ -177,6 +177,14 @@ function emitSelectionChange() {
   emit('selection-change', selected)
 }
 
+/** 清除所有选中行 */
+function clearSelection() {
+  selectedRowKeys.value = new Set()
+  emitSelectionChange()
+}
+
+defineExpose({ clearSelection })
+
 // ---- 固定列样式 ----
 
 /**
