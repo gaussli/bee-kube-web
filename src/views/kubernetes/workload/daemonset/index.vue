@@ -14,7 +14,7 @@
       <!-- 查询表单 -->
       <div class="table-toolbar">
         <BeeInputSearch v-model="searchKey" placeholder="按 ID / 名称搜索" class="table-toolbar__search" />
-        <BeeSelect v-model="queryForm.namespace" placeholder="命名空间筛选" :options="namespaceOptions" :width="300" />
+        <BeeSelect v-model="queryForm.namespace" placeholder="命名空间筛选" :options="namespaceOptions" :width="300" :menu-height="300" />
         <BeeSelect v-model="queryForm.status" placeholder="状态筛选" :options="DAEMONSET_STATUS_OPTIONS" />
         <BeeButton icon="basic-search" @click="handleSearch"> 搜索 </BeeButton>
         <BeeButton icon="basic-refresh" @click="handleReset"> 重置 </BeeButton>
@@ -128,7 +128,9 @@
 import { onMounted, reactive, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { ElMessage } from 'element-plus'
+import type { NamespaceSimpleListResp } from '@/types/kubernetes/namespace'
 import type { DaemonSetQueryReq, DaemonSetListResp, DaemonSetUpdateStrategyType } from '@/types/kubernetes/workload/daemonset'
+import { getNamespacePage } from '@/api/kubernetes/namespace'
 import { getDaemonSetPage, deleteDaemonSet, deleteDaemonSets } from '@/api/kubernetes/workload/daemonset'
 import BeeAuditCell from '@/components/BeeAuditCell/index.vue'
 import BeeButton from '@/components/BeeButton/index.vue'
@@ -153,12 +155,16 @@ import { DAEMONSET_STATUS_OPTIONS } from '@/config/kubernetes'
 
 defineOptions({ name: 'DaemonSetManage' })
 
+// ==================== Composables & Route ====================
+
 const { hasPermission } = usePermission()
 const route = useRoute()
 const router = useRouter()
-const searchKey = ref('')
-const clusterId = ref(route.params.clusterId as string)
 
+// ==================== Reactive State ====================
+
+const clusterId = ref(route.params.clusterId as string)
+const searchKey = ref('')
 const loading = ref(false)
 const tableData = ref<DaemonSetListResp[]>([])
 const selectedRows = ref<DaemonSetListResp[]>([])
@@ -166,27 +172,13 @@ const deleteDialogVisible = ref(false)
 const batchDeleteDialogVisible = ref(false)
 const currentTargetRow = ref<DaemonSetListResp | null>(null)
 
-const queryForm = reactive<Partial<DaemonSetQueryReq>>({
-  id: undefined,
-  name: undefined,
-  namespace: undefined,
-  status: undefined
-})
-const pagination = reactive({
-  page: 1,
-  pageSize: 10,
-  total: 0
-})
+const queryForm = reactive<Partial<DaemonSetQueryReq>>({})
+const pagination = reactive({ page: 1, pageSize: 10, total: 0 })
+
+// ==================== Options ====================
 
 /** 命名空间选项 */
-const namespaceOptions = ref([
-  { label: '全部命名空间', value: undefined },
-  { label: 'default', value: 'default' },
-  { label: 'kube-system', value: 'kube-system' },
-  { label: 'monitoring', value: 'monitoring' },
-  { label: 'logging', value: 'logging' },
-  { label: 'storage', value: 'storage' }
-])
+const namespaceOptions = ref<{ label: string; value: string | undefined }[]>([{ label: '全部命名空间', value: undefined }])
 
 /** 更新策略中文映射 */
 const UPDATE_STRATEGY_LABEL: Record<DaemonSetUpdateStrategyType, string> = {
@@ -201,6 +193,22 @@ const UPDATE_STRATEGY_LABEL: Record<DaemonSetUpdateStrategyType, string> = {
  */
 function updateStrategyLabel(type: DaemonSetUpdateStrategyType): string {
   return UPDATE_STRATEGY_LABEL[type] || type
+}
+
+// ==================== Data Loading ====================
+
+/**
+ * 加载命名空间选项
+ * @remarks 通过 getNamespacePage mode=simple 获取简化列表，转换后填充下拉选项
+ */
+async function loadNamespaceOptions() {
+  if (!clusterId.value) return
+  try {
+    const namespaces = (await getNamespacePage(clusterId.value, { mode: 'simple' })) as NamespaceSimpleListResp[]
+    namespaceOptions.value = [{ label: '全部命名空间', value: undefined }, ...namespaces.map(ns => ({ label: ns.name, value: ns.name }))]
+  } catch {
+    // 加载失败时保留默认选项
+  }
 }
 
 /**
@@ -225,6 +233,8 @@ async function loadData() {
     loading.value = false
   }
 }
+
+// ==================== Search & Reset ====================
 
 /**
  * 搜索
@@ -251,6 +261,8 @@ function handleReset() {
   loadData()
 }
 
+// ==================== Selection ====================
+
 /**
  * 表格选中行变化
  * @remarks BeeTable 的 selection-change 事件固定返回 Record<string, unknown>[]，需通过 unknown 桥接断言为目标类型
@@ -258,6 +270,8 @@ function handleReset() {
 function handleSelectionChange(rows: Record<string, unknown>[]) {
   selectedRows.value = rows as unknown as DaemonSetListResp[]
 }
+
+// ==================== CRUD: Create / Edit / View ====================
 
 /** 跳转创建页面 */
 function handleCreate() {
@@ -283,6 +297,8 @@ function handleRestart(row: DaemonSetListResp) {
 function handleEditYaml(row: DaemonSetListResp) {
   ElMessage.info(`编辑 YAML: ${row.name}`)
 }
+
+// ==================== CRUD: Delete ====================
 
 /** 打开删除确认弹窗 */
 function handleDelete(row: DaemonSetListResp) {
@@ -326,7 +342,10 @@ async function handleConfirmBatchDelete() {
   }
 }
 
+// ==================== Lifecycle ====================
+
 onMounted(() => {
+  loadNamespaceOptions()
   loadData()
 })
 </script>

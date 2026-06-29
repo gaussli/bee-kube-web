@@ -14,7 +14,7 @@
       <!-- 查询表单 -->
       <div class="table-toolbar">
         <BeeInputSearch v-model="searchKey" placeholder="按 ID / 名称搜索" class="table-toolbar__search" />
-        <BeeSelect v-model="queryForm.namespace" placeholder="命名空间筛选" :options="namespaceOptions" :width="300" />
+        <BeeSelect v-model="queryForm.namespace" placeholder="命名空间筛选" :options="namespaceOptions" :width="300" :menu-height="300" />
         <BeeSelect v-model="queryForm.status" placeholder="状态筛选" :options="DEPLOYMENT_STATUS_OPTIONS" />
         <BeeButton icon="basic-search" @click="handleSearch"> 搜索 </BeeButton>
         <BeeButton icon="basic-refresh" @click="handleReset"> 重置 </BeeButton>
@@ -129,7 +129,9 @@
 import { onMounted, reactive, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { ElMessage } from 'element-plus'
+import type { NamespaceSimpleListResp } from '@/types/kubernetes/namespace'
 import type { DeploymentQueryReq, DeploymentListResp, DeploymentStrategyType } from '@/types/kubernetes/workload/deployment'
+import { getNamespacePage } from '@/api/kubernetes/namespace'
 import { getDeploymentPage, deleteDeployment, deleteDeployments } from '@/api/kubernetes/workload/deployment'
 import BeeAuditCell from '@/components/BeeAuditCell/index.vue'
 import BeeButton from '@/components/BeeButton/index.vue'
@@ -154,12 +156,16 @@ import { DEPLOYMENT_STATUS_OPTIONS } from '@/config/kubernetes'
 
 defineOptions({ name: 'DeploymentManage' })
 
+// ==================== Composables & Route ====================
+
 const { hasPermission } = usePermission()
 const route = useRoute()
 const router = useRouter()
-const searchKey = ref('')
-const clusterId = ref(route.params.clusterId as string)
 
+// ==================== Reactive State ====================
+
+const clusterId = ref(route.params.clusterId as string)
+const searchKey = ref('')
 const loading = ref(false)
 const tableData = ref<DeploymentListResp[]>([])
 const selectedRows = ref<DeploymentListResp[]>([])
@@ -167,26 +173,13 @@ const deleteDialogVisible = ref(false)
 const batchDeleteDialogVisible = ref(false)
 const currentTargetRow = ref<DeploymentListResp | null>(null)
 
-const queryForm = reactive<Partial<DeploymentQueryReq>>({
-  id: undefined,
-  name: undefined,
-  namespace: undefined,
-  status: undefined
-})
-const pagination = reactive({
-  page: 1,
-  pageSize: 10,
-  total: 0
-})
+const queryForm = reactive<Partial<DeploymentQueryReq>>({})
+const pagination = reactive({ page: 1, pageSize: 10, total: 0 })
+
+// ==================== Options ====================
 
 /** 命名空间选项 */
-const namespaceOptions = ref([
-  { label: '全部命名空间', value: undefined },
-  { label: 'default', value: 'default' },
-  { label: 'app-frontend', value: 'app-frontend' },
-  { label: 'app-backend', value: 'app-backend' },
-  { label: 'kube-system', value: 'kube-system' }
-])
+const namespaceOptions = ref<{ label: string; value: string | undefined }[]>([{ label: '全部命名空间', value: undefined }])
 
 /** 更新策略中文映射 */
 const STRATEGY_TYPE_LABEL: Record<DeploymentStrategyType, string> = {
@@ -201,6 +194,22 @@ const STRATEGY_TYPE_LABEL: Record<DeploymentStrategyType, string> = {
  */
 function strategyTypeLabel(type: DeploymentStrategyType): string {
   return STRATEGY_TYPE_LABEL[type] || type
+}
+
+// ==================== Data Loading ====================
+
+/**
+ * 加载命名空间选项
+ * @remarks 通过 getNamespacePage mode=simple 获取简化列表，转换后填充下拉选项
+ */
+async function loadNamespaceOptions() {
+  if (!clusterId.value) return
+  try {
+    const namespaces = (await getNamespacePage(clusterId.value, { mode: 'simple' })) as NamespaceSimpleListResp[]
+    namespaceOptions.value = [{ label: '全部命名空间', value: undefined }, ...namespaces.map(ns => ({ label: ns.name, value: ns.name }))]
+  } catch {
+    // 加载失败时保留默认选项
+  }
 }
 
 /**
@@ -226,6 +235,8 @@ async function loadData() {
   }
 }
 
+// ==================== Search & Reset ====================
+
 /**
  * 搜索
  * @remarks 将 searchKey 同时映射到 id/name 字段进行模糊匹配
@@ -243,12 +254,15 @@ function handleSearch() {
 function handleReset() {
   queryForm.id = undefined
   queryForm.name = undefined
+  queryForm.namespace = undefined
   queryForm.status = undefined
   pagination.page = 1
   pagination.pageSize = 10
   searchKey.value = ''
   loadData()
 }
+
+// ==================== Selection ====================
 
 /**
  * 表格选中行变化
@@ -257,6 +271,8 @@ function handleReset() {
 function handleSelectionChange(rows: Record<string, unknown>[]) {
   selectedRows.value = rows as unknown as DeploymentListResp[]
 }
+
+// ==================== CRUD: Create / Edit / View ====================
 
 /** 跳转创建页面 */
 function handleCreate() {
@@ -287,6 +303,8 @@ function handleRestart(row: DeploymentListResp) {
 function handleRollback(row: DeploymentListResp) {
   ElMessage.info(`回滚: ${row.name}`)
 }
+
+// ==================== CRUD: Delete ====================
 
 /** 打开删除确认弹窗 */
 function handleDelete(row: DeploymentListResp) {
@@ -330,7 +348,10 @@ async function handleConfirmBatchDelete() {
   }
 }
 
+// ==================== Lifecycle ====================
+
 onMounted(() => {
+  loadNamespaceOptions()
   loadData()
 })
 </script>

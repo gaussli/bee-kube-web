@@ -10,7 +10,7 @@
       <!-- 查询表单 -->
       <div class="table-toolbar">
         <BeeInputSearch v-model="searchKey" placeholder="按 ID / 名称搜索" class="table-toolbar__search" />
-        <BeeSelect v-model="queryForm.namespace" placeholder="命名空间筛选" :options="namespaceOptions" :width="300" />
+        <BeeSelect v-model="queryForm.namespace" placeholder="命名空间筛选" :options="namespaceOptions" :width="300" :menu-height="300" />
         <BeeSelect v-model="queryForm.status" placeholder="状态筛选" :options="STATEFULSET_STATUS_OPTIONS" />
         <BeeButton icon="basic-search" @click="handleSearch"> 搜索 </BeeButton>
         <BeeButton icon="basic-refresh" @click="handleReset"> 重置 </BeeButton>
@@ -135,7 +135,9 @@
 import { onMounted, reactive, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { ElMessage } from 'element-plus'
+import type { NamespaceSimpleListResp } from '@/types/kubernetes/namespace'
 import type { StatefulSetQueryReq, StatefulSetListResp, StatefulSetUpdateStrategyType, PodManagementPolicyType } from '@/types/kubernetes/workload/statefulset'
+import { getNamespacePage } from '@/api/kubernetes/namespace'
 import { getStatefulSetPage, deleteStatefulSet, deleteStatefulSets } from '@/api/kubernetes/workload/statefulset'
 import BeeAuditCell from '@/components/BeeAuditCell/index.vue'
 import BeeButton from '@/components/BeeButton/index.vue'
@@ -160,12 +162,16 @@ import { STATEFULSET_STATUS_OPTIONS } from '@/config/kubernetes'
 
 defineOptions({ name: 'StatefulSetManage' })
 
+// ==================== Composables & Route ====================
+
 const { hasPermission } = usePermission()
 const route = useRoute()
 const router = useRouter()
-const searchKey = ref('')
-const clusterId = ref(route.params.clusterId as string)
 
+// ==================== Reactive State ====================
+
+const clusterId = ref(route.params.clusterId as string)
+const searchKey = ref('')
 const loading = ref(false)
 const tableData = ref<StatefulSetListResp[]>([])
 const selectedRows = ref<StatefulSetListResp[]>([])
@@ -173,28 +179,13 @@ const deleteDialogVisible = ref(false)
 const batchDeleteDialogVisible = ref(false)
 const currentTargetRow = ref<StatefulSetListResp | null>(null)
 
-const queryForm = reactive<Partial<StatefulSetQueryReq>>({
-  id: undefined,
-  name: undefined,
-  namespace: undefined,
-  status: undefined
-})
-const pagination = reactive({
-  page: 1,
-  pageSize: 10,
-  total: 0
-})
+const queryForm = reactive<Partial<StatefulSetQueryReq>>({})
+const pagination = reactive({ page: 1, pageSize: 10, total: 0 })
+
+// ==================== Options ====================
 
 /** 命名空间选项 */
-const namespaceOptions = ref([
-  { label: '全部命名空间', value: undefined },
-  { label: 'default', value: 'default' },
-  { label: 'data', value: 'data' },
-  { label: 'middleware', value: 'middleware' },
-  { label: 'storage', value: 'storage' },
-  { label: 'logging', value: 'logging' },
-  { label: 'monitoring', value: 'monitoring' }
-])
+const namespaceOptions = ref<{ label: string; value: string | undefined }[]>([{ label: '全部命名空间', value: undefined }])
 
 /** 更新策略中文映射 */
 const UPDATE_STRATEGY_LABEL: Record<StatefulSetUpdateStrategyType, string> = {
@@ -226,6 +217,22 @@ function podManagementPolicyLabel(type: PodManagementPolicyType): string {
   return POD_MANAGEMENT_POLICY_LABEL[type] || type
 }
 
+// ==================== Data Loading ====================
+
+/**
+ * 加载命名空间选项
+ * @remarks 通过 getNamespacePage mode=simple 获取简化列表，转换后填充下拉选项
+ */
+async function loadNamespaceOptions() {
+  if (!clusterId.value) return
+  try {
+    const namespaces = (await getNamespacePage(clusterId.value, { mode: 'simple' })) as NamespaceSimpleListResp[]
+    namespaceOptions.value = [{ label: '全部命名空间', value: undefined }, ...namespaces.map(ns => ({ label: ns.name, value: ns.name }))]
+  } catch {
+    // 加载失败时保留默认选项
+  }
+}
+
 /**
  * 加载 StatefulSet 列表数据
  * @remarks 根据当前查询条件与分页参数获取 StatefulSet 分页数据
@@ -248,6 +255,8 @@ async function loadData() {
     loading.value = false
   }
 }
+
+// ==================== Search & Reset ====================
 
 /**
  * 搜索
@@ -274,6 +283,8 @@ function handleReset() {
   loadData()
 }
 
+// ==================== Selection ====================
+
 /**
  * 表格选中行变化
  * @remarks BeeTable 的 selection-change 事件固定返回 Record<string, unknown>[]，需通过 unknown 桥接断言为目标类型
@@ -281,6 +292,8 @@ function handleReset() {
 function handleSelectionChange(rows: Record<string, unknown>[]) {
   selectedRows.value = rows as unknown as StatefulSetListResp[]
 }
+
+// ==================== CRUD: Create / Edit / View ====================
 
 /** 跳转创建页面 */
 function handleCreate() {
@@ -311,6 +324,8 @@ function handleRestart(row: StatefulSetListResp) {
 function handleEditYaml(row: StatefulSetListResp) {
   ElMessage.info(`编辑 YAML: ${row.name}`)
 }
+
+// ==================== CRUD: Delete ====================
 
 /** 打开删除确认弹窗 */
 function handleDelete(row: StatefulSetListResp) {
@@ -354,7 +369,10 @@ async function handleConfirmBatchDelete() {
   }
 }
 
+// ==================== Lifecycle ====================
+
 onMounted(() => {
+  loadNamespaceOptions()
   loadData()
 })
 </script>
