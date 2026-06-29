@@ -3,36 +3,34 @@
  * @module mock/kubernetes/workload/daemonset
  */
 import type { PageResp } from '@/types/common'
-import type { DaemonSetQueryReq, DaemonSetReq, DaemonSetResp, DaemonSetLabelsReq, DaemonSetAnnotationsReq, DaemonSetYamlReq } from '@/types/kubernetes/workload/daemonset'
+import type { DaemonSetQueryReq, DaemonSetReq, DaemonSetListResp, DaemonSetDetailResp, DaemonSetLabelsReq, DaemonSetAnnotationsReq, DaemonSetYamlReq } from '@/types/kubernetes/workload/daemonset'
 import { generateId } from '@/mock/utils'
 
 /**
  * DaemonSet 路由配置
  * @remarks
- * - GET /kubernetes/clusters/:clusterId/namespaces/:namespace/daemonsets - 获取 DaemonSet 分页列表
+ * - GET /kubernetes/clusters/:clusterId/daemonsets - 获取 DaemonSet 分页列表
  * - GET /kubernetes/clusters/:clusterId/namespaces/:namespace/daemonsets/:name - 获取 DaemonSet 详情
  * - GET /kubernetes/clusters/:clusterId/namespaces/:namespace/daemonsets/:name/yaml - 查看 YAML
  * - POST /kubernetes/clusters/:clusterId/namespaces/:namespace/daemonsets - 创建 DaemonSet
  * - PUT /kubernetes/clusters/:clusterId/namespaces/:namespace/daemonsets/:name - 更新 DaemonSet
  * - POST /kubernetes/clusters/:clusterId/namespaces/:namespace/daemonsets/:name/restart - 重启
- * - POST /kubernetes/clusters/:clusterId/namespaces/:namespace/daemonsets/:name/rollback - 回滚
  * - POST /kubernetes/clusters/:clusterId/namespaces/:namespace/daemonsets/:name/labels - 更新标签
  * - POST /kubernetes/clusters/:clusterId/namespaces/:namespace/daemonsets/:name/annotations - 更新注解
  * - DELETE /kubernetes/clusters/:clusterId/namespaces/:namespace/daemonsets/:name - 删除 DaemonSet
  * - DELETE /kubernetes/clusters/:clusterId/namespaces/:namespace/daemonsets/batch - 批量删除
- * - GET /kubernetes/clusters/:clusterId/namespaces/:namespace/daemonsets/export - 导出 CSV
  * - POST /kubernetes/clusters/:clusterId/namespaces/:namespace/daemonsets/import - 导入 DaemonSet
  */
 export default [
   {
     method: 'get',
-    url: '/kubernetes/clusters/:clusterId/namespaces/:namespace/daemonsets',
-    handler: (pathParams: Record<string, string>, params: Partial<DaemonSetQueryReq>): PageResp<DaemonSetResp> => getDaemonSetPage(pathParams.clusterId, pathParams.namespace, params)
+    url: '/kubernetes/clusters/:clusterId/daemonsets',
+    handler: (pathParams: Record<string, string>, params: Partial<DaemonSetQueryReq>): PageResp<DaemonSetListResp> => getDaemonSetPage(pathParams.clusterId, params)
   },
   {
     method: 'get',
     url: '/kubernetes/clusters/:clusterId/namespaces/:namespace/daemonsets/:name',
-    handler: (pathParams: Record<string, string>): DaemonSetResp => getDaemonSetDetail(pathParams.clusterId, pathParams.namespace, pathParams.name)
+    handler: (pathParams: Record<string, string>): DaemonSetDetailResp => getDaemonSetDetail(pathParams.clusterId, pathParams.namespace, pathParams.name)
   },
   {
     method: 'get',
@@ -56,11 +54,6 @@ export default [
   },
   {
     method: 'post',
-    url: '/kubernetes/clusters/:clusterId/namespaces/:namespace/daemonsets/:name/rollback',
-    handler: (pathParams: Record<string, string>): void => rollbackDaemonSet(pathParams.clusterId, pathParams.namespace, pathParams.name)
-  },
-  {
-    method: 'post',
     url: '/kubernetes/clusters/:clusterId/namespaces/:namespace/daemonsets/:name/labels',
     handler: (pathParams: Record<string, string>, data: Partial<DaemonSetLabelsReq>): void => manageDaemonSetLabels(pathParams.clusterId, pathParams.namespace, pathParams.name, data)
   },
@@ -80,11 +73,6 @@ export default [
     handler: (pathParams: Record<string, string>, data: string[]): void => deleteDaemonSets(pathParams.clusterId, pathParams.namespace, data)
   },
   {
-    method: 'get',
-    url: '/kubernetes/clusters/:clusterId/namespaces/:namespace/daemonsets/export',
-    handler: (pathParams: Record<string, string>, params: Partial<DaemonSetQueryReq>): void => exportDaemonSet(pathParams.clusterId, pathParams.namespace, params)
-  },
-  {
     method: 'post',
     url: '/kubernetes/clusters/:clusterId/namespaces/:namespace/daemonsets/import',
     handler: (pathParams: Record<string, string>, data: Partial<DaemonSetYamlReq>): void => importDaemonSet(pathParams.clusterId, pathParams.namespace, data)
@@ -94,20 +82,35 @@ export default [
 /**
  * 获取 DaemonSet 分页列表
  * @param clusterId - 集群ID
- * @param namespace - 命名空间
  * @param params - 查询参数
  * @returns 分页数据
  */
-function getDaemonSetPage(clusterId: string, namespace: string, params: Partial<DaemonSetQueryReq>): PageResp<DaemonSetResp> {
-  const { name, status, page = 1, pageSize = 10 } = params || {}
+function getDaemonSetPage(_clusterId: string, params: Partial<DaemonSetQueryReq>): PageResp<DaemonSetListResp> {
+  const { id, name, namespace, status, page = 1, pageSize = 10 } = params || {}
 
-  let filtered = mockDaemonSets.filter(d => d.clusterId === clusterId && d.namespace === namespace)
+  let filtered = [...mockDaemonSets]
 
-  if (name) {
-    filtered = filtered.filter(d => d.name.toLowerCase().includes(name.toLowerCase()))
-  }
   if (status) {
     filtered = filtered.filter(d => d.status === status)
+  }
+  if (namespace) {
+    filtered = filtered.filter(d => d.namespace === namespace)
+  }
+
+  if (id || name) {
+    let searchFiltered: DaemonSetListResp[] = []
+    if (id) {
+      searchFiltered = [...searchFiltered, ...filtered.filter(d => d.id === id)]
+    }
+    if (name) {
+      searchFiltered = [...searchFiltered, ...filtered.filter(d => d.name.toLowerCase().includes(name.toLowerCase()))]
+    }
+    const seenIds = new Set<string>()
+    filtered = searchFiltered.filter(d => {
+      if (seenIds.has(d.id)) return false
+      seenIds.add(d.id)
+      return true
+    })
   }
 
   const total = filtered.length
@@ -125,12 +128,23 @@ function getDaemonSetPage(clusterId: string, namespace: string, params: Partial<
  * @param name - DaemonSet 名称
  * @returns DaemonSet 详情
  */
-function getDaemonSetDetail(clusterId: string, namespace: string, name: string): DaemonSetResp {
-  const daemonSet = mockDaemonSets.find(d => d.clusterId === clusterId && d.namespace === namespace && d.name === name)
-  if (!daemonSet) {
+function getDaemonSetDetail(clusterId: string, namespace: string, name: string): DaemonSetDetailResp {
+  const ds = mockDaemonSets.find(d => d.clusterId === clusterId && d.namespace === namespace && d.name === name)
+  if (!ds) {
     console.error('[Get DaemonSet Detail] can not find daemonset:', clusterId, namespace, name)
   }
-  return daemonSet!
+  return {
+    ...ds!,
+    selector: { app: ds!.name },
+    labels: { app: ds!.name },
+    annotations: { description: ds!.description || '' },
+    containers: [
+      {
+        name: ds!.name,
+        image: `${ds!.name}:latest`
+      }
+    ]
+  }
 }
 
 /**
@@ -141,81 +155,35 @@ function getDaemonSetDetail(clusterId: string, namespace: string, name: string):
  * @returns DaemonSet YAML 配置
  */
 function getDaemonSetYaml(clusterId: string, namespace: string, name: string): string {
-  const daemonSet = mockDaemonSets.find(d => d.clusterId === clusterId && d.namespace === namespace && d.name === name)
-  if (!daemonSet) {
+  const ds = mockDaemonSets.find(d => d.clusterId === clusterId && d.namespace === namespace && d.name === name)
+  if (!ds) {
     console.error('[Get DaemonSet Yaml] can not find daemonset:', clusterId, namespace, name)
     return ''
   }
 
-  const labels = Object.entries(daemonSet.labels || {})
-    .map(([key, value]) => `      ${key}: "${value}"`)
-    .join('\n')
-
-  const annotations = Object.entries(daemonSet.annotations || {})
-    .map(([key, value]) => `      ${key}: "${value}"`)
-    .join('\n')
-
-  const containers = daemonSet.images
-    .map((image, index) => {
-      return `      - name: ${daemonSet.name}-container-${index}
-        image: ${image}
-        resources:
-          limits:
-            cpu: "500m"
-            memory: "512Mi"
-          requests:
-            cpu: "100m"
-            memory: "128Mi"`
-    })
-    .join('\n')
-
   const yaml = `apiVersion: apps/v1
 kind: DaemonSet
 metadata:
-  name: ${daemonSet.name}
-  namespace: ${daemonSet.namespace}
-  labels:
-${labels}
-  annotations:
-${annotations}
-  creationTimestamp: "${daemonSet.createAt}"
-  resourceVersion: "${generateId()}"
-  uid: "${generateId()}"
+  name: ${ds.name}
+  namespace: ${ds.namespace}
+  creationTimestamp: "${ds.createAt}"
 spec:
   selector:
     matchLabels:
-      ${Object.entries(daemonSet.selector || {})[0] ? `${Object.entries(daemonSet.selector || {})[0][0]}: "${Object.entries(daemonSet.selector || {})[0][1]}"` : ''}
+      app: ${ds.name}
   updateStrategy:
-    type: RollingUpdate
-    rollingUpdate:
-      maxSurge: 0
-      maxUnavailable: 1
+    type: ${ds.updateStrategy}
   template:
     metadata:
-      creationTimestamp: "${daemonSet.createAt}"
       labels:
-${labels}
+        app: ${ds.name}
     spec:
       containers:
-${containers}
-      dnsPolicy: ClusterFirst
-      restartPolicy: Always
-      terminationGracePeriodSeconds: 30
-      tolerations:
-      - key: "node.kubernetes.io/not-ready"
-        operator: "Exists"
-        effect: "NoSchedule"
-      - key: "node.kubernetes.io/unreachable"
-        operator: "Exists"
-        effect: "NoSchedule"
+      - name: ${ds.name}
+        image: ${ds.name}:latest
 status:
-  observedGeneration: 1
-  currentNumberScheduled: ${daemonSet.currentReplicas}
-  numberMisscheduled: 0
-  desiredNumberScheduled: ${daemonSet.replicas}
-  numberReady: ${daemonSet.readyReplicas}
-  updatedNumberScheduled: ${daemonSet.replicas}
-  numberAvailable: ${daemonSet.availableReplicas}`
+  desiredNumberScheduled: ${ds.desiredNumberScheduled}
+  numberReady: ${ds.numberReady}`
 
   return yaml
 }
@@ -227,28 +195,7 @@ status:
  * @param data - 创建参数
  */
 function createDaemonSet(clusterId: string, namespace: string, data: Partial<DaemonSetReq>): void {
-  const created: DaemonSetResp = {
-    id: generateId(),
-    name: data.name || '',
-    namespace: namespace,
-    clusterId: clusterId,
-    clusterName: 'prod-cluster',
-    status: 'Available',
-    replicas: 1,
-    readyReplicas: 1,
-    currentReplicas: 1,
-    availableReplicas: 1,
-    images: data.containers?.map(c => c.image) || [],
-    selector: data.selector || {},
-    labels: data.labels || {},
-    annotations: data.annotations || {},
-    deletable: true,
-    createBy: 'admin',
-    createAt: new Date().toLocaleString(),
-    updateBy: 'admin',
-    updateAt: new Date().toLocaleString()
-  }
-  mockDaemonSets.push(created)
+  console.log('[Create DaemonSet]', clusterId, namespace, data)
 }
 
 /**
@@ -259,20 +206,7 @@ function createDaemonSet(clusterId: string, namespace: string, data: Partial<Dae
  * @param data - 更新参数
  */
 function updateDaemonSet(clusterId: string, namespace: string, name: string, data: Partial<DaemonSetReq>): void {
-  const index = mockDaemonSets.findIndex(d => d.clusterId === clusterId && d.namespace === namespace && d.name === name)
-  if (index === -1) {
-    console.error('[Update DaemonSet] can not find daemonset:', clusterId, namespace, name)
-    return
-  }
-
-  const updated = {
-    ...mockDaemonSets[index],
-    ...data,
-    images: data.containers?.map(c => c.image) || mockDaemonSets[index].images,
-    updateBy: 'admin',
-    updateAt: new Date().toLocaleString()
-  }
-  mockDaemonSets[index] = updated
+  console.log('[Update DaemonSet]', clusterId, namespace, name, data)
 }
 
 /**
@@ -282,31 +216,7 @@ function updateDaemonSet(clusterId: string, namespace: string, name: string, dat
  * @param name - DaemonSet 名称
  */
 function restartDaemonSet(clusterId: string, namespace: string, name: string): void {
-  const index = mockDaemonSets.findIndex(d => d.clusterId === clusterId && d.namespace === namespace && d.name === name)
-  if (index === -1) {
-    console.error('[Restart DaemonSet] can not find daemonset:', clusterId, namespace, name)
-    return
-  }
-  console.log('[Restart DaemonSet] restart:', clusterId, namespace, name)
-  mockDaemonSets[index].updateAt = new Date().toLocaleString()
-  mockDaemonSets[index].updateBy = 'admin'
-}
-
-/**
- * 回滚 DaemonSet
- * @param clusterId - 集群ID
- * @param namespace - 命名空间
- * @param name - DaemonSet 名称
- */
-function rollbackDaemonSet(clusterId: string, namespace: string, name: string): void {
-  const index = mockDaemonSets.findIndex(d => d.clusterId === clusterId && d.namespace === namespace && d.name === name)
-  if (index === -1) {
-    console.error('[Rollback DaemonSet] can not find daemonset:', clusterId, namespace, name)
-    return
-  }
-  console.log('[Rollback DaemonSet] rollback:', clusterId, namespace, name)
-  mockDaemonSets[index].updateAt = new Date().toLocaleString()
-  mockDaemonSets[index].updateBy = 'admin'
+  console.log('[Restart DaemonSet]', clusterId, namespace, name)
 }
 
 /**
@@ -317,26 +227,7 @@ function rollbackDaemonSet(clusterId: string, namespace: string, name: string): 
  * @param data - 标签数据
  */
 function manageDaemonSetLabels(clusterId: string, namespace: string, name: string, data: Partial<DaemonSetLabelsReq>): void {
-  const index = mockDaemonSets.findIndex(d => d.clusterId === clusterId && d.namespace === namespace && d.name === name)
-  if (index === -1) {
-    console.error('[Manage DaemonSet Labels] can not find daemonset:', clusterId, namespace, name)
-    return
-  }
-
-  const currentLabels = mockDaemonSets[index].labels || {}
-
-  if (data.operation === 1) {
-    mockDaemonSets[index].labels = { ...currentLabels, ...data.labels }
-  } else if (data.operation === 2) {
-    const newLabels = { ...currentLabels }
-    Object.keys(data.labels).forEach(key => delete newLabels[key])
-    mockDaemonSets[index].labels = newLabels
-  } else if (data.operation === 3) {
-    mockDaemonSets[index].labels = data.labels
-  }
-
-  mockDaemonSets[index].updateBy = 'admin'
-  mockDaemonSets[index].updateAt = new Date().toLocaleString()
+  console.log('[Manage DaemonSet Labels]', clusterId, namespace, name, data)
 }
 
 /**
@@ -347,26 +238,7 @@ function manageDaemonSetLabels(clusterId: string, namespace: string, name: strin
  * @param data - 注解数据
  */
 function manageDaemonSetAnnotations(clusterId: string, namespace: string, name: string, data: Partial<DaemonSetAnnotationsReq>): void {
-  const index = mockDaemonSets.findIndex(d => d.clusterId === clusterId && d.namespace === namespace && d.name === name)
-  if (index === -1) {
-    console.error('[Manage DaemonSet Annotations] can not find daemonset:', clusterId, namespace, name)
-    return
-  }
-
-  const currentAnnotations = mockDaemonSets[index].annotations || {}
-
-  if (data.operation === 1) {
-    mockDaemonSets[index].annotations = { ...currentAnnotations, ...data.annotations }
-  } else if (data.operation === 2) {
-    const newAnnotations = { ...currentAnnotations }
-    Object.keys(data.annotations).forEach(key => delete newAnnotations[key])
-    mockDaemonSets[index].annotations = newAnnotations
-  } else if (data.operation === 3) {
-    mockDaemonSets[index].annotations = data.annotations
-  }
-
-  mockDaemonSets[index].updateBy = 'admin'
-  mockDaemonSets[index].updateAt = new Date().toLocaleString()
+  console.log('[Manage DaemonSet Annotations]', clusterId, namespace, name, data)
 }
 
 /**
@@ -376,13 +248,7 @@ function manageDaemonSetAnnotations(clusterId: string, namespace: string, name: 
  * @param name - DaemonSet 名称
  */
 function deleteDaemonSet(clusterId: string, namespace: string, name: string): void {
-  const index = mockDaemonSets.findIndex(d => d.clusterId === clusterId && d.namespace === namespace && d.name === name)
-  if (index === -1) {
-    console.error('[Delete DaemonSet] can not find daemonset:', clusterId, namespace, name)
-    return
-  }
-
-  mockDaemonSets.splice(index, 1)
+  console.log('[Delete DaemonSet]', clusterId, namespace, name)
 }
 
 /**
@@ -392,56 +258,7 @@ function deleteDaemonSet(clusterId: string, namespace: string, name: string): vo
  * @param names - DaemonSet 名称数组
  */
 function deleteDaemonSets(clusterId: string, namespace: string, names: string[]): void {
-  names.forEach(name => {
-    const index = mockDaemonSets.findIndex(d => d.clusterId === clusterId && d.namespace === namespace && d.name === name)
-    if (index === -1) {
-      console.error('[Delete DaemonSets] can not find daemonset:', clusterId, namespace, name)
-    } else {
-      mockDaemonSets.splice(index, 1)
-    }
-  })
-}
-
-/**
- * 导出 DaemonSet CSV
- * @param clusterId - 集群ID
- * @param namespace - 命名空间
- * @param params - 查询参数
- */
-function exportDaemonSet(clusterId: string, namespace: string, params: Partial<DaemonSetQueryReq>): void {
-  const { name, status } = params || {}
-
-  let daemonSets = mockDaemonSets.filter(d => d.clusterId === clusterId && d.namespace === namespace)
-
-  if (name) {
-    daemonSets = daemonSets.filter(d => d.name.toLowerCase().includes(name.toLowerCase()))
-  }
-  if (status) {
-    daemonSets = daemonSets.filter(d => d.status === status)
-  }
-
-  const headers = ['名称', '命名空间', '集群名称', '状态', '期望副本数', '就绪副本数', '当前副本数', '可用副本数', '镜像', '标签', '创建时间', '创建人', '更新时间', '更新人']
-  const rows = daemonSets.map(d => [
-    d.name,
-    d.namespace,
-    d.clusterName,
-    d.status,
-    d.replicas,
-    d.readyReplicas,
-    d.currentReplicas,
-    d.availableReplicas,
-    d.images.join(';'),
-    Object.entries(d.labels || {})
-      .map(([k, v]) => `${k}=${v}`)
-      .join(';'),
-    d.createAt,
-    d.createBy,
-    d.updateAt,
-    d.updateBy
-  ])
-
-  const csvContent = [headers.join(','), ...rows.map(row => row.map(cell => `"${cell}"`).join(','))].join('\n')
-  console.log('[Export DaemonSet CSV]', csvContent)
+  console.log('[Delete DaemonSets]', clusterId, namespace, names)
 }
 
 /**
@@ -451,116 +268,195 @@ function exportDaemonSet(clusterId: string, namespace: string, params: Partial<D
  * @param data - YAML 配置
  */
 function importDaemonSet(clusterId: string, namespace: string, data: Partial<DaemonSetYamlReq>): void {
-  console.log('[Import DaemonSet]', clusterId, namespace, data.yaml)
+  console.log('[Import DaemonSet]', clusterId, namespace, data)
 }
 
 /**
  * 模拟 DaemonSet 数据
+ * @remarks 包含日志采集、监控代理、存储插件等各类节点级守护 Pod
  */
-const mockDaemonSets: DaemonSetResp[] = [
+const mockDaemonSets: DaemonSetListResp[] = [
+  // ==================== Running（运行中）- 3 条 ====================
   {
     id: generateId(),
-    name: 'kube-proxy',
+    uid: generateId(),
+    name: 'fluentd-logging',
     namespace: 'kube-system',
     clusterId: generateId(),
     clusterName: 'prod-cluster',
-    status: 'Available',
-    replicas: 3,
-    readyReplicas: 3,
-    currentReplicas: 3,
-    availableReplicas: 3,
-    images: ['registry.k8s.io/kube-proxy:v1.28.3'],
-    selector: { 'k8s-app': 'kube-proxy' },
-    labels: { 'k8s-app': 'kube-proxy', 'kubernetes.io/os': 'linux' },
-    annotations: {},
-    deletable: false,
-    createBy: 'system',
-    createAt: '2024-01-15 10:00:00',
-    updateBy: 'system',
-    updateAt: '2024-03-15 14:00:00'
+    description: 'Fluentd 日志采集 DaemonSet，在每个节点运行并采集容器日志发送到日志平台',
+    status: 'Running',
+    desiredNumberScheduled: 8,
+    numberReady: 8,
+    updateStrategy: 'RollingUpdate',
+    createAt: '2024-01-15 10:30:00',
+    createBy: 'admin',
+    updateAt: '2024-03-20 14:00:00',
+    updateBy: 'admin'
   },
   {
     id: generateId(),
-    name: 'flannel',
-    namespace: 'kube-system',
-    clusterId: generateId(),
-    clusterName: 'prod-cluster',
-    status: 'Available',
-    replicas: 3,
-    readyReplicas: 3,
-    currentReplicas: 3,
-    availableReplicas: 3,
-    images: ['rancher/mirrored-flannelcni-flannel:v0.21.0'],
-    selector: { app: 'flannel' },
-    labels: { app: 'flannel', tier: 'network' },
-    annotations: {},
-    deletable: false,
-    createBy: 'system',
-    createAt: '2024-01-15 10:05:00',
-    updateBy: 'system',
-    updateAt: '2024-03-10 11:00:00'
-  },
-  {
-    id: generateId(),
+    uid: generateId(),
     name: 'node-exporter',
     namespace: 'monitoring',
     clusterId: generateId(),
     clusterName: 'prod-cluster',
-    status: 'Available',
-    replicas: 3,
-    readyReplicas: 3,
-    currentReplicas: 3,
-    availableReplicas: 3,
-    images: ['prom/node-exporter:v1.7.0'],
-    selector: { app: 'node-exporter' },
-    labels: { app: 'node-exporter', tier: 'monitoring' },
-    annotations: {},
-    deletable: true,
+    description: 'Prometheus Node Exporter，采集节点级别的 CPU、内存、磁盘等硬件指标',
+    status: 'Running',
+    desiredNumberScheduled: 8,
+    numberReady: 8,
+    updateStrategy: 'RollingUpdate',
+    createAt: '2024-01-20 09:00:00',
     createBy: 'admin',
-    createAt: '2024-02-01 09:00:00',
-    updateBy: 'admin',
-    updateAt: '2024-03-05 10:00:00'
+    updateAt: '2024-03-19 16:30:00',
+    updateBy: 'admin'
   },
   {
     id: generateId(),
-    name: 'nvidia-device-plugin',
-    namespace: 'gpu',
+    uid: generateId(),
+    name: 'kube-proxy',
+    namespace: 'kube-system',
     clusterId: generateId(),
     clusterName: 'prod-cluster',
+    description: 'Kubernetes 网络代理组件，维护节点上的网络规则和 Service 流量转发',
+    status: 'Running',
+    desiredNumberScheduled: 8,
+    numberReady: 8,
+    updateStrategy: 'RollingUpdate',
+    createAt: '2024-01-15 10:35:00',
+    createBy: 'system',
+    updateAt: '2024-03-18 10:00:00',
+    updateBy: 'system'
+  },
+  // ==================== Available（部分就绪）- 2 条 ====================
+  {
+    id: generateId(),
+    uid: generateId(),
+    name: 'filebeat',
+    namespace: 'logging',
+    clusterId: generateId(),
+    clusterName: 'prod-cluster',
+    description: 'Filebeat 日志采集器，将应用日志文件实时发送到 ElasticSearch',
     status: 'Available',
-    replicas: 2,
-    readyReplicas: 2,
-    currentReplicas: 2,
-    availableReplicas: 2,
-    images: ['nvcr.io/nvidia/k8s-device-plugin:v0.14.5'],
-    selector: { app: 'nvidia-device-plugin' },
-    labels: { app: 'nvidia-device-plugin', tier: 'gpu' },
-    annotations: {},
-    deletable: true,
-    createBy: 'admin',
-    createAt: '2024-02-15 14:00:00',
-    updateBy: 'admin',
-    updateAt: '2024-03-12 16:00:00'
+    statusMessage: '1 个节点上的 Pod 未就绪，正在等待节点资源',
+    desiredNumberScheduled: 8,
+    numberReady: 7,
+    updateStrategy: 'RollingUpdate',
+    createAt: '2024-02-10 10:00:00',
+    createBy: 'developer',
+    updateAt: '2024-03-20 11:00:00',
+    updateBy: 'developer'
   },
   {
     id: generateId(),
-    name: 'local-volume-provisioner',
+    uid: generateId(),
+    name: 'csi-driver',
     namespace: 'storage',
     clusterId: generateId(),
     clusterName: 'prod-cluster',
-    status: 'Degraded',
-    replicas: 3,
-    readyReplicas: 2,
-    currentReplicas: 2,
-    availableReplicas: 2,
-    images: ['quay.io/external_storage/local-volume-provisioner:v2.5.0'],
-    selector: { app: 'local-volume-provisioner' },
-    labels: { app: 'local-volume-provisioner', tier: 'storage' },
-    annotations: {},
-    deletable: true,
+    description: 'CSI 存储驱动插件，为每个节点提供持久化存储卷的挂载和管理能力',
+    status: 'Available',
+    statusMessage: '新增节点上 Pod 初始化中，存储卷尚未挂载完成',
+    desiredNumberScheduled: 10,
+    numberReady: 9,
+    updateStrategy: 'OnDelete',
+    createAt: '2024-02-15 08:00:00',
     createBy: 'admin',
-    createAt: '2024-03-01 10:00:00',
-    updateBy: 'admin',
-    updateAt: '2024-03-19 08:00:00'
+    updateAt: '2024-03-19 12:00:00',
+    updateBy: 'admin'
+  },
+  // ==================== Updating（更新中）- 2 条 ====================
+  {
+    id: generateId(),
+    uid: generateId(),
+    name: 'datadog-agent',
+    namespace: 'monitoring',
+    clusterId: generateId(),
+    clusterName: 'prod-cluster',
+    description: 'Datadog Agent，提供应用性能监控(APM)和基础设施监控能力',
+    status: 'Updating',
+    statusMessage: '滚动更新中，按节点逐个替换旧版本 Pod',
+    desiredNumberScheduled: 8,
+    numberReady: 5,
+    updateStrategy: 'RollingUpdate',
+    createAt: '2024-02-20 14:00:00',
+    createBy: 'developer',
+    updateAt: '2024-03-20 16:00:00',
+    updateBy: 'developer'
+  },
+  {
+    id: generateId(),
+    uid: generateId(),
+    name: 'calico-node',
+    namespace: 'kube-system',
+    clusterId: generateId(),
+    clusterName: 'prod-cluster',
+    description: 'Calico 网络插件节点组件，管理 Pod 网络策略和路由',
+    status: 'Updating',
+    statusMessage: '版本升级进行中，网络策略迁移中',
+    desiredNumberScheduled: 8,
+    numberReady: 6,
+    updateStrategy: 'RollingUpdate',
+    createAt: '2024-01-10 08:00:00',
+    createBy: 'admin',
+    updateAt: '2024-03-20 15:30:00',
+    updateBy: 'admin'
+  },
+  // ==================== Creating（创建中）- 1 条 ====================
+  {
+    id: generateId(),
+    uid: generateId(),
+    name: 'gpu-device-plugin',
+    namespace: 'kube-system',
+    clusterId: generateId(),
+    clusterName: 'prod-cluster',
+    description: 'NVIDIA GPU 设备插件，使 Kubernetes 能够发现和调度 GPU 资源',
+    status: 'Creating',
+    statusMessage: 'Pod 正在节点上创建，等待镜像拉取完成',
+    desiredNumberScheduled: 4,
+    numberReady: 1,
+    updateStrategy: 'OnDelete',
+    createAt: '2024-03-19 15:00:00',
+    createBy: 'admin',
+    updateAt: '2024-03-19 15:00:00',
+    updateBy: 'admin'
+  },
+  // ==================== Failed（失败异常）- 1 条 ====================
+  {
+    id: generateId(),
+    uid: generateId(),
+    name: 'network-monitor',
+    namespace: 'monitoring',
+    clusterId: generateId(),
+    clusterName: 'prod-cluster',
+    description: '网络监控探针，检测节点间网络延迟和连通性',
+    status: 'Failed',
+    statusMessage: '部分节点 Pod 启动失败，CrashLoopBackOff',
+    desiredNumberScheduled: 8,
+    numberReady: 3,
+    updateStrategy: 'RollingUpdate',
+    createAt: '2024-02-25 10:00:00',
+    createBy: 'admin',
+    updateAt: '2024-03-18 09:00:00',
+    updateBy: 'admin'
+  },
+  // ==================== Unknown（未知）- 1 条 ====================
+  {
+    id: generateId(),
+    uid: generateId(),
+    name: 'auditbeat',
+    namespace: 'logging',
+    clusterId: generateId(),
+    clusterName: 'prod-cluster',
+    description: 'Auditbeat 审计日志采集器，记录系统级别审计事件',
+    status: 'Unknown',
+    statusMessage: 'API Server 连接异常，无法获取 DaemonSet 状态',
+    desiredNumberScheduled: 8,
+    numberReady: 0,
+    updateStrategy: 'RollingUpdate',
+    createAt: '2024-03-01 08:00:00',
+    createBy: 'admin',
+    updateAt: '2024-03-20 17:00:00',
+    updateBy: 'admin'
   }
 ]

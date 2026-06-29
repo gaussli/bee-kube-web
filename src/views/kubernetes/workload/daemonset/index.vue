@@ -1,142 +1,99 @@
 <template>
-  <div class="daemonset-table">
+  <BeePage class="daemonset-page">
     <!-- 页面标题 -->
-    <div class="page-header">
-      <BeePageTitle :icon="Monitor" title="守护进程" description="守护进程（DaemonSet）确保所有（或部分）节点运行一个 Pod 副本，常用于日志收集、监控等场景。" />
-    </div>
+    <BeeCard class="daemonset-page__header">
+      <BeePageTitle
+        icon="kubernetes-namespace"
+        title="守护应用"
+        description="守护应用（DaemonSet）是 Kubernetes 中用于确保每个节点运行一个 Pod 副本的控制器，常用于日志采集、监控代理、存储驱动等节点级守护服务。"
+      />
+    </BeeCard>
 
     <!-- 页面内容 -->
-    <div class="page-body">
+    <BeeCard class="daemonset-page__body">
       <!-- 查询表单 -->
-      <div class="table-query">
-        <div class="table-query-left">
-          <BeeInputSearch v-model="searchKey" placeholder="按名称搜索" />
-          <BeeSelect v-model="queryForm.namespace" placeholder="选择命名空间" :options="namespaceOptions" @change="handleNamespaceChange" />
-        </div>
-        <div class="table-query-right">
-          <BeeButton @click="handleReset">
-            <template #icon><Refresh /></template>
-            刷新
-          </BeeButton>
-          <el-divider v-if="hasPermission('kubernetes:workload:daemonset:create')" direction="vertical" />
-          <BeeButton v-if="hasPermission('kubernetes:workload:daemonset:create')" type="primary" @click="handleCreate">
-            <template #icon><Plus /></template>
-            新增
-          </BeeButton>
-        </div>
+      <div class="table-toolbar">
+        <BeeInputSearch v-model="searchKey" placeholder="按 ID / 名称搜索" class="table-toolbar__search" />
+        <BeeSelect v-model="queryForm.namespace" placeholder="命名空间筛选" :options="namespaceOptions" :width="300" />
+        <BeeSelect v-model="queryForm.status" placeholder="状态筛选" :options="DAEMONSET_STATUS_OPTIONS" />
+        <BeeButton icon="basic-search" @click="handleSearch"> 搜索 </BeeButton>
+        <BeeButton icon="basic-refresh" @click="handleReset"> 重置 </BeeButton>
+        <BeeButton v-if="hasPermission('kubernetes:workload:daemonset:create')" type="primary" icon="basic-create" @click="handleCreate"> 新增 </BeeButton>
       </div>
 
       <!-- 表格主体 -->
       <div class="table-body">
-        <el-table v-loading="loading" :data="tableData" height="100%" @selection-change="handleSelectionChange">
-          <el-table-column type="selection" width="60" align="center" />
-          <el-table-column min-width="200">
-            <template #header>
-              <BeeIconLabel icon="monitor" label="名称" />
-            </template>
+        <BeeTable :data="tableData" :loading="loading" selectable @selection-change="handleSelectionChange">
+          <BeeTableColumn :width="500">
             <template #default="{ row }">
-              <div class="name-cell">
-                <div class="name-row">
-                  <span class="name-text">{{ row.name }}</span>
-                  <el-icon class="copy-icon" @click="handleCopy(row.name)"><DocumentCopy /></el-icon>
-                </div>
-                <div class="desc-text">{{ row.labels?.description || '-' }}</div>
+              <BeeWorkloadInfoCell :uid="row.uid" :name="row.name" :description="row.description" :icon-size="32" icon="kubernetes-namespace" />
+            </template>
+          </BeeTableColumn>
+          <BeeTableColumn :width="200">
+            <template #default="{ row }">
+              <BeeTableCommonCell :text="row.namespace" subtext="命名空间" />
+            </template>
+          </BeeTableColumn>
+          <BeeTableColumn :width="160">
+            <template #default="{ row }">
+              <BeeStatusCell :status="row.status" :status-msg="row.statusMessage" :options="DAEMONSET_STATUS_OPTIONS" />
+            </template>
+          </BeeTableColumn>
+          <BeeTableColumn :width="160">
+            <template #default="{ row }">
+              <BeeTableCommonCell :text="`${row.numberReady} / ${row.desiredNumberScheduled}`" subtext="就绪 / 期望节点" />
+            </template>
+          </BeeTableColumn>
+          <BeeTableColumn :width="160">
+            <template #default="{ row }">
+              <BeeTableCommonCell :text="row.updateStrategy" :subtext="updateStrategyLabel(row.updateStrategy)" />
+            </template>
+          </BeeTableColumn>
+          <BeeTableColumn :width="200">
+            <template #default="{ row }">
+              <BeeAuditCell :username="row.createBy" :datetime="row.createAt" field-name="创建人 / 时间" />
+            </template>
+          </BeeTableColumn>
+          <BeeTableColumn :width="200">
+            <template #default="{ row }">
+              <BeeAuditCell :username="row.updateBy" :datetime="row.updateAt" field-name="更新人 / 时间" />
+            </template>
+          </BeeTableColumn>
+          <BeeTableColumn :width="150" fixed="right">
+            <template #default="{ row }">
+              <div class="table-action">
+                <BeeCircleButton v-if="hasPermission('kubernetes:workload:daemonset:edit')" icon="basic-edit" tooltip="编辑" @click="handleEdit(row)" />
+                <BeeCircleButton icon="basic-view" tooltip="详情" @click="handleViewDetail(row)" />
+                <BeeDropdown trigger="click">
+                  <BeeCircleButton icon="basic-more" tooltip="更多" />
+                  <template #dropdown>
+                    <BeeDropdownItem value="restart" label="重启" icon="basic-refresh" @click="handleRestart(row)" />
+                    <BeeDropdownItem value="yamledit" label="编辑 YAML" icon="basic-code" @click="handleEditYaml(row)" />
+                    <BeeDropdownItem
+                      v-if="hasPermission('kubernetes:workload:daemonset:delete') && row.deletable !== false"
+                      value="delete"
+                      label="删除"
+                      icon="basic-delete"
+                      @click="handleDelete(row)"
+                    />
+                  </template>
+                </BeeDropdown>
               </div>
             </template>
-          </el-table-column>
-          <el-table-column min-width="120">
-            <template #header>
-              <BeeIconLabel icon="folder-opened" label="命名空间" />
-            </template>
-            <template #default="{ row }">
-              <span>{{ row.namespace }}</span>
-            </template>
-          </el-table-column>
-          <el-table-column width="120">
-            <template #header>
-              <BeeIconLabel icon="cpu" label="期望" />
-            </template>
-            <template #default="{ row }">
-              <span>{{ row.desiredNumberScheduled }}</span>
-            </template>
-          </el-table-column>
-          <el-table-column width="100">
-            <template #header>
-              <BeeIconLabel icon="circle-check" label="就绪" />
-            </template>
-            <template #default="{ row }">
-              <span :class="row.numberReady === row.desiredNumberScheduled ? 'replicas-ready' : 'replicas-pending'">{{ row.numberReady }}</span>
-            </template>
-          </el-table-column>
-          <el-table-column width="100">
-            <template #header>
-              <BeeIconLabel icon="info-filled" label="可用" />
-            </template>
-            <template #default="{ row }">
-              <span>{{ row.numberAvailable }}</span>
-            </template>
-          </el-table-column>
-          <el-table-column width="180">
-            <template #header>
-              <BeeIconLabel icon="clock" label="创建时间" />
-            </template>
-            <template #default="{ row }">
-              <span class="time-text">{{ formatTime(row.createAt) }}</span>
-            </template>
-          </el-table-column>
-          <el-table-column width="200" fixed="right">
-            <template #header>
-              <BeeIconLabel icon="edit-pen" label="操作" />
-            </template>
-            <template #default="{ row }">
-              <el-tooltip content="编辑" placement="top">
-                <el-button v-if="hasPermission('kubernetes:workload:daemonset:edit')" circle :icon="EditPen" size="default" @click="handleEdit(row)" />
-              </el-tooltip>
-              <el-tooltip content="详情" placement="top">
-                <el-button circle :icon="View" size="default" @click="handleViewDetail(row)" />
-              </el-tooltip>
-
-              <el-tooltip content="更多" placement="top">
-                <el-dropdown trigger="click">
-                  <template #default>
-                    <el-button circle :icon="MoreFilled" size="default" />
-                  </template>
-                  <template #dropdown>
-                    <el-dropdown-menu>
-                      <el-dropdown-item @click="handleEditYaml(row)">
-                        <el-icon><DocumentChecked /></el-icon> 编辑 YAML
-                      </el-dropdown-item>
-                      <el-dropdown-item v-if="hasPermission('kubernetes:workload:daemonset:delete') && row.deletable !== false" divided @click="handleDelete(row)">
-                        <el-icon><Delete /></el-icon> 删除
-                      </el-dropdown-item>
-                    </el-dropdown-menu>
-                  </template>
-                </el-dropdown>
-              </el-tooltip>
-            </template>
-          </el-table-column>
-        </el-table>
+          </BeeTableColumn>
+        </BeeTable>
       </div>
 
       <!-- 表格底部 -->
       <div class="table-footer">
         <div>
           <BeeButton v-if="hasPermission('kubernetes:workload:daemonset:delete')" type="danger" :disabled="selectedRows.length === 0" @click="handleBatchDelete">
-            <template #icon><Delete /></template>
             批量删除 ({{ selectedRows.length }})
           </BeeButton>
         </div>
-        <el-pagination
-          v-model:current-page="pagination.page"
-          v-model:page-size="pagination.pageSize"
-          :total="pagination.total"
-          :page-sizes="[10, 20, 50]"
-          layout="total, sizes, prev, pager, next, jumper"
-          @size-change="loadData"
-          @current-change="loadData"
-        />
+        <BeePagination v-model="pagination.page" v-model:pageSize="pagination.pageSize" :total="pagination.total" :page-sizes="[10, 20, 50]" @change="loadData" />
       </div>
-    </div>
+    </BeeCard>
 
     <!-- 单个删除 Dialog -->
     <BeeDialog v-model="deleteDialogVisible" title="确认删除" @confirm="handleConfirmDelete">
@@ -160,48 +117,60 @@
         </div>
       </div>
     </BeeDialog>
-  </div>
+  </BeePage>
 </template>
 
 <script setup lang="ts">
+/**
+ * DaemonSet 管理页面
+ * @module views/kubernetes/workload/daemonset
+ */
 import { onMounted, reactive, ref } from 'vue'
-import { useRouter } from 'vue-router'
+import { useRoute, useRouter } from 'vue-router'
 import { ElMessage } from 'element-plus'
-import { Monitor, Refresh, Plus, EditPen, Delete, View, DocumentCopy, DocumentChecked, MoreFilled } from '@element-plus/icons-vue'
-import type { DaemonSetQueryReq, DaemonSetResp } from '@/types/kubernetes/workload/daemonset'
+import type { DaemonSetQueryReq, DaemonSetListResp, DaemonSetUpdateStrategyType } from '@/types/kubernetes/workload/daemonset'
 import { getDaemonSetPage, deleteDaemonSet, deleteDaemonSets } from '@/api/kubernetes/workload/daemonset'
+import BeeAuditCell from '@/components/BeeAuditCell/index.vue'
 import BeeButton from '@/components/BeeButton/index.vue'
+import BeeCard from '@/components/BeeCard/index.vue'
+import BeeCircleButton from '@/components/BeeCircleButton/index.vue'
 import BeeDialog from '@/components/BeeDialog/index.vue'
-import BeeIconLabel from '@/components/BeeIconLabel/index.vue'
+import BeeDropdown from '@/components/BeeDropdown/index.vue'
+import BeeDropdownItem from '@/components/BeeDropdownItem/index.vue'
 import BeeInputSearch from '@/components/BeeInputSearch/index.vue'
+import BeePage from '@/components/BeePage/index.vue'
 import BeePageTitle from '@/components/BeePageTitle/index.vue'
+import BeePagination from '@/components/BeePagination/index.vue'
 import BeeSelect from '@/components/BeeSelect/index.vue'
+import BeeStatusCell from '@/components/BeeStatusCell/index.vue'
+import BeeTableColumn from '@/components/BeeTable/BeeTableColumn.vue'
+import BeeTableCommonCell from '@/components/BeeTable/BeeTableCommonCell.vue'
+import BeeTable from '@/components/BeeTable/index.vue'
 import BeeTag from '@/components/BeeTag/index.vue'
-import { useClipboard } from '@/composables/useClipboard'
+import BeeWorkloadInfoCell from '@/components/BeeWorkloadInfoCell/index.vue'
 import { usePermission } from '@/composables/usePermission'
-import { useKubernetesStore } from '@/stores'
+import { DAEMONSET_STATUS_OPTIONS } from '@/config/kubernetes'
 
 defineOptions({ name: 'DaemonSetManage' })
 
 const { hasPermission } = usePermission()
-const { copy } = useClipboard()
+const route = useRoute()
 const router = useRouter()
-const kubernetesStore = useKubernetesStore()
 const searchKey = ref('')
+const clusterId = ref(route.params.clusterId as string)
 
 const loading = ref(false)
-const tableData = ref<DaemonSetResp[]>([])
-const selectedRows = ref<DaemonSetResp[]>([])
+const tableData = ref<DaemonSetListResp[]>([])
+const selectedRows = ref<DaemonSetListResp[]>([])
 const deleteDialogVisible = ref(false)
 const batchDeleteDialogVisible = ref(false)
-const currentTargetRow = ref<DaemonSetResp | null>(null)
+const currentTargetRow = ref<DaemonSetListResp | null>(null)
 
-const queryForm = reactive<DaemonSetQueryReq>({
+const queryForm = reactive<Partial<DaemonSetQueryReq>>({
+  id: undefined,
   name: undefined,
-  clusterId: kubernetesStore.activeClusterId || undefined,
   namespace: undefined,
-  page: 1,
-  pageSize: 10
+  status: undefined
 })
 const pagination = reactive({
   page: 1,
@@ -209,27 +178,47 @@ const pagination = reactive({
   total: 0
 })
 
+/** 命名空间选项 */
 const namespaceOptions = ref([
   { label: '全部命名空间', value: undefined },
   { label: 'default', value: 'default' },
-  { label: 'app-frontend', value: 'app-frontend' },
-  { label: 'app-backend', value: 'app-backend' },
-  { label: 'kube-system', value: 'kube-system' }
+  { label: 'kube-system', value: 'kube-system' },
+  { label: 'monitoring', value: 'monitoring' },
+  { label: 'logging', value: 'logging' },
+  { label: 'storage', value: 'storage' }
 ])
 
-function formatTime(time: string) {
-  if (!time) return '-'
-  return time.replace('T', ' ').slice(0, 19)
+/** 更新策略中文映射 */
+const UPDATE_STRATEGY_LABEL: Record<DaemonSetUpdateStrategyType, string> = {
+  RollingUpdate: '滚动更新',
+  OnDelete: '手动删除'
 }
 
+/**
+ * 获取更新策略中文名称
+ * @param type - 更新策略枚举值
+ * @returns 中文名称
+ */
+function updateStrategyLabel(type: DaemonSetUpdateStrategyType): string {
+  return UPDATE_STRATEGY_LABEL[type] || type
+}
+
+/**
+ * 加载 DaemonSet 列表数据
+ * @remarks 根据当前查询条件与分页参数获取 DaemonSet 分页数据
+ */
 async function loadData() {
-  if (!queryForm.clusterId) {
+  if (!clusterId.value) {
     tableData.value = []
     return
   }
   loading.value = true
   try {
-    const resp = await getDaemonSetPage({ ...queryForm, page: pagination.page, pageSize: pagination.pageSize })
+    const resp = await getDaemonSetPage(clusterId.value, {
+      ...queryForm,
+      page: pagination.page,
+      pageSize: pagination.pageSize
+    })
     tableData.value = resp.list
     pagination.total = resp.total
   } finally {
@@ -237,52 +226,71 @@ async function loadData() {
   }
 }
 
-function handleNamespaceChange(value: string) {
-  queryForm.namespace = value || undefined
+/**
+ * 搜索
+ * @remarks 将 searchKey 同时映射到 id/name 字段进行模糊匹配
+ */
+function handleSearch() {
+  queryForm.id = searchKey.value
+  queryForm.name = searchKey.value
   pagination.page = 1
   loadData()
 }
 
+/**
+ * 重置搜索条件
+ */
 function handleReset() {
+  queryForm.id = undefined
   queryForm.name = undefined
   queryForm.namespace = undefined
-  queryForm.page = 1
-  queryForm.pageSize = 10
+  queryForm.status = undefined
   pagination.page = 1
   pagination.pageSize = 10
   searchKey.value = ''
   loadData()
 }
 
-function handleSelectionChange(rows: DaemonSetResp[]) {
-  selectedRows.value = rows
+/**
+ * 表格选中行变化
+ * @remarks BeeTable 的 selection-change 事件固定返回 Record<string, unknown>[]，需通过 unknown 桥接断言为目标类型
+ */
+function handleSelectionChange(rows: Record<string, unknown>[]) {
+  selectedRows.value = rows as unknown as DaemonSetListResp[]
 }
 
+/** 跳转创建页面 */
 function handleCreate() {
-  router.push({ name: 'kubernetes:workload:daemonset:create', params: { clusterId: kubernetesStore.activeClusterId } })
+  router.push({ name: 'kubernetes:workload:daemonset:create', params: { clusterId: clusterId.value } })
 }
 
-function handleEdit(row: DaemonSetResp) {
+/** 跳转编辑页面 */
+function handleEdit(row: DaemonSetListResp) {
   router.push({ name: 'kubernetes:workload:daemonset:edit', params: { clusterId: row.clusterId }, query: { namespace: row.namespace, name: row.name } })
 }
 
-function handleViewDetail(row: DaemonSetResp) {
+/** 跳转详情页面 */
+function handleViewDetail(row: DaemonSetListResp) {
   router.push({ name: 'kubernetes:workload:daemonset:detail', params: { clusterId: row.clusterId }, query: { namespace: row.namespace, name: row.name } })
 }
 
-function handleEditYaml(row: DaemonSetResp) {
+/** 重启 */
+function handleRestart(row: DaemonSetListResp) {
+  ElMessage.info(`重启: ${row.name}`)
+}
+
+/** 编辑 YAML */
+function handleEditYaml(row: DaemonSetListResp) {
   ElMessage.info(`编辑 YAML: ${row.name}`)
 }
 
-function handleCopy(text: string) {
-  copy(text)
-}
-
-function handleDelete(row: DaemonSetResp) {
+/** 打开删除确认弹窗 */
+function handleDelete(row: DaemonSetListResp) {
   currentTargetRow.value = row
   deleteDialogVisible.value = true
 }
 
+/** 确认单个删除 */
 async function handleConfirmDelete() {
   if (!currentTargetRow.value) return
   try {
@@ -291,28 +299,30 @@ async function handleConfirmDelete() {
     deleteDialogVisible.value = false
     currentTargetRow.value = null
     loadData()
-  } catch {
-    // 失败处理
+  } catch (err) {
+    console.error('[handleConfirmDelete]', err)
   }
 }
 
+/** 打开批量删除确认弹窗 */
 function handleBatchDelete() {
   batchDeleteDialogVisible.value = true
 }
 
+/** 确认批量删除 */
 async function handleConfirmBatchDelete() {
   if (selectedRows.value.length === 0) return
-  const clusterId = selectedRows.value[0].clusterId
-  const namespace = selectedRows.value[0].namespace
+  const targetClusterId = selectedRows.value[0].clusterId
+  const targetNamespace = selectedRows.value[0].namespace
   const names = selectedRows.value.map(row => row.name)
   try {
-    await deleteDaemonSets(clusterId, namespace, names)
+    await deleteDaemonSets(targetClusterId, targetNamespace, names)
     ElMessage.success(`成功删除 ${names.length} 个 DaemonSet`)
     batchDeleteDialogVisible.value = false
     selectedRows.value = []
     loadData()
-  } catch {
-    // 失败处理
+  } catch (err) {
+    console.error('[handleConfirmBatchDelete]', err)
   }
 }
 
@@ -322,122 +332,45 @@ onMounted(() => {
 </script>
 
 <style lang="scss" scoped>
-.daemonset-table {
-  display: flex;
-  flex-direction: column;
-  height: 100%;
-}
-
-.page-header {
-  flex-shrink: 0;
-  padding: 0 20px;
-  margin-bottom: 16px;
-  background-color: $color-bg-surface;
-}
-
-.page-body {
-  display: flex;
-  flex-direction: column;
-  flex: 1;
-  min-height: 0;
-  overflow: hidden;
-  background-color: $color-bg-surface;
-}
-
-.table-query {
-  display: flex;
-  gap: 12px;
-  flex-shrink: 0;
-  align-items: center;
-  justify-content: space-between;
-  padding: 16px 20px;
-
-  .table-query-left {
+.daemonset-page {
+  .daemonset-page__body {
     display: flex;
-    gap: 12px;
-    align-items: center;
-  }
-}
-
-.table-body {
-  flex: 1;
-  min-height: 0;
-  padding: 0 20px;
-  overflow-y: auto;
-
-  :deep(.el-table) {
-    height: 100%;
-
-    th.el-table__cell {
-      padding: 12px 0;
-    }
-
-    td.el-table__cell {
-      padding: 16px 0;
-    }
-
-    .el-table__body tr {
-      height: 56px;
-    }
-
-    .el-button + .el-button {
-      margin-left: 8px;
-    }
-  }
-
-  .replicas-ready {
-    color: $color-success;
-  }
-
-  .replicas-pending {
-    color: $color-warning;
-  }
-
-  .name-cell {
-    display: flex;
-    gap: 2px;
     flex-direction: column;
+    flex: 1;
+    min-height: 0;
+    overflow: hidden;
 
-    .name-row {
+    .table-toolbar {
       display: flex;
-      gap: 4px;
+      gap: $spacing-8;
       align-items: center;
+      padding: $spacing-16 0;
+
+      &__search {
+        flex: 1;
+        min-width: 0;
+      }
     }
 
-    .name-text {
-      font-size: 14px;
-      font-weight: 500;
-      color: $color-text-regular;
+    .table-body {
+      flex: 1;
+      min-height: 0;
     }
 
-    .copy-icon {
-      font-size: 14px;
-      color: $color-primary;
-      cursor: pointer;
+    .table-action {
+      display: flex;
+      gap: $spacing-8;
+      width: 100%;
+      height: auto;
     }
 
-    .desc-text {
-      overflow: hidden;
-      font-size: 12px;
-      color: $color-text-secondary;
-      text-overflow: ellipsis;
-      white-space: nowrap;
+    .table-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: $spacing-16 0;
     }
   }
-
-  .time-text {
-    font-family: monospace;
-    font-size: 12px;
-    color: $color-text-secondary;
-  }
-}
-
-.table-footer {
-  display: flex;
-  flex-shrink: 0;
-  align-items: center;
-  justify-content: space-between;
-  padding: 16px 20px;
 }
 
 .dialog-content {
@@ -450,6 +383,6 @@ onMounted(() => {
   display: flex;
   gap: 8px;
   flex-wrap: wrap;
-  margin-top: 12px;
+  margin: 12px 0;
 }
 </style>

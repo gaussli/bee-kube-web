@@ -67,5 +67,20 @@ export const STATEFULSET_STATUS_OPTIONS: StatusOption[] = [
   { value: 'Unknown', label: '未知', labelEn: 'Unknown', color: COLOR_GRAY_70 }
 ]
 
+/** DaemonSet 状态配置选项 */
+export const DAEMONSET_STATUS_OPTIONS: StatusOption[] = [
+  { value: undefined, label: '全部状态', labelEn: 'ALL', color: COLOR_SUCCESS },
+  { value: 'Running', label: '运行中', labelEn: 'Running', color: COLOR_SUCCESS },
+  { value: 'Available', label: '部分就绪', labelEn: 'Available', color: COLOR_SUCCESS },
+  { value: 'Stopped', label: '已停止', labelEn: 'Stopped', color: COLOR_GRAY_70 },
+  { value: 'Creating', label: '创建中', labelEn: 'Creating', color: COLOR_PRIMARY },
+  { value: 'Updating', label: '更新中', labelEn: 'Updating', color: COLOR_PRIMARY },
+  { value: 'Terminating', label: '终止中', labelEn: 'Terminating', color: COLOR_PRIMARY },
+  { value: 'CreateTimeout', label: '创建超时', labelEn: 'CreateTimeout', color: COLOR_DANGER },
+  { value: 'UpdateTimeout', label: '更新超时', labelEn: 'UpdateTimeout', color: COLOR_DANGER },
+  { value: 'Failed', label: '失败异常', labelEn: 'Failed', color: COLOR_DANGER },
+  { value: 'Unknown', label: '未知', labelEn: 'Unknown', color: COLOR_GRAY_70 }
+]
+
 /** 证书即将过期告警阈值（天） */
 export const CERT_EXPIRE_WARNING_DAYS = 30

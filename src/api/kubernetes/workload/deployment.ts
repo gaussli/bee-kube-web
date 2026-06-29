@@ -9,7 +9,6 @@ import type {
   DeploymentDetailResp,
   DeploymentLabelsReq,
   DeploymentListResp,
-  DeploymentOverviewResp,
   DeploymentQueryReq,
   DeploymentReq,
   DeploymentScaleReq,

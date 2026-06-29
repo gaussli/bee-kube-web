@@ -3,18 +3,25 @@
  * @module api/kubernetes/workload/daemonset
  */
 import type { PageResp } from '@/types/common'
-import type { DaemonSetQueryReq, DaemonSetResp, DaemonSetReq, DaemonSetLabelsReq, DaemonSetAnnotationsReq, DaemonSetYamlReq } from '@/types/kubernetes/workload/daemonset'
+import type {
+  DaemonSetAnnotationsReq,
+  DaemonSetDetailResp,
+  DaemonSetLabelsReq,
+  DaemonSetListResp,
+  DaemonSetQueryReq,
+  DaemonSetReq,
+  DaemonSetYamlReq
+} from '@/types/kubernetes/workload/daemonset'
 import { request } from '@/utils'
 
 /**
  * 获取 DaemonSet 分页列表
  * @param clusterId - 集群ID
- * @param namespace - 命名空间名称
  * @param params - 查询参数
  * @returns 分页后的 DaemonSet 列表
  */
-export function getDaemonSetPage(clusterId: string, namespace: string, params: Partial<DaemonSetQueryReq>): Promise<PageResp<DaemonSetResp>> {
-  return request.get<PageResp<DaemonSetResp>>(`/kubernetes/clusters/${clusterId}/namespaces/${namespace}/daemonsets`, { params: params })
+export function getDaemonSetPage(clusterId: string, params: Partial<DaemonSetQueryReq>): Promise<PageResp<DaemonSetListResp>> {
+  return request.get<PageResp<DaemonSetListResp>>(`/kubernetes/clusters/${clusterId}/daemonsets`, params)
 }
 
 /**
@@ -24,8 +31,8 @@ export function getDaemonSetPage(clusterId: string, namespace: string, params: P
  * @param name - DaemonSet 名称
  * @returns DaemonSet 详情
  */
-export function getDaemonSetDetail(clusterId: string, namespace: string, name: string): Promise<DaemonSetResp> {
-  return request.get<DaemonSetResp>(`/kubernetes/clusters/${clusterId}/namespaces/${namespace}/daemonsets/${name}`)
+export function getDaemonSetDetail(clusterId: string, namespace: string, name: string): Promise<DaemonSetDetailResp> {
+  return request.get<DaemonSetDetailResp>(`/kubernetes/clusters/${clusterId}/namespaces/${namespace}/daemonsets/${name}`)
 }
 
 /**
@@ -35,7 +42,7 @@ export function getDaemonSetDetail(clusterId: string, namespace: string, name: s
  * @param data - 创建参数
  */
 export function createDaemonSet(clusterId: string, namespace: string, data: Partial<DaemonSetReq>): Promise<void> {
-  return request.post(`/kubernetes/clusters/${clusterId}/namespaces/${namespace}/daemonsets`, { data: data })
+  return request.post(`/kubernetes/clusters/${clusterId}/namespaces/${namespace}/daemonsets`, data)
 }
 
 /**
@@ -46,7 +53,7 @@ export function createDaemonSet(clusterId: string, namespace: string, data: Part
  * @param data - 更新参数
  */
 export function updateDaemonSet(clusterId: string, namespace: string, name: string, data: Partial<DaemonSetReq>): Promise<void> {
-  return request.put(`/kubernetes/clusters/${clusterId}/namespaces/${namespace}/daemonsets/${name}`, { data: data })
+  return request.put(`/kubernetes/clusters/${clusterId}/namespaces/${namespace}/daemonsets/${name}`, data)
 }
 
 /**
@@ -60,16 +67,6 @@ export function restartDaemonSet(clusterId: string, namespace: string, name: str
 }
 
 /**
- * 回滚 DaemonSet
- * @param clusterId - 集群ID
- * @param namespace - 命名空间名称
- * @param name - DaemonSet 名称
- */
-export function rollbackDaemonSet(clusterId: string, namespace: string, name: string): Promise<void> {
-  return request.post(`/kubernetes/clusters/${clusterId}/namespaces/${namespace}/daemonsets/${name}/rollback`)
-}
-
-/**
  * 更新 DaemonSet 标签
  * @param clusterId - 集群ID
  * @param namespace - 命名空间名称
@@ -77,7 +74,7 @@ export function rollbackDaemonSet(clusterId: string, namespace: string, name: st
  * @param data - 标签数据
  */
 export function manageDaemonSetLabels(clusterId: string, namespace: string, name: string, data: Partial<DaemonSetLabelsReq>): Promise<void> {
-  return request.post(`/kubernetes/clusters/${clusterId}/namespaces/${namespace}/daemonsets/${name}/labels`, { data: data })
+  return request.post(`/kubernetes/clusters/${clusterId}/namespaces/${namespace}/daemonsets/${name}/labels`, data)
 }
 
 /**
@@ -88,7 +85,7 @@ export function manageDaemonSetLabels(clusterId: string, namespace: string, name
  * @param data - 注解数据
  */
 export function manageDaemonSetAnnotations(clusterId: string, namespace: string, name: string, data: Partial<DaemonSetAnnotationsReq>): Promise<void> {
-  return request.post(`/kubernetes/clusters/${clusterId}/namespaces/${namespace}/daemonsets/${name}/annotations`, { data: data })
+  return request.post(`/kubernetes/clusters/${clusterId}/namespaces/${namespace}/daemonsets/${name}/annotations`, data)
 }
 
 /**
@@ -123,21 +120,11 @@ export function getDaemonSetYaml(clusterId: string, namespace: string, name: str
 }
 
 /**
- * 导出 DaemonSet CSV
- * @param clusterId - 集群ID
- * @param namespace - 命名空间名称
- * @param params - 查询参数
- */
-export function exportDaemonSet(clusterId: string, namespace: string, params: Partial<DaemonSetQueryReq>): Promise<void> {
-  return request.get(`/kubernetes/clusters/${clusterId}/namespaces/${namespace}/daemonsets/export`, { params: params, responseType: 'blob' })
-}
-
-/**
  * 导入 DaemonSet
  * @param clusterId - 集群ID
  * @param namespace - 命名空间名称
  * @param data - YAML 配置
  */
 export function importDaemonSet(clusterId: string, namespace: string, data: Partial<DaemonSetYamlReq>): Promise<void> {
-  return request.post(`/kubernetes/clusters/${clusterId}/namespaces/${namespace}/daemonsets/import`, { data: data })
+  return request.post(`/kubernetes/clusters/${clusterId}/namespaces/${namespace}/daemonsets/import`, data)
 }
