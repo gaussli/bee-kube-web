@@ -6,4 +6,6 @@ export interface DropdownOption {
   label?: string
   /** 选项图标（可选） */
   icon?: string
+  /** 点击回调（可选，来自 BeeDropdownItem 的 @click 事件） */
+  onClick?: () => void
 }

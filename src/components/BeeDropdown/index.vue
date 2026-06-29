@@ -84,13 +84,14 @@ watch(
 )
 
 /** 添加菜单项（供 BeeDropdownItem 调用） */
-function addItem(item: { value: string | number; label?: string; icon?: string }) {
+function addItem(item: { value: string | number; label?: string; icon?: string; onClick?: () => void }) {
   const existing = menuItems.value.findIndex(i => i.value === item.value)
   if (existing === -1) {
     menuItems.value.push({
       value: item.value,
       label: item.label,
-      icon: item.icon
+      icon: item.icon,
+      onClick: item.onClick
     })
   }
 }
@@ -105,8 +106,7 @@ function removeItem(value: string | number) {
 
 /** 收起菜单（供 BeeDropdownItem 调用） */
 function hideMenu() {
-  isOpen.value = false
-  emit('visible-change', false)
+  close()
 }
 
 // 提供上下文给 BeeDropdownItem
@@ -165,32 +165,50 @@ function toggle() {
 
 /** 处理选项选中 */
 function handleSelect(option: DropdownOption) {
+  // 先触发 BeeDropdownItem 注册的 @click 回调
+  option.onClick?.()
   emit('update:modelValue', option.value)
   emit('change', option.value)
-  isOpen.value = false
-  emit('visible-change', false)
+  close()
+}
+
+/** 判断目标是否在 trigger 或 menu 内部 */
+function isInside(target: Node): boolean {
+  return !!(triggerRef.value?.contains(target) || floatingRef.value?.contains(target))
+}
+
+/** 关闭菜单 */
+function close() {
+  if (isOpen.value) {
+    isOpen.value = false
+    emit('visible-change', false)
+  }
 }
 
 /** 点击外部关闭 */
 function handleClickOutside(event: MouseEvent) {
-  if (isOpen.value) {
-    const target = event.target as Node
-    // 判断点击是否在触发器或菜单外部
-    if (!triggerRef.value?.contains(target) && !floatingRef.value?.contains(target)) {
-      isOpen.value = false
-      emit('visible-change', false)
-    }
+  if (!isInside(event.target as Node)) {
+    close()
   }
 }
 
-/** 监听外部点击 */
+/** 焦点移出时关闭（Tab 键、点击其他可聚焦元素等场景） */
+function handleFocusIn(event: FocusEvent) {
+  if (!isInside(event.target as Node)) {
+    close()
+  }
+}
+
+/** 监听外部点击与焦点变化 */
 onMounted(() => {
   document.addEventListener('click', handleClickOutside)
+  document.addEventListener('focusin', handleFocusIn)
 })
 
 /** 取消监听 */
 onBeforeUnmount(() => {
   document.removeEventListener('click', handleClickOutside)
+  document.removeEventListener('focusin', handleFocusIn)
 })
 
 /** 暴露方法供外部调用 */

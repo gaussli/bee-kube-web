@@ -24,7 +24,7 @@ const emit = defineEmits<{
 
 /** 注入的 Dropdown 上下文 */
 interface DropdownContext {
-  addItem: (item: { value: string | number; label?: string; icon?: string }) => void
+  addItem: (item: { value: string | number; label?: string; icon?: string; onClick?: () => void }) => void
   removeItem: (value: string | number) => void
   hideMenu: () => void
   updateValue: (value: string | number) => void
