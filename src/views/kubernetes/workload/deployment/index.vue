@@ -13,7 +13,7 @@
         <BeeSelect v-model="queryForm.namespace" placeholder="命名空间筛选" :options="namespaceOptions" :width="300" />
         <BeeSelect v-model="queryForm.status" placeholder="状态筛选" :options="DEPLOYMENT_STATUS_OPTIONS" />
         <BeeButton icon="basic-search" @click="handleSearch"> 搜索 </BeeButton>
-        <BeeButton icon="basic-refresh" @click="handleReset"> 刷新 </BeeButton>
+        <BeeButton icon="basic-refresh" @click="handleReset"> 重置 </BeeButton>
         <BeeButton v-if="hasPermission('kubernetes:workload:deployment:create')" type="primary" icon="basic-create" @click="handleCreate"> 新增 </BeeButton>
       </div>
 
