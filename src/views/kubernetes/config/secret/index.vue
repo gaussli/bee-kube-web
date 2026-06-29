@@ -10,7 +10,7 @@
       <!-- 查询表单 -->
       <div class="table-toolbar">
         <BeeInputSearch v-model="searchKey" placeholder="按 UID / 名称搜索" class="table-toolbar__search" />
-        <BeeSelect v-model="queryForm.namespace" placeholder="命名空间筛选" :options="namespaceOptions" :width="300" />
+        <BeeSelect v-model="queryForm.namespace" placeholder="命名空间筛选" :options="namespaceOptions" :width="300" :menu-height="300" />
         <BeeSelect v-model="queryForm.type" placeholder="类型筛选" :options="typeOptions" :width="300" />
         <BeeButton icon="basic-search" @click="handleSearch"> 搜索 </BeeButton>
         <BeeButton icon="basic-refresh" @click="handleReset"> 重置 </BeeButton>
@@ -163,9 +163,7 @@ const pagination = reactive({
 })
 
 /** 命名空间选项 */
-const namespaceOptions = ref<{ label: string; value: string | undefined }[]>([
-  { label: '全部命名空间', value: undefined }
-])
+const namespaceOptions = ref<{ label: string; value: string | undefined }[]>([{ label: '全部命名空间', value: undefined }])
 
 /**
  * 加载命名空间选项
@@ -174,11 +172,8 @@ const namespaceOptions = ref<{ label: string; value: string | undefined }[]>([
 async function loadNamespaceOptions() {
   if (!clusterId.value) return
   try {
-    const namespaces = await getNamespacePage(clusterId.value, { mode: 'simple' }) as NamespaceSimpleListResp[]
-    namespaceOptions.value = [
-      { label: '全部命名空间', value: undefined },
-      ...namespaces.map(ns => ({ label: ns.name, value: ns.name }))
-    ]
+    const namespaces = (await getNamespacePage(clusterId.value, { mode: 'simple' })) as NamespaceSimpleListResp[]
+    namespaceOptions.value = [{ label: '全部命名空间', value: undefined }, ...namespaces.map(ns => ({ label: ns.name, value: ns.name }))]
   } catch {
     // 加载失败时保留默认选项
   }

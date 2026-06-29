@@ -8,7 +8,7 @@
 
   <Teleport to="body" :disabled="!isOpen">
     <Transition name="bee-select">
-      <div v-if="isOpen" ref="floatingRef" class="bee-select__menu" :style="[floatingStyles, widthStyle]" @click.stop>
+      <div v-if="isOpen" ref="floatingRef" class="bee-select__menu" :style="[floatingStyles, widthStyle, menuStyle]" @click.stop>
         <div v-for="option in options" :key="option.value" class="bee-select__menu-item" :class="{ 'is-selected': option.value === modelValue }" @click="handleSelect(option)">
           <BeeIcon v-if="option.icon" class="bee-select__menu-icon" :name="option.icon" :size="14" />
           <span>{{ option.label }}</span>
@@ -44,12 +44,15 @@ const props = withDefaults(
     placeholder?: string
     /** 组件宽度（px） */
     width?: number
+    /** 下拉菜单最大高度（px），不设则自适应 */
+    menuHeight?: number
   }>(),
   {
     modelValue: undefined,
     options: () => [],
     placeholder: '请选择',
-    width: 120
+    width: 120,
+    menuHeight: undefined
   }
 )
 
@@ -85,6 +88,15 @@ const selectedLabel = computed(() => {
 
 /** 组件宽度样式 */
 const widthStyle = computed(() => ({ width: `${props.width}px` }))
+
+/** 菜单容器样式（含最大高度与滚动） */
+const menuStyle = computed(() => {
+  if (props.menuHeight === undefined) return {}
+  return {
+    maxHeight: `${props.menuHeight}px`,
+    overflowY: 'auto' as const
+  }
+})
 
 // ==================== Floating-UI 定位 ====================
 
