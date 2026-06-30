@@ -56,7 +56,7 @@
 import { ref, onMounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { Collection, ArrowLeft, EditPen } from '@element-plus/icons-vue'
-import type { StatefulSetListResp } from '@/types/kubernetes/workload/statefulset'
+import type { StatefulSetDetailVo } from '@/types/kubernetes/workload/statefulset'
 import { getStatefulSetDetail } from '@/api/kubernetes/workload/statefulset'
 import BeeButton from '@/components/BeeButton/index.vue'
 import BeePageTitle from '@/components/BeePageTitle/index.vue'
@@ -70,7 +70,7 @@ const clusterId = ref(route.params.clusterId as string)
 const namespace = ref(route.query.namespace as string)
 const statefulsetName = ref(route.query.name as string)
 const loading = ref(false)
-const statefulsetData = ref<StatefulSetListResp>()
+const statefulsetData = ref<StatefulSetDetailVo>()
 const activeTab = ref('basic')
 async function loadData() {
   if (!clusterId.value || !namespace.value || !statefulsetName.value) return

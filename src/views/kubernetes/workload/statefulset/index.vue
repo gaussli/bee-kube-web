@@ -118,7 +118,7 @@ import { onMounted, reactive, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { ElMessage } from 'element-plus'
 import type { NamespaceSimpleListResp } from '@/types/kubernetes/namespace'
-import type { StatefulSetQueryReq, StatefulSetListResp, StatefulSetUpdateStrategyType, PodManagementPolicyType } from '@/types/kubernetes/workload/statefulset'
+import type { StatefulSetQueryForm, StatefulSetListVo, StatefulSetUpdateStrategyType, PodManagementPolicyType } from '@/types/kubernetes/workload/statefulset'
 import type { ActionItem } from '@/components/BeeActionCell/index.vue'
 import { getNamespacePage } from '@/api/kubernetes/namespace'
 import { getStatefulSetList, deleteStatefulSet, deleteStatefulSets } from '@/api/kubernetes/workload/statefulset'
@@ -154,13 +154,13 @@ const router = useRouter()
 const clusterId = ref(route.params.clusterId as string)
 const searchKey = ref('')
 const loading = ref(false)
-const tableData = ref<StatefulSetListResp[]>([])
-const selectedRows = ref<StatefulSetListResp[]>([])
+const tableData = ref<StatefulSetListVo[]>([])
+const selectedRows = ref<StatefulSetListVo[]>([])
 const deleteDialogVisible = ref(false)
 const batchDeleteDialogVisible = ref(false)
-const currentTargetRow = ref<StatefulSetListResp | null>(null)
+const currentTargetRow = ref<StatefulSetListVo | null>(null)
 
-const queryForm = reactive<Partial<StatefulSetQueryReq>>({})
+const queryForm = reactive<Partial<StatefulSetQueryForm>>({})
 const pagination = reactive({ page: 1, pageSize: 10, total: 0 })
 
 // ==================== Options ====================
@@ -271,7 +271,7 @@ function handleReset() {
  * @remarks BeeTable 的 selection-change 事件固定返回 Record<string, unknown>[]，需通过 unknown 桥接断言为目标类型
  */
 function handleSelectionChange(rows: Record<string, unknown>[]) {
-  selectedRows.value = rows as unknown as StatefulSetListResp[]
+  selectedRows.value = rows as unknown as StatefulSetListVo[]
 }
 
 // ==================== CRUD: Create / Edit / View ====================
@@ -282,34 +282,34 @@ function handleCreate() {
 }
 
 /** 跳转编辑页面 */
-function handleEdit(row: StatefulSetListResp) {
+function handleEdit(row: StatefulSetListVo) {
   router.push({ name: 'kubernetes:workload:statefulset:edit', params: { clusterId: row.clusterId }, query: { namespace: row.namespace, name: row.name } })
 }
 
 /** 跳转详情页面 */
-function handleViewDetail(row: StatefulSetListResp) {
+function handleViewDetail(row: StatefulSetListVo) {
   router.push({ name: 'kubernetes:workload:statefulset:detail', params: { clusterId: row.clusterId }, query: { namespace: row.namespace, name: row.name } })
 }
 
 /** 扩缩容 */
-function handleScale(row: StatefulSetListResp) {
+function handleScale(row: StatefulSetListVo) {
   ElMessage.info(`扩缩容: ${row.name}`)
 }
 
 /** 重启 */
-function handleRestart(row: StatefulSetListResp) {
+function handleRestart(row: StatefulSetListVo) {
   ElMessage.info(`重启: ${row.name}`)
 }
 
 /** 编辑 YAML */
-function handleEditYaml(row: StatefulSetListResp) {
+function handleEditYaml(row: StatefulSetListVo) {
   ElMessage.info(`编辑 YAML: ${row.name}`)
 }
 
 // ==================== CRUD: Delete ====================
 
 /** 打开删除确认弹窗 */
-function handleDelete(row: StatefulSetListResp) {
+function handleDelete(row: StatefulSetListVo) {
   currentTargetRow.value = row
   deleteDialogVisible.value = true
 }
@@ -365,7 +365,7 @@ const perm: Record<string, boolean> = {
  * @returns 操作项数组
  * @remarks 按权限和 row.deletable 条件过滤，由调用方负责
  */
-function getActions(row: StatefulSetListResp): ActionItem[] {
+function getActions(row: StatefulSetListVo): ActionItem[] {
   const actions: ActionItem[] = []
   // 查看权限
   if (perm.view) {

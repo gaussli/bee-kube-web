@@ -145,3 +145,35 @@ export interface Container {
   restart: number
   isInit: boolean
 }
+
+/**
+ * StatefulSet 副本状态
+ */
+export interface StatefulSetReplicaStatus {
+  /** 期望副本数 */
+  replicas: number
+  /** 就绪副本数 */
+  readyReplicas: number
+  /** 当前副本数 */
+  currentReplicas: number
+  /** 更新副本数 */
+  updatedReplicas: number
+}
+
+/**
+ * VolumeClaimTemplate 持久化存储模板
+ */
+export interface VolumeClaimTemplate {
+  /** 名称 */
+  name: string
+  /** 存储类名 */
+  storageClassName?: string
+  /** 请求存储大小 */
+  resources?: {
+    requests?: {
+      storage: string
+    }
+  }
+  /** 访问模式 */
+  accessModes?: string[]
+}

@@ -4,14 +4,15 @@
  */
 import type { PageResp } from '@/types/common'
 import type {
-  StatefulSetQueryReq,
-  StatefulSetReq,
-  StatefulSetListResp,
-  StatefulSetDetailResp,
-  StatefulSetLabelsReq,
-  StatefulSetAnnotationsReq,
-  StatefulSetScaleReq,
-  StatefulSetYamlReq
+  StatefulSetQueryForm,
+  StatefulSetCreateForm,
+  StatefulSetUpdateForm,
+  StatefulSetListVo,
+  StatefulSetDetailVo,
+  StatefulSetLabelForm,
+  StatefulSetAnnotationForm,
+  StatefulSetScaleForm,
+  StatefulSetYamlForm
 } from '@/types/kubernetes/workload/statefulset'
 import { generateId } from '@/mock/utils'
 
@@ -37,12 +38,12 @@ export default [
   {
     method: 'get',
     url: '/kubernetes/clusters/:clusterId/statefulsets',
-    handler: (pathParams: Record<string, string>, params: Partial<StatefulSetQueryReq>): PageResp<StatefulSetListResp> => getStatefulSetList(pathParams.clusterId, params)
+    handler: (pathParams: Record<string, string>, params: Partial<StatefulSetQueryForm>): PageResp<StatefulSetListVo> => getStatefulSetList(pathParams.clusterId, params)
   },
   {
     method: 'get',
     url: '/kubernetes/clusters/:clusterId/namespaces/:namespace/statefulsets/:name',
-    handler: (pathParams: Record<string, string>): StatefulSetDetailResp => getStatefulSetDetail(pathParams.clusterId, pathParams.namespace, pathParams.name)
+    handler: (pathParams: Record<string, string>): StatefulSetDetailVo => getStatefulSetDetail(pathParams.clusterId, pathParams.namespace, pathParams.name)
   },
   {
     method: 'get',
@@ -52,22 +53,22 @@ export default [
   {
     method: 'post',
     url: '/kubernetes/clusters/:clusterId/namespaces/:namespace/statefulsets',
-    handler: (pathParams: Record<string, string>, data: StatefulSetReq): void => createStatefulSet(pathParams.clusterId, pathParams.namespace, data)
+    handler: (pathParams: Record<string, string>, data: StatefulSetCreateForm): void => createStatefulSet(pathParams.clusterId, pathParams.namespace, data)
   },
   {
     method: 'put',
     url: '/kubernetes/clusters/:clusterId/namespaces/:namespace/statefulsets/:name',
-    handler: (pathParams: Record<string, string>, data: Partial<StatefulSetReq>): void => updateStatefulSet(pathParams.clusterId, pathParams.namespace, pathParams.name, data)
+    handler: (pathParams: Record<string, string>, data: Partial<StatefulSetUpdateForm>): void => updateStatefulSet(pathParams.clusterId, pathParams.namespace, pathParams.name, data)
   },
   {
     method: 'post',
     url: '/kubernetes/clusters/:clusterId/namespaces/:namespace/statefulsets/:name/labels',
-    handler: (pathParams: Record<string, string>, data: StatefulSetLabelsReq): void => manageStatefulSetLabels(pathParams.clusterId, pathParams.namespace, pathParams.name, data)
+    handler: (pathParams: Record<string, string>, data: StatefulSetLabelForm): void => manageStatefulSetLabels(pathParams.clusterId, pathParams.namespace, pathParams.name, data)
   },
   {
     method: 'post',
     url: '/kubernetes/clusters/:clusterId/namespaces/:namespace/statefulsets/:name/annotations',
-    handler: (pathParams: Record<string, string>, data: StatefulSetAnnotationsReq): void => manageStatefulSetAnnotations(pathParams.clusterId, pathParams.namespace, pathParams.name, data)
+    handler: (pathParams: Record<string, string>, data: StatefulSetAnnotationForm): void => manageStatefulSetAnnotations(pathParams.clusterId, pathParams.namespace, pathParams.name, data)
   },
   {
     method: 'delete',
@@ -82,17 +83,17 @@ export default [
   {
     method: 'get',
     url: '/kubernetes/clusters/:clusterId/statefulsets/export',
-    handler: (pathParams: Record<string, string>, params: Partial<StatefulSetQueryReq>): void => exportStatefulSet(pathParams.clusterId, params)
+    handler: (pathParams: Record<string, string>, params: Partial<StatefulSetQueryForm>): void => exportStatefulSet(pathParams.clusterId, params)
   },
   {
     method: 'post',
     url: '/kubernetes/clusters/:clusterId/statefulsets/import',
-    handler: (pathParams: Record<string, string>, data: StatefulSetYamlReq): void => importStatefulSet(pathParams.clusterId, data)
+    handler: (pathParams: Record<string, string>, data: StatefulSetYamlForm): void => importStatefulSet(pathParams.clusterId, data)
   },
   {
     method: 'post',
     url: '/kubernetes/clusters/:clusterId/namespaces/:namespace/statefulsets/:name/scale',
-    handler: (pathParams: Record<string, string>, data: StatefulSetScaleReq): void => scaleStatefulSet(pathParams.clusterId, pathParams.namespace, pathParams.name, data)
+    handler: (pathParams: Record<string, string>, data: StatefulSetScaleForm): void => scaleStatefulSet(pathParams.clusterId, pathParams.namespace, pathParams.name, data)
   },
   {
     method: 'post',
@@ -112,7 +113,7 @@ export default [
  * @param params - 查询参数
  * @returns 分页数据
  */
-function getStatefulSetList(_clusterId: string, params: Partial<StatefulSetQueryReq>): PageResp<StatefulSetListResp> {
+function getStatefulSetList(_clusterId: string, params: Partial<StatefulSetQueryForm>): PageResp<StatefulSetListVo> {
   const { id, name, namespace, status, page = 1, pageSize = 10 } = params || {}
 
   let filtered = [...mockStatefulSets]
@@ -125,7 +126,7 @@ function getStatefulSetList(_clusterId: string, params: Partial<StatefulSetQuery
   }
 
   if (id || name) {
-    let searchFiltered: StatefulSetListResp[] = []
+    let searchFiltered: StatefulSetListVo[] = []
     if (id) {
       searchFiltered = [...searchFiltered, ...filtered.filter(s => s.id === id)]
     }
@@ -156,7 +157,7 @@ function getStatefulSetList(_clusterId: string, params: Partial<StatefulSetQuery
  * @param name - StatefulSet 名称
  * @returns StatefulSet 详情
  */
-function getStatefulSetDetail(clusterId: string, namespace: string, name: string): StatefulSetDetailResp {
+function getStatefulSetDetail(clusterId: string, namespace: string, name: string): StatefulSetDetailVo {
   const statefulSet = mockStatefulSets.find(s => s.clusterId === clusterId && s.namespace === namespace && s.name === name)
   if (!statefulSet) {
     console.error('[Get StatefulSet Detail] can not find statefulset:', clusterId, namespace, name)
@@ -168,8 +169,14 @@ function getStatefulSetDetail(clusterId: string, namespace: string, name: string
     annotations: { description: statefulSet!.description || '' },
     containers: [
       {
+        containerId: generateId(),
         name: statefulSet!.name,
-        image: `${statefulSet!.name}:latest`
+        status: 'Running',
+        statusMessage: '',
+        image: `${statefulSet!.name}:latest`,
+        ports: [],
+        restart: 0,
+        isInit: false
       }
     ],
     volumeClaimTemplates: [
@@ -252,7 +259,7 @@ status:
  * @param namespace - 命名空间
  * @param data - 创建参数
  */
-function createStatefulSet(clusterId: string, namespace: string, data: StatefulSetReq): void {
+function createStatefulSet(clusterId: string, namespace: string, data: StatefulSetCreateForm): void {
   console.log('[Mock] createStatefulSet', { clusterId, namespace, data })
 }
 
@@ -263,7 +270,7 @@ function createStatefulSet(clusterId: string, namespace: string, data: StatefulS
  * @param name - StatefulSet 名称
  * @param data - 更新参数
  */
-function updateStatefulSet(clusterId: string, namespace: string, name: string, data: Partial<StatefulSetReq>): void {
+function updateStatefulSet(clusterId: string, namespace: string, name: string, data: Partial<StatefulSetUpdateForm>): void {
   console.log('[Mock] updateStatefulSet', { clusterId, namespace, name, data })
 }
 
@@ -274,7 +281,7 @@ function updateStatefulSet(clusterId: string, namespace: string, name: string, d
  * @param name - StatefulSet 名称
  * @param data - 扩缩容参数
  */
-function scaleStatefulSet(clusterId: string, namespace: string, name: string, data: StatefulSetScaleReq): void {
+function scaleStatefulSet(clusterId: string, namespace: string, name: string, data: StatefulSetScaleForm): void {
   console.log('[Mock] scaleStatefulSet', { clusterId, namespace, name, data })
 }
 
@@ -305,7 +312,7 @@ function rollbackStatefulSet(clusterId: string, namespace: string, name: string)
  * @param name - StatefulSet 名称
  * @param data - 标签数据
  */
-function manageStatefulSetLabels(clusterId: string, namespace: string, name: string, data: StatefulSetLabelsReq): void {
+function manageStatefulSetLabels(clusterId: string, namespace: string, name: string, data: StatefulSetLabelForm): void {
   console.log('[Mock] manageStatefulSetLabels', { clusterId, namespace, name, data })
 }
 
@@ -316,7 +323,7 @@ function manageStatefulSetLabels(clusterId: string, namespace: string, name: str
  * @param name - StatefulSet 名称
  * @param data - 注解数据
  */
-function manageStatefulSetAnnotations(clusterId: string, namespace: string, name: string, data: StatefulSetAnnotationsReq): void {
+function manageStatefulSetAnnotations(clusterId: string, namespace: string, name: string, data: StatefulSetAnnotationForm): void {
   console.log('[Mock] manageStatefulSetAnnotations', { clusterId, namespace, name, data })
 }
 
@@ -345,7 +352,7 @@ function deleteStatefulSets(clusterId: string, namespace: string, names: string[
  * @param clusterId - 集群ID
  * @param params - 查询参数
  */
-function exportStatefulSet(clusterId: string, params: Partial<StatefulSetQueryReq>): void {
+function exportStatefulSet(clusterId: string, params: Partial<StatefulSetQueryForm>): void {
   console.log('[Mock] exportStatefulSet', { clusterId, params })
 }
 
@@ -354,7 +361,7 @@ function exportStatefulSet(clusterId: string, params: Partial<StatefulSetQueryRe
  * @param clusterId - 集群ID
  * @param data - YAML 配置
  */
-function importStatefulSet(clusterId: string, data: StatefulSetYamlReq): void {
+function importStatefulSet(clusterId: string, data: StatefulSetYamlForm): void {
   console.log('[Mock] importStatefulSet', { clusterId, data })
 }
 
@@ -362,7 +369,7 @@ function importStatefulSet(clusterId: string, data: StatefulSetYamlReq): void {
  * 模拟 StatefulSet 数据
  * @remarks 20 条数据覆盖全部 10 种状态
  */
-const mockStatefulSets: StatefulSetListResp[] = [
+const mockStatefulSets: StatefulSetListVo[] = [
   // ==================== Running（运行中）- 3 条 ====================
   {
     id: generateId(),
