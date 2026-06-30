@@ -115,7 +115,7 @@
 import { ref, onMounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { Document, ArrowLeft, EditPen } from '@element-plus/icons-vue'
-import type { DeploymentResp } from '@/types/kubernetes/workload/deployment'
+import type { DeploymentDetailVo } from '@/types/kubernetes/workload/deployment'
 import { getDeploymentDetail } from '@/api/kubernetes/workload/deployment'
 import BeeButton from '@/components/BeeButton/index.vue'
 import BeePageTitle from '@/components/BeePageTitle/index.vue'
@@ -132,7 +132,7 @@ const clusterId = ref(route.params.clusterId as string)
 const namespace = ref(route.query.namespace as string)
 const deploymentName = ref(route.query.name as string)
 const loading = ref(false)
-const deploymentData = ref<DeploymentResp>()
+const deploymentData = ref<DeploymentDetailVo>()
 const activeTab = ref('basic')
 
 async function loadData() {

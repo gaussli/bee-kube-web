@@ -4,16 +4,17 @@
  */
 import type { PageResp } from '@/types/common'
 import type {
-  DeploymentAdvancedResp,
-  DeploymentAnnotationsReq,
-  DeploymentDetailResp,
-  DeploymentLabelsReq,
-  DeploymentListResp,
-  DeploymentQueryReq,
-  DeploymentReq,
-  DeploymentScaleReq,
-  DeploymentScheduleResp,
-  DeploymentYamlReq
+  DeploymentAdvancedVo,
+  DeploymentAnnotationForm,
+  DeploymentCreateForm,
+  DeploymentDetailVo,
+  DeploymentEditForm,
+  DeploymentLabelForm,
+  DeploymentListVo,
+  DeploymentQueryForm,
+  DeploymentScaleForm,
+  DeploymentScheduleVo,
+  DeploymentYamlForm
 } from '@/types/kubernetes/workload/deployment'
 import { request } from '@/utils'
 
@@ -23,8 +24,8 @@ import { request } from '@/utils'
  * @param params - 查询参数
  * @returns 分页后的 Deployment 列表
  */
-export function getDeploymentList(clusterId: string, params: Partial<DeploymentQueryReq>): Promise<PageResp<DeploymentListResp>> {
-  return request.get<PageResp<DeploymentListResp>>(`/kubernetes/clusters/${clusterId}/deployments`, params)
+export function getDeploymentList(clusterId: string, params: Partial<DeploymentQueryForm>): Promise<PageResp<DeploymentListVo>> {
+  return request.get<PageResp<DeploymentListVo>>(`/kubernetes/clusters/${clusterId}/deployments`, params)
 }
 
 /**
@@ -34,8 +35,8 @@ export function getDeploymentList(clusterId: string, params: Partial<DeploymentQ
  * @param name - Deployment 名称
  * @returns Deployment 详情
  */
-export function getDeploymentDetail(clusterId: string, namespace: string, name: string): Promise<DeploymentDetailResp> {
-  return request.get<DeploymentDetailResp>(`/kubernetes/clusters/${clusterId}/namespaces/${namespace}/deployments/${name}`)
+export function getDeploymentDetail(clusterId: string, namespace: string, name: string): Promise<DeploymentDetailVo> {
+  return request.get<DeploymentDetailVo>(`/kubernetes/clusters/${clusterId}/namespaces/${namespace}/deployments/${name}`)
 }
 
 /**
@@ -55,7 +56,7 @@ export function getDeploymentYaml(clusterId: string, namespace: string, name: st
  * @param namespace - 命名空间名称
  * @param data - 创建参数
  */
-export function createDeployment(clusterId: string, namespace: string, data: DeploymentReq): Promise<void> {
+export function createDeployment(clusterId: string, namespace: string, data: DeploymentCreateForm): Promise<void> {
   return request.post(`/kubernetes/clusters/${clusterId}/namespaces/${namespace}/deployments`, data)
 }
 
@@ -66,7 +67,7 @@ export function createDeployment(clusterId: string, namespace: string, data: Dep
  * @param name - Deployment 名称
  * @param data - 更新参数
  */
-export function updateDeployment(clusterId: string, namespace: string, name: string, data: Partial<DeploymentReq>): Promise<void> {
+export function updateDeployment(clusterId: string, namespace: string, name: string, data: Partial<DeploymentEditForm>): Promise<void> {
   return request.put(`/kubernetes/clusters/${clusterId}/namespaces/${namespace}/deployments/${name}`, data)
 }
 
@@ -77,7 +78,7 @@ export function updateDeployment(clusterId: string, namespace: string, name: str
  * @param name - Deployment 名称
  * @param data - 标签数据
  */
-export function manageDeploymentLabels(clusterId: string, namespace: string, name: string, data: DeploymentLabelsReq): Promise<void> {
+export function manageDeploymentLabels(clusterId: string, namespace: string, name: string, data: DeploymentLabelForm): Promise<void> {
   return request.post(`/kubernetes/clusters/${clusterId}/namespaces/${namespace}/deployments/${name}/labels`, data)
 }
 
@@ -88,7 +89,7 @@ export function manageDeploymentLabels(clusterId: string, namespace: string, nam
  * @param name - Deployment 名称
  * @param data - 注解数据
  */
-export function manageDeploymentAnnotations(clusterId: string, namespace: string, name: string, data: DeploymentAnnotationsReq): Promise<void> {
+export function manageDeploymentAnnotations(clusterId: string, namespace: string, name: string, data: DeploymentAnnotationForm): Promise<void> {
   return request.post(`/kubernetes/clusters/${clusterId}/namespaces/${namespace}/deployments/${name}/annotations`, data)
 }
 
@@ -117,7 +118,7 @@ export function deleteDeployments(clusterId: string, namespace: string, names: s
  * @param clusterId - 集群ID
  * @param params - 查询参数
  */
-export function exportDeployment(clusterId: string, params: Partial<DeploymentQueryReq>): Promise<void> {
+export function exportDeployment(clusterId: string, params: Partial<DeploymentQueryForm>): Promise<void> {
   return request.get(`/kubernetes/clusters/${clusterId}/deployments/export`, { params: params, responseType: 'blob' })
 }
 
@@ -126,7 +127,7 @@ export function exportDeployment(clusterId: string, params: Partial<DeploymentQu
  * @param clusterId - 集群ID
  * @param data - YAML 配置
  */
-export function importDeployment(clusterId: string, data: DeploymentYamlReq): Promise<void> {
+export function importDeployment(clusterId: string, data: DeploymentYamlForm): Promise<void> {
   return request.post(`/kubernetes/clusters/${clusterId}/deployments/import`, data)
 }
 
@@ -137,8 +138,8 @@ export function importDeployment(clusterId: string, data: DeploymentYamlReq): Pr
  * @param name - Deployment 名称
  * @returns Deployment 调度策略
  */
-export function getDeploymentSchedule(clusterId: string, namespace: string, name: string): Promise<DeploymentScheduleResp> {
-  return request.get<DeploymentScheduleResp>(`/kubernetes/clusters/${clusterId}/namespaces/${namespace}/deployments/${name}/schedule`)
+export function getDeploymentSchedule(clusterId: string, namespace: string, name: string): Promise<DeploymentScheduleVo> {
+  return request.get<DeploymentScheduleVo>(`/kubernetes/clusters/${clusterId}/namespaces/${namespace}/deployments/${name}/schedule`)
 }
 
 /**
@@ -148,8 +149,8 @@ export function getDeploymentSchedule(clusterId: string, namespace: string, name
  * @param name - Deployment 名称
  * @returns Deployment 高级配置
  */
-export function getDeploymentAdvanced(clusterId: string, namespace: string, name: string): Promise<DeploymentAdvancedResp> {
-  return request.get<DeploymentAdvancedResp>(`/kubernetes/clusters/${clusterId}/namespaces/${namespace}/deployments/${name}/advanced`)
+export function getDeploymentAdvanced(clusterId: string, namespace: string, name: string): Promise<DeploymentAdvancedVo> {
+  return request.get<DeploymentAdvancedVo>(`/kubernetes/clusters/${clusterId}/namespaces/${namespace}/deployments/${name}/advanced`)
 }
 
 /**
@@ -159,7 +160,7 @@ export function getDeploymentAdvanced(clusterId: string, namespace: string, name
  * @param name - Deployment 名称
  * @param data - 扩缩容参数
  */
-export function scaleDeployment(clusterId: string, namespace: string, name: string, data: DeploymentScaleReq): Promise<void> {
+export function scaleDeployment(clusterId: string, namespace: string, name: string, data: DeploymentScaleForm): Promise<void> {
   return request.post(`/kubernetes/clusters/${clusterId}/namespaces/${namespace}/deployments/${name}/scale`, data)
 }
 

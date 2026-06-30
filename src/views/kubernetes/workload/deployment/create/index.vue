@@ -86,7 +86,7 @@ import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { ElMessage, type FormInstance } from 'element-plus'
 import { Document, Plus, Delete, Close, Check } from '@element-plus/icons-vue'
-import type { DeploymentResp } from '@/types/kubernetes/workload/deployment'
+import type { DeploymentCreateForm } from '@/types/kubernetes/workload/deployment'
 import { createDeployment } from '@/api/kubernetes/workload/deployment'
 import BeeButton from '@/components/BeeButton/index.vue'
 import BeePageTitle from '@/components/BeePageTitle/index.vue'
@@ -97,7 +97,7 @@ const router = useRouter()
 const formRef = ref<FormInstance>()
 const submitting = ref(false)
 
-const formData = ref<Partial<DeploymentResp>>({
+const formData = ref<Partial<DeploymentCreateForm>>({
   name: '',
   namespace: 'default',
   clusterId: 'default',

@@ -4,16 +4,17 @@
  */
 import type { PageResp } from '@/types/common'
 import type {
-  DeploymentAdvancedResp,
-  DeploymentAnnotationsReq,
-  DeploymentDetailResp,
-  DeploymentLabelsReq,
-  DeploymentListResp,
-  DeploymentQueryReq,
-  DeploymentReq,
-  DeploymentScaleReq,
-  DeploymentScheduleResp,
-  DeploymentYamlReq
+  DeploymentAdvancedVo,
+  DeploymentAnnotationForm,
+  DeploymentCreateForm,
+  DeploymentDetailVo,
+  DeploymentEditForm,
+  DeploymentLabelForm,
+  DeploymentListVo,
+  DeploymentQueryForm,
+  DeploymentScaleForm,
+  DeploymentScheduleVo,
+  DeploymentYamlForm
 } from '@/types/kubernetes/workload/deployment'
 import { generateId } from '@/mock/utils'
 
@@ -41,12 +42,12 @@ export default [
   {
     method: 'get',
     url: '/kubernetes/clusters/:clusterId/deployments',
-    handler: (pathParams: Record<string, string>, params: Partial<DeploymentQueryReq>): PageResp<DeploymentListResp> => getDeploymentList(pathParams.clusterId, params)
+    handler: (pathParams: Record<string, string>, params: Partial<DeploymentQueryForm>): PageResp<DeploymentListVo> => getDeploymentList(pathParams.clusterId, params)
   },
   {
     method: 'get',
     url: '/kubernetes/clusters/:clusterId/namespaces/:namespace/deployments/:name',
-    handler: (pathParams: Record<string, string>): DeploymentDetailResp => getDeploymentDetail(pathParams.clusterId, pathParams.namespace, pathParams.name)
+    handler: (pathParams: Record<string, string>): DeploymentDetailVo => getDeploymentDetail(pathParams.clusterId, pathParams.namespace, pathParams.name)
   },
   {
     method: 'get',
@@ -56,22 +57,22 @@ export default [
   {
     method: 'post',
     url: '/kubernetes/clusters/:clusterId/namespaces/:namespace/deployments',
-    handler: (pathParams: Record<string, string>, data: DeploymentReq): void => createDeployment(pathParams.clusterId, pathParams.namespace, data)
+    handler: (pathParams: Record<string, string>, data: DeploymentCreateForm): void => createDeployment(pathParams.clusterId, pathParams.namespace, data)
   },
   {
     method: 'put',
     url: '/kubernetes/clusters/:clusterId/namespaces/:namespace/deployments/:name',
-    handler: (pathParams: Record<string, string>, data: Partial<DeploymentReq>): void => updateDeployment(pathParams.clusterId, pathParams.namespace, pathParams.name, data)
+    handler: (pathParams: Record<string, string>, data: Partial<DeploymentEditForm>): void => updateDeployment(pathParams.clusterId, pathParams.namespace, pathParams.name, data)
   },
   {
     method: 'post',
     url: '/kubernetes/clusters/:clusterId/namespaces/:namespace/deployments/:name/labels',
-    handler: (pathParams: Record<string, string>, data: DeploymentLabelsReq): void => manageDeploymentLabels(pathParams.clusterId, pathParams.namespace, pathParams.name, data)
+    handler: (pathParams: Record<string, string>, data: DeploymentLabelForm): void => manageDeploymentLabels(pathParams.clusterId, pathParams.namespace, pathParams.name, data)
   },
   {
     method: 'post',
     url: '/kubernetes/clusters/:clusterId/namespaces/:namespace/deployments/:name/annotations',
-    handler: (pathParams: Record<string, string>, data: DeploymentAnnotationsReq): void => manageDeploymentAnnotations(pathParams.clusterId, pathParams.namespace, pathParams.name, data)
+    handler: (pathParams: Record<string, string>, data: DeploymentAnnotationForm): void => manageDeploymentAnnotations(pathParams.clusterId, pathParams.namespace, pathParams.name, data)
   },
   {
     method: 'delete',
@@ -86,27 +87,27 @@ export default [
   {
     method: 'get',
     url: '/kubernetes/clusters/:clusterId/deployments/export',
-    handler: (pathParams: Record<string, string>, params: Partial<DeploymentQueryReq>): void => exportDeployment(pathParams.clusterId, params)
+    handler: (pathParams: Record<string, string>, params: Partial<DeploymentQueryForm>): void => exportDeployment(pathParams.clusterId, params)
   },
   {
     method: 'post',
     url: '/kubernetes/clusters/:clusterId/deployments/import',
-    handler: (pathParams: Record<string, string>, data: DeploymentYamlReq): void => importDeployment(pathParams.clusterId, data)
+    handler: (pathParams: Record<string, string>, data: DeploymentYamlForm): void => importDeployment(pathParams.clusterId, data)
   },
   {
     method: 'get',
     url: '/kubernetes/clusters/:clusterId/namespaces/:namespace/deployments/:name/schedule',
-    handler: (pathParams: Record<string, string>): DeploymentScheduleResp => getDeploymentSchedule(pathParams.clusterId, pathParams.namespace, pathParams.name)
+    handler: (pathParams: Record<string, string>): DeploymentScheduleVo => getDeploymentSchedule(pathParams.clusterId, pathParams.namespace, pathParams.name)
   },
   {
     method: 'get',
     url: '/kubernetes/clusters/:clusterId/namespaces/:namespace/deployments/:name/advanced',
-    handler: (pathParams: Record<string, string>): DeploymentAdvancedResp => getDeploymentAdvanced(pathParams.clusterId, pathParams.namespace, pathParams.name)
+    handler: (pathParams: Record<string, string>): DeploymentAdvancedVo => getDeploymentAdvanced(pathParams.clusterId, pathParams.namespace, pathParams.name)
   },
   {
     method: 'post',
     url: '/kubernetes/clusters/:clusterId/namespaces/:namespace/deployments/:name/scale',
-    handler: (pathParams: Record<string, string>, data: DeploymentScaleReq): void => scaleDeployment(pathParams.clusterId, pathParams.namespace, pathParams.name, data)
+    handler: (pathParams: Record<string, string>, data: DeploymentScaleForm): void => scaleDeployment(pathParams.clusterId, pathParams.namespace, pathParams.name, data)
   },
   {
     method: 'post',
@@ -126,7 +127,7 @@ export default [
  * @param params - 查询参数
  * @returns 分页数据
  */
-function getDeploymentList(_clusterId: string, params: Partial<DeploymentQueryReq>): PageResp<DeploymentListResp> {
+function getDeploymentList(_clusterId: string, params: Partial<DeploymentQueryForm>): PageResp<DeploymentListVo> {
   const { id, name, namespace, status, page = 1, pageSize = 10 } = params || {}
 
   let filtered = [...mockDeployments]
@@ -139,7 +140,7 @@ function getDeploymentList(_clusterId: string, params: Partial<DeploymentQueryRe
   }
 
   if (id || name) {
-    let searchFiltered: DeploymentListResp[] = []
+    let searchFiltered: DeploymentListVo[] = []
     if (id) {
       searchFiltered = [...searchFiltered, ...filtered.filter(n => n.id === id)]
       console.log(searchFiltered)
@@ -172,7 +173,7 @@ function getDeploymentList(_clusterId: string, params: Partial<DeploymentQueryRe
  * @param name - Deployment 名称
  * @returns Deployment 详情
  */
-function getDeploymentDetail(clusterId: string, namespace: string, name: string): DeploymentDetailResp {
+function getDeploymentDetail(clusterId: string, namespace: string, name: string): DeploymentDetailVo {
   const deployment = mockDeployments.find(d => d.clusterId === clusterId && d.namespace === namespace && d.name === name)
   if (!deployment) {
     console.error('[Get Deployment Detail] can not find deployment:', clusterId, namespace, name)
@@ -333,7 +334,7 @@ status:
  * @param name - Deployment 名称
  * @returns Deployment 调度策略
  */
-function getDeploymentSchedule(clusterId: string, namespace: string, name: string): DeploymentScheduleResp {
+function getDeploymentSchedule(clusterId: string, namespace: string, name: string): DeploymentScheduleVo {
   const deployment = mockDeployments.find(d => d.clusterId === clusterId && d.namespace === namespace && d.name === name)
   if (!deployment) {
     console.error('[Get Deployment Schedule] can not find deployment:', clusterId, namespace, name)
@@ -356,7 +357,7 @@ function getDeploymentSchedule(clusterId: string, namespace: string, name: strin
  * @param name - Deployment 名称
  * @returns Deployment 高级配置
  */
-function getDeploymentAdvanced(clusterId: string, namespace: string, name: string): DeploymentAdvancedResp {
+function getDeploymentAdvanced(clusterId: string, namespace: string, name: string): DeploymentAdvancedVo {
   const deployment = mockDeployments.find(d => d.clusterId === clusterId && d.namespace === namespace && d.name === name)
   if (!deployment) {
     console.error('[Get Deployment Advanced] can not find deployment:', clusterId, namespace, name)
@@ -376,7 +377,7 @@ function getDeploymentAdvanced(clusterId: string, namespace: string, name: strin
  * @param namespace - 命名空间
  * @param data - 创建参数
  */
-function createDeployment(clusterId: string, namespace: string, data: DeploymentReq): void {
+function createDeployment(clusterId: string, namespace: string, data: DeploymentCreateForm): void {
   console.log('[Mock] createDeployment', { clusterId, namespace, data })
 }
 
@@ -387,7 +388,7 @@ function createDeployment(clusterId: string, namespace: string, data: Deployment
  * @param name - Deployment 名称
  * @param data - 更新参数
  */
-function updateDeployment(clusterId: string, namespace: string, name: string, data: Partial<DeploymentReq>): void {
+function updateDeployment(clusterId: string, namespace: string, name: string, data: Partial<DeploymentEditForm>): void {
   console.log('[Mock] updateDeployment', { clusterId, namespace, name, data })
 }
 
@@ -398,7 +399,7 @@ function updateDeployment(clusterId: string, namespace: string, name: string, da
  * @param name - Deployment 名称
  * @param data - 扩缩容参数
  */
-function scaleDeployment(clusterId: string, namespace: string, name: string, data: DeploymentScaleReq): void {
+function scaleDeployment(clusterId: string, namespace: string, name: string, data: DeploymentScaleForm): void {
   console.log('[Mock] scaleDeployment', { clusterId, namespace, name, data })
 }
 
@@ -429,7 +430,7 @@ function rollbackDeployment(clusterId: string, namespace: string, name: string):
  * @param name - Deployment 名称
  * @param data - 标签数据
  */
-function manageDeploymentLabels(clusterId: string, namespace: string, name: string, data: DeploymentLabelsReq): void {
+function manageDeploymentLabels(clusterId: string, namespace: string, name: string, data: DeploymentLabelForm): void {
   console.log('[Mock] manageDeploymentLabels', { clusterId, namespace, name, data })
 }
 
@@ -440,7 +441,7 @@ function manageDeploymentLabels(clusterId: string, namespace: string, name: stri
  * @param name - Deployment 名称
  * @param data - 注解数据
  */
-function manageDeploymentAnnotations(clusterId: string, namespace: string, name: string, data: DeploymentAnnotationsReq): void {
+function manageDeploymentAnnotations(clusterId: string, namespace: string, name: string, data: DeploymentAnnotationForm): void {
   console.log('[Mock] manageDeploymentAnnotations', { clusterId, namespace, name, data })
 }
 
@@ -469,7 +470,7 @@ function deleteDeployments(clusterId: string, namespace: string, names: string[]
  * @param clusterId - 集群ID
  * @param params - 查询参数
  */
-function exportDeployment(clusterId: string, params: Partial<DeploymentQueryReq>): void {
+function exportDeployment(clusterId: string, params: Partial<DeploymentQueryForm>): void {
   console.log('[Mock] exportDeployment', { clusterId, params })
 }
 
@@ -478,7 +479,7 @@ function exportDeployment(clusterId: string, params: Partial<DeploymentQueryReq>
  * @param clusterId - 集群ID
  * @param data - YAML 配置
  */
-function importDeployment(clusterId: string, data: DeploymentYamlReq): void {
+function importDeployment(clusterId: string, data: DeploymentYamlForm): void {
   console.log('[Mock] importDeployment', { clusterId, data })
 }
 
@@ -486,7 +487,7 @@ function importDeployment(clusterId: string, data: DeploymentYamlReq): void {
  * 模拟 Deployment 数据
  * @remarks 包含系统组件、应用服务、监控组件等多种类型的 Deployment
  */
-const mockDeployments: DeploymentListResp[] = [
+const mockDeployments: DeploymentListVo[] = [
   // ==================== Running（运行中）- 3 条 ====================
   {
     id: generateId(),
