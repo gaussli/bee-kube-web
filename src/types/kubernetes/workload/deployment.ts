@@ -3,8 +3,11 @@
  * @module types/kubernetes/workload/deployment
  */
 import type { BaseEntity, PageReq } from '@/types/common'
-import type { Condition, Container, ContainerResource, Event, Metadata } from '../types'
-import type { NodeAffinity, PodAffinity, PodAntiAffinity, RestartPolicy, Revision, Toleration } from './types'
+import type { IngressListVo } from '@/types/kubernetes/network/ingress'
+import type { ServiceListVo } from '@/types/kubernetes/network/service'
+import type { PodListVo } from '@/types/kubernetes/pod'
+import type { Condition, ContainerResource, Event, Metadata } from '../types'
+import type { HistoryRevision, NodeAffinity, PodAffinity, PodAntiAffinity, RestartPolicy, Toleration } from './types'
 
 /**
  * Deployment 状态枚举
@@ -37,7 +40,24 @@ export type DeploymentConditionType = 'Available' | 'Progressing' | 'ReplicaFail
  */
 export type DeploymentStrategyType = 'RollingUpdate' | 'Recreate'
 
-// ==================== 1. 列表对象 ====================
+// ==================== 1. 查询表单 ====================
+
+/**
+ * Deployment 查询请求参数
+ * @extends PageReq 继承分页请求（含 page, pageSize）
+ */
+export interface DeploymentQueryForm extends PageReq {
+  /** Deployment ID */
+  id: string
+  /** Deployment 名称（模糊匹配） */
+  name: string
+  /** 命名空间名称 */
+  namespace: string
+  /** Deployment 状态 */
+  status: string
+}
+
+// ==================== 2. 列表对象 ====================
 
 /**
  * Deployment 列表对象响应数据
@@ -68,160 +88,67 @@ export interface DeploymentListVo extends BaseEntity {
   deletable?: boolean
 }
 
-// ==================== 2. 详情对象 ====================
+// ==================== 3. 详情对象 ====================
 
 /**
  * Deployment 详情响应数据
- * @extends BaseEntity 继承基础实体（含 id, createAt, createBy, updateAt, updateBy）
+ * 组合多个子对象，提供完整详情信息
  */
-export interface DeploymentDetailVo extends BaseEntity {
-  /** 资源 UID */
-  uid: string
-  /** 所属集群 ID */
-  clusterId: string
-  /** 所属命名空间 */
-  namespace: string
-  /** Deployment 名称 */
-  name: string
-  /** 描述信息 */
-  description?: string
-  /** 状态 */
-  status: DeploymentStatus
-  /** 状态描述信息（如异常原因） */
-  statusMessage?: string
-  /** 期望副本数 */
-  replicas: number
-  /** 可用副本数 */
-  availableReplicas: number
+export interface DeploymentDetailVo {
+  /** 基础信息 */
+  basic: DeploymentBasicVo
+  /** 副本信息 */
+  replicas: DeploymentReplicasVo
+  /** 元数据信息 */
+  metadata: DeploymentMetadataVo
+  /** 资源信息 */
+  resource: DeploymentResourceVo
+  /** 条件列表 */
+  conditions: DeploymentConditionVo[]
   /** 更新策略 */
-  strategyType: DeploymentStrategyType
-  /** 标签选择器 */
-  selector: Record<string, string>
-  /** 标签 */
-  labels?: Record<string, string>
-  /** 注解 */
-  annotations?: Record<string, string>
-  /** 容器配置列表 */
-  containers: Container[]
+  strategy: DeploymentStrategyVo
 }
-
-// ==================== 3. 查询表单 ====================
-
-/**
- * Deployment 查询请求参数
- * @extends PageReq 继承分页请求（含 page, pageSize）
- */
-export interface DeploymentQueryForm extends PageReq {
-  /** Deployment ID */
-  id: string
-  /** Deployment 名称（模糊匹配） */
-  name: string
-  /** 命名空间名称 */
-  namespace: string
-  /** Deployment 状态 */
-  status: string
-}
-
-// ==================== 4. 创建表单 ====================
-
-/**
- * Deployment 创建请求参数
- */
-export interface DeploymentCreateForm {
-  /** Deployment 名称 */
-  name: string
-  /** 命名空间名称 */
-  namespace: string
-  /** 副本数 */
-  replicas?: number
-  /** 更新策略 */
-  strategy?: DeploymentStrategyType
-  /** 标签选择器 */
-  selector?: Record<string, string>
-  /** 标签 */
-  labels?: Record<string, string>
-  /** 注解 */
-  annotations?: Record<string, string>
-}
-
-// ==================== 5. 编辑表单 ====================
-
-/**
- * Deployment 编辑请求参数
- */
-export interface DeploymentUpdateForm {
-  /** Deployment 名称 */
-  name: string
-  /** 命名空间名称 */
-  namespace: string
-  /** 副本数 */
-  replicas?: number
-  /** 更新策略 */
-  strategy?: DeploymentStrategyType
-  /** 标签选择器 */
-  selector?: Record<string, string>
-  /** 标签 */
-  labels?: Record<string, string>
-  /** 注解 */
-  annotations?: Record<string, string>
-}
-
-// ==================== 6. 标签表单 ====================
-
-/**
- * Deployment 标签更新请求
- */
-export interface DeploymentLabelForm {
-  /** 标签键值对 */
-  labels: Record<string, string>
-  /** 操作（1: 新增；2: 移除：3: 全量替换） */
-  operation: number
-}
-
-// ==================== 7. 注解表单 ====================
-
-/**
- * Deployment 注解更新请求
- */
-export interface DeploymentAnnotationForm {
-  /** 注解键值对 */
-  annotations: Record<string, string>
-  /** 操作（1: 新增；2: 移除：3: 全量替换） */
-  operation: number
-}
-
-// ==================== 8. 其他响应对象（尾部） ====================
 
 /**
  * Deployment 基础信息响应
  * 用于下拉选择、关联引用等场景，仅返回核心标识字段
+ * @extends BaseEntity 继承基础实体（含 id, createAt, createBy, updateAt, updateBy）
  */
-export interface DeploymentBasicVo {
+export interface DeploymentBasicVo extends BaseEntity {
   /** 资源 UID */
   uid: string
-  /** 所属命名空间 */
-  namespace: string
   /** Deployment 名称 */
   name: string
+  /** 所属集群 ID */
+  clusterId: string
+  /** 所属集群 UID */
+  clusterUid: string
+  /** 所属集群名称 */
+  clusterName: string
+  /** 命名空间 ID */
+  namespaceId: string
+  /** 命名空间 UID */
+  namespaceUid: string
+  /** 所属命名空间 */
+  namespace: string
   /** 描述信息 */
   description: string
   /** 状态 */
   status: DeploymentStatus
-  /** 创建时间 */
-  createAt: string
+  /** 状态描述信息 */
+  statusMsg: string
+  /** 是否可删除 */
+  deletation: string
+  /** 版本计数 */
+  generation: number
+  /** 标签选择器 */
+  selector: Record<string, string>
 }
 
 /**
- * Deployment 概览响应
- * @extends BaseEntity 继承基础实体（含 id, createAt, createBy, updateAt, updateBy）
+ * Deployment 副本信息响应
  */
-export interface DeploymentOverviewVo extends BaseEntity {
-  /** 资源 UID */
-  uid: string
-  /** 所属集群 ID */
-  clusterId: string
-  /** 所属集群名称 */
-  clusterName: string
+export interface DeploymentReplicasVo {
   /** 期望副本数 */
   replicas: number
   /** 就绪副本数 */
@@ -230,26 +157,6 @@ export interface DeploymentOverviewVo extends BaseEntity {
   availableReplicas: number
   /** 已更新副本数 */
   updatedReplicas: number
-  /** 标签选择器 */
-  selector: Record<string, string>
-  /** 触发删除时间 */
-  deletionTimestamp?: string
-  /** 容器资源列表 */
-  containerResources: ContainerResource[]
-  /** 条件列表 */
-  conditions: Condition<DeploymentConditionType>
-  /** 更新策略配置 */
-  strategy: {
-    /** 策略类型 */
-    type: DeploymentStrategyType
-    /** 滚动更新参数 */
-    rollingUpdate: {
-      /** 最大不可用副本数（支持数字或百分比，如 "2" 或 "25%"） */
-      maxUnavailable: string
-      /** 最大超出副本数（支持数字或百分比，如 "2" 或 "25%"） */
-      maxSurge: string
-    }
-  }
 }
 
 /**
@@ -257,6 +164,36 @@ export interface DeploymentOverviewVo extends BaseEntity {
  * @extends Metadata 继承元数据类型（含 labels, annotations）
  */
 export interface DeploymentMetadataVo extends Metadata {}
+
+/**
+ * Deployment 资源信息响应
+ * @extends ContainerResource 继承容器资源类型（含 request, limit）
+ */
+export interface DeploymentResourceVo extends ContainerResource {}
+
+/**
+ * Deployment 条件响应
+ * @extends Condition 继承条件类型
+ */
+export interface DeploymentConditionVo extends Condition<DeploymentConditionType> {}
+
+/**
+ * Deployment 更新策略响应
+ */
+export interface DeploymentStrategyVo {
+  /** 策略类型 */
+  type: DeploymentStrategyType
+  /** 最大不可用副本数 */
+  maxUnavailable: string
+  /** 最大超出副本数 */
+  maxSurge: string
+}
+
+/**
+ * Deployment Pod 列表响应
+ * @extends PodListVo 继承 Pod 列表响应类型
+ */
+export interface DeploymentPodListVo extends PodListVo {}
 
 /**
  * Deployment 调度策略响应
@@ -278,7 +215,120 @@ export interface DeploymentScheduleVo {
   tolerations: Toleration[]
 }
 
-export interface DeploymentRevisionVo extends Revision {}
+/**
+ * Deployment 历史版本响应
+ * @extends HistoryRevision 继承历史版本类型
+ */
+export interface DeploymentHistoryRevisionVo extends HistoryRevision {}
+
+/**
+ * Deployment 网络资源响应
+ * 包含关联的 Service 和 Ingress 列表
+ */
+export interface DeploymentNetworkVo {
+  /** 关联的 Service 列表 */
+  services: ServiceListVo[]
+  /** 关联的 Ingress 列表 */
+  ingresses: IngressListVo[]
+}
+
+/**
+ * Deployment 容器挂载配置
+ */
+export interface DeploymentContainerMount {
+  /** 容器 ID */
+  containerId: string
+  /** 容器名称 */
+  container: string
+  /** 挂载路径 */
+  mountPath: string
+  /** 子路径 */
+  subPath: string
+}
+
+/**
+ * Deployment 存储列表响应
+ */
+export interface DeploymentStorageListVo {
+  /** 存储名称 */
+  name: string
+  /** 存储类型 */
+  type: string
+  /** 额外字段 */
+  extraFields: Record<string, string>
+  /** 容器挂载列表 */
+  containerMounts: DeploymentContainerMount[]
+}
+
+// ==================== 5. 创建表单 ====================
+
+/**
+ * Deployment 创建请求参数
+ */
+export interface DeploymentCreateForm {
+  /** Deployment 名称 */
+  name: string
+  /** 命名空间名称 */
+  namespace: string
+  /** 副本数 */
+  replicas?: number
+  /** 更新策略 */
+  strategy?: DeploymentStrategyType
+  /** 标签选择器 */
+  selector?: Record<string, string>
+  /** 标签 */
+  labels?: Record<string, string>
+  /** 注解 */
+  annotations?: Record<string, string>
+}
+
+// ==================== 6. 编辑表单 ====================
+
+/**
+ * Deployment 编辑请求参数
+ */
+export interface DeploymentUpdateForm {
+  /** Deployment 名称 */
+  name: string
+  /** 命名空间名称 */
+  namespace: string
+  /** 副本数 */
+  replicas?: number
+  /** 更新策略 */
+  strategy?: DeploymentStrategyType
+  /** 标签选择器 */
+  selector?: Record<string, string>
+  /** 标签 */
+  labels?: Record<string, string>
+  /** 注解 */
+  annotations?: Record<string, string>
+}
+
+// ==================== 7. 标签表单 ====================
+
+/**
+ * Deployment 标签更新请求
+ */
+export interface DeploymentLabelForm {
+  /** 标签键值对 */
+  labels: Record<string, string>
+  /** 操作（1: 新增；2: 移除：3: 全量替换） */
+  operation: number
+}
+
+// ==================== 8. 注解表单 ====================
+
+/**
+ * Deployment 注解更新请求
+ */
+export interface DeploymentAnnotationForm {
+  /** 注解键值对 */
+  annotations: Record<string, string>
+  /** 操作（1: 新增；2: 移除：3: 全量替换） */
+  operation: number
+}
+
+// ==================== 9. 其他响应对象（尾部） ====================
 
 /**
  * Deployment 监控响应数据
@@ -312,7 +362,7 @@ export interface DeploymentAdvancedVo {
   terminationGracePeriodSeconds: number
 }
 
-// ==================== 9. 其他表单对象（尾部） ====================
+// ==================== 10. 其他表单对象（尾部） ====================
 
 /**
  * Deployment 扩缩容请求

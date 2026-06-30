@@ -3,6 +3,20 @@
  * @module types/kubernetes/types
  */
 
+import type { BaseEntity } from '../common'
+
+export interface Clustered extends BaseEntity {
+  clusterId?: string
+  clusterUid: string
+  clusterName?: string
+}
+
+export interface Namespaced extends Clustered {
+  namespaceId?: string
+  namespaceUid?: string
+  namespace: string
+}
+
 /**
  * Kubernetes 元数据
  */

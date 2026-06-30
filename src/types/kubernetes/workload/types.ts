@@ -1,23 +1,27 @@
 /**
  * Kubernetes 工作负载（Workload）通用类型定义
- * 包含重启策略、亲和性、容忍度等与工作负载调度相关的数据结构
+ * 包含重启策略、容忍度、标签选择器、亲和性、历史版本等调度相关数据结构
  * @module types/kubernetes/workload/types
  */
+
+// ==================== 1. 基础枚举 ====================
 
 /**
  * 工作负载重启策略枚举
  * @remarks
- * - Always: 始终重启（默认策略，适用于长运行服务，如 Deployment、StatefulSet）
- * - OnFailure: 失败时重启（适用于一次性任务，如 Job）
- * - Never: 从不重启（适用于不间断任务，如 CronJob 产生的 Pod）
+ * - Always: 始终重启（适用于 Deployment、StatefulSet 等长运行服务）
+ * - OnFailure: 失败时重启（适用于 Job 等一次性任务）
+ * - Never: 从不重启（适用于 CronJob 产生的 Pod）
  */
 export type RestartPolicy = 'Always' | 'OnFailure' | 'Never'
+
+// ==================== 2. 容忍度 ====================
 
 /**
  * 容忍度运算符枚举
  * @remarks
- * - Equal: 精确匹配（需同时指定 value，要求 key、value、effect 三者同时相等才满足）
- * - Exists: 存在性匹配（仅需 key 和 effect 匹配，value 可省略）
+ * - Equal: 精确匹配（key、value、effect 三者同时相等才满足）
+ * - Exists: 存在性匹配（仅 key 和 effect 匹配，value 可省略）
  */
 export type TolerationOperator = 'Equal' | 'Exists'
 
@@ -39,16 +43,54 @@ export interface Toleration {
   key: string
   /** 匹配运算符 */
   operator: TolerationOperator
-  /** 污点值（当 operator 为 Equal 时生效） */
+  /** 污点值（operator 为 Equal 时生效） */
   value: string
-  /** 容忍效果（须与节点 Taint 的 effect 完全一致才生效） */
+  /** 容忍效果（须与节点 Taint 的 effect 完全一致） */
   effect: TolerationEffect
-  /** 容忍宽限期（秒），仅当 effect 为 NoExecute 时生效；不填表示无限容忍 */
+  /** 容忍宽限期（秒），仅 effect 为 NoExecute 时生效；不填表示无限容忍 */
   tolerationSeconds: number
 }
 
+// ==================== 3. 标签选择器 ====================
+
 /**
- * 亲和性运算符枚举
+ * 标签表达式运算符枚举
+ * @remarks
+ * - In: 标签值在给定列表中
+ * - NotIn: 标签值不在给定列表中
+ * - Exists: 标签键存在
+ * - DoesNotExist: 标签键不存在
+ */
+export type LabelExpressionOperator = 'In' | 'NotIn' | 'Exists' | 'DoesNotExist'
+
+/**
+ * 标签表达式
+ * 定义单个标签匹配条件
+ */
+export interface LabelExpression {
+  /** 标签键 */
+  key: string
+  /** 匹配运算符 */
+  operator: LabelExpressionOperator
+  /** 匹配值列表（operator 为 Exists / DoesNotExist 时不生效） */
+  values: string[]
+}
+
+/**
+ * 标签选择器
+ * 通过标签组合筛选目标资源集合
+ */
+export interface LabelSelector {
+  /** 基于等值匹配的标签（AND 关系） */
+  matchLabels: Record<string, string>
+  /** 基于表达式的匹配条件（与 matchLabels 为 AND 关系） */
+  matchExpressions: LabelExpression[]
+}
+
+// ==================== 4. 节点选择器 ====================
+
+/**
+ * 节点选择器运算符枚举
  * @remarks
  * - In: 值在给定列表中
  * - NotIn: 值不在给定列表中
@@ -57,52 +99,39 @@ export interface Toleration {
  * - Gt: 大于（仅对数字值有效）
  * - Lt: 小于（仅对数字值有效）
  */
-export type AffinityOperator = 'In' | 'NotIn' | 'Exists' | 'DoesNotExist' | 'Gt' | 'Lt'
+export type NodeExpressionOperator = 'In' | 'NotIn' | 'Exists' | 'DoesNotExist' | 'Gt' | 'Lt'
 
 /**
- * 亲和性匹配选择器
- * 用于节点亲和性（NodeAffinity）和 Pod 亲和性（PodAffinity）的匹配表达式
+ * 节点选择器表达式
+ * 定义单个节点标签匹配条件
  */
-export interface AffinityMatchSelector {
-  /** 匹配键（节点标签的 key 或 Pod 标签的 key） */
+export interface NodeExpression {
+  /** 节点标签键 */
   key: string
   /** 匹配运算符 */
-  operator: AffinityOperator
+  operator: NodeExpressionOperator
   /** 匹配值列表（operator 为 Exists / DoesNotExist 时不生效） */
   values: string[]
 }
 
-/**
- * 标签选择器
- * 用于通过标签组合筛选目标资源集合
- */
-export interface LabelSelector {
-  /** 基于等值匹配的标签（AND 关系） */
-  matchLabels: Record<string, string>
-  /** 基于表达式的匹配条件（AND 关系，与 matchLabels 也是 AND 关系） */
-  matchExpressions: AffinityMatchSelector[]
-}
+// ==================== 5. 节点亲和性 ====================
 
 /**
  * 节点亲和性匹配条件
  * 定义单个调度硬/软规则的匹配项
  */
 export interface NodeAffinityTerm {
-  /** 节点标签匹配表达式 */
-  matchExpressions: AffinityMatchSelector[]
-  /** 节点字段匹配表达式 */
-  matchFields: AffinityMatchSelector[]
+  /** 节点标签匹配表达式列表 */
+  matchExpressions: NodeExpression[]
 }
 
 /**
  * 带权重的节点亲和性匹配条件
- * 用于软亲和性规则，权重范围 1~100，值越大优先级越高
+ * 用于软亲和性规则，权重 1~100，值越大优先级越高
  */
-export interface WeightedNodeAffinityTerm {
+export interface WeightedNodeAffinityTerm extends NodeAffinityTerm {
   /** 权重（1~100） */
   weight: number
-  /** 节点亲和性条件 */
-  term: NodeAffinityTerm
 }
 
 /**
@@ -115,6 +144,8 @@ export interface NodeAffinity {
   /** 优先满足的软性调度条件（尽量满足，非强制） */
   preferred: WeightedNodeAffinityTerm[]
 }
+
+// ==================== 6. Pod 亲和性 ====================
 
 /**
  * Pod 亲和性/反亲和性调度条件
@@ -137,13 +168,12 @@ export interface PodAffinityTerm {
 
 /**
  * 带权重的 Pod 亲和性调度条件
- * 用于软亲和性规则，权重范围 1~100
+ * 用于软亲和性规则，权重 1~100
+ * @extends PodAffinityTerm 继承 Pod 亲和性条件的所有属性
  */
-export interface WeightedPodAffinityTerm {
+export interface WeightedPodAffinityTerm extends PodAffinityTerm {
   /** 权重（1~100） */
   weight: number
-  /** Pod 亲和性条件 */
-  term: PodAffinityTerm
 }
 
 /**
@@ -168,10 +198,12 @@ export interface PodAntiAffinity {
   preferred: WeightedPodAffinityTerm[]
 }
 
+// ==================== 7. 历史版本 ====================
+
 /**
  * 历史版本
  */
-export interface Revision {
+export interface HistoryRevision {
   /** 修订版本号 */
   revision: number
   /** 变更原因 */

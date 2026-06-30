@@ -3,7 +3,7 @@
  * @module mock/kubernetes/network/ingress
  */
 import type { PageResp } from '@/types/common'
-import type { IngressResp, IngressQueryReq, IngressReq } from '@/types/kubernetes/network/ingress'
+import type { IngressListVo, IngressQueryReq, IngressReq } from '@/types/kubernetes/network/ingress'
 import { generateId } from '@/mock/utils'
 
 /**
@@ -13,7 +13,7 @@ import { generateId } from '@/mock/utils'
  * @param params - 查询参数
  * @returns 分页数据
  */
-function getIngressPage(clusterId: string, namespaceName: string, params: Partial<IngressQueryReq>): PageResp<IngressResp> {
+function getIngressPage(clusterId: string, namespaceName: string, params: Partial<IngressQueryReq>): PageResp<IngressListVo> {
   const { name, ingressClassName, page = 1, pageSize = 10 } = params || {}
   let filtered = mockIngresses.filter(i => i.clusterId === clusterId && i.namespace === namespaceName)
   if (name) filtered = filtered.filter(i => i.name.toLowerCase().includes(name.toLowerCase()))
@@ -32,7 +32,7 @@ function getIngressPage(clusterId: string, namespaceName: string, params: Partia
  * @param name - Ingress 名称
  * @returns Ingress 详情
  */
-function getIngressDetail(clusterId: string, namespaceName: string, name: string): IngressResp | null {
+function getIngressDetail(clusterId: string, namespaceName: string, name: string): IngressListVo | null {
   return mockIngresses.find(i => i.clusterId === clusterId && i.namespace === namespaceName && i.name === name) || null
 }
 
@@ -42,7 +42,7 @@ function getIngressDetail(clusterId: string, namespaceName: string, name: string
  * @param data - 创建参数
  */
 function createIngress(clusterId: string, data: Partial<IngressReq>): void {
-  const created: IngressResp = {
+  const created: IngressListVo = {
     id: generateId(),
     name: data.name || '',
     namespace: data.namespace || '',
@@ -225,7 +225,7 @@ export default [
 /**
  * Ingress Mock 数据
  */
-const mockIngresses: IngressResp[] = [
+const mockIngresses: IngressListVo[] = [
   {
     id: generateId(),
     name: 'api-ingress',

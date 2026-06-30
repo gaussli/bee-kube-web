@@ -1,36 +1,12 @@
 /**
- * Ingress 资源类型定义
+ * Ingress 资源相关类型定义
  * @module types/kubernetes/network/ingress
  */
-import type { BaseEntity, PageReq } from '@/types/common'
+import type { PageReq } from '@/types/common'
+import type { Namespaced } from '../types'
 import type { IngressLoadBalancer, IngressRule, IngressTLS } from './types'
 
-/**
- * Ingress 响应数据
- * @extends BaseEntity 继承基础实体（含 id, createAt, createBy, updateAt, updateBy）
- */
-export interface IngressResp extends BaseEntity {
-  /** 资源 UID */
-  uid: string
-  /** Ingress 名称 */
-  name: string
-  /** 所属集群 ID */
-  clusterId: string
-  /** 所属集群名称 */
-  clusterName?: string
-  /** 所属命名空间 */
-  namespace: string
-  /** 描述信息（取自 annotations.bee.kube/description） */
-  description: string
-  /** 负载均衡器入口地址列表 */
-  loadBalancer?: IngressLoadBalancer[]
-  /** Ingress 类名（对应 IngressClassName 资源名称） */
-  ingressClassName?: string
-  /** 转发规则列表 */
-  rules: IngressRule[]
-  /** TLS 证书配置列表 */
-  tls?: IngressTLS[]
-}
+// ==================== 1. 查询表单 ====================
 
 /**
  * Ingress 查询请求参数
@@ -44,6 +20,31 @@ export interface IngressQueryReq extends PageReq {
   /** 标签选择器（key=value 格式，多个用逗号分隔） */
   labelSelector?: string
 }
+
+// ==================== 2. 列表对象 ====================
+
+/**
+ * Ingress 列表对象响应数据
+ * @extends Namespaced 继承命名空间级别基础实体（含 id, clusterId, clusterUid, clusterName, namespaceId, namespaceUid, namespace, createAt 等）
+ */
+export interface IngressListVo extends Namespaced {
+  /** 资源 UID */
+  uid: string
+  /** Ingress 名称 */
+  name: string
+  /** 描述信息（取自 annotations.bee.kube/description） */
+  description: string
+  /** Ingress 类名（对应 IngressClassName 资源名称） */
+  ingressClassName?: string
+  /** 负载均衡器入口地址列表 */
+  loadBalancer?: IngressLoadBalancer[]
+  /** 转发规则列表 */
+  rules: IngressRule[]
+  /** TLS 证书配置列表 */
+  tls?: IngressTLS[]
+}
+
+// ==================== 3. 创建/编辑表单 ====================
 
 /**
  * Ingress 创建/更新请求参数
@@ -65,6 +66,8 @@ export interface IngressReq {
   annotations?: Record<string, string>
 }
 
+// ==================== 4. 标签表单 ====================
+
 /**
  * Ingress 标签更新请求
  */
@@ -74,6 +77,8 @@ export interface IngressLabelsReq {
   /** 操作（1: 新增；2: 移除；3: 全量替换） */
   operation: number
 }
+
+// ==================== 5. 注解表单 ====================
 
 /**
  * Ingress 注解更新请求

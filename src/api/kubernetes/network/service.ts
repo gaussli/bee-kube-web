@@ -3,7 +3,7 @@
  * @module api/kubernetes/service
  */
 import type { PageResp } from '@/types/common'
-import type { ServiceResp, ServiceQueryReq, ServiceReq, ServiceLabelsReq, ServiceAnnotationsReq } from '@/types/kubernetes/network/service'
+import type { ServiceListVo, ServiceQueryReq, ServiceReq, ServiceLabelsReq, ServiceAnnotationsReq } from '@/types/kubernetes/network/service'
 import { request } from '@/utils'
 
 /**
@@ -13,7 +13,7 @@ import { request } from '@/utils'
  * @param params - 查询参数
  * @returns 分页后的 Service 列表
  */
-export function getServicePage(clusterId: string, namespaceName: string, params: Partial<ServiceQueryReq>): Promise<PageResp<ServiceResp>> {
+export function getServicePage(clusterId: string, namespaceName: string, params: Partial<ServiceQueryReq>): Promise<PageResp<ServiceListVo>> {
   return request.get(`/kubernetes/clusters/${clusterId}/namespaces/${namespaceName}/services`, { params })
 }
 
@@ -24,7 +24,7 @@ export function getServicePage(clusterId: string, namespaceName: string, params:
  * @param name - Service 名称
  * @returns Service 详情
  */
-export function getServiceDetail(clusterId: string, namespaceName: string, name: string): Promise<ServiceResp> {
+export function getServiceDetail(clusterId: string, namespaceName: string, name: string): Promise<ServiceListVo> {
   return request.get(`/kubernetes/clusters/${clusterId}/namespaces/${namespaceName}/services/${name}`)
 }
 

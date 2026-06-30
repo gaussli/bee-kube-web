@@ -3,7 +3,7 @@
  * @module mock/kubernetes/network/service
  */
 import type { PageResp } from '@/types/common'
-import type { ServiceResp, ServiceQueryReq, ServiceReq } from '@/types/kubernetes/network/service'
+import type { ServiceListVo, ServiceQueryReq, ServiceReq } from '@/types/kubernetes/network/service'
 import { generateId } from '@/mock/utils'
 
 /**
@@ -13,7 +13,7 @@ import { generateId } from '@/mock/utils'
  * @param params - 查询参数
  * @returns 分页数据
  */
-function getServicePage(clusterId: string, namespaceName: string, params: Partial<ServiceQueryReq>): PageResp<ServiceResp> {
+function getServicePage(clusterId: string, namespaceName: string, params: Partial<ServiceQueryReq>): PageResp<ServiceListVo> {
   const { name, type, page = 1, pageSize = 10 } = params || {}
   let filtered = mockServices.filter(s => s.clusterId === clusterId && s.namespace === namespaceName)
   if (name) filtered = filtered.filter(s => s.name.toLowerCase().includes(name.toLowerCase()))
@@ -32,7 +32,7 @@ function getServicePage(clusterId: string, namespaceName: string, params: Partia
  * @param name - Service 名称
  * @returns Service 详情
  */
-function getServiceDetail(clusterId: string, namespaceName: string, name: string): ServiceResp | null {
+function getServiceDetail(clusterId: string, namespaceName: string, name: string): ServiceListVo | null {
   return mockServices.find(s => s.clusterId === clusterId && s.namespace === namespaceName && s.name === name) || null
 }
 
@@ -42,7 +42,7 @@ function getServiceDetail(clusterId: string, namespaceName: string, name: string
  * @param data - 创建参数
  */
 function createService(clusterId: string, data: Partial<ServiceReq>): void {
-  const created: ServiceResp = {
+  const created: ServiceListVo = {
     id: generateId(),
     name: data.name || '',
     namespace: data.namespace || '',
@@ -227,7 +227,7 @@ export default [
 /**
  * Service Mock 数据
  */
-const mockServices: ServiceResp[] = [
+const mockServices: ServiceListVo[] = [
   {
     id: generateId(),
     name: 'kubernetes',

@@ -1,9 +1,12 @@
 /**
- * Service 资源类型定义
+ * Service 资源相关类型定义
  * @module types/kubernetes/network/service
  */
-import type { BaseEntity, PageReq } from '@/types/common'
+import type { PageReq } from '@/types/common'
+import type { Namespaced } from '../types'
 import type { ServicePort } from './types'
+
+// ==================== 1. 基础枚举 ====================
 
 /**
  * Service 类型枚举
@@ -15,34 +18,7 @@ import type { ServicePort } from './types'
  */
 export type ServiceType = 'ClusterIP' | 'NodePort' | 'LoadBalancer' | 'ExternalName'
 
-/**
- * Service 响应数据
- * @extends BaseEntity 继承基础实体（含 id, createAt, createBy, updateAt, updateBy）
- */
-export interface ServiceResp extends BaseEntity {
-  /** 资源 UID */
-  uid: string
-  /** Service 名称 */
-  name: string
-  /** 所属集群 ID */
-  clusterId: string
-  /** 所属集群名称 */
-  clusterName?: string
-  /** 所属命名空间 */
-  namespace: string
-  /** 描述信息 */
-  description: string
-  /** Service 类型 */
-  type: ServiceType
-  /** 端口配置列表 */
-  ports: ServicePort[]
-  /** 标签选择器（匹配目标 Pod 的标签） */
-  selector?: Record<string, string>
-  /** 集群内部 IP（ClusterIP / NodePort / LoadBalancer 类型自动分配） */
-  clusterIp: string
-  /** 外部域名（仅 ExternalName 类型生效） */
-  externalName?: string
-}
+// ==================== 2. 查询表单 ====================
 
 /**
  * Service 查询请求参数
@@ -56,6 +32,35 @@ export interface ServiceQueryReq extends PageReq {
   /** 标签选择器（key=value 格式，多个用逗号分隔） */
   labelSelector?: string
 }
+
+// ==================== 3. 列表对象 ====================
+
+/**
+ * Service 列表对象响应数据
+ * @extends Namespaced 继承命名空间级别基础实体（含 id, clusterId, clusterUid, clusterName, namespaceId, namespaceUid, namespace, createAt 等）
+ */
+export interface ServiceListVo extends Namespaced {
+  /** 资源 UID */
+  uid: string
+  /** Service 名称 */
+  name: string
+  /** 描述信息 */
+  description: string
+  /** Service 类型 */
+  type: ServiceType
+  /** 集群内部 IP（ClusterIP / NodePort / LoadBalancer 类型自动分配） */
+  clusterIp: string
+  /** 端口配置列表 */
+  ports?: ServicePort[]
+  /** 标签选择器（匹配目标 Pod 的标签） */
+  selector: Record<string, string>
+  /** 外部域名（仅 ExternalName 类型生效） */
+  externalName: string
+  /** 是否为 Headless Service（clusterIp 为 None） */
+  headless: boolean
+}
+
+// ==================== 4. 创建/编辑表单 ====================
 
 /**
  * Service 创建/更新请求参数
@@ -81,6 +86,8 @@ export interface ServiceReq {
   annotations?: Record<string, string>
 }
 
+// ==================== 5. 标签表单 ====================
+
 /**
  * Service 标签更新请求
  */
@@ -90,6 +97,8 @@ export interface ServiceLabelsReq {
   /** 操作（1: 新增；2: 移除；3: 全量替换） */
   operation: number
 }
+
+// ==================== 6. 注解表单 ====================
 
 /**
  * Service 注解更新请求
