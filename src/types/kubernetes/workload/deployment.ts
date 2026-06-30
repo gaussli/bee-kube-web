@@ -149,7 +149,7 @@ export interface DeploymentCreateForm {
 /**
  * Deployment 编辑请求参数
  */
-export interface DeploymentEditForm {
+export interface DeploymentUpdateForm {
   /** Deployment 名称 */
   name: string
   /** 命名空间名称 */

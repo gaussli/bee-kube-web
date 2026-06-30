@@ -8,7 +8,7 @@ import type {
   DeploymentAnnotationForm,
   DeploymentCreateForm,
   DeploymentDetailVo,
-  DeploymentEditForm,
+  DeploymentUpdateForm,
   DeploymentLabelForm,
   DeploymentListVo,
   DeploymentQueryForm,
@@ -67,7 +67,7 @@ export function createDeployment(clusterId: string, namespace: string, data: Dep
  * @param name - Deployment 名称
  * @param data - 更新参数
  */
-export function updateDeployment(clusterId: string, namespace: string, name: string, data: Partial<DeploymentEditForm>): Promise<void> {
+export function updateDeployment(clusterId: string, namespace: string, name: string, data: Partial<DeploymentUpdateForm>): Promise<void> {
   return request.put(`/kubernetes/clusters/${clusterId}/namespaces/${namespace}/deployments/${name}`, data)
 }
 

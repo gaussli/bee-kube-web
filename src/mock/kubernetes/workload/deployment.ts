@@ -8,7 +8,7 @@ import type {
   DeploymentAnnotationForm,
   DeploymentCreateForm,
   DeploymentDetailVo,
-  DeploymentEditForm,
+  DeploymentUpdateForm,
   DeploymentLabelForm,
   DeploymentListVo,
   DeploymentQueryForm,
@@ -62,7 +62,7 @@ export default [
   {
     method: 'put',
     url: '/kubernetes/clusters/:clusterId/namespaces/:namespace/deployments/:name',
-    handler: (pathParams: Record<string, string>, data: Partial<DeploymentEditForm>): void => updateDeployment(pathParams.clusterId, pathParams.namespace, pathParams.name, data)
+    handler: (pathParams: Record<string, string>, data: Partial<DeploymentUpdateForm>): void => updateDeployment(pathParams.clusterId, pathParams.namespace, pathParams.name, data)
   },
   {
     method: 'post',
@@ -388,7 +388,7 @@ function createDeployment(clusterId: string, namespace: string, data: Deployment
  * @param name - Deployment 名称
  * @param data - 更新参数
  */
-function updateDeployment(clusterId: string, namespace: string, name: string, data: Partial<DeploymentEditForm>): void {
+function updateDeployment(clusterId: string, namespace: string, name: string, data: Partial<DeploymentUpdateForm>): void {
   console.log('[Mock] updateDeployment', { clusterId, namespace, name, data })
 }
 

@@ -55,7 +55,7 @@ import { ref, onMounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { ElMessage, type FormInstance } from 'element-plus'
 import { Document, Plus, Delete, Close, Check } from '@element-plus/icons-vue'
-import type { DeploymentEditForm } from '@/types/kubernetes/workload/deployment'
+import type { DeploymentUpdateForm } from '@/types/kubernetes/workload/deployment'
 import { getDeploymentDetail, updateDeployment } from '@/api/kubernetes/workload/deployment'
 import BeeButton from '@/components/BeeButton/index.vue'
 import BeePageTitle from '@/components/BeePageTitle/index.vue'
@@ -72,7 +72,7 @@ const deploymentName = ref(route.query.name as string)
 const loading = ref(false)
 const submitting = ref(false)
 
-const formData = ref<Partial<DeploymentEditForm>>({
+const formData = ref<Partial<DeploymentUpdateForm>>({
   replicas: 1,
   strategy: 'RollingUpdate',
   labels: {}
