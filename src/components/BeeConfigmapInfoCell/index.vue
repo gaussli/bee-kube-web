@@ -1,18 +1,18 @@
 <template>
-  <div class="bee-secret-info-cell">
-    <div class="bee-secret-info-cell__icon">
+  <div class="bee-configmap-info-cell">
+    <div class="bee-configmap-info-cell__icon">
       <BeeIcon :name="icon" :size="iconSize" />
     </div>
-    <div class="bee-secret-info-cell__content">
-      <div class="bee-secret-info-cell__top">
+    <div class="bee-configmap-info-cell__content">
+      <div class="bee-configmap-info-cell__top">
         <BeeTooltip :label="uid">
           <BeeTag type="primary" size="tiny">UID</BeeTag>
         </BeeTooltip>
-        <span class="bee-secret-info-cell__name">{{ name }}</span>
-        <BeeIcon name="basic-copy" :size="14" class="bee-secret-info-cell__copy-icon" @click.stop="useClipboard().copy(props.name)" />
+        <span class="bee-configmap-info-cell__name">{{ name }}</span>
+        <BeeIcon name="basic-copy" :size="14" class="bee-configmap-info-cell__copy-icon" @click.stop="useClipboard().copy(props.name)" />
       </div>
-      <div class="bee-secret-info-cell__bottom">
-        <span class="bee-secret-info-cell__desc">{{ description || '-' }}</span>
+      <div class="bee-configmap-info-cell__bottom">
+        <span class="bee-configmap-info-cell__desc">{{ description || '-' }}</span>
       </div>
     </div>
   </div>
@@ -20,16 +20,16 @@
 
 <script setup lang="ts">
 /**
- * Secret 信息单元格组件
- * 上下结构展示 Secret 名称（支持复制）和描述信息
- * @module components/BeeSecretInfoCell
+ * ConfigMap 信息单元格组件
+ * 上下结构展示 ConfigMap 名称（支持复制）和描述信息
+ * @module components/BeeConfigmapInfoCell
  */
 import BeeIcon from '@/components/BeeIcon/index.vue'
 import BeeTag from '@/components/BeeTag/index.vue'
 import BeeTooltip from '@/components/BeeTooltip/index.vue'
 import { useClipboard } from '@/composables/useClipboard'
 
-defineOptions({ name: 'BeeSecretInfoCell' })
+defineOptions({ name: 'BeeConfigmapInfoCell' })
 
 const props = withDefaults(
   defineProps<{
@@ -39,20 +39,20 @@ const props = withDefaults(
     iconSize?: number
     /** Kubernetes 资源 UID，hover UID 标签时显示完整 UID */
     uid: string
-    /** Secret 名称 */
+    /** ConfigMap 名称 */
     name: string
-    /** Secret 描述 */
+    /** ConfigMap 描述 */
     description?: string
   }>(),
   {
-    icon: 'kubernetes-secret',
+    icon: 'kubernetes-namespace',
     iconSize: 48
   }
 )
 </script>
 
 <style lang="scss" scoped>
-.bee-secret-info-cell {
+.bee-configmap-info-cell {
   display: flex;
   gap: $spacing-8;
   flex-direction: row;

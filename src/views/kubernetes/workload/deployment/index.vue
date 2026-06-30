@@ -304,6 +304,11 @@ function handleEdit(row: DeploymentListResp) {
   router.push({ name: 'kubernetes:workload:deployment:edit', params: { clusterId: row.clusterId }, query: { namespace: row.namespace, name: row.name } })
 }
 
+/** 编辑 YAML */
+function handleEditYaml(row: DeploymentListResp) {
+  ElMessage.info(`编辑 YAML: ${row.name}`)
+}
+
 /** 跳转详情页面 */
 function handleViewDetail(row: DeploymentListResp) {
   router.push({ name: 'kubernetes:workload:deployment:detail', params: { clusterId: row.clusterId }, query: { namespace: row.namespace, name: row.name } })
@@ -394,10 +399,13 @@ function getActions(row: DeploymentListResp): ActionItem[] {
     actions.push({ value: 'view', label: '详情', icon: 'basic-view', handler: () => handleViewDetail(row) })
   }
   if (perm.edit) {
-    actions.push({ value: 'edit', label: '编辑', icon: 'basic-edit', handler: () => handleEdit(row) })
-    actions.push({ value: 'scale', label: '扩缩容', icon: 'kubernetes-namespace', handler: () => handleScale(row) })
-    actions.push({ value: 'restart', label: '重启', icon: 'basic-refresh', handler: () => handleRestart(row) })
-    actions.push({ value: 'rollback', label: '回滚', icon: 'kubernetes-namespace', handler: () => handleRollback(row) })
+    actions.push(
+      { value: 'edit', label: '编辑', icon: 'basic-edit', handler: () => handleEdit(row) },
+      { value: 'yamledit', label: '编辑 YAML', icon: 'basic-code', handler: () => handleEditYaml(row) },
+      { value: 'scale', label: '扩缩容', icon: 'kubernetes-namespace', handler: () => handleScale(row) },
+      { value: 'restart', label: '重启', icon: 'basic-refresh', handler: () => handleRestart(row) },
+      { value: 'rollback', label: '回滚', icon: 'kubernetes-namespace', handler: () => handleRollback(row) }
+    )
   }
   if (perm.delete && row.deletable !== false) {
     actions.push({ value: 'delete', label: '删除', icon: 'basic-delete', handler: () => handleDelete(row) })

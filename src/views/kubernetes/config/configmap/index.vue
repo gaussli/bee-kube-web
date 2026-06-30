@@ -21,7 +21,7 @@
         <BeeTable :data="tableData" :loading="loading" selectable @selection-change="handleSelectionChange">
           <BeeTableColumn :width="400">
             <template #default="{ row }">
-              <BeeWorkloadInfoCell :uid="row.uid" :name="row.name" :description="row.description" :icon-size="32" icon="kubernetes-namespace" />
+              <BeeConfigmapInfoCell :uid="row.uid" :name="row.name" :description="row.description" :icon-size="32" icon="kubernetes-namespace" />
             </template>
           </BeeTableColumn>
           <BeeTableColumn :width="200">
@@ -120,7 +120,7 @@ import BeeTableColumn from '@/components/BeeTable/BeeTableColumn.vue'
 import BeeTableCommonCell from '@/components/BeeTable/BeeTableCommonCell.vue'
 import BeeTable from '@/components/BeeTable/index.vue'
 import BeeTag from '@/components/BeeTag/index.vue'
-import BeeWorkloadInfoCell from '@/components/BeeWorkloadInfoCell/index.vue'
+import BeeConfigmapInfoCell from '@/components/BeeConfigmapInfoCell/index.vue'
 import { usePermission } from '@/composables/usePermission'
 
 defineOptions({ name: 'ConfigMapManage' })

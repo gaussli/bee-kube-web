@@ -124,7 +124,7 @@ function handleConfirm() {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: $spacing-8 $spacing-16;
+  padding: $spacing-16;
 
   .dialog-title {
     font-size: $font-size-16;
