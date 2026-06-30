@@ -25,7 +25,7 @@ export default [
   {
     method: 'get',
     url: '/kubernetes/clusters/:clusterId/jobs',
-    handler: (pathParams: Record<string, string>, params: Partial<JobQueryReq>): PageResp<JobListResp> => getJobPage(pathParams.clusterId, params)
+    handler: (pathParams: Record<string, string>, params: Partial<JobQueryReq>): PageResp<JobListResp> => getJobList(pathParams.clusterId, params)
   },
   {
     method: 'get',
@@ -85,7 +85,7 @@ export default [
  * @param params - 查询参数（namespace 可选，不传则查询所有命名空间）
  * @returns 分页数据
  */
-function getJobPage(_clusterId: string, params: Partial<JobQueryReq>): PageResp<JobListResp> {
+function getJobList(_clusterId: string, params: Partial<JobQueryReq>): PageResp<JobListResp> {
   const { id, name, namespace, status, page = 1, pageSize = 10 } = params || {}
 
   let filtered = [...mockJobs]

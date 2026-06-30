@@ -26,7 +26,7 @@ export default [
   {
     method: 'get',
     url: '/kubernetes/clusters/:clusterId/configmaps',
-    handler: (pathParams: Record<string, string>, params: Partial<ConfigMapQueryReq>): PageResp<ConfigMapListResp> => getConfigMapPage(pathParams.clusterId, params)
+    handler: (pathParams: Record<string, string>, params: Partial<ConfigMapQueryReq>): PageResp<ConfigMapListResp> => getConfigMapList(pathParams.clusterId, params)
   },
   {
     method: 'get',
@@ -91,7 +91,7 @@ export default [
  * @param params - 查询参数（含 namespace 筛选）
  * @returns 分页数据
  */
-function getConfigMapPage(_clusterId: string, params: Partial<ConfigMapQueryReq>): PageResp<ConfigMapListResp> {
+function getConfigMapList(_clusterId: string, params: Partial<ConfigMapQueryReq>): PageResp<ConfigMapListResp> {
   const { id, name, namespace, page = 1, pageSize = 10 } = params || {}
 
   let filtered = [...mockConfigMaps]

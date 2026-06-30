@@ -115,7 +115,7 @@ import type { NamespaceSimpleListResp } from '@/types/kubernetes/namespace'
 import type { DaemonSetQueryReq, DaemonSetListResp, DaemonSetUpdateStrategyType } from '@/types/kubernetes/workload/daemonset'
 import type { ActionItem } from '@/components/BeeActionCell/index.vue'
 import { getNamespacePage } from '@/api/kubernetes/namespace'
-import { getDaemonSetPage, deleteDaemonSet, deleteDaemonSets } from '@/api/kubernetes/workload/daemonset'
+import { getDaemonSetList, deleteDaemonSet, deleteDaemonSets } from '@/api/kubernetes/workload/daemonset'
 import BeeActionCell from '@/components/BeeActionCell/index.vue'
 import BeeAuditCell from '@/components/BeeAuditCell/index.vue'
 import BeeButton from '@/components/BeeButton/index.vue'
@@ -204,7 +204,7 @@ async function loadData() {
   }
   loading.value = true
   try {
-    const resp = await getDaemonSetPage(clusterId.value, {
+    const resp = await getDaemonSetList(clusterId.value, {
       ...queryForm,
       page: pagination.page,
       pageSize: pagination.pageSize

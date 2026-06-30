@@ -21,7 +21,7 @@ import { request } from '@/utils'
  * @param params - 查询参数
  * @returns 分页后的 StatefulSet 列表
  */
-export function getStatefulSetPage(clusterId: string, params: Partial<StatefulSetQueryReq>): Promise<PageResp<StatefulSetListResp>> {
+export function getStatefulSetList(clusterId: string, params: Partial<StatefulSetQueryReq>): Promise<PageResp<StatefulSetListResp>> {
   return request.get<PageResp<StatefulSetListResp>>(`/kubernetes/clusters/${clusterId}/statefulsets`, params)
 }
 

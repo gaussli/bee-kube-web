@@ -121,7 +121,7 @@ import type { NamespaceSimpleListResp } from '@/types/kubernetes/namespace'
 import type { StatefulSetQueryReq, StatefulSetListResp, StatefulSetUpdateStrategyType, PodManagementPolicyType } from '@/types/kubernetes/workload/statefulset'
 import type { ActionItem } from '@/components/BeeActionCell/index.vue'
 import { getNamespacePage } from '@/api/kubernetes/namespace'
-import { getStatefulSetPage, deleteStatefulSet, deleteStatefulSets } from '@/api/kubernetes/workload/statefulset'
+import { getStatefulSetList, deleteStatefulSet, deleteStatefulSets } from '@/api/kubernetes/workload/statefulset'
 import BeeActionCell from '@/components/BeeActionCell/index.vue'
 import BeeAuditCell from '@/components/BeeAuditCell/index.vue'
 import BeeButton from '@/components/BeeButton/index.vue'
@@ -225,7 +225,7 @@ async function loadData() {
   }
   loading.value = true
   try {
-    const resp = await getStatefulSetPage(clusterId.value, {
+    const resp = await getStatefulSetList(clusterId.value, {
       ...queryForm,
       page: pagination.page,
       pageSize: pagination.pageSize

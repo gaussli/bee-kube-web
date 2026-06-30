@@ -41,7 +41,7 @@ export default [
   {
     method: 'get',
     url: '/kubernetes/clusters/:clusterId/deployments',
-    handler: (pathParams: Record<string, string>, params: Partial<DeploymentQueryReq>): PageResp<DeploymentListResp> => getDeploymentPage(pathParams.clusterId, params)
+    handler: (pathParams: Record<string, string>, params: Partial<DeploymentQueryReq>): PageResp<DeploymentListResp> => getDeploymentList(pathParams.clusterId, params)
   },
   {
     method: 'get',
@@ -126,7 +126,7 @@ export default [
  * @param params - 查询参数
  * @returns 分页数据
  */
-function getDeploymentPage(_clusterId: string, params: Partial<DeploymentQueryReq>): PageResp<DeploymentListResp> {
+function getDeploymentList(_clusterId: string, params: Partial<DeploymentQueryReq>): PageResp<DeploymentListResp> {
   const { id, name, namespace, status, page = 1, pageSize = 10 } = params || {}
 
   let filtered = [...mockDeployments]

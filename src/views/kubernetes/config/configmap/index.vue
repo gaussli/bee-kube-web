@@ -104,7 +104,7 @@ import { ElMessage } from 'element-plus'
 import type { ConfigMapQueryReq, ConfigMapListResp } from '@/types/kubernetes/config/configmap'
 import type { NamespaceSimpleListResp } from '@/types/kubernetes/namespace'
 import type { ActionItem } from '@/components/BeeActionCell/index.vue'
-import { getConfigMapPage, deleteConfigMap, deleteConfigMaps } from '@/api/kubernetes/config/configmap'
+import { getConfigMapList, deleteConfigMap, deleteConfigMaps } from '@/api/kubernetes/config/configmap'
 import { getNamespacePage } from '@/api/kubernetes/namespace'
 import BeeActionCell from '@/components/BeeActionCell/index.vue'
 import BeeAuditCell from '@/components/BeeAuditCell/index.vue'
@@ -177,7 +177,7 @@ async function loadData() {
   }
   loading.value = true
   try {
-    const resp = await getConfigMapPage(clusterId.value, {
+    const resp = await getConfigMapList(clusterId.value, {
       name: queryForm.name,
       namespace: queryForm.namespace || undefined,
       page: pagination.page,

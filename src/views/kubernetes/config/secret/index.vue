@@ -110,7 +110,7 @@ import { ElMessage } from 'element-plus'
 import type { SecretQueryReq, SecretListResp } from '@/types/kubernetes/config/secret'
 import type { NamespaceSimpleListResp } from '@/types/kubernetes/namespace'
 import type { ActionItem } from '@/components/BeeActionCell/index.vue'
-import { getSecretPage, deleteSecret, deleteSecrets } from '@/api/kubernetes/config/secret'
+import { getSecretList, deleteSecret, deleteSecrets } from '@/api/kubernetes/config/secret'
 import { getNamespacePage } from '@/api/kubernetes/namespace'
 import BeeActionCell from '@/components/BeeActionCell/index.vue'
 import BeeAuditCell from '@/components/BeeAuditCell/index.vue'
@@ -196,7 +196,7 @@ async function loadData() {
   }
   loading.value = true
   try {
-    const resp = await getSecretPage(clusterId.value, {
+    const resp = await getSecretList(clusterId.value, {
       name: queryForm.name,
       namespace: queryForm.namespace || undefined,
       type: queryForm.type || undefined,

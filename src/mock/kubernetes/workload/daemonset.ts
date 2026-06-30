@@ -26,7 +26,7 @@ export default [
   {
     method: 'get',
     url: '/kubernetes/clusters/:clusterId/daemonsets',
-    handler: (pathParams: Record<string, string>, params: Partial<DaemonSetQueryReq>): PageResp<DaemonSetListResp> => getDaemonSetPage(pathParams.clusterId, params)
+    handler: (pathParams: Record<string, string>, params: Partial<DaemonSetQueryReq>): PageResp<DaemonSetListResp> => getDaemonSetList(pathParams.clusterId, params)
   },
   {
     method: 'get',
@@ -91,7 +91,7 @@ export default [
  * @param params - 查询参数
  * @returns 分页数据
  */
-function getDaemonSetPage(_clusterId: string, params: Partial<DaemonSetQueryReq>): PageResp<DaemonSetListResp> {
+function getDaemonSetList(_clusterId: string, params: Partial<DaemonSetQueryReq>): PageResp<DaemonSetListResp> {
   const { id, name, namespace, status, page = 1, pageSize = 10 } = params || {}
 
   let filtered = [...mockDaemonSets]

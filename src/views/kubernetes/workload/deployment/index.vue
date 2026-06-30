@@ -126,7 +126,7 @@ import type { NamespaceSimpleListResp } from '@/types/kubernetes/namespace'
 import type { DeploymentQueryReq, DeploymentListResp, DeploymentStrategyType } from '@/types/kubernetes/workload/deployment'
 import type { ActionItem } from '@/components/BeeActionCell/index.vue'
 import { getNamespacePage } from '@/api/kubernetes/namespace'
-import { getDeploymentPage, deleteDeployment, deleteDeployments } from '@/api/kubernetes/workload/deployment'
+import { getDeploymentList, deleteDeployment, deleteDeployments } from '@/api/kubernetes/workload/deployment'
 import BeeActionCell from '@/components/BeeActionCell/index.vue'
 import BeeAuditCell from '@/components/BeeAuditCell/index.vue'
 import BeeButton from '@/components/BeeButton/index.vue'
@@ -223,7 +223,7 @@ async function loadData() {
   }
   loading.value = true
   try {
-    const resp = await getDeploymentPage(clusterId.value, {
+    const resp = await getDeploymentList(clusterId.value, {
       ...queryForm,
       page: pagination.page,
       pageSize: pagination.pageSize

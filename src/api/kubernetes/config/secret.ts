@@ -12,7 +12,7 @@ import { request } from '@/utils'
  * @param params - 查询参数（含 namespace 筛选）
  * @returns 分页后的 Secret 列表
  */
-export function getSecretPage(clusterId: string, params: Partial<SecretQueryReq>): Promise<PageResp<SecretListResp>> {
+export function getSecretList(clusterId: string, params: Partial<SecretQueryReq>): Promise<PageResp<SecretListResp>> {
   return request.get(`/kubernetes/clusters/${clusterId}/secrets`, params)
 }
 

@@ -12,7 +12,7 @@ import { request } from '@/utils'
  * @param params - 查询参数
  * @returns 分页后的 DaemonSet 列表
  */
-export function getDaemonSetPage(clusterId: string, params: Partial<DaemonSetQueryReq>): Promise<PageResp<DaemonSetListResp>> {
+export function getDaemonSetList(clusterId: string, params: Partial<DaemonSetQueryReq>): Promise<PageResp<DaemonSetListResp>> {
   return request.get<PageResp<DaemonSetListResp>>(`/kubernetes/clusters/${clusterId}/daemonsets`, params)
 }
 

@@ -116,7 +116,7 @@ import type { NamespaceSimpleListResp } from '@/types/kubernetes/namespace'
 import type { JobQueryReq, JobListResp } from '@/types/kubernetes/workload/job'
 import type { ActionItem } from '@/components/BeeActionCell/index.vue'
 import { getNamespacePage } from '@/api/kubernetes/namespace'
-import { getJobPage, deleteJob, deleteJobs } from '@/api/kubernetes/workload/job'
+import { getJobList, deleteJob, deleteJobs } from '@/api/kubernetes/workload/job'
 import BeeActionCell from '@/components/BeeActionCell/index.vue'
 import BeeAuditCell from '@/components/BeeAuditCell/index.vue'
 import BeeButton from '@/components/BeeButton/index.vue'
@@ -215,7 +215,7 @@ async function loadData() {
   }
   loading.value = true
   try {
-    const resp = await getJobPage(clusterId.value, {
+    const resp = await getJobList(clusterId.value, {
       name: queryForm.name,
       namespace: queryForm.namespace || undefined,
       status: queryForm.status,

@@ -37,7 +37,7 @@ export default [
   {
     method: 'get',
     url: '/kubernetes/clusters/:clusterId/statefulsets',
-    handler: (pathParams: Record<string, string>, params: Partial<StatefulSetQueryReq>): PageResp<StatefulSetListResp> => getStatefulSetPage(pathParams.clusterId, params)
+    handler: (pathParams: Record<string, string>, params: Partial<StatefulSetQueryReq>): PageResp<StatefulSetListResp> => getStatefulSetList(pathParams.clusterId, params)
   },
   {
     method: 'get',
@@ -112,7 +112,7 @@ export default [
  * @param params - 查询参数
  * @returns 分页数据
  */
-function getStatefulSetPage(_clusterId: string, params: Partial<StatefulSetQueryReq>): PageResp<StatefulSetListResp> {
+function getStatefulSetList(_clusterId: string, params: Partial<StatefulSetQueryReq>): PageResp<StatefulSetListResp> {
   const { id, name, namespace, status, page = 1, pageSize = 10 } = params || {}
 
   let filtered = [...mockStatefulSets]

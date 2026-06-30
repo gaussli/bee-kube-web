@@ -23,7 +23,7 @@ import { request } from '@/utils'
  * @param params - 查询参数
  * @returns 分页后的 Deployment 列表
  */
-export function getDeploymentPage(clusterId: string, params: Partial<DeploymentQueryReq>): Promise<PageResp<DeploymentListResp>> {
+export function getDeploymentList(clusterId: string, params: Partial<DeploymentQueryReq>): Promise<PageResp<DeploymentListResp>> {
   return request.get<PageResp<DeploymentListResp>>(`/kubernetes/clusters/${clusterId}/deployments`, params)
 }
 

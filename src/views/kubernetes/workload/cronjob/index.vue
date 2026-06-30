@@ -116,7 +116,7 @@ import type { NamespaceSimpleListResp } from '@/types/kubernetes/namespace'
 import type { CronJobQueryReq, CronJobListResp } from '@/types/kubernetes/workload/cronjob'
 import type { ActionItem } from '@/components/BeeActionCell/index.vue'
 import { getNamespacePage } from '@/api/kubernetes/namespace'
-import { getCronJobPage, deleteCronJob, deleteCronJobs } from '@/api/kubernetes/workload/cronjob'
+import { getCronJobList, deleteCronJob, deleteCronJobs } from '@/api/kubernetes/workload/cronjob'
 import BeeActionCell from '@/components/BeeActionCell/index.vue'
 import BeeAuditCell from '@/components/BeeAuditCell/index.vue'
 import BeeButton from '@/components/BeeButton/index.vue'
@@ -200,7 +200,7 @@ async function loadData() {
   }
   loading.value = true
   try {
-    const resp = await getCronJobPage(clusterId.value, {
+    const resp = await getCronJobList(clusterId.value, {
       name: queryForm.name,
       namespace: queryForm.namespace || undefined,
       status: queryForm.status,

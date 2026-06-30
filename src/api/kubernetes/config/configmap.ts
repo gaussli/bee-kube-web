@@ -21,7 +21,7 @@ import { request } from '@/utils'
  * @param params - 查询参数（含 namespace 筛选）
  * @returns 分页后的 ConfigMap 列表
  */
-export function getConfigMapPage(clusterId: string, params: Partial<ConfigMapQueryReq>): Promise<PageResp<ConfigMapListResp>> {
+export function getConfigMapList(clusterId: string, params: Partial<ConfigMapQueryReq>): Promise<PageResp<ConfigMapListResp>> {
   return request.get(`/kubernetes/clusters/${clusterId}/configmaps`, params)
 }
 
