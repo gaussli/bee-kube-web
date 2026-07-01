@@ -260,6 +260,48 @@ export interface DeploymentStorageListVo {
   containerMounts: DeploymentContainerMount[]
 }
 
+/**
+ * Deployment 事件列表响应
+ * @extends Event 继承事件类型
+ */
+export interface DeploymentEventVo extends Event {}
+
+/**
+ * Deployment 监控响应数据
+ * TODO: 待补充监控相关属性（如 CPU、内存使用率等）
+ */
+export interface DeploymentMonitorVo {}
+
+/**
+ * Deployment 高级配置信息
+ */
+export interface DeploymentAdvancedVo {
+  /**
+   * 重启策略
+   * @remarks
+   * 针对 Deployment 必须为 Always，且不可编辑
+   */
+  restartPolicy: RestartPolicy
+  /** Pod 优雅退出时间（秒，默认 30） */
+  terminationGracePeriodSeconds: number
+  /** 使用主机网络 */
+  hostNetwork: boolean
+  /** DNS 策略 */
+  dnsPolicy: string
+  /** 服务账户名称 */
+  serviceAccountName: string
+  /** 自动挂载服务账户令牌 */
+  automountServiceAccountToken: boolean
+  /** 主机名 */
+  hostname: string
+  /** 子域名 */
+  subdomain: string
+  /** 镜像拉取密钥列表 */
+  imagePullSecrets: string[]
+  /** 优先级类 */
+  priorityClass: string
+}
+
 // ==================== 5. 创建表单 ====================
 
 /**
@@ -328,41 +370,7 @@ export interface DeploymentAnnotationForm {
   operation: number
 }
 
-// ==================== 9. 其他响应对象（尾部） ====================
-
-/**
- * Deployment 监控响应数据
- * TODO: 待补充监控相关属性（如 CPU、内存使用率等）
- */
-export interface DeploymentMonitorVo {}
-
-/**
- * Deployment 事件响应
- * @extends Event 继承事件类型
- */
-export interface DeploymentEventVo extends Event {}
-
-/**
- * Deployment 高级配置信息
- */
-export interface DeploymentAdvancedVo {
-  /** 保留历史 Revision 的数量（默认 10） */
-  revisionHistoryLimit: number
-  /** 最小就绪等待秒数（Pod 就绪后需保持的最短时间，默认 0） */
-  minReadySeconds: number
-  /** 进度超时秒数（Deployment 未能完成时的最长等待时间，默认 600） */
-  progressDeadlineSeconds: number
-  /**
-   * 重启策略
-   * @remarks
-   * 针对 Deployment 必须为 Always，且不可编辑
-   */
-  restartPolicy: RestartPolicy
-  /** Pod 优雅退出时间（秒，默认 30） */
-  terminationGracePeriodSeconds: number
-}
-
-// ==================== 10. 其他表单对象（尾部） ====================
+// ==================== 9. 其他表单对象（尾部） ====================
 
 /**
  * Deployment 扩缩容请求
