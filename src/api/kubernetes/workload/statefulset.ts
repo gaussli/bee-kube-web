@@ -5,13 +5,20 @@
 import type { PageVo } from '@/types/common'
 import type {
   StatefulSetAnnotationForm,
+  StatefulSetCreateForm,
   StatefulSetDetailVo,
+  StatefulSetEventListVo,
+  StatefulSetHistoryRevisionListVo,
+  StatefulSetMonitorVo,
+  StatefulSetNetworkVo,
+  StatefulSetPodListVo,
+  StatefulSetStorageListVo,
+  StatefulSetUpdateForm,
   StatefulSetLabelForm,
   StatefulSetListVo,
   StatefulSetQueryForm,
-  StatefulSetCreateForm,
-  StatefulSetUpdateForm,
   StatefulSetScaleForm,
+  StatefulSetScheduleVo,
   StatefulSetYamlForm
 } from '@/types/kubernetes/workload/statefulset'
 import { request } from '@/utils'
@@ -35,6 +42,83 @@ export function getStatefulSetList(clusterId: string, params: Partial<StatefulSe
  */
 export function getStatefulSetDetail(clusterId: string, namespace: string, name: string): Promise<StatefulSetDetailVo> {
   return request.get<StatefulSetDetailVo>(`/kubernetes/clusters/${clusterId}/namespaces/${namespace}/statefulsets/${name}`)
+}
+
+/**
+ * 获取 StatefulSet Pod 列表
+ * @param clusterId - 集群ID
+ * @param namespace - 命名空间名称
+ * @param name - StatefulSet 名称
+ * @returns StatefulSet Pod 列表
+ */
+export function getStatefulSetPodList(clusterId: string, namespace: string, name: string): Promise<StatefulSetPodListVo[]> {
+  return request.get<StatefulSetPodListVo[]>(`/kubernetes/clusters/${clusterId}/namespaces/${namespace}/statefulsets/${name}/pods`)
+}
+
+/**
+ * 获取 StatefulSet 调度策略
+ * @param clusterId - 集群ID
+ * @param namespace - 命名空间名称
+ * @param name - StatefulSet 名称
+ * @returns StatefulSet 调度策略
+ */
+export function getStatefulSetSchedule(clusterId: string, namespace: string, name: string): Promise<StatefulSetScheduleVo> {
+  return request.get<StatefulSetScheduleVo>(`/kubernetes/clusters/${clusterId}/namespaces/${namespace}/statefulsets/${name}/schedule`)
+}
+
+/**
+ * 获取 StatefulSet 历史版本列表
+ * @param clusterId - 集群ID
+ * @param namespace - 命名空间名称
+ * @param name - StatefulSet 名称
+ * @returns StatefulSet 历史版本列表
+ */
+export function getStatefulSetHistoryRevisionList(clusterId: string, namespace: string, name: string): Promise<StatefulSetHistoryRevisionListVo[]> {
+  return request.get<StatefulSetHistoryRevisionListVo[]>(`/kubernetes/clusters/${clusterId}/namespaces/${namespace}/statefulsets/${name}/history`)
+}
+
+/**
+ * 获取 StatefulSet 网络资源
+ * @param clusterId - 集群ID
+ * @param namespace - 命名空间名称
+ * @param name - StatefulSet 名称
+ * @returns StatefulSet 网络资源
+ */
+export function getStatefulSetNetwork(clusterId: string, namespace: string, name: string): Promise<StatefulSetNetworkVo> {
+  return request.get<StatefulSetNetworkVo>(`/kubernetes/clusters/${clusterId}/namespaces/${namespace}/statefulsets/${name}/network`)
+}
+
+/**
+ * 获取 StatefulSet 存储列表
+ * @param clusterId - 集群ID
+ * @param namespace - 命名空间名称
+ * @param name - StatefulSet 名称
+ * @returns StatefulSet 存储列表
+ */
+export function getStatefulSetStorageList(clusterId: string, namespace: string, name: string): Promise<StatefulSetStorageListVo[]> {
+  return request.get<StatefulSetStorageListVo[]>(`/kubernetes/clusters/${clusterId}/namespaces/${namespace}/statefulsets/${name}/storages`)
+}
+
+/**
+ * 获取 StatefulSet 监控数据
+ * @param clusterId - 集群ID
+ * @param namespace - 命名空间名称
+ * @param name - StatefulSet 名称
+ * @returns StatefulSet 监控数据
+ */
+export function getStatefulSetMonitor(clusterId: string, namespace: string, name: string): Promise<StatefulSetMonitorVo> {
+  return request.get<StatefulSetMonitorVo>(`/kubernetes/clusters/${clusterId}/namespaces/${namespace}/statefulsets/${name}/monitor`)
+}
+
+/**
+ * 获取 StatefulSet 事件列表
+ * @param clusterId - 集群ID
+ * @param namespace - 命名空间名称
+ * @param name - StatefulSet 名称
+ * @returns StatefulSet 事件列表
+ */
+export function getStatefulSetEventList(clusterId: string, namespace: string, name: string): Promise<StatefulSetEventListVo[]> {
+  return request.get<StatefulSetEventListVo[]>(`/kubernetes/clusters/${clusterId}/namespaces/${namespace}/statefulsets/${name}/events`)
 }
 
 /**

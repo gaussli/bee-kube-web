@@ -114,6 +114,8 @@ export interface StatefulSetDetailVo {
   conditions: StatefulSetConditionVo[]
   /** 更新策略 */
   strategy: StatefulSetStrategyVo
+  /** 高级配置 */
+  advanced: StatefulSetAdvancedVo
 }
 
 /**
@@ -220,7 +222,7 @@ export interface StatefulSetScheduleVo {
  * StatefulSet 历史版本响应
  * @extends HistoryRevision 继承历史版本类型
  */
-export interface StatefulSetHistoryRevisionVo extends HistoryRevision {}
+export interface StatefulSetHistoryRevisionListVo extends HistoryRevision {}
 
 /**
  * StatefulSet 网络资源响应

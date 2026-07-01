@@ -1578,10 +1578,10 @@ const mockDeploymentAdvanced: DeploymentAdvancedVo = {
   terminationGracePeriodSeconds: 30,
   hostNetwork: false,
   dnsPolicy: 'ClusterFirst',
-  serviceAccountName: 'default',
+  serviceAccountName: 'nginx-ingress-service-account',
   automountServiceAccountToken: true,
-  hostname: '',
-  subdomain: '',
-  imagePullSecrets: [],
-  priorityClass: ''
+  hostname: 'nginx-ingress-controller-0',
+  subdomain: 'nginx-ingress-headless',
+  imagePullSecrets: ['registry-harbor-secret', 'dockerhub-registry-secret'],
+  priorityClass: 'high-priority'
 }
