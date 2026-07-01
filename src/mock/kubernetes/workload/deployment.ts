@@ -6,14 +6,20 @@ import type { PageVo } from '@/types/common'
 import type {
   DeploymentAdvancedVo,
   DeploymentAnnotationForm,
+  DeploymentBasicVo,
+  DeploymentConditionVo,
   DeploymentCreateForm,
   DeploymentDetailVo,
   DeploymentUpdateForm,
   DeploymentLabelForm,
   DeploymentListVo,
+  DeploymentMetadataVo,
   DeploymentQueryForm,
+  DeploymentReplicasVo,
+  DeploymentResourceVo,
   DeploymentScaleForm,
   DeploymentScheduleVo,
+  DeploymentStrategyVo,
   DeploymentYamlForm
 } from '@/types/kubernetes/workload/deployment'
 import { generateId } from '@/mock/utils'
@@ -167,28 +173,176 @@ function getDeploymentList(_clusterId: string, params: Partial<DeploymentQueryFo
 }
 
 /**
+ * 生成 Deployment 基础信息
+ * @param deployment - Deployment 列表对象
+ * @returns 基础信息
+ */
+function generateDeploymentBasic(deployment: DeploymentListVo): DeploymentBasicVo {
+  return {
+    id: deployment.id,
+    uid: deployment.uid,
+    name: deployment.name,
+    description: deployment.description,
+    status: deployment.status,
+    statusMsg: deployment.statusMessage,
+    deletable: deployment.deletable,
+    generation: 1,
+    selector: {
+      'app': deployment.name,
+      'app.kubernetes.io/name': deployment.name,
+      'app.kubernetes.io/instance': deployment.name,
+      'app.kubernetes.io/component': deployment.namespace,
+      'app.kubernetes.io/managed-by': 'bee-kube'
+    },
+    clusterId: deployment.clusterId,
+    clusterUid: deployment.clusterUid,
+    clusterName: deployment.clusterName,
+    namespace: deployment.namespace,
+    namespaceId: deployment.namespaceId,
+    namespaceUid: deployment.namespaceUid,
+    createAt: deployment.createAt,
+    createBy: deployment.createBy,
+    updateAt: deployment.updateAt,
+    updateBy: deployment.updateBy
+  }
+}
+
+/**
+ * 生成 Deployment 副本信息
+ * @returns 副本信息
+ */
+function generateDeploymentReplicas(): DeploymentReplicasVo {
+  const replicas = Math.floor(Math.random() * 21)
+  const readyReplicas = Math.floor(Math.random() * (replicas + 1))
+  const availableReplicas = Math.floor(Math.random() * (readyReplicas + 1))
+  const updatedReplicas = Math.floor(Math.random() * (readyReplicas + 1))
+  return {
+    replicas,
+    readyReplicas,
+    availableReplicas,
+    updatedReplicas
+  }
+}
+
+/**
+ * 生成 Deployment 元数据信息
+ * @param deployment - Deployment 列表对象
+ * @returns 元数据信息
+ */
+function generateDeploymentMetadata(deployment: DeploymentListVo): DeploymentMetadataVo {
+  return {
+    labels: {
+      'app': deployment.name,
+      'app.kubernetes.io/name': deployment.name,
+      'app.kubernetes.io/instance': deployment.name,
+      'app.kubernetes.io/component': deployment.namespace,
+      'app.kubernetes.io/managed-by': 'bee-kube'
+    },
+    annotations: {
+      'description': deployment.description || '',
+      'kubernetes.io/change-cause': 'kubectl apply',
+      'deployment.kubernetes.io/revision': '3',
+      'meta.helm.sh/release-name': deployment.name,
+      'meta.helm.sh/release-namespace': deployment.namespace
+    }
+  }
+}
+
+/**
+ * 生成 Deployment 资源信息
+ * @returns 资源信息
+ */
+function generateDeploymentResource(): DeploymentResourceVo {
+  const cpuRequest = Math.floor(Math.random() * 5001)
+  const cpuLimit = Math.floor(Math.random() * (5000 - cpuRequest + 1)) + cpuRequest
+  const maxMemory = 10 * 1024 * 1024 * 1024
+  const memRequest = Math.floor(Math.random() * (maxMemory + 1))
+  const memLimit = Math.floor(Math.random() * (maxMemory - memRequest + 1)) + memRequest
+  return {
+    request: { cpu: cpuRequest, memory: memRequest },
+    limit: { cpu: cpuLimit, memory: memLimit }
+  }
+}
+
+/**
+ * 生成 Deployment 条件列表
+ * @param deployment - Deployment 列表对象
+ * @returns 条件列表
+ */
+function generateDeploymentConditions(deployment: DeploymentListVo): DeploymentConditionVo[] {
+  return [
+    {
+      type: 'Available',
+      status: 'True',
+      reason: 'MinimumReplicasAvailable',
+      message: 'Deployment has minimum availability.',
+      lastTransitionTime: deployment.updateAt,
+      lastUpdateTime: deployment.updateAt
+    },
+    {
+      type: 'Progressing',
+      status: 'True',
+      reason: 'NewReplicaSetAvailable',
+      message: `ReplicaSet "${deployment.name}" has successfully progressed.`,
+      lastTransitionTime: deployment.createAt,
+      lastUpdateTime: deployment.updateAt
+    },
+    {
+      type: 'Available',
+      status: 'False',
+      reason: 'MinimumReplicasUnavailable',
+      message: 'Deployment does not have minimum availability.',
+      lastTransitionTime: deployment.createAt,
+      lastUpdateTime: deployment.createAt
+    },
+    {
+      type: 'Progressing',
+      status: 'False',
+      reason: 'NewReplicaSetCreated',
+      message: `ReplicaSet "${deployment.name}" is progressing.`,
+      lastTransitionTime: deployment.createAt,
+      lastUpdateTime: deployment.createAt
+    },
+    {
+      type: 'ReplicaFailure',
+      status: 'False',
+      reason: 'FailedCreate',
+      message: 'Replica has been created successfully.',
+      lastTransitionTime: deployment.createAt,
+      lastUpdateTime: deployment.updateAt
+    }
+  ]
+}
+
+/**
+ * 生成 Deployment 更新策略
+ * @param deployment - Deployment 列表对象
+ * @returns 更新策略
+ */
+function generateDeploymentStrategy(deployment: DeploymentListVo): DeploymentStrategyVo {
+  return {
+    type: deployment.strategyType,
+    maxUnavailable: '25%',
+    maxSurge: '25%'
+  }
+}
+
+/**
  * 获取 Deployment 详情
  * @param clusterId - 集群ID
  * @param namespace - 命名空间
  * @param name - Deployment 名称
  * @returns Deployment 详情
  */
-function getDeploymentDetail(clusterId: string, namespace: string, name: string): DeploymentDetailVo {
-  const deployment = mockDeployments.find(d => d.clusterId === clusterId && d.namespace === namespace && d.name === name)
-  if (!deployment) {
-    console.error('[Get Deployment Detail] can not find deployment:', clusterId, namespace, name)
-  }
+function getDeploymentDetail(_clusterId: string, _namespace: string, _name: string): DeploymentDetailVo {
+  const deployment = mockDeployments[0]
   return {
-    ...deployment!,
-    selector: { app: deployment!.name },
-    labels: { app: deployment!.name },
-    annotations: { description: deployment!.description || '' },
-    containers: [
-      {
-        name: deployment!.name,
-        image: `${deployment!.name}:latest`
-      }
-    ]
+    basic: generateDeploymentBasic(deployment),
+    replicas: generateDeploymentReplicas(),
+    metadata: generateDeploymentMetadata(deployment),
+    resource: generateDeploymentResource(),
+    conditions: generateDeploymentConditions(deployment),
+    strategy: generateDeploymentStrategy(deployment)
   }
 }
 
@@ -206,15 +360,18 @@ function getDeploymentYaml(clusterId: string, namespace: string, name: string): 
     return ''
   }
 
-  const labels = Object.entries(deployment.labels || {})
+  const mockLabels: Record<string, string> = { app: deployment.name }
+  const labels = Object.entries(mockLabels)
     .map(([key, value]) => `      ${key}: "${value}"`)
     .join('\n')
 
-  const annotations = Object.entries(deployment.annotations || {})
+  const mockAnnotations: Record<string, string> = { description: deployment.description || '' }
+  const annotations = Object.entries(mockAnnotations)
     .map(([key, value]) => `      ${key}: "${value}"`)
     .join('\n')
 
-  const containers = deployment.images
+  const images = [`${deployment.name}:latest`]
+  const containers = images
     .map((image, index) => {
       return `      - name: ${deployment.name}-container-${index}
         image: ${image}
@@ -284,9 +441,9 @@ spec:
   replicas: ${deployment.replicas}
   selector:
     matchLabels:
-${Object.entries(deployment.selector || { app: deployment.name })[0] ? `      ${Object.entries(deployment.selector || { app: deployment.name })[0][0]}: "${Object.entries(deployment.selector || { app: deployment.name })[0][1]}"` : ''}
+      app: "${deployment.name}"
   strategy:
-    type: ${deployment.strategy || 'RollingUpdate'}
+    type: ${deployment.strategyType}
     rollingUpdate:
       maxSurge: 25%
       maxUnavailable: 25%
@@ -305,7 +462,7 @@ ${containers}
       schedulerName: default-scheduler
       terminationGracePeriodSeconds: 30
 status:
-  observedGeneration: ${deployment.revision || 1}
+  observedGeneration: 1
   replicas: ${deployment.replicas}
   updatedReplicas: ${deployment.replicas}
   readyReplicas: ${deployment.readyReplicas}
@@ -340,13 +497,65 @@ function getDeploymentSchedule(clusterId: string, namespace: string, name: strin
     console.error('[Get Deployment Schedule] can not find deployment:', clusterId, namespace, name)
   }
   return {
-    nodeSelector: { kubernetes: 'true' },
+    nodeSelector: { 'kubernetes.io/os': 'linux' },
     affinity: {
-      nodeAffinity: {},
-      podAffinity: {},
-      podAntiAffinity: {}
+      nodeAffinity: {
+        required: [
+          {
+            matchExpressions: [{ key: 'kubernetes.io/os', operator: 'In', values: ['linux'] }]
+          }
+        ],
+        preferred: [
+          {
+            weight: 80,
+            matchExpressions: [{ key: 'node-type', operator: 'In', values: ['ssd', 'high-memory'] }]
+          }
+        ]
+      },
+      podAffinity: {
+        required: [],
+        preferred: [
+          {
+            weight: 50,
+            labelSelector: { matchLabels: { app: deployment!.name }, matchExpressions: [] },
+            namespaces: [],
+            namespaceSelector: { matchLabels: {}, matchExpressions: [] },
+            topologyKey: 'kubernetes.io/hostname',
+            matchLabelKeys: [],
+            mismatchLabelKeys: []
+          }
+        ]
+      },
+      podAntiAffinity: {
+        required: [
+          {
+            labelSelector: { matchLabels: { app: deployment!.name }, matchExpressions: [] },
+            namespaces: [],
+            namespaceSelector: { matchLabels: {}, matchExpressions: [] },
+            topologyKey: 'kubernetes.io/hostname',
+            matchLabelKeys: [],
+            mismatchLabelKeys: []
+          }
+        ],
+        preferred: []
+      }
     },
-    tolerations: []
+    tolerations: [
+      {
+        key: 'node.kubernetes.io/not-ready',
+        operator: 'Exists',
+        value: '',
+        effect: 'NoExecute',
+        tolerationSeconds: 300
+      },
+      {
+        key: 'node.kubernetes.io/unreachable',
+        operator: 'Exists',
+        value: '',
+        effect: 'NoExecute',
+        tolerationSeconds: 300
+      }
+    ]
   }
 }
 
@@ -363,11 +572,16 @@ function getDeploymentAdvanced(clusterId: string, namespace: string, name: strin
     console.error('[Get Deployment Advanced] can not find deployment:', clusterId, namespace, name)
   }
   return {
-    revisionHistoryLimit: 10,
-    minReadySeconds: 0,
-    progressDeadlineSeconds: 600,
-    restartPolicy: 'Always' as const,
-    terminationGracePeriodSeconds: 30
+    restartPolicy: 'Always',
+    terminationGracePeriodSeconds: 30,
+    hostNetwork: false,
+    dnsPolicy: 'ClusterFirst',
+    serviceAccountName: 'default',
+    automountServiceAccountToken: true,
+    hostname: '',
+    subdomain: '',
+    imagePullSecrets: [],
+    priorityClass: ''
   }
 }
 
@@ -494,7 +708,11 @@ const mockDeployments: DeploymentListVo[] = [
     uid: generateId(),
     name: 'nginx-ingress-controller',
     namespace: 'kube-system',
+    namespaceId: generateId(),
+    namespaceUid: generateId(),
     clusterId: generateId(),
+    clusterUid: generateId(),
+    clusterName: 'system-cluster',
     description: 'Kubernetes Ingress 控制器，管理集群七层流量入口和路由规则',
     status: 'Running',
     replicas: 3,
@@ -511,7 +729,11 @@ const mockDeployments: DeploymentListVo[] = [
     uid: generateId(),
     name: 'coredns',
     namespace: 'kube-system',
+    namespaceId: generateId(),
+    namespaceUid: generateId(),
     clusterId: generateId(),
+    clusterUid: generateId(),
+    clusterName: 'system-cluster',
     description: 'Kubernetes 集群 DNS 服务，负责集群内部域名解析',
     status: 'Running',
     replicas: 2,
@@ -528,7 +750,11 @@ const mockDeployments: DeploymentListVo[] = [
     uid: generateId(),
     name: 'metrics-server',
     namespace: 'kube-system',
+    namespaceId: generateId(),
+    namespaceUid: generateId(),
     clusterId: generateId(),
+    clusterUid: generateId(),
+    clusterName: 'system-cluster',
     description: 'Kubernetes 资源指标采集服务，为 HPA 和 kubectl top 提供 CPU/内存数据',
     status: 'Running',
     replicas: 1,
@@ -546,7 +772,11 @@ const mockDeployments: DeploymentListVo[] = [
     uid: generateId(),
     name: 'frontend-app',
     namespace: 'app-frontend',
+    namespaceId: generateId(),
+    namespaceUid: generateId(),
     clusterId: generateId(),
+    clusterUid: generateId(),
+    clusterName: 'prod-cluster',
     description: '前端应用服务，承载 Web 前端页面和 H5 渲染',
     status: 'Available',
     replicas: 5,
@@ -563,7 +793,11 @@ const mockDeployments: DeploymentListVo[] = [
     uid: generateId(),
     name: 'backend-api',
     namespace: 'app-backend',
+    namespaceId: generateId(),
+    namespaceUid: generateId(),
     clusterId: generateId(),
+    clusterUid: generateId(),
+    clusterName: 'prod-cluster',
     description: '后端 API 服务，提供核心业务逻辑和数据接口',
     status: 'Available',
     replicas: 10,
@@ -580,7 +814,11 @@ const mockDeployments: DeploymentListVo[] = [
     uid: generateId(),
     name: 'order-service',
     namespace: 'app-backend',
+    namespaceId: generateId(),
+    namespaceUid: generateId(),
     clusterId: generateId(),
+    clusterUid: generateId(),
+    clusterName: 'prod-cluster',
     description: '订单服务，管理订单的创建、流转和履约',
     status: 'Available',
     replicas: 6,
@@ -598,7 +836,11 @@ const mockDeployments: DeploymentListVo[] = [
     uid: generateId(),
     name: 'staging-frontend',
     namespace: 'staging-app',
+    namespaceId: generateId(),
+    namespaceUid: generateId(),
     clusterId: generateId(),
+    clusterUid: generateId(),
+    clusterName: 'staging-cluster',
     description: '预发布前端应用，用于生产上线前的集成验证',
     status: 'Stopped',
     statusMessage: '副本已缩容至 0，服务已停止',
@@ -616,7 +858,11 @@ const mockDeployments: DeploymentListVo[] = [
     uid: generateId(),
     name: 'dev-app',
     namespace: 'dev-test',
+    namespaceId: generateId(),
+    namespaceUid: generateId(),
     clusterId: generateId(),
+    clusterUid: generateId(),
+    clusterName: 'dev-cluster',
     description: '开发环境应用，用于日常开发和单元测试',
     status: 'Stopped',
     statusMessage: '开发环境已暂停，副本缩容为 0',
@@ -635,7 +881,11 @@ const mockDeployments: DeploymentListVo[] = [
     uid: generateId(),
     name: 'api-gateway',
     namespace: 'app-backend',
+    namespaceId: generateId(),
+    namespaceUid: generateId(),
     clusterId: generateId(),
+    clusterUid: generateId(),
+    clusterName: 'prod-cluster',
     description: 'API 网关服务，统一管理和路由所有后端接口请求',
     status: 'Creating',
     statusMessage: 'Pod 正在创建中，等待容器就绪',
@@ -653,7 +903,11 @@ const mockDeployments: DeploymentListVo[] = [
     uid: generateId(),
     name: 'search-service',
     namespace: 'app-backend',
+    namespaceId: generateId(),
+    namespaceUid: generateId(),
     clusterId: generateId(),
+    clusterUid: generateId(),
+    clusterName: 'prod-cluster',
     description: '全文检索服务，基于 Elasticsearch 提供高性能搜索能力',
     status: 'Creating',
     statusMessage: '容器镜像正在拉取，Pod 初始化中',
@@ -672,7 +926,11 @@ const mockDeployments: DeploymentListVo[] = [
     uid: generateId(),
     name: 'user-service',
     namespace: 'app-backend',
+    namespaceId: generateId(),
+    namespaceUid: generateId(),
     clusterId: generateId(),
+    clusterUid: generateId(),
+    clusterName: 'prod-cluster',
     description: '用户服务，管理用户资料、会员和账户信息',
     status: 'Updating',
     statusMessage: '滚动更新进行中，旧版本 Pod 正在被逐步替换',
@@ -690,7 +948,11 @@ const mockDeployments: DeploymentListVo[] = [
     uid: generateId(),
     name: 'notification-service',
     namespace: 'app-backend',
+    namespaceId: generateId(),
+    namespaceUid: generateId(),
     clusterId: generateId(),
+    clusterUid: generateId(),
+    clusterName: 'prod-cluster',
     description: '消息推送服务，处理短信、邮件和站内信的批量发送',
     status: 'Updating',
     statusMessage: '更新中，新版本 Pod 健康检查尚未通过',
@@ -709,7 +971,11 @@ const mockDeployments: DeploymentListVo[] = [
     uid: generateId(),
     name: 'prometheus',
     namespace: 'monitoring',
+    namespaceId: generateId(),
+    namespaceUid: generateId(),
     clusterId: generateId(),
+    clusterUid: generateId(),
+    clusterName: 'monitoring-cluster',
     description: 'Prometheus 监控系统，采集和存储集群与应用指标数据',
     status: 'Terminating',
     statusMessage: '正在删除 Pod，等待资源回收',
@@ -727,7 +993,11 @@ const mockDeployments: DeploymentListVo[] = [
     uid: generateId(),
     name: 'grafana',
     namespace: 'monitoring',
+    namespaceId: generateId(),
+    namespaceUid: generateId(),
     clusterId: generateId(),
+    clusterUid: generateId(),
+    clusterName: 'monitoring-cluster',
     description: 'Grafana 可视化平台，提供监控面板和告警图表展示',
     status: 'Terminating',
     statusMessage: 'Finalizer 未清理，删除流程阻塞中',
@@ -746,7 +1016,11 @@ const mockDeployments: DeploymentListVo[] = [
     uid: generateId(),
     name: 'config-center',
     namespace: 'staging-app',
+    namespaceId: generateId(),
+    namespaceUid: generateId(),
     clusterId: generateId(),
+    clusterUid: generateId(),
+    clusterName: 'staging-cluster',
     description: '配置中心服务，统一管理各应用的运行时配置',
     status: 'CreateTimeout',
     statusMessage: '创建超时：节点资源不足，Pod 无法调度',
@@ -764,7 +1038,11 @@ const mockDeployments: DeploymentListVo[] = [
     uid: generateId(),
     name: 'data-sync',
     namespace: 'staging-app',
+    namespaceId: generateId(),
+    namespaceUid: generateId(),
     clusterId: generateId(),
+    clusterUid: generateId(),
+    clusterName: 'staging-cluster',
     description: '数据同步服务，负责跨环境数据定时同步和校验',
     status: 'CreateTimeout',
     statusMessage: '超过 10 分钟未完成创建，镜像仓库连接超时',
@@ -783,7 +1061,11 @@ const mockDeployments: DeploymentListVo[] = [
     uid: generateId(),
     name: 'payment-service',
     namespace: 'app-backend',
+    namespaceId: generateId(),
+    namespaceUid: generateId(),
     clusterId: generateId(),
+    clusterUid: generateId(),
+    clusterName: 'prod-cluster',
     description: '支付服务，处理交易、退款和对账流程',
     status: 'UpdateTimeout',
     statusMessage: '滚动更新超时，新版本 Pod 健康检查持续失败',
@@ -801,7 +1083,11 @@ const mockDeployments: DeploymentListVo[] = [
     uid: generateId(),
     name: 'redis-cache',
     namespace: 'app-backend',
+    namespaceId: generateId(),
+    namespaceUid: generateId(),
     clusterId: generateId(),
+    clusterUid: generateId(),
+    clusterName: 'prod-cluster',
     description: 'Redis 缓存服务，提供高性能内存数据缓存',
     status: 'UpdateTimeout',
     statusMessage: '更新超时：持久化数据迁移耗时超过预期',
@@ -820,7 +1106,11 @@ const mockDeployments: DeploymentListVo[] = [
     uid: generateId(),
     name: 'log-collector',
     namespace: 'monitoring',
+    namespaceId: generateId(),
+    namespaceUid: generateId(),
     clusterId: generateId(),
+    clusterUid: generateId(),
+    clusterName: 'monitoring-cluster',
     description: '日志采集服务，统一收集和转发各应用日志到日志平台',
     status: 'Failed',
     statusMessage: '所有 Pod 启动失败，CrashLoopBackOff',
@@ -838,7 +1128,11 @@ const mockDeployments: DeploymentListVo[] = [
     uid: generateId(),
     name: 'staging-backend',
     namespace: 'staging-app',
+    namespaceId: generateId(),
+    namespaceUid: generateId(),
     clusterId: generateId(),
+    clusterUid: generateId(),
+    clusterName: 'staging-cluster',
     description: '预发布后端应用，用于接口联调和回归测试',
     status: 'Failed',
     statusMessage: '部署失败：OOMKilled，内存不足导致 Pod 被杀死',
@@ -857,7 +1151,11 @@ const mockDeployments: DeploymentListVo[] = [
     uid: generateId(),
     name: 'report-service',
     namespace: 'app-backend',
+    namespaceId: generateId(),
+    namespaceUid: generateId(),
     clusterId: generateId(),
+    clusterUid: generateId(),
+    clusterName: 'prod-cluster',
     description: '报表服务，定时生成和导出业务数据报表',
     status: 'Unknown',
     statusMessage: '无法获取 Deployment 状态，API Server 连接异常',
@@ -875,7 +1173,11 @@ const mockDeployments: DeploymentListVo[] = [
     uid: generateId(),
     name: 'sentinel-dashboard',
     namespace: 'monitoring',
+    namespaceId: generateId(),
+    namespaceUid: generateId(),
     clusterId: generateId(),
+    clusterUid: generateId(),
+    clusterName: 'monitoring-cluster',
     description: 'Sentinel 流量控制面板，提供限流、熔断规则管理',
     status: 'Unknown',
     statusMessage: '状态信息丢失，可能与 Etcd 连接中断有关',

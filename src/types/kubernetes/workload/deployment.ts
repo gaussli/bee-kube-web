@@ -81,7 +81,7 @@ export interface DeploymentListVo extends Namespaced {
   /** 更新策略 */
   strategyType: DeploymentStrategyType
   /** 是否可删除 */
-  deletable?: boolean
+  deletable: boolean
 }
 
 // ==================== 3. 详情对象 ====================
@@ -116,13 +116,13 @@ export interface DeploymentBasicVo extends Namespaced {
   /** Deployment 名称 */
   name: string
   /** 描述信息 */
-  description: string
+  description?: string
   /** 状态 */
   status: DeploymentStatus
   /** 状态描述信息 */
-  statusMsg: string
+  statusMsg?: string
   /** 是否可删除 */
-  deletation: string
+  deletable: boolean
   /** 版本计数 */
   generation: number
   /** 标签选择器 */
