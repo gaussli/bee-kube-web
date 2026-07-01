@@ -158,40 +158,56 @@ function getStatefulSetList(_clusterId: string, params: Partial<StatefulSetQuery
  * @returns StatefulSet 详情
  */
 function getStatefulSetDetail(clusterId: string, namespace: string, name: string): StatefulSetDetailVo {
-  const statefulSet = mockStatefulSets.find(s => s.clusterId === clusterId && s.namespace === namespace && s.name === name)
-  if (!statefulSet) {
+  const s = mockStatefulSets.find(s => s.clusterId === clusterId && s.namespace === namespace && s.name === name)
+  if (!s) {
     console.error('[Get StatefulSet Detail] can not find statefulset:', clusterId, namespace, name)
   }
   return {
-    ...statefulSet!,
-    selector: { app: statefulSet!.name },
-    labels: { app: statefulSet!.name },
-    annotations: { description: statefulSet!.description || '' },
-    containers: [
-      {
-        containerId: generateId(),
-        name: statefulSet!.name,
-        status: 'Running',
-        statusMessage: '',
-        image: `${statefulSet!.name}:latest`,
-        ports: [],
-        restart: 0,
-        isInit: false
-      }
+    basic: {
+      id: s!.id,
+      uid: s!.uid,
+      name: s!.name,
+      clusterId: s!.clusterId,
+      clusterUid: generateId(),
+      clusterName: 'prod-cluster',
+      namespaceId: generateId(),
+      namespaceUid: generateId(),
+      namespace: s!.namespace,
+      description: s!.description || '',
+      status: s!.status,
+      statusMsg: s!.statusMessage || '',
+      deletation: 'true',
+      generation: 1,
+      selector: { app: s!.name },
+      serviceName: s!.serviceName,
+      createBy: s!.createBy,
+      createAt: s!.createAt,
+      updateBy: s!.updateBy,
+      updateAt: s!.updateAt
+    },
+    replicas: {
+      replicas: s!.replicas,
+      readyReplicas: s!.replicas,
+      availableReplicas: s!.replicas,
+      updatedReplicas: s!.replicas,
+      currentRevision: '1',
+      updateRevision: '1'
+    },
+    metadata: {
+      labels: { app: s!.name },
+      annotations: { description: s!.description || '' }
+    },
+    resource: {},
+    conditions: [
+      { type: 'Available', status: 'True', lastTransitionTime: '', reason: '', message: '' }
     ],
-    volumeClaimTemplates: [
-      {
-        name: 'data',
-        storageClassName: 'standard',
-        accessModes: ['ReadWriteOnce'],
-        resources: {
-          requests: {
-            storage: '10Gi'
-          }
-        }
-      }
-    ]
+    strategy: {
+      type: s!.strategyType,
+      partition: 0,
+      podManagementPolicy: s!.podManagementPolicy
+    }
   }
+}
 }
 
 /**
@@ -220,7 +236,7 @@ spec:
   serviceName: ${statefulSet.serviceName}
   replicas: ${statefulSet.replicas}
   podManagementPolicy: ${statefulSet.podManagementPolicy}
-  updateStrategy:
+  strategyType:
     type: ${statefulSet.updateStrategy}
   selector:
     matchLabels:
@@ -382,7 +398,7 @@ const mockStatefulSets: StatefulSetListVo[] = [
     replicas: 3,
     readyReplicas: 3,
     serviceName: 'mysql-primary-headless',
-    updateStrategy: 'RollingUpdate',
+    strategyType: 'RollingUpdate',
     podManagementPolicy: 'OrderedReady',
     createBy: 'admin',
     createAt: '2024-01-20 10:00:00',
@@ -401,7 +417,7 @@ const mockStatefulSets: StatefulSetListVo[] = [
     replicas: 3,
     readyReplicas: 3,
     serviceName: 'mongodb-headless',
-    updateStrategy: 'RollingUpdate',
+    strategyType: 'RollingUpdate',
     podManagementPolicy: 'OrderedReady',
     createBy: 'admin',
     createAt: '2024-02-01 09:00:00',
@@ -420,7 +436,7 @@ const mockStatefulSets: StatefulSetListVo[] = [
     replicas: 3,
     readyReplicas: 3,
     serviceName: 'kafka-headless',
-    updateStrategy: 'RollingUpdate',
+    strategyType: 'RollingUpdate',
     podManagementPolicy: 'OrderedReady',
     createBy: 'admin',
     createAt: '2024-02-15 10:00:00',
@@ -440,7 +456,7 @@ const mockStatefulSets: StatefulSetListVo[] = [
     replicas: 3,
     readyReplicas: 3,
     serviceName: 'mysql-replica-headless',
-    updateStrategy: 'RollingUpdate',
+    strategyType: 'RollingUpdate',
     podManagementPolicy: 'OrderedReady',
     createBy: 'admin',
     createAt: '2024-01-20 10:05:00',
@@ -459,7 +475,7 @@ const mockStatefulSets: StatefulSetListVo[] = [
     replicas: 6,
     readyReplicas: 6,
     serviceName: 'redis-cluster-headless',
-    updateStrategy: 'RollingUpdate',
+    strategyType: 'RollingUpdate',
     podManagementPolicy: 'OrderedReady',
     createBy: 'admin',
     createAt: '2024-02-05 14:00:00',
@@ -478,7 +494,7 @@ const mockStatefulSets: StatefulSetListVo[] = [
     replicas: 4,
     readyReplicas: 4,
     serviceName: 'minio-headless',
-    updateStrategy: 'RollingUpdate',
+    strategyType: 'RollingUpdate',
     podManagementPolicy: 'Parallel',
     createBy: 'admin',
     createAt: '2024-02-20 11:00:00',
@@ -499,7 +515,7 @@ const mockStatefulSets: StatefulSetListVo[] = [
     replicas: 3,
     readyReplicas: 0,
     serviceName: 'zookeeper-headless',
-    updateStrategy: 'RollingUpdate',
+    strategyType: 'RollingUpdate',
     podManagementPolicy: 'OrderedReady',
     createBy: 'admin',
     createAt: '2024-02-10 08:00:00',
@@ -519,7 +535,7 @@ const mockStatefulSets: StatefulSetListVo[] = [
     replicas: 1,
     readyReplicas: 0,
     serviceName: 'nexus-headless',
-    updateStrategy: 'RollingUpdate',
+    strategyType: 'RollingUpdate',
     podManagementPolicy: 'OrderedReady',
     createBy: 'admin',
     createAt: '2024-03-10 10:00:00',
@@ -540,7 +556,7 @@ const mockStatefulSets: StatefulSetListVo[] = [
     replicas: 3,
     readyReplicas: 0,
     serviceName: 'clickhouse-headless',
-    updateStrategy: 'RollingUpdate',
+    strategyType: 'RollingUpdate',
     podManagementPolicy: 'OrderedReady',
     createBy: 'admin',
     createAt: '2024-03-19 16:00:00',
@@ -560,7 +576,7 @@ const mockStatefulSets: StatefulSetListVo[] = [
     replicas: 3,
     readyReplicas: 0,
     serviceName: 'postgresql-headless',
-    updateStrategy: 'RollingUpdate',
+    strategyType: 'RollingUpdate',
     podManagementPolicy: 'OrderedReady',
     createBy: 'admin',
     createAt: '2024-03-20 14:00:00',
@@ -581,7 +597,7 @@ const mockStatefulSets: StatefulSetListVo[] = [
     replicas: 3,
     readyReplicas: 1,
     serviceName: 'elasticsearch-headless',
-    updateStrategy: 'RollingUpdate',
+    strategyType: 'RollingUpdate',
     podManagementPolicy: 'OrderedReady',
     createBy: 'admin',
     createAt: '2024-03-01 09:00:00',
@@ -601,7 +617,7 @@ const mockStatefulSets: StatefulSetListVo[] = [
     replicas: 3,
     readyReplicas: 2,
     serviceName: 'nacos-headless',
-    updateStrategy: 'RollingUpdate',
+    strategyType: 'RollingUpdate',
     podManagementPolicy: 'OrderedReady',
     createBy: 'admin',
     createAt: '2024-02-28 10:00:00',
@@ -622,7 +638,7 @@ const mockStatefulSets: StatefulSetListVo[] = [
     replicas: 3,
     readyReplicas: 0,
     serviceName: 'neo4j-headless',
-    updateStrategy: 'RollingUpdate',
+    strategyType: 'RollingUpdate',
     podManagementPolicy: 'OrderedReady',
     createBy: 'admin',
     createAt: '2024-01-15 09:00:00',
@@ -642,7 +658,7 @@ const mockStatefulSets: StatefulSetListVo[] = [
     replicas: 2,
     readyReplicas: 0,
     serviceName: 'jaeger-headless',
-    updateStrategy: 'OnDelete',
+    strategyType: 'OnDelete',
     podManagementPolicy: 'OrderedReady',
     createBy: 'admin',
     createAt: '2024-02-05 08:00:00',
@@ -663,7 +679,7 @@ const mockStatefulSets: StatefulSetListVo[] = [
     replicas: 3,
     readyReplicas: 0,
     serviceName: 'cassandra-headless',
-    updateStrategy: 'RollingUpdate',
+    strategyType: 'RollingUpdate',
     podManagementPolicy: 'OrderedReady',
     createBy: 'admin',
     createAt: '2024-03-20 08:30:00',
@@ -683,7 +699,7 @@ const mockStatefulSets: StatefulSetListVo[] = [
     replicas: 2,
     readyReplicas: 0,
     serviceName: 'timescaledb-headless',
-    updateStrategy: 'RollingUpdate',
+    strategyType: 'RollingUpdate',
     podManagementPolicy: 'OrderedReady',
     createBy: 'developer',
     createAt: '2024-03-19 10:00:00',
@@ -704,7 +720,7 @@ const mockStatefulSets: StatefulSetListVo[] = [
     replicas: 5,
     readyReplicas: 3,
     serviceName: 'hadoop-datanode-headless',
-    updateStrategy: 'OnDelete',
+    strategyType: 'OnDelete',
     podManagementPolicy: 'Parallel',
     createBy: 'admin',
     createAt: '2024-01-10 09:00:00',
@@ -724,7 +740,7 @@ const mockStatefulSets: StatefulSetListVo[] = [
     replicas: 5,
     readyReplicas: 4,
     serviceName: 'etcd-headless',
-    updateStrategy: 'OnDelete',
+    strategyType: 'OnDelete',
     podManagementPolicy: 'OrderedReady',
     createBy: 'system',
     createAt: '2024-01-01 00:00:00',
@@ -745,7 +761,7 @@ const mockStatefulSets: StatefulSetListVo[] = [
     replicas: 3,
     readyReplicas: 0,
     serviceName: 'rabbitmq-headless',
-    updateStrategy: 'RollingUpdate',
+    strategyType: 'RollingUpdate',
     podManagementPolicy: 'OrderedReady',
     createBy: 'admin',
     createAt: '2024-02-10 14:00:00',
@@ -765,7 +781,7 @@ const mockStatefulSets: StatefulSetListVo[] = [
     replicas: 2,
     readyReplicas: 0,
     serviceName: 'influxdb-headless',
-    updateStrategy: 'RollingUpdate',
+    strategyType: 'RollingUpdate',
     podManagementPolicy: 'OrderedReady',
     createBy: 'admin',
     createAt: '2024-02-20 10:00:00',
@@ -786,7 +802,7 @@ const mockStatefulSets: StatefulSetListVo[] = [
     replicas: 3,
     readyReplicas: 0,
     serviceName: 'consul-headless',
-    updateStrategy: 'RollingUpdate',
+    strategyType: 'RollingUpdate',
     podManagementPolicy: 'OrderedReady',
     createBy: 'admin',
     createAt: '2024-01-05 09:00:00',
@@ -806,7 +822,7 @@ const mockStatefulSets: StatefulSetListVo[] = [
     replicas: 4,
     readyReplicas: 0,
     serviceName: 'greenplum-headless',
-    updateStrategy: 'OnDelete',
+    strategyType: 'OnDelete',
     podManagementPolicy: 'Parallel',
     createBy: 'admin',
     createAt: '2024-04-01 10:00:00',

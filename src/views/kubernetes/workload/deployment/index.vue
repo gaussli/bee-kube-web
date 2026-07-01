@@ -42,7 +42,7 @@
           </BeeTableColumn>
           <BeeTableColumn :width="120">
             <template #default="{ row }">
-              <BeeTableCommonCell :text="`${row.availableReplicas} / ${row.replicas}`" subtext="副本数" />
+              <BeeTableCommonCell :text="`${row.readyReplicas} / ${row.replicas}`" subtext="副本数" />
             </template>
           </BeeTableColumn>
           <BeeTableColumn :width="160">

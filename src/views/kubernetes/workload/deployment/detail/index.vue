@@ -38,8 +38,8 @@
               </div>
               <div class="detail-item">
                 <span class="detail-label">可用副本:</span>
-                <span :class="['detail-value', deploymentData?.availableReplicas === deploymentData?.replicas ? 'replicas-ready' : 'replicas-pending']">
-                  {{ deploymentData?.availableReplicas }}
+                <span :class="['detail-value', deploymentData?.readyReplicas === deploymentData?.replicas ? 'replicas-ready' : 'replicas-pending']">
+                  {{ deploymentData?.readyReplicas }}
                 </span>
               </div>
             </div>

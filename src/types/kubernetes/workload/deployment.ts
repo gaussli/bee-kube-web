@@ -76,8 +76,8 @@ export interface DeploymentListVo extends Namespaced {
   statusMessage?: string
   /** 期望副本数 */
   replicas: number
-  /** 可用副本数 */
-  availableReplicas: number
+  /** 就绪副本数 */
+  readyReplicas: number
   /** 更新策略 */
   strategyType: DeploymentStrategyType
   /** 是否可删除 */
@@ -137,8 +137,8 @@ export interface DeploymentReplicasVo {
   replicas: number
   /** 就绪副本数 */
   readyReplicas: number
-  /** 可用副本数 */
-  availableReplicas: number
+  /** 就绪副本数 */
+  readyReplicas: number
   /** 已更新副本数 */
   updatedReplicas: number
 }

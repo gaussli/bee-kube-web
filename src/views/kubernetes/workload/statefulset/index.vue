@@ -47,7 +47,7 @@
           </BeeTableColumn>
           <BeeTableColumn :width="160">
             <template #default="{ row }">
-              <BeeTableCommonCell :text="row.updateStrategy" :subtext="updateStrategyLabel(row.updateStrategy)" />
+              <BeeTableCommonCell :text="row.strategyType" :subtext="updateStrategyLabel(row.strategyType)" />
             </template>
           </BeeTableColumn>
           <BeeTableColumn :width="140">
@@ -118,7 +118,7 @@ import { onMounted, reactive, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { ElMessage } from 'element-plus'
 import type { NamespaceSimpleListResp } from '@/types/kubernetes/namespace'
-import type { StatefulSetQueryForm, StatefulSetListVo, StatefulSetUpdateStrategyType, PodManagementPolicyType } from '@/types/kubernetes/workload/statefulset'
+import type { StatefulSetQueryForm, StatefulSetListVo, StatefulSetStrategyType, PodManagementPolicyType } from '@/types/kubernetes/workload/statefulset'
 import type { ActionItem } from '@/components/BeeActionCell/index.vue'
 import { getNamespacePage } from '@/api/kubernetes/namespace'
 import { getStatefulSetList, deleteStatefulSet, deleteStatefulSets } from '@/api/kubernetes/workload/statefulset'
@@ -169,7 +169,7 @@ const pagination = reactive({ page: 1, pageSize: 10, total: 0 })
 const namespaceOptions = ref<{ label: string; value: string | undefined }[]>([{ label: '全部命名空间', value: undefined }])
 
 /** 更新策略中文映射 */
-const UPDATE_STRATEGY_LABEL: Record<StatefulSetUpdateStrategyType, string> = {
+const UPDATE_STRATEGY_LABEL: Record<StatefulSetStrategyType, string> = {
   RollingUpdate: '滚动更新',
   OnDelete: '手动删除'
 }
@@ -185,7 +185,7 @@ const POD_MANAGEMENT_POLICY_LABEL: Record<PodManagementPolicyType, string> = {
  * @param type - 更新策略枚举值
  * @returns 中文名称
  */
-function updateStrategyLabel(type: StatefulSetUpdateStrategyType): string {
+function updateStrategyLabel(type: StatefulSetStrategyType): string {
   return UPDATE_STRATEGY_LABEL[type] || type
 }
 
