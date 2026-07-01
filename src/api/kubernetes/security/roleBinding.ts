@@ -2,7 +2,7 @@
  * RoleBinding 资源 API
  * @module api/kubernetes/roleBinding
  */
-import type { PageResp } from '@/types/common'
+import type { PageVo } from '@/types/common'
 import type { RoleBindingResp, RoleBindingQueryReq, RoleBindingReq, RoleBindingLabelsReq, RoleBindingAnnotationsReq, RoleBindingSubjectsReq } from '@/types/kubernetes/security/roleBinding'
 import { request } from '@/utils'
 
@@ -13,7 +13,7 @@ import { request } from '@/utils'
  * @param params - 查询参数
  * @returns 分页后的 RoleBinding 列表
  */
-export function getRoleBindingPage(clusterId: string, namespaceName: string, params: Partial<RoleBindingQueryReq>): Promise<PageResp<RoleBindingResp>> {
+export function getRoleBindingPage(clusterId: string, namespaceName: string, params: Partial<RoleBindingQueryReq>): Promise<PageVo<RoleBindingResp>> {
   return request.get(`/kubernetes/clusters/${clusterId}/namespaces/${namespaceName}/rolebindings`, { params })
 }
 

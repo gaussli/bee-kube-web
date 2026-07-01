@@ -2,7 +2,7 @@
  * Ingress 资源 API
  * @module api/kubernetes/ingress
  */
-import type { PageResp } from '@/types/common'
+import type { PageVo } from '@/types/common'
 import type { IngressListVo, IngressQueryReq, IngressReq, IngressLabelsReq, IngressAnnotationsReq } from '@/types/kubernetes/network/ingress'
 import { request } from '@/utils'
 
@@ -13,7 +13,7 @@ import { request } from '@/utils'
  * @param params - 查询参数
  * @returns 分页后的 Ingress 列表
  */
-export function getIngressPage(clusterId: string, namespaceName: string, params: Partial<IngressQueryReq>): Promise<PageResp<IngressListVo>> {
+export function getIngressPage(clusterId: string, namespaceName: string, params: Partial<IngressQueryReq>): Promise<PageVo<IngressListVo>> {
   return request.get(`/kubernetes/clusters/${clusterId}/namespaces/${namespaceName}/ingresses`, { params })
 }
 

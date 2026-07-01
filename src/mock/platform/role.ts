@@ -1,4 +1,4 @@
-import type { PageResp, RoleDetailResp, RoleQueryReq, RoleResp } from '@/types'
+import type { PageVo, RoleDetailResp, RoleQueryReq, RoleResp } from '@/types'
 
 // 生成32位随机ID（数字+小写字母）
 function generateId(): string {
@@ -174,7 +174,7 @@ export default [
   {
     method: 'get',
     url: '/system/roles',
-    handler: (params: RoleQueryReq): PageResp<RoleResp> => {
+    handler: (params: RoleQueryReq): PageVo<RoleResp> => {
       let filtered = [...mockRoles]
 
       // 按 ID 精确搜索

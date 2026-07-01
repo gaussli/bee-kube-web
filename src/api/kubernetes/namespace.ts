@@ -2,7 +2,7 @@
  * 命名空间管理 API
  * @module api/kubernetes/namespace
  */
-import type { PageResp } from '@/types/common'
+import type { PageVo } from '@/types/common'
 import type {
   NamespaceQueryReq,
   NamespaceListResp,
@@ -22,8 +22,8 @@ import { request } from '@/utils'
  * @param params - 查询参数，mode 为 simple 时不翻页，仅返回 id/uid/name
  * @returns 分页后的命名空间列表（normal）或简化列表（simple）
  */
-export function getNamespacePage(clusterId: string, params: Partial<NamespaceQueryReq>): Promise<PageResp<NamespaceListResp> | NamespaceSimpleListResp[]> {
-  return request.get<PageResp<NamespaceListResp> | NamespaceSimpleListResp[]>(`/kubernetes/clusters/${clusterId}/namespaces`, params)
+export function getNamespacePage(clusterId: string, params: Partial<NamespaceQueryReq>): Promise<PageVo<NamespaceListResp> | NamespaceSimpleListResp[]> {
+  return request.get<PageVo<NamespaceListResp> | NamespaceSimpleListResp[]>(`/kubernetes/clusters/${clusterId}/namespaces`, params)
 }
 
 /**

@@ -2,7 +2,7 @@
  * 节点管理相关类型定义
  * @module types/kubernetes/node
  */
-import type { BaseEntity, PageReq } from '@/types/common'
+import type { BaseEntity, PageForm } from '@/types/common'
 import type { MetadataAnnotationReq, MetadataLabelReq, ResourceResp } from './comomn'
 import type { Condition, Event, Metadata, Taint } from './types'
 
@@ -135,9 +135,9 @@ export interface NodeVolumesResp {
 
 /**
  * 节点查询请求参数
- * @extends PageReq 继承分页请求（含 page, pageSize）
+ * @extends PageForm 继承分页请求（含 page, pageSize）
  */
-export interface NodeQueryReq extends PageReq {
+export interface NodeQueryReq extends PageForm {
   id: string
   /** 节点名称（模糊匹配） */
   name: string

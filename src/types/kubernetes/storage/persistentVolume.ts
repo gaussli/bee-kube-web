@@ -2,7 +2,7 @@
  * PersistentVolume 资源类型定义
  * @module types/kubernetes/persistentVolume
  */
-import type { BaseEntity, PageReq } from '@/types/common'
+import type { BaseEntity, PageForm } from '@/types/common'
 
 /**
  * PersistentVolume 访问模式
@@ -58,9 +58,9 @@ export interface PersistentVolumeResp extends BaseEntity {
 
 /**
  * PersistentVolume 查询请求参数
- * @extends PageReq 继承分页请求（含 page, pageSize）
+ * @extends PageForm 继承分页请求（含 page, pageSize）
  */
-export interface PersistentVolumeQueryReq extends PageReq {
+export interface PersistentVolumeQueryReq extends PageForm {
   /** PersistentVolume 名称（模糊匹配） */
   name?: string
   /** 状态 */

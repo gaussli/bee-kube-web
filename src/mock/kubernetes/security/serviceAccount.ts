@@ -2,7 +2,7 @@
  * ServiceAccount Mock API
  * @module mock/kubernetes/security/serviceAccount
  */
-import type { PageResp } from '@/types/common'
+import type { PageVo } from '@/types/common'
 import type { ServiceAccountResp, ServiceAccountQueryReq, ServiceAccountReq } from '@/types/kubernetes/security/serviceAccount'
 import { generateId } from '@/mock/utils'
 
@@ -13,7 +13,7 @@ import { generateId } from '@/mock/utils'
  * @param params - 查询参数
  * @returns 分页数据
  */
-function getServiceAccountPage(clusterId: string, namespaceName: string, params: Partial<ServiceAccountQueryReq>): PageResp<ServiceAccountResp> {
+function getServiceAccountPage(clusterId: string, namespaceName: string, params: Partial<ServiceAccountQueryReq>): PageVo<ServiceAccountResp> {
   const { name, page = 1, pageSize = 10 } = params || {}
   let filtered = mockServiceAccounts.filter(s => s.clusterId === clusterId && s.namespace === namespaceName)
   if (name) filtered = filtered.filter(s => s.name.toLowerCase().includes(name.toLowerCase()))

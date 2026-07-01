@@ -2,7 +2,7 @@
  * Role 资源类型定义
  * @module types/kubernetes/role
  */
-import type { BaseEntity, PageReq } from '@/types/common'
+import type { BaseEntity, PageForm } from '@/types/common'
 import type { ClusterRolePolicyRule } from './clusterRole'
 
 /**
@@ -32,9 +32,9 @@ export interface RoleResp extends BaseEntity {
 
 /**
  * Role 查询请求参数
- * @extends PageReq 继承分页请求（含 page, pageSize）
+ * @extends PageForm 继承分页请求（含 page, pageSize）
  */
-export interface RoleQueryReq extends PageReq {
+export interface RoleQueryReq extends PageForm {
   /** Role 名称（模糊匹配） */
   name?: string
   /** 标签选择器 */

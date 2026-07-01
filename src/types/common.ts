@@ -19,7 +19,7 @@ export interface ApiResult<T = any> {
 /**
  * 分页请求参数
  */
-export interface PageReq {
+export interface PageForm {
   /** 页码 */
   page: number
   /** 每页条数 */
@@ -29,7 +29,7 @@ export interface PageReq {
 /**
  * 分页响应结构
  */
-export interface PageResp<T = any> {
+export interface PageVo<T = any> {
   /** 数据列表 */
   list: T[]
   /** 总条数 */

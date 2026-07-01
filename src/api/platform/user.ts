@@ -1,9 +1,9 @@
-import type { PageResp, RoleQueryReq, RoleResp, UserChangeStatusReq, UserDetailResp, UserQueryReq, UserResp } from '@/types'
+import type { PageVo, RoleQueryReq, RoleResp, UserChangeStatusReq, UserDetailResp, UserQueryReq, UserResp } from '@/types'
 import { request } from '@/utils'
 
 // 分页查询用户列表
 export function getUserPage(data: UserQueryReq) {
-  return request.get<PageResp<UserResp>>('/system/users', data)
+  return request.get<PageVo<UserResp>>('/system/users', data)
 }
 
 // 获取用户详情
@@ -38,7 +38,7 @@ export function batchRemove(ids: string[]) {
 
 // 分页查询用户关联的角色列表
 export function getUserRoles(id: string, data: RoleQueryReq) {
-  return request.get<PageResp<RoleResp>>(`/system/users/${id}/roles`, data)
+  return request.get<PageVo<RoleResp>>(`/system/users/${id}/roles`, data)
 }
 
 // 批量绑定用户关联的角色

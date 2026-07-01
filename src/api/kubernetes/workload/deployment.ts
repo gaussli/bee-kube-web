@@ -2,7 +2,7 @@
  * Deployment 资源管理 API
  * @module api/kubernetes/workload/deployment
  */
-import type { PageResp } from '@/types/common'
+import type { PageVo } from '@/types/common'
 import type {
   DeploymentAdvancedVo,
   DeploymentAnnotationForm,
@@ -24,8 +24,8 @@ import { request } from '@/utils'
  * @param params - 查询参数
  * @returns 分页后的 Deployment 列表
  */
-export function getDeploymentList(clusterId: string, params: Partial<DeploymentQueryForm>): Promise<PageResp<DeploymentListVo>> {
-  return request.get<PageResp<DeploymentListVo>>(`/kubernetes/clusters/${clusterId}/deployments`, params)
+export function getDeploymentList(clusterId: string, params: Partial<DeploymentQueryForm>): Promise<PageVo<DeploymentListVo>> {
+  return request.get<PageVo<DeploymentListVo>>(`/kubernetes/clusters/${clusterId}/deployments`, params)
 }
 
 /**

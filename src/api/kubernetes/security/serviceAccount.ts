@@ -2,7 +2,7 @@
  * ServiceAccount 资源 API
  * @module api/kubernetes/serviceAccount
  */
-import type { PageResp } from '@/types/common'
+import type { PageVo } from '@/types/common'
 import type {
   ServiceAccountResp,
   ServiceAccountQueryReq,
@@ -20,7 +20,7 @@ import { request } from '@/utils'
  * @param params - 查询参数
  * @returns 分页后的 ServiceAccount 列表
  */
-export function getServiceAccountPage(clusterId: string, namespaceName: string, params: Partial<ServiceAccountQueryReq>): Promise<PageResp<ServiceAccountResp>> {
+export function getServiceAccountPage(clusterId: string, namespaceName: string, params: Partial<ServiceAccountQueryReq>): Promise<PageVo<ServiceAccountResp>> {
   return request.get(`/kubernetes/clusters/${clusterId}/namespaces/${namespaceName}/serviceaccounts`, { params })
 }
 

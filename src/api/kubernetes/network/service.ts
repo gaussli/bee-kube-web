@@ -2,7 +2,7 @@
  * Service 资源 API
  * @module api/kubernetes/service
  */
-import type { PageResp } from '@/types/common'
+import type { PageVo } from '@/types/common'
 import type { ServiceListVo, ServiceQueryReq, ServiceReq, ServiceLabelsReq, ServiceAnnotationsReq } from '@/types/kubernetes/network/service'
 import { request } from '@/utils'
 
@@ -13,7 +13,7 @@ import { request } from '@/utils'
  * @param params - 查询参数
  * @returns 分页后的 Service 列表
  */
-export function getServicePage(clusterId: string, namespaceName: string, params: Partial<ServiceQueryReq>): Promise<PageResp<ServiceListVo>> {
+export function getServicePage(clusterId: string, namespaceName: string, params: Partial<ServiceQueryReq>): Promise<PageVo<ServiceListVo>> {
   return request.get(`/kubernetes/clusters/${clusterId}/namespaces/${namespaceName}/services`, { params })
 }
 

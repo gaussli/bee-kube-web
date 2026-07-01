@@ -1,9 +1,9 @@
-import type { MenuChangeStatusReq, MenuCreateReq, MenuDetailResp, MenuQueryReq, MenuResp, MenuUpdateReq, PageResp, RoleQueryReq, RoleResp } from '@/types'
+import type { MenuChangeStatusReq, MenuCreateReq, MenuDetailResp, MenuQueryReq, MenuResp, MenuUpdateReq, PageVo, RoleQueryReq, RoleResp } from '@/types'
 import { request } from '@/utils'
 
 // 分页查询菜单列表
 export function getMenuPage(data: MenuQueryReq) {
-  return request.get<PageResp<MenuResp>>('/system/menus', data)
+  return request.get<PageVo<MenuResp>>('/system/menus', data)
 }
 
 // 获取菜单详情
@@ -38,7 +38,7 @@ export function batchRemoveMenus(ids: string[]) {
 
 // 获取菜单关联的角色
 export function getMenuRoles(id: string, data: RoleQueryReq) {
-  return request.get<PageResp<RoleResp>>(`/system/menus/${id}/roles`, data)
+  return request.get<PageVo<RoleResp>>(`/system/menus/${id}/roles`, data)
 }
 
 // 批量绑定菜单关联的角色

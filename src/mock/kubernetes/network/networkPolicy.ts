@@ -2,7 +2,7 @@
  * NetworkPolicy Mock API
  * @module mock/kubernetes/network/networkPolicy
  */
-import type { PageResp } from '@/types/common'
+import type { PageVo } from '@/types/common'
 import type { NetworkPolicyResp, NetworkPolicyQueryReq, NetworkPolicyReq } from '@/types/kubernetes/network/networkPolicy'
 import { generateId } from '@/mock/utils'
 
@@ -13,7 +13,7 @@ import { generateId } from '@/mock/utils'
  * @param params - 查询参数
  * @returns 分页数据
  */
-function getNetworkPolicyPage(clusterId: string, namespaceName: string, params: Partial<NetworkPolicyQueryReq>): PageResp<NetworkPolicyResp> {
+function getNetworkPolicyPage(clusterId: string, namespaceName: string, params: Partial<NetworkPolicyQueryReq>): PageVo<NetworkPolicyResp> {
   const { name, page = 1, pageSize = 10 } = params || {}
   let filtered = mockNetworkPolicys.filter(n => n.clusterId === clusterId && n.namespace === namespaceName)
   if (name) filtered = filtered.filter(n => n.name.toLowerCase().includes(name.toLowerCase()))

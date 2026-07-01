@@ -2,7 +2,7 @@
  * PersistentVolumeClaim 资源 API
  * @module api/kubernetes/persistentVolumeClaim
  */
-import type { PageResp } from '@/types/common'
+import type { PageVo } from '@/types/common'
 import type {
   PersistentVolumeClaimQueryReq,
   PersistentVolumeClaimResp,
@@ -19,7 +19,7 @@ import { request } from '@/utils'
  * @param params - 查询参数
  * @returns 分页后的 PersistentVolumeClaim 列表
  */
-export function getPersistentVolumeClaimPage(clusterId: string, namespaceName: string, params: Partial<PersistentVolumeClaimQueryReq>): Promise<PageResp<PersistentVolumeClaimResp>> {
+export function getPersistentVolumeClaimPage(clusterId: string, namespaceName: string, params: Partial<PersistentVolumeClaimQueryReq>): Promise<PageVo<PersistentVolumeClaimResp>> {
   return request.get(`/kubernetes/clusters/${clusterId}/namespaces/${namespaceName}/persistentvolumeclaims`, { params })
 }
 

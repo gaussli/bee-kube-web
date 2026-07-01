@@ -2,7 +2,7 @@
  * Kubernetes StatefulSet 管理 Mock API
  * @module mock/kubernetes/workload/statefulset
  */
-import type { PageResp } from '@/types/common'
+import type { PageVo } from '@/types/common'
 import type {
   StatefulSetQueryForm,
   StatefulSetCreateForm,
@@ -38,7 +38,7 @@ export default [
   {
     method: 'get',
     url: '/kubernetes/clusters/:clusterId/statefulsets',
-    handler: (pathParams: Record<string, string>, params: Partial<StatefulSetQueryForm>): PageResp<StatefulSetListVo> => getStatefulSetList(pathParams.clusterId, params)
+    handler: (pathParams: Record<string, string>, params: Partial<StatefulSetQueryForm>): PageVo<StatefulSetListVo> => getStatefulSetList(pathParams.clusterId, params)
   },
   {
     method: 'get',
@@ -113,7 +113,7 @@ export default [
  * @param params - 查询参数
  * @returns 分页数据
  */
-function getStatefulSetList(_clusterId: string, params: Partial<StatefulSetQueryForm>): PageResp<StatefulSetListVo> {
+function getStatefulSetList(_clusterId: string, params: Partial<StatefulSetQueryForm>): PageVo<StatefulSetListVo> {
   const { id, name, namespace, status, page = 1, pageSize = 10 } = params || {}
 
   let filtered = [...mockStatefulSets]

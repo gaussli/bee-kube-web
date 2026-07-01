@@ -2,7 +2,7 @@
  * DaemonSet 资源管理 API
  * @module api/kubernetes/workload/daemonset
  */
-import type { PageResp } from '@/types/common'
+import type { PageVo } from '@/types/common'
 import type { DaemonSetAnnotationsReq, DaemonSetDetailResp, DaemonSetLabelsReq, DaemonSetListResp, DaemonSetQueryReq, DaemonSetReq, DaemonSetYamlReq } from '@/types/kubernetes/workload/daemonset'
 import { request } from '@/utils'
 
@@ -12,8 +12,8 @@ import { request } from '@/utils'
  * @param params - 查询参数
  * @returns 分页后的 DaemonSet 列表
  */
-export function getDaemonSetList(clusterId: string, params: Partial<DaemonSetQueryReq>): Promise<PageResp<DaemonSetListResp>> {
-  return request.get<PageResp<DaemonSetListResp>>(`/kubernetes/clusters/${clusterId}/daemonsets`, params)
+export function getDaemonSetList(clusterId: string, params: Partial<DaemonSetQueryReq>): Promise<PageVo<DaemonSetListResp>> {
+  return request.get<PageVo<DaemonSetListResp>>(`/kubernetes/clusters/${clusterId}/daemonsets`, params)
 }
 
 /**

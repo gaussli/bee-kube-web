@@ -2,7 +2,7 @@
  * CronJob 资源管理 API
  * @module api/kubernetes/workload/cronjob
  */
-import type { PageResp } from '@/types/common'
+import type { PageVo } from '@/types/common'
 import type { CronJobAnnotationsReq, CronJobDetailResp, CronJobLabelsReq, CronJobListResp, CronJobQueryReq, CronJobReq, CronJobYamlReq } from '@/types/kubernetes/workload/cronjob'
 import { request } from '@/utils'
 
@@ -12,8 +12,8 @@ import { request } from '@/utils'
  * @param params - 查询参数（namespace 可选，默认查询所有命名空间）
  * @returns 分页后的 CronJob 列表
  */
-export function getCronJobList(clusterId: string, params: Partial<CronJobQueryReq>): Promise<PageResp<CronJobListResp>> {
-  return request.get<PageResp<CronJobListResp>>(`/kubernetes/clusters/${clusterId}/cronjobs`, params)
+export function getCronJobList(clusterId: string, params: Partial<CronJobQueryReq>): Promise<PageVo<CronJobListResp>> {
+  return request.get<PageVo<CronJobListResp>>(`/kubernetes/clusters/${clusterId}/cronjobs`, params)
 }
 
 /**

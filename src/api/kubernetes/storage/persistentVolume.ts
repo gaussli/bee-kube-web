@@ -2,7 +2,7 @@
  * PersistentVolume 资源 API
  * @module api/kubernetes/persistentVolume
  */
-import type { PageResp } from '@/types/common'
+import type { PageVo } from '@/types/common'
 import type { PersistentVolumeQueryReq, PersistentVolumeResp, PersistentVolumeLabelsReq, PersistentVolumeAnnotationsReq } from '@/types/kubernetes/storage/persistentVolume'
 import { request } from '@/utils'
 
@@ -12,7 +12,7 @@ import { request } from '@/utils'
  * @param params - 查询参数
  * @returns 分页后的 PersistentVolume 列表
  */
-export function getPersistentVolumePage(clusterId: string, params: Partial<PersistentVolumeQueryReq>): Promise<PageResp<PersistentVolumeResp>> {
+export function getPersistentVolumePage(clusterId: string, params: Partial<PersistentVolumeQueryReq>): Promise<PageVo<PersistentVolumeResp>> {
   return request.get(`/kubernetes/clusters/${clusterId}/persistentvolumes`, { params })
 }
 

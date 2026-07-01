@@ -2,7 +2,7 @@
  * ClusterRoleBinding Mock API
  * @module mock/kubernetes/security/clusterRoleBinding
  */
-import type { PageResp } from '@/types/common'
+import type { PageVo } from '@/types/common'
 import type { ClusterRoleBindingResp, ClusterRoleBindingQueryReq, ClusterRoleBindingReq } from '@/types/kubernetes/security/clusterRoleBinding'
 import { generateId } from '@/mock/utils'
 
@@ -12,7 +12,7 @@ import { generateId } from '@/mock/utils'
  * @param params - 查询参数
  * @returns 分页数据
  */
-function getClusterRoleBindingPage(clusterId: string, params: Partial<ClusterRoleBindingQueryReq>): PageResp<ClusterRoleBindingResp> {
+function getClusterRoleBindingPage(clusterId: string, params: Partial<ClusterRoleBindingQueryReq>): PageVo<ClusterRoleBindingResp> {
   const { name, showSystem, page = 1, pageSize = 10 } = params || {}
   let filtered = mockClusterRoleBindings.filter(b => b.clusterId === clusterId)
   if (!showSystem) filtered = filtered.filter(b => !b.isSystem)

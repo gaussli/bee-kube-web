@@ -2,7 +2,7 @@
  * CRD 资源相关 API
  * @module api/kubernetes/customResourceDefinition
  */
-import type { PageResp } from '@/types/common'
+import type { PageVo } from '@/types/common'
 import type { CrdResp, CrdQueryReq, CrdLabelsReq, CrdAnnotationsReq } from '@/types/kubernetes/crd'
 import request from '@/utils/request'
 
@@ -12,7 +12,7 @@ import request from '@/utils/request'
  * @param params - 查询参数
  * @returns CRD 分页列表
  */
-export function getCrdPage(clusterId: string, params: Partial<CrdQueryReq>): Promise<PageResp<CrdResp>> {
+export function getCrdPage(clusterId: string, params: Partial<CrdQueryReq>): Promise<PageVo<CrdResp>> {
   return request.get(`/kubernetes/clusters/${clusterId}/crds`, {
     params
   })

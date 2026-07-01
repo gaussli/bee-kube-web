@@ -2,7 +2,7 @@
  * ClusterRoleBinding 资源 API
  * @module api/kubernetes/clusterRoleBinding
  */
-import type { PageResp } from '@/types/common'
+import type { PageVo } from '@/types/common'
 import type {
   ClusterRoleBindingResp,
   ClusterRoleBindingQueryReq,
@@ -19,7 +19,7 @@ import { request } from '@/utils'
  * @param params - 查询参数
  * @returns 分页后的 ClusterRoleBinding 列表
  */
-export function getClusterRoleBindingPage(clusterId: string, params: Partial<ClusterRoleBindingQueryReq>): Promise<PageResp<ClusterRoleBindingResp>> {
+export function getClusterRoleBindingPage(clusterId: string, params: Partial<ClusterRoleBindingQueryReq>): Promise<PageVo<ClusterRoleBindingResp>> {
   return request.get(`/kubernetes/clusters/${clusterId}/clusterrolebindings`, { params })
 }
 

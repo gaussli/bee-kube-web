@@ -2,7 +2,7 @@
  * Job 资源相关类型定义
  * @module types/kubernetes/workload/job
  */
-import type { BaseEntity, PageReq } from '@/types/common'
+import type { BaseEntity, PageForm } from '@/types/common'
 
 /**
  * Job 状态枚举
@@ -101,9 +101,9 @@ export interface JobDetailResp extends BaseEntity {
 
 /**
  * Job 查询请求参数
- * @extends PageReq 继承分页请求（含 page, pageSize）
+ * @extends PageForm 继承分页请求（含 page, pageSize）
  */
-export interface JobQueryReq extends PageReq {
+export interface JobQueryReq extends PageForm {
   /** 资源 ID */
   id: string
   /** Job 名称（模糊匹配） */

@@ -2,7 +2,7 @@
  * Ingress Mock API
  * @module mock/kubernetes/network/ingress
  */
-import type { PageResp } from '@/types/common'
+import type { PageVo } from '@/types/common'
 import type { IngressListVo, IngressQueryReq, IngressReq } from '@/types/kubernetes/network/ingress'
 import { generateId } from '@/mock/utils'
 
@@ -13,7 +13,7 @@ import { generateId } from '@/mock/utils'
  * @param params - 查询参数
  * @returns 分页数据
  */
-function getIngressPage(clusterId: string, namespaceName: string, params: Partial<IngressQueryReq>): PageResp<IngressListVo> {
+function getIngressPage(clusterId: string, namespaceName: string, params: Partial<IngressQueryReq>): PageVo<IngressListVo> {
   const { name, ingressClassName, page = 1, pageSize = 10 } = params || {}
   let filtered = mockIngresses.filter(i => i.clusterId === clusterId && i.namespace === namespaceName)
   if (name) filtered = filtered.filter(i => i.name.toLowerCase().includes(name.toLowerCase()))

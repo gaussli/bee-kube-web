@@ -2,7 +2,7 @@
  * Secret 资源管理 API
  * @module api/kubernetes/config/secret
  */
-import type { PageResp } from '@/types/common'
+import type { PageVo } from '@/types/common'
 import type { SecretAnnotationsReq, SecretDataReq, SecretDetailResp, SecretLabelsReq, SecretListResp, SecretQueryReq, SecretReq, SecretYamlReq } from '@/types/kubernetes/config/secret'
 import { request } from '@/utils'
 
@@ -12,7 +12,7 @@ import { request } from '@/utils'
  * @param params - 查询参数（含 namespace 筛选）
  * @returns 分页后的 Secret 列表
  */
-export function getSecretList(clusterId: string, params: Partial<SecretQueryReq>): Promise<PageResp<SecretListResp>> {
+export function getSecretList(clusterId: string, params: Partial<SecretQueryReq>): Promise<PageVo<SecretListResp>> {
   return request.get(`/kubernetes/clusters/${clusterId}/secrets`, params)
 }
 

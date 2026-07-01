@@ -2,7 +2,7 @@
  * Kubernetes 集群管理 API
  * @module api/kubernetes/cluster
  */
-import type { PageResp } from '@/types/common'
+import type { PageVo } from '@/types/common'
 import type { ClusterDetailResp, ClusterEventQueryReq, ClusterEventResp, ClusterListResp, ClusterQueryReq, ClusterRegistrationReq, ClusterReq, ClusterResourceResp } from '@/types/kubernetes/cluster'
 import { request } from '@/utils'
 
@@ -11,8 +11,8 @@ import { request } from '@/utils'
  * @param params - 查询参数
  * @returns 分页后的集群列表
  */
-export function getClusterPage(params: Partial<ClusterQueryReq>): Promise<PageResp<ClusterListResp>> {
-  return request.get<PageResp<ClusterListResp>>('/kubernetes/clusters', params)
+export function getClusterPage(params: Partial<ClusterQueryReq>): Promise<PageVo<ClusterListResp>> {
+  return request.get<PageVo<ClusterListResp>>('/kubernetes/clusters', params)
 }
 
 /**
@@ -39,8 +39,8 @@ export function getClusterResource(id: string): Promise<ClusterResourceResp> {
  * @param params - 查询参数
  * @returns 分页后的集群事件列表
  */
-export function getClusterEventPage(clusterId: string, params: Partial<ClusterEventQueryReq>): Promise<PageResp<ClusterEventResp>> {
-  return request.get<PageResp<ClusterEventResp>>(`/kubernetes/clusters/${clusterId}/events`, params)
+export function getClusterEventPage(clusterId: string, params: Partial<ClusterEventQueryReq>): Promise<PageVo<ClusterEventResp>> {
+  return request.get<PageVo<ClusterEventResp>>(`/kubernetes/clusters/${clusterId}/events`, params)
 }
 
 /**

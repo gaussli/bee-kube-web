@@ -2,7 +2,7 @@
  * StatefulSet 资源管理 API
  * @module api/kubernetes/workload/statefulset
  */
-import type { PageResp } from '@/types/common'
+import type { PageVo } from '@/types/common'
 import type {
   StatefulSetAnnotationForm,
   StatefulSetDetailVo,
@@ -22,8 +22,8 @@ import { request } from '@/utils'
  * @param params - 查询参数
  * @returns 分页后的 StatefulSet 列表
  */
-export function getStatefulSetList(clusterId: string, params: Partial<StatefulSetQueryForm>): Promise<PageResp<StatefulSetListVo>> {
-  return request.get<PageResp<StatefulSetListVo>>(`/kubernetes/clusters/${clusterId}/statefulsets`, params)
+export function getStatefulSetList(clusterId: string, params: Partial<StatefulSetQueryForm>): Promise<PageVo<StatefulSetListVo>> {
+  return request.get<PageVo<StatefulSetListVo>>(`/kubernetes/clusters/${clusterId}/statefulsets`, params)
 }
 
 /**

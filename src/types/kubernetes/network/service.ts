@@ -2,7 +2,7 @@
  * Service 资源相关类型定义
  * @module types/kubernetes/network/service
  */
-import type { PageReq } from '@/types/common'
+import type { PageForm } from '@/types/common'
 import type { Namespaced } from '../types'
 import type { ServicePort } from './types'
 
@@ -22,9 +22,9 @@ export type ServiceType = 'ClusterIP' | 'NodePort' | 'LoadBalancer' | 'ExternalN
 
 /**
  * Service 查询请求参数
- * @extends PageReq 继承分页请求（含 page, pageSize）
+ * @extends PageForm 继承分页请求（含 page, pageSize）
  */
-export interface ServiceQueryReq extends PageReq {
+export interface ServiceQueryReq extends PageForm {
   /** Service 名称（模糊匹配） */
   name?: string
   /** Service 类型 */

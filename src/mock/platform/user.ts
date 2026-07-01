@@ -1,4 +1,4 @@
-import type { PageResp, UserQueryReq, UserResp } from '@/types'
+import type { PageVo, UserQueryReq, UserResp } from '@/types'
 
 // 生成32位随机ID（数字+小写字母）
 function generateId(): string {
@@ -590,7 +590,7 @@ const mockUsers: UserResp[] = [
   }
 ]
 
-function getUserPage(params: UserQueryReq): PageResp<UserResp> {
+function getUserPage(params: UserQueryReq): PageVo<UserResp> {
   const { id, username, nickname, status, page = 1, pageSize = 10 } = params || {}
 
   let filtered = [...mockUsers]

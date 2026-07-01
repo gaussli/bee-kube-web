@@ -2,7 +2,7 @@
  * DaemonSet 资源相关类型定义
  * @module types/kubernetes/workload/daemonset
  */
-import type { BaseEntity, PageReq } from '@/types/common'
+import type { BaseEntity, PageForm } from '@/types/common'
 
 /**
  * DaemonSet 状态枚举
@@ -93,9 +93,9 @@ export interface DaemonSetDetailResp extends BaseEntity {
 
 /**
  * DaemonSet 查询请求参数
- * @extends PageReq 继承分页请求（含 page, pageSize）
+ * @extends PageForm 继承分页请求（含 page, pageSize）
  */
-export interface DaemonSetQueryReq extends PageReq {
+export interface DaemonSetQueryReq extends PageForm {
   /** DaemonSet ID（精确匹配） */
   id: string
   /** DaemonSet 名称（模糊匹配） */

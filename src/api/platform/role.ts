@@ -1,9 +1,9 @@
-import type { MenuQueryReq, MenuResp, PageResp, RoleChangeStatusReq, RoleCreateReq, RoleDetailResp, RoleQueryReq, RoleResp, RoleUpdateReq, UserQueryReq, UserResp } from '@/types'
+import type { MenuQueryReq, MenuResp, PageVo, RoleChangeStatusReq, RoleCreateReq, RoleDetailResp, RoleQueryReq, RoleResp, RoleUpdateReq, UserQueryReq, UserResp } from '@/types'
 import { request } from '@/utils'
 
 // 分页查询角色列表
 export function getRolePage(data: RoleQueryReq) {
-  return request.get<PageResp<RoleResp>>('/system/roles', data)
+  return request.get<PageVo<RoleResp>>('/system/roles', data)
 }
 
 // 获取角色详情
@@ -53,7 +53,7 @@ export function unbindRoleMenus(id: string, menuIds: string[]) {
 
 // 分页查询角色关联的用户列表
 export function getRoleUsers(id: string, data: UserQueryReq) {
-  return request.get<PageResp<UserResp>>(`/system/roles/${id}/users`, data)
+  return request.get<PageVo<UserResp>>(`/system/roles/${id}/users`, data)
 }
 
 // 绑定角色关联的用户

@@ -2,7 +2,7 @@
  * PersistentVolumeClaim Mock API
  * @module mock/kubernetes/storage/persistentVolumeClaim
  */
-import type { PageResp } from '@/types/common'
+import type { PageVo } from '@/types/common'
 import type { PersistentVolumeClaimResp, PersistentVolumeClaimQueryReq, PersistentVolumeClaimReq } from '@/types/kubernetes/storage/persistentVolumeClaim'
 import { generateId } from '@/mock/utils'
 
@@ -13,7 +13,7 @@ import { generateId } from '@/mock/utils'
  * @param params - 查询参数
  * @returns 分页数据
  */
-function getPersistentVolumeClaimPage(clusterId: string, namespaceName: string, params: Partial<PersistentVolumeClaimQueryReq>): PageResp<PersistentVolumeClaimResp> {
+function getPersistentVolumeClaimPage(clusterId: string, namespaceName: string, params: Partial<PersistentVolumeClaimQueryReq>): PageVo<PersistentVolumeClaimResp> {
   const { name, status, storageClassName, page = 1, pageSize = 10 } = params || {}
   let filtered = mockPVCS.filter(p => p.clusterId === clusterId && p.namespace === namespaceName)
   if (name) filtered = filtered.filter(p => p.name.toLowerCase().includes(name.toLowerCase()))

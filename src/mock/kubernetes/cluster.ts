@@ -2,7 +2,7 @@
  * Kubernetes 集群管理 Mock API
  * @module mock/kubernetes/cluster
  */
-import type { PageResp } from '@/types/common'
+import type { PageVo } from '@/types/common'
 import type { ClusterDetailResp, ClusterEventQueryReq, ClusterEventResp, ClusterListResp, ClusterQueryReq, ClusterRegistrationReq, ClusterReq, ClusterResourceResp } from '@/types/kubernetes/cluster'
 import { generateId } from '@/mock/utils'
 
@@ -23,7 +23,7 @@ export default [
   {
     method: 'get',
     url: '/kubernetes/clusters',
-    handler: (params: Partial<ClusterQueryReq>): PageResp<ClusterListResp> => getClusterPage(params)
+    handler: (params: Partial<ClusterQueryReq>): PageVo<ClusterListResp> => getClusterPage(params)
   },
   {
     method: 'get',
@@ -63,7 +63,7 @@ export default [
   {
     method: 'get',
     url: '/kubernetes/clusters/:id/events',
-    handler: (pathParams: Record<string, string>, params: Partial<ClusterEventQueryReq>): PageResp<ClusterEventResp> => getClusterEventPage(pathParams.id, params)
+    handler: (pathParams: Record<string, string>, params: Partial<ClusterEventQueryReq>): PageVo<ClusterEventResp> => getClusterEventPage(pathParams.id, params)
   }
 ]
 
@@ -72,7 +72,7 @@ export default [
  * @param params - 查询参数
  * @returns 分页数据
  */
-function getClusterPage(params: Partial<ClusterQueryReq>): PageResp<ClusterListResp> {
+function getClusterPage(params: Partial<ClusterQueryReq>): PageVo<ClusterListResp> {
   const { id, name, status, page = 1, pageSize = 10 } = params || {}
 
   let filtered = [...mockClusters]
@@ -263,7 +263,7 @@ function deleteClusters(ids: string[]): void {
  * @param params - 查询参数
  * @returns 分页后的集群事件数据
  */
-function getClusterEventPage(clusterId: string, params: Partial<ClusterEventQueryReq>): PageResp<ClusterEventResp> {
+function getClusterEventPage(clusterId: string, params: Partial<ClusterEventQueryReq>): PageVo<ClusterEventResp> {
   const { type, reason, involvedObjectName, involvedObjectKind, page = 1, pageSize = 10 } = params || {}
 
   let filtered = [...mockClusterEvents]

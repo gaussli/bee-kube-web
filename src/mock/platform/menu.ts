@@ -1,4 +1,4 @@
-import type { MenuDetailResp, MenuQueryReq, MenuResp, PageResp } from '@/types'
+import type { MenuDetailResp, MenuQueryReq, MenuResp, PageVo } from '@/types'
 
 // 生成32位随机ID（数字+小写字母）
 function generateId(): string {
@@ -205,7 +205,7 @@ export default [
   {
     method: 'get',
     url: '/system/menus',
-    handler: (params: MenuQueryReq): PageResp<MenuResp> => {
+    handler: (params: MenuQueryReq): PageVo<MenuResp> => {
       let filtered = [...mockMenus]
 
       // 按 ID 精确搜索

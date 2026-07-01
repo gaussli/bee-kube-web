@@ -2,7 +2,7 @@
  * Kubernetes Job 管理 Mock API
  * @module mock/kubernetes/workload/job
  */
-import type { PageResp } from '@/types/common'
+import type { PageVo } from '@/types/common'
 import type { JobAnnotationsReq, JobDetailResp, JobLabelsReq, JobListResp, JobQueryReq, JobReq, JobYamlReq } from '@/types/kubernetes/workload/job'
 import { generateId } from '@/mock/utils'
 
@@ -25,7 +25,7 @@ export default [
   {
     method: 'get',
     url: '/kubernetes/clusters/:clusterId/jobs',
-    handler: (pathParams: Record<string, string>, params: Partial<JobQueryReq>): PageResp<JobListResp> => getJobList(pathParams.clusterId, params)
+    handler: (pathParams: Record<string, string>, params: Partial<JobQueryReq>): PageVo<JobListResp> => getJobList(pathParams.clusterId, params)
   },
   {
     method: 'get',
@@ -85,7 +85,7 @@ export default [
  * @param params - 查询参数（namespace 可选，不传则查询所有命名空间）
  * @returns 分页数据
  */
-function getJobList(_clusterId: string, params: Partial<JobQueryReq>): PageResp<JobListResp> {
+function getJobList(_clusterId: string, params: Partial<JobQueryReq>): PageVo<JobListResp> {
   const { id, name, namespace, status, page = 1, pageSize = 10 } = params || {}
 
   let filtered = [...mockJobs]

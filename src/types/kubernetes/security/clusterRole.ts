@@ -2,7 +2,7 @@
  * ClusterRole 资源类型定义
  * @module types/kubernetes/clusterRole
  */
-import type { BaseEntity, PageReq } from '@/types/common'
+import type { BaseEntity, PageForm } from '@/types/common'
 
 /**
  * 聚合策略类型
@@ -66,9 +66,9 @@ export interface ClusterRoleResp extends BaseEntity {
 
 /**
  * ClusterRole 查询请求参数
- * @extends PageReq 继承分页请求（含 page, pageSize）
+ * @extends PageForm 继承分页请求（含 page, pageSize）
  */
-export interface ClusterRoleQueryReq extends PageReq {
+export interface ClusterRoleQueryReq extends PageForm {
   /** ClusterRole 名称（模糊匹配） */
   name?: string
   /** 标签选择器 */

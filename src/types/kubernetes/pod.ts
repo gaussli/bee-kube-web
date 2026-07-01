@@ -2,32 +2,28 @@
  * Pod 资源相关类型定义
  * @module types/kubernetes/pod
  */
-import type { BaseEntity } from '../common'
+import type { Namespaced } from './types'
 
-/** Pod 状态枚举 */
+/**
+ * Pod 状态枚举
+ * @remarks
+ * - Running: 运行中（所有容器已创建且至少一个容器正在运行）
+ * - Pending: 等待中（Pod 已被集群接受，但容器尚未完全启动）
+ * - Succeeded: 已成功（所有容器已正常终止，不再重启）
+ * - Failed: 已失败（所有容器已终止，至少一个容器以失败退出）
+ * - Unknown: 未知状态（无法获取 Pod 状态）
+ */
 export type PodStatus = 'Running' | 'Pending' | 'Succeeded' | 'Failed' | 'Unknown'
 
 /**
  * Pod 列表响应数据
- * @extends BaseEntity 继承基础实体（含 id, createAt, createBy, updateAt, updateBy）
+ * @extends Namespaced 继承命名空间类型（含 clusterId, clusterName, namespace 等）
  */
-export interface PodListVo extends BaseEntity {
+export interface PodListVo extends Namespaced {
   /** 资源 UID */
   uid: string
   /** Pod 名称 */
   name: string
-  /** 所属集群 ID */
-  clusterId: string
-  /** 所属集群 UID */
-  clusterUid: string
-  /** 所属集群名称 */
-  clusterName: string
-  /** 命名空间 ID */
-  namespaceId: string
-  /** 命名空间 UID */
-  namespaceUid: string
-  /** 所属命名空间 */
-  namespace: string
   /** Pod IP */
   ip: string
   /** 状态 */

@@ -2,7 +2,7 @@
  * 命名空间管理相关类型定义
  * @module types/kubernetes/namespace
  */
-import type { BaseEntity, PageReq } from '@/types/common'
+import type { BaseEntity, PageForm } from '@/types/common'
 import type { MetadataAnnotationReq, MetadataLabelReq } from './comomn'
 import type { Condition, Metadata } from './types'
 
@@ -166,9 +166,9 @@ export interface NamespaceSimpleListResp {
 
 /**
  * 命名空间查询请求参数
- * @extends PageReq 继承分页请求（含 page, pageSize）
+ * @extends PageForm 继承分页请求（含 page, pageSize）
  */
-export interface NamespaceQueryReq extends PageReq {
+export interface NamespaceQueryReq extends PageForm {
   /** 命名空间ID */
   id: string
   /** 命名空间名称（模糊匹配） */

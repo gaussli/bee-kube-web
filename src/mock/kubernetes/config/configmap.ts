@@ -2,7 +2,7 @@
  * Kubernetes ConfigMap 管理 Mock API
  * @module mock/kubernetes/config/configmap
  */
-import type { PageResp } from '@/types/common'
+import type { PageVo } from '@/types/common'
 import type { ConfigMapAnnotationsReq, ConfigMapDataReq, ConfigMapDetailResp, ConfigMapLabelsReq, ConfigMapListResp, ConfigMapQueryReq, ConfigMapReq, ConfigMapYamlReq } from '@/types/kubernetes/config/configmap'
 import { generateId } from '@/mock/utils'
 
@@ -26,7 +26,7 @@ export default [
   {
     method: 'get',
     url: '/kubernetes/clusters/:clusterId/configmaps',
-    handler: (pathParams: Record<string, string>, params: Partial<ConfigMapQueryReq>): PageResp<ConfigMapListResp> => getConfigMapList(pathParams.clusterId, params)
+    handler: (pathParams: Record<string, string>, params: Partial<ConfigMapQueryReq>): PageVo<ConfigMapListResp> => getConfigMapList(pathParams.clusterId, params)
   },
   {
     method: 'get',
@@ -91,7 +91,7 @@ export default [
  * @param params - 查询参数（含 namespace 筛选）
  * @returns 分页数据
  */
-function getConfigMapList(_clusterId: string, params: Partial<ConfigMapQueryReq>): PageResp<ConfigMapListResp> {
+function getConfigMapList(_clusterId: string, params: Partial<ConfigMapQueryReq>): PageVo<ConfigMapListResp> {
   const { id, name, namespace, page = 1, pageSize = 10 } = params || {}
 
   let filtered = [...mockConfigMaps]

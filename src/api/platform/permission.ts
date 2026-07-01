@@ -1,9 +1,9 @@
-import type { PageResp, PermissionChangeStatusReq, PermissionCreateReq, PermissionDetailResp, PermissionQueryReq, PermissionResp, PermissionUpdateReq } from '@/types'
+import type { PageVo, PermissionChangeStatusReq, PermissionCreateReq, PermissionDetailResp, PermissionQueryReq, PermissionResp, PermissionUpdateReq } from '@/types'
 import { request } from '@/utils'
 
 // 分页查询权限列表
 export function getPermissionPage(data: PermissionQueryReq) {
-  return request.get<PageResp<PermissionResp>>('/system/permissions', data)
+  return request.get<PageVo<PermissionResp>>('/system/permissions', data)
 }
 
 // 获取权限详情

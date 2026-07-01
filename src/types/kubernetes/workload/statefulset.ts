@@ -2,7 +2,7 @@
  * StatefulSet 资源相关类型定义
  * @module types/kubernetes/workload/statefulset
  */
-import type { BaseEntity, PageReq } from '@/types/common'
+import type { BaseEntity, PageForm } from '@/types/common'
 import type { Container, VolumeClaimTemplate } from '../types'
 
 /**
@@ -125,9 +125,9 @@ export interface StatefulSetDetailVo extends BaseEntity {
 
 /**
  * StatefulSet 查询请求参数
- * @extends PageReq 继承分页请求（含 page, pageSize）
+ * @extends PageForm 继承分页请求（含 page, pageSize）
  */
-export interface StatefulSetQueryForm extends PageReq {
+export interface StatefulSetQueryForm extends PageForm {
   /** StatefulSet ID（精确匹配） */
   id: string
   /** StatefulSet 名称（模糊匹配） */

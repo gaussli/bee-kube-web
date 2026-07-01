@@ -2,7 +2,7 @@
  * Kubernetes Deployment 管理 Mock API
  * @module mock/kubernetes/workload/deployment
  */
-import type { PageResp } from '@/types/common'
+import type { PageVo } from '@/types/common'
 import type {
   DeploymentAdvancedVo,
   DeploymentAnnotationForm,
@@ -42,7 +42,7 @@ export default [
   {
     method: 'get',
     url: '/kubernetes/clusters/:clusterId/deployments',
-    handler: (pathParams: Record<string, string>, params: Partial<DeploymentQueryForm>): PageResp<DeploymentListVo> => getDeploymentList(pathParams.clusterId, params)
+    handler: (pathParams: Record<string, string>, params: Partial<DeploymentQueryForm>): PageVo<DeploymentListVo> => getDeploymentList(pathParams.clusterId, params)
   },
   {
     method: 'get',
@@ -127,7 +127,7 @@ export default [
  * @param params - 查询参数
  * @returns 分页数据
  */
-function getDeploymentList(_clusterId: string, params: Partial<DeploymentQueryForm>): PageResp<DeploymentListVo> {
+function getDeploymentList(_clusterId: string, params: Partial<DeploymentQueryForm>): PageVo<DeploymentListVo> {
   const { id, name, namespace, status, page = 1, pageSize = 10 } = params || {}
 
   let filtered = [...mockDeployments]

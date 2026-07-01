@@ -2,7 +2,7 @@
  * Role 资源 API
  * @module api/kubernetes/role
  */
-import type { PageResp } from '@/types/common'
+import type { PageVo } from '@/types/common'
 import type { RoleResp, RoleQueryReq, RoleReq, RoleLabelsReq, RoleAnnotationsReq, RoleRulesReq } from '@/types/kubernetes/security/role'
 import { request } from '@/utils'
 
@@ -13,7 +13,7 @@ import { request } from '@/utils'
  * @param params - 查询参数
  * @returns 分页后的 Role 列表
  */
-export function getRolePage(clusterId: string, namespaceName: string, params: Partial<RoleQueryReq>): Promise<PageResp<RoleResp>> {
+export function getRolePage(clusterId: string, namespaceName: string, params: Partial<RoleQueryReq>): Promise<PageVo<RoleResp>> {
   return request.get(`/kubernetes/clusters/${clusterId}/namespaces/${namespaceName}/roles`, { params })
 }
 

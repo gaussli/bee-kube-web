@@ -2,14 +2,14 @@
  * Kubernetes 集群管理类型定义
  * @module types/kubernetes/cluster
  */
-import type { BaseEntity, PageReq } from '@/types/common'
+import type { BaseEntity, PageForm } from '@/types/common'
 import type { ResourceResp } from '@/types/kubernetes/comomn'
 import type { Event, EventSource, EventType, ObjectReference } from './types'
 
 /**
  * 集群查询请求参数
  */
-export interface ClusterQueryReq extends PageReq {
+export interface ClusterQueryReq extends PageForm {
   /** 集群ID */
   id: string
   /** 集群名称 */
@@ -87,9 +87,9 @@ export interface ClusterEventResp extends BaseEntity, Event {
 
 /**
  * 集群事件查询请求参数
- * @extends PageReq 继承分页请求（含 page, pageSize）
+ * @extends PageForm 继承分页请求（含 page, pageSize）
  */
-export interface ClusterEventQueryReq extends PageReq {
+export interface ClusterEventQueryReq extends PageForm {
   /** 事件类型 */
   type?: EventType
   /** 事件原因（模糊匹配） */

@@ -2,7 +2,7 @@
  * Kubernetes Secret 管理 Mock API
  * @module mock/kubernetes/config/secret
  */
-import type { PageResp } from '@/types/common'
+import type { PageVo } from '@/types/common'
 import type { SecretAnnotationsReq, SecretDataReq, SecretDetailResp, SecretLabelsReq, SecretListResp, SecretQueryReq, SecretReq, SecretYamlReq } from '@/types/kubernetes/config/secret'
 import { generateId } from '@/mock/utils'
 
@@ -26,7 +26,7 @@ export default [
   {
     method: 'get',
     url: '/kubernetes/clusters/:clusterId/secrets',
-    handler: (pathParams: Record<string, string>, params: Partial<SecretQueryReq>): PageResp<SecretListResp> => getSecretList(pathParams.clusterId, params)
+    handler: (pathParams: Record<string, string>, params: Partial<SecretQueryReq>): PageVo<SecretListResp> => getSecretList(pathParams.clusterId, params)
   },
   {
     method: 'get',
@@ -91,7 +91,7 @@ export default [
  * @param params - 查询参数（含 namespace 筛选）
  * @returns 分页数据
  */
-function getSecretList(_clusterId: string, params: Partial<SecretQueryReq>): PageResp<SecretListResp> {
+function getSecretList(_clusterId: string, params: Partial<SecretQueryReq>): PageVo<SecretListResp> {
   const { id, name, namespace, type, page = 1, pageSize = 10 } = params || {}
 
   let filtered = [...mockSecrets]

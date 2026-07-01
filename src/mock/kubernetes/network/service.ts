@@ -2,7 +2,7 @@
  * Service Mock API
  * @module mock/kubernetes/network/service
  */
-import type { PageResp } from '@/types/common'
+import type { PageVo } from '@/types/common'
 import type { ServiceListVo, ServiceQueryReq, ServiceReq } from '@/types/kubernetes/network/service'
 import { generateId } from '@/mock/utils'
 
@@ -13,7 +13,7 @@ import { generateId } from '@/mock/utils'
  * @param params - 查询参数
  * @returns 分页数据
  */
-function getServicePage(clusterId: string, namespaceName: string, params: Partial<ServiceQueryReq>): PageResp<ServiceListVo> {
+function getServicePage(clusterId: string, namespaceName: string, params: Partial<ServiceQueryReq>): PageVo<ServiceListVo> {
   const { name, type, page = 1, pageSize = 10 } = params || {}
   let filtered = mockServices.filter(s => s.clusterId === clusterId && s.namespace === namespaceName)
   if (name) filtered = filtered.filter(s => s.name.toLowerCase().includes(name.toLowerCase()))

@@ -2,7 +2,7 @@
  * StorageClass Mock API
  * @module mock/kubernetes/storage/storageClass
  */
-import type { PageResp } from '@/types/common'
+import type { PageVo } from '@/types/common'
 import type { StorageClassResp, StorageClassQueryReq } from '@/types/kubernetes/storage/storageClass'
 import { generateId } from '@/mock/utils'
 
@@ -12,7 +12,7 @@ import { generateId } from '@/mock/utils'
  * @param params - 查询参数
  * @returns 分页数据
  */
-function getStorageClassPage(clusterId: string, params: Partial<StorageClassQueryReq>): PageResp<StorageClassResp> {
+function getStorageClassPage(clusterId: string, params: Partial<StorageClassQueryReq>): PageVo<StorageClassResp> {
   const { name, provisioner, page = 1, pageSize = 10 } = params || {}
   let filtered = mockSCs.filter(s => s.clusterId === clusterId)
   if (name) filtered = filtered.filter(s => s.name.toLowerCase().includes(name.toLowerCase()))

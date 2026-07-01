@@ -2,7 +2,7 @@
  * Kubernetes CronJob 管理 Mock API
  * @module mock/kubernetes/workload/cronjob
  */
-import type { PageResp } from '@/types/common'
+import type { PageVo } from '@/types/common'
 import type { CronJobAnnotationsReq, CronJobDetailResp, CronJobLabelsReq, CronJobListResp, CronJobQueryReq, CronJobReq, CronJobYamlReq } from '@/types/kubernetes/workload/cronjob'
 import { generateId } from '@/mock/utils'
 
@@ -28,7 +28,7 @@ export default [
   {
     method: 'get',
     url: '/kubernetes/clusters/:clusterId/cronjobs',
-    handler: (pathParams: Record<string, string>, params: Partial<CronJobQueryReq>): PageResp<CronJobListResp> => getCronJobList(pathParams.clusterId, params)
+    handler: (pathParams: Record<string, string>, params: Partial<CronJobQueryReq>): PageVo<CronJobListResp> => getCronJobList(pathParams.clusterId, params)
   },
   {
     method: 'get',
@@ -103,7 +103,7 @@ export default [
  * @param params - 查询参数（namespace 可选，不传则查询所有命名空间）
  * @returns 分页数据
  */
-function getCronJobList(_clusterId: string, params: Partial<CronJobQueryReq>): PageResp<CronJobListResp> {
+function getCronJobList(_clusterId: string, params: Partial<CronJobQueryReq>): PageVo<CronJobListResp> {
   const { id, name, namespace, status, page = 1, pageSize = 10 } = params || {}
 
   let filtered = [...mockCronJobs]

@@ -2,7 +2,7 @@
  * NetworkPolicy 资源 API
  * @module api/kubernetes/networkPolicy
  */
-import type { PageResp } from '@/types/common'
+import type { PageVo } from '@/types/common'
 import type { NetworkPolicyResp, NetworkPolicyQueryReq, NetworkPolicyReq, NetworkPolicyLabelsReq, NetworkPolicyAnnotationsReq } from '@/types/kubernetes/network/networkPolicy'
 import { request } from '@/utils'
 
@@ -13,7 +13,7 @@ import { request } from '@/utils'
  * @param params - 查询参数
  * @returns 分页后的 NetworkPolicy 列表
  */
-export function getNetworkPolicyPage(clusterId: string, namespaceName: string, params: Partial<NetworkPolicyQueryReq>): Promise<PageResp<NetworkPolicyResp>> {
+export function getNetworkPolicyPage(clusterId: string, namespaceName: string, params: Partial<NetworkPolicyQueryReq>): Promise<PageVo<NetworkPolicyResp>> {
   return request.get(`/kubernetes/clusters/${clusterId}/namespaces/${namespaceName}/networkpolicies`, { params })
 }
 

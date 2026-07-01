@@ -2,7 +2,7 @@
  * ClusterRole 资源 API
  * @module api/kubernetes/clusterRole
  */
-import type { PageResp } from '@/types/common'
+import type { PageVo } from '@/types/common'
 import type { ClusterRoleResp, ClusterRoleQueryReq, ClusterRoleReq, ClusterRoleLabelsReq, ClusterRoleAnnotationsReq, ClusterRoleRulesReq } from '@/types/kubernetes/security/clusterRole'
 import { request } from '@/utils'
 
@@ -12,7 +12,7 @@ import { request } from '@/utils'
  * @param params - 查询参数
  * @returns 分页后的 ClusterRole 列表
  */
-export function getClusterRolePage(clusterId: string, params: Partial<ClusterRoleQueryReq>): Promise<PageResp<ClusterRoleResp>> {
+export function getClusterRolePage(clusterId: string, params: Partial<ClusterRoleQueryReq>): Promise<PageVo<ClusterRoleResp>> {
   return request.get(`/kubernetes/clusters/${clusterId}/clusterroles`, { params })
 }
 

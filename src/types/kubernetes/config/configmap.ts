@@ -2,7 +2,7 @@
  * ConfigMap 资源相关类型定义
  * @module types/kubernetes/config/configmap
  */
-import type { BaseEntity, PageReq } from '@/types/common'
+import type { BaseEntity, PageForm } from '@/types/common'
 
 /**
  * ConfigMap 列表响应数据
@@ -62,9 +62,9 @@ export interface ConfigMapDetailResp extends BaseEntity {
 
 /**
  * ConfigMap 查询请求参数
- * @extends PageReq 继承分页请求（含 page, pageSize）
+ * @extends PageForm 继承分页请求（含 page, pageSize）
  */
-export interface ConfigMapQueryReq extends PageReq {
+export interface ConfigMapQueryReq extends PageForm {
   /** ConfigMap ID（精确匹配） */
   id: string
   /** ConfigMap 名称（模糊匹配） */

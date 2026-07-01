@@ -2,7 +2,7 @@
  * Job 资源管理 API
  * @module api/kubernetes/workload/job
  */
-import type { PageResp } from '@/types/common'
+import type { PageVo } from '@/types/common'
 import type { JobAnnotationsReq, JobDetailResp, JobLabelsReq, JobListResp, JobQueryReq, JobReq, JobYamlReq } from '@/types/kubernetes/workload/job'
 import { request } from '@/utils'
 
@@ -12,8 +12,8 @@ import { request } from '@/utils'
  * @param params - 查询参数（namespace 可选，默认查询所有命名空间）
  * @returns 分页后的 Job 列表
  */
-export function getJobList(clusterId: string, params: Partial<JobQueryReq>): Promise<PageResp<JobListResp>> {
-  return request.get<PageResp<JobListResp>>(`/kubernetes/clusters/${clusterId}/jobs`, params)
+export function getJobList(clusterId: string, params: Partial<JobQueryReq>): Promise<PageVo<JobListResp>> {
+  return request.get<PageVo<JobListResp>>(`/kubernetes/clusters/${clusterId}/jobs`, params)
 }
 
 /**

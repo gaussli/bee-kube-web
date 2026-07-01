@@ -2,7 +2,7 @@
  * PersistentVolume Mock API
  * @module mock/kubernetes/storage/persistentVolume
  */
-import type { PageResp } from '@/types/common'
+import type { PageVo } from '@/types/common'
 import type { PersistentVolumeResp, PersistentVolumeQueryReq } from '@/types/kubernetes/storage/persistentVolume'
 import { generateId } from '@/mock/utils'
 
@@ -12,7 +12,7 @@ import { generateId } from '@/mock/utils'
  * @param params - 查询参数
  * @returns 分页数据
  */
-function getPersistentVolumePage(clusterId: string, params: Partial<PersistentVolumeQueryReq>): PageResp<PersistentVolumeResp> {
+function getPersistentVolumePage(clusterId: string, params: Partial<PersistentVolumeQueryReq>): PageVo<PersistentVolumeResp> {
   const { name, status, storageClassName, page = 1, pageSize = 10 } = params || {}
   let filtered = mockPVs.filter(p => p.clusterId === clusterId)
   if (name) filtered = filtered.filter(p => p.name.toLowerCase().includes(name.toLowerCase()))

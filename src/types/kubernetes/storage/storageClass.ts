@@ -2,7 +2,7 @@
  * StorageClass 资源类型定义
  * @module types/kubernetes/storageClass
  */
-import type { BaseEntity, PageReq } from '@/types/common'
+import type { BaseEntity, PageForm } from '@/types/common'
 
 /**
  * StorageClass 响应数据
@@ -35,9 +35,9 @@ export interface StorageClassResp extends BaseEntity {
 
 /**
  * StorageClass 查询请求参数
- * @extends PageReq 继承分页请求（含 page, pageSize）
+ * @extends PageForm 继承分页请求（含 page, pageSize）
  */
-export interface StorageClassQueryReq extends PageReq {
+export interface StorageClassQueryReq extends PageForm {
   /** StorageClass 名称（模糊匹配） */
   name?: string
   /** 存储提供者 */

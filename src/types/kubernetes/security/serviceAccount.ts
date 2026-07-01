@@ -2,7 +2,7 @@
  * ServiceAccount 资源类型定义
  * @module types/kubernetes/serviceAccount
  */
-import type { BaseEntity, PageReq } from '@/types/common'
+import type { BaseEntity, PageForm } from '@/types/common'
 
 /**
  * ServiceAccount 响应数据
@@ -38,9 +38,9 @@ export interface ServiceAccountResp extends BaseEntity {
 
 /**
  * ServiceAccount 查询请求参数
- * @extends PageReq 继承分页请求（含 page, pageSize）
+ * @extends PageForm 继承分页请求（含 page, pageSize）
  */
-export interface ServiceAccountQueryReq extends PageReq {
+export interface ServiceAccountQueryReq extends PageForm {
   /** ServiceAccount 名称（模糊匹配） */
   name?: string
   /** 标签选择器 */

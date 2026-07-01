@@ -2,7 +2,7 @@
  * ClusterRole Mock API
  * @module mock/kubernetes/security/clusterRole
  */
-import type { PageResp } from '@/types/common'
+import type { PageVo } from '@/types/common'
 import type { ClusterRoleResp, ClusterRoleQueryReq, ClusterRoleReq } from '@/types/kubernetes/security/clusterRole'
 import { generateId } from '@/mock/utils'
 
@@ -12,7 +12,7 @@ import { generateId } from '@/mock/utils'
  * @param params - 查询参数
  * @returns 分页数据
  */
-function getClusterRolePage(clusterId: string, params: Partial<ClusterRoleQueryReq>): PageResp<ClusterRoleResp> {
+function getClusterRolePage(clusterId: string, params: Partial<ClusterRoleQueryReq>): PageVo<ClusterRoleResp> {
   const { name, showSystem, page = 1, pageSize = 10 } = params || {}
   let filtered = mockClusterRoles.filter(c => c.clusterId === clusterId)
   if (!showSystem) filtered = filtered.filter(c => !c.isSystem)

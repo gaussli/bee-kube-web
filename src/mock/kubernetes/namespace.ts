@@ -2,7 +2,7 @@
  * Kubernetes 命名空间管理 Mock API
  * @module mock/kubernetes/namespace
  */
-import type { PageResp } from '@/types/common'
+import type { PageVo } from '@/types/common'
 import type { NamespaceQueryReq, NamespaceReq, NamespaceListResp, NamespaceDetailResp, NamespaceSimpleListResp, NamespaceLabelsReq, NamespaceAnnotationsReq, NamespaceQuotaReq, NamespaceImportReq } from '@/types/kubernetes/namespace'
 import { generateId } from '@/mock/utils'
 
@@ -28,7 +28,7 @@ export default [
   {
     method: 'get',
     url: '/kubernetes/clusters/:clusterId/namespaces',
-    handler: (pathParams: Record<string, string>, params: Partial<NamespaceQueryReq>): PageResp<NamespaceListResp> | NamespaceSimpleListResp[] => getNamespacePage(pathParams.clusterId, params)
+    handler: (pathParams: Record<string, string>, params: Partial<NamespaceQueryReq>): PageVo<NamespaceListResp> | NamespaceSimpleListResp[] => getNamespacePage(pathParams.clusterId, params)
   },
   {
     method: 'get',
@@ -103,7 +103,7 @@ export default [
  * @param params - 查询参数
  * @returns 分页数据（normal）或简化列表（simple）
  */
-function getNamespacePage(_clusterId: string, params: Partial<NamespaceQueryReq>): PageResp<NamespaceListResp> | NamespaceSimpleListResp[] {
+function getNamespacePage(_clusterId: string, params: Partial<NamespaceQueryReq>): PageVo<NamespaceListResp> | NamespaceSimpleListResp[] {
   const { id, name, status, mode = 'normal', page = 1, pageSize = 10 } = params || {}
 
   let filtered = [...mockNamespaces]

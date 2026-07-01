@@ -2,7 +2,7 @@
  * Ingress 资源相关类型定义
  * @module types/kubernetes/network/ingress
  */
-import type { PageReq } from '@/types/common'
+import type { PageForm } from '@/types/common'
 import type { Namespaced } from '../types'
 import type { IngressLoadBalancer, IngressRule, IngressTLS } from './types'
 
@@ -10,9 +10,9 @@ import type { IngressLoadBalancer, IngressRule, IngressTLS } from './types'
 
 /**
  * Ingress 查询请求参数
- * @extends PageReq 继承分页请求（含 page, pageSize）
+ * @extends PageForm 继承分页请求（含 page, pageSize）
  */
-export interface IngressQueryReq extends PageReq {
+export interface IngressQueryReq extends PageForm {
   /** Ingress 名称（模糊匹配） */
   name?: string
   /** Ingress 类名 */

@@ -2,7 +2,7 @@
  * 节点管理 API
  * @module api/kubernetes/node
  */
-import type { PageResp } from '@/types/common'
+import type { PageVo } from '@/types/common'
 import type { NodeQueryReq, NodeListResp, NodeReq, NodeCordonReq, NodeLabelsReq, NodeAnnotationsReq, NodeTaintsReq, NodeResourceResp } from '@/types/kubernetes/node'
 import { request } from '@/utils'
 
@@ -12,8 +12,8 @@ import { request } from '@/utils'
  * @param params - 查询参数
  * @returns 分页后的节点列表
  */
-export function getNodePage(clusterId: string, params: Partial<NodeQueryReq>): Promise<PageResp<NodeListResp>> {
-  return request.get<PageResp<NodeListResp>>(`/kubernetes/clusters/${clusterId}/nodes`, params)
+export function getNodePage(clusterId: string, params: Partial<NodeQueryReq>): Promise<PageVo<NodeListResp>> {
+  return request.get<PageVo<NodeListResp>>(`/kubernetes/clusters/${clusterId}/nodes`, params)
 }
 
 /**

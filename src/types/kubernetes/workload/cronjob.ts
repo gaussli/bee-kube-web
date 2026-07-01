@@ -2,7 +2,7 @@
  * CronJob 资源相关类型定义
  * @module types/kubernetes/workload/cronjob
  */
-import type { BaseEntity, PageReq } from '@/types/common'
+import type { BaseEntity, PageForm } from '@/types/common'
 
 /** CronJob 状态 */
 export type CronJobStatus = 'Active' | 'Suspended' | 'Unknown'
@@ -118,9 +118,9 @@ export interface CronJobDetailResp extends BaseEntity {
 
 /**
  * CronJob 查询请求参数
- * @extends PageReq 继承分页请求（含 page, pageSize）
+ * @extends PageForm 继承分页请求（含 page, pageSize）
  */
-export interface CronJobQueryReq extends PageReq {
+export interface CronJobQueryReq extends PageForm {
   /** 资源 ID */
   id: string
   /** CronJob 名称（模糊匹配） */

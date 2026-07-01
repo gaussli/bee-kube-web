@@ -2,7 +2,7 @@
  * RoleBinding Mock API
  * @module mock/kubernetes/security/roleBinding
  */
-import type { PageResp } from '@/types/common'
+import type { PageVo } from '@/types/common'
 import type { RoleBindingResp, RoleBindingQueryReq, RoleBindingReq } from '@/types/kubernetes/security/roleBinding'
 import { generateId } from '@/mock/utils'
 
@@ -13,7 +13,7 @@ import { generateId } from '@/mock/utils'
  * @param params - 查询参数
  * @returns 分页数据
  */
-function getRoleBindingPage(clusterId: string, namespaceName: string, params: Partial<RoleBindingQueryReq>): PageResp<RoleBindingResp> {
+function getRoleBindingPage(clusterId: string, namespaceName: string, params: Partial<RoleBindingQueryReq>): PageVo<RoleBindingResp> {
   const { name, showSystem, page = 1, pageSize = 10 } = params || {}
   let filtered = mockRoleBindings.filter(b => b.clusterId === clusterId && b.namespace === namespaceName)
   if (!showSystem) filtered = filtered.filter(b => !b.isSystem)

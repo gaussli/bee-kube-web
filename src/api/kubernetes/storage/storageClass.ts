@@ -2,7 +2,7 @@
  * StorageClass 资源 API
  * @module api/kubernetes/storageClass
  */
-import type { PageResp } from '@/types/common'
+import type { PageVo } from '@/types/common'
 import type { StorageClassQueryReq, StorageClassResp, StorageClassLabelsReq, StorageClassAnnotationsReq } from '@/types/kubernetes/storage/storageClass'
 import { request } from '@/utils'
 
@@ -12,7 +12,7 @@ import { request } from '@/utils'
  * @param params - 查询参数
  * @returns 分页后的 StorageClass 列表
  */
-export function getStorageClassPage(clusterId: string, params: Partial<StorageClassQueryReq>): Promise<PageResp<StorageClassResp>> {
+export function getStorageClassPage(clusterId: string, params: Partial<StorageClassQueryReq>): Promise<PageVo<StorageClassResp>> {
   return request.get(`/kubernetes/clusters/${clusterId}/storageclasses`, { params })
 }
 

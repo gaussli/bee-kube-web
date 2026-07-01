@@ -2,7 +2,7 @@
  * NetworkPolicy 资源类型定义
  * @module types/kubernetes/networkPolicy
  */
-import type { BaseEntity, PageReq } from '@/types/common'
+import type { BaseEntity, PageForm } from '@/types/common'
 
 /**
  * IP 块配置
@@ -79,9 +79,9 @@ export interface NetworkPolicyResp extends BaseEntity {
 
 /**
  * NetworkPolicy 查询请求参数
- * @extends PageReq 继承分页请求（含 page, pageSize）
+ * @extends PageForm 继承分页请求（含 page, pageSize）
  */
-export interface NetworkPolicyQueryReq extends PageReq {
+export interface NetworkPolicyQueryReq extends PageForm {
   /** NetworkPolicy 名称（模糊匹配） */
   name?: string
   /** 标签选择器 */

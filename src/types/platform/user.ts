@@ -1,8 +1,8 @@
 // 用户相关类型
-import type { BaseEntity, PageReq } from '@/types/common'
+import type { BaseEntity, PageForm } from '@/types/common'
 
 // 用户查询请求参数
-export interface UserQueryReq extends PageReq {
+export interface UserQueryReq extends PageForm {
   id?: string
   username?: string
   nickname?: string

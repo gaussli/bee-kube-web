@@ -2,11 +2,11 @@
  * Deployment 资源相关类型定义
  * @module types/kubernetes/workload/deployment
  */
-import type { BaseEntity, PageReq } from '@/types/common'
+import type { PageForm } from '@/types/common'
 import type { IngressListVo } from '@/types/kubernetes/network/ingress'
 import type { ServiceListVo } from '@/types/kubernetes/network/service'
 import type { PodListVo } from '@/types/kubernetes/pod'
-import type { Condition, ContainerResource, Event, Metadata } from '../types'
+import type { Condition, ContainerResource, Event, Metadata, Namespaced } from '../types'
 import type { HistoryRevision, NodeAffinity, PodAffinity, PodAntiAffinity, RestartPolicy, Toleration } from './types'
 
 /**
@@ -44,9 +44,9 @@ export type DeploymentStrategyType = 'RollingUpdate' | 'Recreate'
 
 /**
  * Deployment 查询请求参数
- * @extends PageReq 继承分页请求（含 page, pageSize）
+ * @extends PageForm 继承分页请求（含 page, pageSize）
  */
-export interface DeploymentQueryForm extends PageReq {
+export interface DeploymentQueryForm extends PageForm {
   /** Deployment ID */
   id: string
   /** Deployment 名称（模糊匹配） */
@@ -61,15 +61,11 @@ export interface DeploymentQueryForm extends PageReq {
 
 /**
  * Deployment 列表对象响应数据
- * @extends BaseEntity 继承基础实体（含 id, createAt, createBy, updateAt, updateBy）
+ * @extends Namespaced 继承命名空间类型（含 clusterId, clusterName, namespace 等）
  */
-export interface DeploymentListVo extends BaseEntity {
+export interface DeploymentListVo extends Namespaced {
   /** 资源 UID */
   uid: string
-  /** 所属集群 ID */
-  clusterId: string
-  /** 所属命名空间 */
-  namespace: string
   /** Deployment 名称 */
   name: string
   /** 描述信息 */
@@ -112,25 +108,13 @@ export interface DeploymentDetailVo {
 /**
  * Deployment 基础信息响应
  * 用于下拉选择、关联引用等场景，仅返回核心标识字段
- * @extends BaseEntity 继承基础实体（含 id, createAt, createBy, updateAt, updateBy）
+ * @extends Namespaced 继承命名空间类型（含 clusterId, clusterName, namespace 等）
  */
-export interface DeploymentBasicVo extends BaseEntity {
+export interface DeploymentBasicVo extends Namespaced {
   /** 资源 UID */
   uid: string
   /** Deployment 名称 */
   name: string
-  /** 所属集群 ID */
-  clusterId: string
-  /** 所属集群 UID */
-  clusterUid: string
-  /** 所属集群名称 */
-  clusterName: string
-  /** 命名空间 ID */
-  namespaceId: string
-  /** 命名空间 UID */
-  namespaceUid: string
-  /** 所属命名空间 */
-  namespace: string
   /** 描述信息 */
   description: string
   /** 状态 */
@@ -188,6 +172,8 @@ export interface DeploymentStrategyVo {
   /** 最大超出副本数 */
   maxSurge: string
 }
+
+// ==================== 4. 其他响应对象 ====================
 
 /**
  * Deployment Pod 列表响应

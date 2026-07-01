@@ -2,7 +2,7 @@
  * CRD Mock API
  * @module mock/kubernetes/customResourceDefinition
  */
-import type { PageResp } from '@/types/common'
+import type { PageVo } from '@/types/common'
 import type { CrdResp, CrdQueryReq, CrdLabelsReq, CrdAnnotationsReq } from '@/types/kubernetes/crd'
 import { generateId } from '@/mock/utils'
 
@@ -20,7 +20,7 @@ export default [
   {
     method: 'GET',
     url: '/kubernetes/clusters/:clusterId/crds',
-    handler: (pathParams: Record<string, string>, params: Partial<CrdQueryReq>): PageResp<CrdResp> => getCrdPage(pathParams.clusterId, params)
+    handler: (pathParams: Record<string, string>, params: Partial<CrdQueryReq>): PageVo<CrdResp> => getCrdPage(pathParams.clusterId, params)
   },
   {
     method: 'GET',
@@ -55,7 +55,7 @@ export default [
  * @param params - 查询参数
  * @returns 分页数据
  */
-function getCrdPage(clusterId: string, params: Partial<CrdQueryReq>): PageResp<CrdResp> {
+function getCrdPage(clusterId: string, params: Partial<CrdQueryReq>): PageVo<CrdResp> {
   const { name, group, scope, page = 1, pageSize = 10 } = params || {}
 
   let filtered = [...mockCrds].filter(c => c.clusterId === clusterId)
