@@ -4,10 +4,15 @@
  */
 import type { PageVo } from '@/types/common'
 import type {
-  DeploymentAdvancedVo,
   DeploymentAnnotationForm,
   DeploymentCreateForm,
   DeploymentDetailVo,
+  DeploymentEventListVo,
+  DeploymentHistoryRevisionListVo,
+  DeploymentMonitorVo,
+  DeploymentNetworkVo,
+  DeploymentPodListVo,
+  DeploymentStorageListVo,
   DeploymentUpdateForm,
   DeploymentLabelForm,
   DeploymentListVo,
@@ -37,6 +42,83 @@ export function getDeploymentList(clusterId: string, params: Partial<DeploymentQ
  */
 export function getDeploymentDetail(clusterId: string, namespace: string, name: string): Promise<DeploymentDetailVo> {
   return request.get<DeploymentDetailVo>(`/kubernetes/clusters/${clusterId}/namespaces/${namespace}/deployments/${name}`)
+}
+
+/**
+ * 获取 Deployment Pod 列表
+ * @param clusterId - 集群ID
+ * @param namespace - 命名空间名称
+ * @param name - Deployment 名称
+ * @returns Deployment Pod 列表
+ */
+export function getDeploymentPodList(clusterId: string, namespace: string, name: string): Promise<DeploymentPodListVo[]> {
+  return request.get<DeploymentPodListVo[]>(`/kubernetes/clusters/${clusterId}/namespaces/${namespace}/deployments/${name}/pods`)
+}
+
+/**
+ * 获取 Deployment 调度策略
+ * @param clusterId - 集群ID
+ * @param namespace - 命名空间名称
+ * @param name - Deployment 名称
+ * @returns Deployment 调度策略
+ */
+export function getDeploymentSchedule(clusterId: string, namespace: string, name: string): Promise<DeploymentScheduleVo> {
+  return request.get<DeploymentScheduleVo>(`/kubernetes/clusters/${clusterId}/namespaces/${namespace}/deployments/${name}/schedule`)
+}
+
+/**
+ * 获取 Deployment 历史版本列表
+ * @param clusterId - 集群ID
+ * @param namespace - 命名空间名称
+ * @param name - Deployment 名称
+ * @returns Deployment 历史版本列表
+ */
+export function getDeploymentHistoryRevisionList(clusterId: string, namespace: string, name: string): Promise<DeploymentHistoryRevisionListVo[]> {
+  return request.get<DeploymentHistoryRevisionListVo[]>(`/kubernetes/clusters/${clusterId}/namespaces/${namespace}/deployments/${name}/history`)
+}
+
+/**
+ * 获取 Deployment 网络资源
+ * @param clusterId - 集群ID
+ * @param namespace - 命名空间名称
+ * @param name - Deployment 名称
+ * @returns Deployment 网络资源
+ */
+export function getDeploymentNetwork(clusterId: string, namespace: string, name: string): Promise<DeploymentNetworkVo> {
+  return request.get<DeploymentNetworkVo>(`/kubernetes/clusters/${clusterId}/namespaces/${namespace}/deployments/${name}/network`)
+}
+
+/**
+ * 获取 Deployment 存储列表
+ * @param clusterId - 集群ID
+ * @param namespace - 命名空间名称
+ * @param name - Deployment 名称
+ * @returns Deployment 存储列表
+ */
+export function getDeploymentStorageList(clusterId: string, namespace: string, name: string): Promise<DeploymentStorageListVo[]> {
+  return request.get<DeploymentStorageListVo[]>(`/kubernetes/clusters/${clusterId}/namespaces/${namespace}/deployments/${name}/storages`)
+}
+
+/**
+ * 获取 Deployment 监控数据
+ * @param clusterId - 集群ID
+ * @param namespace - 命名空间名称
+ * @param name - Deployment 名称
+ * @returns Deployment 监控数据
+ */
+export function getDeploymentMonitor(clusterId: string, namespace: string, name: string): Promise<DeploymentMonitorVo> {
+  return request.get<DeploymentMonitorVo>(`/kubernetes/clusters/${clusterId}/namespaces/${namespace}/deployments/${name}/monitor`)
+}
+
+/**
+ * 获取 Deployment 事件列表
+ * @param clusterId - 集群ID
+ * @param namespace - 命名空间名称
+ * @param name - Deployment 名称
+ * @returns Deployment 事件列表
+ */
+export function getDeploymentEventList(clusterId: string, namespace: string, name: string): Promise<DeploymentEventListVo[]> {
+  return request.get<DeploymentEventListVo[]>(`/kubernetes/clusters/${clusterId}/namespaces/${namespace}/deployments/${name}/events`)
 }
 
 /**
@@ -129,28 +211,6 @@ export function exportDeployment(clusterId: string, params: Partial<DeploymentQu
  */
 export function importDeployment(clusterId: string, data: DeploymentYamlForm): Promise<void> {
   return request.post(`/kubernetes/clusters/${clusterId}/deployments/import`, data)
-}
-
-/**
- * 获取 Deployment 调度策略
- * @param clusterId - 集群ID
- * @param namespace - 命名空间名称
- * @param name - Deployment 名称
- * @returns Deployment 调度策略
- */
-export function getDeploymentSchedule(clusterId: string, namespace: string, name: string): Promise<DeploymentScheduleVo> {
-  return request.get<DeploymentScheduleVo>(`/kubernetes/clusters/${clusterId}/namespaces/${namespace}/deployments/${name}/schedule`)
-}
-
-/**
- * 获取 Deployment 高级配置
- * @param clusterId - 集群ID
- * @param namespace - 命名空间名称
- * @param name - Deployment 名称
- * @returns Deployment 高级配置
- */
-export function getDeploymentAdvanced(clusterId: string, namespace: string, name: string): Promise<DeploymentAdvancedVo> {
-  return request.get<DeploymentAdvancedVo>(`/kubernetes/clusters/${clusterId}/namespaces/${namespace}/deployments/${name}/advanced`)
 }
 
 /**

@@ -10,6 +10,12 @@ import type {
   DeploymentConditionVo,
   DeploymentCreateForm,
   DeploymentDetailVo,
+  DeploymentEventListVo,
+  DeploymentHistoryRevisionListVo,
+  DeploymentMonitorVo,
+  DeploymentNetworkVo,
+  DeploymentPodListVo,
+  DeploymentStorageListVo,
   DeploymentUpdateForm,
   DeploymentLabelForm,
   DeploymentListVo,
@@ -29,6 +35,13 @@ import { generateId } from '@/mock/utils'
  * @remarks
  * - GET /kubernetes/clusters/:clusterId/deployments - 获取 Deployment 分页列表
  * - GET /kubernetes/clusters/:clusterId/namespaces/:namespace/deployments/:name - 获取 Deployment 详情
+ * - GET /kubernetes/clusters/:clusterId/namespaces/:namespace/deployments/:name/pods - 获取 Pod 列表
+ * - GET /kubernetes/clusters/:clusterId/namespaces/:namespace/deployments/:name/schedule - 获取调度策略
+ * - GET /kubernetes/clusters/:clusterId/namespaces/:namespace/deployments/:name/history - 获取历史版本列表
+ * - GET /kubernetes/clusters/:clusterId/namespaces/:namespace/deployments/:name/network - 获取网络资源
+ * - GET /kubernetes/clusters/:clusterId/namespaces/:namespace/deployments/:name/storages - 获取存储列表
+ * - GET /kubernetes/clusters/:clusterId/namespaces/:namespace/deployments/:name/monitor - 获取监控数据
+ * - GET /kubernetes/clusters/:clusterId/namespaces/:namespace/deployments/:name/events - 获取事件列表
  * - GET /kubernetes/clusters/:clusterId/namespaces/:namespace/deployments/:name/yaml - 查看 YAML
  * - POST /kubernetes/clusters/:clusterId/namespaces/:namespace/deployments - 创建 Deployment
  * - PUT /kubernetes/clusters/:clusterId/namespaces/:namespace/deployments/:name - 更新 Deployment
@@ -38,8 +51,6 @@ import { generateId } from '@/mock/utils'
  * - DELETE /kubernetes/clusters/:clusterId/namespaces/:namespace/deployments/batch - 批量删除
  * - GET /kubernetes/clusters/:clusterId/deployments/export - 导出 CSV
  * - POST /kubernetes/clusters/:clusterId/deployments/import - 导入 Deployment
- * - GET /kubernetes/clusters/:clusterId/namespaces/:namespace/deployments/:name/schedule - 获取调度策略
- * - GET /kubernetes/clusters/:clusterId/namespaces/:namespace/deployments/:name/advanced - 获取高级配置
  * - POST /kubernetes/clusters/:clusterId/namespaces/:namespace/deployments/:name/scale - 扩缩容
  * - POST /kubernetes/clusters/:clusterId/namespaces/:namespace/deployments/:name/restart - 重启
  * - POST /kubernetes/clusters/:clusterId/namespaces/:namespace/deployments/:name/rollback - 回滚
@@ -54,6 +65,41 @@ export default [
     method: 'get',
     url: '/kubernetes/clusters/:clusterId/namespaces/:namespace/deployments/:name',
     handler: (pathParams: Record<string, string>): DeploymentDetailVo => getDeploymentDetail(pathParams.clusterId, pathParams.namespace, pathParams.name)
+  },
+  {
+    method: 'get',
+    url: '/kubernetes/clusters/:clusterId/namespaces/:namespace/deployments/:name/pods',
+    handler: (pathParams: Record<string, string>): DeploymentPodListVo[] => getDeploymentPodList(pathParams.clusterId, pathParams.namespace, pathParams.name)
+  },
+  {
+    method: 'get',
+    url: '/kubernetes/clusters/:clusterId/namespaces/:namespace/deployments/:name/schedule',
+    handler: (pathParams: Record<string, string>): DeploymentScheduleVo => getDeploymentSchedule(pathParams.clusterId, pathParams.namespace, pathParams.name)
+  },
+  {
+    method: 'get',
+    url: '/kubernetes/clusters/:clusterId/namespaces/:namespace/deployments/:name/history',
+    handler: (pathParams: Record<string, string>): DeploymentHistoryRevisionListVo[] => getDeploymentHistoryRevisionList(pathParams.clusterId, pathParams.namespace, pathParams.name)
+  },
+  {
+    method: 'get',
+    url: '/kubernetes/clusters/:clusterId/namespaces/:namespace/deployments/:name/network',
+    handler: (pathParams: Record<string, string>): DeploymentNetworkVo => getDeploymentNetwork(pathParams.clusterId, pathParams.namespace, pathParams.name)
+  },
+  {
+    method: 'get',
+    url: '/kubernetes/clusters/:clusterId/namespaces/:namespace/deployments/:name/storages',
+    handler: (pathParams: Record<string, string>): DeploymentStorageListVo[] => getDeploymentStorageList(pathParams.clusterId, pathParams.namespace, pathParams.name)
+  },
+  {
+    method: 'get',
+    url: '/kubernetes/clusters/:clusterId/namespaces/:namespace/deployments/:name/monitor',
+    handler: (pathParams: Record<string, string>): DeploymentMonitorVo => getDeploymentMonitor(pathParams.clusterId, pathParams.namespace, pathParams.name)
+  },
+  {
+    method: 'get',
+    url: '/kubernetes/clusters/:clusterId/namespaces/:namespace/deployments/:name/events',
+    handler: (pathParams: Record<string, string>): DeploymentEventListVo[] => getDeploymentEventList(pathParams.clusterId, pathParams.namespace, pathParams.name)
   },
   {
     method: 'get',
@@ -99,16 +145,6 @@ export default [
     method: 'post',
     url: '/kubernetes/clusters/:clusterId/deployments/import',
     handler: (pathParams: Record<string, string>, data: DeploymentYamlForm): void => importDeployment(pathParams.clusterId, data)
-  },
-  {
-    method: 'get',
-    url: '/kubernetes/clusters/:clusterId/namespaces/:namespace/deployments/:name/schedule',
-    handler: (pathParams: Record<string, string>): DeploymentScheduleVo => getDeploymentSchedule(pathParams.clusterId, pathParams.namespace, pathParams.name)
-  },
-  {
-    method: 'get',
-    url: '/kubernetes/clusters/:clusterId/namespaces/:namespace/deployments/:name/advanced',
-    handler: (pathParams: Record<string, string>): DeploymentAdvancedVo => getDeploymentAdvanced(pathParams.clusterId, pathParams.namespace, pathParams.name)
   },
   {
     method: 'post',
@@ -173,161 +209,6 @@ function getDeploymentList(_clusterId: string, params: Partial<DeploymentQueryFo
 }
 
 /**
- * 生成 Deployment 基础信息
- * @param deployment - Deployment 列表对象
- * @returns 基础信息
- */
-function generateDeploymentBasic(deployment: DeploymentListVo): DeploymentBasicVo {
-  return {
-    id: deployment.id,
-    uid: deployment.uid,
-    name: deployment.name,
-    description: deployment.description,
-    status: deployment.status,
-    statusMsg: deployment.statusMessage,
-    deletable: deployment.deletable,
-    generation: 1,
-    selector: {
-      'app': deployment.name,
-      'app.kubernetes.io/name': deployment.name,
-      'app.kubernetes.io/instance': deployment.name,
-      'app.kubernetes.io/component': deployment.namespace,
-      'app.kubernetes.io/managed-by': 'bee-kube'
-    },
-    clusterId: deployment.clusterId,
-    clusterUid: deployment.clusterUid,
-    clusterName: deployment.clusterName,
-    namespace: deployment.namespace,
-    namespaceId: deployment.namespaceId,
-    namespaceUid: deployment.namespaceUid,
-    createAt: deployment.createAt,
-    createBy: deployment.createBy,
-    updateAt: deployment.updateAt,
-    updateBy: deployment.updateBy
-  }
-}
-
-/**
- * 生成 Deployment 副本信息
- * @returns 副本信息
- */
-function generateDeploymentReplicas(): DeploymentReplicasVo {
-  const replicas = Math.floor(Math.random() * 21)
-  const readyReplicas = Math.floor(Math.random() * (replicas + 1))
-  const availableReplicas = Math.floor(Math.random() * (readyReplicas + 1))
-  const updatedReplicas = Math.floor(Math.random() * (readyReplicas + 1))
-  return {
-    replicas,
-    readyReplicas,
-    availableReplicas,
-    updatedReplicas
-  }
-}
-
-/**
- * 生成 Deployment 元数据信息
- * @param deployment - Deployment 列表对象
- * @returns 元数据信息
- */
-function generateDeploymentMetadata(deployment: DeploymentListVo): DeploymentMetadataVo {
-  return {
-    labels: {
-      'app': deployment.name,
-      'app.kubernetes.io/name': deployment.name,
-      'app.kubernetes.io/instance': deployment.name,
-      'app.kubernetes.io/component': deployment.namespace,
-      'app.kubernetes.io/managed-by': 'bee-kube'
-    },
-    annotations: {
-      'description': deployment.description || '',
-      'kubernetes.io/change-cause': 'kubectl apply',
-      'deployment.kubernetes.io/revision': '3',
-      'meta.helm.sh/release-name': deployment.name,
-      'meta.helm.sh/release-namespace': deployment.namespace
-    }
-  }
-}
-
-/**
- * 生成 Deployment 资源信息
- * @returns 资源信息
- */
-function generateDeploymentResource(): DeploymentResourceVo {
-  const cpuRequest = Math.floor(Math.random() * 5001)
-  const cpuLimit = Math.floor(Math.random() * (5000 - cpuRequest + 1)) + cpuRequest
-  const maxMemory = 10 * 1024 * 1024 * 1024
-  const memRequest = Math.floor(Math.random() * (maxMemory + 1))
-  const memLimit = Math.floor(Math.random() * (maxMemory - memRequest + 1)) + memRequest
-  return {
-    request: { cpu: cpuRequest, memory: memRequest },
-    limit: { cpu: cpuLimit, memory: memLimit }
-  }
-}
-
-/**
- * 生成 Deployment 条件列表
- * @param deployment - Deployment 列表对象
- * @returns 条件列表
- */
-function generateDeploymentConditions(deployment: DeploymentListVo): DeploymentConditionVo[] {
-  return [
-    {
-      type: 'Available',
-      status: 'True',
-      reason: 'MinimumReplicasAvailable',
-      message: 'Deployment has minimum availability.',
-      lastTransitionTime: deployment.updateAt,
-      lastUpdateTime: deployment.updateAt
-    },
-    {
-      type: 'Progressing',
-      status: 'True',
-      reason: 'NewReplicaSetAvailable',
-      message: `ReplicaSet "${deployment.name}" has successfully progressed.`,
-      lastTransitionTime: deployment.createAt,
-      lastUpdateTime: deployment.updateAt
-    },
-    {
-      type: 'Available',
-      status: 'False',
-      reason: 'MinimumReplicasUnavailable',
-      message: 'Deployment does not have minimum availability.',
-      lastTransitionTime: deployment.createAt,
-      lastUpdateTime: deployment.createAt
-    },
-    {
-      type: 'Progressing',
-      status: 'False',
-      reason: 'NewReplicaSetCreated',
-      message: `ReplicaSet "${deployment.name}" is progressing.`,
-      lastTransitionTime: deployment.createAt,
-      lastUpdateTime: deployment.createAt
-    },
-    {
-      type: 'ReplicaFailure',
-      status: 'False',
-      reason: 'FailedCreate',
-      message: 'Replica has been created successfully.',
-      lastTransitionTime: deployment.createAt,
-      lastUpdateTime: deployment.updateAt
-    }
-  ]
-}
-
-/**
- * 生成 Deployment 更新策略
- * @param deployment - Deployment 列表对象
- * @returns 更新策略
- */
-function generateDeploymentStrategy(deployment: DeploymentListVo): DeploymentStrategyVo {
-  return {
-    type: deployment.strategyType,
-    maxUnavailable: '25%',
-    maxSurge: '25%'
-  }
-}
-
-/**
  * 获取 Deployment 详情
  * @param clusterId - 集群ID
  * @param namespace - 命名空间
@@ -335,15 +216,489 @@ function generateDeploymentStrategy(deployment: DeploymentListVo): DeploymentStr
  * @returns Deployment 详情
  */
 function getDeploymentDetail(_clusterId: string, _namespace: string, _name: string): DeploymentDetailVo {
-  const deployment = mockDeployments[0]
   return {
-    basic: generateDeploymentBasic(deployment),
-    replicas: generateDeploymentReplicas(),
-    metadata: generateDeploymentMetadata(deployment),
-    resource: generateDeploymentResource(),
-    conditions: generateDeploymentConditions(deployment),
-    strategy: generateDeploymentStrategy(deployment)
+    basic: mockDeploymentBasic,
+    replicas: mockDeploymentReplicas,
+    metadata: mockDeploymentMetadata,
+    resource: mockDeploymentResource,
+    conditions: mockDeploymentConditions,
+    strategy: mockDeploymentStrategy,
+    advanced: mockDeploymentAdvanced
   }
+}
+
+/**
+ * 获取 Deployment Pod 列表
+ * @param clusterId - 集群ID
+ * @param namespace - 命名空间
+ * @param name - Deployment 名称
+ * @returns Pod 列表
+ */
+function getDeploymentPodList(_clusterId: string, _namespace: string, _name: string): DeploymentPodListVo[] {
+  const deploy = mockDeployments[0]
+  const nodeName = `${deploy.clusterName || 'cluster'}-node`
+  const nodeIp = '10.0.1.'
+  return [
+    {
+      id: generateId(),
+      uid: generateId(),
+      name: `${deploy.name}-6d4f8c9b7-xk2lm`,
+      ip: '10.244.1.',
+      status: 'Running',
+      statusMsg: 'All containers are running normally',
+      restarts: 0,
+      nodeIp: `${nodeIp}101`,
+      nodeName: `${nodeName}-001`,
+      readyContainerCount: 2,
+      containerCount: 2,
+      cpuUsage: '15%',
+      memoryUsage: '32%',
+      clusterId: deploy.clusterId,
+      clusterUid: deploy.clusterUid,
+      clusterName: deploy.clusterName,
+      namespace: deploy.namespace,
+      namespaceId: deploy.namespaceId,
+      namespaceUid: deploy.namespaceUid,
+      createAt: deploy.createAt,
+      createBy: deploy.createBy,
+      updateAt: deploy.updateAt,
+      updateBy: deploy.updateBy
+    },
+    {
+      id: generateId(),
+      uid: generateId(),
+      name: `${deploy.name}-6d4f8c9b7-pq9rs`,
+      ip: '10.244.2.',
+      status: 'Running',
+      statusMsg: 'All containers are running normally',
+      restarts: 2,
+      nodeIp: `${nodeIp}102`,
+      nodeName: `${nodeName}-002`,
+      readyContainerCount: 2,
+      containerCount: 2,
+      cpuUsage: '22%',
+      memoryUsage: '45%',
+      clusterId: deploy.clusterId,
+      clusterUid: deploy.clusterUid,
+      clusterName: deploy.clusterName,
+      namespace: deploy.namespace,
+      namespaceId: deploy.namespaceId,
+      namespaceUid: deploy.namespaceUid,
+      createAt: deploy.createAt,
+      createBy: deploy.createBy,
+      updateAt: deploy.updateAt,
+      updateBy: deploy.updateBy
+    },
+    {
+      id: generateId(),
+      uid: generateId(),
+      name: `${deploy.name}-6d4f8c9b7-zt7wv`,
+      ip: '10.244.3.',
+      status: 'Pending',
+      statusMsg: 'ContainerCreating: pulling image',
+      restarts: 0,
+      nodeIp: `${nodeIp}101`,
+      nodeName: `${nodeName}-001`,
+      readyContainerCount: 0,
+      containerCount: 2,
+      cpuUsage: '0%',
+      memoryUsage: '0%',
+      clusterId: deploy.clusterId,
+      clusterUid: deploy.clusterUid,
+      clusterName: deploy.clusterName,
+      namespace: deploy.namespace,
+      namespaceId: deploy.namespaceId,
+      namespaceUid: deploy.namespaceUid,
+      createAt: new Date().toLocaleString(),
+      createBy: deploy.createBy,
+      updateAt: new Date().toLocaleString(),
+      updateBy: deploy.updateBy
+    },
+    {
+      id: generateId(),
+      uid: generateId(),
+      name: `${deploy.name}-6d4f8c9b7-ab4cd`,
+      ip: '10.244.1.',
+      status: 'Running',
+      statusMsg: 'Minor performance degradation detected',
+      restarts: 1,
+      nodeIp: `${nodeIp}103`,
+      nodeName: `${nodeName}-003`,
+      readyContainerCount: 2,
+      containerCount: 2,
+      cpuUsage: '78%',
+      memoryUsage: '91%',
+      clusterId: deploy.clusterId,
+      clusterUid: deploy.clusterUid,
+      clusterName: deploy.clusterName,
+      namespace: deploy.namespace,
+      namespaceId: deploy.namespaceId,
+      namespaceUid: deploy.namespaceUid,
+      createAt: deploy.createAt,
+      createBy: deploy.createBy,
+      updateAt: deploy.updateAt,
+      updateBy: deploy.updateBy
+    },
+    {
+      id: generateId(),
+      uid: generateId(),
+      name: `${deploy.name}-6d4f8c9b7-ef5gh`,
+      ip: '10.244.2.',
+      status: 'Failed',
+      statusMsg: 'CrashLoopBackOff: container exited with code 1',
+      restarts: 15,
+      nodeIp: `${nodeIp}102`,
+      nodeName: `${nodeName}-002`,
+      readyContainerCount: 0,
+      containerCount: 2,
+      cpuUsage: '5%',
+      memoryUsage: '8%',
+      clusterId: deploy.clusterId,
+      clusterUid: deploy.clusterUid,
+      clusterName: deploy.clusterName,
+      namespace: deploy.namespace,
+      namespaceId: deploy.namespaceId,
+      namespaceUid: deploy.namespaceUid,
+      createAt: deploy.createAt,
+      createBy: deploy.createBy,
+      updateAt: deploy.updateAt,
+      updateBy: deploy.updateBy
+    }
+  ]
+}
+
+/**
+ * 获取 Deployment 调度策略
+ * @param clusterId - 集群ID
+ * @param namespace - 命名空间
+ * @param name - Deployment 名称
+ * @returns Deployment 调度策略
+ */
+function getDeploymentSchedule(clusterId: string, namespace: string, name: string): DeploymentScheduleVo {
+  const deployment = mockDeployments.find(d => d.clusterId === clusterId && d.namespace === namespace && d.name === name)
+  if (!deployment) {
+    console.error('[Get Deployment Schedule] can not find deployment:', clusterId, namespace, name)
+  }
+  return {
+    nodeSelector: { 'kubernetes.io/os': 'linux' },
+    affinity: {
+      nodeAffinity: {
+        required: [
+          {
+            matchExpressions: [{ key: 'kubernetes.io/os', operator: 'In', values: ['linux'] }]
+          }
+        ],
+        preferred: [
+          {
+            weight: 80,
+            matchExpressions: [{ key: 'node-type', operator: 'In', values: ['ssd', 'high-memory'] }]
+          }
+        ]
+      },
+      podAffinity: {
+        required: [],
+        preferred: [
+          {
+            weight: 50,
+            labelSelector: { matchLabels: { app: deployment!.name }, matchExpressions: [] },
+            namespaces: [],
+            namespaceSelector: { matchLabels: {}, matchExpressions: [] },
+            topologyKey: 'kubernetes.io/hostname',
+            matchLabelKeys: [],
+            mismatchLabelKeys: []
+          }
+        ]
+      },
+      podAntiAffinity: {
+        required: [
+          {
+            labelSelector: { matchLabels: { app: deployment!.name }, matchExpressions: [] },
+            namespaces: [],
+            namespaceSelector: { matchLabels: {}, matchExpressions: [] },
+            topologyKey: 'kubernetes.io/hostname',
+            matchLabelKeys: [],
+            mismatchLabelKeys: []
+          }
+        ],
+        preferred: []
+      }
+    },
+    tolerations: [
+      {
+        key: 'node.kubernetes.io/not-ready',
+        operator: 'Exists',
+        value: '',
+        effect: 'NoExecute',
+        tolerationSeconds: 300
+      },
+      {
+        key: 'node.kubernetes.io/unreachable',
+        operator: 'Exists',
+        value: '',
+        effect: 'NoExecute',
+        tolerationSeconds: 300
+      }
+    ]
+  }
+}
+
+/**
+ * 获取 Deployment 历史版本列表
+ * @param clusterId - 集群ID
+ * @param namespace - 命名空间
+ * @param name - Deployment 名称
+ * @returns 历史版本列表
+ */
+function getDeploymentHistoryRevisionList(_clusterId: string, _namespace: string, _name: string): DeploymentHistoryRevisionListVo[] {
+  return [
+    { revision: 5, changeCause: 'kubectl set image deployment=' + _name + '=' + _name + ':v2.1.0', createAt: '2024-07-01 14:30:00', active: true },
+    { revision: 4, changeCause: 'kubectl edit deployment/' + _name, createAt: '2024-06-28 09:15:00', active: false },
+    { revision: 3, changeCause: 'kubectl set resources deployment/' + _name + ' --limits=cpu=500m,memory=512Mi', createAt: '2024-06-25 16:45:00', active: false },
+    { revision: 2, changeCause: 'kubectl apply -f ' + _name + '.yaml --record', createAt: '2024-06-20 11:00:00', active: false },
+    { revision: 1, changeCause: 'kubectl create deployment ' + _name + ' --image=' + _name + ':v1.0.0', createAt: '2024-06-15 08:30:00', active: false }
+  ]
+}
+
+/**
+ * 获取 Deployment 网络资源
+ * @param clusterId - 集群ID
+ * @param namespace - 命名空间
+ * @param name - Deployment 名称
+ * @returns 网络资源
+ */
+function getDeploymentNetwork(_clusterId: string, _namespace: string, _name: string): DeploymentNetworkVo {
+  const deploy = mockDeployments[0]
+  return {
+    services: [
+      {
+        id: generateId(),
+        uid: generateId(),
+        name: deploy.name + '-svc',
+        description: deploy.description || '',
+        type: 'ClusterIP',
+        clusterIp: '10.96.100.' + Math.floor(Math.random() * 255),
+        ports: [{ name: 'http', protocol: 'TCP', port: 80, targetPort: 8080 }],
+        selector: { app: deploy.name },
+        externalName: '',
+        headless: false,
+        clusterId: deploy.clusterId,
+        clusterUid: deploy.clusterUid,
+        clusterName: deploy.clusterName,
+        namespace: deploy.namespace,
+        namespaceId: deploy.namespaceId,
+        namespaceUid: deploy.namespaceUid,
+        createAt: deploy.createAt,
+        createBy: deploy.createBy,
+        updateAt: deploy.updateAt,
+        updateBy: deploy.updateBy
+      },
+      {
+        id: generateId(),
+        uid: generateId(),
+        name: deploy.name + '-nodeport',
+        description: 'NodePort exposure for external access',
+        type: 'NodePort',
+        clusterIp: '10.96.200.' + Math.floor(Math.random() * 255),
+        ports: [{ name: 'http', protocol: 'TCP', port: 80, targetPort: 8080, nodePort: 30080 }],
+        selector: { app: deploy.name },
+        externalName: '',
+        headless: false,
+        clusterId: deploy.clusterId,
+        clusterUid: deploy.clusterUid,
+        clusterName: deploy.clusterName,
+        namespace: deploy.namespace,
+        namespaceId: deploy.namespaceId,
+        namespaceUid: deploy.namespaceUid,
+        createAt: deploy.createAt,
+        createBy: deploy.createBy,
+        updateAt: deploy.updateAt,
+        updateBy: deploy.updateBy
+      },
+      {
+        id: generateId(),
+        uid: generateId(),
+        name: deploy.name + '-lb',
+        description: 'LoadBalancer for production traffic',
+        type: 'LoadBalancer',
+        clusterIp: '10.96.50.' + Math.floor(Math.random() * 255),
+        ports: [{ name: 'https', protocol: 'TCP', port: 443, targetPort: 8443, nodePort: 30443 }],
+        selector: { app: deploy.name },
+        externalName: '',
+        headless: false,
+        clusterId: deploy.clusterId,
+        clusterUid: deploy.clusterUid,
+        clusterName: deploy.clusterName,
+        namespace: deploy.namespace,
+        namespaceId: deploy.namespaceId,
+        namespaceUid: deploy.namespaceUid,
+        createAt: deploy.createAt,
+        createBy: deploy.createBy,
+        updateAt: deploy.updateAt,
+        updateBy: deploy.updateBy
+      }
+    ],
+    ingresses: [
+      {
+        id: generateId(),
+        uid: generateId(),
+        name: deploy.name + '-ingress',
+        description: 'Ingress rule for ' + deploy.name,
+        ingressClassName: 'nginx',
+        rules: [{ host: deploy.name + '.example.com', paths: [{ path: '/', pathType: 'Prefix', serviceName: deploy.name + '-svc', servicePort: 80 }] }],
+        clusterId: deploy.clusterId,
+        clusterUid: deploy.clusterUid,
+        clusterName: deploy.clusterName,
+        namespace: deploy.namespace,
+        namespaceId: deploy.namespaceId,
+        namespaceUid: deploy.namespaceUid,
+        createAt: deploy.createAt,
+        createBy: deploy.createBy,
+        updateAt: deploy.updateAt,
+        updateBy: deploy.updateBy
+      },
+      {
+        id: generateId(),
+        uid: generateId(),
+        name: deploy.name + '-api-ingress',
+        description: 'API ingress with TLS termination',
+        ingressClassName: 'nginx',
+        rules: [{ host: 'api.example.com', paths: [{ path: '/v1', pathType: 'Prefix', serviceName: deploy.name + '-svc', servicePort: 8080 }] }],
+        tls: [{ hosts: ['api.example.com'], secretName: 'api-tls-cert' }],
+        clusterId: deploy.clusterId,
+        clusterUid: deploy.clusterUid,
+        clusterName: deploy.clusterName,
+        namespace: deploy.namespace,
+        namespaceId: deploy.namespaceId,
+        namespaceUid: deploy.namespaceUid,
+        createAt: deploy.createAt,
+        createBy: deploy.createBy,
+        updateAt: deploy.updateAt,
+        updateBy: deploy.updateBy
+      }
+    ]
+  }
+}
+
+/**
+ * 获取 Deployment 存储列表
+ * @param clusterId - 集群ID
+ * @param namespace - 命名空间
+ * @param name - Deployment 名称
+ * @returns 存储列表
+ */
+function getDeploymentStorageList(_clusterId: string, _namespace: string, _name: string): DeploymentStorageListVo[] {
+  return [
+    {
+      name: 'app-config',
+      type: 'ConfigMap',
+      extraFields: { configMapName: 'app-config-v3', defaultMode: '420' },
+      containerMounts: [{ containerId: generateId(), container: 'main-container', mountPath: '/etc/config', subPath: '' }]
+    },
+    {
+      name: 'app-secret',
+      type: 'Secret',
+      extraFields: { secretName: 'app-secret', defaultMode: '400', optional: 'false' },
+      containerMounts: [
+        { containerId: generateId(), container: 'main-container', mountPath: '/etc/secret', subPath: '' },
+        { containerId: generateId(), container: 'sidecar-container', mountPath: '/etc/shared-secret', subPath: 'db-password' }
+      ]
+    },
+    {
+      name: 'app-data',
+      type: 'PersistentVolumeClaim',
+      extraFields: { claimName: 'app-data-pvc', readOnly: 'false', storageClassName: 'ssd' },
+      containerMounts: [{ containerId: generateId(), container: 'main-container', mountPath: '/data', subPath: '' }]
+    },
+    {
+      name: 'app-logs',
+      type: 'EmptyDir',
+      extraFields: { medium: '', sizeLimit: '1Gi' },
+      containerMounts: [
+        { containerId: generateId(), container: 'main-container', mountPath: '/var/log/app', subPath: '' },
+        { containerId: generateId(), container: 'fluentd-sidecar', mountPath: '/var/log/app', subPath: '' }
+      ]
+    },
+    {
+      name: 'host-timezone',
+      type: 'HostPath',
+      extraFields: { path: '/etc/localtime', type: 'File' },
+      containerMounts: [{ containerId: generateId(), container: 'main-container', mountPath: '/etc/localtime', subPath: '' }]
+    }
+  ]
+}
+
+/**
+ * 获取 Deployment 监控数据
+ * @param clusterId - 集群ID
+ * @param namespace - 命名空间
+ * @param name - Deployment 名称
+ * @returns 监控数据
+ */
+function getDeploymentMonitor(_clusterId: string, _namespace: string, _name: string): DeploymentMonitorVo {
+  return {}
+}
+
+/**
+ * 获取 Deployment 事件列表
+ * @param clusterId - 集群ID
+ * @param namespace - 命名空间
+ * @param name - Deployment 名称
+ * @returns 事件列表
+ */
+function getDeploymentEventList(_clusterId: string, _namespace: string, _name: string): DeploymentEventListVo[] {
+  const deploy = mockDeployments[0]
+  return [
+    {
+      type: 'Normal',
+      reason: 'ScalingReplicaSet',
+      message: `Scaled up replica set ${deploy.name}-6d4f8c9b7 to 3`,
+      involvedObject: { kind: 'Deployment', name: deploy.name, namespace: deploy.namespace, uid: deploy.uid },
+      source: { component: 'deployment-controller' },
+      count: 1,
+      firstTimestamp: deploy.updateAt,
+      lastTimestamp: deploy.updateAt
+    },
+    {
+      type: 'Normal',
+      reason: 'SuccessfulCreate',
+      message: `Created pod: ${deploy.name}-6d4f8c9b7-xk2lm`,
+      involvedObject: { kind: 'ReplicaSet', name: deploy.name + '-6d4f8c9b7', namespace: deploy.namespace },
+      source: { component: 'replicaset-controller' },
+      count: 3,
+      firstTimestamp: deploy.createAt,
+      lastTimestamp: deploy.updateAt
+    },
+    {
+      type: 'Warning',
+      reason: 'Unhealthy',
+      message: 'Readiness probe failed: Get "http://10.244.1.xx:8080/healthz": dial tcp 10.244.1.xx:8080: connect: connection refused',
+      involvedObject: { kind: 'Pod', name: deploy.name + '-6d4f8c9b7-zt7wv', namespace: deploy.namespace },
+      source: { component: 'kubelet', host: 'node-001' },
+      count: 2,
+      firstTimestamp: deploy.createAt,
+      lastTimestamp: deploy.updateAt
+    },
+    {
+      type: 'Normal',
+      reason: 'Pulling',
+      message: `Pulling image "${deploy.name}:latest"`,
+      involvedObject: { kind: 'Pod', name: deploy.name + '-6d4f8c9b7-zt7wv', namespace: deploy.namespace },
+      source: { component: 'kubelet', host: 'node-001' },
+      count: 1,
+      firstTimestamp: deploy.createAt,
+      lastTimestamp: deploy.createAt
+    },
+    {
+      type: 'Warning',
+      reason: 'FailedScheduling',
+      message: `0/3 nodes are available: 1 Insufficient cpu, 2 node(s) had taint {node-role.kubernetes.io/master: }, that the pod didn't tolerate.`,
+      involvedObject: { kind: 'Pod', name: deploy.name + '-6d4f8c9b7-ab4cd', namespace: deploy.namespace },
+      source: { component: 'default-scheduler' },
+      count: 5,
+      firstTimestamp: deploy.createAt,
+      lastTimestamp: deploy.updateAt
+    }
+  ]
 }
 
 /**
@@ -485,107 +840,6 @@ status:
 }
 
 /**
- * 获取 Deployment 调度策略
- * @param clusterId - 集群ID
- * @param namespace - 命名空间
- * @param name - Deployment 名称
- * @returns Deployment 调度策略
- */
-function getDeploymentSchedule(clusterId: string, namespace: string, name: string): DeploymentScheduleVo {
-  const deployment = mockDeployments.find(d => d.clusterId === clusterId && d.namespace === namespace && d.name === name)
-  if (!deployment) {
-    console.error('[Get Deployment Schedule] can not find deployment:', clusterId, namespace, name)
-  }
-  return {
-    nodeSelector: { 'kubernetes.io/os': 'linux' },
-    affinity: {
-      nodeAffinity: {
-        required: [
-          {
-            matchExpressions: [{ key: 'kubernetes.io/os', operator: 'In', values: ['linux'] }]
-          }
-        ],
-        preferred: [
-          {
-            weight: 80,
-            matchExpressions: [{ key: 'node-type', operator: 'In', values: ['ssd', 'high-memory'] }]
-          }
-        ]
-      },
-      podAffinity: {
-        required: [],
-        preferred: [
-          {
-            weight: 50,
-            labelSelector: { matchLabels: { app: deployment!.name }, matchExpressions: [] },
-            namespaces: [],
-            namespaceSelector: { matchLabels: {}, matchExpressions: [] },
-            topologyKey: 'kubernetes.io/hostname',
-            matchLabelKeys: [],
-            mismatchLabelKeys: []
-          }
-        ]
-      },
-      podAntiAffinity: {
-        required: [
-          {
-            labelSelector: { matchLabels: { app: deployment!.name }, matchExpressions: [] },
-            namespaces: [],
-            namespaceSelector: { matchLabels: {}, matchExpressions: [] },
-            topologyKey: 'kubernetes.io/hostname',
-            matchLabelKeys: [],
-            mismatchLabelKeys: []
-          }
-        ],
-        preferred: []
-      }
-    },
-    tolerations: [
-      {
-        key: 'node.kubernetes.io/not-ready',
-        operator: 'Exists',
-        value: '',
-        effect: 'NoExecute',
-        tolerationSeconds: 300
-      },
-      {
-        key: 'node.kubernetes.io/unreachable',
-        operator: 'Exists',
-        value: '',
-        effect: 'NoExecute',
-        tolerationSeconds: 300
-      }
-    ]
-  }
-}
-
-/**
- * 获取 Deployment 高级配置
- * @param clusterId - 集群ID
- * @param namespace - 命名空间
- * @param name - Deployment 名称
- * @returns Deployment 高级配置
- */
-function getDeploymentAdvanced(clusterId: string, namespace: string, name: string): DeploymentAdvancedVo {
-  const deployment = mockDeployments.find(d => d.clusterId === clusterId && d.namespace === namespace && d.name === name)
-  if (!deployment) {
-    console.error('[Get Deployment Advanced] can not find deployment:', clusterId, namespace, name)
-  }
-  return {
-    restartPolicy: 'Always',
-    terminationGracePeriodSeconds: 30,
-    hostNetwork: false,
-    dnsPolicy: 'ClusterFirst',
-    serviceAccountName: 'default',
-    automountServiceAccountToken: true,
-    hostname: '',
-    subdomain: '',
-    imagePullSecrets: [],
-    priorityClass: ''
-  }
-}
-
-/**
  * 创建 Deployment
  * @param clusterId - 集群ID
  * @param namespace - 命名空间
@@ -604,37 +858,6 @@ function createDeployment(clusterId: string, namespace: string, data: Deployment
  */
 function updateDeployment(clusterId: string, namespace: string, name: string, data: Partial<DeploymentUpdateForm>): void {
   console.log('[Mock] updateDeployment', { clusterId, namespace, name, data })
-}
-
-/**
- * 扩缩容 Deployment
- * @param clusterId - 集群ID
- * @param namespace - 命名空间
- * @param name - Deployment 名称
- * @param data - 扩缩容参数
- */
-function scaleDeployment(clusterId: string, namespace: string, name: string, data: DeploymentScaleForm): void {
-  console.log('[Mock] scaleDeployment', { clusterId, namespace, name, data })
-}
-
-/**
- * 重启 Deployment
- * @param clusterId - 集群ID
- * @param namespace - 命名空间
- * @param name - Deployment 名称
- */
-function restartDeployment(clusterId: string, namespace: string, name: string): void {
-  console.log('[Mock] restartDeployment', { clusterId, namespace, name })
-}
-
-/**
- * 回滚 Deployment
- * @param clusterId - 集群ID
- * @param namespace - 命名空间
- * @param name - Deployment 名称
- */
-function rollbackDeployment(clusterId: string, namespace: string, name: string): void {
-  console.log('[Mock] rollbackDeployment', { clusterId, namespace, name })
 }
 
 /**
@@ -695,6 +918,37 @@ function exportDeployment(clusterId: string, params: Partial<DeploymentQueryForm
  */
 function importDeployment(clusterId: string, data: DeploymentYamlForm): void {
   console.log('[Mock] importDeployment', { clusterId, data })
+}
+
+/**
+ * 扩缩容 Deployment
+ * @param clusterId - 集群ID
+ * @param namespace - 命名空间
+ * @param name - Deployment 名称
+ * @param data - 扩缩容参数
+ */
+function scaleDeployment(clusterId: string, namespace: string, name: string, data: DeploymentScaleForm): void {
+  console.log('[Mock] scaleDeployment', { clusterId, namespace, name, data })
+}
+
+/**
+ * 重启 Deployment
+ * @param clusterId - 集群ID
+ * @param namespace - 命名空间
+ * @param name - Deployment 名称
+ */
+function restartDeployment(clusterId: string, namespace: string, name: string): void {
+  console.log('[Mock] restartDeployment', { clusterId, namespace, name })
+}
+
+/**
+ * 回滚 Deployment
+ * @param clusterId - 集群ID
+ * @param namespace - 命名空间
+ * @param name - Deployment 名称
+ */
+function rollbackDeployment(clusterId: string, namespace: string, name: string): void {
+  console.log('[Mock] rollbackDeployment', { clusterId, namespace, name })
 }
 
 /**
@@ -1191,3 +1445,143 @@ const mockDeployments: DeploymentListVo[] = [
     deletable: true
   }
 ]
+
+/**
+ * Deployment 详情模拟数据 - 基础信息
+ */
+const mockDeploymentBasic: DeploymentBasicVo = {
+  id: generateId(),
+  uid: generateId(),
+  name: 'nginx-ingress-controller',
+  description: 'Kubernetes Ingress 控制器，管理集群七层流量入口和路由规则',
+  status: 'Running',
+  statusMsg: '',
+  deletable: false,
+  generation: 1,
+  selector: {
+    'app': 'nginx-ingress-controller',
+    'app.kubernetes.io/name': 'nginx-ingress-controller',
+    'app.kubernetes.io/instance': 'nginx-ingress-controller',
+    'app.kubernetes.io/component': 'kube-system',
+    'app.kubernetes.io/managed-by': 'bee-kube'
+  },
+  clusterId: generateId(),
+  clusterUid: generateId(),
+  clusterName: 'system-cluster',
+  namespace: 'kube-system',
+  namespaceId: generateId(),
+  namespaceUid: generateId(),
+  createAt: '2024-01-15 10:30:25',
+  createBy: 'admin',
+  updateAt: '2024-03-20 14:22:18',
+  updateBy: 'admin'
+}
+
+/**
+ * Deployment 详情模拟数据 - 副本信息
+ */
+const mockDeploymentReplicas: DeploymentReplicasVo = {
+  replicas: 3,
+  readyReplicas: 2,
+  availableReplicas: 2,
+  updatedReplicas: 3
+}
+
+/**
+ * Deployment 详情模拟数据 - 元数据信息
+ */
+const mockDeploymentMetadata: DeploymentMetadataVo = {
+  labels: {
+    'app': 'nginx-ingress-controller',
+    'app.kubernetes.io/name': 'nginx-ingress-controller',
+    'app.kubernetes.io/instance': 'nginx-ingress-controller',
+    'app.kubernetes.io/component': 'kube-system',
+    'app.kubernetes.io/managed-by': 'bee-kube'
+  },
+  annotations: {
+    'description': 'Kubernetes Ingress 控制器，管理集群七层流量入口和路由规则',
+    'kubernetes.io/change-cause': 'kubectl apply',
+    'deployment.kubernetes.io/revision': '3',
+    'meta.helm.sh/release-name': 'nginx-ingress-controller',
+    'meta.helm.sh/release-namespace': 'kube-system'
+  }
+}
+
+/**
+ * Deployment 详情模拟数据 - 资源信息
+ */
+const mockDeploymentResource: DeploymentResourceVo = {
+  request: { cpu: 200, memory: 268435456 },
+  limit: { cpu: 1000, memory: 536870912 }
+}
+
+/**
+ * Deployment 详情模拟数据 - 条件列表
+ */
+const mockDeploymentConditions: DeploymentConditionVo[] = [
+  {
+    type: 'Available',
+    status: 'True',
+    reason: 'MinimumReplicasAvailable',
+    message: 'Deployment has minimum availability.',
+    lastTransitionTime: '2024-03-20 14:22:18',
+    lastUpdateTime: '2024-03-20 14:22:18'
+  },
+  {
+    type: 'Progressing',
+    status: 'True',
+    reason: 'NewReplicaSetAvailable',
+    message: 'ReplicaSet "nginx-ingress-controller" has successfully progressed.',
+    lastTransitionTime: '2024-01-15 10:30:25',
+    lastUpdateTime: '2024-03-20 14:22:18'
+  },
+  {
+    type: 'Available',
+    status: 'False',
+    reason: 'MinimumReplicasUnavailable',
+    message: 'Deployment does not have minimum availability.',
+    lastTransitionTime: '2024-01-15 10:30:25',
+    lastUpdateTime: '2024-01-15 10:30:25'
+  },
+  {
+    type: 'Progressing',
+    status: 'False',
+    reason: 'NewReplicaSetCreated',
+    message: 'ReplicaSet "nginx-ingress-controller" is progressing.',
+    lastTransitionTime: '2024-01-15 10:30:25',
+    lastUpdateTime: '2024-01-15 10:30:25'
+  },
+  {
+    type: 'ReplicaFailure',
+    status: 'False',
+    reason: 'FailedCreate',
+    message: 'Replica has been created successfully.',
+    lastTransitionTime: '2024-01-15 10:30:25',
+    lastUpdateTime: '2024-03-20 14:22:18'
+  }
+]
+
+/**
+ * Deployment 详情模拟数据 - 更新策略
+ */
+const mockDeploymentStrategy: DeploymentStrategyVo = {
+  type: 'RollingUpdate',
+  maxUnavailable: '25%',
+  maxSurge: '25%'
+}
+
+/**
+ * Deployment 详情模拟数据 - 高级配置
+ */
+const mockDeploymentAdvanced: DeploymentAdvancedVo = {
+  restartPolicy: 'Always',
+  terminationGracePeriodSeconds: 30,
+  hostNetwork: false,
+  dnsPolicy: 'ClusterFirst',
+  serviceAccountName: 'default',
+  automountServiceAccountToken: true,
+  hostname: '',
+  subdomain: '',
+  imagePullSecrets: [],
+  priorityClass: ''
+}

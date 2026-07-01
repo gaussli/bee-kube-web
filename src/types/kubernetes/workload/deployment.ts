@@ -103,6 +103,38 @@ export interface DeploymentDetailVo {
   conditions: DeploymentConditionVo[]
   /** 更新策略 */
   strategy: DeploymentStrategyVo
+  /** 高级配置 */
+  advanced: DeploymentAdvancedVo
+}
+
+/**
+ * Deployment 高级配置信息
+ */
+export interface DeploymentAdvancedVo {
+  /**
+   * 重启策略
+   * @remarks
+   * 针对 Deployment 必须为 Always，且不可编辑
+   */
+  restartPolicy: RestartPolicy
+  /** Pod 优雅退出时间（秒，默认 30） */
+  terminationGracePeriodSeconds: number
+  /** 使用主机网络 */
+  hostNetwork: boolean
+  /** DNS 策略 */
+  dnsPolicy: string
+  /** 服务账户名称 */
+  serviceAccountName: string
+  /** 自动挂载服务账户令牌 */
+  automountServiceAccountToken: boolean
+  /** 主机名 */
+  hostname: string
+  /** 子域名 */
+  subdomain: string
+  /** 镜像拉取密钥列表 */
+  imagePullSecrets: string[]
+  /** 优先级类 */
+  priorityClass: string
 }
 
 /**
@@ -205,7 +237,7 @@ export interface DeploymentScheduleVo {
  * Deployment 历史版本响应
  * @extends HistoryRevision 继承历史版本类型
  */
-export interface DeploymentHistoryRevisionVo extends HistoryRevision {}
+export interface DeploymentHistoryRevisionListVo extends HistoryRevision {}
 
 /**
  * Deployment 网络资源响应
@@ -250,43 +282,13 @@ export interface DeploymentStorageListVo {
  * Deployment 事件列表响应
  * @extends Event 继承事件类型
  */
-export interface DeploymentEventVo extends Event {}
+export interface DeploymentEventListVo extends Event {}
 
 /**
  * Deployment 监控响应数据
  * TODO: 待补充监控相关属性（如 CPU、内存使用率等）
  */
 export interface DeploymentMonitorVo {}
-
-/**
- * Deployment 高级配置信息
- */
-export interface DeploymentAdvancedVo {
-  /**
-   * 重启策略
-   * @remarks
-   * 针对 Deployment 必须为 Always，且不可编辑
-   */
-  restartPolicy: RestartPolicy
-  /** Pod 优雅退出时间（秒，默认 30） */
-  terminationGracePeriodSeconds: number
-  /** 使用主机网络 */
-  hostNetwork: boolean
-  /** DNS 策略 */
-  dnsPolicy: string
-  /** 服务账户名称 */
-  serviceAccountName: string
-  /** 自动挂载服务账户令牌 */
-  automountServiceAccountToken: boolean
-  /** 主机名 */
-  hostname: string
-  /** 子域名 */
-  subdomain: string
-  /** 镜像拉取密钥列表 */
-  imagePullSecrets: string[]
-  /** 优先级类 */
-  priorityClass: string
-}
 
 // ==================== 5. 创建表单 ====================
 
