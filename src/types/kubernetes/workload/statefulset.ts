@@ -2,11 +2,11 @@
  * StatefulSet 资源相关类型定义
  * @module types/kubernetes/workload/statefulset
  */
-import type { BaseEntity, PageForm } from '@/types/common'
+import type { PageForm } from '@/types/common'
 import type { IngressListVo } from '@/types/kubernetes/network/ingress'
 import type { ServiceListVo } from '@/types/kubernetes/network/service'
 import type { PodListVo } from '@/types/kubernetes/pod'
-import type { Condition, ContainerResource, Event, Metadata } from '../types'
+import type { Condition, ContainerResource, Event, Metadata, Namespaced } from '../types'
 import type { HistoryRevision, NodeAffinity, PodAffinity, PodAntiAffinity, RestartPolicy, Toleration } from './types'
 
 /**
@@ -68,15 +68,11 @@ export interface StatefulSetQueryForm extends PageForm {
 
 /**
  * StatefulSet 列表对象响应数据
- * @extends BaseEntity 继承基础实体（含 id, createAt, createBy, updateAt, updateBy）
+ * @extends Namespaced 继承命名空间类型（含 clusterId, clusterName, namespace 等）
  */
-export interface StatefulSetListVo extends BaseEntity {
+export interface StatefulSetListVo extends Namespaced {
   /** 资源 UID */
   uid: string
-  /** 所属集群 ID */
-  clusterId: string
-  /** 所属命名空间 */
-  namespace: string
   /** StatefulSet 名称 */
   name: string
   /** 描述信息 */
@@ -123,25 +119,13 @@ export interface StatefulSetDetailVo {
 /**
  * StatefulSet 基础信息响应
  * 用于下拉选择、关联引用等场景，仅返回核心标识字段
- * @extends BaseEntity 继承基础实体（含 id, createAt, createBy, updateAt, updateBy）
+ * @extends Namespaced 继承命名空间类型（含 clusterId, clusterName, namespace 等）
  */
-export interface StatefulSetBasicVo extends BaseEntity {
+export interface StatefulSetBasicVo extends Namespaced {
   /** 资源 UID */
   uid: string
   /** StatefulSet 名称 */
   name: string
-  /** 所属集群 ID */
-  clusterId: string
-  /** 所属集群 UID */
-  clusterUid: string
-  /** 所属集群名称 */
-  clusterName: string
-  /** 命名空间 ID */
-  namespaceId: string
-  /** 命名空间 UID */
-  namespaceUid: string
-  /** 所属命名空间 */
-  namespace: string
   /** 描述信息 */
   description: string
   /** 状态 */
@@ -156,6 +140,10 @@ export interface StatefulSetBasicVo extends BaseEntity {
   selector: Record<string, string>
   /** 关联的服务名 */
   serviceName: string
+  /** 当前版本号 */
+  currentRevision: string
+  /** 更新版本号 */
+  updateRevision: string
 }
 
 /**
@@ -170,10 +158,6 @@ export interface StatefulSetReplicasVo {
   availableReplicas: number
   /** 已更新副本数 */
   updatedReplicas: number
-  /** 当前版本号 */
-  currentRevision: string
-  /** 更新版本号 */
-  updateRevision: string
 }
 
 /**

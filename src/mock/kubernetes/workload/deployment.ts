@@ -309,7 +309,7 @@ status:
   replicas: ${deployment.replicas}
   updatedReplicas: ${deployment.replicas}
   readyReplicas: ${deployment.readyReplicas}
-  readyReplicas: ${deployment.readyReplicas}
+  availableReplicas: ${deployment.readyReplicas}
   conditions:
     - type: Available
       status: "True"

@@ -180,6 +180,8 @@ function getStatefulSetDetail(clusterId: string, namespace: string, name: string
       generation: 1,
       selector: { app: s!.name },
       serviceName: s!.serviceName,
+      currentRevision: '1',
+      updateRevision: '1',
       createBy: s!.createBy,
       createAt: s!.createAt,
       updateBy: s!.updateBy,
@@ -189,9 +191,7 @@ function getStatefulSetDetail(clusterId: string, namespace: string, name: string
       replicas: s!.replicas,
       readyReplicas: s!.replicas,
       availableReplicas: s!.replicas,
-      updatedReplicas: s!.replicas,
-      currentRevision: '1',
-      updateRevision: '1'
+      updatedReplicas: s!.replicas
     },
     metadata: {
       labels: { app: s!.name },

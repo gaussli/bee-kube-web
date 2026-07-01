@@ -137,8 +137,8 @@ export interface DeploymentReplicasVo {
   replicas: number
   /** 就绪副本数 */
   readyReplicas: number
-  /** 就绪副本数 */
-  readyReplicas: number
+  /** 可用副本数 */
+  availableReplicas: number
   /** 已更新副本数 */
   updatedReplicas: number
 }
