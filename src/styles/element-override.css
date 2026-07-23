@@ -102,7 +102,7 @@
 }
 .el-pagination :is(.btn-prev:disabled, .btn-prev.is-disabled, .btn-next:disabled, .btn-next.is-disabled) {
   --el-pagination-button-disabled-bg-color: none;
-  --el-pagination-button-disabled-color: rgba(255, 255, 255, 0.1960784314);
+  --el-pagination-button-disabled-color: #666666;
 }
 .el-pagination .el-pagination__jump .el-input {
   --el-input-bg-color: rgb(12.75, 12.75, 12.75);

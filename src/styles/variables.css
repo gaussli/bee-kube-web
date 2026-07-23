@@ -1,1 +1,32 @@
-/*# sourceMappingURL=variables.css.map */
+@charset "UTF-8";
+/**
+ * 生成灰色色阶映射表
+ * @param $step - 明度步进值，默认 5，取值范围 1-100 且能整除 100
+ * @returns 键为明度百分比，值为对应灰色的映射表
+ */
+/**
+ * 生成颜色色阶映射表
+ * @param $hue - 色相值，取值范围 0-360
+ * @param $step - 明度步进值，默认 10，取值范围 1-100 且能整除 100
+ * @returns 键为明度百分比，值为对应颜色色阶的映射表
+ */
+@keyframes fade-slide-in {
+  from {
+    opacity: 0;
+    transform: translateX(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+@keyframes fade-slide-out {
+  from {
+    opacity: 1;
+    transform: translateX(0);
+  }
+  to {
+    opacity: 0;
+    transform: translateX(-20px);
+  }
+}/*# sourceMappingURL=variables.css.map */
