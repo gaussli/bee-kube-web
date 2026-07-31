@@ -967,7 +967,7 @@ const mockDeployments: DeploymentListVo[] = [
     clusterId: generateId(),
     clusterUid: generateId(),
     clusterName: 'system-cluster',
-    description: 'Kubernetes Ingress 控制器，管理集群七层流量入口和路由规则',
+    description: 'Kubernetes Ingress 控制器，管理集群七层流量入口和路由规则。Kubernetes Ingress 控制器，管理集群七层流量入口和路由规则。Kubernetes Ingress 控制器，管理集群七层流量入口和路由规则',
     status: 'Running',
     replicas: 3,
     readyReplicas: 3,
@@ -1453,7 +1453,8 @@ const mockDeploymentBasic: DeploymentBasicVo = {
   id: generateId(),
   uid: generateId(),
   name: 'nginx-ingress-controller',
-  description: 'Kubernetes Ingress 控制器，管理集群七层流量入口和路由规则',
+  description:
+    'Kubernetes Ingress 控制器，管理集群七层流量入口和路由规则。Kubernetes Ingress 控制器，管理集群七层流量入口和路由规则，Kubernetes Ingress 控制器，管理集群七层流量入口和路由规则。Kubernetes Ingress 控制器，管理集群七层流量入口和路由规则',
   status: 'Running',
   statusMsg: '',
   deletable: false,
