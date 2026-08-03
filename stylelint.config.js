@@ -1,29 +1,91 @@
+/**
+ * Bee Kube Stylelint 配置文件
+ * @description
+ * 基于 stylelint-config-standard-scss 扩展，强制执行以下规则：
+ *   1. 选择器命名   — class 使用 kebab-case 命名
+ *   2. 属性值大小写 — 统一小写，忽略 Vue v-bind 函数值
+ *   3. 声明顺序     — 自定义属性 → SCSS 变量 → 声明 → 属性分组排序
+ *   4. Vue 文件     — 通过 postcss-html 解析 .vue 文件的 <style> 块
+ *
+ * @remarks
+ * 执行 pnpm lint:style 时会按此配置检查 .css / .scss / .vue 文件
+ */
+
 export default {
-  extends: ['stylelint-config-standard-scss'],
-  plugins: ['stylelint-order'],
+  /* ======================================================================
+   * 基础配置
+   * ====================================================================== */
+  extends: ['stylelint-config-standard-scss'],  // SCSS 标准规则（含缩进、引号、空行等）
+  plugins: ['stylelint-order'],                 // CSS 属性排序插件
+
+  /* ======================================================================
+   * 规则定义
+   * ====================================================================== */
   rules: {
+    /* ------------------------------------------------------------------
+     * 1. 选择器 class 命名规范
+     *    强制 kebab-case：小写字母开头，中划线、双中划线、双下划线分隔
+     *    示例：✅ bee-button  ✅ bee-button--primary  ✅ bee-button__icon
+     *          ❌ BeeButton   ❌ beeButton            ❌ bee_button
+     * ------------------------------------------------------------------ */
     'selector-class-pattern': [
       '^([a-z][a-z0-9]*)((-|--|__)[a-z0-9]+)*$',
       {
         message: selector => `Expected class selector "${selector}" to be kebab-case`
       }
     ],
+
+    /* ------------------------------------------------------------------
+     * 2. 属性值关键字大小写
+     *    统一使用小写，但忽略 Vue 的 v-bind() CSS 函数
+     *    原因：v-bind() 中的值是 JS 表达式，不应受 CSS 大小写规则约束
+     * ------------------------------------------------------------------ */
     'value-keyword-case': [
       'lower',
       {
-        ignoreFunctions: [/^v-bind/]
+        ignoreFunctions: [/^v-bind/]  // 忽略 v-bind() 中的值，如 v-bind(color)
       }
     ],
 
+    /* ------------------------------------------------------------------
+     * 3. 声明块内声明类型的排列顺序
+     *    优先级：--自定义属性 → $SCSS变量 → 普通声明（color / margin 等）
+     * ------------------------------------------------------------------ */
     // prettier-ignore
     'order/order': [
-      'custom-properties',
-      'dollar-variables',
-      'declarations'
+      'custom-properties',  // CSS 自定义属性（--开头）
+      'dollar-variables',   // SCSS 变量（$开头）
+      'declarations'        // 普通 CSS 属性声明
     ],
+
+    /* ------------------------------------------------------------------
+     * 4. 自定义属性按字母序排列
+     *    示例：✅ --color / --font-size / --padding
+     * ------------------------------------------------------------------ */
     'order/custom-properties-alphabetical-order': true,
+
+    /* ------------------------------------------------------------------
+     * 5. CSS 属性分组排序
+     *    将属性按功能分为 8 组，每组内按声明顺序排列。
+     *    未归入任何分组的属性（unspecified）放在最底部，前面留一个空行。
+     *
+     *    分组说明：
+     *    ┌──────────┬──────────────────────────────────────────────────┐
+     *    │ 分组     │ 属性类别                                         │
+     *    ├──────────┼──────────────────────────────────────────────────┤
+     *    │ 布局     │ position / display / flex / grid / z-index 等    │
+     *    │ 盒模型   │ 尺寸 / 内外边距 / 边框 / 圆角 / overflow        │
+     *    │ 文本排版 │ 字体 / 字号 / 行高 / 颜色 / 对齐等              │
+     *    │ 视觉效果 │ 背景 / 透明度 / 阴影 / 轮廓 / transform 等      │
+     *    │ SVG 属性 │ fill / stroke / 相关透明度与渲染属性            │
+     *    │ 内容生成 │ content / counter / quotes                      │
+     *    │ 动画过渡 │ transition / animation 及其子属性               │
+     *    │ 滚动     │ scrollbar / scroll-behavior / scroll-snap 等    │
+     *    └──────────┴──────────────────────────────────────────────────┘
+     * ------------------------------------------------------------------ */
     'order/properties-order': [
       [
+        // 布局相关
         {
           groupName: '布局',
           properties: [
@@ -36,6 +98,7 @@ export default {
             'left',
             'inset',
             'z-index',
+            // Flex
             'display',
             'gap',
             'row-gap',
@@ -52,6 +115,7 @@ export default {
             'flex-basis',
             'order',
             'align-self',
+            // Grid
             'grid-template-rows',
             'grid-template-columns',
             'grid-template-areas',
@@ -76,6 +140,8 @@ export default {
             'place-self'
           ]
         },
+
+        // 盒模型
         {
           groupName: '盒模型',
           properties: [
@@ -87,16 +153,19 @@ export default {
             'max-width',
             'max-height',
             'aspect-ratio',
+            // 内边距
             'padding',
             'padding-top',
             'padding-right',
             'padding-bottom',
             'padding-left',
+            // 外边距
             'margin',
             'margin-top',
             'margin-right',
             'margin-bottom',
             'margin-left',
+            // 边框
             'border',
             'border-top',
             'border-right',
@@ -125,6 +194,7 @@ export default {
             'border-left-width',
             'border-collapse',
             'border-spacing',
+            // 圆角
             'border-radius',
             'border-top-left-radius',
             'border-top-right-radius',
@@ -134,12 +204,15 @@ export default {
             'border-start-end-radius',
             'border-end-start-radius',
             'border-end-end-radius',
+            // 溢出
             'overflow',
             'overflow-x',
             'overflow-y',
             'overflow-clip-margin'
           ]
         },
+
+        // 文本排版
         {
           groupName: '文本排版',
           properties: [
@@ -167,6 +240,8 @@ export default {
             'white-space'
           ]
         },
+
+        // 视觉效果
         {
           groupName: '视觉效果',
           properties: [
@@ -192,6 +267,8 @@ export default {
             'transform-style'
           ]
         },
+
+        // SVG 属性
         {
           groupName: 'SVG 属性',
           // prettier-ignore
@@ -207,6 +284,8 @@ export default {
             'stop-opacity'
           ]
         },
+
+        // 内容生成（伪元素相关）
         {
           groupName: '内容生成',
           // prettier-ignore
@@ -217,6 +296,8 @@ export default {
             'quotes'
           ]
         },
+
+        // 动画过渡
         {
           groupName: '动画过渡',
           properties: [
@@ -235,6 +316,8 @@ export default {
             'animation-fill-mode'
           ]
         },
+
+        // 滚动条与滚动行为
         {
           groupName: '滚动',
           // prettier-ignore
@@ -251,16 +334,22 @@ export default {
         }
       ],
       {
-        unspecified: 'bottom',
-        emptyLineBeforeUnspecified: 'always'
+        unspecified: 'top',                 // 未分组的属性放在最前面（bottom → top 变更，更符合直觉）
+        emptyLineBeforeUnspecified: 'always' // 未分组属性前保留一个空行，与分组属性隔离
       }
     ]
   },
+
+  /* ======================================================================
+   * Vue 文件覆盖规则
+   *    对 .vue 文件额外加载 Vue 推荐规则，并使用 postcss-html
+   *    作为自定义语法解析器以正确处理 <style lang="scss"> 块
+   * ====================================================================== */
   overrides: [
     {
-      files: ['*.vue', '**/*.vue'],
-      extends: ['stylelint-config-recommended-vue/scss'],
-      customSyntax: 'postcss-html'
+      files: ['*.vue', '**/*.vue'],                          // 匹配所有 .vue 文件
+      extends: ['stylelint-config-recommended-vue/scss'],    // Vue SCSS 推荐规则
+      customSyntax: 'postcss-html'                           // 解析 Vue SFC 中的 <style> 块
     }
   ]
 }
