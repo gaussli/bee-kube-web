@@ -76,9 +76,11 @@ export default [
   },
 
   /* ======================================================================
-   * 5. Vue 文件解析器
+   * 5. Vue 文件解析器 + TypeScript 规则
    *    .vue 文件使用 vue-eslint-parser 作为顶层解析器，
-   *    通过 parserOptions.parser 将 <script lang="ts"> 委托给 TypeScript 解析器处理
+   *    通过 parserOptions.parser 将 <script lang="ts"> 委托给 TypeScript 解析器。
+   *    同时注入 @typescript-eslint 插件规则，确保 .vue 文件中的 TS 代码与 .ts
+   *    文件享有同等级别的类型安全检查。
    * ====================================================================== */
   {
     files: ['**/*.vue'],
@@ -91,11 +93,28 @@ export default [
       }
     },
     plugins: {
-      vue: pluginVue
+      vue: pluginVue,
+      '@typescript-eslint': tseslintPlugin
     },
     rules: {
+      // --- Vue 规则 ---
       'vue/multi-word-component-names': 'off',  // 允许单单词组件名（如 Index / Login）
-      'vue/no-v-html': 'off'                    // 允许 v-html（YAML 高亮等场景需要）
+      'vue/no-v-html': 'off',                   // 允许 v-html（YAML 高亮等场景需要）
+
+      // --- TypeScript 规则（与 Block 6 保持一致，确保 .vue 脚本享有同等检查）---
+      'no-redeclare': 'off',                              // 关闭 ESLint 原生规则
+      '@typescript-eslint/no-redeclare': 'error',         // 启用 TS 版本（兼容类型声明和接口重复检测）
+      '@typescript-eslint/no-explicit-any': 'off',        // 允许显式 any（渐进式迁移）
+      '@typescript-eslint/no-unused-vars': [
+        'error',
+        {
+          vars: 'all',                                    // 检查所有变量声明
+          varsIgnorePattern: '^_',                        // _ 前缀变量允许未使用
+          args: 'all',                                    // 检查所有函数参数
+          argsIgnorePattern: '^_'                         // _ 前缀参数允许未使用
+        }
+      ],
+      'no-prototype-builtins': 'off'                      // 允许直接调用 hasOwnProperty 等原型方法
     }
   },
 
@@ -184,7 +203,7 @@ export default [
             'index',     // 目录的 index 入口文件
             'object'     // import * as 对象导入
           ],
-          newlinesBetween: 'never',                     // 不同分组之间不插入空行
+          'newlines-between': 'never',                  // 不同分组之间不插入空行
           pathGroupsExcludedImportTypes: ['builtin'],   // Node 内置模块不作为 pathGroups 候选
           pathGroups: [
             // --- external 组：核心依赖按固定顺序排在 npm 包最前面 ---

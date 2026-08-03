@@ -132,7 +132,6 @@ async function handleLogout() {
   userStore.clear()
   router.push('/login')
 }
-
 </script>
 
 <style lang="scss" scoped>

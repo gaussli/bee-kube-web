@@ -3,7 +3,16 @@
  * @module mock/kubernetes/config/configmap
  */
 import type { PageVo } from '@/types/common'
-import type { ConfigMapAnnotationsReq, ConfigMapDataReq, ConfigMapDetailResp, ConfigMapLabelsReq, ConfigMapListResp, ConfigMapQueryReq, ConfigMapReq, ConfigMapYamlReq } from '@/types/kubernetes/config/configmap'
+import type {
+  ConfigMapAnnotationsReq,
+  ConfigMapDataReq,
+  ConfigMapDetailResp,
+  ConfigMapLabelsReq,
+  ConfigMapListResp,
+  ConfigMapQueryReq,
+  ConfigMapReq,
+  ConfigMapYamlReq
+} from '@/types/kubernetes/config/configmap'
 import { generateId } from '@/mock/utils'
 
 /**

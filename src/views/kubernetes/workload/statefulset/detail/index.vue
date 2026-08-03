@@ -29,7 +29,9 @@
               </div>
               <div class="detail-item">
                 <span class="detail-label">就绪副本:</span
-                ><span :class="['detail-value', statefulsetData?.replicas.readyReplicas === statefulsetData?.replicas.replicas ? 'replicas-ready' : 'replicas-pending']">{{ statefulsetData?.replicas.readyReplicas }}</span>
+                ><span :class="['detail-value', statefulsetData?.replicas.readyReplicas === statefulsetData?.replicas.replicas ? 'replicas-ready' : 'replicas-pending']">{{
+                  statefulsetData?.replicas.readyReplicas
+                }}</span>
               </div>
             </div>
             <div class="detail-row">

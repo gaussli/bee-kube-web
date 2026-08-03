@@ -3,7 +3,17 @@
  * @module mock/kubernetes/namespace
  */
 import type { PageVo } from '@/types/common'
-import type { NamespaceQueryReq, NamespaceReq, NamespaceListResp, NamespaceDetailResp, NamespaceSimpleListResp, NamespaceLabelsReq, NamespaceAnnotationsReq, NamespaceQuotaReq, NamespaceImportReq } from '@/types/kubernetes/namespace'
+import type {
+  NamespaceQueryReq,
+  NamespaceReq,
+  NamespaceListResp,
+  NamespaceDetailResp,
+  NamespaceSimpleListResp,
+  NamespaceLabelsReq,
+  NamespaceAnnotationsReq,
+  NamespaceQuotaReq,
+  NamespaceImportReq
+} from '@/types/kubernetes/namespace'
 import { generateId } from '@/mock/utils'
 
 /**
@@ -162,7 +172,7 @@ function getNamespaceDetail(clusterId: string, name: string): NamespaceDetailRes
   return {
     ...ns!,
     labels: { 'app.kubernetes.io/name': ns!.name },
-    annotations: { 'description': ns!.description || '' },
+    annotations: { description: ns!.description || '' },
     resourceQuota: {
       requestsCpu: 4,
       requestsMemory: '8Gi',

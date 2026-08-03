@@ -297,7 +297,7 @@ const mockJobs: JobListResp[] = [
     createBy: 'system',
     updateAt: '2024-03-20 02:15:00',
     updateBy: 'system',
-    deletable: true,
+    deletable: true
   },
   {
     id: generateId(),
@@ -318,7 +318,7 @@ const mockJobs: JobListResp[] = [
     createBy: 'developer',
     updateAt: '2024-03-19 10:30:00',
     updateBy: 'system',
-    deletable: true,
+    deletable: true
   },
   {
     id: generateId(),
@@ -339,7 +339,7 @@ const mockJobs: JobListResp[] = [
     createBy: 'ml-engineer',
     updateAt: '2024-03-20 08:00:00',
     updateBy: 'ml-engineer',
-    deletable: true,
+    deletable: true
   },
   {
     id: generateId(),
@@ -360,7 +360,7 @@ const mockJobs: JobListResp[] = [
     createBy: 'system',
     updateAt: '2024-03-19 00:10:00',
     updateBy: 'system',
-    deletable: true,
+    deletable: true
   },
   {
     id: generateId(),
@@ -381,7 +381,7 @@ const mockJobs: JobListResp[] = [
     createBy: 'system',
     updateAt: '2024-03-21 01:08:00',
     updateBy: 'system',
-    deletable: true,
+    deletable: true
   },
   {
     id: generateId(),
@@ -402,7 +402,7 @@ const mockJobs: JobListResp[] = [
     createBy: 'analyst',
     updateAt: '2024-03-21 09:30:00',
     updateBy: 'analyst',
-    deletable: true,
+    deletable: true
   },
   {
     id: generateId(),
@@ -423,7 +423,7 @@ const mockJobs: JobListResp[] = [
     createBy: 'system',
     updateAt: '2024-03-20 23:05:00',
     updateBy: 'system',
-    deletable: false,
+    deletable: false
   },
   {
     id: generateId(),
@@ -444,6 +444,6 @@ const mockJobs: JobListResp[] = [
     createBy: 'devops',
     updateAt: '2024-03-20 04:45:00',
     updateBy: 'devops',
-    deletable: true,
+    deletable: true
   }
 ]

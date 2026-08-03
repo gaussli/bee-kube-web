@@ -251,11 +251,6 @@ function handleEdit(row: PermissionResp) {
   router.push({ name: 'platform:system:permission:edit', params: { id: row.id } })
 }
 
-function handleToggleStatus(row: PermissionResp) {
-  currentTargetRow.value = row
-  statusDialogVisible.value = true
-}
-
 function handleDelete(row: PermissionResp) {
   currentTargetRow.value = row
   deleteDialogVisible.value = true

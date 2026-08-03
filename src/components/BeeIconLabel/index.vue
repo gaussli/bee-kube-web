@@ -10,7 +10,7 @@ import BeeIcon from '@/components/BeeIcon/index.vue'
 
 defineOptions({ name: 'BeeIconLabel' })
 
-const props = withDefaults(
+withDefaults(
   defineProps<{
     icon?: string
     label: string

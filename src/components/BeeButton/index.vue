@@ -15,7 +15,7 @@ import BeeIcon from '@/components/BeeIcon/index.vue'
 
 defineOptions({ name: 'BeeButton' })
 
-const props = withDefaults(
+withDefaults(
   defineProps<{
     type?: 'default' | 'primary' | 'success' | 'warning' | 'danger'
     disabled?: boolean

@@ -306,7 +306,7 @@ const mockDaemonSets: DaemonSetListResp[] = [
     createBy: 'admin',
     updateAt: '2024-03-20 14:00:00',
     updateBy: 'admin',
-    deletable: false,
+    deletable: false
   },
   {
     id: generateId(),
@@ -323,7 +323,7 @@ const mockDaemonSets: DaemonSetListResp[] = [
     createBy: 'admin',
     updateAt: '2024-03-19 16:30:00',
     updateBy: 'admin',
-    deletable: true,
+    deletable: true
   },
   {
     id: generateId(),
@@ -340,7 +340,7 @@ const mockDaemonSets: DaemonSetListResp[] = [
     createBy: 'system',
     updateAt: '2024-03-18 10:00:00',
     updateBy: 'system',
-    deletable: false,
+    deletable: false
   },
   // ==================== Available（部分就绪）- 2 条 ====================
   {
@@ -359,7 +359,7 @@ const mockDaemonSets: DaemonSetListResp[] = [
     createBy: 'developer',
     updateAt: '2024-03-20 11:00:00',
     updateBy: 'developer',
-    deletable: true,
+    deletable: true
   },
   {
     id: generateId(),
@@ -377,7 +377,7 @@ const mockDaemonSets: DaemonSetListResp[] = [
     createBy: 'admin',
     updateAt: '2024-03-19 12:00:00',
     updateBy: 'admin',
-    deletable: true,
+    deletable: true
   },
   // ==================== Updating（更新中）- 2 条 ====================
   {
@@ -396,7 +396,7 @@ const mockDaemonSets: DaemonSetListResp[] = [
     createBy: 'developer',
     updateAt: '2024-03-20 16:00:00',
     updateBy: 'developer',
-    deletable: true,
+    deletable: true
   },
   {
     id: generateId(),
@@ -414,7 +414,7 @@ const mockDaemonSets: DaemonSetListResp[] = [
     createBy: 'admin',
     updateAt: '2024-03-20 15:30:00',
     updateBy: 'admin',
-    deletable: false,
+    deletable: false
   },
   // ==================== Creating（创建中）- 1 条 ====================
   {
@@ -433,7 +433,7 @@ const mockDaemonSets: DaemonSetListResp[] = [
     createBy: 'admin',
     updateAt: '2024-03-19 15:00:00',
     updateBy: 'admin',
-    deletable: false,
+    deletable: false
   },
   // ==================== Failed（失败异常）- 1 条 ====================
   {
@@ -452,7 +452,7 @@ const mockDaemonSets: DaemonSetListResp[] = [
     createBy: 'admin',
     updateAt: '2024-03-18 09:00:00',
     updateBy: 'admin',
-    deletable: true,
+    deletable: true
   },
   // ==================== Unknown（未知）- 1 条 ====================
   {
@@ -471,6 +471,6 @@ const mockDaemonSets: DaemonSetListResp[] = [
     createBy: 'admin',
     updateAt: '2024-03-20 17:00:00',
     updateBy: 'admin',
-    deletable: true,
+    deletable: true
   }
 ]
