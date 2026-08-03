@@ -36,7 +36,9 @@
 
       <el-form-item label="性别" prop="gender">
         <template #label>
-          <el-icon><Male v-if="formData.gender === 1" /><Female v-else-if="formData.gender === 2" /><Help v-else /></el-icon>
+          <el-icon
+            ><Male v-if="formData.gender === 1" /><Female v-else-if="formData.gender === 2" /><Help v-else
+          /></el-icon>
           <span>性别</span>
         </template>
         <el-radio-group v-model="formData.gender">
@@ -106,7 +108,20 @@
 
 <script setup lang="ts">
 import { computed, reactive, ref, watch } from 'vue'
-import { User, UserFilled, Postcard, Coin, Male, Female, Help, Phone, Message, Calendar, Switch, Document } from '@element-plus/icons-vue'
+import {
+  User,
+  UserFilled,
+  Postcard,
+  Coin,
+  Male,
+  Female,
+  Help,
+  Phone,
+  Message,
+  Calendar,
+  Switch,
+  Document
+} from '@element-plus/icons-vue'
 import type { FormInstance, FormRules } from 'element-plus'
 import type { UserDetailResp } from '@/types'
 

@@ -19,7 +19,10 @@ import { request } from '@/utils'
  * @param params - 查询参数
  * @returns 分页后的 ClusterRoleBinding 列表
  */
-export function getClusterRoleBindingPage(clusterId: string, params: Partial<ClusterRoleBindingQueryReq>): Promise<PageVo<ClusterRoleBindingResp>> {
+export function getClusterRoleBindingPage(
+  clusterId: string,
+  params: Partial<ClusterRoleBindingQueryReq>
+): Promise<PageVo<ClusterRoleBindingResp>> {
   return request.get(`/kubernetes/clusters/${clusterId}/clusterrolebindings`, { params })
 }
 
@@ -59,7 +62,11 @@ export function updateClusterRoleBinding(clusterId: string, data: Partial<Cluste
  * @param name - ClusterRoleBinding 名称
  * @param data - 标签更新参数
  */
-export function manageClusterRoleBindingLabels(clusterId: string, name: string, data: Partial<ClusterRoleBindingLabelsReq>): Promise<void> {
+export function manageClusterRoleBindingLabels(
+  clusterId: string,
+  name: string,
+  data: Partial<ClusterRoleBindingLabelsReq>
+): Promise<void> {
   return request.put(`/kubernetes/clusters/${clusterId}/clusterrolebindings/${name}/labels`, { data })
 }
 
@@ -69,7 +76,11 @@ export function manageClusterRoleBindingLabels(clusterId: string, name: string, 
  * @param name - ClusterRoleBinding 名称
  * @param data - 注解更新参数
  */
-export function manageClusterRoleBindingAnnotations(clusterId: string, name: string, data: Partial<ClusterRoleBindingAnnotationsReq>): Promise<void> {
+export function manageClusterRoleBindingAnnotations(
+  clusterId: string,
+  name: string,
+  data: Partial<ClusterRoleBindingAnnotationsReq>
+): Promise<void> {
   return request.put(`/kubernetes/clusters/${clusterId}/clusterrolebindings/${name}/annotations`, { data })
 }
 
@@ -79,7 +90,11 @@ export function manageClusterRoleBindingAnnotations(clusterId: string, name: str
  * @param name - ClusterRoleBinding 名称
  * @param data - 主体更新参数
  */
-export function manageClusterRoleBindingSubjects(clusterId: string, name: string, data: Partial<ClusterRoleBindingSubjectsReq>): Promise<void> {
+export function manageClusterRoleBindingSubjects(
+  clusterId: string,
+  name: string,
+  data: Partial<ClusterRoleBindingSubjectsReq>
+): Promise<void> {
   return request.put(`/kubernetes/clusters/${clusterId}/clusterrolebindings/${name}/subjects`, { data })
 }
 

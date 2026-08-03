@@ -9,7 +9,12 @@
           <BeeTag type="primary" size="tiny">UID</BeeTag>
         </BeeTooltip>
         <span class="bee-namespace-info-cell__name">{{ name }}</span>
-        <BeeIcon name="basic-copy" :size="14" class="bee-namespace-info-cell__copy-icon" @click="useClipboard().copy(props.name)" />
+        <BeeIcon
+          name="basic-copy"
+          :size="14"
+          class="bee-namespace-info-cell__copy-icon"
+          @click="useClipboard().copy(props.name)"
+        />
       </div>
       <div class="bee-namespace-info-cell__bottom">
         <span class="bee-namespace-info-cell__desc">{{ description || '-' }}</span>

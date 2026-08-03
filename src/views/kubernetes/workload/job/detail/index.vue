@@ -17,7 +17,8 @@
             </div>
             <div class="detail-row">
               <div class="detail-item">
-                <span class="detail-label">集群:</span><span class="detail-value">{{ jobData?.clusterName || jobData?.clusterId }}</span>
+                <span class="detail-label">集群:</span
+                ><span class="detail-value">{{ jobData?.clusterName || jobData?.clusterId }}</span>
               </div>
               <div class="detail-item">
                 <span class="detail-label">并行度:</span><span class="detail-value">{{ jobData?.parallelism }}</span>
@@ -34,10 +35,19 @@
             <div class="detail-row">
               <div class="detail-item">
                 <span class="detail-label">成功:</span
-                ><span :class="['detail-value', jobData?.succeeded === jobData?.completions ? 'replicas-ready' : 'replicas-pending']">{{ jobData?.succeeded }}</span>
+                ><span
+                  :class="[
+                    'detail-value',
+                    jobData?.succeeded === jobData?.completions ? 'replicas-ready' : 'replicas-pending'
+                  ]"
+                  >{{ jobData?.succeeded }}</span
+                >
               </div>
               <div class="detail-item">
-                <span class="detail-label">失败:</span><span :class="['detail-value', (jobData?.failed || 0) > 0 ? 'replicas-pending' : '']">{{ jobData?.failed }}</span>
+                <span class="detail-label">失败:</span
+                ><span :class="['detail-value', (jobData?.failed || 0) > 0 ? 'replicas-pending' : '']">{{
+                  jobData?.failed
+                }}</span>
               </div>
             </div>
             <div class="detail-row">
@@ -93,7 +103,11 @@ function handleBack() {
   router.back()
 }
 function handleEdit() {
-  router.push({ name: 'kubernetes:workload:job:edit', params: { clusterId: clusterId.value }, query: { namespace: namespace.value, name: jobName.value } })
+  router.push({
+    name: 'kubernetes:workload:job:edit',
+    params: { clusterId: clusterId.value },
+    query: { namespace: namespace.value, name: jobName.value }
+  })
 }
 onMounted(() => {
   loadData()

@@ -9,9 +9,19 @@
         <BeeInputSearch v-model="leftSearch" placeholder="搜索" size="default" class="header-search" />
       </div>
       <div class="panel-body">
-        <div v-for="item in leftFilteredData" :key="getItemKey(item)" class="panel-item" :class="{ 'is-checked': leftCheckedKeys.has(getItemKey(item)) }" @click="handleLeftItemClick(item)">
+        <div
+          v-for="item in leftFilteredData"
+          :key="getItemKey(item)"
+          class="panel-item"
+          :class="{ 'is-checked': leftCheckedKeys.has(getItemKey(item)) }"
+          @click="handleLeftItemClick(item)"
+        >
           <slot name="left" :item="item">
-            <el-checkbox :model-value="leftCheckedKeys.has(getItemKey(item))" @click.stop @change="handleLeftItemCheck(item)" />
+            <el-checkbox
+              :model-value="leftCheckedKeys.has(getItemKey(item))"
+              @click.stop
+              @change="handleLeftItemCheck(item)"
+            />
             <span class="item-label">{{ getItemLabel(item) }}</span>
           </slot>
         </div>
@@ -41,9 +51,19 @@
         <BeeInputSearch v-model="rightSearch" placeholder="搜索" size="default" class="header-search" />
       </div>
       <div class="panel-body">
-        <div v-for="item in rightFilteredData" :key="getItemKey(item)" class="panel-item" :class="{ 'is-checked': rightCheckedKeys.has(getItemKey(item)) }" @click="handleRightItemClick(item)">
+        <div
+          v-for="item in rightFilteredData"
+          :key="getItemKey(item)"
+          class="panel-item"
+          :class="{ 'is-checked': rightCheckedKeys.has(getItemKey(item)) }"
+          @click="handleRightItemClick(item)"
+        >
           <slot name="right" :item="item">
-            <el-checkbox :model-value="rightCheckedKeys.has(getItemKey(item))" @click.stop @change="handleRightItemCheck(item)" />
+            <el-checkbox
+              :model-value="rightCheckedKeys.has(getItemKey(item))"
+              @click.stop
+              @change="handleRightItemCheck(item)"
+            />
             <span class="item-label">{{ getItemLabel(item) }}</span>
           </slot>
         </div>

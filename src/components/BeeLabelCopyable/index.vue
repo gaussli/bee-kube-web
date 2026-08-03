@@ -17,7 +17,9 @@ defineProps<{
 }>()
 
 async function handleCopy() {
-  const text = (event?.target as HTMLElement)?.closest('.bee-label-copyable')?.querySelector('.bee-label-copyable__label')?.textContent
+  const text = (event?.target as HTMLElement)
+    ?.closest('.bee-label-copyable')
+    ?.querySelector('.bee-label-copyable__label')?.textContent
   if (text) {
     try {
       await navigator.clipboard.writeText(text)

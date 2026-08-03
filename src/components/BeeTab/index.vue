@@ -2,7 +2,13 @@
   <div class="bee-tab">
     <div class="tab-header">
       <div class="slider" :style="sliderStyle" />
-      <div v-for="(tab, index) in tabs" :key="tab.key" class="tab-item" :class="{ active: activeIndex === index }" @click="handleClick(index)">
+      <div
+        v-for="(tab, index) in tabs"
+        :key="tab.key"
+        class="tab-item"
+        :class="{ active: activeIndex === index }"
+        @click="handleClick(index)"
+      >
         <el-icon v-if="tab.icon">
           <component :is="tab.icon" />
         </el-icon>

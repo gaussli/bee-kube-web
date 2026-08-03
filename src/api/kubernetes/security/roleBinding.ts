@@ -3,7 +3,14 @@
  * @module api/kubernetes/roleBinding
  */
 import type { PageVo } from '@/types/common'
-import type { RoleBindingResp, RoleBindingQueryReq, RoleBindingReq, RoleBindingLabelsReq, RoleBindingAnnotationsReq, RoleBindingSubjectsReq } from '@/types/kubernetes/security/roleBinding'
+import type {
+  RoleBindingResp,
+  RoleBindingQueryReq,
+  RoleBindingReq,
+  RoleBindingLabelsReq,
+  RoleBindingAnnotationsReq,
+  RoleBindingSubjectsReq
+} from '@/types/kubernetes/security/roleBinding'
 import { request } from '@/utils'
 
 /**
@@ -13,7 +20,11 @@ import { request } from '@/utils'
  * @param params - 查询参数
  * @returns 分页后的 RoleBinding 列表
  */
-export function getRoleBindingPage(clusterId: string, namespaceName: string, params: Partial<RoleBindingQueryReq>): Promise<PageVo<RoleBindingResp>> {
+export function getRoleBindingPage(
+  clusterId: string,
+  namespaceName: string,
+  params: Partial<RoleBindingQueryReq>
+): Promise<PageVo<RoleBindingResp>> {
   return request.get(`/kubernetes/clusters/${clusterId}/namespaces/${namespaceName}/rolebindings`, { params })
 }
 
@@ -45,7 +56,9 @@ export function createRoleBinding(clusterId: string, data: Partial<RoleBindingRe
  * @returns 更新的 RoleBinding ID
  */
 export function updateRoleBinding(clusterId: string, data: Partial<RoleBindingReq>): Promise<void> {
-  return request.put(`/kubernetes/clusters/${clusterId}/namespaces/${data.namespace}/rolebindings/${data.name}`, { data })
+  return request.put(`/kubernetes/clusters/${clusterId}/namespaces/${data.namespace}/rolebindings/${data.name}`, {
+    data
+  })
 }
 
 /**
@@ -55,8 +68,15 @@ export function updateRoleBinding(clusterId: string, data: Partial<RoleBindingRe
  * @param name - RoleBinding 名称
  * @param data - 标签更新参数
  */
-export function manageRoleBindingLabels(clusterId: string, namespaceName: string, name: string, data: Partial<RoleBindingLabelsReq>): Promise<void> {
-  return request.put(`/kubernetes/clusters/${clusterId}/namespaces/${namespaceName}/rolebindings/${name}/labels`, { data })
+export function manageRoleBindingLabels(
+  clusterId: string,
+  namespaceName: string,
+  name: string,
+  data: Partial<RoleBindingLabelsReq>
+): Promise<void> {
+  return request.put(`/kubernetes/clusters/${clusterId}/namespaces/${namespaceName}/rolebindings/${name}/labels`, {
+    data
+  })
 }
 
 /**
@@ -66,8 +86,15 @@ export function manageRoleBindingLabels(clusterId: string, namespaceName: string
  * @param name - RoleBinding 名称
  * @param data - 注解更新参数
  */
-export function manageRoleBindingAnnotations(clusterId: string, namespaceName: string, name: string, data: Partial<RoleBindingAnnotationsReq>): Promise<void> {
-  return request.put(`/kubernetes/clusters/${clusterId}/namespaces/${namespaceName}/rolebindings/${name}/annotations`, { data })
+export function manageRoleBindingAnnotations(
+  clusterId: string,
+  namespaceName: string,
+  name: string,
+  data: Partial<RoleBindingAnnotationsReq>
+): Promise<void> {
+  return request.put(`/kubernetes/clusters/${clusterId}/namespaces/${namespaceName}/rolebindings/${name}/annotations`, {
+    data
+  })
 }
 
 /**
@@ -77,8 +104,15 @@ export function manageRoleBindingAnnotations(clusterId: string, namespaceName: s
  * @param name - RoleBinding 名称
  * @param data - 主体更新参数
  */
-export function manageRoleBindingSubjects(clusterId: string, namespaceName: string, name: string, data: Partial<RoleBindingSubjectsReq>): Promise<void> {
-  return request.put(`/kubernetes/clusters/${clusterId}/namespaces/${namespaceName}/rolebindings/${name}/subjects`, { data })
+export function manageRoleBindingSubjects(
+  clusterId: string,
+  namespaceName: string,
+  name: string,
+  data: Partial<RoleBindingSubjectsReq>
+): Promise<void> {
+  return request.put(`/kubernetes/clusters/${clusterId}/namespaces/${namespaceName}/rolebindings/${name}/subjects`, {
+    data
+  })
 }
 
 /**

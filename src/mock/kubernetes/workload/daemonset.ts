@@ -3,7 +3,15 @@
  * @module mock/kubernetes/workload/daemonset
  */
 import type { PageVo } from '@/types/common'
-import type { DaemonSetAnnotationsReq, DaemonSetDetailResp, DaemonSetLabelsReq, DaemonSetListResp, DaemonSetQueryReq, DaemonSetReq, DaemonSetYamlReq } from '@/types/kubernetes/workload/daemonset'
+import type {
+  DaemonSetAnnotationsReq,
+  DaemonSetDetailResp,
+  DaemonSetLabelsReq,
+  DaemonSetListResp,
+  DaemonSetQueryReq,
+  DaemonSetReq,
+  DaemonSetYamlReq
+} from '@/types/kubernetes/workload/daemonset'
 import { generateId } from '@/mock/utils'
 
 /**
@@ -26,62 +34,74 @@ export default [
   {
     method: 'get',
     url: '/kubernetes/clusters/:clusterId/daemonsets',
-    handler: (pathParams: Record<string, string>, params: Partial<DaemonSetQueryReq>): PageVo<DaemonSetListResp> => getDaemonSetList(pathParams.clusterId, params)
+    handler: (pathParams: Record<string, string>, params: Partial<DaemonSetQueryReq>): PageVo<DaemonSetListResp> =>
+      getDaemonSetList(pathParams.clusterId, params)
   },
   {
     method: 'get',
     url: '/kubernetes/clusters/:clusterId/namespaces/:namespace/daemonsets/:name',
-    handler: (pathParams: Record<string, string>): DaemonSetDetailResp => getDaemonSetDetail(pathParams.clusterId, pathParams.namespace, pathParams.name)
+    handler: (pathParams: Record<string, string>): DaemonSetDetailResp =>
+      getDaemonSetDetail(pathParams.clusterId, pathParams.namespace, pathParams.name)
   },
   {
     method: 'get',
     url: '/kubernetes/clusters/:clusterId/namespaces/:namespace/daemonsets/:name/yaml',
-    handler: (pathParams: Record<string, string>): string => getDaemonSetYaml(pathParams.clusterId, pathParams.namespace, pathParams.name)
+    handler: (pathParams: Record<string, string>): string =>
+      getDaemonSetYaml(pathParams.clusterId, pathParams.namespace, pathParams.name)
   },
   {
     method: 'post',
     url: '/kubernetes/clusters/:clusterId/namespaces/:namespace/daemonsets',
-    handler: (pathParams: Record<string, string>, data: DaemonSetReq): void => createDaemonSet(pathParams.clusterId, pathParams.namespace, data)
+    handler: (pathParams: Record<string, string>, data: DaemonSetReq): void =>
+      createDaemonSet(pathParams.clusterId, pathParams.namespace, data)
   },
   {
     method: 'put',
     url: '/kubernetes/clusters/:clusterId/namespaces/:namespace/daemonsets/:name',
-    handler: (pathParams: Record<string, string>, data: Partial<DaemonSetReq>): void => updateDaemonSet(pathParams.clusterId, pathParams.namespace, pathParams.name, data)
+    handler: (pathParams: Record<string, string>, data: Partial<DaemonSetReq>): void =>
+      updateDaemonSet(pathParams.clusterId, pathParams.namespace, pathParams.name, data)
   },
   {
     method: 'post',
     url: '/kubernetes/clusters/:clusterId/namespaces/:namespace/daemonsets/:name/restart',
-    handler: (pathParams: Record<string, string>): void => restartDaemonSet(pathParams.clusterId, pathParams.namespace, pathParams.name)
+    handler: (pathParams: Record<string, string>): void =>
+      restartDaemonSet(pathParams.clusterId, pathParams.namespace, pathParams.name)
   },
   {
     method: 'post',
     url: '/kubernetes/clusters/:clusterId/namespaces/:namespace/daemonsets/:name/labels',
-    handler: (pathParams: Record<string, string>, data: DaemonSetLabelsReq): void => manageDaemonSetLabels(pathParams.clusterId, pathParams.namespace, pathParams.name, data)
+    handler: (pathParams: Record<string, string>, data: DaemonSetLabelsReq): void =>
+      manageDaemonSetLabels(pathParams.clusterId, pathParams.namespace, pathParams.name, data)
   },
   {
     method: 'post',
     url: '/kubernetes/clusters/:clusterId/namespaces/:namespace/daemonsets/:name/annotations',
-    handler: (pathParams: Record<string, string>, data: DaemonSetAnnotationsReq): void => manageDaemonSetAnnotations(pathParams.clusterId, pathParams.namespace, pathParams.name, data)
+    handler: (pathParams: Record<string, string>, data: DaemonSetAnnotationsReq): void =>
+      manageDaemonSetAnnotations(pathParams.clusterId, pathParams.namespace, pathParams.name, data)
   },
   {
     method: 'delete',
     url: '/kubernetes/clusters/:clusterId/namespaces/:namespace/daemonsets/:name',
-    handler: (pathParams: Record<string, string>): void => deleteDaemonSet(pathParams.clusterId, pathParams.namespace, pathParams.name)
+    handler: (pathParams: Record<string, string>): void =>
+      deleteDaemonSet(pathParams.clusterId, pathParams.namespace, pathParams.name)
   },
   {
     method: 'delete',
     url: '/kubernetes/clusters/:clusterId/namespaces/:namespace/daemonsets/batch',
-    handler: (pathParams: Record<string, string>, data: string[]): void => deleteDaemonSets(pathParams.clusterId, pathParams.namespace, data)
+    handler: (pathParams: Record<string, string>, data: string[]): void =>
+      deleteDaemonSets(pathParams.clusterId, pathParams.namespace, data)
   },
   {
     method: 'get',
     url: '/kubernetes/clusters/:clusterId/daemonsets/export',
-    handler: (pathParams: Record<string, string>, params: Partial<DaemonSetQueryReq>): void => exportDaemonSet(pathParams.clusterId, params)
+    handler: (pathParams: Record<string, string>, params: Partial<DaemonSetQueryReq>): void =>
+      exportDaemonSet(pathParams.clusterId, params)
   },
   {
     method: 'post',
     url: '/kubernetes/clusters/:clusterId/daemonsets/import',
-    handler: (pathParams: Record<string, string>, data: DaemonSetYamlReq): void => importDaemonSet(pathParams.clusterId, data)
+    handler: (pathParams: Record<string, string>, data: DaemonSetYamlReq): void =>
+      importDaemonSet(pathParams.clusterId, data)
   }
 ]
 
@@ -243,7 +263,12 @@ function manageDaemonSetLabels(clusterId: string, namespace: string, name: strin
  * @param name - DaemonSet 名称
  * @param data - 注解数据
  */
-function manageDaemonSetAnnotations(clusterId: string, namespace: string, name: string, data: DaemonSetAnnotationsReq): void {
+function manageDaemonSetAnnotations(
+  clusterId: string,
+  namespace: string,
+  name: string,
+  data: DaemonSetAnnotationsReq
+): void {
   console.log('[Mock] manageDaemonSetAnnotations', { clusterId, namespace, name, data })
 }
 

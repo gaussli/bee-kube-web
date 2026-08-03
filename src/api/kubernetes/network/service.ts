@@ -3,7 +3,13 @@
  * @module api/kubernetes/service
  */
 import type { PageVo } from '@/types/common'
-import type { ServiceListVo, ServiceQueryReq, ServiceReq, ServiceLabelsReq, ServiceAnnotationsReq } from '@/types/kubernetes/network/service'
+import type {
+  ServiceListVo,
+  ServiceQueryReq,
+  ServiceReq,
+  ServiceLabelsReq,
+  ServiceAnnotationsReq
+} from '@/types/kubernetes/network/service'
 import { request } from '@/utils'
 
 /**
@@ -13,7 +19,11 @@ import { request } from '@/utils'
  * @param params - 查询参数
  * @returns 分页后的 Service 列表
  */
-export function getServicePage(clusterId: string, namespaceName: string, params: Partial<ServiceQueryReq>): Promise<PageVo<ServiceListVo>> {
+export function getServicePage(
+  clusterId: string,
+  namespaceName: string,
+  params: Partial<ServiceQueryReq>
+): Promise<PageVo<ServiceListVo>> {
   return request.get(`/kubernetes/clusters/${clusterId}/namespaces/${namespaceName}/services`, { params })
 }
 
@@ -55,7 +65,12 @@ export function updateService(clusterId: string, data: Partial<ServiceReq>): Pro
  * @param name - Service 名称
  * @param data - 标签更新参数
  */
-export function manageServiceLabels(clusterId: string, namespaceName: string, name: string, data: Partial<ServiceLabelsReq>): Promise<void> {
+export function manageServiceLabels(
+  clusterId: string,
+  namespaceName: string,
+  name: string,
+  data: Partial<ServiceLabelsReq>
+): Promise<void> {
   return request.put(`/kubernetes/clusters/${clusterId}/namespaces/${namespaceName}/services/${name}/labels`, { data })
 }
 
@@ -66,8 +81,15 @@ export function manageServiceLabels(clusterId: string, namespaceName: string, na
  * @param name - Service 名称
  * @param data - 注解更新参数
  */
-export function manageServiceAnnotations(clusterId: string, namespaceName: string, name: string, data: Partial<ServiceAnnotationsReq>): Promise<void> {
-  return request.put(`/kubernetes/clusters/${clusterId}/namespaces/${namespaceName}/services/${name}/annotations`, { data })
+export function manageServiceAnnotations(
+  clusterId: string,
+  namespaceName: string,
+  name: string,
+  data: Partial<ServiceAnnotationsReq>
+): Promise<void> {
+  return request.put(`/kubernetes/clusters/${clusterId}/namespaces/${namespaceName}/services/${name}/annotations`, {
+    data
+  })
 }
 
 /**

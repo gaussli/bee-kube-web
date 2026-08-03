@@ -13,7 +13,11 @@
       <BeeCircleButton icon="basic-help" :border="false" tooltip="帮助" />
       <BeeCircleButton :icon="fullscreenIcon" :tooltip="fullscreenTooltip" :border="false" @click="toggleFullscreen" />
       <BeeDropdown :options="dropdownOptions" @change="handleDropdownChange">
-        <BeeHeaderUserInfo :img="currentUser?.avatarId" :nickname="currentUser?.nickname || ''" :username="currentUser?.username || ''" />
+        <BeeHeaderUserInfo
+          :img="currentUser?.avatarId"
+          :nickname="currentUser?.nickname || ''"
+          :username="currentUser?.username || ''"
+        />
       </BeeDropdown>
     </div>
   </header>

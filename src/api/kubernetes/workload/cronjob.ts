@@ -3,7 +3,15 @@
  * @module api/kubernetes/workload/cronjob
  */
 import type { PageVo } from '@/types/common'
-import type { CronJobAnnotationsReq, CronJobDetailResp, CronJobLabelsReq, CronJobListResp, CronJobQueryReq, CronJobReq, CronJobYamlReq } from '@/types/kubernetes/workload/cronjob'
+import type {
+  CronJobAnnotationsReq,
+  CronJobDetailResp,
+  CronJobLabelsReq,
+  CronJobListResp,
+  CronJobQueryReq,
+  CronJobReq,
+  CronJobYamlReq
+} from '@/types/kubernetes/workload/cronjob'
 import { request } from '@/utils'
 
 /**
@@ -55,7 +63,12 @@ export function createCronJob(clusterId: string, namespace: string, data: CronJo
  * @param name - CronJob 名称
  * @param data - 更新参数
  */
-export function updateCronJob(clusterId: string, namespace: string, name: string, data: Partial<CronJobReq>): Promise<void> {
+export function updateCronJob(
+  clusterId: string,
+  namespace: string,
+  name: string,
+  data: Partial<CronJobReq>
+): Promise<void> {
   return request.put(`/kubernetes/clusters/${clusterId}/namespaces/${namespace}/cronjobs/${name}`, data)
 }
 
@@ -66,7 +79,12 @@ export function updateCronJob(clusterId: string, namespace: string, name: string
  * @param name - CronJob 名称
  * @param data - 标签数据
  */
-export function manageCronJobLabels(clusterId: string, namespace: string, name: string, data: CronJobLabelsReq): Promise<void> {
+export function manageCronJobLabels(
+  clusterId: string,
+  namespace: string,
+  name: string,
+  data: CronJobLabelsReq
+): Promise<void> {
   return request.put(`/kubernetes/clusters/${clusterId}/namespaces/${namespace}/cronjobs/${name}/labels`, data)
 }
 
@@ -77,7 +95,12 @@ export function manageCronJobLabels(clusterId: string, namespace: string, name: 
  * @param name - CronJob 名称
  * @param data - 注解数据
  */
-export function manageCronJobAnnotations(clusterId: string, namespace: string, name: string, data: CronJobAnnotationsReq): Promise<void> {
+export function manageCronJobAnnotations(
+  clusterId: string,
+  namespace: string,
+  name: string,
+  data: CronJobAnnotationsReq
+): Promise<void> {
   return request.put(`/kubernetes/clusters/${clusterId}/namespaces/${namespace}/cronjobs/${name}/annotations`, data)
 }
 

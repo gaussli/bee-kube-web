@@ -12,7 +12,10 @@ import { generateId } from '@/mock/utils'
  * @param params - 查询参数
  * @returns 分页数据
  */
-function getPersistentVolumePage(clusterId: string, params: Partial<PersistentVolumeQueryReq>): PageVo<PersistentVolumeResp> {
+function getPersistentVolumePage(
+  clusterId: string,
+  params: Partial<PersistentVolumeQueryReq>
+): PageVo<PersistentVolumeResp> {
   const { name, status, storageClassName, page = 1, pageSize = 10 } = params || {}
   let filtered = mockPVs.filter(p => p.clusterId === clusterId)
   if (name) filtered = filtered.filter(p => p.name.toLowerCase().includes(name.toLowerCase()))
@@ -42,7 +45,12 @@ function getPersistentVolumeDetail(clusterId: string, name: string): PersistentV
  * @param labels - 标签键值对
  * @param operation - 操作类型
  */
-function managePersistentVolumeLabels(clusterId: string, name: string, labels: Record<string, string>, operation: number): void {
+function managePersistentVolumeLabels(
+  clusterId: string,
+  name: string,
+  labels: Record<string, string>,
+  operation: number
+): void {
   const index = mockPVs.findIndex(p => p.clusterId === clusterId && p.name === name)
   if (index === -1) {
     console.error('[Update PersistentVolume Labels] can not find pv:', name)
@@ -67,7 +75,12 @@ function managePersistentVolumeLabels(clusterId: string, name: string, labels: R
  * @param annotations - 注解键值对
  * @param operation - 操作类型
  */
-function managePersistentVolumeAnnotations(clusterId: string, name: string, annotations: Record<string, string>, operation: number): void {
+function managePersistentVolumeAnnotations(
+  clusterId: string,
+  name: string,
+  annotations: Record<string, string>,
+  operation: number
+): void {
   const index = mockPVs.findIndex(p => p.clusterId === clusterId && p.name === name)
   if (index === -1) {
     console.error('[Update PersistentVolume Annotations] can not find pv:', name)
@@ -129,7 +142,8 @@ export default [
   {
     method: 'get',
     url: '/kubernetes/clusters/:clusterId/persistentvolumes',
-    handler: (pathParams: Record<string, string>, params: Partial<PersistentVolumeQueryReq>) => getPersistentVolumePage(pathParams.clusterId, params)
+    handler: (pathParams: Record<string, string>, params: Partial<PersistentVolumeQueryReq>) =>
+      getPersistentVolumePage(pathParams.clusterId, params)
   },
   {
     method: 'get',
@@ -139,14 +153,20 @@ export default [
   {
     method: 'put',
     url: '/kubernetes/clusters/:clusterId/persistentvolumes/:name/labels',
-    handler: (pathParams: Record<string, string>, _params: unknown, data: { labels: Record<string, string>; operation: number }) =>
-      managePersistentVolumeLabels(pathParams.clusterId, pathParams.name, data.labels, data.operation)
+    handler: (
+      pathParams: Record<string, string>,
+      _params: unknown,
+      data: { labels: Record<string, string>; operation: number }
+    ) => managePersistentVolumeLabels(pathParams.clusterId, pathParams.name, data.labels, data.operation)
   },
   {
     method: 'put',
     url: '/kubernetes/clusters/:clusterId/persistentvolumes/:name/annotations',
-    handler: (pathParams: Record<string, string>, _params: unknown, data: { annotations: Record<string, string>; operation: number }) =>
-      managePersistentVolumeAnnotations(pathParams.clusterId, pathParams.name, data.annotations, data.operation)
+    handler: (
+      pathParams: Record<string, string>,
+      _params: unknown,
+      data: { annotations: Record<string, string>; operation: number }
+    ) => managePersistentVolumeAnnotations(pathParams.clusterId, pathParams.name, data.annotations, data.operation)
   },
   {
     method: 'delete',
@@ -156,7 +176,8 @@ export default [
   {
     method: 'delete',
     url: '/kubernetes/clusters/:clusterId/persistentvolumes',
-    handler: (pathParams: Record<string, string>, _params: unknown, data: string[]) => deletePersistentVolumes(pathParams.clusterId, data)
+    handler: (pathParams: Record<string, string>, _params: unknown, data: string[]) =>
+      deletePersistentVolumes(pathParams.clusterId, data)
   }
 ]
 

@@ -1,7 +1,11 @@
 <template>
   <div class="statefulset-edit">
     <div class="page-header">
-      <BeePageTitle :icon="Collection" :title="`编辑有状态应用: ${statefulsetName}`" description="编辑 StatefulSet 配置。" />
+      <BeePageTitle
+        :icon="Collection"
+        :title="`编辑有状态应用: ${statefulsetName}`"
+        description="编辑 StatefulSet 配置。"
+      />
     </div>
     <div class="page-body">
       <el-form ref="formRef" :model="formData" :rules="formRules" label-width="140px" class="edit-form">

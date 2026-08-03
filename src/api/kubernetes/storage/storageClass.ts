@@ -3,7 +3,12 @@
  * @module api/kubernetes/storageClass
  */
 import type { PageVo } from '@/types/common'
-import type { StorageClassQueryReq, StorageClassResp, StorageClassLabelsReq, StorageClassAnnotationsReq } from '@/types/kubernetes/storage/storageClass'
+import type {
+  StorageClassQueryReq,
+  StorageClassResp,
+  StorageClassLabelsReq,
+  StorageClassAnnotationsReq
+} from '@/types/kubernetes/storage/storageClass'
 import { request } from '@/utils'
 
 /**
@@ -12,7 +17,10 @@ import { request } from '@/utils'
  * @param params - 查询参数
  * @returns 分页后的 StorageClass 列表
  */
-export function getStorageClassPage(clusterId: string, params: Partial<StorageClassQueryReq>): Promise<PageVo<StorageClassResp>> {
+export function getStorageClassPage(
+  clusterId: string,
+  params: Partial<StorageClassQueryReq>
+): Promise<PageVo<StorageClassResp>> {
   return request.get(`/kubernetes/clusters/${clusterId}/storageclasses`, { params })
 }
 
@@ -32,7 +40,11 @@ export function getStorageClassDetail(clusterId: string, name: string): Promise<
  * @param name - StorageClass 名称
  * @param data - 标签更新参数
  */
-export function manageStorageClassLabels(clusterId: string, name: string, data: Partial<StorageClassLabelsReq>): Promise<void> {
+export function manageStorageClassLabels(
+  clusterId: string,
+  name: string,
+  data: Partial<StorageClassLabelsReq>
+): Promise<void> {
   return request.put(`/kubernetes/clusters/${clusterId}/storageclasses/${name}/labels`, { data })
 }
 
@@ -42,6 +54,10 @@ export function manageStorageClassLabels(clusterId: string, name: string, data: 
  * @param name - StorageClass 名称
  * @param data - 注解更新参数
  */
-export function manageStorageClassAnnotations(clusterId: string, name: string, data: Partial<StorageClassAnnotationsReq>): Promise<void> {
+export function manageStorageClassAnnotations(
+  clusterId: string,
+  name: string,
+  data: Partial<StorageClassAnnotationsReq>
+): Promise<void> {
   return request.put(`/kubernetes/clusters/${clusterId}/storageclasses/${name}/annotations`, { data })
 }

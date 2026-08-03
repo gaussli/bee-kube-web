@@ -1,6 +1,12 @@
 <template>
   <!-- 触发器：包裹 slot 默认内容，hover 时显示 tooltip -->
-  <div ref="triggerRef" class="bee-tooltip-trigger" :class="{ 'bee-tooltip-trigger--disabled': disabled }" @mouseenter="handleTriggerMouseEnter" @mouseleave="handleTriggerMouseLeave">
+  <div
+    ref="triggerRef"
+    class="bee-tooltip-trigger"
+    :class="{ 'bee-tooltip-trigger--disabled': disabled }"
+    @mouseenter="handleTriggerMouseEnter"
+    @mouseleave="handleTriggerMouseLeave"
+  >
     <slot />
   </div>
 

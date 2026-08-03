@@ -2,7 +2,11 @@
   <div class="deployment-edit">
     <!-- 页面标题 -->
     <div class="page-header">
-      <BeePageTitle :icon="Document" :title="`编辑无状态应用: ${deploymentName}`" description="编辑 Deployment 的副本数量、标签等配置。" />
+      <BeePageTitle
+        :icon="Document"
+        :title="`编辑无状态应用: ${deploymentName}`"
+        description="编辑 Deployment 的副本数量、标签等配置。"
+      />
     </div>
 
     <!-- 表单内容 -->

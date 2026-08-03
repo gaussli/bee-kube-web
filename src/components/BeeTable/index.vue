@@ -20,7 +20,13 @@
             :style="{ cursor: selectable ? 'pointer' : undefined }"
             @click="selectable && handleRowClick(row, rowIndex)"
           >
-            <div v-for="(col, colIndex) in columnList" :key="col.id" class="bee-table__cell" :class="getFixedClass(col)" :style="getColumnStyle(col, colIndex)">
+            <div
+              v-for="(col, colIndex) in columnList"
+              :key="col.id"
+              class="bee-table__cell"
+              :class="getFixedClass(col)"
+              :style="getColumnStyle(col, colIndex)"
+            >
               <template v-if="col.slots.default">
                 <component :is="cellRenderer(col, row)" />
               </template>

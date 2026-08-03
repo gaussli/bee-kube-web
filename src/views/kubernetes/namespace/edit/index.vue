@@ -2,7 +2,11 @@
   <div class="namespace-edit">
     <!-- 页面标题 -->
     <div class="page-header">
-      <BeePageTitle :icon="FolderOpened" :title="`编辑命名空间: ${namespaceName}`" description="编辑命名空间的标签和注解。" />
+      <BeePageTitle
+        :icon="FolderOpened"
+        :title="`编辑命名空间: ${namespaceName}`"
+        description="编辑命名空间的标签和注解。"
+      />
     </div>
 
     <!-- 表单内容 -->

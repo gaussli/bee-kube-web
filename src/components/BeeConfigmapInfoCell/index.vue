@@ -9,7 +9,12 @@
           <BeeTag type="primary" size="tiny">UID</BeeTag>
         </BeeTooltip>
         <span class="bee-configmap-info-cell__name">{{ name }}</span>
-        <BeeIcon name="basic-copy" :size="14" class="bee-configmap-info-cell__copy-icon" @click.stop="useClipboard().copy(props.name)" />
+        <BeeIcon
+          name="basic-copy"
+          :size="14"
+          class="bee-configmap-info-cell__copy-icon"
+          @click.stop="useClipboard().copy(props.name)"
+        />
       </div>
       <div class="bee-configmap-info-cell__bottom">
         <span class="bee-configmap-info-cell__desc">{{ description || '-' }}</span>

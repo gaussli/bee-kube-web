@@ -12,29 +12,42 @@
                 <span class="detail-label">应用名称:</span><span class="detail-value">{{ daemonsetData?.name }}</span>
               </div>
               <div class="detail-item">
-                <span class="detail-label">命名空间:</span><span class="detail-value">{{ daemonsetData?.namespace }}</span>
+                <span class="detail-label">命名空间:</span
+                ><span class="detail-value">{{ daemonsetData?.namespace }}</span>
               </div>
             </div>
             <div class="detail-row">
               <div class="detail-item">
-                <span class="detail-label">集群:</span><span class="detail-value">{{ daemonsetData?.clusterName || daemonsetData?.clusterId }}</span>
+                <span class="detail-label">集群:</span
+                ><span class="detail-value">{{ daemonsetData?.clusterName || daemonsetData?.clusterId }}</span>
               </div>
               <div class="detail-item">
-                <span class="detail-label">期望调度:</span><span class="detail-value">{{ daemonsetData?.desiredNumberScheduled }}</span>
+                <span class="detail-label">期望调度:</span
+                ><span class="detail-value">{{ daemonsetData?.desiredNumberScheduled }}</span>
               </div>
             </div>
             <div class="detail-row">
               <div class="detail-item">
                 <span class="detail-label">就绪数量:</span
-                ><span :class="['detail-value', daemonsetData?.numberReady === daemonsetData?.desiredNumberScheduled ? 'replicas-ready' : 'replicas-pending']">{{ daemonsetData?.numberReady }}</span>
+                ><span
+                  :class="[
+                    'detail-value',
+                    daemonsetData?.numberReady === daemonsetData?.desiredNumberScheduled
+                      ? 'replicas-ready'
+                      : 'replicas-pending'
+                  ]"
+                  >{{ daemonsetData?.numberReady }}</span
+                >
               </div>
               <div class="detail-item">
-                <span class="detail-label">可用数量:</span><span class="detail-value">{{ daemonsetData?.numberAvailable }}</span>
+                <span class="detail-label">可用数量:</span
+                ><span class="detail-value">{{ daemonsetData?.numberAvailable }}</span>
               </div>
             </div>
             <div class="detail-row">
               <div class="detail-item">
-                <span class="detail-label">创建时间:</span><span class="detail-value">{{ daemonsetData?.createAt }}</span>
+                <span class="detail-label">创建时间:</span
+                ><span class="detail-value">{{ daemonsetData?.createAt }}</span>
               </div>
             </div>
           </div>
@@ -85,7 +98,11 @@ function handleBack() {
   router.back()
 }
 function handleEdit() {
-  router.push({ name: 'kubernetes:workload:daemonset:edit', params: { clusterId: clusterId.value }, query: { namespace: namespace.value, name: daemonsetName.value } })
+  router.push({
+    name: 'kubernetes:workload:daemonset:edit',
+    params: { clusterId: clusterId.value },
+    query: { namespace: namespace.value, name: daemonsetName.value }
+  })
 }
 onMounted(() => {
   loadData()

@@ -21,7 +21,10 @@ import { request } from '@/utils'
  * @param params - 查询参数（含 namespace 筛选）
  * @returns 分页后的 ConfigMap 列表
  */
-export function getConfigMapList(clusterId: string, params: Partial<ConfigMapQueryReq>): Promise<PageVo<ConfigMapListResp>> {
+export function getConfigMapList(
+  clusterId: string,
+  params: Partial<ConfigMapQueryReq>
+): Promise<PageVo<ConfigMapListResp>> {
   return request.get(`/kubernetes/clusters/${clusterId}/configmaps`, params)
 }
 
@@ -64,7 +67,12 @@ export function createConfigMap(clusterId: string, namespace: string, data: Conf
  * @param name - ConfigMap 名称
  * @param data - 更新参数
  */
-export function updateConfigMap(clusterId: string, namespace: string, name: string, data: Partial<ConfigMapReq>): Promise<void> {
+export function updateConfigMap(
+  clusterId: string,
+  namespace: string,
+  name: string,
+  data: Partial<ConfigMapReq>
+): Promise<void> {
   return request.put(`/kubernetes/clusters/${clusterId}/namespaces/${namespace}/configmaps/${name}`, data)
 }
 
@@ -75,7 +83,12 @@ export function updateConfigMap(clusterId: string, namespace: string, name: stri
  * @param name - ConfigMap 名称
  * @param data - 标签数据
  */
-export function manageConfigMapLabels(clusterId: string, namespace: string, name: string, data: ConfigMapLabelsReq): Promise<void> {
+export function manageConfigMapLabels(
+  clusterId: string,
+  namespace: string,
+  name: string,
+  data: ConfigMapLabelsReq
+): Promise<void> {
   return request.put(`/kubernetes/clusters/${clusterId}/namespaces/${namespace}/configmaps/${name}/labels`, data)
 }
 
@@ -86,7 +99,12 @@ export function manageConfigMapLabels(clusterId: string, namespace: string, name
  * @param name - ConfigMap 名称
  * @param data - 注解数据
  */
-export function manageConfigMapAnnotations(clusterId: string, namespace: string, name: string, data: ConfigMapAnnotationsReq): Promise<void> {
+export function manageConfigMapAnnotations(
+  clusterId: string,
+  namespace: string,
+  name: string,
+  data: ConfigMapAnnotationsReq
+): Promise<void> {
   return request.put(`/kubernetes/clusters/${clusterId}/namespaces/${namespace}/configmaps/${name}/annotations`, data)
 }
 
@@ -135,6 +153,11 @@ export function importConfigMap(clusterId: string, data: ConfigMapYamlReq): Prom
  * @param name - ConfigMap 名称
  * @param data - 数据参数
  */
-export function manageConfigMapData(clusterId: string, namespace: string, name: string, data: ConfigMapDataReq): Promise<void> {
+export function manageConfigMapData(
+  clusterId: string,
+  namespace: string,
+  name: string,
+  data: ConfigMapDataReq
+): Promise<void> {
   return request.put(`/kubernetes/clusters/${clusterId}/namespaces/${namespace}/configmaps/${name}/data`, data)
 }

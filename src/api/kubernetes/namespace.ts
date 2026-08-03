@@ -22,8 +22,14 @@ import { request } from '@/utils'
  * @param params - 查询参数，mode 为 simple 时不翻页，仅返回 id/uid/name
  * @returns 分页后的命名空间列表（normal）或简化列表（simple）
  */
-export function getNamespacePage(clusterId: string, params: Partial<NamespaceQueryReq>): Promise<PageVo<NamespaceListResp> | NamespaceSimpleListResp[]> {
-  return request.get<PageVo<NamespaceListResp> | NamespaceSimpleListResp[]>(`/kubernetes/clusters/${clusterId}/namespaces`, params)
+export function getNamespacePage(
+  clusterId: string,
+  params: Partial<NamespaceQueryReq>
+): Promise<PageVo<NamespaceListResp> | NamespaceSimpleListResp[]> {
+  return request.get<PageVo<NamespaceListResp> | NamespaceSimpleListResp[]>(
+    `/kubernetes/clusters/${clusterId}/namespaces`,
+    params
+  )
 }
 
 /**
@@ -61,7 +67,11 @@ export function updateNamespace(clusterId: string, name: string, data: Partial<N
  * @param name - 命名空间名称
  * @param data - 标签数据
  */
-export function manageNamespaceLabels(clusterId: string, name: string, data: Partial<NamespaceLabelsReq>): Promise<void> {
+export function manageNamespaceLabels(
+  clusterId: string,
+  name: string,
+  data: Partial<NamespaceLabelsReq>
+): Promise<void> {
   return request.post(`/kubernetes/clusters/${clusterId}/namespaces/${name}/labels`, data)
 }
 
@@ -71,7 +81,11 @@ export function manageNamespaceLabels(clusterId: string, name: string, data: Par
  * @param name - 命名空间名称
  * @param data - 注解数据
  */
-export function manageNamespaceAnnotations(clusterId: string, name: string, data: Partial<NamespaceAnnotationsReq>): Promise<void> {
+export function manageNamespaceAnnotations(
+  clusterId: string,
+  name: string,
+  data: Partial<NamespaceAnnotationsReq>
+): Promise<void> {
   return request.post(`/kubernetes/clusters/${clusterId}/namespaces/${name}/annotations`, data)
 }
 

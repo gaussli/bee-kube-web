@@ -1,14 +1,31 @@
 <template>
   <div class="bee-tree-node" role="treeitem" :aria-expanded="isExpanded">
-    <div class="bee-tree-node__content" :class="{ 'is-selected': isSelected, 'is-disabled': isNodeDisabled }" :style="{ paddingLeft: `${level * indent}px` }" @click="handleContentClick">
+    <div
+      class="bee-tree-node__content"
+      :class="{ 'is-selected': isSelected, 'is-disabled': isNodeDisabled }"
+      :style="{ paddingLeft: `${level * indent}px` }"
+      @click="handleContentClick"
+    >
       <!-- 展开/折叠图标 -->
-      <span v-if="hasChildren" class="bee-tree-node__expand-icon" :class="{ 'is-expanded': isExpanded }" @click.stop="handleToggle">
+      <span
+        v-if="hasChildren"
+        class="bee-tree-node__expand-icon"
+        :class="{ 'is-expanded': isExpanded }"
+        @click.stop="handleToggle"
+      >
         <el-icon><CaretRight /></el-icon>
       </span>
       <span v-else class="bee-tree-node__expand-icon is-leaf" />
 
       <!-- 复选框 -->
-      <el-checkbox v-if="showCheckbox" :model-value="isChecked" :indeterminate="isHalfChecked" :disabled="isNodeDisabled" @change="handleCheck" @click.stop />
+      <el-checkbox
+        v-if="showCheckbox"
+        :model-value="isChecked"
+        :indeterminate="isHalfChecked"
+        :disabled="isNodeDisabled"
+        @change="handleCheck"
+        @click.stop
+      />
 
       <!-- 节点内容 -->
       <div class="bee-tree-node__label" @click.stop="handleSelect">

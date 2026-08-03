@@ -38,7 +38,13 @@
             <span>菜单权限</span>
           </div>
           <div class="panel-body">
-            <BeeTree ref="menuTreeRef" v-model="selectedMenuIds" :data="menuTreeData" :props="{ children: 'children', label: 'name' }" :default-expand-all="true">
+            <BeeTree
+              ref="menuTreeRef"
+              v-model="selectedMenuIds"
+              :data="menuTreeData"
+              :props="{ children: 'children', label: 'name' }"
+              :default-expand-all="true"
+            >
               <template #default="{ data }">
                 <div class="menu-tree-node">
                   <div class="menu-info">
@@ -109,9 +115,36 @@ const mockMenus: MenuResp[] = [
     createAt: '',
     updateAt: '',
     children: [
-      { id: '2-1', code: 'system:user', name: '用户管理', parentId: '2', type: 1, status: 1, createAt: '', updateAt: '' },
-      { id: '2-2', code: 'system:role', name: '角色管理', parentId: '2', type: 1, status: 1, createAt: '', updateAt: '' },
-      { id: '2-3', code: 'system:menu', name: '菜单管理', parentId: '2', type: 1, status: 1, createAt: '', updateAt: '' }
+      {
+        id: '2-1',
+        code: 'system:user',
+        name: '用户管理',
+        parentId: '2',
+        type: 1,
+        status: 1,
+        createAt: '',
+        updateAt: ''
+      },
+      {
+        id: '2-2',
+        code: 'system:role',
+        name: '角色管理',
+        parentId: '2',
+        type: 1,
+        status: 1,
+        createAt: '',
+        updateAt: ''
+      },
+      {
+        id: '2-3',
+        code: 'system:menu',
+        name: '菜单管理',
+        parentId: '2',
+        type: 1,
+        status: 1,
+        createAt: '',
+        updateAt: ''
+      }
     ]
   },
   {
@@ -123,8 +156,26 @@ const mockMenus: MenuResp[] = [
     createAt: '',
     updateAt: '',
     children: [
-      { id: '3-1', code: 'order:list', name: '订单列表', parentId: '3', type: 1, status: 1, createAt: '', updateAt: '' },
-      { id: '3-2', code: 'order:export', name: '导出订单', parentId: '3', type: 2, status: 1, createAt: '', updateAt: '' }
+      {
+        id: '3-1',
+        code: 'order:list',
+        name: '订单列表',
+        parentId: '3',
+        type: 1,
+        status: 1,
+        createAt: '',
+        updateAt: ''
+      },
+      {
+        id: '3-2',
+        code: 'order:export',
+        name: '导出订单',
+        parentId: '3',
+        type: 2,
+        status: 1,
+        createAt: '',
+        updateAt: ''
+      }
     ]
   }
 ]

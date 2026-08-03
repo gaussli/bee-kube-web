@@ -1,12 +1,24 @@
 <template>
   <div v-if="actions.length > 0" class="bee-action-cell">
     <!-- 前两个操作（或全部操作，若 ≤3 个） -->
-    <BeeCircleButton v-for="action in primaryActions" :key="action.value" :icon="action.icon" :tooltip="action.label" @click="action.handler" />
+    <BeeCircleButton
+      v-for="action in primaryActions"
+      :key="action.value"
+      :icon="action.icon"
+      :tooltip="action.label"
+      @click="action.handler"
+    />
     <!-- 更多下拉菜单 -->
     <BeeDropdown v-if="showMore" trigger="click" @change="handleDropdownChange">
       <BeeCircleButton icon="basic-more" tooltip="更多" />
       <template #dropdown>
-        <BeeDropdownItem v-for="action in moreActions" :key="action.value" :value="action.value" :label="action.label" :icon="action.icon" />
+        <BeeDropdownItem
+          v-for="action in moreActions"
+          :key="action.value"
+          :value="action.value"
+          :label="action.label"
+          :icon="action.icon"
+        />
       </template>
     </BeeDropdown>
   </div>

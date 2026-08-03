@@ -4,7 +4,13 @@
       <template v-for="item in currentMenuList" :key="item.id">
         <BeeMenuItem v-if="!item.children?.length" :index="item.code" :label="item.name" :icon="item.icon" />
         <BeeSubMenu v-else :index="item.code" :label="item.name" :icon="item.icon">
-          <BeeMenuItem v-for="child in item.children" :key="child.id" :index="child.code" :label="child.name" :icon="child.icon" />
+          <BeeMenuItem
+            v-for="child in item.children"
+            :key="child.id"
+            :index="child.code"
+            :label="child.name"
+            :icon="child.icon"
+          />
         </BeeSubMenu>
       </template>
     </BeeMenu>

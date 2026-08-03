@@ -4,24 +4,48 @@
     <span class="bee-pagination__total">共 {{ total }} 条</span>
 
     <!-- 每页数量选择 -->
-    <BeeSelect v-model="currentPageSize" class="bee-pagination__size-selector" :options="pageSizeOptions" placeholder="条/页" />
+    <BeeSelect
+      v-model="currentPageSize"
+      class="bee-pagination__size-selector"
+      :options="pageSizeOptions"
+      placeholder="条/页"
+    />
 
     <!-- 分页控制 -->
     <div class="bee-pagination__controls">
       <!-- 上一页按钮 -->
-      <button class="bee-pagination__btn bee-pagination__btn--prev" :class="{ 'is-disabled': isFirstPage }" :disabled="isFirstPage" @click="handlePrevPage">
+      <button
+        class="bee-pagination__btn bee-pagination__btn--prev"
+        :class="{ 'is-disabled': isFirstPage }"
+        :disabled="isFirstPage"
+        @click="handlePrevPage"
+      >
         <BeeIcon name="basic-arrow-down" class="bee-pagination__icon" />
       </button>
 
       <!-- 当前页码输入 -->
       <div class="bee-pagination__page-input-wrapper">
-        <input v-model="pageInput" type="number" class="bee-pagination__input" :min="1" :max="totalPages" @input="handlePageInputFilter" @keyup.enter="handlePageInput" @blur="handlePageInput" />
+        <input
+          v-model="pageInput"
+          type="number"
+          class="bee-pagination__input"
+          :min="1"
+          :max="totalPages"
+          @input="handlePageInputFilter"
+          @keyup.enter="handlePageInput"
+          @blur="handlePageInput"
+        />
         <span class="bee-pagination__page-separator">/</span>
         <span class="bee-pagination__total-pages">{{ totalPages }}</span>
       </div>
 
       <!-- 下一页按钮 -->
-      <button class="bee-pagination__btn bee-pagination__btn--next" :class="{ 'is-disabled': isLastPage }" :disabled="isLastPage" @click="handleNextPage">
+      <button
+        class="bee-pagination__btn bee-pagination__btn--next"
+        :class="{ 'is-disabled': isLastPage }"
+        :disabled="isLastPage"
+        @click="handleNextPage"
+      >
         <BeeIcon name="basic-arrow-down" class="bee-pagination__icon" />
       </button>
     </div>

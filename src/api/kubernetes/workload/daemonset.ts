@@ -3,7 +3,15 @@
  * @module api/kubernetes/workload/daemonset
  */
 import type { PageVo } from '@/types/common'
-import type { DaemonSetAnnotationsReq, DaemonSetDetailResp, DaemonSetLabelsReq, DaemonSetListResp, DaemonSetQueryReq, DaemonSetReq, DaemonSetYamlReq } from '@/types/kubernetes/workload/daemonset'
+import type {
+  DaemonSetAnnotationsReq,
+  DaemonSetDetailResp,
+  DaemonSetLabelsReq,
+  DaemonSetListResp,
+  DaemonSetQueryReq,
+  DaemonSetReq,
+  DaemonSetYamlReq
+} from '@/types/kubernetes/workload/daemonset'
 import { request } from '@/utils'
 
 /**
@@ -12,7 +20,10 @@ import { request } from '@/utils'
  * @param params - 查询参数
  * @returns 分页后的 DaemonSet 列表
  */
-export function getDaemonSetList(clusterId: string, params: Partial<DaemonSetQueryReq>): Promise<PageVo<DaemonSetListResp>> {
+export function getDaemonSetList(
+  clusterId: string,
+  params: Partial<DaemonSetQueryReq>
+): Promise<PageVo<DaemonSetListResp>> {
   return request.get<PageVo<DaemonSetListResp>>(`/kubernetes/clusters/${clusterId}/daemonsets`, params)
 }
 
@@ -24,7 +35,9 @@ export function getDaemonSetList(clusterId: string, params: Partial<DaemonSetQue
  * @returns DaemonSet 详情
  */
 export function getDaemonSetDetail(clusterId: string, namespace: string, name: string): Promise<DaemonSetDetailResp> {
-  return request.get<DaemonSetDetailResp>(`/kubernetes/clusters/${clusterId}/namespaces/${namespace}/daemonsets/${name}`)
+  return request.get<DaemonSetDetailResp>(
+    `/kubernetes/clusters/${clusterId}/namespaces/${namespace}/daemonsets/${name}`
+  )
 }
 
 /**
@@ -55,7 +68,12 @@ export function createDaemonSet(clusterId: string, namespace: string, data: Daem
  * @param name - DaemonSet 名称
  * @param data - 更新参数
  */
-export function updateDaemonSet(clusterId: string, namespace: string, name: string, data: Partial<DaemonSetReq>): Promise<void> {
+export function updateDaemonSet(
+  clusterId: string,
+  namespace: string,
+  name: string,
+  data: Partial<DaemonSetReq>
+): Promise<void> {
   return request.put(`/kubernetes/clusters/${clusterId}/namespaces/${namespace}/daemonsets/${name}`, data)
 }
 
@@ -66,7 +84,12 @@ export function updateDaemonSet(clusterId: string, namespace: string, name: stri
  * @param name - DaemonSet 名称
  * @param data - 标签数据
  */
-export function manageDaemonSetLabels(clusterId: string, namespace: string, name: string, data: DaemonSetLabelsReq): Promise<void> {
+export function manageDaemonSetLabels(
+  clusterId: string,
+  namespace: string,
+  name: string,
+  data: DaemonSetLabelsReq
+): Promise<void> {
   return request.post(`/kubernetes/clusters/${clusterId}/namespaces/${namespace}/daemonsets/${name}/labels`, data)
 }
 
@@ -77,7 +100,12 @@ export function manageDaemonSetLabels(clusterId: string, namespace: string, name
  * @param name - DaemonSet 名称
  * @param data - 注解数据
  */
-export function manageDaemonSetAnnotations(clusterId: string, namespace: string, name: string, data: DaemonSetAnnotationsReq): Promise<void> {
+export function manageDaemonSetAnnotations(
+  clusterId: string,
+  namespace: string,
+  name: string,
+  data: DaemonSetAnnotationsReq
+): Promise<void> {
   return request.post(`/kubernetes/clusters/${clusterId}/namespaces/${namespace}/daemonsets/${name}/annotations`, data)
 }
 

@@ -83,7 +83,11 @@ const formData = reactive({
 const formRules: FormRules = {
   code: [
     { required: true, message: '请输入权限编码', trigger: 'blur' },
-    { pattern: /^[a-zA-Z][a-zA-Z0-9_:]*$/, message: '权限编码以字母开头，只能包含字母、数字、冒号和下划线', trigger: 'blur' }
+    {
+      pattern: /^[a-zA-Z][a-zA-Z0-9_:]*$/,
+      message: '权限编码以字母开头，只能包含字母、数字、冒号和下划线',
+      trigger: 'blur'
+    }
   ],
   name: [
     { required: true, message: '请输入权限名称', trigger: 'blur' },

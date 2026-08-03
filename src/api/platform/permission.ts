@@ -1,4 +1,12 @@
-import type { PageVo, PermissionChangeStatusReq, PermissionCreateReq, PermissionDetailResp, PermissionQueryReq, PermissionResp, PermissionUpdateReq } from '@/types'
+import type {
+  PageVo,
+  PermissionChangeStatusReq,
+  PermissionCreateReq,
+  PermissionDetailResp,
+  PermissionQueryReq,
+  PermissionResp,
+  PermissionUpdateReq
+} from '@/types'
 import { request } from '@/utils'
 
 // 分页查询权限列表

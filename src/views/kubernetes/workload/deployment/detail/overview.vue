@@ -8,7 +8,12 @@
     <!-- 1. 副本统计 -->
     <BeeCard class="deployment-overview__section">
       <div class="replica-stats">
-        <div class="replica-stats__ring" :style="{ background: `conic-gradient(${replicaRingColor} 0% ${replicaPercentage}%, $color-bg-elevated ${replicaPercentage}% 100%)` }">
+        <div
+          class="replica-stats__ring"
+          :style="{
+            background: `conic-gradient(${replicaRingColor} 0% ${replicaPercentage}%, $color-bg-elevated ${replicaPercentage}% 100%)`
+          }"
+        >
           <div class="replica-stats__ring-inner">
             <span class="replica-stats__ring-value" :style="{ color: replicaRingColor }">{{ replicaPercentage }}%</span>
           </div>
@@ -112,7 +117,10 @@
       <div class="condition-list">
         <div v-for="(cond, index) in data.conditions" :key="index" class="condition-item">
           <div class="condition-item__type">{{ cond.type }}</div>
-          <div class="condition-item__status" :class="`condition-item__status--${cond.status === 'True' ? 'true' : 'false'}`">
+          <div
+            class="condition-item__status"
+            :class="`condition-item__status--${cond.status === 'True' ? 'true' : 'false'}`"
+          >
             <span class="condition-item__status-dot" />
             {{ cond.status }}
           </div>

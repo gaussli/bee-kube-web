@@ -1,5 +1,10 @@
 <template>
-  <button class="bee-button" :class="[`bee-button--${type}`, { 'is-disabled': disabled, 'is-loading': loading }]" :disabled="disabled || loading" @click="handleClick">
+  <button
+    class="bee-button"
+    :class="[`bee-button--${type}`, { 'is-disabled': disabled, 'is-loading': loading }]"
+    :disabled="disabled || loading"
+    @click="handleClick"
+  >
     <BeeIcon v-if="loading" name="basic-loading" :size="14" class="bee-button__icon is-loading" />
     <BeeIcon v-else-if="icon" :name="icon" :size="14" class="bee-button__icon" />
     <slot v-else-if="$slots.icon" name="icon" />

@@ -59,107 +59,128 @@ export default [
   {
     method: 'get',
     url: '/kubernetes/clusters/:clusterId/statefulsets',
-    handler: (pathParams: Record<string, string>, params: Partial<StatefulSetQueryForm>): PageVo<StatefulSetListVo> => getStatefulSetList(pathParams.clusterId, params)
+    handler: (pathParams: Record<string, string>, params: Partial<StatefulSetQueryForm>): PageVo<StatefulSetListVo> =>
+      getStatefulSetList(pathParams.clusterId, params)
   },
   {
     method: 'get',
     url: '/kubernetes/clusters/:clusterId/namespaces/:namespace/statefulsets/:name',
-    handler: (pathParams: Record<string, string>): StatefulSetDetailVo => getStatefulSetDetail(pathParams.clusterId, pathParams.namespace, pathParams.name)
+    handler: (pathParams: Record<string, string>): StatefulSetDetailVo =>
+      getStatefulSetDetail(pathParams.clusterId, pathParams.namespace, pathParams.name)
   },
   {
     method: 'get',
     url: '/kubernetes/clusters/:clusterId/namespaces/:namespace/statefulsets/:name/pods',
-    handler: (pathParams: Record<string, string>): StatefulSetPodListVo[] => getStatefulSetPodList(pathParams.clusterId, pathParams.namespace, pathParams.name)
+    handler: (pathParams: Record<string, string>): StatefulSetPodListVo[] =>
+      getStatefulSetPodList(pathParams.clusterId, pathParams.namespace, pathParams.name)
   },
   {
     method: 'get',
     url: '/kubernetes/clusters/:clusterId/namespaces/:namespace/statefulsets/:name/schedule',
-    handler: (pathParams: Record<string, string>): StatefulSetScheduleVo => getStatefulSetSchedule(pathParams.clusterId, pathParams.namespace, pathParams.name)
+    handler: (pathParams: Record<string, string>): StatefulSetScheduleVo =>
+      getStatefulSetSchedule(pathParams.clusterId, pathParams.namespace, pathParams.name)
   },
   {
     method: 'get',
     url: '/kubernetes/clusters/:clusterId/namespaces/:namespace/statefulsets/:name/history',
-    handler: (pathParams: Record<string, string>): StatefulSetHistoryRevisionListVo[] => getStatefulSetHistoryRevisionList(pathParams.clusterId, pathParams.namespace, pathParams.name)
+    handler: (pathParams: Record<string, string>): StatefulSetHistoryRevisionListVo[] =>
+      getStatefulSetHistoryRevisionList(pathParams.clusterId, pathParams.namespace, pathParams.name)
   },
   {
     method: 'get',
     url: '/kubernetes/clusters/:clusterId/namespaces/:namespace/statefulsets/:name/network',
-    handler: (pathParams: Record<string, string>): StatefulSetNetworkVo => getStatefulSetNetwork(pathParams.clusterId, pathParams.namespace, pathParams.name)
+    handler: (pathParams: Record<string, string>): StatefulSetNetworkVo =>
+      getStatefulSetNetwork(pathParams.clusterId, pathParams.namespace, pathParams.name)
   },
   {
     method: 'get',
     url: '/kubernetes/clusters/:clusterId/namespaces/:namespace/statefulsets/:name/storages',
-    handler: (pathParams: Record<string, string>): StatefulSetStorageListVo[] => getStatefulSetStorageList(pathParams.clusterId, pathParams.namespace, pathParams.name)
+    handler: (pathParams: Record<string, string>): StatefulSetStorageListVo[] =>
+      getStatefulSetStorageList(pathParams.clusterId, pathParams.namespace, pathParams.name)
   },
   {
     method: 'get',
     url: '/kubernetes/clusters/:clusterId/namespaces/:namespace/statefulsets/:name/monitor',
-    handler: (pathParams: Record<string, string>): StatefulSetMonitorVo => getStatefulSetMonitor(pathParams.clusterId, pathParams.namespace, pathParams.name)
+    handler: (pathParams: Record<string, string>): StatefulSetMonitorVo =>
+      getStatefulSetMonitor(pathParams.clusterId, pathParams.namespace, pathParams.name)
   },
   {
     method: 'get',
     url: '/kubernetes/clusters/:clusterId/namespaces/:namespace/statefulsets/:name/events',
-    handler: (pathParams: Record<string, string>): StatefulSetEventListVo[] => getStatefulSetEventList(pathParams.clusterId, pathParams.namespace, pathParams.name)
+    handler: (pathParams: Record<string, string>): StatefulSetEventListVo[] =>
+      getStatefulSetEventList(pathParams.clusterId, pathParams.namespace, pathParams.name)
   },
   {
     method: 'get',
     url: '/kubernetes/clusters/:clusterId/namespaces/:namespace/statefulsets/:name/yaml',
-    handler: (pathParams: Record<string, string>): string => getStatefulSetYaml(pathParams.clusterId, pathParams.namespace, pathParams.name)
+    handler: (pathParams: Record<string, string>): string =>
+      getStatefulSetYaml(pathParams.clusterId, pathParams.namespace, pathParams.name)
   },
   {
     method: 'post',
     url: '/kubernetes/clusters/:clusterId/namespaces/:namespace/statefulsets',
-    handler: (pathParams: Record<string, string>, data: StatefulSetCreateForm): void => createStatefulSet(pathParams.clusterId, pathParams.namespace, data)
+    handler: (pathParams: Record<string, string>, data: StatefulSetCreateForm): void =>
+      createStatefulSet(pathParams.clusterId, pathParams.namespace, data)
   },
   {
     method: 'put',
     url: '/kubernetes/clusters/:clusterId/namespaces/:namespace/statefulsets/:name',
-    handler: (pathParams: Record<string, string>, data: Partial<StatefulSetUpdateForm>): void => updateStatefulSet(pathParams.clusterId, pathParams.namespace, pathParams.name, data)
+    handler: (pathParams: Record<string, string>, data: Partial<StatefulSetUpdateForm>): void =>
+      updateStatefulSet(pathParams.clusterId, pathParams.namespace, pathParams.name, data)
   },
   {
     method: 'post',
     url: '/kubernetes/clusters/:clusterId/namespaces/:namespace/statefulsets/:name/labels',
-    handler: (pathParams: Record<string, string>, data: StatefulSetLabelForm): void => manageStatefulSetLabels(pathParams.clusterId, pathParams.namespace, pathParams.name, data)
+    handler: (pathParams: Record<string, string>, data: StatefulSetLabelForm): void =>
+      manageStatefulSetLabels(pathParams.clusterId, pathParams.namespace, pathParams.name, data)
   },
   {
     method: 'post',
     url: '/kubernetes/clusters/:clusterId/namespaces/:namespace/statefulsets/:name/annotations',
-    handler: (pathParams: Record<string, string>, data: StatefulSetAnnotationForm): void => manageStatefulSetAnnotations(pathParams.clusterId, pathParams.namespace, pathParams.name, data)
+    handler: (pathParams: Record<string, string>, data: StatefulSetAnnotationForm): void =>
+      manageStatefulSetAnnotations(pathParams.clusterId, pathParams.namespace, pathParams.name, data)
   },
   {
     method: 'delete',
     url: '/kubernetes/clusters/:clusterId/namespaces/:namespace/statefulsets/:name',
-    handler: (pathParams: Record<string, string>): void => deleteStatefulSet(pathParams.clusterId, pathParams.namespace, pathParams.name)
+    handler: (pathParams: Record<string, string>): void =>
+      deleteStatefulSet(pathParams.clusterId, pathParams.namespace, pathParams.name)
   },
   {
     method: 'delete',
     url: '/kubernetes/clusters/:clusterId/namespaces/:namespace/statefulsets/batch',
-    handler: (pathParams: Record<string, string>, data: string[]): void => deleteStatefulSets(pathParams.clusterId, pathParams.namespace, data)
+    handler: (pathParams: Record<string, string>, data: string[]): void =>
+      deleteStatefulSets(pathParams.clusterId, pathParams.namespace, data)
   },
   {
     method: 'get',
     url: '/kubernetes/clusters/:clusterId/statefulsets/export',
-    handler: (pathParams: Record<string, string>, params: Partial<StatefulSetQueryForm>): void => exportStatefulSet(pathParams.clusterId, params)
+    handler: (pathParams: Record<string, string>, params: Partial<StatefulSetQueryForm>): void =>
+      exportStatefulSet(pathParams.clusterId, params)
   },
   {
     method: 'post',
     url: '/kubernetes/clusters/:clusterId/statefulsets/import',
-    handler: (pathParams: Record<string, string>, data: StatefulSetYamlForm): void => importStatefulSet(pathParams.clusterId, data)
+    handler: (pathParams: Record<string, string>, data: StatefulSetYamlForm): void =>
+      importStatefulSet(pathParams.clusterId, data)
   },
   {
     method: 'post',
     url: '/kubernetes/clusters/:clusterId/namespaces/:namespace/statefulsets/:name/scale',
-    handler: (pathParams: Record<string, string>, data: StatefulSetScaleForm): void => scaleStatefulSet(pathParams.clusterId, pathParams.namespace, pathParams.name, data)
+    handler: (pathParams: Record<string, string>, data: StatefulSetScaleForm): void =>
+      scaleStatefulSet(pathParams.clusterId, pathParams.namespace, pathParams.name, data)
   },
   {
     method: 'post',
     url: '/kubernetes/clusters/:clusterId/namespaces/:namespace/statefulsets/:name/restart',
-    handler: (pathParams: Record<string, string>): void => restartStatefulSet(pathParams.clusterId, pathParams.namespace, pathParams.name)
+    handler: (pathParams: Record<string, string>): void =>
+      restartStatefulSet(pathParams.clusterId, pathParams.namespace, pathParams.name)
   },
   {
     method: 'post',
     url: '/kubernetes/clusters/:clusterId/namespaces/:namespace/statefulsets/:name/rollback',
-    handler: (pathParams: Record<string, string>): void => rollbackStatefulSet(pathParams.clusterId, pathParams.namespace, pathParams.name)
+    handler: (pathParams: Record<string, string>): void =>
+      rollbackStatefulSet(pathParams.clusterId, pathParams.namespace, pathParams.name)
   }
 ]
 
@@ -397,11 +418,25 @@ function getStatefulSetSchedule(clusterId: string, namespace: string, name: stri
  * @param name - StatefulSet 名称
  * @returns 历史版本列表
  */
-function getStatefulSetHistoryRevisionList(_clusterId: string, _namespace: string, _name: string): StatefulSetHistoryRevisionListVo[] {
+function getStatefulSetHistoryRevisionList(
+  _clusterId: string,
+  _namespace: string,
+  _name: string
+): StatefulSetHistoryRevisionListVo[] {
   return [
-    { revision: 3, changeCause: `kubectl set image statefulset/${_name}=${_name}:v2.1.0`, createAt: '2024-07-01 14:30:00', active: true },
+    {
+      revision: 3,
+      changeCause: `kubectl set image statefulset/${_name}=${_name}:v2.1.0`,
+      createAt: '2024-07-01 14:30:00',
+      active: true
+    },
     { revision: 2, changeCause: `kubectl edit statefulset/${_name}`, createAt: '2024-06-20 09:15:00', active: false },
-    { revision: 1, changeCause: `kubectl create statefulset ${_name} --image=${_name}:v1.0.0`, createAt: '2024-06-15 08:30:00', active: false }
+    {
+      revision: 1,
+      changeCause: `kubectl create statefulset ${_name} --image=${_name}:v1.0.0`,
+      createAt: '2024-06-15 08:30:00',
+      active: false
+    }
   ]
 }
 
@@ -479,25 +514,33 @@ function getStatefulSetStorageList(_clusterId: string, _namespace: string, _name
       name: `${sts.name}-data`,
       type: 'PersistentVolumeClaim',
       extraFields: { claimName: `${sts.name}-data-${sts.name}-0`, readOnly: 'false', storageClassName: 'ssd' },
-      containerMounts: [{ containerId: generateId(), container: `${sts.name}-container`, mountPath: '/var/lib/mysql', subPath: '' }]
+      containerMounts: [
+        { containerId: generateId(), container: `${sts.name}-container`, mountPath: '/var/lib/mysql', subPath: '' }
+      ]
     },
     {
       name: `${sts.name}-config`,
       type: 'ConfigMap',
       extraFields: { configMapName: `${sts.name}-config`, defaultMode: '420' },
-      containerMounts: [{ containerId: generateId(), container: `${sts.name}-container`, mountPath: '/etc/config', subPath: '' }]
+      containerMounts: [
+        { containerId: generateId(), container: `${sts.name}-container`, mountPath: '/etc/config', subPath: '' }
+      ]
     },
     {
       name: `${sts.name}-secret`,
       type: 'Secret',
       extraFields: { secretName: `${sts.name}-secret`, defaultMode: '400', optional: 'false' },
-      containerMounts: [{ containerId: generateId(), container: `${sts.name}-container`, mountPath: '/etc/secret', subPath: '' }]
+      containerMounts: [
+        { containerId: generateId(), container: `${sts.name}-container`, mountPath: '/etc/secret', subPath: '' }
+      ]
     },
     {
       name: `${sts.name}-logs`,
       type: 'EmptyDir',
       extraFields: { medium: '', sizeLimit: '1Gi' },
-      containerMounts: [{ containerId: generateId(), container: `${sts.name}-container`, mountPath: '/var/log/app', subPath: '' }]
+      containerMounts: [
+        { containerId: generateId(), container: `${sts.name}-container`, mountPath: '/var/log/app', subPath: '' }
+      ]
     }
   ]
 }
@@ -718,7 +761,12 @@ function createStatefulSet(clusterId: string, namespace: string, data: StatefulS
  * @param name - StatefulSet 名称
  * @param data - 更新参数
  */
-function updateStatefulSet(clusterId: string, namespace: string, name: string, data: Partial<StatefulSetUpdateForm>): void {
+function updateStatefulSet(
+  clusterId: string,
+  namespace: string,
+  name: string,
+  data: Partial<StatefulSetUpdateForm>
+): void {
   console.log('[Mock] updateStatefulSet', { clusterId, namespace, name, data })
 }
 
@@ -740,7 +788,12 @@ function manageStatefulSetLabels(clusterId: string, namespace: string, name: str
  * @param name - StatefulSet 名称
  * @param data - 注解数据
  */
-function manageStatefulSetAnnotations(clusterId: string, namespace: string, name: string, data: StatefulSetAnnotationForm): void {
+function manageStatefulSetAnnotations(
+  clusterId: string,
+  namespace: string,
+  name: string,
+  data: StatefulSetAnnotationForm
+): void {
   console.log('[Mock] manageStatefulSetAnnotations', { clusterId, namespace, name, data })
 }
 

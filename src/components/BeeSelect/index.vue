@@ -1,15 +1,36 @@
 <template>
-  <div ref="triggerRef" v-bind="$attrs" class="bee-select" :class="{ 'is-open': isOpen }" :style="widthStyle" @click="toggle">
+  <div
+    ref="triggerRef"
+    v-bind="$attrs"
+    class="bee-select"
+    :class="{ 'is-open': isOpen }"
+    :style="widthStyle"
+    @click="toggle"
+  >
     <div class="bee-select__trigger">
-      <span class="bee-select__value" :class="{ 'is-placeholder': !selectedLabel }">{{ selectedLabel || placeholder }}</span>
+      <span class="bee-select__value" :class="{ 'is-placeholder': !selectedLabel }">{{
+        selectedLabel || placeholder
+      }}</span>
       <BeeIcon class="bee-select__arrow-icon" :class="{ 'is-open': isOpen }" name="basic-arrow-down" :size="14" />
     </div>
   </div>
 
   <Teleport to="body" :disabled="!isOpen">
     <Transition name="bee-select">
-      <div v-if="isOpen" ref="floatingRef" class="bee-select__menu" :style="[floatingStyles, widthStyle, menuStyle]" @click.stop>
-        <div v-for="option in options" :key="option.value" class="bee-select__menu-item" :class="{ 'is-selected': option.value === modelValue }" @click="handleSelect(option)">
+      <div
+        v-if="isOpen"
+        ref="floatingRef"
+        class="bee-select__menu"
+        :style="[floatingStyles, widthStyle, menuStyle]"
+        @click.stop
+      >
+        <div
+          v-for="option in options"
+          :key="option.value"
+          class="bee-select__menu-item"
+          :class="{ 'is-selected': option.value === modelValue }"
+          @click="handleSelect(option)"
+        >
           <BeeIcon v-if="option.icon" class="bee-select__menu-icon" :name="option.icon" :size="14" />
           <span>{{ option.label }}</span>
         </div>

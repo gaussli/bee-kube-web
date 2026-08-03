@@ -81,10 +81,22 @@
           </template>
           <template #default="{ row }">
             <el-tooltip content="详情" placement="top">
-              <el-button v-if="hasPermission('system:permission:view')" circle :icon="View" size="default" @click="handleView(row)" />
+              <el-button
+                v-if="hasPermission('system:permission:view')"
+                circle
+                :icon="View"
+                size="default"
+                @click="handleView(row)"
+              />
             </el-tooltip>
             <el-tooltip content="编辑" placement="top">
-              <el-button v-if="hasPermission('system:permission:edit')" circle :icon="EditPen" size="default" @click="handleEdit(row)" />
+              <el-button
+                v-if="hasPermission('system:permission:edit')"
+                circle
+                :icon="EditPen"
+                size="default"
+                @click="handleEdit(row)"
+              />
             </el-tooltip>
             <el-tooltip v-if="hasPermission('system:permission:delete')" content="删除" placement="top">
               <el-button circle :icon="Delete" size="default" @click="handleDelete(row)" />
@@ -97,7 +109,12 @@
     <!-- 表格底部 -->
     <div class="table-footer">
       <div>
-        <BeeButton v-if="hasPermission('system:permission:delete')" type="danger" :disabled="selectedRows.length === 0" @click="handleBatchDelete">
+        <BeeButton
+          v-if="hasPermission('system:permission:delete')"
+          type="danger"
+          :disabled="selectedRows.length === 0"
+          @click="handleBatchDelete"
+        >
           <template #icon><Delete /></template>
           批量删除 ({{ selectedRows.length }})
         </BeeButton>
@@ -114,7 +131,11 @@
     </div>
 
     <!-- 状态确认 Dialog -->
-    <BeeDialog v-model="statusDialogVisible" :title="currentTargetRow?.status === 1 ? '确认禁用' : '确认启用'" @confirm="handleConfirmStatus">
+    <BeeDialog
+      v-model="statusDialogVisible"
+      :title="currentTargetRow?.status === 1 ? '确认禁用' : '确认启用'"
+      @confirm="handleConfirmStatus"
+    >
       <div class="dialog-content">
         <p v-if="currentTargetRow?.status === 1">
           确定要禁用权限 <strong>{{ currentTargetRow?.name }}</strong> 吗？禁用后该权限将无法使用。
@@ -156,7 +177,12 @@ import { useRouter } from 'vue-router'
 import { ElMessage } from 'element-plus'
 import { Delete, EditPen, Plus, Refresh, View } from '@element-plus/icons-vue'
 import type { PermissionQueryReq, PermissionResp } from '@/types/platform/permission'
-import { changePermissionStatus, getPermissionPage, removePermission, batchRemovePermissions } from '@/api/platform/permission'
+import {
+  changePermissionStatus,
+  getPermissionPage,
+  removePermission,
+  batchRemovePermissions
+} from '@/api/platform/permission'
 import BeeAuditCell from '@/components/BeeAuditCell/index.vue'
 import BeeButton from '@/components/BeeButton/index.vue'
 import BeeDialog from '@/components/BeeDialog/index.vue'

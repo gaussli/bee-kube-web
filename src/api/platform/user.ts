@@ -1,4 +1,12 @@
-import type { PageVo, RoleQueryReq, RoleResp, UserChangeStatusReq, UserDetailResp, UserQueryReq, UserResp } from '@/types'
+import type {
+  PageVo,
+  RoleQueryReq,
+  RoleResp,
+  UserChangeStatusReq,
+  UserDetailResp,
+  UserQueryReq,
+  UserResp
+} from '@/types'
 import { request } from '@/utils'
 
 // 分页查询用户列表

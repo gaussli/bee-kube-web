@@ -110,10 +110,22 @@
           </template>
           <template #default="{ row }">
             <el-tooltip content="详情" placement="top">
-              <el-button v-if="hasPermission('system:menu:view')" circle :icon="View" size="default" @click="handleView(row)" />
+              <el-button
+                v-if="hasPermission('system:menu:view')"
+                circle
+                :icon="View"
+                size="default"
+                @click="handleView(row)"
+              />
             </el-tooltip>
             <el-tooltip content="编辑" placement="top">
-              <el-button v-if="hasPermission('system:menu:edit')" circle :icon="EditPen" size="default" @click="handleEdit(row)" />
+              <el-button
+                v-if="hasPermission('system:menu:edit')"
+                circle
+                :icon="EditPen"
+                size="default"
+                @click="handleEdit(row)"
+              />
             </el-tooltip>
             <el-tooltip v-if="hasPermission('system:menu:edit')" content="更多" placement="top">
               <el-dropdown trigger="click">
@@ -122,10 +134,16 @@
                 </template>
                 <template #dropdown>
                   <el-dropdown-menu>
-                    <el-dropdown-item v-if="row.status === 0 && hasPermission('system:menu:edit')" @click="handleToggleStatus(row)">
+                    <el-dropdown-item
+                      v-if="row.status === 0 && hasPermission('system:menu:edit')"
+                      @click="handleToggleStatus(row)"
+                    >
                       <el-icon><CircleCheck /></el-icon> 启用
                     </el-dropdown-item>
-                    <el-dropdown-item v-if="row.status === 1 && hasPermission('system:menu:edit')" @click="handleToggleStatus(row)">
+                    <el-dropdown-item
+                      v-if="row.status === 1 && hasPermission('system:menu:edit')"
+                      @click="handleToggleStatus(row)"
+                    >
                       <el-icon><CircleClose /></el-icon> 禁用
                     </el-dropdown-item>
                     <el-dropdown-item v-if="hasPermission('system:menu:edit')" @click="handleAssignRoles(row)">
@@ -148,7 +166,12 @@
 
     <!-- 表格底部 -->
     <div class="table-footer">
-      <BeeButton v-if="hasPermission('system:menu:delete')" type="danger" :disabled="selectedRows.length === 0" @click="handleBatchDelete">
+      <BeeButton
+        v-if="hasPermission('system:menu:delete')"
+        type="danger"
+        :disabled="selectedRows.length === 0"
+        @click="handleBatchDelete"
+      >
         <template #icon><Delete /></template>
         批量删除 ({{ selectedRows.length }})
       </BeeButton>
@@ -165,7 +188,11 @@
   </div>
 
   <!-- 状态确认 Dialog -->
-  <BeeDialog v-model="statusDialogVisible" :title="currentTargetRow?.status === 1 ? '确认禁用' : '确认启用'" @confirm="handleConfirmStatus">
+  <BeeDialog
+    v-model="statusDialogVisible"
+    :title="currentTargetRow?.status === 1 ? '确认禁用' : '确认启用'"
+    @confirm="handleConfirmStatus"
+  >
     <div class="dialog-content">
       <p v-if="currentTargetRow?.status === 1">
         确定要禁用菜单 <strong>{{ currentTargetRow?.name }}</strong> 吗？禁用后该菜单将无法访问。
@@ -204,7 +231,17 @@
 import { onMounted, reactive, ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { ElMessage } from 'element-plus'
-import { CircleCheck, CircleClose, Delete, EditPen, MoreFilled, Plus, Refresh, Setting, View } from '@element-plus/icons-vue'
+import {
+  CircleCheck,
+  CircleClose,
+  Delete,
+  EditPen,
+  MoreFilled,
+  Plus,
+  Refresh,
+  Setting,
+  View
+} from '@element-plus/icons-vue'
 import type { MenuQueryReq, MenuResp } from '@/types/platform/menu'
 import { changeMenuStatus, getMenuPage, removeMenu, batchRemoveMenus } from '@/api/platform/menu'
 import BeeAuditCell from '@/components/BeeAuditCell/index.vue'

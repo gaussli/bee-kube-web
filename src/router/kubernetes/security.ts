@@ -244,6 +244,12 @@ export const securityRoutes: RouteRecordRaw[] = [
       title: '安全',
       icon: 'Key'
     },
-    children: [...serviceAccountRoutes, ...clusteRoleRoutes, ...roleRoutes, ...clusteRoleBindingRoutes, ...roleBindingRoutes]
+    children: [
+      ...serviceAccountRoutes,
+      ...clusteRoleRoutes,
+      ...roleRoutes,
+      ...clusteRoleBindingRoutes,
+      ...roleBindingRoutes
+    ]
   }
 ]

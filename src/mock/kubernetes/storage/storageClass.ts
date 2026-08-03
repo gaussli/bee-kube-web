@@ -41,7 +41,12 @@ function getStorageClassDetail(clusterId: string, name: string): StorageClassRes
  * @param labels - 标签键值对
  * @param operation - 操作类型
  */
-function manageStorageClassLabels(clusterId: string, name: string, labels: Record<string, string>, operation: number): void {
+function manageStorageClassLabels(
+  clusterId: string,
+  name: string,
+  labels: Record<string, string>,
+  operation: number
+): void {
   const index = mockSCs.findIndex(s => s.clusterId === clusterId && s.name === name)
   if (index === -1) {
     console.error('[Update StorageClass Labels] can not find sc:', name)
@@ -66,7 +71,12 @@ function manageStorageClassLabels(clusterId: string, name: string, labels: Recor
  * @param annotations - 注解键值对
  * @param operation - 操作类型
  */
-function manageStorageClassAnnotations(clusterId: string, name: string, annotations: Record<string, string>, operation: number): void {
+function manageStorageClassAnnotations(
+  clusterId: string,
+  name: string,
+  annotations: Record<string, string>,
+  operation: number
+): void {
   const index = mockSCs.findIndex(s => s.clusterId === clusterId && s.name === name)
   if (index === -1) {
     console.error('[Update StorageClass Annotations] can not find sc:', name)
@@ -96,7 +106,8 @@ export default [
   {
     method: 'get',
     url: '/kubernetes/clusters/:clusterId/storageclasses',
-    handler: (pathParams: Record<string, string>, params: Partial<StorageClassQueryReq>) => getStorageClassPage(pathParams.clusterId, params)
+    handler: (pathParams: Record<string, string>, params: Partial<StorageClassQueryReq>) =>
+      getStorageClassPage(pathParams.clusterId, params)
   },
   {
     method: 'get',
@@ -106,14 +117,20 @@ export default [
   {
     method: 'put',
     url: '/kubernetes/clusters/:clusterId/storageclasses/:name/labels',
-    handler: (pathParams: Record<string, string>, _params: unknown, data: { labels: Record<string, string>; operation: number }) =>
-      manageStorageClassLabels(pathParams.clusterId, pathParams.name, data.labels, data.operation)
+    handler: (
+      pathParams: Record<string, string>,
+      _params: unknown,
+      data: { labels: Record<string, string>; operation: number }
+    ) => manageStorageClassLabels(pathParams.clusterId, pathParams.name, data.labels, data.operation)
   },
   {
     method: 'put',
     url: '/kubernetes/clusters/:clusterId/storageclasses/:name/annotations',
-    handler: (pathParams: Record<string, string>, _params: unknown, data: { annotations: Record<string, string>; operation: number }) =>
-      manageStorageClassAnnotations(pathParams.clusterId, pathParams.name, data.annotations, data.operation)
+    handler: (
+      pathParams: Record<string, string>,
+      _params: unknown,
+      data: { annotations: Record<string, string>; operation: number }
+    ) => manageStorageClassAnnotations(pathParams.clusterId, pathParams.name, data.annotations, data.operation)
   }
 ]
 

@@ -3,7 +3,16 @@
  * @module mock/kubernetes/config/secret
  */
 import type { PageVo } from '@/types/common'
-import type { SecretAnnotationsReq, SecretDataReq, SecretDetailResp, SecretLabelsReq, SecretListResp, SecretQueryReq, SecretReq, SecretYamlReq } from '@/types/kubernetes/config/secret'
+import type {
+  SecretAnnotationsReq,
+  SecretDataReq,
+  SecretDetailResp,
+  SecretLabelsReq,
+  SecretListResp,
+  SecretQueryReq,
+  SecretReq,
+  SecretYamlReq
+} from '@/types/kubernetes/config/secret'
 import { generateId } from '@/mock/utils'
 
 /**
@@ -26,57 +35,68 @@ export default [
   {
     method: 'get',
     url: '/kubernetes/clusters/:clusterId/secrets',
-    handler: (pathParams: Record<string, string>, params: Partial<SecretQueryReq>): PageVo<SecretListResp> => getSecretList(pathParams.clusterId, params)
+    handler: (pathParams: Record<string, string>, params: Partial<SecretQueryReq>): PageVo<SecretListResp> =>
+      getSecretList(pathParams.clusterId, params)
   },
   {
     method: 'get',
     url: '/kubernetes/clusters/:clusterId/namespaces/:namespace/secrets/:name',
-    handler: (pathParams: Record<string, string>): SecretDetailResp => getSecretDetail(pathParams.clusterId, pathParams.namespace, pathParams.name)
+    handler: (pathParams: Record<string, string>): SecretDetailResp =>
+      getSecretDetail(pathParams.clusterId, pathParams.namespace, pathParams.name)
   },
   {
     method: 'get',
     url: '/kubernetes/clusters/:clusterId/namespaces/:namespace/secrets/:name/yaml',
-    handler: (pathParams: Record<string, string>): string => getSecretYaml(pathParams.clusterId, pathParams.namespace, pathParams.name)
+    handler: (pathParams: Record<string, string>): string =>
+      getSecretYaml(pathParams.clusterId, pathParams.namespace, pathParams.name)
   },
   {
     method: 'post',
     url: '/kubernetes/clusters/:clusterId/namespaces/:namespace/secrets',
-    handler: (pathParams: Record<string, string>, data: SecretReq): void => createSecret(pathParams.clusterId, pathParams.namespace, data)
+    handler: (pathParams: Record<string, string>, data: SecretReq): void =>
+      createSecret(pathParams.clusterId, pathParams.namespace, data)
   },
   {
     method: 'put',
     url: '/kubernetes/clusters/:clusterId/namespaces/:namespace/secrets/:name',
-    handler: (pathParams: Record<string, string>, data: Partial<SecretReq>): void => updateSecret(pathParams.clusterId, pathParams.namespace, pathParams.name, data)
+    handler: (pathParams: Record<string, string>, data: Partial<SecretReq>): void =>
+      updateSecret(pathParams.clusterId, pathParams.namespace, pathParams.name, data)
   },
   {
     method: 'put',
     url: '/kubernetes/clusters/:clusterId/namespaces/:namespace/secrets/:name/data',
-    handler: (pathParams: Record<string, string>, data: SecretDataReq): void => manageSecretData(pathParams.clusterId, pathParams.namespace, pathParams.name, data)
+    handler: (pathParams: Record<string, string>, data: SecretDataReq): void =>
+      manageSecretData(pathParams.clusterId, pathParams.namespace, pathParams.name, data)
   },
   {
     method: 'put',
     url: '/kubernetes/clusters/:clusterId/namespaces/:namespace/secrets/:name/labels',
-    handler: (pathParams: Record<string, string>, data: SecretLabelsReq): void => manageSecretLabels(pathParams.clusterId, pathParams.namespace, pathParams.name, data)
+    handler: (pathParams: Record<string, string>, data: SecretLabelsReq): void =>
+      manageSecretLabels(pathParams.clusterId, pathParams.namespace, pathParams.name, data)
   },
   {
     method: 'put',
     url: '/kubernetes/clusters/:clusterId/namespaces/:namespace/secrets/:name/annotations',
-    handler: (pathParams: Record<string, string>, data: SecretAnnotationsReq): void => manageSecretAnnotations(pathParams.clusterId, pathParams.namespace, pathParams.name, data)
+    handler: (pathParams: Record<string, string>, data: SecretAnnotationsReq): void =>
+      manageSecretAnnotations(pathParams.clusterId, pathParams.namespace, pathParams.name, data)
   },
   {
     method: 'delete',
     url: '/kubernetes/clusters/:clusterId/namespaces/:namespace/secrets/:name',
-    handler: (pathParams: Record<string, string>): void => deleteSecret(pathParams.clusterId, pathParams.namespace, pathParams.name)
+    handler: (pathParams: Record<string, string>): void =>
+      deleteSecret(pathParams.clusterId, pathParams.namespace, pathParams.name)
   },
   {
     method: 'delete',
     url: '/kubernetes/clusters/:clusterId/namespaces/:namespace/secrets/batch',
-    handler: (pathParams: Record<string, string>, data: string[]): void => deleteSecrets(pathParams.clusterId, pathParams.namespace, data)
+    handler: (pathParams: Record<string, string>, data: string[]): void =>
+      deleteSecrets(pathParams.clusterId, pathParams.namespace, data)
   },
   {
     method: 'get',
     url: '/kubernetes/clusters/:clusterId/secrets/export',
-    handler: (pathParams: Record<string, string>, params: Partial<SecretQueryReq>): void => exportSecret(pathParams.clusterId, params)
+    handler: (pathParams: Record<string, string>, params: Partial<SecretQueryReq>): void =>
+      exportSecret(pathParams.clusterId, params)
   },
   {
     method: 'post',

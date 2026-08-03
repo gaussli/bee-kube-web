@@ -3,7 +3,16 @@
     <svg :width="size" :height="size" :viewBox="`0 0 ${size} ${size}`">
       <defs>
         <!-- 数据区域径向渐变：从中心向外越来越浅 -->
-        <radialGradient :id="`radar-area-gradient-${uid}`" cx="50%" cy="50%" gradientUnits="userSpaceOnUse" :fx="center" :fy="center" :fr="0" :r="radius">
+        <radialGradient
+          :id="`radar-area-gradient-${uid}`"
+          cx="50%"
+          cy="50%"
+          gradientUnits="userSpaceOnUse"
+          :fx="center"
+          :fy="center"
+          :fr="0"
+          :r="radius"
+        >
           <stop offset="0%" :stop-color="color" stop-opacity="1" />
           <stop offset="100%" :stop-color="color" stop-opacity="0.2" />
         </radialGradient>
@@ -11,7 +20,16 @@
 
       <g :transform="`translate(${center}, ${center})`">
         <!-- 背景网格圆环 -->
-        <circle v-for="level in levels" :key="`bg-circle-${level}`" :r="radius * level" fill="none" :stroke="gridColor" :stroke-width="1" :stroke-opacity="0.3" class="grid-circle" />
+        <circle
+          v-for="level in levels"
+          :key="`bg-circle-${level}`"
+          :r="radius * level"
+          fill="none"
+          :stroke="gridColor"
+          :stroke-width="1"
+          :stroke-opacity="0.3"
+          class="grid-circle"
+        />
 
         <!-- 网格线 -->
         <line
@@ -28,11 +46,32 @@
         />
 
         <!-- 数据区域 -->
-        <polygon :points="getPolygonPoints()" :fill="`url(#radar-area-gradient-${uid})`" :stroke="color" :stroke-width="2" stroke-linejoin="round" class="data-area" :style="dataAreaStyle" />
+        <polygon
+          :points="getPolygonPoints()"
+          :fill="`url(#radar-area-gradient-${uid})`"
+          :stroke="color"
+          :stroke-width="2"
+          stroke-linejoin="round"
+          class="data-area"
+          :style="dataAreaStyle"
+        />
 
         <!-- 数据点 -->
-        <g v-for="(point, index) in dataPoints" :key="`point-${index}`" @mouseenter="showTooltip($event, index)" @mouseleave="hideTooltip" @mousemove="moveTooltip($event)">
-          <circle :cx="point.x" :cy="point.y" :r="pointRadius" :fill="color" class="data-point" :opacity="animationProgress" />
+        <g
+          v-for="(point, index) in dataPoints"
+          :key="`point-${index}`"
+          @mouseenter="showTooltip($event, index)"
+          @mouseleave="hideTooltip"
+          @mousemove="moveTooltip($event)"
+        >
+          <circle
+            :cx="point.x"
+            :cy="point.y"
+            :r="pointRadius"
+            :fill="color"
+            class="data-point"
+            :opacity="animationProgress"
+          />
           <!-- 数据点脉冲效果 -->
           <circle
             v-if="showAnimation"

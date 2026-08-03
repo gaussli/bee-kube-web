@@ -27,7 +27,11 @@ export type NamespaceType = 0 | 1
  * - NamespaceDeletionContentFailure: 命名空间内容删除失败
  * - NamespaceFinalizersRemaining: 命名空间终结器未清理完成
  */
-export type NamespaceConditionType = 'NamespaceContentRemaining' | 'NamespaceDeletionDiscoveryFailure' | 'NamespaceDeletionContentFailure' | 'NamespaceFinalizersRemaining'
+export type NamespaceConditionType =
+  | 'NamespaceContentRemaining'
+  | 'NamespaceDeletionDiscoveryFailure'
+  | 'NamespaceDeletionContentFailure'
+  | 'NamespaceFinalizersRemaining'
 
 /**
  * 命名空间响应数据

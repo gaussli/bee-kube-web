@@ -8,7 +8,8 @@
         <el-form-item label="标签">
           <div class="key-value-list">
             <div v-for="(item, index) in labelList" :key="index" class="key-value-item">
-              <el-input v-model="item.key" placeholder="键" /><span class="separator">:</span><el-input v-model="item.value" placeholder="值" />
+              <el-input v-model="item.key" placeholder="键" /><span class="separator">:</span
+              ><el-input v-model="item.value" placeholder="值" />
               <el-button circle :icon="Delete" size="small" @click="removeLabel(index)" />
             </div>
             <BeeButton type="primary" @click="addLabel"
@@ -54,7 +55,8 @@ async function loadData() {
   loading.value = true
   try {
     daemonsetData.value = await getDaemonSetDetail(clusterId.value, namespace.value, daemonsetName.value)
-    if (daemonsetData.value.labels) labelList.value = Object.entries(daemonsetData.value.labels).map(([key, value]) => ({ key, value }))
+    if (daemonsetData.value.labels)
+      labelList.value = Object.entries(daemonsetData.value.labels).map(([key, value]) => ({ key, value }))
   } finally {
     loading.value = false
   }

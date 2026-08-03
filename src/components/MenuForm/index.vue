@@ -50,7 +50,10 @@
           <el-icon><Document /></el-icon>
           <span>组件路径</span>
         </template>
-        <el-input v-model="formData.frontComponent" placeholder="请输入前端组件路径，如 @/views/system/user/index.vue" />
+        <el-input
+          v-model="formData.frontComponent"
+          placeholder="请输入前端组件路径，如 @/views/system/user/index.vue"
+        />
       </el-form-item>
 
       <el-form-item label="菜单图标" prop="frontIcon">
@@ -141,7 +144,11 @@ const formData = reactive({
 const formRules: FormRules = {
   code: [
     { required: true, message: '请输入菜单编码', trigger: 'blur' },
-    { pattern: /^[a-zA-Z][a-zA-Z0-9_:]*$/, message: '菜单编码以字母开头，只能包含字母、数字、冒号和下划线', trigger: 'blur' }
+    {
+      pattern: /^[a-zA-Z][a-zA-Z0-9_:]*$/,
+      message: '菜单编码以字母开头，只能包含字母、数字、冒号和下划线',
+      trigger: 'blur'
+    }
   ],
   name: [
     { required: true, message: '请输入菜单名称', trigger: 'blur' },

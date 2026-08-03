@@ -20,7 +20,8 @@ export default [
   {
     method: 'GET',
     url: '/kubernetes/clusters/:clusterId/crds',
-    handler: (pathParams: Record<string, string>, params: Partial<CrdQueryReq>): PageVo<CrdResp> => getCrdPage(pathParams.clusterId, params)
+    handler: (pathParams: Record<string, string>, params: Partial<CrdQueryReq>): PageVo<CrdResp> =>
+      getCrdPage(pathParams.clusterId, params)
   },
   {
     method: 'GET',
@@ -30,12 +31,14 @@ export default [
   {
     method: 'POST',
     url: '/kubernetes/clusters/:clusterId/crds/:name/labels',
-    handler: (pathParams: Record<string, string>, data: Partial<CrdLabelsReq>): void => manageCrdLabels(pathParams.clusterId, pathParams.name, data)
+    handler: (pathParams: Record<string, string>, data: Partial<CrdLabelsReq>): void =>
+      manageCrdLabels(pathParams.clusterId, pathParams.name, data)
   },
   {
     method: 'POST',
     url: '/kubernetes/clusters/:clusterId/crds/:name/annotations',
-    handler: (pathParams: Record<string, string>, data: Partial<CrdAnnotationsReq>): void => manageCrdAnnotations(pathParams.clusterId, pathParams.name, data)
+    handler: (pathParams: Record<string, string>, data: Partial<CrdAnnotationsReq>): void =>
+      manageCrdAnnotations(pathParams.clusterId, pathParams.name, data)
   },
   {
     method: 'DELETE',
@@ -45,7 +48,8 @@ export default [
   {
     method: 'DELETE',
     url: '/kubernetes/clusters/:clusterId/crds',
-    handler: (pathParams: Record<string, string>, data: { names: string[] }): void => deleteCrds(pathParams.clusterId, data)
+    handler: (pathParams: Record<string, string>, data: { names: string[] }): void =>
+      deleteCrds(pathParams.clusterId, data)
   }
 ]
 

@@ -66,7 +66,9 @@ function createRole(clusterId: string, data: Partial<RoleReq>): void {
  * @param data - 更新参数
  */
 function updateRole(clusterId: string, data: Partial<RoleReq>): void {
-  const index = mockRoles.findIndex(r => r.clusterId === clusterId && r.namespace === data.namespace && r.name === data.name)
+  const index = mockRoles.findIndex(
+    r => r.clusterId === clusterId && r.namespace === data.namespace && r.name === data.name
+  )
   if (index === -1) {
     console.error('[Update Role] can not find role:', data.name)
     return
@@ -88,7 +90,13 @@ function updateRole(clusterId: string, data: Partial<RoleReq>): void {
  * @param labels - 标签键值对
  * @param operation - 操作类型
  */
-function manageRoleLabels(clusterId: string, namespaceName: string, name: string, labels: Record<string, string>, operation: number): void {
+function manageRoleLabels(
+  clusterId: string,
+  namespaceName: string,
+  name: string,
+  labels: Record<string, string>,
+  operation: number
+): void {
   const index = mockRoles.findIndex(r => r.clusterId === clusterId && r.namespace === namespaceName && r.name === name)
   if (index === -1) {
     console.error('[Update Role Labels] can not find role:', name)
@@ -114,7 +122,13 @@ function manageRoleLabels(clusterId: string, namespaceName: string, name: string
  * @param annotations - 注解键值对
  * @param operation - 操作类型
  */
-function manageRoleAnnotations(clusterId: string, namespaceName: string, name: string, annotations: Record<string, string>, operation: number): void {
+function manageRoleAnnotations(
+  clusterId: string,
+  namespaceName: string,
+  name: string,
+  annotations: Record<string, string>,
+  operation: number
+): void {
   const index = mockRoles.findIndex(r => r.clusterId === clusterId && r.namespace === namespaceName && r.name === name)
   if (index === -1) {
     console.error('[Update Role Annotations] can not find role:', name)
@@ -173,7 +187,9 @@ function deleteRole(clusterId: string, namespaceName: string, name: string): voi
  */
 function deleteRoles(clusterId: string, namespaceName: string, names: string[]): void {
   names.forEach(name => {
-    const index = mockRoles.findIndex(r => r.clusterId === clusterId && r.namespace === namespaceName && r.name === name)
+    const index = mockRoles.findIndex(
+      r => r.clusterId === clusterId && r.namespace === namespaceName && r.name === name
+    )
     if (index === -1) {
       console.error('[Delete Roles] can not find role:', name)
     } else {
@@ -199,49 +215,69 @@ export default [
   {
     method: 'get',
     url: '/kubernetes/clusters/:clusterId/namespaces/:namespaceName/roles',
-    handler: (pathParams: Record<string, string>, params: Partial<RoleQueryReq>) => getRolePage(pathParams.clusterId, pathParams.namespaceName, params)
+    handler: (pathParams: Record<string, string>, params: Partial<RoleQueryReq>) =>
+      getRolePage(pathParams.clusterId, pathParams.namespaceName, params)
   },
   {
     method: 'get',
     url: '/kubernetes/clusters/:clusterId/namespaces/:namespaceName/roles/:name',
-    handler: (pathParams: Record<string, string>) => getRoleDetail(pathParams.clusterId, pathParams.namespaceName, pathParams.name)
+    handler: (pathParams: Record<string, string>) =>
+      getRoleDetail(pathParams.clusterId, pathParams.namespaceName, pathParams.name)
   },
   {
     method: 'post',
     url: '/kubernetes/clusters/:clusterId/namespaces/:namespaceName/roles',
-    handler: (pathParams: Record<string, string>, _params: unknown, data: Partial<RoleReq>) => createRole(pathParams.clusterId, data)
+    handler: (pathParams: Record<string, string>, _params: unknown, data: Partial<RoleReq>) =>
+      createRole(pathParams.clusterId, data)
   },
   {
     method: 'put',
     url: '/kubernetes/clusters/:clusterId/namespaces/:namespaceName/roles/:name',
-    handler: (pathParams: Record<string, string>, _params: unknown, data: Partial<RoleReq>) => updateRole(pathParams.clusterId, data)
+    handler: (pathParams: Record<string, string>, _params: unknown, data: Partial<RoleReq>) =>
+      updateRole(pathParams.clusterId, data)
   },
   {
     method: 'put',
     url: '/kubernetes/clusters/:clusterId/namespaces/:namespaceName/roles/:name/labels',
-    handler: (pathParams: Record<string, string>, _params: unknown, data: { labels: Record<string, string>; operation: number }) =>
-      manageRoleLabels(pathParams.clusterId, pathParams.namespaceName, pathParams.name, data.labels, data.operation)
+    handler: (
+      pathParams: Record<string, string>,
+      _params: unknown,
+      data: { labels: Record<string, string>; operation: number }
+    ) => manageRoleLabels(pathParams.clusterId, pathParams.namespaceName, pathParams.name, data.labels, data.operation)
   },
   {
     method: 'put',
     url: '/kubernetes/clusters/:clusterId/namespaces/:namespaceName/roles/:name/annotations',
-    handler: (pathParams: Record<string, string>, _params: unknown, data: { annotations: Record<string, string>; operation: number }) =>
-      manageRoleAnnotations(pathParams.clusterId, pathParams.namespaceName, pathParams.name, data.annotations, data.operation)
+    handler: (
+      pathParams: Record<string, string>,
+      _params: unknown,
+      data: { annotations: Record<string, string>; operation: number }
+    ) =>
+      manageRoleAnnotations(
+        pathParams.clusterId,
+        pathParams.namespaceName,
+        pathParams.name,
+        data.annotations,
+        data.operation
+      )
   },
   {
     method: 'put',
     url: '/kubernetes/clusters/:clusterId/namespaces/:namespaceName/roles/:name/rules',
-    handler: (pathParams: Record<string, string>, _params: unknown, data: { rules: RoleReq['rules'] }) => updateRoleRules(pathParams.clusterId, pathParams.namespaceName, pathParams.name, data.rules)
+    handler: (pathParams: Record<string, string>, _params: unknown, data: { rules: RoleReq['rules'] }) =>
+      updateRoleRules(pathParams.clusterId, pathParams.namespaceName, pathParams.name, data.rules)
   },
   {
     method: 'delete',
     url: '/kubernetes/clusters/:clusterId/namespaces/:namespaceName/roles/:name',
-    handler: (pathParams: Record<string, string>) => deleteRole(pathParams.clusterId, pathParams.namespaceName, pathParams.name)
+    handler: (pathParams: Record<string, string>) =>
+      deleteRole(pathParams.clusterId, pathParams.namespaceName, pathParams.name)
   },
   {
     method: 'delete',
     url: '/kubernetes/clusters/:clusterId/namespaces/:namespaceName/roles',
-    handler: (pathParams: Record<string, string>, _params: unknown, data: string[]) => deleteRoles(pathParams.clusterId, pathParams.namespaceName, data)
+    handler: (pathParams: Record<string, string>, _params: unknown, data: string[]) =>
+      deleteRoles(pathParams.clusterId, pathParams.namespaceName, data)
   }
 ]
 
@@ -256,7 +292,9 @@ const mockRoles: RoleResp[] = [
     clusterId: 'cluster-1',
     clusterName: 'prod-cluster',
     isSystem: true,
-    rules: [{ apiGroups: [''], resources: ['endpoints'], verbs: ['get', 'list', 'watch', 'create', 'update', 'patch'] }],
+    rules: [
+      { apiGroups: [''], resources: ['endpoints'], verbs: ['get', 'list', 'watch', 'create', 'update', 'patch'] }
+    ],
     labels: { 'kubernetes.io/bootstrapping': 'rbac-defaults' },
     annotations: { 'rbac.authorization.kubernetes.io/autoupdate': 'true' },
     deletable: false,
@@ -273,8 +311,16 @@ const mockRoles: RoleResp[] = [
     clusterName: 'prod-cluster',
     isSystem: false,
     rules: [
-      { apiGroups: ['apps'], resources: ['deployments', 'statefulsets'], verbs: ['get', 'list', 'watch', 'create', 'update', 'patch', 'delete'] },
-      { apiGroups: [''], resources: ['services', 'configmaps', 'secrets'], verbs: ['get', 'list', 'watch', 'create', 'update', 'patch', 'delete'] }
+      {
+        apiGroups: ['apps'],
+        resources: ['deployments', 'statefulsets'],
+        verbs: ['get', 'list', 'watch', 'create', 'update', 'patch', 'delete']
+      },
+      {
+        apiGroups: [''],
+        resources: ['services', 'configmaps', 'secrets'],
+        verbs: ['get', 'list', 'watch', 'create', 'update', 'patch', 'delete']
+      }
     ],
     labels: { 'app.kubernetes.io/name': 'developer-role' },
     deletable: true,

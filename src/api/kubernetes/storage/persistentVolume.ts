@@ -3,7 +3,12 @@
  * @module api/kubernetes/persistentVolume
  */
 import type { PageVo } from '@/types/common'
-import type { PersistentVolumeQueryReq, PersistentVolumeResp, PersistentVolumeLabelsReq, PersistentVolumeAnnotationsReq } from '@/types/kubernetes/storage/persistentVolume'
+import type {
+  PersistentVolumeQueryReq,
+  PersistentVolumeResp,
+  PersistentVolumeLabelsReq,
+  PersistentVolumeAnnotationsReq
+} from '@/types/kubernetes/storage/persistentVolume'
 import { request } from '@/utils'
 
 /**
@@ -12,7 +17,10 @@ import { request } from '@/utils'
  * @param params - 查询参数
  * @returns 分页后的 PersistentVolume 列表
  */
-export function getPersistentVolumePage(clusterId: string, params: Partial<PersistentVolumeQueryReq>): Promise<PageVo<PersistentVolumeResp>> {
+export function getPersistentVolumePage(
+  clusterId: string,
+  params: Partial<PersistentVolumeQueryReq>
+): Promise<PageVo<PersistentVolumeResp>> {
   return request.get(`/kubernetes/clusters/${clusterId}/persistentvolumes`, { params })
 }
 
@@ -32,7 +40,11 @@ export function getPersistentVolumeDetail(clusterId: string, name: string): Prom
  * @param name - PersistentVolume 名称
  * @param data - 标签更新参数
  */
-export function managePersistentVolumeLabels(clusterId: string, name: string, data: Partial<PersistentVolumeLabelsReq>): Promise<void> {
+export function managePersistentVolumeLabels(
+  clusterId: string,
+  name: string,
+  data: Partial<PersistentVolumeLabelsReq>
+): Promise<void> {
   return request.put(`/kubernetes/clusters/${clusterId}/persistentvolumes/${name}/labels`, { data })
 }
 
@@ -42,7 +54,11 @@ export function managePersistentVolumeLabels(clusterId: string, name: string, da
  * @param name - PersistentVolume 名称
  * @param data - 注解更新参数
  */
-export function managePersistentVolumeAnnotations(clusterId: string, name: string, data: Partial<PersistentVolumeAnnotationsReq>): Promise<void> {
+export function managePersistentVolumeAnnotations(
+  clusterId: string,
+  name: string,
+  data: Partial<PersistentVolumeAnnotationsReq>
+): Promise<void> {
   return request.put(`/kubernetes/clusters/${clusterId}/persistentvolumes/${name}/annotations`, { data })
 }
 

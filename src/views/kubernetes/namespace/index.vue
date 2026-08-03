@@ -17,7 +17,14 @@
         <BeeSelect v-model="queryForm.status" :options="NAMESPACE_STATUS_OPTIONS" placeholder="状态筛选" />
         <BeeButton icon="basic-search" @click="handleSearch"> 搜索 </BeeButton>
         <BeeButton icon="basic-refresh" @click="handleReset"> 重置 </BeeButton>
-        <BeeButton v-if="hasPermission('kubernetes:namespace:create')" type="primary" icon="basic-create" @click="handleCreate"> 新增 </BeeButton>
+        <BeeButton
+          v-if="hasPermission('kubernetes:namespace:create')"
+          type="primary"
+          icon="basic-create"
+          @click="handleCreate"
+        >
+          新增
+        </BeeButton>
       </div>
 
       <!-- 表格主体 -->
@@ -46,13 +53,29 @@
           <BeeTableColumn :width="150" fixed="right">
             <template #default="{ row }">
               <div class="table-action">
-                <BeeCircleButton v-if="hasPermission('kubernetes:namespace:edit')" icon="basic-edit" tooltip="编辑" @click="handleEdit(row)" />
+                <BeeCircleButton
+                  v-if="hasPermission('kubernetes:namespace:edit')"
+                  icon="basic-edit"
+                  tooltip="编辑"
+                  @click="handleEdit(row)"
+                />
                 <BeeCircleButton icon="basic-view" tooltip="详情" @click="handleViewDetail(row)" />
                 <BeeDropdown trigger="click">
                   <BeeCircleButton icon="basic-more" tooltip="更多" />
                   <template #dropdown>
-                    <BeeDropdownItem value="resourceQuota" label="资源配额" icon="kubernetes-quota" @click="handleResourceQuota(row)" />
-                    <BeeDropdownItem v-if="hasPermission('kubernetes:namespace:delete') && row.deletable !== false" value="delete" label="删除" icon="basic-delete" @click="handleDelete(row)" />
+                    <BeeDropdownItem
+                      value="resourceQuota"
+                      label="资源配额"
+                      icon="kubernetes-quota"
+                      @click="handleResourceQuota(row)"
+                    />
+                    <BeeDropdownItem
+                      v-if="hasPermission('kubernetes:namespace:delete') && row.deletable !== false"
+                      value="delete"
+                      label="删除"
+                      icon="basic-delete"
+                      @click="handleDelete(row)"
+                    />
                   </template>
                 </BeeDropdown>
               </div>
@@ -64,11 +87,22 @@
       <!-- 表格底部 -->
       <div class="table-footer">
         <div>
-          <BeeButton v-if="hasPermission('kubernetes:namespace:delete')" type="danger" :disabled="selectedRows.length === 0" @click="handleBatchDelete">
+          <BeeButton
+            v-if="hasPermission('kubernetes:namespace:delete')"
+            type="danger"
+            :disabled="selectedRows.length === 0"
+            @click="handleBatchDelete"
+          >
             批量删除 ({{ selectedRows.length }})
           </BeeButton>
         </div>
-        <BeePagination v-model="pagination.page" v-model:pageSize="pagination.pageSize" :total="pagination.total" :page-sizes="[10, 20, 50]" @change="loadData" />
+        <BeePagination
+          v-model="pagination.page"
+          v-model:pageSize="pagination.pageSize"
+          :total="pagination.total"
+          :page-sizes="[10, 20, 50]"
+          @change="loadData"
+        />
       </div>
     </BeeCard>
 
@@ -158,7 +192,11 @@ async function loadData() {
   }
   loading.value = true
   try {
-    const resp = await getNamespacePage(clusterId.value, { ...queryForm, page: pagination.page, pageSize: pagination.pageSize })
+    const resp = await getNamespacePage(clusterId.value, {
+      ...queryForm,
+      page: pagination.page,
+      pageSize: pagination.pageSize
+    })
     tableData.value = resp.list
     pagination.total = resp.total
   } finally {

@@ -20,7 +20,11 @@ import { request } from '@/utils'
  * @param params - 查询参数
  * @returns 分页后的 ServiceAccount 列表
  */
-export function getServiceAccountPage(clusterId: string, namespaceName: string, params: Partial<ServiceAccountQueryReq>): Promise<PageVo<ServiceAccountResp>> {
+export function getServiceAccountPage(
+  clusterId: string,
+  namespaceName: string,
+  params: Partial<ServiceAccountQueryReq>
+): Promise<PageVo<ServiceAccountResp>> {
   return request.get(`/kubernetes/clusters/${clusterId}/namespaces/${namespaceName}/serviceaccounts`, { params })
 }
 
@@ -31,7 +35,11 @@ export function getServiceAccountPage(clusterId: string, namespaceName: string, 
  * @param name - ServiceAccount 名称
  * @returns ServiceAccount 详情
  */
-export function getServiceAccountDetail(clusterId: string, namespaceName: string, name: string): Promise<ServiceAccountResp> {
+export function getServiceAccountDetail(
+  clusterId: string,
+  namespaceName: string,
+  name: string
+): Promise<ServiceAccountResp> {
   return request.get(`/kubernetes/clusters/${clusterId}/namespaces/${namespaceName}/serviceaccounts/${name}`)
 }
 
@@ -52,7 +60,9 @@ export function createServiceAccount(clusterId: string, data: Partial<ServiceAcc
  * @returns 更新的 ServiceAccount ID
  */
 export function updateServiceAccount(clusterId: string, data: Partial<ServiceAccountReq>): Promise<void> {
-  return request.put(`/kubernetes/clusters/${clusterId}/namespaces/${data.namespace}/serviceaccounts/${data.name}`, { data })
+  return request.put(`/kubernetes/clusters/${clusterId}/namespaces/${data.namespace}/serviceaccounts/${data.name}`, {
+    data
+  })
 }
 
 /**
@@ -62,8 +72,15 @@ export function updateServiceAccount(clusterId: string, data: Partial<ServiceAcc
  * @param name - ServiceAccount 名称
  * @param data - 标签更新参数
  */
-export function manageServiceAccountLabels(clusterId: string, namespaceName: string, name: string, data: Partial<ServiceAccountLabelsReq>): Promise<void> {
-  return request.put(`/kubernetes/clusters/${clusterId}/namespaces/${namespaceName}/serviceaccounts/${name}/labels`, { data })
+export function manageServiceAccountLabels(
+  clusterId: string,
+  namespaceName: string,
+  name: string,
+  data: Partial<ServiceAccountLabelsReq>
+): Promise<void> {
+  return request.put(`/kubernetes/clusters/${clusterId}/namespaces/${namespaceName}/serviceaccounts/${name}/labels`, {
+    data
+  })
 }
 
 /**
@@ -73,8 +90,16 @@ export function manageServiceAccountLabels(clusterId: string, namespaceName: str
  * @param name - ServiceAccount 名称
  * @param data - 注解更新参数
  */
-export function manageServiceAccountAnnotations(clusterId: string, namespaceName: string, name: string, data: Partial<ServiceAccountAnnotationsReq>): Promise<void> {
-  return request.put(`/kubernetes/clusters/${clusterId}/namespaces/${namespaceName}/serviceaccounts/${name}/annotations`, { data })
+export function manageServiceAccountAnnotations(
+  clusterId: string,
+  namespaceName: string,
+  name: string,
+  data: Partial<ServiceAccountAnnotationsReq>
+): Promise<void> {
+  return request.put(
+    `/kubernetes/clusters/${clusterId}/namespaces/${namespaceName}/serviceaccounts/${name}/annotations`,
+    { data }
+  )
 }
 
 /**
@@ -84,8 +109,16 @@ export function manageServiceAccountAnnotations(clusterId: string, namespaceName
  * @param name - ServiceAccount 名称
  * @param data - 镜像拉取密钥更新参数
  */
-export function manageServiceAccountImagePullSecrets(clusterId: string, namespaceName: string, name: string, data: Partial<ServiceAccountImagePullSecretsReq>): Promise<void> {
-  return request.put(`/kubernetes/clusters/${clusterId}/namespaces/${namespaceName}/serviceaccounts/${name}/imagepullsecrets`, { data })
+export function manageServiceAccountImagePullSecrets(
+  clusterId: string,
+  namespaceName: string,
+  name: string,
+  data: Partial<ServiceAccountImagePullSecretsReq>
+): Promise<void> {
+  return request.put(
+    `/kubernetes/clusters/${clusterId}/namespaces/${namespaceName}/serviceaccounts/${name}/imagepullsecrets`,
+    { data }
+  )
 }
 
 /**
@@ -105,5 +138,7 @@ export function deleteServiceAccount(clusterId: string, namespaceName: string, n
  * @param names - 待删除的 ServiceAccount 名称列表
  */
 export function deleteServiceAccounts(clusterId: string, namespaceName: string, names: string[]): Promise<void> {
-  return request.delete(`/kubernetes/clusters/${clusterId}/namespaces/${namespaceName}/serviceaccounts`, { data: names })
+  return request.delete(`/kubernetes/clusters/${clusterId}/namespaces/${namespaceName}/serviceaccounts`, {
+    data: names
+  })
 }

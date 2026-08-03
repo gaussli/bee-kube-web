@@ -3,7 +3,13 @@
  * @module api/kubernetes/ingress
  */
 import type { PageVo } from '@/types/common'
-import type { IngressListVo, IngressQueryReq, IngressReq, IngressLabelsReq, IngressAnnotationsReq } from '@/types/kubernetes/network/ingress'
+import type {
+  IngressListVo,
+  IngressQueryReq,
+  IngressReq,
+  IngressLabelsReq,
+  IngressAnnotationsReq
+} from '@/types/kubernetes/network/ingress'
 import { request } from '@/utils'
 
 /**
@@ -13,7 +19,11 @@ import { request } from '@/utils'
  * @param params - 查询参数
  * @returns 分页后的 Ingress 列表
  */
-export function getIngressPage(clusterId: string, namespaceName: string, params: Partial<IngressQueryReq>): Promise<PageVo<IngressListVo>> {
+export function getIngressPage(
+  clusterId: string,
+  namespaceName: string,
+  params: Partial<IngressQueryReq>
+): Promise<PageVo<IngressListVo>> {
   return request.get(`/kubernetes/clusters/${clusterId}/namespaces/${namespaceName}/ingresses`, { params })
 }
 
@@ -55,7 +65,12 @@ export function updateIngress(clusterId: string, data: Partial<IngressReq>): Pro
  * @param name - Ingress 名称
  * @param data - 标签更新参数
  */
-export function manageIngressLabels(clusterId: string, namespaceName: string, name: string, data: Partial<IngressLabelsReq>): Promise<void> {
+export function manageIngressLabels(
+  clusterId: string,
+  namespaceName: string,
+  name: string,
+  data: Partial<IngressLabelsReq>
+): Promise<void> {
   return request.put(`/kubernetes/clusters/${clusterId}/namespaces/${namespaceName}/ingresses/${name}/labels`, { data })
 }
 
@@ -66,8 +81,15 @@ export function manageIngressLabels(clusterId: string, namespaceName: string, na
  * @param name - Ingress 名称
  * @param data - 注解更新参数
  */
-export function manageIngressAnnotations(clusterId: string, namespaceName: string, name: string, data: Partial<IngressAnnotationsReq>): Promise<void> {
-  return request.put(`/kubernetes/clusters/${clusterId}/namespaces/${namespaceName}/ingresses/${name}/annotations`, { data })
+export function manageIngressAnnotations(
+  clusterId: string,
+  namespaceName: string,
+  name: string,
+  data: Partial<IngressAnnotationsReq>
+): Promise<void> {
+  return request.put(`/kubernetes/clusters/${clusterId}/namespaces/${namespaceName}/ingresses/${name}/annotations`, {
+    data
+  })
 }
 
 /**

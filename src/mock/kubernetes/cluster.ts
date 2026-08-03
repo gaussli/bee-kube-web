@@ -3,7 +3,16 @@
  * @module mock/kubernetes/cluster
  */
 import type { PageVo } from '@/types/common'
-import type { ClusterDetailResp, ClusterEventQueryReq, ClusterEventResp, ClusterListResp, ClusterQueryReq, ClusterRegistrationReq, ClusterReq, ClusterResourceResp } from '@/types/kubernetes/cluster'
+import type {
+  ClusterDetailResp,
+  ClusterEventQueryReq,
+  ClusterEventResp,
+  ClusterListResp,
+  ClusterQueryReq,
+  ClusterRegistrationReq,
+  ClusterReq,
+  ClusterResourceResp
+} from '@/types/kubernetes/cluster'
 import { generateId } from '@/mock/utils'
 
 /**
@@ -63,7 +72,8 @@ export default [
   {
     method: 'get',
     url: '/kubernetes/clusters/:id/events',
-    handler: (pathParams: Record<string, string>, params: Partial<ClusterEventQueryReq>): PageVo<ClusterEventResp> => getClusterEventPage(pathParams.id, params)
+    handler: (pathParams: Record<string, string>, params: Partial<ClusterEventQueryReq>): PageVo<ClusterEventResp> =>
+      getClusterEventPage(pathParams.id, params)
   }
 ]
 
@@ -417,7 +427,12 @@ const mockClusterEvents: ClusterEventResp[] = [
     type: 'Normal',
     reason: 'SuccessfulCreate',
     message: 'Created pod: nginx-deployment-7fb96c846b-xk2p9',
-    involvedObject: { kind: 'ReplicaSet', name: 'nginx-deployment-7fb96c846b', namespace: 'default', uid: generateId() },
+    involvedObject: {
+      kind: 'ReplicaSet',
+      name: 'nginx-deployment-7fb96c846b',
+      namespace: 'default',
+      uid: generateId()
+    },
     source: { component: 'replicaset-controller', host: '' },
     count: 1,
     firstTimestamp: '2024-01-15 10:30:20',
@@ -461,7 +476,8 @@ const mockClusterEvents: ClusterEventResp[] = [
     id: generateId(),
     type: 'Warning',
     reason: 'Unhealthy',
-    message: 'Readiness probe failed: Get "http://10.0.1.15:8080/health": dial tcp 10.0.1.15:8080: connect: connection refused',
+    message:
+      'Readiness probe failed: Get "http://10.0.1.15:8080/health": dial tcp 10.0.1.15:8080: connect: connection refused',
     involvedObject: { kind: 'Pod', name: 'api-service-6d9f8c5b4-l3k7j', namespace: 'production', uid: generateId() },
     source: { component: 'kubelet', host: 'node-2' },
     count: 8,

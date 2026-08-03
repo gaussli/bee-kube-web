@@ -2,11 +2,20 @@
   <BeeTooltip :label="tooltip" placement="top" size="small">
     <button
       class="bee-circle-button"
-      :class="[`bee-circle-button--${type}`, `bee-circle-button--${size}`, { 'bee-circle-button--bordered': border, 'is-disabled': disabled, 'is-loading': loading }]"
+      :class="[
+        `bee-circle-button--${type}`,
+        `bee-circle-button--${size}`,
+        { 'bee-circle-button--bordered': border, 'is-disabled': disabled, 'is-loading': loading }
+      ]"
       :disabled="disabled || loading"
       @click.stop="handleClick"
     >
-      <BeeIcon v-if="loading" name="basic-loading" :size="effectiveIconSize" class="bee-circle-button__icon is-loading" />
+      <BeeIcon
+        v-if="loading"
+        name="basic-loading"
+        :size="effectiveIconSize"
+        class="bee-circle-button__icon is-loading"
+      />
       <BeeIcon v-else :name="icon" :size="effectiveIconSize" class="bee-circle-button__icon" />
     </button>
   </BeeTooltip>

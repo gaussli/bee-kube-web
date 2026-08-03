@@ -30,7 +30,15 @@
         </div>
 
         <!-- 角色分配 -->
-        <BeeTransfer v-model="selectedRoleIds" :left-data="availableRoles" :right-data="selectedRoles" left-title="可选角色" right-title="已选角色" label-key="name" value-key="id">
+        <BeeTransfer
+          v-model="selectedRoleIds"
+          :left-data="availableRoles"
+          :right-data="selectedRoles"
+          left-title="可选角色"
+          right-title="已选角色"
+          label-key="name"
+          value-key="id"
+        >
           <template #left="{ item }">
             <div class="role-item-content">
               <div class="role-icon">

@@ -3,7 +3,16 @@
  * @module api/kubernetes/config/secret
  */
 import type { PageVo } from '@/types/common'
-import type { SecretAnnotationsReq, SecretDataReq, SecretDetailResp, SecretLabelsReq, SecretListResp, SecretQueryReq, SecretReq, SecretYamlReq } from '@/types/kubernetes/config/secret'
+import type {
+  SecretAnnotationsReq,
+  SecretDataReq,
+  SecretDetailResp,
+  SecretLabelsReq,
+  SecretListResp,
+  SecretQueryReq,
+  SecretReq,
+  SecretYamlReq
+} from '@/types/kubernetes/config/secret'
 import { request } from '@/utils'
 
 /**
@@ -55,7 +64,12 @@ export function createSecret(clusterId: string, namespace: string, data: SecretR
  * @param name - Secret 名称
  * @param data - 更新参数
  */
-export function updateSecret(clusterId: string, namespace: string, name: string, data: Partial<SecretReq>): Promise<void> {
+export function updateSecret(
+  clusterId: string,
+  namespace: string,
+  name: string,
+  data: Partial<SecretReq>
+): Promise<void> {
   return request.put(`/kubernetes/clusters/${clusterId}/namespaces/${namespace}/secrets/${name}`, data)
 }
 
@@ -66,7 +80,12 @@ export function updateSecret(clusterId: string, namespace: string, name: string,
  * @param name - Secret 名称
  * @param data - 标签数据
  */
-export function manageSecretLabels(clusterId: string, namespace: string, name: string, data: SecretLabelsReq): Promise<void> {
+export function manageSecretLabels(
+  clusterId: string,
+  namespace: string,
+  name: string,
+  data: SecretLabelsReq
+): Promise<void> {
   return request.put(`/kubernetes/clusters/${clusterId}/namespaces/${namespace}/secrets/${name}/labels`, data)
 }
 
@@ -77,7 +96,12 @@ export function manageSecretLabels(clusterId: string, namespace: string, name: s
  * @param name - Secret 名称
  * @param data - 注解数据
  */
-export function manageSecretAnnotations(clusterId: string, namespace: string, name: string, data: SecretAnnotationsReq): Promise<void> {
+export function manageSecretAnnotations(
+  clusterId: string,
+  namespace: string,
+  name: string,
+  data: SecretAnnotationsReq
+): Promise<void> {
   return request.put(`/kubernetes/clusters/${clusterId}/namespaces/${namespace}/secrets/${name}/annotations`, data)
 }
 
@@ -126,6 +150,11 @@ export function importSecret(clusterId: string, data: SecretYamlReq): Promise<vo
  * @param name - Secret 名称
  * @param data - 数据参数
  */
-export function manageSecretData(clusterId: string, namespace: string, name: string, data: SecretDataReq): Promise<void> {
+export function manageSecretData(
+  clusterId: string,
+  namespace: string,
+  name: string,
+  data: SecretDataReq
+): Promise<void> {
   return request.put(`/kubernetes/clusters/${clusterId}/namespaces/${namespace}/secrets/${name}/data`, data)
 }

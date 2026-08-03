@@ -59,107 +59,128 @@ export default [
   {
     method: 'get',
     url: '/kubernetes/clusters/:clusterId/deployments',
-    handler: (pathParams: Record<string, string>, params: Partial<DeploymentQueryForm>): PageVo<DeploymentListVo> => getDeploymentList(pathParams.clusterId, params)
+    handler: (pathParams: Record<string, string>, params: Partial<DeploymentQueryForm>): PageVo<DeploymentListVo> =>
+      getDeploymentList(pathParams.clusterId, params)
   },
   {
     method: 'get',
     url: '/kubernetes/clusters/:clusterId/namespaces/:namespace/deployments/:name',
-    handler: (pathParams: Record<string, string>): DeploymentDetailVo => getDeploymentDetail(pathParams.clusterId, pathParams.namespace, pathParams.name)
+    handler: (pathParams: Record<string, string>): DeploymentDetailVo =>
+      getDeploymentDetail(pathParams.clusterId, pathParams.namespace, pathParams.name)
   },
   {
     method: 'get',
     url: '/kubernetes/clusters/:clusterId/namespaces/:namespace/deployments/:name/pods',
-    handler: (pathParams: Record<string, string>): DeploymentPodListVo[] => getDeploymentPodList(pathParams.clusterId, pathParams.namespace, pathParams.name)
+    handler: (pathParams: Record<string, string>): DeploymentPodListVo[] =>
+      getDeploymentPodList(pathParams.clusterId, pathParams.namespace, pathParams.name)
   },
   {
     method: 'get',
     url: '/kubernetes/clusters/:clusterId/namespaces/:namespace/deployments/:name/schedule',
-    handler: (pathParams: Record<string, string>): DeploymentScheduleVo => getDeploymentSchedule(pathParams.clusterId, pathParams.namespace, pathParams.name)
+    handler: (pathParams: Record<string, string>): DeploymentScheduleVo =>
+      getDeploymentSchedule(pathParams.clusterId, pathParams.namespace, pathParams.name)
   },
   {
     method: 'get',
     url: '/kubernetes/clusters/:clusterId/namespaces/:namespace/deployments/:name/history',
-    handler: (pathParams: Record<string, string>): DeploymentHistoryRevisionListVo[] => getDeploymentHistoryRevisionList(pathParams.clusterId, pathParams.namespace, pathParams.name)
+    handler: (pathParams: Record<string, string>): DeploymentHistoryRevisionListVo[] =>
+      getDeploymentHistoryRevisionList(pathParams.clusterId, pathParams.namespace, pathParams.name)
   },
   {
     method: 'get',
     url: '/kubernetes/clusters/:clusterId/namespaces/:namespace/deployments/:name/network',
-    handler: (pathParams: Record<string, string>): DeploymentNetworkVo => getDeploymentNetwork(pathParams.clusterId, pathParams.namespace, pathParams.name)
+    handler: (pathParams: Record<string, string>): DeploymentNetworkVo =>
+      getDeploymentNetwork(pathParams.clusterId, pathParams.namespace, pathParams.name)
   },
   {
     method: 'get',
     url: '/kubernetes/clusters/:clusterId/namespaces/:namespace/deployments/:name/storages',
-    handler: (pathParams: Record<string, string>): DeploymentStorageListVo[] => getDeploymentStorageList(pathParams.clusterId, pathParams.namespace, pathParams.name)
+    handler: (pathParams: Record<string, string>): DeploymentStorageListVo[] =>
+      getDeploymentStorageList(pathParams.clusterId, pathParams.namespace, pathParams.name)
   },
   {
     method: 'get',
     url: '/kubernetes/clusters/:clusterId/namespaces/:namespace/deployments/:name/monitor',
-    handler: (pathParams: Record<string, string>): DeploymentMonitorVo => getDeploymentMonitor(pathParams.clusterId, pathParams.namespace, pathParams.name)
+    handler: (pathParams: Record<string, string>): DeploymentMonitorVo =>
+      getDeploymentMonitor(pathParams.clusterId, pathParams.namespace, pathParams.name)
   },
   {
     method: 'get',
     url: '/kubernetes/clusters/:clusterId/namespaces/:namespace/deployments/:name/events',
-    handler: (pathParams: Record<string, string>): DeploymentEventListVo[] => getDeploymentEventList(pathParams.clusterId, pathParams.namespace, pathParams.name)
+    handler: (pathParams: Record<string, string>): DeploymentEventListVo[] =>
+      getDeploymentEventList(pathParams.clusterId, pathParams.namespace, pathParams.name)
   },
   {
     method: 'get',
     url: '/kubernetes/clusters/:clusterId/namespaces/:namespace/deployments/:name/yaml',
-    handler: (pathParams: Record<string, string>): string => getDeploymentYaml(pathParams.clusterId, pathParams.namespace, pathParams.name)
+    handler: (pathParams: Record<string, string>): string =>
+      getDeploymentYaml(pathParams.clusterId, pathParams.namespace, pathParams.name)
   },
   {
     method: 'post',
     url: '/kubernetes/clusters/:clusterId/namespaces/:namespace/deployments',
-    handler: (pathParams: Record<string, string>, data: DeploymentCreateForm): void => createDeployment(pathParams.clusterId, pathParams.namespace, data)
+    handler: (pathParams: Record<string, string>, data: DeploymentCreateForm): void =>
+      createDeployment(pathParams.clusterId, pathParams.namespace, data)
   },
   {
     method: 'put',
     url: '/kubernetes/clusters/:clusterId/namespaces/:namespace/deployments/:name',
-    handler: (pathParams: Record<string, string>, data: Partial<DeploymentUpdateForm>): void => updateDeployment(pathParams.clusterId, pathParams.namespace, pathParams.name, data)
+    handler: (pathParams: Record<string, string>, data: Partial<DeploymentUpdateForm>): void =>
+      updateDeployment(pathParams.clusterId, pathParams.namespace, pathParams.name, data)
   },
   {
     method: 'post',
     url: '/kubernetes/clusters/:clusterId/namespaces/:namespace/deployments/:name/labels',
-    handler: (pathParams: Record<string, string>, data: DeploymentLabelForm): void => manageDeploymentLabels(pathParams.clusterId, pathParams.namespace, pathParams.name, data)
+    handler: (pathParams: Record<string, string>, data: DeploymentLabelForm): void =>
+      manageDeploymentLabels(pathParams.clusterId, pathParams.namespace, pathParams.name, data)
   },
   {
     method: 'post',
     url: '/kubernetes/clusters/:clusterId/namespaces/:namespace/deployments/:name/annotations',
-    handler: (pathParams: Record<string, string>, data: DeploymentAnnotationForm): void => manageDeploymentAnnotations(pathParams.clusterId, pathParams.namespace, pathParams.name, data)
+    handler: (pathParams: Record<string, string>, data: DeploymentAnnotationForm): void =>
+      manageDeploymentAnnotations(pathParams.clusterId, pathParams.namespace, pathParams.name, data)
   },
   {
     method: 'delete',
     url: '/kubernetes/clusters/:clusterId/namespaces/:namespace/deployments/:name',
-    handler: (pathParams: Record<string, string>): void => deleteDeployment(pathParams.clusterId, pathParams.namespace, pathParams.name)
+    handler: (pathParams: Record<string, string>): void =>
+      deleteDeployment(pathParams.clusterId, pathParams.namespace, pathParams.name)
   },
   {
     method: 'delete',
     url: '/kubernetes/clusters/:clusterId/namespaces/:namespace/deployments/batch',
-    handler: (pathParams: Record<string, string>, data: string[]): void => deleteDeployments(pathParams.clusterId, pathParams.namespace, data)
+    handler: (pathParams: Record<string, string>, data: string[]): void =>
+      deleteDeployments(pathParams.clusterId, pathParams.namespace, data)
   },
   {
     method: 'get',
     url: '/kubernetes/clusters/:clusterId/deployments/export',
-    handler: (pathParams: Record<string, string>, params: Partial<DeploymentQueryForm>): void => exportDeployment(pathParams.clusterId, params)
+    handler: (pathParams: Record<string, string>, params: Partial<DeploymentQueryForm>): void =>
+      exportDeployment(pathParams.clusterId, params)
   },
   {
     method: 'post',
     url: '/kubernetes/clusters/:clusterId/deployments/import',
-    handler: (pathParams: Record<string, string>, data: DeploymentYamlForm): void => importDeployment(pathParams.clusterId, data)
+    handler: (pathParams: Record<string, string>, data: DeploymentYamlForm): void =>
+      importDeployment(pathParams.clusterId, data)
   },
   {
     method: 'post',
     url: '/kubernetes/clusters/:clusterId/namespaces/:namespace/deployments/:name/scale',
-    handler: (pathParams: Record<string, string>, data: DeploymentScaleForm): void => scaleDeployment(pathParams.clusterId, pathParams.namespace, pathParams.name, data)
+    handler: (pathParams: Record<string, string>, data: DeploymentScaleForm): void =>
+      scaleDeployment(pathParams.clusterId, pathParams.namespace, pathParams.name, data)
   },
   {
     method: 'post',
     url: '/kubernetes/clusters/:clusterId/namespaces/:namespace/deployments/:name/restart',
-    handler: (pathParams: Record<string, string>): void => restartDeployment(pathParams.clusterId, pathParams.namespace, pathParams.name)
+    handler: (pathParams: Record<string, string>): void =>
+      restartDeployment(pathParams.clusterId, pathParams.namespace, pathParams.name)
   },
   {
     method: 'post',
     url: '/kubernetes/clusters/:clusterId/namespaces/:namespace/deployments/:name/rollback',
-    handler: (pathParams: Record<string, string>): void => rollbackDeployment(pathParams.clusterId, pathParams.namespace, pathParams.name)
+    handler: (pathParams: Record<string, string>): void =>
+      rollbackDeployment(pathParams.clusterId, pathParams.namespace, pathParams.name)
   }
 ]
 
@@ -375,7 +396,9 @@ function getDeploymentPodList(_clusterId: string, _namespace: string, _name: str
  * @returns Deployment 调度策略
  */
 function getDeploymentSchedule(clusterId: string, namespace: string, name: string): DeploymentScheduleVo {
-  const deployment = mockDeployments.find(d => d.clusterId === clusterId && d.namespace === namespace && d.name === name)
+  const deployment = mockDeployments.find(
+    d => d.clusterId === clusterId && d.namespace === namespace && d.name === name
+  )
   if (!deployment) {
     console.error('[Get Deployment Schedule] can not find deployment:', clusterId, namespace, name)
   }
@@ -449,13 +472,37 @@ function getDeploymentSchedule(clusterId: string, namespace: string, name: strin
  * @param name - Deployment 名称
  * @returns 历史版本列表
  */
-function getDeploymentHistoryRevisionList(_clusterId: string, _namespace: string, _name: string): DeploymentHistoryRevisionListVo[] {
+function getDeploymentHistoryRevisionList(
+  _clusterId: string,
+  _namespace: string,
+  _name: string
+): DeploymentHistoryRevisionListVo[] {
   return [
-    { revision: 5, changeCause: 'kubectl set image deployment=' + _name + '=' + _name + ':v2.1.0', createAt: '2024-07-01 14:30:00', active: true },
+    {
+      revision: 5,
+      changeCause: 'kubectl set image deployment=' + _name + '=' + _name + ':v2.1.0',
+      createAt: '2024-07-01 14:30:00',
+      active: true
+    },
     { revision: 4, changeCause: 'kubectl edit deployment/' + _name, createAt: '2024-06-28 09:15:00', active: false },
-    { revision: 3, changeCause: 'kubectl set resources deployment/' + _name + ' --limits=cpu=500m,memory=512Mi', createAt: '2024-06-25 16:45:00', active: false },
-    { revision: 2, changeCause: 'kubectl apply -f ' + _name + '.yaml --record', createAt: '2024-06-20 11:00:00', active: false },
-    { revision: 1, changeCause: 'kubectl create deployment ' + _name + ' --image=' + _name + ':v1.0.0', createAt: '2024-06-15 08:30:00', active: false }
+    {
+      revision: 3,
+      changeCause: 'kubectl set resources deployment/' + _name + ' --limits=cpu=500m,memory=512Mi',
+      createAt: '2024-06-25 16:45:00',
+      active: false
+    },
+    {
+      revision: 2,
+      changeCause: 'kubectl apply -f ' + _name + '.yaml --record',
+      createAt: '2024-06-20 11:00:00',
+      active: false
+    },
+    {
+      revision: 1,
+      changeCause: 'kubectl create deployment ' + _name + ' --image=' + _name + ':v1.0.0',
+      createAt: '2024-06-15 08:30:00',
+      active: false
+    }
   ]
 }
 
@@ -544,7 +591,12 @@ function getDeploymentNetwork(_clusterId: string, _namespace: string, _name: str
         name: deploy.name + '-ingress',
         description: 'Ingress rule for ' + deploy.name,
         ingressClassName: 'nginx',
-        rules: [{ host: deploy.name + '.example.com', paths: [{ path: '/', pathType: 'Prefix', serviceName: deploy.name + '-svc', servicePort: 80 }] }],
+        rules: [
+          {
+            host: deploy.name + '.example.com',
+            paths: [{ path: '/', pathType: 'Prefix', serviceName: deploy.name + '-svc', servicePort: 80 }]
+          }
+        ],
         clusterId: deploy.clusterId,
         clusterUid: deploy.clusterUid,
         clusterName: deploy.clusterName,
@@ -562,7 +614,12 @@ function getDeploymentNetwork(_clusterId: string, _namespace: string, _name: str
         name: deploy.name + '-api-ingress',
         description: 'API ingress with TLS termination',
         ingressClassName: 'nginx',
-        rules: [{ host: 'api.example.com', paths: [{ path: '/v1', pathType: 'Prefix', serviceName: deploy.name + '-svc', servicePort: 8080 }] }],
+        rules: [
+          {
+            host: 'api.example.com',
+            paths: [{ path: '/v1', pathType: 'Prefix', serviceName: deploy.name + '-svc', servicePort: 8080 }]
+          }
+        ],
         tls: [{ hosts: ['api.example.com'], secretName: 'api-tls-cert' }],
         clusterId: deploy.clusterId,
         clusterUid: deploy.clusterUid,
@@ -592,7 +649,9 @@ function getDeploymentStorageList(_clusterId: string, _namespace: string, _name:
       name: 'app-config',
       type: 'ConfigMap',
       extraFields: { configMapName: 'app-config-v3', defaultMode: '420' },
-      containerMounts: [{ containerId: generateId(), container: 'main-container', mountPath: '/etc/config', subPath: '' }]
+      containerMounts: [
+        { containerId: generateId(), container: 'main-container', mountPath: '/etc/config', subPath: '' }
+      ]
     },
     {
       name: 'app-secret',
@@ -600,7 +659,12 @@ function getDeploymentStorageList(_clusterId: string, _namespace: string, _name:
       extraFields: { secretName: 'app-secret', defaultMode: '400', optional: 'false' },
       containerMounts: [
         { containerId: generateId(), container: 'main-container', mountPath: '/etc/secret', subPath: '' },
-        { containerId: generateId(), container: 'sidecar-container', mountPath: '/etc/shared-secret', subPath: 'db-password' }
+        {
+          containerId: generateId(),
+          container: 'sidecar-container',
+          mountPath: '/etc/shared-secret',
+          subPath: 'db-password'
+        }
       ]
     },
     {
@@ -622,7 +686,9 @@ function getDeploymentStorageList(_clusterId: string, _namespace: string, _name:
       name: 'host-timezone',
       type: 'HostPath',
       extraFields: { path: '/etc/localtime', type: 'File' },
-      containerMounts: [{ containerId: generateId(), container: 'main-container', mountPath: '/etc/localtime', subPath: '' }]
+      containerMounts: [
+        { containerId: generateId(), container: 'main-container', mountPath: '/etc/localtime', subPath: '' }
+      ]
     }
   ]
 }
@@ -671,7 +737,8 @@ function getDeploymentEventList(_clusterId: string, _namespace: string, _name: s
     {
       type: 'Warning',
       reason: 'Unhealthy',
-      message: 'Readiness probe failed: Get "http://10.244.1.xx:8080/healthz": dial tcp 10.244.1.xx:8080: connect: connection refused',
+      message:
+        'Readiness probe failed: Get "http://10.244.1.xx:8080/healthz": dial tcp 10.244.1.xx:8080: connect: connection refused',
       involvedObject: { kind: 'Pod', name: deploy.name + '-6d4f8c9b7-zt7wv', namespace: deploy.namespace },
       source: { component: 'kubelet', host: 'node-001' },
       count: 2,
@@ -709,7 +776,9 @@ function getDeploymentEventList(_clusterId: string, _namespace: string, _name: s
  * @returns Deployment YAML 配置
  */
 function getDeploymentYaml(clusterId: string, namespace: string, name: string): string {
-  const deployment = mockDeployments.find(d => d.clusterId === clusterId && d.namespace === namespace && d.name === name)
+  const deployment = mockDeployments.find(
+    d => d.clusterId === clusterId && d.namespace === namespace && d.name === name
+  )
   if (!deployment) {
     console.error('[Get Deployment Yaml] can not find deployment:', clusterId, namespace, name)
     return ''
@@ -856,7 +925,12 @@ function createDeployment(clusterId: string, namespace: string, data: Deployment
  * @param name - Deployment 名称
  * @param data - 更新参数
  */
-function updateDeployment(clusterId: string, namespace: string, name: string, data: Partial<DeploymentUpdateForm>): void {
+function updateDeployment(
+  clusterId: string,
+  namespace: string,
+  name: string,
+  data: Partial<DeploymentUpdateForm>
+): void {
   console.log('[Mock] updateDeployment', { clusterId, namespace, name, data })
 }
 
@@ -878,7 +952,12 @@ function manageDeploymentLabels(clusterId: string, namespace: string, name: stri
  * @param name - Deployment 名称
  * @param data - 注解数据
  */
-function manageDeploymentAnnotations(clusterId: string, namespace: string, name: string, data: DeploymentAnnotationForm): void {
+function manageDeploymentAnnotations(
+  clusterId: string,
+  namespace: string,
+  name: string,
+  data: DeploymentAnnotationForm
+): void {
   console.log('[Mock] manageDeploymentAnnotations', { clusterId, namespace, name, data })
 }
 
@@ -967,7 +1046,8 @@ const mockDeployments: DeploymentListVo[] = [
     clusterId: generateId(),
     clusterUid: generateId(),
     clusterName: 'system-cluster',
-    description: 'Kubernetes Ingress 控制器，管理集群七层流量入口和路由规则。Kubernetes Ingress 控制器，管理集群七层流量入口和路由规则。Kubernetes Ingress 控制器，管理集群七层流量入口和路由规则',
+    description:
+      'Kubernetes Ingress 控制器，管理集群七层流量入口和路由规则。Kubernetes Ingress 控制器，管理集群七层流量入口和路由规则。Kubernetes Ingress 控制器，管理集群七层流量入口和路由规则',
     status: 'Running',
     replicas: 3,
     readyReplicas: 3,

@@ -3,7 +3,13 @@
  * @module api/kubernetes/networkPolicy
  */
 import type { PageVo } from '@/types/common'
-import type { NetworkPolicyResp, NetworkPolicyQueryReq, NetworkPolicyReq, NetworkPolicyLabelsReq, NetworkPolicyAnnotationsReq } from '@/types/kubernetes/network/networkPolicy'
+import type {
+  NetworkPolicyResp,
+  NetworkPolicyQueryReq,
+  NetworkPolicyReq,
+  NetworkPolicyLabelsReq,
+  NetworkPolicyAnnotationsReq
+} from '@/types/kubernetes/network/networkPolicy'
 import { request } from '@/utils'
 
 /**
@@ -13,7 +19,11 @@ import { request } from '@/utils'
  * @param params - 查询参数
  * @returns 分页后的 NetworkPolicy 列表
  */
-export function getNetworkPolicyPage(clusterId: string, namespaceName: string, params: Partial<NetworkPolicyQueryReq>): Promise<PageVo<NetworkPolicyResp>> {
+export function getNetworkPolicyPage(
+  clusterId: string,
+  namespaceName: string,
+  params: Partial<NetworkPolicyQueryReq>
+): Promise<PageVo<NetworkPolicyResp>> {
   return request.get(`/kubernetes/clusters/${clusterId}/namespaces/${namespaceName}/networkpolicies`, { params })
 }
 
@@ -24,7 +34,11 @@ export function getNetworkPolicyPage(clusterId: string, namespaceName: string, p
  * @param name - NetworkPolicy 名称
  * @returns NetworkPolicy 详情
  */
-export function getNetworkPolicyDetail(clusterId: string, namespaceName: string, name: string): Promise<NetworkPolicyResp> {
+export function getNetworkPolicyDetail(
+  clusterId: string,
+  namespaceName: string,
+  name: string
+): Promise<NetworkPolicyResp> {
   return request.get(`/kubernetes/clusters/${clusterId}/namespaces/${namespaceName}/networkpolicies/${name}`)
 }
 
@@ -45,7 +59,9 @@ export function createNetworkPolicy(clusterId: string, data: Partial<NetworkPoli
  * @returns 更新的 NetworkPolicy ID
  */
 export function updateNetworkPolicy(clusterId: string, data: Partial<NetworkPolicyReq>): Promise<void> {
-  return request.put(`/kubernetes/clusters/${clusterId}/namespaces/${data.namespace}/networkpolicies/${data.name}`, { data })
+  return request.put(`/kubernetes/clusters/${clusterId}/namespaces/${data.namespace}/networkpolicies/${data.name}`, {
+    data
+  })
 }
 
 /**
@@ -55,8 +71,15 @@ export function updateNetworkPolicy(clusterId: string, data: Partial<NetworkPoli
  * @param name - NetworkPolicy 名称
  * @param data - 标签更新参数
  */
-export function manageNetworkPolicyLabels(clusterId: string, namespaceName: string, name: string, data: Partial<NetworkPolicyLabelsReq>): Promise<void> {
-  return request.put(`/kubernetes/clusters/${clusterId}/namespaces/${namespaceName}/networkpolicies/${name}/labels`, { data })
+export function manageNetworkPolicyLabels(
+  clusterId: string,
+  namespaceName: string,
+  name: string,
+  data: Partial<NetworkPolicyLabelsReq>
+): Promise<void> {
+  return request.put(`/kubernetes/clusters/${clusterId}/namespaces/${namespaceName}/networkpolicies/${name}/labels`, {
+    data
+  })
 }
 
 /**
@@ -66,8 +89,16 @@ export function manageNetworkPolicyLabels(clusterId: string, namespaceName: stri
  * @param name - NetworkPolicy 名称
  * @param data - 注解更新参数
  */
-export function manageNetworkPolicyAnnotations(clusterId: string, namespaceName: string, name: string, data: Partial<NetworkPolicyAnnotationsReq>): Promise<void> {
-  return request.put(`/kubernetes/clusters/${clusterId}/namespaces/${namespaceName}/networkpolicies/${name}/annotations`, { data })
+export function manageNetworkPolicyAnnotations(
+  clusterId: string,
+  namespaceName: string,
+  name: string,
+  data: Partial<NetworkPolicyAnnotationsReq>
+): Promise<void> {
+  return request.put(
+    `/kubernetes/clusters/${clusterId}/namespaces/${namespaceName}/networkpolicies/${name}/annotations`,
+    { data }
+  )
 }
 
 /**
@@ -87,5 +118,7 @@ export function deleteNetworkPolicy(clusterId: string, namespaceName: string, na
  * @param names - 待删除的 NetworkPolicy 名称列表
  */
 export function deleteNetworkPolicys(clusterId: string, namespaceName: string, names: string[]): Promise<void> {
-  return request.delete(`/kubernetes/clusters/${clusterId}/namespaces/${namespaceName}/networkpolicies`, { data: names })
+  return request.delete(`/kubernetes/clusters/${clusterId}/namespaces/${namespaceName}/networkpolicies`, {
+    data: names
+  })
 }

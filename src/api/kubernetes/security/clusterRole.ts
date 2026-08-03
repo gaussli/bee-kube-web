@@ -3,7 +3,14 @@
  * @module api/kubernetes/clusterRole
  */
 import type { PageVo } from '@/types/common'
-import type { ClusterRoleResp, ClusterRoleQueryReq, ClusterRoleReq, ClusterRoleLabelsReq, ClusterRoleAnnotationsReq, ClusterRoleRulesReq } from '@/types/kubernetes/security/clusterRole'
+import type {
+  ClusterRoleResp,
+  ClusterRoleQueryReq,
+  ClusterRoleReq,
+  ClusterRoleLabelsReq,
+  ClusterRoleAnnotationsReq,
+  ClusterRoleRulesReq
+} from '@/types/kubernetes/security/clusterRole'
 import { request } from '@/utils'
 
 /**
@@ -12,7 +19,10 @@ import { request } from '@/utils'
  * @param params - 查询参数
  * @returns 分页后的 ClusterRole 列表
  */
-export function getClusterRolePage(clusterId: string, params: Partial<ClusterRoleQueryReq>): Promise<PageVo<ClusterRoleResp>> {
+export function getClusterRolePage(
+  clusterId: string,
+  params: Partial<ClusterRoleQueryReq>
+): Promise<PageVo<ClusterRoleResp>> {
   return request.get(`/kubernetes/clusters/${clusterId}/clusterroles`, { params })
 }
 
@@ -52,7 +62,11 @@ export function updateClusterRole(clusterId: string, data: Partial<ClusterRoleRe
  * @param name - ClusterRole 名称
  * @param data - 标签更新参数
  */
-export function manageClusterRoleLabels(clusterId: string, name: string, data: Partial<ClusterRoleLabelsReq>): Promise<void> {
+export function manageClusterRoleLabels(
+  clusterId: string,
+  name: string,
+  data: Partial<ClusterRoleLabelsReq>
+): Promise<void> {
   return request.put(`/kubernetes/clusters/${clusterId}/clusterroles/${name}/labels`, { data })
 }
 
@@ -62,7 +76,11 @@ export function manageClusterRoleLabels(clusterId: string, name: string, data: P
  * @param name - ClusterRole 名称
  * @param data - 注解更新参数
  */
-export function manageClusterRoleAnnotations(clusterId: string, name: string, data: Partial<ClusterRoleAnnotationsReq>): Promise<void> {
+export function manageClusterRoleAnnotations(
+  clusterId: string,
+  name: string,
+  data: Partial<ClusterRoleAnnotationsReq>
+): Promise<void> {
   return request.put(`/kubernetes/clusters/${clusterId}/clusterroles/${name}/annotations`, { data })
 }
 
@@ -72,7 +90,11 @@ export function manageClusterRoleAnnotations(clusterId: string, name: string, da
  * @param name - ClusterRole 名称
  * @param data - 规则更新参数
  */
-export function updateClusterRoleRules(clusterId: string, name: string, data: Partial<ClusterRoleRulesReq>): Promise<void> {
+export function updateClusterRoleRules(
+  clusterId: string,
+  name: string,
+  data: Partial<ClusterRoleRulesReq>
+): Promise<void> {
   return request.put(`/kubernetes/clusters/${clusterId}/clusterroles/${name}/rules`, { data })
 }
 

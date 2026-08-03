@@ -2,7 +2,11 @@
   <div class="namespace-detail">
     <!-- 页面标题 -->
     <div class="page-header">
-      <BeePageTitle :icon="FolderOpened" :title="`命名空间详情: ${namespaceName}`" description="查看命名空间详细信息、标签和注解等。" />
+      <BeePageTitle
+        :icon="FolderOpened"
+        :title="`命名空间详情: ${namespaceName}`"
+        description="查看命名空间详细信息、标签和注解等。"
+      />
     </div>
 
     <!-- 页面内容 -->
@@ -130,7 +134,11 @@ function handleBack() {
 }
 
 function handleEdit() {
-  router.push({ name: 'kubernetes:namespace:edit', params: { clusterId: clusterId.value }, query: { name: namespaceName.value } })
+  router.push({
+    name: 'kubernetes:namespace:edit',
+    params: { clusterId: clusterId.value },
+    query: { name: namespaceName.value }
+  })
 }
 
 onMounted(() => {

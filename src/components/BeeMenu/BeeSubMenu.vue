@@ -5,7 +5,13 @@
       <span class="bee-submenu__label">{{ label }}</span>
       <BeeIcon name="basic-arrow-down" :size="14" class="bee-submenu__arrow" :class="{ 'is-expanded': isExpanded }" />
     </div>
-    <Transition name="bee-submenu-collapse" @enter="onEnter" @after-enter="onAfterEnter" @leave="onLeave" @after-leave="onAfterLeave">
+    <Transition
+      name="bee-submenu-collapse"
+      @enter="onEnter"
+      @after-enter="onAfterEnter"
+      @leave="onLeave"
+      @after-leave="onAfterLeave"
+    >
       <div v-if="isExpanded" class="bee-submenu__content">
         <slot />
       </div>

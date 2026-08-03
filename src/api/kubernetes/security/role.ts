@@ -3,7 +3,14 @@
  * @module api/kubernetes/role
  */
 import type { PageVo } from '@/types/common'
-import type { RoleResp, RoleQueryReq, RoleReq, RoleLabelsReq, RoleAnnotationsReq, RoleRulesReq } from '@/types/kubernetes/security/role'
+import type {
+  RoleResp,
+  RoleQueryReq,
+  RoleReq,
+  RoleLabelsReq,
+  RoleAnnotationsReq,
+  RoleRulesReq
+} from '@/types/kubernetes/security/role'
 import { request } from '@/utils'
 
 /**
@@ -13,7 +20,11 @@ import { request } from '@/utils'
  * @param params - 查询参数
  * @returns 分页后的 Role 列表
  */
-export function getRolePage(clusterId: string, namespaceName: string, params: Partial<RoleQueryReq>): Promise<PageVo<RoleResp>> {
+export function getRolePage(
+  clusterId: string,
+  namespaceName: string,
+  params: Partial<RoleQueryReq>
+): Promise<PageVo<RoleResp>> {
   return request.get(`/kubernetes/clusters/${clusterId}/namespaces/${namespaceName}/roles`, { params })
 }
 
@@ -55,7 +66,12 @@ export function updateRole(clusterId: string, data: Partial<RoleReq>): Promise<v
  * @param name - Role 名称
  * @param data - 标签更新参数
  */
-export function manageRoleLabels(clusterId: string, namespaceName: string, name: string, data: Partial<RoleLabelsReq>): Promise<void> {
+export function manageRoleLabels(
+  clusterId: string,
+  namespaceName: string,
+  name: string,
+  data: Partial<RoleLabelsReq>
+): Promise<void> {
   return request.put(`/kubernetes/clusters/${clusterId}/namespaces/${namespaceName}/roles/${name}/labels`, { data })
 }
 
@@ -66,8 +82,15 @@ export function manageRoleLabels(clusterId: string, namespaceName: string, name:
  * @param name - Role 名称
  * @param data - 注解更新参数
  */
-export function manageRoleAnnotations(clusterId: string, namespaceName: string, name: string, data: Partial<RoleAnnotationsReq>): Promise<void> {
-  return request.put(`/kubernetes/clusters/${clusterId}/namespaces/${namespaceName}/roles/${name}/annotations`, { data })
+export function manageRoleAnnotations(
+  clusterId: string,
+  namespaceName: string,
+  name: string,
+  data: Partial<RoleAnnotationsReq>
+): Promise<void> {
+  return request.put(`/kubernetes/clusters/${clusterId}/namespaces/${namespaceName}/roles/${name}/annotations`, {
+    data
+  })
 }
 
 /**
@@ -77,7 +100,12 @@ export function manageRoleAnnotations(clusterId: string, namespaceName: string, 
  * @param name - Role 名称
  * @param data - 规则更新参数
  */
-export function updateRoleRules(clusterId: string, namespaceName: string, name: string, data: Partial<RoleRulesReq>): Promise<void> {
+export function updateRoleRules(
+  clusterId: string,
+  namespaceName: string,
+  name: string,
+  data: Partial<RoleRulesReq>
+): Promise<void> {
   return request.put(`/kubernetes/clusters/${clusterId}/namespaces/${namespaceName}/roles/${name}/rules`, { data })
 }
 

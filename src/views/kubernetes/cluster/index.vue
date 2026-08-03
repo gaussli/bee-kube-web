@@ -3,7 +3,11 @@
     <!-- 页面标题 -->
     <BeeCard class="cluster-page__header">
       <BeeAlert type="primary" label="在进行集群管理之前，需要先选择一个集群。" />
-      <BeePageTitle icon="kubernetes-cluster" title="集群管理" description="对多集群以及每个集群的基础资源、服务组件及相关应用资源等的统一管理。" />
+      <BeePageTitle
+        icon="kubernetes-cluster"
+        title="集群管理"
+        description="对多集群以及每个集群的基础资源、服务组件及相关应用资源等的统一管理。"
+      />
     </BeeCard>
 
     <!-- 页面内容 -->
@@ -15,7 +19,14 @@
         <BeeButton icon="basic-search" @click="handleSearch"> 搜索 </BeeButton>
         <BeeButton icon="basic-refresh" @click="handleReset"> 重置 </BeeButton>
         <BeeDivider v-if="hasPermission('kubernetes:cluster:create')" direction="vertical" length="12px" />
-        <BeeButton v-if="hasPermission('kubernetes:cluster:create')" type="primary" icon="basic-create" @click="handleCreate"> 纳管 </BeeButton>
+        <BeeButton
+          v-if="hasPermission('kubernetes:cluster:create')"
+          type="primary"
+          icon="basic-create"
+          @click="handleCreate"
+        >
+          纳管
+        </BeeButton>
       </div>
 
       <!-- 表格主体 -->
@@ -49,9 +60,25 @@
           <BeeTableColumn :width="150" fixed="right">
             <template #default="{ row }">
               <div class="table-action">
-                <BeeCircleButton v-if="hasPermission('kubernetes:cluster:edit')" icon="basic-edit" tooltip="编辑" @click="handleEdit(row)" />
-                <BeeCircleButton v-if="hasPermission('kubernetes:cluster:edit')" icon="basic-switch" tooltip="切换集群" @click="handleSelectCluster(row)" />
-                <BeeCircleButton v-if="hasPermission('kubernetes:cluster:delete')" icon="basic-delete" type="danger" tooltip="删除" @click="handleDelete(row)" />
+                <BeeCircleButton
+                  v-if="hasPermission('kubernetes:cluster:edit')"
+                  icon="basic-edit"
+                  tooltip="编辑"
+                  @click="handleEdit(row)"
+                />
+                <BeeCircleButton
+                  v-if="hasPermission('kubernetes:cluster:edit')"
+                  icon="basic-switch"
+                  tooltip="切换集群"
+                  @click="handleSelectCluster(row)"
+                />
+                <BeeCircleButton
+                  v-if="hasPermission('kubernetes:cluster:delete')"
+                  icon="basic-delete"
+                  type="danger"
+                  tooltip="删除"
+                  @click="handleDelete(row)"
+                />
               </div>
             </template>
           </BeeTableColumn>
@@ -61,11 +88,23 @@
       <!-- 表格底部 -->
       <div class="table-footer">
         <div>
-          <BeeButton v-if="hasPermission('kubernetes:cluster:delete')" type="danger" icon="basic-delete" :disabled="selectedRows.length === 0" @click="handleBatchDelete">
+          <BeeButton
+            v-if="hasPermission('kubernetes:cluster:delete')"
+            type="danger"
+            icon="basic-delete"
+            :disabled="selectedRows.length === 0"
+            @click="handleBatchDelete"
+          >
             批量删除 ({{ selectedRows.length }})
           </BeeButton>
         </div>
-        <BeePagination v-model="pagination.page" v-model:pageSize="pagination.pageSize" :total="pagination.total" :page-sizes="[10, 20, 50]" @change="loadData" />
+        <BeePagination
+          v-model="pagination.page"
+          v-model:pageSize="pagination.pageSize"
+          :total="pagination.total"
+          :page-sizes="[10, 20, 50]"
+          @change="loadData"
+        />
       </div>
     </BeeCard>
 

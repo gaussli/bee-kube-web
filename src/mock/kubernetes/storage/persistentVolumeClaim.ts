@@ -3,7 +3,11 @@
  * @module mock/kubernetes/storage/persistentVolumeClaim
  */
 import type { PageVo } from '@/types/common'
-import type { PersistentVolumeClaimResp, PersistentVolumeClaimQueryReq, PersistentVolumeClaimReq } from '@/types/kubernetes/storage/persistentVolumeClaim'
+import type {
+  PersistentVolumeClaimResp,
+  PersistentVolumeClaimQueryReq,
+  PersistentVolumeClaimReq
+} from '@/types/kubernetes/storage/persistentVolumeClaim'
 import { generateId } from '@/mock/utils'
 
 /**
@@ -13,7 +17,11 @@ import { generateId } from '@/mock/utils'
  * @param params - 查询参数
  * @returns 分页数据
  */
-function getPersistentVolumeClaimPage(clusterId: string, namespaceName: string, params: Partial<PersistentVolumeClaimQueryReq>): PageVo<PersistentVolumeClaimResp> {
+function getPersistentVolumeClaimPage(
+  clusterId: string,
+  namespaceName: string,
+  params: Partial<PersistentVolumeClaimQueryReq>
+): PageVo<PersistentVolumeClaimResp> {
   const { name, status, storageClassName, page = 1, pageSize = 10 } = params || {}
   let filtered = mockPVCS.filter(p => p.clusterId === clusterId && p.namespace === namespaceName)
   if (name) filtered = filtered.filter(p => p.name.toLowerCase().includes(name.toLowerCase()))
@@ -33,7 +41,11 @@ function getPersistentVolumeClaimPage(clusterId: string, namespaceName: string, 
  * @param name - PersistentVolumeClaim 名称
  * @returns PersistentVolumeClaim 详情
  */
-function getPersistentVolumeClaimDetail(clusterId: string, namespaceName: string, name: string): PersistentVolumeClaimResp | null {
+function getPersistentVolumeClaimDetail(
+  clusterId: string,
+  namespaceName: string,
+  name: string
+): PersistentVolumeClaimResp | null {
   return mockPVCS.find(p => p.clusterId === clusterId && p.namespace === namespaceName && p.name === name) || null
 }
 
@@ -70,7 +82,9 @@ function createPersistentVolumeClaim(clusterId: string, data: Partial<Persistent
  * @param data - 更新参数
  */
 function updatePersistentVolumeClaim(clusterId: string, data: Partial<PersistentVolumeClaimReq>): void {
-  const index = mockPVCS.findIndex(p => p.clusterId === clusterId && p.namespace === data.namespace && p.name === data.name)
+  const index = mockPVCS.findIndex(
+    p => p.clusterId === clusterId && p.namespace === data.namespace && p.name === data.name
+  )
   if (index === -1) {
     console.error('[Update PersistentVolumeClaim] can not find pvc:', data.name)
     return
@@ -92,7 +106,13 @@ function updatePersistentVolumeClaim(clusterId: string, data: Partial<Persistent
  * @param labels - 标签键值对
  * @param operation - 操作类型
  */
-function managePersistentVolumeClaimLabels(clusterId: string, namespaceName: string, name: string, labels: Record<string, string>, operation: number): void {
+function managePersistentVolumeClaimLabels(
+  clusterId: string,
+  namespaceName: string,
+  name: string,
+  labels: Record<string, string>,
+  operation: number
+): void {
   const index = mockPVCS.findIndex(p => p.clusterId === clusterId && p.namespace === namespaceName && p.name === name)
   if (index === -1) {
     console.error('[Update PersistentVolumeClaim Labels] can not find pvc:', name)
@@ -118,7 +138,13 @@ function managePersistentVolumeClaimLabels(clusterId: string, namespaceName: str
  * @param annotations - 注解键值对
  * @param operation - 操作类型
  */
-function managePersistentVolumeClaimAnnotations(clusterId: string, namespaceName: string, name: string, annotations: Record<string, string>, operation: number): void {
+function managePersistentVolumeClaimAnnotations(
+  clusterId: string,
+  namespaceName: string,
+  name: string,
+  annotations: Record<string, string>,
+  operation: number
+): void {
   const index = mockPVCS.findIndex(p => p.clusterId === clusterId && p.namespace === namespaceName && p.name === name)
   if (index === -1) {
     console.error('[Update PersistentVolumeClaim Annotations] can not find pvc:', name)
@@ -184,44 +210,70 @@ export default [
   {
     method: 'get',
     url: '/kubernetes/clusters/:clusterId/namespaces/:namespaceName/persistentvolumeclaims',
-    handler: (pathParams: Record<string, string>, params: Partial<PersistentVolumeClaimQueryReq>) => getPersistentVolumeClaimPage(pathParams.clusterId, pathParams.namespaceName, params)
+    handler: (pathParams: Record<string, string>, params: Partial<PersistentVolumeClaimQueryReq>) =>
+      getPersistentVolumeClaimPage(pathParams.clusterId, pathParams.namespaceName, params)
   },
   {
     method: 'get',
     url: '/kubernetes/clusters/:clusterId/namespaces/:namespaceName/persistentvolumeclaims/:name',
-    handler: (pathParams: Record<string, string>) => getPersistentVolumeClaimDetail(pathParams.clusterId, pathParams.namespaceName, pathParams.name)
+    handler: (pathParams: Record<string, string>) =>
+      getPersistentVolumeClaimDetail(pathParams.clusterId, pathParams.namespaceName, pathParams.name)
   },
   {
     method: 'post',
     url: '/kubernetes/clusters/:clusterId/namespaces/:namespaceName/persistentvolumeclaims',
-    handler: (pathParams: Record<string, string>, _params: unknown, data: Partial<PersistentVolumeClaimReq>) => createPersistentVolumeClaim(pathParams.clusterId, data)
+    handler: (pathParams: Record<string, string>, _params: unknown, data: Partial<PersistentVolumeClaimReq>) =>
+      createPersistentVolumeClaim(pathParams.clusterId, data)
   },
   {
     method: 'put',
     url: '/kubernetes/clusters/:clusterId/namespaces/:namespaceName/persistentvolumeclaims/:name',
-    handler: (pathParams: Record<string, string>, _params: unknown, data: Partial<PersistentVolumeClaimReq>) => updatePersistentVolumeClaim(pathParams.clusterId, data)
+    handler: (pathParams: Record<string, string>, _params: unknown, data: Partial<PersistentVolumeClaimReq>) =>
+      updatePersistentVolumeClaim(pathParams.clusterId, data)
   },
   {
     method: 'put',
     url: '/kubernetes/clusters/:clusterId/namespaces/:namespaceName/persistentvolumeclaims/:name/labels',
-    handler: (pathParams: Record<string, string>, _params: unknown, data: { labels: Record<string, string>; operation: number }) =>
-      managePersistentVolumeClaimLabels(pathParams.clusterId, pathParams.namespaceName, pathParams.name, data.labels, data.operation)
+    handler: (
+      pathParams: Record<string, string>,
+      _params: unknown,
+      data: { labels: Record<string, string>; operation: number }
+    ) =>
+      managePersistentVolumeClaimLabels(
+        pathParams.clusterId,
+        pathParams.namespaceName,
+        pathParams.name,
+        data.labels,
+        data.operation
+      )
   },
   {
     method: 'put',
     url: '/kubernetes/clusters/:clusterId/namespaces/:namespaceName/persistentvolumeclaims/:name/annotations',
-    handler: (pathParams: Record<string, string>, _params: unknown, data: { annotations: Record<string, string>; operation: number }) =>
-      managePersistentVolumeClaimAnnotations(pathParams.clusterId, pathParams.namespaceName, pathParams.name, data.annotations, data.operation)
+    handler: (
+      pathParams: Record<string, string>,
+      _params: unknown,
+      data: { annotations: Record<string, string>; operation: number }
+    ) =>
+      managePersistentVolumeClaimAnnotations(
+        pathParams.clusterId,
+        pathParams.namespaceName,
+        pathParams.name,
+        data.annotations,
+        data.operation
+      )
   },
   {
     method: 'delete',
     url: '/kubernetes/clusters/:clusterId/namespaces/:namespaceName/persistentvolumeclaims/:name',
-    handler: (pathParams: Record<string, string>) => deletePersistentVolumeClaim(pathParams.clusterId, pathParams.namespaceName, pathParams.name)
+    handler: (pathParams: Record<string, string>) =>
+      deletePersistentVolumeClaim(pathParams.clusterId, pathParams.namespaceName, pathParams.name)
   },
   {
     method: 'delete',
     url: '/kubernetes/clusters/:clusterId/namespaces/:namespaceName/persistentvolumeclaims',
-    handler: (pathParams: Record<string, string>, _params: unknown, data: string[]) => deletePersistentVolumeClaims(pathParams.clusterId, pathParams.namespaceName, data)
+    handler: (pathParams: Record<string, string>, _params: unknown, data: string[]) =>
+      deletePersistentVolumeClaims(pathParams.clusterId, pathParams.namespaceName, data)
   }
 ]
 

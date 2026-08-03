@@ -3,7 +3,16 @@
  * @module mock/kubernetes/node
  */
 import type { PageVo } from '@/types/common'
-import type { NodeQueryReq, NodeReq, NodeListResp, NodeCordonReq, NodeLabelsReq, NodeAnnotationsReq, NodeTaintsReq, NodeResourceResp } from '@/types/kubernetes/node'
+import type {
+  NodeQueryReq,
+  NodeReq,
+  NodeListResp,
+  NodeCordonReq,
+  NodeLabelsReq,
+  NodeAnnotationsReq,
+  NodeTaintsReq,
+  NodeResourceResp
+} from '@/types/kubernetes/node'
 import { generateId } from '@/mock/utils'
 
 /**
@@ -24,12 +33,14 @@ export default [
   {
     method: 'get',
     url: '/kubernetes/clusters/:clusterId/nodes',
-    handler: (pathParams: Record<string, string>, params: Partial<NodeQueryReq>): PageVo<NodeListResp> => getNodePage(pathParams.clusterId, params)
+    handler: (pathParams: Record<string, string>, params: Partial<NodeQueryReq>): PageVo<NodeListResp> =>
+      getNodePage(pathParams.clusterId, params)
   },
   {
     method: 'get',
     url: '/kubernetes/clusters/:clusterId/nodes/topn',
-    handler: (pathParams: Record<string, string>, params: Partial<{ metric: string; count: number }>): NodeListResp[] => getNodeTopN(pathParams.clusterId, params)
+    handler: (pathParams: Record<string, string>, params: Partial<{ metric: string; count: number }>): NodeListResp[] =>
+      getNodeTopN(pathParams.clusterId, params)
   },
   {
     method: 'get',
@@ -39,12 +50,14 @@ export default [
   {
     method: 'get',
     url: '/kubernetes/clusters/:clusterId/nodes/:name/resource',
-    handler: (pathParams: Record<string, string>): NodeResourceResp => getNodeResource(pathParams.clusterId, pathParams.name)
+    handler: (pathParams: Record<string, string>): NodeResourceResp =>
+      getNodeResource(pathParams.clusterId, pathParams.name)
   },
   {
     method: 'put',
     url: '/kubernetes/clusters/:clusterId/nodes/:name',
-    handler: (pathParams: Record<string, string>, data: Partial<NodeReq>): void => updateNode(pathParams.clusterId, pathParams.name, data)
+    handler: (pathParams: Record<string, string>, data: Partial<NodeReq>): void =>
+      updateNode(pathParams.clusterId, pathParams.name, data)
   },
   {
     method: 'post',
@@ -54,22 +67,26 @@ export default [
   {
     method: 'post',
     url: '/kubernetes/clusters/:clusterId/nodes/:name/cordon',
-    handler: (pathParams: Record<string, string>, data: NodeCordonReq): void => cordonNode(pathParams.clusterId, pathParams.name, data)
+    handler: (pathParams: Record<string, string>, data: NodeCordonReq): void =>
+      cordonNode(pathParams.clusterId, pathParams.name, data)
   },
   {
     method: 'post',
     url: '/kubernetes/clusters/:clusterId/nodes/:name/labels',
-    handler: (pathParams: Record<string, string>, data: Partial<NodeLabelsReq>): void => manageNodeLabels(pathParams.clusterId, pathParams.name, data)
+    handler: (pathParams: Record<string, string>, data: Partial<NodeLabelsReq>): void =>
+      manageNodeLabels(pathParams.clusterId, pathParams.name, data)
   },
   {
     method: 'post',
     url: '/kubernetes/clusters/:clusterId/nodes/:name/annotations',
-    handler: (pathParams: Record<string, string>, data: Partial<NodeAnnotationsReq>): void => manageNodeAnnotations(pathParams.clusterId, pathParams.name, data)
+    handler: (pathParams: Record<string, string>, data: Partial<NodeAnnotationsReq>): void =>
+      manageNodeAnnotations(pathParams.clusterId, pathParams.name, data)
   },
   {
     method: 'post',
     url: '/kubernetes/clusters/:clusterId/nodes/:name/taints',
-    handler: (pathParams: Record<string, string>, data: Partial<NodeTaintsReq>): void => manageNodeTaints(pathParams.clusterId, pathParams.name, data)
+    handler: (pathParams: Record<string, string>, data: Partial<NodeTaintsReq>): void =>
+      manageNodeTaints(pathParams.clusterId, pathParams.name, data)
   }
 ]
 
@@ -252,7 +269,8 @@ const mockNodes: NodeListResp[] = [
     id: generateId(),
     uid: generateId(),
     name: 'master-01',
-    description: '生产集群主控制节点，负责集群调度和管理。生产集群主控制节点，负责集群调度和管理。生产集群主控制节点，负责集群调度和管理。',
+    description:
+      '生产集群主控制节点，负责集群调度和管理。生产集群主控制节点，负责集群调度和管理。生产集群主控制节点，负责集群调度和管理。',
     clusterId: generateId(),
     clusterName: 'prod-cluster',
     status: 'Ready',

@@ -12,27 +12,36 @@
                 <span class="detail-label">任务名称:</span><span class="detail-value">{{ cronjobData?.name }}</span>
               </div>
               <div class="detail-item">
-                <span class="detail-label">命名空间:</span><span class="detail-value">{{ cronjobData?.namespace }}</span>
+                <span class="detail-label">命名空间:</span
+                ><span class="detail-value">{{ cronjobData?.namespace }}</span>
               </div>
             </div>
             <div class="detail-row">
               <div class="detail-item">
-                <span class="detail-label">集群:</span><span class="detail-value">{{ cronjobData?.clusterName || cronjobData?.clusterId }}</span>
+                <span class="detail-label">集群:</span
+                ><span class="detail-value">{{ cronjobData?.clusterName || cronjobData?.clusterId }}</span>
               </div>
               <div class="detail-item">
-                <span class="detail-label">调度规则:</span><code class="schedule-code">{{ cronjobData?.schedule }}</code>
+                <span class="detail-label">调度规则:</span
+                ><code class="schedule-code">{{ cronjobData?.schedule }}</code>
               </div>
             </div>
             <div class="detail-row">
               <div class="detail-item">
-                <span class="detail-label">暂停:</span><el-tag :type="cronjobData?.suspend ? 'warning' : 'success'" size="small">{{ cronjobData?.suspend ? '是' : '否' }}</el-tag>
+                <span class="detail-label">暂停:</span
+                ><el-tag :type="cronjobData?.suspend ? 'warning' : 'success'" size="small">{{
+                  cronjobData?.suspend ? '是' : '否'
+                }}</el-tag>
               </div>
               <div class="detail-item">
-                <span class="detail-label">活跃任务:</span><span class="detail-value">{{ cronjobData?.activeJobs }}</span>
+                <span class="detail-label">活跃任务:</span
+                ><span class="detail-value">{{ cronjobData?.activeJobs }}</span>
               </div>
             </div>
             <div class="detail-row">
-              <div class="detail-item"><span class="detail-label">上次调度:</span><TimeCell :time="cronjobData?.lastSuccessfulTime" /></div>
+              <div class="detail-item">
+                <span class="detail-label">上次调度:</span><TimeCell :time="cronjobData?.lastSuccessfulTime" />
+              </div>
               <div class="detail-item">
                 <span class="detail-label">创建时间:</span><span class="detail-value">{{ cronjobData?.createAt }}</span>
               </div>
@@ -86,7 +95,11 @@ function handleBack() {
   router.back()
 }
 function handleEdit() {
-  router.push({ name: 'kubernetes:workload:cronjob:edit', params: { clusterId: clusterId.value }, query: { namespace: namespace.value, name: cronjobName.value } })
+  router.push({
+    name: 'kubernetes:workload:cronjob:edit',
+    params: { clusterId: clusterId.value },
+    query: { namespace: namespace.value, name: cronjobName.value }
+  })
 }
 onMounted(() => {
   loadData()

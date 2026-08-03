@@ -19,7 +19,8 @@
         <el-form-item label="标签">
           <div class="key-value-list">
             <div v-for="(item, index) in labelList" :key="index" class="key-value-item">
-              <el-input v-model="item.key" placeholder="键" /><span class="separator">:</span><el-input v-model="item.value" placeholder="值" />
+              <el-input v-model="item.key" placeholder="键" /><span class="separator">:</span
+              ><el-input v-model="item.value" placeholder="值" />
               <el-button circle :icon="Delete" size="small" @click="removeLabel(index)" />
             </div>
             <BeeButton type="primary" @click="addLabel"
@@ -69,7 +70,8 @@ async function loadData() {
     cronjobData.value = await getCronJobDetail(clusterId.value, namespace.value, cronjobName.value)
     formData.value.schedule = cronjobData.value.schedule
     formData.value.suspend = cronjobData.value.suspend
-    if (cronjobData.value.labels) labelList.value = Object.entries(cronjobData.value.labels).map(([key, value]) => ({ key, value }))
+    if (cronjobData.value.labels)
+      labelList.value = Object.entries(cronjobData.value.labels).map(([key, value]) => ({ key, value }))
   } finally {
     loading.value = false
   }

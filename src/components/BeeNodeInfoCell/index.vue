@@ -12,7 +12,12 @@
           <BeeTag type="primary" size="tiny">IP</BeeTag>
         </BeeTooltip>
         <span class="bee-node-info-cell__name">{{ name }}</span>
-        <BeeIcon name="basic-copy" :size="14" class="bee-node-info-cell__copy-icon" @click="useClipboard().copy(props.name)" />
+        <BeeIcon
+          name="basic-copy"
+          :size="14"
+          class="bee-node-info-cell__copy-icon"
+          @click="useClipboard().copy(props.name)"
+        />
       </div>
       <div class="bee-node-info-cell__bottom">
         <BeeIcon name="basic-description" :size="14" class="bee-node-info-cell__desc-icon" />

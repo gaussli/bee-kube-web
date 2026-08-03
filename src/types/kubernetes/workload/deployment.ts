@@ -23,7 +23,17 @@ import type { HistoryRevision, NodeAffinity, PodAffinity, PodAntiAffinity, Resta
  * - Failed: 失败异常（创建或更新过程出现错误）
  * - Unknown: 未知状态
  */
-export type DeploymentStatus = 'Running' | 'Available' | 'Stopped' | 'Creating' | 'Updating' | 'Terminating' | 'CreateTimeout' | 'UpdateTimeout' | 'Failed' | 'Unknown'
+export type DeploymentStatus =
+  | 'Running'
+  | 'Available'
+  | 'Stopped'
+  | 'Creating'
+  | 'Updating'
+  | 'Terminating'
+  | 'CreateTimeout'
+  | 'UpdateTimeout'
+  | 'Failed'
+  | 'Unknown'
 
 /**
  * Deployment 条件类型枚举

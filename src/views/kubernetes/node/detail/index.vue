@@ -2,7 +2,11 @@
   <div class="node-detail">
     <!-- 页面标题 -->
     <div class="page-header">
-      <BeePageTitle :icon="Box" :title="`节点详情: ${nodeName}`" description="查看节点详细信息、资源使用情况、标签和污点等。" />
+      <BeePageTitle
+        :icon="Box"
+        :title="`节点详情: ${nodeName}`"
+        description="查看节点详细信息、资源使用情况、标签和污点等。"
+      />
     </div>
 
     <!-- 页面内容 -->

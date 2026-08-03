@@ -1,7 +1,11 @@
 <template>
   <div class="statefulset-detail">
     <div class="page-header">
-      <BeePageTitle :icon="Collection" :title="`有状态应用详情: ${statefulsetName}`" description="查看 StatefulSet 详细信息。" />
+      <BeePageTitle
+        :icon="Collection"
+        :title="`有状态应用详情: ${statefulsetName}`"
+        description="查看 StatefulSet 详细信息。"
+      />
     </div>
     <div class="page-body">
       <el-tabs v-model="activeTab" type="border-card">
@@ -9,34 +13,48 @@
           <div class="detail-section" v-loading="loading">
             <div class="detail-row">
               <div class="detail-item">
-                <span class="detail-label">应用名称:</span><span class="detail-value">{{ statefulsetData?.basic.name }}</span>
+                <span class="detail-label">应用名称:</span
+                ><span class="detail-value">{{ statefulsetData?.basic.name }}</span>
               </div>
               <div class="detail-item">
-                <span class="detail-label">命名空间:</span><span class="detail-value">{{ statefulsetData?.basic.namespace }}</span>
-              </div>
-            </div>
-            <div class="detail-row">
-              <div class="detail-item">
-                <span class="detail-label">集群:</span><span class="detail-value">{{ statefulsetData?.basic.clusterName || statefulsetData?.basic.clusterId }}</span>
-              </div>
-              <div class="detail-item">
-                <span class="detail-label">服务名称:</span><span class="detail-value">{{ statefulsetData?.basic.serviceName }}</span>
+                <span class="detail-label">命名空间:</span
+                ><span class="detail-value">{{ statefulsetData?.basic.namespace }}</span>
               </div>
             </div>
             <div class="detail-row">
               <div class="detail-item">
-                <span class="detail-label">期望副本:</span><span class="detail-value">{{ statefulsetData?.replicas.replicas }}</span>
+                <span class="detail-label">集群:</span
+                ><span class="detail-value">{{
+                  statefulsetData?.basic.clusterName || statefulsetData?.basic.clusterId
+                }}</span>
+              </div>
+              <div class="detail-item">
+                <span class="detail-label">服务名称:</span
+                ><span class="detail-value">{{ statefulsetData?.basic.serviceName }}</span>
+              </div>
+            </div>
+            <div class="detail-row">
+              <div class="detail-item">
+                <span class="detail-label">期望副本:</span
+                ><span class="detail-value">{{ statefulsetData?.replicas.replicas }}</span>
               </div>
               <div class="detail-item">
                 <span class="detail-label">就绪副本:</span
-                ><span :class="['detail-value', statefulsetData?.replicas.readyReplicas === statefulsetData?.replicas.replicas ? 'replicas-ready' : 'replicas-pending']">{{
-                  statefulsetData?.replicas.readyReplicas
-                }}</span>
+                ><span
+                  :class="[
+                    'detail-value',
+                    statefulsetData?.replicas.readyReplicas === statefulsetData?.replicas.replicas
+                      ? 'replicas-ready'
+                      : 'replicas-pending'
+                  ]"
+                  >{{ statefulsetData?.replicas.readyReplicas }}</span
+                >
               </div>
             </div>
             <div class="detail-row">
               <div class="detail-item">
-                <span class="detail-label">创建时间:</span><span class="detail-value">{{ statefulsetData?.basic.createAt }}</span>
+                <span class="detail-label">创建时间:</span
+                ><span class="detail-value">{{ statefulsetData?.basic.createAt }}</span>
               </div>
             </div>
           </div>
@@ -87,7 +105,11 @@ function handleBack() {
   router.back()
 }
 function handleEdit() {
-  router.push({ name: 'kubernetes:workload:statefulset:edit', params: { clusterId: clusterId.value }, query: { namespace: namespace.value, name: statefulsetName.value } })
+  router.push({
+    name: 'kubernetes:workload:statefulset:edit',
+    params: { clusterId: clusterId.value },
+    query: { namespace: namespace.value, name: statefulsetName.value }
+  })
 }
 onMounted(() => {
   loadData()

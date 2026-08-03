@@ -2,7 +2,11 @@
   <BeePage class="secret-page">
     <!-- 页面标题 -->
     <BeeCard class="secret-page__header">
-      <BeePageTitle icon="kubernetes-namespace" title="密钥" description="密钥（Secret）用于存储敏感配置数据，如密码、Token、TLS 证书、Docker 仓库凭证等，实现敏感信息与工作负载的解耦。" />
+      <BeePageTitle
+        icon="kubernetes-namespace"
+        title="密钥"
+        description="密钥（Secret）用于存储敏感配置数据，如密码、Token、TLS 证书、Docker 仓库凭证等，实现敏感信息与工作负载的解耦。"
+      />
     </BeeCard>
 
     <!-- 页面内容 -->
@@ -10,11 +14,24 @@
       <!-- 查询表单 -->
       <div class="table-toolbar">
         <BeeInputSearch v-model="searchKey" placeholder="按 UID / 名称搜索" class="table-toolbar__search" />
-        <BeeSelect v-model="queryForm.namespace" placeholder="命名空间筛选" :options="namespaceOptions" :width="300" :menu-height="300" />
+        <BeeSelect
+          v-model="queryForm.namespace"
+          placeholder="命名空间筛选"
+          :options="namespaceOptions"
+          :width="300"
+          :menu-height="300"
+        />
         <BeeSelect v-model="queryForm.type" placeholder="类型筛选" :options="typeOptions" :width="300" />
         <BeeButton icon="basic-search" @click="handleSearch"> 搜索 </BeeButton>
         <BeeButton icon="basic-refresh" @click="handleReset"> 重置 </BeeButton>
-        <BeeButton v-if="hasPermission('kubernetes:config:secret:create')" type="primary" icon="basic-create" @click="handleCreate"> 新增 </BeeButton>
+        <BeeButton
+          v-if="hasPermission('kubernetes:config:secret:create')"
+          type="primary"
+          icon="basic-create"
+          @click="handleCreate"
+        >
+          新增
+        </BeeButton>
       </div>
 
       <!-- 表格主体 -->
@@ -22,7 +39,13 @@
         <BeeTable :data="tableData" :loading="loading" selectable @selection-change="handleSelectionChange">
           <BeeTableColumn :width="400">
             <template #default="{ row }">
-              <BeeSecretInfoCell :uid="row.uid" :name="row.name" :description="row.description" :icon-size="32" icon="kubernetes-namespace" />
+              <BeeSecretInfoCell
+                :uid="row.uid"
+                :name="row.name"
+                :description="row.description"
+                :icon-size="32"
+                icon="kubernetes-namespace"
+              />
             </template>
           </BeeTableColumn>
           <BeeTableColumn :width="200">
@@ -66,11 +89,22 @@
       <!-- 表格底部 -->
       <div class="table-footer">
         <div>
-          <BeeButton v-if="hasPermission('kubernetes:config:secret:delete')" type="danger" :disabled="selectedRows.length === 0" @click="handleBatchDelete">
+          <BeeButton
+            v-if="hasPermission('kubernetes:config:secret:delete')"
+            type="danger"
+            :disabled="selectedRows.length === 0"
+            @click="handleBatchDelete"
+          >
             批量删除 ({{ selectedRows.length }})
           </BeeButton>
         </div>
-        <BeePagination v-model="pagination.page" v-model:pageSize="pagination.pageSize" :total="pagination.total" :page-sizes="[10, 20, 50]" @change="loadData" />
+        <BeePagination
+          v-model="pagination.page"
+          v-model:pageSize="pagination.pageSize"
+          :total="pagination.total"
+          :page-sizes="[10, 20, 50]"
+          @change="loadData"
+        />
       </div>
     </BeeCard>
 
@@ -154,7 +188,9 @@ const pagination = reactive({ page: 1, pageSize: 10, total: 0 })
 // ==================== Options ====================
 
 /** 命名空间选项 */
-const namespaceOptions = ref<{ label: string; value: string | undefined }[]>([{ label: '全部命名空间', value: undefined }])
+const namespaceOptions = ref<{ label: string; value: string | undefined }[]>([
+  { label: '全部命名空间', value: undefined }
+])
 
 /** Secret 类型选项 */
 const typeOptions = ref([
@@ -179,7 +215,10 @@ async function loadNamespaceOptions() {
   if (!clusterId.value) return
   try {
     const namespaces = (await getNamespacePage(clusterId.value, { mode: 'simple' })) as NamespaceSimpleListResp[]
-    namespaceOptions.value = [{ label: '全部命名空间', value: undefined }, ...namespaces.map(ns => ({ label: ns.name, value: ns.name }))]
+    namespaceOptions.value = [
+      { label: '全部命名空间', value: undefined },
+      ...namespaces.map(ns => ({ label: ns.name, value: ns.name }))
+    ]
   } catch {
     // 加载失败时保留默认选项
   }
@@ -257,12 +296,20 @@ function handleCreate() {
 
 /** 跳转编辑页面 */
 function handleEdit(row: SecretListResp) {
-  router.push({ name: 'kubernetes:config:secret:edit', params: { clusterId: row.clusterId }, query: { namespace: row.namespace, name: row.name } })
+  router.push({
+    name: 'kubernetes:config:secret:edit',
+    params: { clusterId: row.clusterId },
+    query: { namespace: row.namespace, name: row.name }
+  })
 }
 
 /** 跳转详情页面 */
 function handleViewDetail(row: SecretListResp) {
-  router.push({ name: 'kubernetes:config:secret:detail', params: { clusterId: row.clusterId }, query: { namespace: row.namespace, name: row.name } })
+  router.push({
+    name: 'kubernetes:config:secret:detail',
+    params: { clusterId: row.clusterId },
+    query: { namespace: row.namespace, name: row.name }
+  })
 }
 
 /** 编辑 YAML */

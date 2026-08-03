@@ -1,7 +1,13 @@
 <template>
   <div ref="containerRef" class="bee-segmented-control">
     <div class="bee-segmented-control__slider" :style="sliderStyle" />
-    <div v-for="(option, index) in options" :key="option.value" class="bee-segmented-control__item" :class="{ active: activeIndex === index }" @click="handleClick(index, option.value)">
+    <div
+      v-for="(option, index) in options"
+      :key="option.value"
+      class="bee-segmented-control__item"
+      :class="{ active: activeIndex === index }"
+      @click="handleClick(index, option.value)"
+    >
       <BeeIcon v-if="option.icon" :name="option.icon" :size="14" class="bee-segmented-control__icon" />
       {{ option.label }}
     </div>

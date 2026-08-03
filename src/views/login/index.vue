@@ -11,10 +11,20 @@
           <el-input v-model="loginForm.username" placeholder="请输入用户名" prefix-icon="User" size="large" />
         </el-form-item>
         <el-form-item prop="password">
-          <el-input v-model="loginForm.password" type="password" placeholder="请输入密码" prefix-icon="Lock" show-password size="large" @keyup.enter="handleLogin" />
+          <el-input
+            v-model="loginForm.password"
+            type="password"
+            placeholder="请输入密码"
+            prefix-icon="Lock"
+            show-password
+            size="large"
+            @keyup.enter="handleLogin"
+          />
         </el-form-item>
         <el-form-item>
-          <el-button type="primary" size="large" :loading="loading" class="login-btn" @click="handleLogin"> 登 录 </el-button>
+          <el-button type="primary" size="large" :loading="loading" class="login-btn" @click="handleLogin">
+            登 录
+          </el-button>
         </el-form-item>
       </el-form>
     </el-card>

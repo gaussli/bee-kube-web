@@ -6,10 +6,14 @@
     <div class="page-body">
       <el-form ref="formRef" :model="formData" :rules="formRules" label-width="140px" class="create-form">
         <el-form-item label="所属集群" prop="clusterId">
-          <el-select v-model="formData.clusterId" placeholder="选择集群" style="width: 300px"><el-option label="默认集群" value="default" /></el-select>
+          <el-select v-model="formData.clusterId" placeholder="选择集群" style="width: 300px"
+            ><el-option label="默认集群" value="default"
+          /></el-select>
         </el-form-item>
         <el-form-item label="命名空间" prop="namespace">
-          <el-select v-model="formData.namespace" placeholder="选择命名空间" style="width: 300px"><el-option label="default" value="default" /></el-select>
+          <el-select v-model="formData.namespace" placeholder="选择命名空间" style="width: 300px"
+            ><el-option label="default" value="default"
+          /></el-select>
         </el-form-item>
         <el-form-item label="应用名称" prop="name">
           <el-input v-model="formData.name" placeholder="请输入应用名称" style="width: 300px" />

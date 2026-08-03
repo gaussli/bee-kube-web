@@ -29,15 +29,102 @@ const mockUsers: UserResp[] = [
     updateAt: '2024-04-10 14:22:35',
     updateBy: 'admin'
   },
-  { id: generateId(), username: 'zhangsan', nickname: '张三', gender: 1, status: 1, createAt: '2024-02-08 14:15:36', createBy: 'admin', updateAt: '2024-04-12 10:05:18', updateBy: 'admin' },
-  { id: generateId(), username: 'lisi', nickname: '李四', gender: 1, status: 1, createAt: '2024-02-20 10:45:11', createBy: 'admin', updateAt: '2024-04-08 16:30:42', updateBy: 'zhangsan' },
-  { id: generateId(), username: 'wangwu', nickname: '王五', gender: 0, status: 0, createAt: '2024-03-05 16:22:08', createBy: 'admin', updateAt: '2024-04-11 11:15:27', updateBy: 'admin' },
-  { id: generateId(), username: 'zhaoliu', nickname: '赵六', gender: 0, status: 1, createAt: '2024-03-12 08:55:43', createBy: 'zhangsan', updateAt: '2024-04-09 09:42:51', updateBy: 'zhangsan' },
-  { id: generateId(), username: 'sunqi', nickname: '孙七', status: 0, createAt: '2024-03-18 11:30:57', createBy: 'zhangsan', updateAt: '2024-04-07 14:58:33', updateBy: 'lisi' },
-  { id: generateId(), username: 'zhouba', nickname: '周八', gender: 1, status: 1, createAt: '2024-03-25 15:10:22', createBy: 'lisi', updateAt: '2024-04-13 08:25:16', updateBy: 'lisi' },
-  { id: generateId(), username: 'wujiu', nickname: '吴九', status: 1, createAt: '2024-04-02 09:42:18', createBy: 'lisi', updateAt: '2024-04-14 17:35:09', updateBy: 'admin' },
-  { id: generateId(), username: 'zhengshi', nickname: '郑十', gender: 0, status: 0, createAt: '2024-04-10 13:25:34', createBy: 'admin', updateAt: '2024-04-10 13:25:34', updateBy: 'admin' },
-  { id: generateId(), username: 'caihua', nickname: '蔡华', status: 1, createAt: '2024-04-15 17:08:45', createBy: 'zhangsan', updateAt: '2024-04-15 17:08:45', updateBy: 'zhangsan' },
+  {
+    id: generateId(),
+    username: 'zhangsan',
+    nickname: '张三',
+    gender: 1,
+    status: 1,
+    createAt: '2024-02-08 14:15:36',
+    createBy: 'admin',
+    updateAt: '2024-04-12 10:05:18',
+    updateBy: 'admin'
+  },
+  {
+    id: generateId(),
+    username: 'lisi',
+    nickname: '李四',
+    gender: 1,
+    status: 1,
+    createAt: '2024-02-20 10:45:11',
+    createBy: 'admin',
+    updateAt: '2024-04-08 16:30:42',
+    updateBy: 'zhangsan'
+  },
+  {
+    id: generateId(),
+    username: 'wangwu',
+    nickname: '王五',
+    gender: 0,
+    status: 0,
+    createAt: '2024-03-05 16:22:08',
+    createBy: 'admin',
+    updateAt: '2024-04-11 11:15:27',
+    updateBy: 'admin'
+  },
+  {
+    id: generateId(),
+    username: 'zhaoliu',
+    nickname: '赵六',
+    gender: 0,
+    status: 1,
+    createAt: '2024-03-12 08:55:43',
+    createBy: 'zhangsan',
+    updateAt: '2024-04-09 09:42:51',
+    updateBy: 'zhangsan'
+  },
+  {
+    id: generateId(),
+    username: 'sunqi',
+    nickname: '孙七',
+    status: 0,
+    createAt: '2024-03-18 11:30:57',
+    createBy: 'zhangsan',
+    updateAt: '2024-04-07 14:58:33',
+    updateBy: 'lisi'
+  },
+  {
+    id: generateId(),
+    username: 'zhouba',
+    nickname: '周八',
+    gender: 1,
+    status: 1,
+    createAt: '2024-03-25 15:10:22',
+    createBy: 'lisi',
+    updateAt: '2024-04-13 08:25:16',
+    updateBy: 'lisi'
+  },
+  {
+    id: generateId(),
+    username: 'wujiu',
+    nickname: '吴九',
+    status: 1,
+    createAt: '2024-04-02 09:42:18',
+    createBy: 'lisi',
+    updateAt: '2024-04-14 17:35:09',
+    updateBy: 'admin'
+  },
+  {
+    id: generateId(),
+    username: 'zhengshi',
+    nickname: '郑十',
+    gender: 0,
+    status: 0,
+    createAt: '2024-04-10 13:25:34',
+    createBy: 'admin',
+    updateAt: '2024-04-10 13:25:34',
+    updateBy: 'admin'
+  },
+  {
+    id: generateId(),
+    username: 'caihua',
+    nickname: '蔡华',
+    status: 1,
+    createAt: '2024-04-15 17:08:45',
+    createBy: 'zhangsan',
+    updateAt: '2024-04-15 17:08:45',
+    updateBy: 'zhangsan'
+  },
   {
     id: generateId(),
     username: 'chenwei',
@@ -595,7 +682,9 @@ function getUserPage(params: UserQueryReq): PageVo<UserResp> {
 
   let filtered = [...mockUsers]
   if (id && id === username && nickname === username) {
-    filtered = filtered.filter(u => u.id == id || u.username.includes(username.toLowerCase()) || u.nickname.includes(nickname))
+    filtered = filtered.filter(
+      u => u.id == id || u.username.includes(username.toLowerCase()) || u.nickname.includes(nickname)
+    )
   } else {
     if (username) {
       filtered = filtered.filter(u => u.username.includes(username))

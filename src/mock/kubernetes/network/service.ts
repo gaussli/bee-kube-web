@@ -13,7 +13,11 @@ import { generateId } from '@/mock/utils'
  * @param params - 查询参数
  * @returns 分页数据
  */
-function getServicePage(clusterId: string, namespaceName: string, params: Partial<ServiceQueryReq>): PageVo<ServiceListVo> {
+function getServicePage(
+  clusterId: string,
+  namespaceName: string,
+  params: Partial<ServiceQueryReq>
+): PageVo<ServiceListVo> {
   const { name, type, page = 1, pageSize = 10 } = params || {}
   let filtered = mockServices.filter(s => s.clusterId === clusterId && s.namespace === namespaceName)
   if (name) filtered = filtered.filter(s => s.name.toLowerCase().includes(name.toLowerCase()))
@@ -69,7 +73,9 @@ function createService(clusterId: string, data: Partial<ServiceReq>): void {
  * @param data - 更新参数
  */
 function updateService(clusterId: string, data: Partial<ServiceReq>): void {
-  const index = mockServices.findIndex(s => s.clusterId === clusterId && s.namespace === data.namespace && s.name === data.name)
+  const index = mockServices.findIndex(
+    s => s.clusterId === clusterId && s.namespace === data.namespace && s.name === data.name
+  )
   if (index === -1) {
     console.error('[Update Service] can not find service:', data.name)
     return
@@ -91,8 +97,16 @@ function updateService(clusterId: string, data: Partial<ServiceReq>): void {
  * @param labels - 标签键值对
  * @param operation - 操作类型
  */
-function manageServiceLabels(clusterId: string, namespaceName: string, name: string, labels: Record<string, string>, operation: number): void {
-  const index = mockServices.findIndex(s => s.clusterId === clusterId && s.namespace === namespaceName && s.name === name)
+function manageServiceLabels(
+  clusterId: string,
+  namespaceName: string,
+  name: string,
+  labels: Record<string, string>,
+  operation: number
+): void {
+  const index = mockServices.findIndex(
+    s => s.clusterId === clusterId && s.namespace === namespaceName && s.name === name
+  )
   if (index === -1) {
     console.error('[Update Service Labels] can not find service:', name)
     return
@@ -117,8 +131,16 @@ function manageServiceLabels(clusterId: string, namespaceName: string, name: str
  * @param annotations - 注解键值对
  * @param operation - 操作类型
  */
-function manageServiceAnnotations(clusterId: string, namespaceName: string, name: string, annotations: Record<string, string>, operation: number): void {
-  const index = mockServices.findIndex(s => s.clusterId === clusterId && s.namespace === namespaceName && s.name === name)
+function manageServiceAnnotations(
+  clusterId: string,
+  namespaceName: string,
+  name: string,
+  annotations: Record<string, string>,
+  operation: number
+): void {
+  const index = mockServices.findIndex(
+    s => s.clusterId === clusterId && s.namespace === namespaceName && s.name === name
+  )
   if (index === -1) {
     console.error('[Update Service Annotations] can not find service:', name)
     return
@@ -142,7 +164,9 @@ function manageServiceAnnotations(clusterId: string, namespaceName: string, name
  * @param name - Service 名称
  */
 function deleteService(clusterId: string, namespaceName: string, name: string): void {
-  const index = mockServices.findIndex(s => s.clusterId === clusterId && s.namespace === namespaceName && s.name === name)
+  const index = mockServices.findIndex(
+    s => s.clusterId === clusterId && s.namespace === namespaceName && s.name === name
+  )
   if (index === -1) {
     console.error('[Delete Service] can not find service:', name)
     return
@@ -158,7 +182,9 @@ function deleteService(clusterId: string, namespaceName: string, name: string): 
  */
 function deleteServices(clusterId: string, namespaceName: string, names: string[]): void {
   names.forEach(name => {
-    const index = mockServices.findIndex(s => s.clusterId === clusterId && s.namespace === namespaceName && s.name === name)
+    const index = mockServices.findIndex(
+      s => s.clusterId === clusterId && s.namespace === namespaceName && s.name === name
+    )
     if (index === -1) {
       console.error('[Delete Services] can not find service:', name)
     } else {
@@ -183,44 +209,64 @@ export default [
   {
     method: 'get',
     url: '/kubernetes/clusters/:clusterId/namespaces/:namespaceName/services',
-    handler: (pathParams: Record<string, string>, params: Partial<ServiceQueryReq>) => getServicePage(pathParams.clusterId, pathParams.namespaceName, params)
+    handler: (pathParams: Record<string, string>, params: Partial<ServiceQueryReq>) =>
+      getServicePage(pathParams.clusterId, pathParams.namespaceName, params)
   },
   {
     method: 'get',
     url: '/kubernetes/clusters/:clusterId/namespaces/:namespaceName/services/:name',
-    handler: (pathParams: Record<string, string>) => getServiceDetail(pathParams.clusterId, pathParams.namespaceName, pathParams.name)
+    handler: (pathParams: Record<string, string>) =>
+      getServiceDetail(pathParams.clusterId, pathParams.namespaceName, pathParams.name)
   },
   {
     method: 'post',
     url: '/kubernetes/clusters/:clusterId/namespaces/:namespaceName/services',
-    handler: (pathParams: Record<string, string>, _params: unknown, data: Partial<ServiceReq>) => createService(pathParams.clusterId, data)
+    handler: (pathParams: Record<string, string>, _params: unknown, data: Partial<ServiceReq>) =>
+      createService(pathParams.clusterId, data)
   },
   {
     method: 'put',
     url: '/kubernetes/clusters/:clusterId/namespaces/:namespaceName/services/:name',
-    handler: (pathParams: Record<string, string>, _params: unknown, data: Partial<ServiceReq>) => updateService(pathParams.clusterId, data)
+    handler: (pathParams: Record<string, string>, _params: unknown, data: Partial<ServiceReq>) =>
+      updateService(pathParams.clusterId, data)
   },
   {
     method: 'put',
     url: '/kubernetes/clusters/:clusterId/namespaces/:namespaceName/services/:name/labels',
-    handler: (pathParams: Record<string, string>, _params: unknown, data: { labels: Record<string, string>; operation: number }) =>
+    handler: (
+      pathParams: Record<string, string>,
+      _params: unknown,
+      data: { labels: Record<string, string>; operation: number }
+    ) =>
       manageServiceLabels(pathParams.clusterId, pathParams.namespaceName, pathParams.name, data.labels, data.operation)
   },
   {
     method: 'put',
     url: '/kubernetes/clusters/:clusterId/namespaces/:namespaceName/services/:name/annotations',
-    handler: (pathParams: Record<string, string>, _params: unknown, data: { annotations: Record<string, string>; operation: number }) =>
-      manageServiceAnnotations(pathParams.clusterId, pathParams.namespaceName, pathParams.name, data.annotations, data.operation)
+    handler: (
+      pathParams: Record<string, string>,
+      _params: unknown,
+      data: { annotations: Record<string, string>; operation: number }
+    ) =>
+      manageServiceAnnotations(
+        pathParams.clusterId,
+        pathParams.namespaceName,
+        pathParams.name,
+        data.annotations,
+        data.operation
+      )
   },
   {
     method: 'delete',
     url: '/kubernetes/clusters/:clusterId/namespaces/:namespaceName/services/:name',
-    handler: (pathParams: Record<string, string>) => deleteService(pathParams.clusterId, pathParams.namespaceName, pathParams.name)
+    handler: (pathParams: Record<string, string>) =>
+      deleteService(pathParams.clusterId, pathParams.namespaceName, pathParams.name)
   },
   {
     method: 'delete',
     url: '/kubernetes/clusters/:clusterId/namespaces/:namespaceName/services',
-    handler: (pathParams: Record<string, string>, _params: unknown, data: string[]) => deleteServices(pathParams.clusterId, pathParams.namespaceName, data)
+    handler: (pathParams: Record<string, string>, _params: unknown, data: string[]) =>
+      deleteServices(pathParams.clusterId, pathParams.namespaceName, data)
   }
 ]
 

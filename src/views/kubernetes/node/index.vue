@@ -24,7 +24,13 @@
         <BeeTable :data="tableData" :loading="loading" selectable @selection-change="handleSelectionChange">
           <BeeTableColumn :width="500">
             <template #default="{ row }">
-              <BeeNodeInfoCell :name="row.name" :id="row.id" :ip="row.ip" :description="row.description" :icon-size="32" />
+              <BeeNodeInfoCell
+                :name="row.name"
+                :id="row.id"
+                :ip="row.ip"
+                :description="row.description"
+                :icon-size="32"
+              />
             </template>
           </BeeTableColumn>
           <BeeTableColumn :width="160">
@@ -34,22 +40,34 @@
           </BeeTableColumn>
           <BeeTableColumn :width="140">
             <template #default="{ row }">
-              <BeeResourceUsageCell :percentage="calcPercentage(row.resource.usage.cpu, row.resource.allocation.cpu)" field-name="CPU" />
+              <BeeResourceUsageCell
+                :percentage="calcPercentage(row.resource.usage.cpu, row.resource.allocation.cpu)"
+                field-name="CPU"
+              />
             </template>
           </BeeTableColumn>
           <BeeTableColumn :width="140">
             <template #default="{ row }">
-              <BeeResourceUsageCell :percentage="calcPercentage(row.resource.usage.memory, row.resource.allocation.memory)" field-name="内存" />
+              <BeeResourceUsageCell
+                :percentage="calcPercentage(row.resource.usage.memory, row.resource.allocation.memory)"
+                field-name="内存"
+              />
             </template>
           </BeeTableColumn>
           <BeeTableColumn :width="140">
             <template #default="{ row }">
-              <BeeResourceUsageCell :percentage="calcPercentage(row.resource.usage.storage, row.resource.allocation.storage)" field-name="磁盘" />
+              <BeeResourceUsageCell
+                :percentage="calcPercentage(row.resource.usage.storage, row.resource.allocation.storage)"
+                field-name="磁盘"
+              />
             </template>
           </BeeTableColumn>
           <BeeTableColumn :width="140">
             <template #default="{ row }">
-              <BeeResourceUsageCell :percentage="calcPercentage(row.resource.usage.pod, row.resource.allocation.pod)" field-name="容器数" />
+              <BeeResourceUsageCell
+                :percentage="calcPercentage(row.resource.usage.pod, row.resource.allocation.pod)"
+                field-name="容器数"
+              />
             </template>
           </BeeTableColumn>
           <BeeTableColumn :width="200">
@@ -65,14 +83,36 @@
           <BeeTableColumn :width="150" fixed="right">
             <template #default="{ row }">
               <div class="table-action">
-                <BeeCircleButton v-if="hasPermission('kubernetes:node:edit')" icon="basic-edit" tooltip="编辑" @click="handleEdit(row)" />
+                <BeeCircleButton
+                  v-if="hasPermission('kubernetes:node:edit')"
+                  icon="basic-edit"
+                  tooltip="编辑"
+                  @click="handleEdit(row)"
+                />
                 <BeeCircleButton icon="basic-view" tooltip="详情" @click="handleViewDetail(row)" />
                 <BeeDropdown v-if="hasPermission('kubernetes:node:edit')" trigger="click">
                   <BeeCircleButton icon="basic-more" tooltip="更多" />
                   <template #dropdown>
-                    <BeeDropdownItem v-if="row.schedulable !== false" value="stopScheduler" label="停止调度" icon="basic-stop" @click="handleCordon(row, true)" />
-                    <BeeDropdownItem v-else value="enableScheduler" label="允许调度" icon="basic-right" @click="handleCordon(row, false)" />
-                    <BeeDropdownItem value="drainPod" label="驱逐Pod" icon="kubernetes-drain" @click="handleDrain(row)" />
+                    <BeeDropdownItem
+                      v-if="row.schedulable !== false"
+                      value="stopScheduler"
+                      label="停止调度"
+                      icon="basic-stop"
+                      @click="handleCordon(row, true)"
+                    />
+                    <BeeDropdownItem
+                      v-else
+                      value="enableScheduler"
+                      label="允许调度"
+                      icon="basic-right"
+                      @click="handleCordon(row, false)"
+                    />
+                    <BeeDropdownItem
+                      value="drainPod"
+                      label="驱逐Pod"
+                      icon="kubernetes-drain"
+                      @click="handleDrain(row)"
+                    />
                   </template>
                 </BeeDropdown>
               </div>
@@ -83,7 +123,13 @@
 
       <!-- 表格底部 -->
       <div class="table-footer">
-        <BeePagination v-model="pagination.page" v-model:pageSize="pagination.pageSize" :total="pagination.total" :page-sizes="[10, 20, 50]" @change="loadData" />
+        <BeePagination
+          v-model="pagination.page"
+          v-model:pageSize="pagination.pageSize"
+          :total="pagination.total"
+          :page-sizes="[10, 20, 50]"
+          @change="loadData"
+        />
       </div>
     </BeeCard>
   </BeePage>
@@ -151,7 +197,11 @@ async function loadData() {
   }
   loading.value = true
   try {
-    const resp = await getNodePage(clusterId.value, { ...queryForm, page: pagination.page, pageSize: pagination.pageSize })
+    const resp = await getNodePage(clusterId.value, {
+      ...queryForm,
+      page: pagination.page,
+      pageSize: pagination.pageSize
+    })
     tableData.value = resp.list
     pagination.total = resp.total
   } finally {

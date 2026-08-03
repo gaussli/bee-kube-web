@@ -147,7 +147,18 @@
 <script setup lang="ts">
 import { onMounted, ref } from 'vue'
 import { useRouter } from 'vue-router'
-import { ArrowLeft, Clock, Collection, Document, EditPen, Key, Lock, Plus, Timer, UserFilled } from '@element-plus/icons-vue'
+import {
+  ArrowLeft,
+  Clock,
+  Collection,
+  Document,
+  EditPen,
+  Key,
+  Lock,
+  Plus,
+  Timer,
+  UserFilled
+} from '@element-plus/icons-vue'
 import type { RoleDetailResp } from '@/types/platform/role'
 import { getRoleDetail } from '@/api/platform/role'
 import BeeButton from '@/components/BeeButton/index.vue'

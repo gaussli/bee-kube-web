@@ -3,7 +3,15 @@
  * @module api/kubernetes/workload/job
  */
 import type { PageVo } from '@/types/common'
-import type { JobAnnotationsReq, JobDetailResp, JobLabelsReq, JobListResp, JobQueryReq, JobReq, JobYamlReq } from '@/types/kubernetes/workload/job'
+import type {
+  JobAnnotationsReq,
+  JobDetailResp,
+  JobLabelsReq,
+  JobListResp,
+  JobQueryReq,
+  JobReq,
+  JobYamlReq
+} from '@/types/kubernetes/workload/job'
 import { request } from '@/utils'
 
 /**
@@ -77,7 +85,12 @@ export function manageJobLabels(clusterId: string, namespace: string, name: stri
  * @param name - Job 名称
  * @param data - 注解数据
  */
-export function manageJobAnnotations(clusterId: string, namespace: string, name: string, data: JobAnnotationsReq): Promise<void> {
+export function manageJobAnnotations(
+  clusterId: string,
+  namespace: string,
+  name: string,
+  data: JobAnnotationsReq
+): Promise<void> {
   return request.put(`/kubernetes/clusters/${clusterId}/namespaces/${namespace}/jobs/${name}/annotations`, data)
 }
 

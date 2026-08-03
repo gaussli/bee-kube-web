@@ -14,11 +14,24 @@
       <!-- 查询表单 -->
       <div class="table-toolbar">
         <BeeInputSearch v-model="searchKey" placeholder="按 ID / 名称搜索" class="table-toolbar__search" />
-        <BeeSelect v-model="queryForm.namespace" placeholder="命名空间筛选" :options="namespaceOptions" :width="300" :menu-height="300" />
+        <BeeSelect
+          v-model="queryForm.namespace"
+          placeholder="命名空间筛选"
+          :options="namespaceOptions"
+          :width="300"
+          :menu-height="300"
+        />
         <BeeSelect v-model="queryForm.status" placeholder="状态筛选" :options="DAEMONSET_STATUS_OPTIONS" />
         <BeeButton icon="basic-search" @click="handleSearch"> 搜索 </BeeButton>
         <BeeButton icon="basic-refresh" @click="handleReset"> 重置 </BeeButton>
-        <BeeButton v-if="hasPermission('kubernetes:workload:daemonset:create')" type="primary" icon="basic-create" @click="handleCreate"> 新增 </BeeButton>
+        <BeeButton
+          v-if="hasPermission('kubernetes:workload:daemonset:create')"
+          type="primary"
+          icon="basic-create"
+          @click="handleCreate"
+        >
+          新增
+        </BeeButton>
       </div>
 
       <!-- 表格主体 -->
@@ -26,7 +39,13 @@
         <BeeTable :data="tableData" :loading="loading" selectable @selection-change="handleSelectionChange">
           <BeeTableColumn :width="500">
             <template #default="{ row }">
-              <BeeWorkloadInfoCell :uid="row.uid" :name="row.name" :description="row.description" :icon-size="32" icon="kubernetes-namespace" />
+              <BeeWorkloadInfoCell
+                :uid="row.uid"
+                :name="row.name"
+                :description="row.description"
+                :icon-size="32"
+                icon="kubernetes-namespace"
+              />
             </template>
           </BeeTableColumn>
           <BeeTableColumn :width="200">
@@ -41,7 +60,10 @@
           </BeeTableColumn>
           <BeeTableColumn :width="160">
             <template #default="{ row }">
-              <BeeTableCommonCell :text="`${row.numberReady} / ${row.desiredNumberScheduled}`" subtext="就绪 / 期望节点" />
+              <BeeTableCommonCell
+                :text="`${row.numberReady} / ${row.desiredNumberScheduled}`"
+                subtext="就绪 / 期望节点"
+              />
             </template>
           </BeeTableColumn>
           <BeeTableColumn :width="160">
@@ -70,11 +92,22 @@
       <!-- 表格底部 -->
       <div class="table-footer">
         <div>
-          <BeeButton v-if="hasPermission('kubernetes:workload:daemonset:delete')" type="danger" :disabled="selectedRows.length === 0" @click="handleBatchDelete">
+          <BeeButton
+            v-if="hasPermission('kubernetes:workload:daemonset:delete')"
+            type="danger"
+            :disabled="selectedRows.length === 0"
+            @click="handleBatchDelete"
+          >
             批量删除 ({{ selectedRows.length }})
           </BeeButton>
         </div>
-        <BeePagination v-model="pagination.page" v-model:pageSize="pagination.pageSize" :total="pagination.total" :page-sizes="[10, 20, 50]" @change="loadData" />
+        <BeePagination
+          v-model="pagination.page"
+          v-model:pageSize="pagination.pageSize"
+          :total="pagination.total"
+          :page-sizes="[10, 20, 50]"
+          @change="loadData"
+        />
       </div>
     </BeeCard>
 
@@ -112,7 +145,11 @@ import { onMounted, reactive, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { ElMessage } from 'element-plus'
 import type { NamespaceSimpleListResp } from '@/types/kubernetes/namespace'
-import type { DaemonSetQueryReq, DaemonSetListResp, DaemonSetUpdateStrategyType } from '@/types/kubernetes/workload/daemonset'
+import type {
+  DaemonSetQueryReq,
+  DaemonSetListResp,
+  DaemonSetUpdateStrategyType
+} from '@/types/kubernetes/workload/daemonset'
 import type { ActionItem } from '@/components/BeeActionCell/index.vue'
 import { getNamespacePage } from '@/api/kubernetes/namespace'
 import { getDaemonSetList, deleteDaemonSet, deleteDaemonSets } from '@/api/kubernetes/workload/daemonset'
@@ -160,7 +197,9 @@ const pagination = reactive({ page: 1, pageSize: 10, total: 0 })
 // ==================== Options ====================
 
 /** 命名空间选项 */
-const namespaceOptions = ref<{ label: string; value: string | undefined }[]>([{ label: '全部命名空间', value: undefined }])
+const namespaceOptions = ref<{ label: string; value: string | undefined }[]>([
+  { label: '全部命名空间', value: undefined }
+])
 
 /** 更新策略中文映射 */
 const UPDATE_STRATEGY_LABEL: Record<DaemonSetUpdateStrategyType, string> = {
@@ -187,7 +226,10 @@ async function loadNamespaceOptions() {
   if (!clusterId.value) return
   try {
     const namespaces = (await getNamespacePage(clusterId.value, { mode: 'simple' })) as NamespaceSimpleListResp[]
-    namespaceOptions.value = [{ label: '全部命名空间', value: undefined }, ...namespaces.map(ns => ({ label: ns.name, value: ns.name }))]
+    namespaceOptions.value = [
+      { label: '全部命名空间', value: undefined },
+      ...namespaces.map(ns => ({ label: ns.name, value: ns.name }))
+    ]
   } catch {
     // 加载失败时保留默认选项
   }
@@ -262,12 +304,20 @@ function handleCreate() {
 
 /** 跳转编辑页面 */
 function handleEdit(row: DaemonSetListResp) {
-  router.push({ name: 'kubernetes:workload:daemonset:edit', params: { clusterId: row.clusterId }, query: { namespace: row.namespace, name: row.name } })
+  router.push({
+    name: 'kubernetes:workload:daemonset:edit',
+    params: { clusterId: row.clusterId },
+    query: { namespace: row.namespace, name: row.name }
+  })
 }
 
 /** 跳转详情页面 */
 function handleViewDetail(row: DaemonSetListResp) {
-  router.push({ name: 'kubernetes:workload:daemonset:detail', params: { clusterId: row.clusterId }, query: { namespace: row.namespace, name: row.name } })
+  router.push({
+    name: 'kubernetes:workload:daemonset:detail',
+    params: { clusterId: row.clusterId },
+    query: { namespace: row.namespace, name: row.name }
+  })
 }
 
 /** 重启 */
@@ -292,7 +342,11 @@ function handleDelete(row: DaemonSetListResp) {
 async function handleConfirmDelete() {
   if (!currentTargetRow.value) return
   try {
-    await deleteDaemonSet(currentTargetRow.value.clusterId, currentTargetRow.value.namespace, currentTargetRow.value.name)
+    await deleteDaemonSet(
+      currentTargetRow.value.clusterId,
+      currentTargetRow.value.namespace,
+      currentTargetRow.value.name
+    )
     ElMessage.success('删除成功')
     deleteDialogVisible.value = false
     currentTargetRow.value = null

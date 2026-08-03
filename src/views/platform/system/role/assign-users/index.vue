@@ -32,7 +32,15 @@
         </div>
 
         <!-- 用户分配 -->
-        <BeeTransfer v-model="selectedUserIds" :left-data="availableUsers" :right-data="selectedUsers" left-title="可选用户" right-title="已选用户" label-key="username" value-key="id">
+        <BeeTransfer
+          v-model="selectedUserIds"
+          :left-data="availableUsers"
+          :right-data="selectedUsers"
+          left-title="可选用户"
+          right-title="已选用户"
+          label-key="username"
+          value-key="id"
+        >
           <template #left="{ item }">
             <div class="user-item-content">
               <div class="user-icon">
