@@ -367,7 +367,12 @@ function handleEdit(row: DeploymentListVo) {
  * @param row
  */
 function handleEditYaml(row: DeploymentListVo) {
-  ElMessage.info(`编辑 YAML: ${row.name}`)
+  router
+    .push({
+      name: 'kubernetes:workload:deployment:edit:yaml',
+      params: { clusterId: row.clusterId, namespace: row.namespace, name: row.name },
+    })
+    .catch(() => {})
 }
 
 /**

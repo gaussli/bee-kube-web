@@ -35,6 +35,17 @@ const deploymentRoutes: RouteRecordRaw[] = [
     },
   },
   {
+    path: '/kubernetes/clusters/:clusterId/deployments/create/yaml',
+    name: 'kubernetes:workload:deployment:create:yaml',
+    component: () => import('@/views/kubernetes/workload/deployment/create/yaml.vue'),
+    meta: {
+      title: '创建无状态应用 YAML',
+      icon: 'Document',
+      permission: 'kubernetes:workload:deployment:create',
+      activeCode: 'kubernetes:workload:deployment',
+    },
+  },
+  {
     path: '/kubernetes/clusters/:clusterId/namespaces/:namespace/deployments/:name/edit',
     name: 'kubernetes:workload:deployment:edit',
     component: () => import('@/views/kubernetes/workload/deployment/edit/index.vue'),
