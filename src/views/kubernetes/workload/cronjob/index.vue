@@ -24,19 +24,19 @@
         <BeeSelect v-model="queryForm.status" placeholder="状态筛选" :options="CRONJOB_STATUS_OPTIONS" />
         <BeeButton icon="basic-search" @click="handleSearch"> 搜索 </BeeButton>
         <BeeButton icon="basic-refresh" @click="handleReset"> 重置 </BeeButton>
-        <BeeButton
-          v-if="hasPermission('kubernetes:workload:cronjob:create')"
-          type="primary"
-          icon="basic-create"
-          @click="handleCreate"
-        >
-          新增
-        </BeeButton>
+        <BeeButton v-if="perm.create" type="primary" icon="basic-create" @click="handleCreate"> 新增 </BeeButton>
+        <BeeButton v-if="perm.create" type="primary" icon="basic-create" @click="handleCreateYaml"> YAML </BeeButton>
       </div>
 
       <!-- 表格主体 -->
       <div class="table-body">
-        <BeeTable :data="tableData" :loading="loading" selectable @selection-change="handleSelectionChange">
+        <BeeTable
+          ref="tableRef"
+          :data="tableData"
+          :loading="loading"
+          selectable
+          @selection-change="handleSelectionChange"
+        >
           <BeeTableColumn :width="400">
             <template #default="{ row }">
               <BeeWorkloadInfoCell
@@ -93,15 +93,13 @@
 
       <!-- 表格底部 -->
       <div class="table-footer">
-        <div>
-          <BeeButton
-            v-if="hasPermission('kubernetes:workload:cronjob:delete')"
-            type="danger"
-            :disabled="selectedRows.length === 0"
-            @click="handleBatchDelete"
-          >
+        <div class="table-footer__actions">
+          <BeeButton :disabled="selectedRows.length === 0" @click="handleClearSelection"> 取消选择 </BeeButton>
+          <BeeButton v-if="perm.delete" type="danger" :disabled="selectedRows.length === 0" @click="handleBatchDelete">
             批量删除 ({{ selectedRows.length }})
           </BeeButton>
+          <BeeButton v-if="perm.view" icon="basic-create" @click="handleExport"> 导出 </BeeButton>
+          <BeeButton v-if="perm.create" icon="basic-create" @click="handleImport"> 导入 </BeeButton>
         </div>
         <BeePagination
           v-model="pagination.page"
@@ -191,6 +189,7 @@ const clusterId = ref(route.params.clusterId as string)
 const searchKey = ref('')
 const loading = ref(false)
 const tableData = ref<CronJobListResp[]>([])
+const tableRef = ref<InstanceType<typeof BeeTable>>()
 const selectedRows = ref<CronJobListResp[]>([])
 const deleteDialogVisible = ref(false)
 const batchDeleteDialogVisible = ref(false)
@@ -296,11 +295,31 @@ function handleSelectionChange(rows: Record<string, unknown>[]) {
   selectedRows.value = rows as unknown as CronJobListResp[]
 }
 
+/** 取消全部选中 */
+function handleClearSelection() {
+  tableRef.value?.clearSelection()
+}
+
 // ==================== CRUD: Create / Edit / View ====================
 
 /** 跳转创建页面 */
 function handleCreate() {
   router.push({ name: 'kubernetes:workload:cronjob:create', params: { clusterId: clusterId.value } }).catch(() => {})
+}
+
+/** YAML 方式创建 */
+function handleCreateYaml() {
+  router.push({ name: 'kubernetes:workload:cronjob:create:yaml', params: { clusterId: clusterId.value } }).catch(() => {})
+}
+
+/** 导出 CronJob（功能开发中） */
+function handleExport() {
+  ElMessage.info('功能开发中')
+}
+
+/** 导入 CronJob（功能开发中） */
+function handleImport() {
+  ElMessage.info('功能开发中')
 }
 
 /**
@@ -311,8 +330,20 @@ function handleEdit(row: CronJobListResp) {
   router
     .push({
       name: 'kubernetes:workload:cronjob:edit',
-      params: { clusterId: row.clusterId },
-      query: { namespace: row.namespace, name: row.name },
+      params: { clusterId: row.clusterId, namespace: row.namespace, name: row.name },
+    })
+    .catch(() => {})
+}
+
+/**
+ * 编辑 YAML
+ * @param row
+ */
+function handleEditYaml(row: CronJobListResp) {
+  router
+    .push({
+      name: 'kubernetes:workload:cronjob:edit:yaml',
+      params: { clusterId: row.clusterId, namespace: row.namespace, name: row.name },
     })
     .catch(() => {})
 }
@@ -325,18 +356,9 @@ function handleViewDetail(row: CronJobListResp) {
   router
     .push({
       name: 'kubernetes:workload:cronjob:detail',
-      params: { clusterId: row.clusterId },
-      query: { namespace: row.namespace, name: row.name },
+      params: { clusterId: row.clusterId, namespace: row.namespace, name: row.name },
     })
     .catch(() => {})
-}
-
-/**
- * 编辑 YAML
- * @param row
- */
-function handleEditYaml(row: CronJobListResp) {
-  ElMessage.info(`编辑 YAML: ${row.name}`)
 }
 
 // ==================== CRUD: Delete ====================
@@ -388,8 +410,9 @@ async function handleConfirmBatchDelete() {
 
 // ==================== Row Actions ====================
 
-/** 页面级权限缓存，避免每个 row 都重复调用 hasPermission */
+/** 页面级权限缓存，避免模板/循环中重复调用 hasPermission */
 const perm: Record<string, boolean> = {
+  create: hasPermission('kubernetes:workload:cronjob:create'),
   edit: hasPermission('kubernetes:workload:cronjob:edit'),
   view: hasPermission('kubernetes:workload:cronjob:view'),
   delete: hasPermission('kubernetes:workload:cronjob:delete'),
@@ -461,6 +484,12 @@ onMounted(() => {
       justify-content: space-between;
       align-items: center;
       padding: $spacing-16 0;
+
+      &__actions {
+        display: flex;
+        gap: 8px;
+        align-items: center;
+      }
     }
   }
 }
