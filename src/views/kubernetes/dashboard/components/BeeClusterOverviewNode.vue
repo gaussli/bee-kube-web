@@ -35,8 +35,6 @@ import type { NodeListResp } from '@/types/kubernetes/node'
 
 import { getNodeTopN } from '@/api/kubernetes/node'
 
-import { useKubernetesStore } from '@/stores/kubernetes'
-
 import BeeButton from '@/components/BeeButton/index.vue'
 import BeeCard from '@/components/BeeCard/index.vue'
 import BeeIcon from '@/components/BeeIcon/index.vue'
@@ -46,7 +44,10 @@ import BeeSegmentedControl from '@/components/BeeSegmentedControl/index.vue'
 
 defineOptions({ name: 'BeeClusterOverviewNode' })
 
-const kubernetesStore = useKubernetesStore()
+const props = defineProps<{
+  /** 集群 ID */
+  clusterId: string
+}>()
 
 /**
  * 节点排序
@@ -85,8 +86,8 @@ function calcPercentage(used: number, total: number): number {
  * 加载节点 TopN 数据
  */
 async function loadData() {
-  if (!kubernetesStore.activeClusterId) return
-  topNNodes.value = await getNodeTopN(kubernetesStore.activeClusterId, {
+  if (!props.clusterId) return
+  topNNodes.value = await getNodeTopN(props.clusterId, {
     metric: sortKey.value,
     count: 5,
   })
@@ -99,6 +100,7 @@ const nodeListData = computed(() => {
   return topNNodes.value.map(node => ({
     id: node.id,
     name: node.name,
+    ip: node.ip,
     description: node.description || '',
     cpuUsagePercentage: calcPercentage(node.resource.usage.cpu, node.resource.allocation.cpu),
     memoryUsagePercentage: calcPercentage(node.resource.usage.memory, node.resource.allocation.memory),

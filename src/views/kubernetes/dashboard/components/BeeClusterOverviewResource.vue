@@ -41,8 +41,6 @@ import { formatCpu, formatDisk, formatMemory } from '@/utils/kubernetes'
 
 import { getClusterResource } from '@/api/kubernetes/cluster'
 
-import { useKubernetesStore } from '@/stores/kubernetes'
-
 import BeeCard from '@/components/BeeCard/index.vue'
 import BeeCircleButton from '@/components/BeeCircleButton/index.vue'
 import BeeIcon from '@/components/BeeIcon/index.vue'
@@ -51,7 +49,10 @@ import BeeRingChart from '@/components/BeeRingChart/index.vue'
 
 defineOptions({ name: 'BeeClusterOverviewResource' })
 
-const kubernetesStore = useKubernetesStore()
+const props = defineProps<{
+  /** 集群 ID */
+  clusterId: string
+}>()
 
 /** 雷达图数据 */
 const radarData = ref([
@@ -76,8 +77,8 @@ function calcPercentage(used: number, total: number): number {
  * 加载资源用量数据并构建雷达图数据
  */
 async function loadData() {
-  if (!kubernetesStore.activeClusterId) return
-  const res = await getClusterResource(kubernetesStore.activeClusterId)
+  if (!props.clusterId) return
+  const res = await getClusterResource(props.clusterId)
   radarData.value = [
     {
       label: 'CPU',

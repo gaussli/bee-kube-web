@@ -50,8 +50,6 @@ import type { ClusterEventResp } from '@/types/kubernetes/cluster'
 
 import { getClusterEventPage } from '@/api/kubernetes/cluster'
 
-import { useKubernetesStore } from '@/stores/kubernetes'
-
 import BeeCard from '@/components/BeeCard/index.vue'
 import BeeCircleButton from '@/components/BeeCircleButton/index.vue'
 import BeeIcon from '@/components/BeeIcon/index.vue'
@@ -62,7 +60,10 @@ import BeeTag from '@/components/BeeTag/index.vue'
 
 defineOptions({ name: 'BeeClusterOverviewEvent' })
 
-const kubernetesStore = useKubernetesStore()
+const props = defineProps<{
+  /** 集群 ID */
+  clusterId: string
+}>()
 
 /** 最近事件数据 */
 const recentEvents = ref<ClusterEventResp[]>([])
@@ -72,8 +73,8 @@ const recentEvents = ref<ClusterEventResp[]>([])
  * @remarks 获取第一页事件，每页 10 条
  */
 async function loadEvents() {
-  if (!kubernetesStore.activeClusterId) return
-  const { list } = await getClusterEventPage(kubernetesStore.activeClusterId, { page: 1, pageSize: 10 })
+  if (!props.clusterId) return
+  const { list } = await getClusterEventPage(props.clusterId, { page: 1, pageSize: 10 })
   recentEvents.value = list
 }
 

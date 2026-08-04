@@ -88,8 +88,9 @@ const dropdownOptions: { label: string; value: string; icon: string; divided?: b
 function handleTabChange(tab?: string | number) {
   if (tab) {
     appStore.setCurrentTab(tab as TabType)
+    console.log(tab)
     if (activeClusterId.value || tab !== 'kubernetes') {
-      router.push({ name: tab as string }).catch(() => {})
+      router.push({ name: tab as string, params: { clusterId: activeClusterId.value } }).catch(() => {})
     } else {
       router.push({ name: 'kubernetes:cluster' }).catch(() => {})
     }

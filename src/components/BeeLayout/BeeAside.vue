@@ -25,6 +25,7 @@
  */
 import { computed } from 'vue'
 
+import { ElMessage } from 'element-plus'
 import { useRoute, useRouter } from 'vue-router'
 
 import BeeMenu from '@/components/BeeMenu/BeeMenu.vue'
@@ -41,9 +42,8 @@ const kubernetesStore = useKubernetesStore()
 const route = useRoute()
 const router = useRouter()
 
-/** 集群管理相关路由名称常量 */
+/** 集群管理路由名称常量 */
 const CLUSTER_ROUTE = 'kubernetes:cluster' as const
-const CLUSTER_DASHBOARD_ROUTE = 'kubernetes:dashboard' as const
 
 /** 当前激活的菜单项，优先使用路由 meta.activeCode，回退到 route.name */
 const defaultActive = computed(() => {
@@ -61,19 +61,13 @@ const currentMenuList = computed(() => {
  */
 function handleSelect(index: string | number) {
   const routeName = String(index)
-  // 集群管理特殊处理：存在 activeClusterId 则跳转 dashboard，否则跳转列表
-  if (routeName === CLUSTER_ROUTE && kubernetesStore.activeClusterId) {
-    router
-      .push({ name: CLUSTER_DASHBOARD_ROUTE, params: { clusterId: kubernetesStore.activeClusterId } })
-      .catch(() => {})
+  // 未选择集群时，提示用户并跳转到集群管理页
+  if (!kubernetesStore.activeClusterId) {
+    ElMessage.warning('请先选择一个集群')
+    router.push({ name: CLUSTER_ROUTE }).catch(() => {})
     return
   }
-  // kubernetes 子资源路由需要携带 clusterId
-  if (routeName.startsWith('kubernetes:') && routeName !== CLUSTER_ROUTE && routeName !== CLUSTER_DASHBOARD_ROUTE) {
-    router.push({ name: routeName, params: { clusterId: kubernetesStore.activeClusterId } }).catch(() => {})
-    return
-  }
-  router.push({ name: routeName }).catch(() => {})
+  router.push({ name: routeName, params: { clusterId: kubernetesStore.activeClusterId } }).catch(() => {})
 }
 </script>
 

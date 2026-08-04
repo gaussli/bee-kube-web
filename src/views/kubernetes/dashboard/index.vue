@@ -6,24 +6,24 @@
     <!-- 资源雷达图 + 节点列表 -->
     <div class="cluster-overview__metrics-row">
       <!-- 资源用量 -->
-      <BeeClusterOverviewResource />
+      <BeeClusterOverviewResource :cluster-id="route.params.clusterId as string" />
       <!-- 节点列表 -->
-      <BeeClusterOverviewNode />
+      <BeeClusterOverviewNode :cluster-id="route.params.clusterId as string" />
     </div>
 
     <!-- 最近事件 -->
-    <BeeClusterOverviewEvent />
+    <BeeClusterOverviewEvent :cluster-id="route.params.clusterId as string" />
   </BeePage>
 </template>
 
 <script setup lang="ts">
 import { onMounted, ref } from 'vue'
 
+import { useRoute } from 'vue-router'
+
 import type { ClusterOverviewInfoData } from './components/BeeClusterOverviewInfo.vue'
 
 import { getClusterDetail } from '@/api/kubernetes/cluster'
-
-import { useKubernetesStore } from '@/stores/kubernetes'
 
 import BeePage from '@/components/BeePage/index.vue'
 
@@ -34,7 +34,7 @@ import BeeClusterOverviewResource from './components/BeeClusterOverviewResource.
 
 defineOptions({ name: 'ClusterOverview' })
 
-const kubernetesStore = useKubernetesStore()
+const route = useRoute()
 
 /** 集群概览数据 */
 const clusterOverviewInfoData = ref<ClusterOverviewInfoData>({
@@ -52,8 +52,9 @@ const clusterOverviewInfoData = ref<ClusterOverviewInfoData>({
  * @remarks 从 API 获取集群详情，转换为 ClusterOverviewInfoData 格式
  */
 async function loadClusterOverview() {
-  if (!kubernetesStore.activeClusterId) return
-  const detail = await getClusterDetail(kubernetesStore.activeClusterId)
+  const clusterId = route.params.clusterId as string | undefined
+  if (!clusterId) return
+  const detail = await getClusterDetail(clusterId)
   clusterOverviewInfoData.value = {
     name: detail.name,
     description: detail.description,
