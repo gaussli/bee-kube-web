@@ -24,6 +24,8 @@ import pluginVue from 'eslint-plugin-vue'
 import globals from 'globals'
 import * as parserVue from 'vue-eslint-parser'
 
+import prettierConfig from './prettier.config.js'
+
 export default [
   /* ======================================================================
    * 1. 全局忽略
@@ -302,7 +304,8 @@ export default [
       prettier,
     },
     rules: {
-      'prettier/prettier': 'error', // 以 error 级别报告 Prettier 格式化差异
+      // 显式传入 prettier 配置，确保 ESLint IDE 扩展正确解析（避免回退到默认值）
+      'prettier/prettier': ['error', prettierConfig],
     },
   },
 ]
