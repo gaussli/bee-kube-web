@@ -334,9 +334,9 @@ function handleCreate() {
   router.push({ name: 'kubernetes:workload:deployment:create', params: { clusterId: clusterId.value } }).catch(() => {})
 }
 
-/** YAML 方式创建（功能开发中） */
+/** YAML 方式创建 */
 function handleCreateYaml() {
-  ElMessage.info('功能开发中')
+  router.push({ name: 'kubernetes:workload:deployment:create:yaml', params: { clusterId: clusterId.value } }).catch(() => {})
 }
 
 /** 导出 Deployment（功能开发中） */
