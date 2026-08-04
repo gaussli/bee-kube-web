@@ -31,7 +31,8 @@ export default {
     'selector-class-pattern': [
       '^([a-z][a-z0-9]*)((-|--|__)[a-z0-9]+)*$',
       {
-        message: selector => `Expected class selector "${selector}" to be kebab-case`
+        message: selector => `Expected class selector "${selector}" to be kebab-case`,
+        resolveNestedSelectors: true    // 检查 SCSS 嵌套内的选择器
       }
     ],
 
@@ -98,6 +99,9 @@ export default {
             'left',
             'inset',
             'z-index',
+            'contain',
+            'container-type',
+            'container-name',
             // Flex
             'display',
             'gap',
@@ -177,12 +181,6 @@ export default {
             'border-right-color',
             'border-bottom-color',
             'border-left-color',
-            'border-image',
-            'border-image-source',
-            'border-image-slice',
-            'border-image-width',
-            'border-image-outset',
-            'border-image-repeat',
             'border-width',
             'border-top-width',
             'border-right-width',
@@ -355,7 +353,13 @@ export default {
     'declaration-block-no-redundant-longhand-properties': true,
 
     /** 禁止简写属性中的冗余值，如 margin: 1px 1px 1px 1px → margin: 1px */
-    'shorthand-property-no-redundant-values': true
+    'shorthand-property-no-redundant-values': true,
+
+    /** SCSS 变量命名强制 kebab-case，如 $color-primary（禁止 $colorPrimary） */
+    'scss/dollar-variable-pattern': '^[a-z][a-z0-9-]*$',
+
+    /* selector-max-id 不适合 Vue 项目：Vue 官方约定使用 #app 作为挂载点，
+       且 global.scss 中 #app 是唯一合法使用场景，不强制该规则 */
   },
 
   /* ======================================================================
