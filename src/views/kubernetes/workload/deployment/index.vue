@@ -357,8 +357,7 @@ function handleEdit(row: DeploymentListVo) {
   router
     .push({
       name: 'kubernetes:workload:deployment:edit',
-      params: { clusterId: row.clusterId },
-      query: { namespace: row.namespace, name: row.name },
+      params: { clusterId: row.clusterId, namespace: row.namespace, name: row.name },
     })
     .catch(() => {})
 }
@@ -379,8 +378,7 @@ function handleViewDetail(row: DeploymentListVo) {
   router
     .push({
       name: 'kubernetes:workload:deployment:detail',
-      params: { clusterId: row.clusterId },
-      query: { namespace: row.namespace, name: row.name },
+      params: { clusterId: row.clusterId, namespace: row.namespace, name: row.name },
     })
     .catch(() => {})
 }

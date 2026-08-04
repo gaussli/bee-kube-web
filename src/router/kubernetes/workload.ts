@@ -2,7 +2,7 @@ import type { RouteRecordRaw } from 'vue-router'
 
 const deploymentRoutes: RouteRecordRaw[] = [
   {
-    path: '/kubernetes/clusters/:clusterId/workload/deployment',
+    path: '/kubernetes/clusters/:clusterId/deployments',
     name: 'kubernetes:workload:deployment',
     component: () => import('@/views/kubernetes/workload/deployment/index.vue'),
     meta: {
@@ -13,7 +13,18 @@ const deploymentRoutes: RouteRecordRaw[] = [
     },
   },
   {
-    path: '/kubernetes/clusters/:clusterId/workload/deployment/create',
+    path: '/kubernetes/clusters/:clusterId/namespaces/:namespace/deployments/:name',
+    name: 'kubernetes:workload:deployment:detail',
+    component: () => import('@/views/kubernetes/workload/deployment/detail/index.vue'),
+    meta: {
+      title: '无状态应用详情',
+      icon: 'Document',
+      permission: 'kubernetes:workload:deployment:view',
+      activeCode: 'kubernetes:workload:deployment',
+    },
+  },
+  {
+    path: '/kubernetes/clusters/:clusterId/deployments/create',
     name: 'kubernetes:workload:deployment:create',
     component: () => import('@/views/kubernetes/workload/deployment/create/index.vue'),
     meta: {
@@ -24,24 +35,13 @@ const deploymentRoutes: RouteRecordRaw[] = [
     },
   },
   {
-    path: '/kubernetes/clusters/:clusterId/workload/deployment/edit',
+    path: '/kubernetes/clusters/:clusterId/namespaces/:namespace/deployments/:name/edit',
     name: 'kubernetes:workload:deployment:edit',
     component: () => import('@/views/kubernetes/workload/deployment/edit/index.vue'),
     meta: {
       title: '编辑无状态应用',
       icon: 'Document',
       permission: 'kubernetes:workload:deployment:edit',
-      activeCode: 'kubernetes:workload:deployment',
-    },
-  },
-  {
-    path: '/kubernetes/clusters/:clusterId/workload/deployment/detail',
-    name: 'kubernetes:workload:deployment:detail',
-    component: () => import('@/views/kubernetes/workload/deployment/detail/index.vue'),
-    meta: {
-      title: '无状态应用详情',
-      icon: 'Document',
-      permission: 'kubernetes:workload:deployment:view',
       activeCode: 'kubernetes:workload:deployment',
     },
   },
