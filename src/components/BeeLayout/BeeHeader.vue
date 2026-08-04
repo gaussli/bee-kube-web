@@ -44,14 +44,13 @@ import BeeHeaderUserInfo from '@/components/BeeHeaderUserInfo/index.vue'
 import { BeeMessage } from '@/components/BeeMessage'
 import BeeSegmentedControl from '@/components/BeeSegmentedControl/index.vue'
 
-import { useAppStore, useKubernetesStore, useUserStore } from '@/stores'
+import { useAppStore, useUserStore } from '@/stores'
 
 defineOptions({ name: 'BeeHeader' })
 
 const router = useRouter()
 const appStore = useAppStore()
 const userStore = useUserStore()
-const kubernetesStore = useKubernetesStore()
 
 const isFullscreen = ref(false)
 
@@ -66,8 +65,6 @@ const currentTab = computed({
   get: () => appStore.currentTab,
   set: (val: TabType) => appStore.setCurrentTab(val),
 })
-
-const _activeClusterId = computed(() => kubernetesStore.activeClusterId)
 
 // tabOptions 从用户菜单第一层获取，label 对应 name，value 对应 code
 const tabOptions = computed(
