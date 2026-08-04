@@ -138,8 +138,6 @@ import { onMounted, reactive, ref } from 'vue'
 
 import { useRoute, useRouter } from 'vue-router'
 
-import { ElMessage } from 'element-plus'
-
 import type { NamespaceQueryReq, NamespaceListResp } from '@/types/kubernetes/namespace'
 
 import { getNamespacePage, deleteNamespace, deleteNamespaces } from '@/api/kubernetes/namespace'
@@ -152,6 +150,7 @@ import BeeDialog from '@/components/BeeDialog/index.vue'
 import BeeDropdown from '@/components/BeeDropdown/index.vue'
 import BeeDropdownItem from '@/components/BeeDropdownItem/index.vue'
 import BeeInputSearch from '@/components/BeeInputSearch/index.vue'
+import { BeeMessage } from '@/components/BeeMessage'
 import BeeNamespaceInfoCell from '@/components/BeeNamespaceInfoCell/index.vue'
 import BeePage from '@/components/BeePage/index.vue'
 import BeePageTitle from '@/components/BeePageTitle/index.vue'
@@ -273,7 +272,7 @@ async function handleConfirmDelete() {
   if (!currentTargetRow.value) return
   try {
     await deleteNamespace(currentTargetRow.value.clusterId, currentTargetRow.value.name)
-    ElMessage.success('删除成功')
+    BeeMessage.success('删除成功')
     deleteDialogVisible.value = false
     currentTargetRow.value = null
     await loadData()
@@ -292,7 +291,7 @@ async function handleConfirmBatchDelete() {
   const names = selectedRows.value.map(row => row.name)
   try {
     await deleteNamespaces(targetClusterId, names)
-    ElMessage.success(`成功删除 ${names.length} 个命名空间`)
+    BeeMessage.success(`成功删除 ${names.length} 个命名空间`)
     batchDeleteDialogVisible.value = false
     selectedRows.value = []
     await loadData()

@@ -36,9 +36,9 @@ import { reactive, ref } from 'vue'
 
 import { useRoute, useRouter } from 'vue-router'
 
-import { ElMessage } from 'element-plus'
-
 import { getCurrentUser, login } from '@/api/auth/auth'
+
+import { BeeMessage } from '@/components/BeeMessage'
 
 import { useUserStore } from '@/stores'
 
@@ -71,7 +71,7 @@ async function handleLogin() {
       userStore.setCurrentMenus(currentUserResp.menus)
       userStore.setCurrentPermissions(currentUserResp.permissions)
     })
-    ElMessage.success('登录成功')
+    BeeMessage.success('登录成功')
     const redirect = (route.query.redirect as string) || '/'
     router.push(redirect).catch(() => {})
   } catch (error) {

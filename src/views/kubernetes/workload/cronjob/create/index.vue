@@ -47,15 +47,16 @@ import { ref } from 'vue'
 
 import { useRouter } from 'vue-router'
 
-import { ElMessage, type FormInstance } from 'element-plus'
-
 import { Clock, Close, Check, InfoFilled } from '@element-plus/icons-vue'
+
+import type { FormInstance } from 'element-plus'
 
 import type { CronJobDetailResp } from '@/types/kubernetes/workload/cronjob'
 
 import { createCronJob } from '@/api/kubernetes/workload/cronjob'
 
 import BeeButton from '@/components/BeeButton/index.vue'
+import { BeeMessage } from '@/components/BeeMessage'
 import BeePageTitle from '@/components/BeePageTitle/index.vue'
 
 defineOptions({ name: 'CronJobCreate' })
@@ -84,7 +85,7 @@ async function handleSubmit() {
   submitting.value = true
   try {
     await createCronJob(formData.value)
-    ElMessage.success('创建成功')
+    BeeMessage.success('创建成功')
     router.back()
   } finally {
     submitting.value = false

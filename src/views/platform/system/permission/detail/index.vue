@@ -160,8 +160,6 @@ import { onMounted, ref } from 'vue'
 
 import { useRouter } from 'vue-router'
 
-import { ElMessage } from 'element-plus'
-
 import { ArrowLeft, Clock, Collection, Document, EditPen, Key, User } from '@element-plus/icons-vue'
 
 import type { PermissionDetailResp } from '@/types/platform/permission'
@@ -171,6 +169,7 @@ import { getPermissionDetail } from '@/api/platform/permission'
 import BeeButton from '@/components/BeeButton/index.vue'
 import BeeDivider from '@/components/BeeDivider/index.vue'
 import BeeLabelCopyable from '@/components/BeeLabelCopyable/index.vue'
+import { BeeMessage } from '@/components/BeeMessage'
 
 defineOptions({ name: 'PermissionDetail' })
 
@@ -193,7 +192,7 @@ async function loadPermissionDetail() {
     permissionData.value = await getPermissionDetail(permissionId)
     loaded.value = true
   } catch {
-    ElMessage.error('加载权限详情失败')
+    BeeMessage.error('加载权限详情失败')
     router.back()
   }
 }

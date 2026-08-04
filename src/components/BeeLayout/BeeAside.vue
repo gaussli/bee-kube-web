@@ -25,12 +25,12 @@
  */
 import { computed } from 'vue'
 
-import { ElMessage } from 'element-plus'
 import { useRoute, useRouter } from 'vue-router'
 
 import BeeMenu from '@/components/BeeMenu/BeeMenu.vue'
 import BeeMenuItem from '@/components/BeeMenu/BeeMenuItem.vue'
 import BeeSubMenu from '@/components/BeeMenu/BeeSubMenu.vue'
+import { BeeMessage } from '@/components/BeeMessage'
 
 import { useAppStore, useUserStore, useKubernetesStore } from '@/stores'
 
@@ -63,7 +63,7 @@ function handleSelect(index: string | number) {
   const routeName = String(index)
   // 未选择集群时，提示用户并跳转到集群管理页
   if (!kubernetesStore.activeClusterId) {
-    ElMessage.warning('请先选择一个集群')
+    BeeMessage.warning('请先选择一个集群')
     router.push({ name: CLUSTER_ROUTE }).catch(() => {})
     return
   }

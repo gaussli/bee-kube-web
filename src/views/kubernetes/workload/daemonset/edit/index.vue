@@ -35,8 +35,6 @@ import { ref, onMounted } from 'vue'
 
 import { useRoute, useRouter } from 'vue-router'
 
-import { ElMessage } from 'element-plus'
-
 import { Monitor, Plus, Delete, Close, Check } from '@element-plus/icons-vue'
 
 import type { DaemonSetResp } from '@/types/kubernetes/workload/daemonset'
@@ -44,6 +42,7 @@ import type { DaemonSetResp } from '@/types/kubernetes/workload/daemonset'
 import { getDaemonSetDetail, updateDaemonSet } from '@/api/kubernetes/workload/daemonset'
 
 import BeeButton from '@/components/BeeButton/index.vue'
+import { BeeMessage } from '@/components/BeeMessage'
 import BeePageTitle from '@/components/BeePageTitle/index.vue'
 
 defineOptions({ name: 'DaemonSetEdit' })
@@ -84,7 +83,7 @@ async function handleSubmit() {
   submitting.value = true
   try {
     await updateDaemonSet(clusterId.value, namespace.value, daemonsetName.value, { labels })
-    ElMessage.success('保存成功')
+    BeeMessage.success('保存成功')
     router.back()
   } catch {
     /* 请求失败已由 request 拦截器统一弹窗提示，无需额外处理 */

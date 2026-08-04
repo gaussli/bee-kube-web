@@ -1,10 +1,10 @@
 import axios from 'axios'
 
-import { ElMessage } from 'element-plus'
-
 import type { AxiosInstance, AxiosRequestConfig, AxiosResponse, InternalAxiosRequestConfig } from 'axios'
 
 import { mockRequest } from '@/mock'
+
+import { BeeMessage } from '@/components/BeeMessage'
 
 import router from '@/router'
 import { useUserStore } from '@/stores'
@@ -62,11 +62,11 @@ service.interceptors.response.use(
     if (code === 20000) {
       return data
     } else if (code === 10002 || code === 10003) {
-      ElMessage.error('登录已过期，请重新登录')
+      BeeMessage.error('登录已过期，请重新登录')
       storage.clear()
       router.push('/login').catch(() => {})
     } else {
-      ElMessage.error(`[${code}]: ${message || '请求失败'}`)
+      BeeMessage.error(`[${code}]: ${message || '请求失败'}`)
     }
     return Promise.reject(new BizError(code, message || '请求失败'))
   },
@@ -75,13 +75,13 @@ service.interceptors.response.use(
       console.log('服务器响应错误:', error.response)
       const { status, headers, data } = error.response
       headers && handleRefreshToken(headers)
-      ElMessage.error(`[${status}${data?.code ? `|${data.code}` : ''}]: ${data?.message || '网络异常'}`)
+      BeeMessage.error(`[${status}${data?.code ? `|${data.code}` : ''}]: ${data?.message || '网络异常'}`)
     } else if (error.request) {
       console.log('请求已发出但没有响应:', error.request)
-      ElMessage.error('网络异常')
+      BeeMessage.error('网络异常')
     } else {
       console.log('其他错误:', error.message)
-      ElMessage.error('网络异常')
+      BeeMessage.error('网络异常')
     }
     return Promise.reject(error)
   },

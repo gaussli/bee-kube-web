@@ -46,8 +46,6 @@ import { ref, onMounted } from 'vue'
 
 import { useRoute, useRouter } from 'vue-router'
 
-import { ElMessage } from 'element-plus'
-
 import { Clock, Plus, Delete, Close, Check, InfoFilled } from '@element-plus/icons-vue'
 
 import type { CronJobDetailResp } from '@/types/kubernetes/workload/cronjob'
@@ -55,6 +53,7 @@ import type { CronJobDetailResp } from '@/types/kubernetes/workload/cronjob'
 import { getCronJobDetail, updateCronJob } from '@/api/kubernetes/workload/cronjob'
 
 import BeeButton from '@/components/BeeButton/index.vue'
+import { BeeMessage } from '@/components/BeeMessage'
 import BeePageTitle from '@/components/BeePageTitle/index.vue'
 
 defineOptions({ name: 'CronJobEdit' })
@@ -102,7 +101,7 @@ async function handleSubmit() {
   submitting.value = true
   try {
     await updateCronJob(clusterId.value, namespace.value, cronjobName.value, { ...formData.value, labels })
-    ElMessage.success('保存成功')
+    BeeMessage.success('保存成功')
     router.back()
   } catch {
     /* 请求失败已由 request 拦截器统一弹窗提示，无需额外处理 */

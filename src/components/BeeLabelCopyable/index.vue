@@ -6,9 +6,8 @@
 </template>
 
 <script setup lang="ts">
-import { ElMessage } from 'element-plus'
-
 import BeeIcon from '@/components/BeeIcon/index.vue'
+import { BeeMessage } from '@/components/BeeMessage'
 
 defineOptions({ name: 'BeeLabelCopyable' })
 
@@ -24,9 +23,9 @@ async function handleCopy() {
   if (text) {
     try {
       await navigator.clipboard.writeText(text)
-      ElMessage.success('已复制到剪贴板')
+      BeeMessage.success('已复制到剪贴板')
     } catch {
-      ElMessage.error('复制失败')
+      BeeMessage.error('复制失败')
     }
   }
 }

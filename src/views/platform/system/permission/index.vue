@@ -176,8 +176,6 @@ import { onMounted, reactive, ref } from 'vue'
 
 import { useRouter } from 'vue-router'
 
-import { ElMessage } from 'element-plus'
-
 import { Delete, EditPen, Plus, Refresh, View } from '@element-plus/icons-vue'
 
 import type { PermissionQueryReq, PermissionResp } from '@/types/platform/permission'
@@ -195,6 +193,7 @@ import BeeDialog from '@/components/BeeDialog/index.vue'
 import BeeIconLabel from '@/components/BeeIconLabel/index.vue'
 import BeeInputSearch from '@/components/BeeInputSearch/index.vue'
 import BeeLabelCopyable from '@/components/BeeLabelCopyable/index.vue'
+import { BeeMessage } from '@/components/BeeMessage'
 import BeeSegmentedControl from '@/components/BeeSegmentedControl/index.vue'
 import BeeTag from '@/components/BeeTag/index.vue'
 import PermissionCell from '@/components/PermissionCell/index.vue'
@@ -295,7 +294,7 @@ async function handleConfirmStatus() {
   const actionText = targetStatus === 1 ? '启用' : '禁用'
   try {
     await changePermissionStatus(currentTargetRow.value.id, { status: targetStatus })
-    ElMessage.success(`${actionText}成功`)
+    BeeMessage.success(`${actionText}成功`)
     statusDialogVisible.value = false
     currentTargetRow.value = null
     await loadData()
@@ -308,7 +307,7 @@ async function handleConfirmDelete() {
   if (!currentTargetRow.value) return
   try {
     await removePermission(currentTargetRow.value.id)
-    ElMessage.success('删除成功')
+    BeeMessage.success('删除成功')
     deleteDialogVisible.value = false
     currentTargetRow.value = null
     await loadData()
@@ -325,7 +324,7 @@ async function handleConfirmBatchDelete() {
   const ids = selectedRows.value.map(row => row.id)
   try {
     await batchRemovePermissions(ids)
-    ElMessage.success(`成功删除 ${ids.length} 个权限`)
+    BeeMessage.success(`成功删除 ${ids.length} 个权限`)
     batchDeleteDialogVisible.value = false
     selectedRows.value = []
     await loadData()

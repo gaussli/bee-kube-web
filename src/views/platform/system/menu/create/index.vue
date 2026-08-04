@@ -36,14 +36,13 @@ import { ref } from 'vue'
 
 import { useRouter } from 'vue-router'
 
-import { ElMessage } from 'element-plus'
-
 import { ArrowLeft, Check, Close } from '@element-plus/icons-vue'
 
 import { createMenu } from '@/api/platform/menu'
 
 import BeeButton from '@/components/BeeButton/index.vue'
 import BeeDivider from '@/components/BeeDivider/index.vue'
+import { BeeMessage } from '@/components/BeeMessage'
 import MenuForm from '@/components/MenuForm/index.vue'
 
 defineOptions({ name: 'MenuCreate' })
@@ -60,7 +59,7 @@ async function handleCreate() {
     await menuFormRef.value?.validate()
     const formData = menuFormRef.value?.getFormData()
     await createMenu(formData!)
-    ElMessage.success('创建成功')
+    BeeMessage.success('创建成功')
     router.push({ name: 'platform:system:menu' }).catch(() => {})
   } catch {
     // 验证失败

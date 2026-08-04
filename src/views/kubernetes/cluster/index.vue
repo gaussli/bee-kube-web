@@ -139,8 +139,6 @@ import { onMounted, reactive, ref } from 'vue'
 
 import { useRouter } from 'vue-router'
 
-import { ElMessage } from 'element-plus'
-
 import type { ClusterListResp, ClusterQueryReq } from '@/types/kubernetes/cluster'
 
 import { getClusterPage, deleteCluster, deleteClusters } from '@/api/kubernetes/cluster'
@@ -154,6 +152,7 @@ import BeeClusterInfoCell from '@/components/BeeClusterInfoCell/index.vue'
 import BeeDialog from '@/components/BeeDialog/index.vue'
 import BeeDivider from '@/components/BeeDivider/index.vue'
 import BeeInputSearch from '@/components/BeeInputSearch/index.vue'
+import { BeeMessage } from '@/components/BeeMessage'
 import BeePage from '@/components/BeePage/index.vue'
 import BeePageTitle from '@/components/BeePageTitle/index.vue'
 import BeePagination from '@/components/BeePagination/index.vue'
@@ -284,7 +283,7 @@ async function handleConfirmDelete() {
   if (!currentTargetRow.value) return
   try {
     await deleteCluster(currentTargetRow.value.id)
-    ElMessage.success('删除成功')
+    BeeMessage.success('删除成功')
     deleteDialogVisible.value = false
     currentTargetRow.value = null
     await loadData()
@@ -307,7 +306,7 @@ async function handleConfirmBatchDelete() {
   const ids = selectedRows.value.map(row => row.id)
   try {
     await deleteClusters(ids)
-    ElMessage.success(`成功删除 ${ids.length} 个集群`)
+    BeeMessage.success(`成功删除 ${ids.length} 个集群`)
     batchDeleteDialogVisible.value = false
     selectedRows.value = []
     await loadData()

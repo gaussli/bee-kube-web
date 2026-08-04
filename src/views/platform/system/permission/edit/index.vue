@@ -38,8 +38,6 @@ import { onMounted, ref } from 'vue'
 
 import { useRouter } from 'vue-router'
 
-import { ElMessage } from 'element-plus'
-
 import { ArrowLeft, Close, Check } from '@element-plus/icons-vue'
 
 import type { PermissionDetailResp } from '@/types/platform/permission'
@@ -48,6 +46,7 @@ import { getPermissionDetail, updatePermission } from '@/api/platform/permission
 
 import BeeButton from '@/components/BeeButton/index.vue'
 import BeeDivider from '@/components/BeeDivider/index.vue'
+import { BeeMessage } from '@/components/BeeMessage'
 import PermissionForm from '@/components/PermissionForm/index.vue'
 
 defineOptions({ name: 'PermissionEdit' })
@@ -68,7 +67,7 @@ async function handleSubmit() {
     await permissionFormRef.value?.validate()
     const formData = permissionFormRef.value?.getFormData()
     await updatePermission(permissionId, formData!)
-    ElMessage.success('保存成功')
+    BeeMessage.success('保存成功')
     router.push({ name: 'platform:system:permission' }).catch(() => {})
   } catch {
     // 验证失败
@@ -80,7 +79,7 @@ async function loadPermissionDetail() {
     permissionData.value = await getPermissionDetail(permissionId)
     loaded.value = true
   } catch {
-    ElMessage.error('加载权限详情失败')
+    BeeMessage.error('加载权限详情失败')
     router.back()
   }
 }

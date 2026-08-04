@@ -38,14 +38,13 @@ import { onMounted, ref } from 'vue'
 
 import { useRouter } from 'vue-router'
 
-import { ElMessage } from 'element-plus'
-
 import { ArrowLeft, Close, Check } from '@element-plus/icons-vue'
 
 import type { UserDetailResp } from '@/types'
 
 import BeeButton from '@/components/BeeButton/index.vue'
 import BeeDivider from '@/components/BeeDivider/index.vue'
+import { BeeMessage } from '@/components/BeeMessage'
 import UserForm from '@/components/UserForm/index.vue'
 
 defineOptions({ name: 'UserEdit' })
@@ -81,7 +80,7 @@ async function handleSubmit() {
   try {
     await userFormRef.value?.validate()
     // TODO: 调用更新 API
-    ElMessage.success('保存成功')
+    BeeMessage.success('保存成功')
     router.push({ name: 'platform:system:user' }).catch(() => {})
   } catch {
     // 验证失败

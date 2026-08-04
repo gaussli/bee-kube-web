@@ -77,8 +77,6 @@ import { onMounted, ref } from 'vue'
 
 import { useRouter } from 'vue-router'
 
-import { ElMessage } from 'element-plus'
-
 import { ArrowLeft, Key, Menu } from '@element-plus/icons-vue'
 
 import type { RoleDetailResp, MenuResp } from '@/types/platform/role'
@@ -88,6 +86,7 @@ import { bindRoleMenus, getRoleDetail, getRoleMenus, getMenuPage } from '@/api/p
 import BeeButton from '@/components/BeeButton/index.vue'
 import BeeDivider from '@/components/BeeDivider/index.vue'
 import BeeLabelCopyable from '@/components/BeeLabelCopyable/index.vue'
+import { BeeMessage } from '@/components/BeeMessage'
 import BeeTree from '@/components/BeeTree/index.vue'
 
 defineOptions({ name: 'RoleAssignPermissions' })
@@ -193,7 +192,7 @@ function handleBack() {
 async function handleSubmit() {
   try {
     await bindRoleMenus(roleId, selectedMenuIds.value)
-    ElMessage.success('保存成功')
+    BeeMessage.success('保存成功')
     router.back()
   } catch {
     // 失败处理

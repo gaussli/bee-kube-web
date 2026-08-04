@@ -140,8 +140,6 @@ import { computed, onMounted, reactive, ref } from 'vue'
 
 import { useRoute, useRouter } from 'vue-router'
 
-import { ElMessage } from 'element-plus'
-
 import type { NodeQueryReq, NodeListResp } from '@/types/kubernetes/node'
 
 import { calcPercentage } from '@/utils/kubernetes'
@@ -155,6 +153,7 @@ import BeeCircleButton from '@/components/BeeCircleButton/index.vue'
 import BeeDropdown from '@/components/BeeDropdown/index.vue'
 import BeeDropdownItem from '@/components/BeeDropdownItem/index.vue'
 import BeeInputSearch from '@/components/BeeInputSearch/index.vue'
+import { BeeMessage } from '@/components/BeeMessage'
 import BeeNodeInfoCell from '@/components/BeeNodeInfoCell/index.vue'
 import BeePage from '@/components/BeePage/index.vue'
 import BeePageTitle from '@/components/BeePageTitle/index.vue'
@@ -275,7 +274,7 @@ function handleEdit(row: NodeListResp) {
 async function handleCordon(row: NodeListResp, unschedulable: boolean) {
   try {
     await cordonNode(row.clusterId, row.name, unschedulable)
-    ElMessage.success(unschedulable ? '已设置为不可调度' : '已设置为可调度')
+    BeeMessage.success(unschedulable ? '已设置为不可调度' : '已设置为可调度')
     await loadData()
   } catch (err) {
     console.error('[handleCordon]', err)
@@ -285,7 +284,7 @@ async function handleCordon(row: NodeListResp, unschedulable: boolean) {
 async function handleDrain(row: NodeListResp) {
   try {
     await drainNode(row.clusterId, row.name)
-    ElMessage.success('已开始驱逐节点上的 Pod')
+    BeeMessage.success('已开始驱逐节点上的 Pod')
     await loadData()
   } catch (err) {
     console.error('[handleDrain]', err)

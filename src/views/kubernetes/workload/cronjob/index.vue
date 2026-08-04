@@ -145,8 +145,6 @@ import { onMounted, reactive, ref } from 'vue'
 
 import { useRoute, useRouter } from 'vue-router'
 
-import { ElMessage } from 'element-plus'
-
 import type { NamespaceSimpleListResp } from '@/types/kubernetes/namespace'
 import type { CronJobQueryReq, CronJobListResp } from '@/types/kubernetes/workload/cronjob'
 
@@ -161,6 +159,7 @@ import BeeButton from '@/components/BeeButton/index.vue'
 import BeeCard from '@/components/BeeCard/index.vue'
 import BeeDialog from '@/components/BeeDialog/index.vue'
 import BeeInputSearch from '@/components/BeeInputSearch/index.vue'
+import { BeeMessage } from '@/components/BeeMessage'
 import BeePage from '@/components/BeePage/index.vue'
 import BeePageTitle from '@/components/BeePageTitle/index.vue'
 import BeePagination from '@/components/BeePagination/index.vue'
@@ -309,17 +308,19 @@ function handleCreate() {
 
 /** YAML 方式创建 */
 function handleCreateYaml() {
-  router.push({ name: 'kubernetes:workload:cronjob:create:yaml', params: { clusterId: clusterId.value } }).catch(() => {})
+  router
+    .push({ name: 'kubernetes:workload:cronjob:create:yaml', params: { clusterId: clusterId.value } })
+    .catch(() => {})
 }
 
 /** 导出 CronJob（功能开发中） */
 function handleExport() {
-  ElMessage.info('功能开发中')
+  BeeMessage.info('功能开发中')
 }
 
 /** 导入 CronJob（功能开发中） */
 function handleImport() {
-  ElMessage.info('功能开发中')
+  BeeMessage.info('功能开发中')
 }
 
 /**
@@ -377,7 +378,7 @@ async function handleConfirmDelete() {
   if (!currentTargetRow.value) return
   try {
     await deleteCronJob(currentTargetRow.value.clusterId, currentTargetRow.value.namespace, currentTargetRow.value.name)
-    ElMessage.success('删除成功')
+    BeeMessage.success('删除成功')
     deleteDialogVisible.value = false
     currentTargetRow.value = null
     await loadData()
@@ -399,7 +400,7 @@ async function handleConfirmBatchDelete() {
   const names = selectedRows.value.map(row => row.name)
   try {
     await deleteCronJobs(targetClusterId, targetNamespace, names)
-    ElMessage.success(`成功删除 ${names.length} 个 CronJob`)
+    BeeMessage.success(`成功删除 ${names.length} 个 CronJob`)
     batchDeleteDialogVisible.value = false
     selectedRows.value = []
     await loadData()

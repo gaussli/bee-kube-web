@@ -157,8 +157,6 @@ import { onMounted, reactive, ref } from 'vue'
 
 import { useRoute, useRouter } from 'vue-router'
 
-import { ElMessage } from 'element-plus'
-
 import type { NamespaceSimpleListResp } from '@/types/kubernetes/namespace'
 import type {
   StatefulSetQueryForm,
@@ -178,6 +176,7 @@ import BeeButton from '@/components/BeeButton/index.vue'
 import BeeCard from '@/components/BeeCard/index.vue'
 import BeeDialog from '@/components/BeeDialog/index.vue'
 import BeeInputSearch from '@/components/BeeInputSearch/index.vue'
+import { BeeMessage } from '@/components/BeeMessage'
 import BeePage from '@/components/BeePage/index.vue'
 import BeePageTitle from '@/components/BeePageTitle/index.vue'
 import BeePagination from '@/components/BeePagination/index.vue'
@@ -341,22 +340,26 @@ function handleClearSelection() {
 
 /** 跳转创建页面 */
 function handleCreate() {
-  router.push({ name: 'kubernetes:workload:statefulset:create', params: { clusterId: clusterId.value } }).catch(() => {})
+  router
+    .push({ name: 'kubernetes:workload:statefulset:create', params: { clusterId: clusterId.value } })
+    .catch(() => {})
 }
 
 /** YAML 方式创建 */
 function handleCreateYaml() {
-  router.push({ name: 'kubernetes:workload:statefulset:create:yaml', params: { clusterId: clusterId.value } }).catch(() => {})
+  router
+    .push({ name: 'kubernetes:workload:statefulset:create:yaml', params: { clusterId: clusterId.value } })
+    .catch(() => {})
 }
 
 /** 导出 StatefulSet（功能开发中） */
 function handleExport() {
-  ElMessage.info('功能开发中')
+  BeeMessage.info('功能开发中')
 }
 
 /** 导入 StatefulSet（功能开发中） */
 function handleImport() {
-  ElMessage.info('功能开发中')
+  BeeMessage.info('功能开发中')
 }
 
 /**
@@ -403,7 +406,7 @@ function handleViewDetail(row: StatefulSetListVo) {
  * @param row
  */
 function handleScale(row: StatefulSetListVo) {
-  ElMessage.info(`扩缩容: ${row.name}`)
+  BeeMessage.info(`扩缩容: ${row.name}`)
 }
 
 /**
@@ -411,7 +414,7 @@ function handleScale(row: StatefulSetListVo) {
  * @param row
  */
 function handleRestart(row: StatefulSetListVo) {
-  ElMessage.info(`重启: ${row.name}`)
+  BeeMessage.info(`重启: ${row.name}`)
 }
 
 // ==================== CRUD: Delete ====================
@@ -434,7 +437,7 @@ async function handleConfirmDelete() {
       currentTargetRow.value.namespace,
       currentTargetRow.value.name,
     )
-    ElMessage.success('删除成功')
+    BeeMessage.success('删除成功')
     deleteDialogVisible.value = false
     currentTargetRow.value = null
     await loadData()
@@ -456,7 +459,7 @@ async function handleConfirmBatchDelete() {
   const names = selectedRows.value.map(row => row.name)
   try {
     await deleteStatefulSets(targetClusterId, targetNamespace, names)
-    ElMessage.success(`成功删除 ${names.length} 个 StatefulSet`)
+    BeeMessage.success(`成功删除 ${names.length} 个 StatefulSet`)
     batchDeleteDialogVisible.value = false
     selectedRows.value = []
     await loadData()

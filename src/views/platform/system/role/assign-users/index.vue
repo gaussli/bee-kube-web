@@ -98,8 +98,6 @@ import { computed, onMounted, ref } from 'vue'
 
 import { useRouter } from 'vue-router'
 
-import { ElMessage } from 'element-plus'
-
 import { ArrowLeft, Message, User, UserFilled } from '@element-plus/icons-vue'
 
 import type { UserResp } from '@/types'
@@ -108,6 +106,7 @@ import type { RoleDetailResp } from '@/types'
 import BeeButton from '@/components/BeeButton/index.vue'
 import BeeDivider from '@/components/BeeDivider/index.vue'
 import BeeLabelCopyable from '@/components/BeeLabelCopyable/index.vue'
+import { BeeMessage } from '@/components/BeeMessage'
 import BeeTag from '@/components/BeeTag/index.vue'
 import BeeTransfer from '@/components/BeeTransfer/index.vue'
 
@@ -158,7 +157,7 @@ function handleBack() {
 async function handleSubmit() {
   console.log('提交参数:', { roleId, userIds: selectedUserIds.value })
   // TODO: 调用 API
-  ElMessage.success('保存成功')
+  BeeMessage.success('保存成功')
   router.back()
 }
 

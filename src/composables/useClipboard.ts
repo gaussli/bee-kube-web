@@ -1,4 +1,4 @@
-import { ElMessage } from 'element-plus'
+import { BeeMessage } from '@/components/BeeMessage'
 
 /**
  *
@@ -7,9 +7,9 @@ export function useClipboard() {
   async function copy(text: string) {
     try {
       await navigator.clipboard.writeText(text)
-      ElMessage.success('已复制到剪贴板')
+      BeeMessage.success('已复制到剪贴板')
     } catch {
-      ElMessage.error('复制失败')
+      BeeMessage.error('复制失败')
     }
   }
 

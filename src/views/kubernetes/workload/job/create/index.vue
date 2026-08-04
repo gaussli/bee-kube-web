@@ -42,15 +42,16 @@ import { ref } from 'vue'
 
 import { useRouter } from 'vue-router'
 
-import { ElMessage, type FormInstance } from 'element-plus'
-
 import { Timer, Close, Check } from '@element-plus/icons-vue'
+
+import type { FormInstance } from 'element-plus'
 
 import type { JobResp } from '@/types/kubernetes/workload/job'
 
 import { createJob } from '@/api/kubernetes/workload/job'
 
 import BeeButton from '@/components/BeeButton/index.vue'
+import { BeeMessage } from '@/components/BeeMessage'
 import BeePageTitle from '@/components/BeePageTitle/index.vue'
 
 defineOptions({ name: 'JobCreate' })
@@ -80,7 +81,7 @@ async function handleSubmit() {
   submitting.value = true
   try {
     await createJob(formData.value)
-    ElMessage.success('创建成功')
+    BeeMessage.success('创建成功')
     router.back()
   } catch {
     /* 请求失败已由 request 拦截器统一弹窗提示，无需额外处理 */

@@ -69,15 +69,16 @@ import { ref } from 'vue'
 
 import { useRouter } from 'vue-router'
 
-import { ElMessage, type FormInstance } from 'element-plus'
-
 import { FolderOpened, Plus, Delete, Close, Check } from '@element-plus/icons-vue'
+
+import type { FormInstance } from 'element-plus'
 
 import type { NamespaceReq } from '@/types'
 
 import { createNamespace } from '@/api/kubernetes/namespace'
 
 import BeeButton from '@/components/BeeButton/index.vue'
+import { BeeMessage } from '@/components/BeeMessage'
 import BeePageTitle from '@/components/BeePageTitle/index.vue'
 
 defineOptions({ name: 'NamespaceCreate' })
@@ -148,7 +149,7 @@ async function handleSubmit() {
   submitting.value = true
   try {
     await createNamespace(data)
-    ElMessage.success('创建成功')
+    BeeMessage.success('创建成功')
     router.back()
   } catch {
     // 失败处理

@@ -156,8 +156,6 @@ import { computed, onMounted, reactive, ref } from 'vue'
 
 import { useRoute, useRouter } from 'vue-router'
 
-import { ElMessage } from 'element-plus'
-
 import type { NamespaceSimpleListResp } from '@/types/kubernetes/namespace'
 import type {
   DeploymentQueryForm,
@@ -176,6 +174,7 @@ import BeeButton from '@/components/BeeButton/index.vue'
 import BeeCard from '@/components/BeeCard/index.vue'
 import BeeDialog from '@/components/BeeDialog/index.vue'
 import BeeInputSearch from '@/components/BeeInputSearch/index.vue'
+import { BeeMessage } from '@/components/BeeMessage'
 import BeePage from '@/components/BeePage/index.vue'
 import BeePageTitle from '@/components/BeePageTitle/index.vue'
 import BeePagination from '@/components/BeePagination/index.vue'
@@ -336,17 +335,19 @@ function handleCreate() {
 
 /** YAML 方式创建 */
 function handleCreateYaml() {
-  router.push({ name: 'kubernetes:workload:deployment:create:yaml', params: { clusterId: clusterId.value } }).catch(() => {})
+  router
+    .push({ name: 'kubernetes:workload:deployment:create:yaml', params: { clusterId: clusterId.value } })
+    .catch(() => {})
 }
 
 /** 导出 Deployment（功能开发中） */
 function handleExport() {
-  ElMessage.info('功能开发中')
+  BeeMessage.info('功能开发中')
 }
 
 /** 导入 Deployment（功能开发中） */
 function handleImport() {
-  ElMessage.info('功能开发中')
+  BeeMessage.info('功能开发中')
 }
 
 /**
@@ -393,7 +394,7 @@ function handleViewDetail(row: DeploymentListVo) {
  * @param row
  */
 function handleScale(row: DeploymentListVo) {
-  ElMessage.info(`扩缩容: ${row.name}`)
+  BeeMessage.info(`扩缩容: ${row.name}`)
 }
 
 /**
@@ -401,7 +402,7 @@ function handleScale(row: DeploymentListVo) {
  * @param row
  */
 function handleRestart(row: DeploymentListVo) {
-  ElMessage.info(`重启: ${row.name}`)
+  BeeMessage.info(`重启: ${row.name}`)
 }
 
 /**
@@ -409,7 +410,7 @@ function handleRestart(row: DeploymentListVo) {
  * @param row
  */
 function handleRollback(row: DeploymentListVo) {
-  ElMessage.info(`回滚: ${row.name}`)
+  BeeMessage.info(`回滚: ${row.name}`)
 }
 
 // ==================== CRUD: Delete ====================
@@ -432,7 +433,7 @@ async function handleConfirmDelete() {
       currentTargetRow.value.namespace,
       currentTargetRow.value.name,
     )
-    ElMessage.success('删除成功')
+    BeeMessage.success('删除成功')
     deleteDialogVisible.value = false
     currentTargetRow.value = null
     await loadData()
@@ -444,7 +445,7 @@ async function handleConfirmDelete() {
 /** 打开批量删除确认弹窗 */
 function handleBatchDelete() {
   if (deletableRows.value.length === 0) {
-    ElMessage.warning('选中的 Deployment 均不可删除')
+    BeeMessage.warning('选中的 Deployment 均不可删除')
     return
   }
   batchDeleteDialogVisible.value = true
@@ -458,7 +459,7 @@ async function handleConfirmBatchDelete() {
   const names = deletableRows.value.map(row => row.name)
   try {
     await deleteDeployments(targetClusterId, targetNamespace, names)
-    ElMessage.success(`成功删除 ${names.length} 个 Deployment`)
+    BeeMessage.success(`成功删除 ${names.length} 个 Deployment`)
     batchDeleteDialogVisible.value = false
     selectedRows.value = []
     await loadData()

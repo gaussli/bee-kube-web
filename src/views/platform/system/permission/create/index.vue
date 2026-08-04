@@ -36,14 +36,13 @@ import { ref } from 'vue'
 
 import { useRouter } from 'vue-router'
 
-import { ElMessage } from 'element-plus'
-
 import { ArrowLeft, Close, Check } from '@element-plus/icons-vue'
 
 import { createPermission } from '@/api/platform/permission'
 
 import BeeButton from '@/components/BeeButton/index.vue'
 import BeeDivider from '@/components/BeeDivider/index.vue'
+import { BeeMessage } from '@/components/BeeMessage'
 import PermissionForm from '@/components/PermissionForm/index.vue'
 
 defineOptions({ name: 'PermissionCreate' })
@@ -60,7 +59,7 @@ async function handleCreate() {
     await permissionFormRef.value?.validate()
     const formData = permissionFormRef.value?.getFormData()
     await createPermission(formData!)
-    ElMessage.success('创建成功')
+    BeeMessage.success('创建成功')
     router.push({ name: 'platform:system:permission' }).catch(() => {})
   } catch {
     // 验证失败

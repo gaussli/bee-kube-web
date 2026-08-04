@@ -205,8 +205,6 @@ import { onMounted, reactive, ref } from 'vue'
 
 import { useRouter } from 'vue-router'
 
-import { ElMessage } from 'element-plus'
-
 import {
   Delete,
   MoreFilled,
@@ -229,6 +227,7 @@ import BeeDialog from '@/components/BeeDialog/index.vue'
 import BeeIconLabel from '@/components/BeeIconLabel/index.vue'
 import BeeInputSearch from '@/components/BeeInputSearch/index.vue'
 import BeeLabelCopyable from '@/components/BeeLabelCopyable/index.vue'
+import { BeeMessage } from '@/components/BeeMessage'
 import BeeSegmentedControl from '@/components/BeeSegmentedControl/index.vue'
 import BeeStatusCell from '@/components/BeeStatusCell/index.vue'
 import BeeTag from '@/components/BeeTag/index.vue'
@@ -339,7 +338,7 @@ async function handleConfirmDelete() {
   if (!currentTargetRow.value) return
   try {
     // TODO: 调用删除 API
-    ElMessage.success('删除成功')
+    BeeMessage.success('删除成功')
     deleteDialogVisible.value = false
     currentTargetRow.value = null
     await loadData()
@@ -354,7 +353,7 @@ async function handleConfirmStatus() {
   const actionText = targetStatus === 1 ? '启用' : '禁用'
   try {
     // TODO: 调用 API
-    ElMessage.success(`${actionText}成功`)
+    BeeMessage.success(`${actionText}成功`)
     statusDialogVisible.value = false
     currentTargetRow.value = null
     await loadData()
@@ -371,7 +370,7 @@ async function handleConfirmBatchDelete() {
   const ids = selectedRows.value.map(row => row.id)
   try {
     // TODO: 调用批量删除 API
-    ElMessage.success(`成功删除 ${ids.length} 个用户`)
+    BeeMessage.success(`成功删除 ${ids.length} 个用户`)
     batchDeleteDialogVisible.value = false
     selectedRows.value = []
     await loadData()

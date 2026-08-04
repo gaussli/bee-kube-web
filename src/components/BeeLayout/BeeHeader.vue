@@ -32,7 +32,7 @@ import { computed, ref, onMounted, onUnmounted } from 'vue'
 
 import { useRouter } from 'vue-router'
 
-import { ElMessage, ElMessageBox } from 'element-plus'
+import { ElMessageBox } from 'element-plus'
 
 import type { TabType } from '@/stores/app'
 
@@ -41,6 +41,7 @@ import { logout } from '@/api/auth/auth'
 import BeeCircleButton from '@/components/BeeCircleButton/index.vue'
 import BeeDropdown from '@/components/BeeDropdown/index.vue'
 import BeeHeaderUserInfo from '@/components/BeeHeaderUserInfo/index.vue'
+import { BeeMessage } from '@/components/BeeMessage'
 import BeeSegmentedControl from '@/components/BeeSegmentedControl/index.vue'
 
 import { useAppStore, useKubernetesStore, useUserStore } from '@/stores'
@@ -66,7 +67,7 @@ const currentTab = computed({
   set: (val: TabType) => appStore.setCurrentTab(val),
 })
 
-const activeClusterId = computed(() => kubernetesStore.activeClusterId)
+const _activeClusterId = computed(() => kubernetesStore.activeClusterId)
 
 // tabOptions 从用户菜单第一层获取，label 对应 name，value 对应 code
 const tabOptions = computed(
@@ -116,10 +117,10 @@ function toggleFullscreen() {
 async function handleDropdownChange(command: string | number) {
   switch (command) {
     case 'profile':
-      ElMessage.info('用户信息功能开发中')
+      BeeMessage.info('用户信息功能开发中')
       break
     case 'setting':
-      ElMessage.info('系统设置功能开发中')
+      BeeMessage.info('系统设置功能开发中')
       break
     case 'logout':
       await handleLogout()
@@ -131,7 +132,7 @@ async function handleLogout() {
   await ElMessageBox.confirm('确定要退出登录吗？', '提示', { type: 'warning' })
   try {
     await logout()
-    ElMessage.success('退出登录成功')
+    BeeMessage.success('退出登录成功')
   } catch {
     // 忽略退出接口错误，继续清理
   }

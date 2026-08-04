@@ -142,8 +142,6 @@ import { onMounted, reactive, ref } from 'vue'
 
 import { useRoute, useRouter } from 'vue-router'
 
-import { ElMessage } from 'element-plus'
-
 import type { SecretQueryReq, SecretListResp } from '@/types/kubernetes/config/secret'
 import type { NamespaceSimpleListResp } from '@/types/kubernetes/namespace'
 
@@ -158,6 +156,7 @@ import BeeButton from '@/components/BeeButton/index.vue'
 import BeeCard from '@/components/BeeCard/index.vue'
 import BeeDialog from '@/components/BeeDialog/index.vue'
 import BeeInputSearch from '@/components/BeeInputSearch/index.vue'
+import { BeeMessage } from '@/components/BeeMessage'
 import BeePage from '@/components/BeePage/index.vue'
 import BeePageTitle from '@/components/BeePageTitle/index.vue'
 import BeePagination from '@/components/BeePagination/index.vue'
@@ -335,7 +334,7 @@ function handleViewDetail(row: SecretListResp) {
  * @param row
  */
 function handleEditYaml(row: SecretListResp) {
-  ElMessage.info(`编辑 YAML: ${row.name}`)
+  BeeMessage.info(`编辑 YAML: ${row.name}`)
 }
 
 // ==================== CRUD: Delete ====================
@@ -354,7 +353,7 @@ async function handleConfirmDelete() {
   if (!currentTargetRow.value) return
   try {
     await deleteSecret(currentTargetRow.value.clusterId, currentTargetRow.value.namespace, currentTargetRow.value.name)
-    ElMessage.success('删除成功')
+    BeeMessage.success('删除成功')
     deleteDialogVisible.value = false
     currentTargetRow.value = null
     await loadData()
@@ -376,7 +375,7 @@ async function handleConfirmBatchDelete() {
   const names = selectedRows.value.map(row => row.name)
   try {
     await deleteSecrets(targetClusterId, targetNamespace, names)
-    ElMessage.success(`成功删除 ${names.length} 个 Secret`)
+    BeeMessage.success(`成功删除 ${names.length} 个 Secret`)
     batchDeleteDialogVisible.value = false
     selectedRows.value = []
     await loadData()

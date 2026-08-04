@@ -36,14 +36,13 @@ import { ref } from 'vue'
 
 import { useRouter } from 'vue-router'
 
-import { ElMessage } from 'element-plus'
-
 import { ArrowLeft, Close, Check } from '@element-plus/icons-vue'
 
 import { createRole } from '@/api/platform/role'
 
 import BeeButton from '@/components/BeeButton/index.vue'
 import BeeDivider from '@/components/BeeDivider/index.vue'
+import { BeeMessage } from '@/components/BeeMessage'
 import RoleForm from '@/components/RoleForm/index.vue'
 
 defineOptions({ name: 'RoleCreate' })
@@ -60,7 +59,7 @@ async function handleCreate() {
     await roleFormRef.value?.validate()
     const formData = roleFormRef.value?.getFormData()
     await createRole(formData!)
-    ElMessage.success('创建成功')
+    BeeMessage.success('创建成功')
     router.push({ name: 'platform:system:role' }).catch(() => {})
   } catch {
     // 验证失败

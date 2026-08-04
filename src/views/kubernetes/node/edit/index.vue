@@ -81,15 +81,16 @@ import { ref, onMounted } from 'vue'
 
 import { useRoute, useRouter } from 'vue-router'
 
-import { ElMessage, type FormInstance } from 'element-plus'
-
 import { Box, Plus, Delete, Close, Check } from '@element-plus/icons-vue'
+
+import type { FormInstance } from 'element-plus'
 
 import type { NodeListResp, NodeReq } from '@/types/kubernetes/node'
 
 import { getNodeDetail, updateNode } from '@/api/kubernetes/node'
 
 import BeeButton from '@/components/BeeButton/index.vue'
+import { BeeMessage } from '@/components/BeeMessage'
 import BeePageTitle from '@/components/BeePageTitle/index.vue'
 
 defineOptions({ name: 'NodeEdit' })
@@ -195,7 +196,7 @@ async function handleSubmit() {
   submitting.value = true
   try {
     await updateNode(clusterId.value, nodeName.value, data)
-    ElMessage.success('保存成功')
+    BeeMessage.success('保存成功')
     router.back()
   } catch {
     // 失败处理

@@ -136,8 +136,6 @@ import { onMounted, reactive, ref } from 'vue'
 
 import { useRoute, useRouter } from 'vue-router'
 
-import { ElMessage } from 'element-plus'
-
 import type { ConfigMapQueryReq, ConfigMapListResp } from '@/types/kubernetes/config/configmap'
 import type { NamespaceSimpleListResp } from '@/types/kubernetes/namespace'
 
@@ -153,6 +151,7 @@ import BeeCard from '@/components/BeeCard/index.vue'
 import BeeConfigmapInfoCell from '@/components/BeeConfigmapInfoCell/index.vue'
 import BeeDialog from '@/components/BeeDialog/index.vue'
 import BeeInputSearch from '@/components/BeeInputSearch/index.vue'
+import { BeeMessage } from '@/components/BeeMessage'
 import BeePage from '@/components/BeePage/index.vue'
 import BeePageTitle from '@/components/BeePageTitle/index.vue'
 import BeePagination from '@/components/BeePagination/index.vue'
@@ -314,7 +313,7 @@ function handleViewDetail(row: ConfigMapListResp) {
  * @param row
  */
 function handleEditYaml(row: ConfigMapListResp) {
-  ElMessage.info(`编辑 YAML: ${row.name}`)
+  BeeMessage.info(`编辑 YAML: ${row.name}`)
 }
 
 // ==================== CRUD: Delete ====================
@@ -337,7 +336,7 @@ async function handleConfirmDelete() {
       currentTargetRow.value.namespace,
       currentTargetRow.value.name,
     )
-    ElMessage.success('删除成功')
+    BeeMessage.success('删除成功')
     deleteDialogVisible.value = false
     currentTargetRow.value = null
     await loadData()
@@ -359,7 +358,7 @@ async function handleConfirmBatchDelete() {
   const names = selectedRows.value.map(row => row.name)
   try {
     await deleteConfigMaps(targetClusterId, targetNamespace, names)
-    ElMessage.success(`成功删除 ${names.length} 个 ConfigMap`)
+    BeeMessage.success(`成功删除 ${names.length} 个 ConfigMap`)
     batchDeleteDialogVisible.value = false
     selectedRows.value = []
     await loadData()

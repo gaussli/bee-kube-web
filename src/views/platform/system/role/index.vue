@@ -208,8 +208,6 @@ import { onMounted, reactive, ref } from 'vue'
 
 import { useRouter } from 'vue-router'
 
-import { ElMessage } from 'element-plus'
-
 import {
   CircleCheck,
   CircleClose,
@@ -233,6 +231,7 @@ import BeeDialog from '@/components/BeeDialog/index.vue'
 import BeeIconLabel from '@/components/BeeIconLabel/index.vue'
 import BeeInputSearch from '@/components/BeeInputSearch/index.vue'
 import BeeLabelCopyable from '@/components/BeeLabelCopyable/index.vue'
+import { BeeMessage } from '@/components/BeeMessage'
 import BeeSegmentedControl from '@/components/BeeSegmentedControl/index.vue'
 import BeeStatusCell from '@/components/BeeStatusCell/index.vue'
 import BeeTag from '@/components/BeeTag/index.vue'
@@ -347,7 +346,7 @@ async function handleConfirmStatus() {
   const actionText = targetStatus === 1 ? '启用' : '禁用'
   try {
     await changeRoleStatus(currentTargetRow.value.id, { status: targetStatus })
-    ElMessage.success(`${actionText}成功`)
+    BeeMessage.success(`${actionText}成功`)
     statusDialogVisible.value = false
     currentTargetRow.value = null
     await loadData()
@@ -360,7 +359,7 @@ async function handleConfirmDelete() {
   if (!currentTargetRow.value) return
   try {
     await removeRole(currentTargetRow.value.id)
-    ElMessage.success('删除成功')
+    BeeMessage.success('删除成功')
     deleteDialogVisible.value = false
     currentTargetRow.value = null
     await loadData()
@@ -377,7 +376,7 @@ async function handleConfirmBatchDelete() {
   const ids = selectedRows.value.map(row => row.id)
   try {
     await batchRemoveRoles(ids)
-    ElMessage.success(`成功删除 ${ids.length} 个角色`)
+    BeeMessage.success(`成功删除 ${ids.length} 个角色`)
     batchDeleteDialogVisible.value = false
     selectedRows.value = []
     await loadData()
