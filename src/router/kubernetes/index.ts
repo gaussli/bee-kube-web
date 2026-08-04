@@ -14,7 +14,7 @@ export const kubernetesRoutes: RouteRecordRaw[] = [
   {
     path: '/kubernetes',
     name: 'kubernetes',
-    redirect: '/kubernetes/cluster',
+    redirect: '/kubernetes/clusters',
   },
   {
     path: '/kubernetes/clusters/:clusterId/dashboard',
