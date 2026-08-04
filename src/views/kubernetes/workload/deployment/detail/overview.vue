@@ -250,9 +250,9 @@ function formatMemoryBytes(bytes: number): string {
 
   &__ring {
     display: flex;
-    flex-shrink: 0;
-    align-items: center;
     justify-content: center;
+    align-items: center;
+    flex-shrink: 0;
     width: 120px;
     height: 120px;
     border-radius: 50%;
@@ -260,8 +260,8 @@ function formatMemoryBytes(bytes: number): string {
 
     &-inner {
       display: flex;
-      align-items: center;
       justify-content: center;
+      align-items: center;
       width: 100px;
       height: 100px;
       border-radius: 50%;
@@ -381,8 +381,8 @@ function formatMemoryBytes(bytes: number): string {
 .condition-item {
   display: grid;
   gap: $spacing-16;
-  grid-template-columns: 100px 80px 160px 1fr 140px;
   align-items: center;
+  grid-template-columns: 100px 80px 160px 1fr 140px;
   padding: $spacing-8 $spacing-16;
   border-radius: $radius-8;
   background: $color-bg-elevated;

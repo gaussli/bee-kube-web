@@ -150,8 +150,8 @@ defineExpose({ validate, resetFields, getFormData })
 
 :deep(.el-form-item__label) {
   display: flex;
-  flex-shrink: 0;
   align-items: center;
+  flex-shrink: 0;
   width: 100px;
   color: $color-text-secondary;
   white-space: nowrap;

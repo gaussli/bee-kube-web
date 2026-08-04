@@ -38,8 +38,8 @@ function handleGoBack() {
 <style lang="scss" scoped>
 .no-permission {
   display: flex;
-  align-items: center;
   justify-content: center;
+  align-items: center;
   height: 100%;
   background-color: $color-bg-surface;
 
@@ -48,8 +48,8 @@ function handleGoBack() {
 
     .icon {
       display: inline-flex;
-      align-items: center;
       justify-content: center;
+      align-items: center;
       width: 80px;
       height: 80px;
       margin-bottom: 24px;

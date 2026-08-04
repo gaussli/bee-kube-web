@@ -105,9 +105,9 @@ function handleClick(index: number) {
     z-index: 1;
     display: flex;
     gap: 6px;
-    flex: 1;
-    align-items: center;
     justify-content: center;
+    align-items: center;
+    flex: 1;
     font-size: 12px;
     color: #909399;
     cursor: pointer;

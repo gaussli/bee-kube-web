@@ -122,8 +122,8 @@ defineExpose({ loading })
   $types: primary, success, warning, danger;
 
   display: inline-flex;
-  align-items: center;
   justify-content: center;
+  align-items: center;
   width: 32px;
   height: 32px;
   padding: 0;

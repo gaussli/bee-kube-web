@@ -13,8 +13,8 @@ const tabName = '调度策略'
 <style lang="scss" scoped>
 .deployment-scheduling {
   display: flex;
-  align-items: center;
   justify-content: center;
+  align-items: center;
   height: 100%;
   font-size: 24px;
   color: $color-text-secondary;

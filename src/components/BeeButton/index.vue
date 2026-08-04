@@ -104,8 +104,8 @@ defineExpose({ loading })
 
   display: inline-flex;
   gap: $spacing-4;
-  align-items: center;
   justify-content: center;
+  align-items: center;
   height: 32px;
   padding: 0 $spacing-16;
   border: 1px solid;

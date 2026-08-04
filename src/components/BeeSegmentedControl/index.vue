@@ -155,8 +155,8 @@ function handleClick(index: number, value?: string | number) {
     z-index: 1;
     display: flex;
     gap: $spacing-4;
-    align-items: center;
     justify-content: center;
+    align-items: center;
     height: 100%;
     padding: 0 $spacing-16;
     font-size: $font-size-14;

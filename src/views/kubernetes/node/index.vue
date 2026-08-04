@@ -332,8 +332,8 @@ onMounted(() => {
 
     .table-footer {
       display: flex;
-      align-items: center;
       justify-content: flex-end;
+      align-items: center;
       padding: $spacing-16 0;
     }
   }

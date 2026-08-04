@@ -123,10 +123,7 @@ export default {
             'grid-auto-columns',
             'grid-auto-flow',
             'justify-items',
-            'align-items',
             'place-items',
-            'justify-content',
-            'align-content',
             'place-content',
             'grid-row-start',
             'grid-row-end',
@@ -136,7 +133,6 @@ export default {
             'grid-column',
             'grid-area',
             'justify-self',
-            'align-self',
             'place-self'
           ]
         },
@@ -348,7 +344,7 @@ export default {
   overrides: [
     {
       files: ['*.vue', '**/*.vue'],                          // 匹配所有 .vue 文件
-      extends: ['stylelint-config-recommended-vue/scss'],    // Vue SCSS 推荐规则
+      extends: ['stylelint-config-standard-vue/scss'],       // Vue SCSS 标准规则
       customSyntax: 'postcss-html'                           // 解析 Vue SFC 中的 <style> 块
     }
   ]

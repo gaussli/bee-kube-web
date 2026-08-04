@@ -42,9 +42,9 @@ const iconComponent = computed(() => {
 
   .menu-left {
     display: flex;
-    flex-shrink: 0;
-    align-items: center;
     justify-content: center;
+    align-items: center;
+    flex-shrink: 0;
   }
 
   .menu-icon {

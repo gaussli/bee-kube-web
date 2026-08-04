@@ -56,9 +56,9 @@ function handleError() {
 <style lang="scss" scoped>
 .user-avatar {
   display: inline-flex;
-  flex-shrink: 0;
-  align-items: center;
   justify-content: center;
+  align-items: center;
+  flex-shrink: 0;
   border-radius: 8px;
   overflow: hidden;
 
@@ -70,8 +70,8 @@ function handleError() {
 
   span {
     display: flex;
-    align-items: center;
     justify-content: center;
+    align-items: center;
     width: 100%;
     height: 100%;
     font-weight: 600;

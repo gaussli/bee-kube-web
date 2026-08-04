@@ -72,8 +72,8 @@ defineOptions({ name: 'Dashboard' })
 
     .stat-icon {
       display: flex;
-      align-items: center;
       justify-content: center;
+      align-items: center;
       width: 60px;
       height: 60px;
       border-radius: 8px;

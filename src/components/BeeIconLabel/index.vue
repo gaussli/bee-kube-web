@@ -31,8 +31,8 @@ withDefaults(
 .bee-icon-label {
   display: inline-flex;
   gap: $spacing-4;
-  align-items: center;
   justify-content: center;
+  align-items: center;
   font-size: v-bind(size);
   font-weight: v-bind(fontWeight);
   color: v-bind(color);

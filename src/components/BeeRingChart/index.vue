@@ -70,8 +70,8 @@ const ringStyle = computed(() => {
 .bee-ring-chart {
   position: relative;
   display: inline-flex;
-  align-items: center;
   justify-content: center;
+  align-items: center;
 
   svg {
     transform: rotate(-90deg);
@@ -86,8 +86,8 @@ const ringStyle = computed(() => {
     top: 50%;
     left: 50%;
     display: flex;
-    align-items: center;
     justify-content: center;
+    align-items: center;
     transform: translate(-50%, -50%);
 
     .ring-value {

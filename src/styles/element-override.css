@@ -1,9 +1,11 @@
 @charset "UTF-8";
+
 /**
  * 生成灰色色阶映射表
  * @param $step - 明度步进值，默认 5，取值范围 1-100 且能整除 100
  * @returns 键为明度百分比，值为对应灰色的映射表
  */
+
 /**
  * 生成颜色色阶映射表
  * @param $hue - 色相值，取值范围 0-360
@@ -15,134 +17,154 @@
     opacity: 0;
     transform: translateX(20px);
   }
+
   to {
     opacity: 1;
     transform: translateX(0);
   }
 }
+
 @keyframes fade-slide-out {
   from {
     opacity: 1;
     transform: translateX(0);
   }
+
   to {
     opacity: 0;
     transform: translateX(-20px);
   }
 }
+
 :root {
-  --el-color-primary: hsl(30, 70%, 50%);
+  --el-color-primary: hsl(30deg 70% 50%);
 }
 
 .el-menu {
   --el-menu-active-color: white;
   --el-menu-item-height: 46px;
   --el-menu-sub-item-height: 46px;
-  --el-menu-text-color: rgb(178.5, 178.5, 178.5);
+  --el-menu-text-color: rgb(178.5 178.5 178.5);
+
   background-color: transparent;
 }
+
 .el-menu .el-menu-item,
 .el-menu .el-sub-menu__title {
   margin-top: 4px;
   border-radius: 1000px;
 }
+
 .el-menu .el-menu-item:hover,
 .el-menu .el-sub-menu__title:hover {
   color: #c8cad0;
   background-color: #26292c;
 }
+
 .el-menu .el-menu-item.is-active {
   background-color: #2b2e31;
 }
 
 .el-card {
-  --el-card-bg-color: rgb(25.5, 25.5, 25.5);
+  --el-card-bg-color: rgb(25.5 25.5 25.5);
+
   border: none;
 }
 
 .el-table {
-  --el-table-bg-color: rgb(25.5, 25.5, 25.5);
+  --el-table-bg-color: rgb(25.5 25.5 25.5);
   --el-table-border-color: #2b2e31;
-  --el-table-header-bg-color: rgb(25.5, 25.5, 25.5);
-  --el-table-header-text-color: rgb(229.5, 229.5, 229.5);
+  --el-table-header-bg-color: rgb(25.5 25.5 25.5);
+  --el-table-header-text-color: rgb(229.5 229.5 229.5);
   --el-table-row-hover-bg-color: #26292c;
-  --el-table-text-color: rgb(229.5, 229.5, 229.5);
-  --el-table-tr-bg-color: rgb(25.5, 25.5, 25.5);
+  --el-table-text-color: rgb(229.5 229.5 229.5);
+  --el-table-tr-bg-color: rgb(25.5 25.5 25.5);
 }
 
 .el-loading-mask {
-  --el-mask-color: rgb(25.5, 25.5, 25.5);
-  --el-table-text-color: rgb(229.5, 229.5, 229.5);
+  --el-mask-color: rgb(25.5 25.5 25.5);
+  --el-table-text-color: rgb(229.5 229.5 229.5);
 }
+
 .el-loading-mask .el-loading-spinner .circular .path {
-  stroke: rgb(229.5, 229.5, 229.5);
+  stroke: rgb(229.5 229.5 229.5);
 }
 
 .el-pagination {
   --el-pagination-font-size: 12px;
 }
+
 .el-pagination .el-pagination__total,
 .el-pagination .el-pagination__jump {
-  --el-text-color-regular: rgb(229.5, 229.5, 229.5);
+  --el-text-color-regular: rgb(229.5 229.5 229.5);
 }
+
 .el-pagination .el-select__wrapper {
-  --el-input-text-color: rgb(229.5, 229.5, 229.5);
+  --el-input-text-color: rgb(229.5 229.5 229.5);
+
   border-radius: 16px;
   font-size: 12px;
-  background-color: rgb(12.75, 12.75, 12.75);
+  background-color: rgb(12.75 12.75 12.75);
   box-shadow: none;
 }
+
 .el-pagination .el-select__wrapper.is-hovering:not(.is-focused) {
   box-shadow: 0 0 0 1px #2b2e31;
 }
+
 .el-pagination :is(.btn-prev, .btn-next, .el-pager li) {
   --el-pagination-bg-color: none;
-  --el-pagination-button-color: rgb(178.5, 178.5, 178.5);
-  --el-pagination-hover-color: rgb(229.5, 229.5, 229.5);
+  --el-pagination-button-color: rgb(178.5 178.5 178.5);
+  --el-pagination-hover-color: rgb(229.5 229.5 229.5);
 }
+
 .el-pagination :is(.btn-prev:disabled, .btn-prev.is-disabled, .btn-next:disabled, .btn-next.is-disabled) {
   --el-pagination-button-disabled-bg-color: none;
-  --el-pagination-button-disabled-color: #666666;
+  --el-pagination-button-disabled-color: #666;
 }
+
 .el-pagination .el-pagination__jump .el-input {
-  --el-input-bg-color: rgb(12.75, 12.75, 12.75);
+  --el-input-bg-color: rgb(12.75 12.75 12.75);
   --el-input-border-color: none;
   --el-input-border-radius: 16px;
   --el-input-hover-border-color: #2b2e31;
+
   font-size: 12px;
 }
 
 .el-button {
   --el-button-active-bg-color: #f4bf99;
-  --el-button-active-border-color: hsl(30, 70%, 50%);
+  --el-button-active-border-color: hsl(30deg 70% 50%);
   --el-button-active-color: white;
   --el-button-active-text-color: white;
   --el-button-bg-color: none;
-  --el-button-border-color: rgb(178.5, 178.5, 178.5);
-  --el-button-hover-bg-color: hsl(30, 70%, 50%);
-  --el-button-hover-border-color: hsl(30, 70%, 50%);
+  --el-button-border-color: rgb(178.5 178.5 178.5);
+  --el-button-hover-bg-color: hsl(30deg 70% 50%);
+  --el-button-hover-border-color: hsl(30deg 70% 50%);
   --el-button-hover-link-text-color: #f4bf99;
   --el-button-hover-text-color: white;
-  --el-button-text-color: rgb(229.5, 229.5, 229.5);
+  --el-button-text-color: rgb(229.5 229.5 229.5);
+
   font-size: 12px;
 }
 
 .el-input {
-  --el-color-info: rgb(229.5, 229.5, 229.5);
-  --el-fill-color-light: rgb(12.75, 12.75, 12.75);
-  --el-input-text-color: rgb(229.5, 229.5, 229.5);
-  --el-text-color-placeholder: #666666;
+  --el-color-info: rgb(229.5 229.5 229.5);
+  --el-fill-color-light: rgb(12.75 12.75 12.75);
+  --el-input-text-color: rgb(229.5 229.5 229.5);
+  --el-text-color-placeholder: #666;
 }
+
 .el-input .el-input__wrapper {
-  --el-input-bg-color: rgb(12.75, 12.75, 12.75);
+  --el-input-bg-color: rgb(12.75 12.75 12.75);
 }
 
 .el-checkbox {
   --el-border: var(--el-border-width) var(--el-border-style) var(--el-border-color);
-  --el-border-color: rgb(178.5, 178.5, 178.5);
+  --el-border-color: rgb(178.5 178.5 178.5);
   --el-checkbox-bg-color: transparent;
   --el-checkbox-checked-bg-color: transparent;
-  --el-checkbox-checked-icon-color: hsl(30, 70%, 50%);
-  --el-checkbox-checked-input-border-color: hsl(30, 70%, 50%);
-  --el-checkbox-text-color: hsl(30, 70%, 50%);
-}/*# sourceMappingURL=element-override.css.map */
+  --el-checkbox-checked-icon-color: hsl(30deg 70% 50%);
+  --el-checkbox-checked-input-border-color: hsl(30deg 70% 50%);
+  --el-checkbox-text-color: hsl(30deg 70% 50%);
+}

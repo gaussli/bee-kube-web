@@ -13,8 +13,8 @@ const tabName = '监控数据'
 <style lang="scss" scoped>
 .deployment-monitor {
   display: flex;
-  align-items: center;
   justify-content: center;
+  align-items: center;
   height: 100%;
   font-size: 24px;
   color: $color-text-secondary;

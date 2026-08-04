@@ -399,8 +399,8 @@ onMounted(() => {
 
   .query-form {
     display: flex;
-    align-items: center;
     justify-content: space-between;
+    align-items: center;
 
     .query-form-left {
       display: flex;
@@ -438,9 +438,9 @@ onMounted(() => {
 
 .table-footer {
   display: flex;
-  flex-shrink: 0;
-  align-items: center;
   justify-content: space-between;
+  align-items: center;
+  flex-shrink: 0;
   padding: 16px 20px;
 }
 

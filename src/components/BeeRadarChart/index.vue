@@ -423,8 +423,8 @@ watch(
     .tooltip-content {
       .tooltip-item {
         display: flex;
-        align-items: center;
         justify-content: space-between;
+        align-items: center;
         padding-top: 8px;
         font-size: 12px;
 

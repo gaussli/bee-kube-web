@@ -13,8 +13,8 @@ const tabName = '事件信息'
 <style lang="scss" scoped>
 .deployment-events {
   display: flex;
-  align-items: center;
   justify-content: center;
+  align-items: center;
   height: 100%;
   font-size: 24px;
   color: $color-text-secondary;

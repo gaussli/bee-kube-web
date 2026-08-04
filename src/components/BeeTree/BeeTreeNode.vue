@@ -164,9 +164,9 @@ function handleContentClick() {
 
   &__expand-icon {
     display: flex;
-    flex-shrink: 0;
-    align-items: center;
     justify-content: center;
+    align-items: center;
+    flex-shrink: 0;
     width: 24px;
     height: 24px;
     font-size: 12px;

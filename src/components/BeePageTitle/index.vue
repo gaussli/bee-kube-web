@@ -44,8 +44,8 @@ defineProps<{
 
   &__icon {
     display: flex;
-    align-items: center;
     justify-content: center;
+    align-items: center;
     width: var(--bee-page-title-icon-size);
     height: var(--bee-page-title-icon-size);
     border-radius: 50% 0 50% 50%;
@@ -57,8 +57,8 @@ defineProps<{
     display: flex;
     gap: $spacing-4;
     flex-direction: column;
-    flex: 1;
     justify-content: center;
+    flex: 1;
     min-width: 0;
   }
 

@@ -218,8 +218,8 @@ onMounted(() => {
 
 .detail-header {
   display: flex;
-  flex-shrink: 0;
   align-items: center;
+  flex-shrink: 0;
   height: 48px;
   padding: 0 8px;
   border-bottom: 1px solid rgba($color-text-secondary, 0.1);
@@ -250,8 +250,8 @@ onMounted(() => {
 
   .role-icon {
     display: flex;
-    align-items: center;
     justify-content: center;
+    align-items: center;
     width: 72px;
     height: 72px;
     border-radius: 16px;
@@ -330,8 +330,8 @@ onMounted(() => {
       .info-item {
         display: flex;
         gap: 16px;
-        align-items: center;
         justify-content: space-between;
+        align-items: center;
 
         .info-label {
           display: flex;

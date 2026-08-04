@@ -179,8 +179,8 @@ onMounted(() => {
 
 .assign-header {
   display: flex;
-  flex-shrink: 0;
   align-items: center;
+  flex-shrink: 0;
   height: 48px;
   padding: 0 8px;
   border-bottom: 1px solid rgba($color-text-secondary, 0.1);
@@ -211,9 +211,9 @@ onMounted(() => {
 .assign-footer {
   display: flex;
   gap: 12px;
-  flex-shrink: 0;
-  align-items: center;
   justify-content: flex-end;
+  align-items: center;
+  flex-shrink: 0;
   padding: 16px 20px;
   border-top: 1px solid rgba($color-text-secondary, 0.1);
 }
@@ -228,8 +228,8 @@ onMounted(() => {
 
   .menu-icon {
     display: flex;
-    align-items: center;
     justify-content: center;
+    align-items: center;
     width: 72px;
     height: 72px;
     border-radius: 16px;
@@ -266,8 +266,8 @@ onMounted(() => {
 .role-item-content {
   display: flex;
   gap: 10px;
-  flex: 1;
   align-items: center;
+  flex: 1;
   min-width: 0;
 }
 
@@ -278,8 +278,8 @@ onMounted(() => {
 
 .role-icon {
   display: flex;
-  align-items: center;
   justify-content: center;
+  align-items: center;
   width: 32px;
   height: 32px;
   border-radius: 8px;

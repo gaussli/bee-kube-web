@@ -86,8 +86,8 @@ onMounted(() => {
 .bee-cluster-overview-event {
   &__header {
     display: flex;
-    align-items: center;
     justify-content: space-between;
+    align-items: center;
     height: 64px;
     font-weight: 500;
   }

@@ -148,8 +148,8 @@ async function handleLogout() {
 .bee-header {
   position: relative;
   display: flex;
-  align-items: center;
   justify-content: space-between;
+  align-items: center;
   width: 100%;
   height: 64px;
   padding: $spacing-8 $spacing-16;

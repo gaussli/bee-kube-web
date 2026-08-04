@@ -126,9 +126,9 @@ onMounted(() => {
 
   &__header {
     display: flex;
-    flex: 0 0 auto;
-    align-items: center;
     justify-content: space-between;
+    align-items: center;
+    flex: 0 0 auto;
     height: 64px;
     font-weight: 500;
   }

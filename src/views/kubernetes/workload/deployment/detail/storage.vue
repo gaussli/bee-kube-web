@@ -13,8 +13,8 @@ const tabName = '挂载存储'
 <style lang="scss" scoped>
 .deployment-storage {
   display: flex;
-  align-items: center;
   justify-content: center;
+  align-items: center;
   height: 100%;
   font-size: 24px;
   color: $color-text-secondary;

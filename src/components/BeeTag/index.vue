@@ -54,8 +54,8 @@ withDefaults(
   );
 
   display: inline-flex;
-  align-items: center;
   justify-content: center;
+  align-items: center;
   border: 1px solid $color-border-secondary;
   border-radius: $radius-full;
   color: $color-text-secondary;

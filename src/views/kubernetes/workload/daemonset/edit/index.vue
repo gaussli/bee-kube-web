@@ -121,8 +121,8 @@ onMounted(() => {
 
 .page-footer {
   display: flex;
-  flex-shrink: 0;
   justify-content: space-between;
+  flex-shrink: 0;
   padding: 16px 20px;
   background-color: $color-bg-surface;
 }

@@ -53,8 +53,8 @@ function handleClick() {
   position: relative;
   display: flex;
   gap: $spacing-8;
-  flex-shrink: 0;
   align-items: center;
+  flex-shrink: 0;
   box-sizing: border-box;
   height: 40px;
   padding: 0 20px;

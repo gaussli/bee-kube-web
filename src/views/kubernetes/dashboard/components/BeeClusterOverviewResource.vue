@@ -115,8 +115,8 @@ onMounted(() => {
 .bee-cluster-overview-resource {
   &__header {
     display: flex;
-    align-items: center;
     justify-content: space-between;
+    align-items: center;
     width: 100%;
     height: 64px;
     font-weight: 600;
@@ -153,8 +153,8 @@ onMounted(() => {
     &-row {
       display: grid;
       gap: 4px;
-      grid-template-columns: 48px 1fr 1fr 1fr;
       align-items: center;
+      grid-template-columns: 48px 1fr 1fr 1fr;
       padding: 16px;
       border-radius: 8px;
       background: $color-bg-elevated;
@@ -162,16 +162,16 @@ onMounted(() => {
 
     &-ring {
       display: flex;
-      align-items: center;
       justify-content: center;
+      align-items: center;
     }
 
     &-col {
       display: flex;
       gap: 8px;
       flex-direction: column;
-      align-items: center;
       justify-content: center;
+      align-items: center;
 
       // height: 48px;
     }

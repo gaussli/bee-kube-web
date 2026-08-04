@@ -106,8 +106,8 @@ function handleConfirm() {
   inset: 0;
   z-index: 2000;
   display: flex;
-  align-items: center;
   justify-content: center;
+  align-items: center;
   background-color: $color-bg-mask;
 }
 
@@ -123,8 +123,8 @@ function handleConfirm() {
 // ==================== 头部 ====================
 .dialog-header {
   display: flex;
-  align-items: center;
   justify-content: space-between;
+  align-items: center;
   padding: $spacing-16;
 
   .dialog-title {

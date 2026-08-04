@@ -322,8 +322,8 @@ function handleMoveToLeft() {
 
 .panel-empty {
   display: flex;
-  align-items: center;
   justify-content: center;
+  align-items: center;
   height: 100px;
   font-size: 13px;
   color: $color-text-secondary;

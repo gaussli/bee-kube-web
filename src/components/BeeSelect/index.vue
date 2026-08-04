@@ -291,8 +291,8 @@ defineExpose({
   z-index: 1;
   display: flex;
   gap: $spacing-8;
-  align-items: center;
   justify-content: space-between;
+  align-items: center;
   padding: $spacing-8 $spacing-16;
   margin: $spacing-8;
   border-radius: $radius-full;

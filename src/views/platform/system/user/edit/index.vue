@@ -103,8 +103,8 @@ onMounted(() => {
 
 .form-header {
   display: flex;
-  flex-shrink: 0;
   align-items: center;
+  flex-shrink: 0;
   height: 48px;
   padding: 0 8px;
   border-bottom: 1px solid rgba($color-text-secondary, 0.1);
@@ -130,9 +130,9 @@ onMounted(() => {
 
 .form-footer {
   display: flex;
-  flex-shrink: 0;
-  align-items: center;
   justify-content: flex-end;
+  align-items: center;
+  flex-shrink: 0;
   padding: 16px 20px;
   border-top: 1px solid rgba($color-text-secondary, 0.1);
 }

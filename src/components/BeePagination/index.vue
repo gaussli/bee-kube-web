@@ -263,8 +263,8 @@ function handlePageInputFilter(event: Event) {
 
   &__btn {
     display: flex;
-    align-items: center;
     justify-content: center;
+    align-items: center;
     width: 28px;
     height: 28px;
     padding: 0;
@@ -315,8 +315,8 @@ function handlePageInputFilter(event: Event) {
     // 隐藏 number 输入框的箭头
     &::-webkit-outer-spin-button,
     &::-webkit-inner-spin-button {
-      margin: 0;
       appearance: none;
+      margin: 0;
     }
 
     // Firefox

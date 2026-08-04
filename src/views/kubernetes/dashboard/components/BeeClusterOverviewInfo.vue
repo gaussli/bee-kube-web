@@ -99,15 +99,15 @@ const statusConfig = computed(() => {
   &__core {
     display: flex;
     gap: $spacing-16;
-    flex: 1;
     align-items: flex-start;
+    flex: 1;
     height: 100%;
     padding: $spacing-16;
 
     &-icon {
       display: flex;
-      align-items: center;
       justify-content: center;
+      align-items: center;
       width: 64px;
       height: 64px;
       border-radius: 50% 0 50% 50%;
@@ -119,8 +119,8 @@ const statusConfig = computed(() => {
       display: flex;
       gap: $spacing-16;
       flex-direction: column;
-      flex: 1;
       align-items: center;
+      flex: 1;
       width: 100%;
 
       &-row {
