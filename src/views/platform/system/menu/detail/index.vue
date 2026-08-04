@@ -384,40 +384,6 @@ onMounted(() => {
         justify-content: space-between;
         align-items: center;
 
-        &-full {
-          gap: 8px;
-          flex-direction: column;
-          align-items: flex-start;
-
-          .info-value {
-            text-align: left;
-            word-break: break-all;
-          }
-        }
-
-        .info-label {
-          display: flex;
-          gap: 8px;
-          align-items: center;
-
-          .el-icon {
-            flex-shrink: 0;
-            font-size: 14px;
-            color: $color-text-tertiary;
-          }
-
-          .label-zh {
-            font-size: 14px;
-            color: $color-text-secondary;
-          }
-
-          .label-en {
-            margin-left: 2px;
-            font-size: 12px;
-            color: $color-text-tertiary;
-          }
-        }
-
         .info-value {
           overflow: hidden;
           font-size: 14px;
@@ -441,6 +407,41 @@ onMounted(() => {
         .permission-value {
           font-family: Monaco, Menlo, monospace;
           color: $color-warning;
+        }
+      }
+
+      // Extracted:避免嵌套深度超过 4 层
+      .info-item-full {
+        gap: 8px;
+        flex-direction: column;
+        align-items: flex-start;
+      }
+
+      .info-item-full .info-value {
+        text-align: left;
+        word-break: break-all;
+      }
+
+      .info-item .info-label {
+        display: flex;
+        gap: 8px;
+        align-items: center;
+
+        .el-icon {
+          flex-shrink: 0;
+          font-size: 14px;
+          color: $color-text-tertiary;
+        }
+
+        .label-zh {
+          font-size: 14px;
+          color: $color-text-secondary;
+        }
+
+        .label-en {
+          margin-left: 2px;
+          font-size: 12px;
+          color: $color-text-tertiary;
         }
       }
     }

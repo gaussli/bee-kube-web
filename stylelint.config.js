@@ -67,7 +67,7 @@ export default {
     /* ------------------------------------------------------------------
      * 5. CSS 属性分组排序
      *    将属性按功能分为 8 组，每组内按声明顺序排列。
-     *    未归入任何分组的属性（unspecified）放在最底部，前面留一个空行。
+     *    未归入任何分组的属性（unspecified）放在最顶部，前面留一个空行。
      *
      *    分组说明：
      *    ┌──────────┬──────────────────────────────────────────────────┐
@@ -333,7 +333,29 @@ export default {
         unspecified: 'top',                 // 未分组的属性放在最前面（bottom → top 变更，更符合直觉）
         emptyLineBeforeUnspecified: 'always' // 未分组属性前保留一个空行，与分组属性隔离
       }
-    ]
+    ],
+
+    /* ------------------------------------------------------------------
+     * 6. 代码质量规则
+     *    控制嵌套深度、冗余嵌套、冗余简写属性，提升代码可维护性
+     * ------------------------------------------------------------------ */
+
+    /** 嵌套深度最大 4 层，忽略伪类/伪元素嵌套 */
+    'max-nesting-depth': [
+      4,
+      {
+        ignore: ['pseudo-classes']
+      }
+    ],
+
+    /** 禁止冗余的 SCSS 嵌套选择器，如 & { .foo { &__bar {} } } */
+    'scss/selector-no-redundant-nesting-selector': true,
+
+    /** 禁止可合并的冗余长写属性，如同时设置 margin-top + margin-bottom */
+    'declaration-block-no-redundant-longhand-properties': true,
+
+    /** 禁止简写属性中的冗余值，如 margin: 1px 1px 1px 1px → margin: 1px */
+    'shorthand-property-no-redundant-values': true
   },
 
   /* ======================================================================

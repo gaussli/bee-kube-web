@@ -337,23 +337,6 @@ onMounted(() => {
           display: flex;
           gap: 8px;
           align-items: center;
-
-          .el-icon {
-            flex-shrink: 0;
-            font-size: 14px;
-            color: $color-text-tertiary;
-          }
-
-          .label-zh {
-            font-size: 14px;
-            color: $color-text-secondary;
-          }
-
-          .label-en {
-            margin-left: 2px;
-            font-size: 12px;
-            color: $color-text-tertiary;
-          }
         }
 
         .info-value {
@@ -363,6 +346,26 @@ onMounted(() => {
           text-align: right;
           text-overflow: ellipsis;
           white-space: nowrap;
+        }
+      }
+
+      // Extracted:避免嵌套深度超过 4 层
+      .info-item .info-label {
+        .el-icon {
+          flex-shrink: 0;
+          font-size: 14px;
+          color: $color-text-tertiary;
+        }
+
+        .label-zh {
+          font-size: 14px;
+          color: $color-text-secondary;
+        }
+
+        .label-en {
+          margin-left: 2px;
+          font-size: 12px;
+          color: $color-text-tertiary;
         }
       }
     }
