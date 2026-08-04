@@ -89,9 +89,9 @@ function handleTabChange(tab?: string | number) {
   if (tab) {
     appStore.setCurrentTab(tab as TabType)
     if (activeClusterId.value || tab !== 'kubernetes') {
-      router.push({ name: tab as string })
+      router.push({ name: tab as string }).catch(() => {})
     } else {
-      router.push({ name: 'kubernetes:cluster' })
+      router.push({ name: 'kubernetes:cluster' }).catch(() => {})
     }
   }
 }
@@ -111,9 +111,9 @@ onUnmounted(() => {
 
 function toggleFullscreen() {
   if (!document.fullscreenElement) {
-    document.documentElement.requestFullscreen()
+    void document.documentElement.requestFullscreen().catch(() => {})
   } else {
-    document.exitFullscreen()
+    void document.exitFullscreen().catch(() => {})
   }
 }
 
@@ -139,8 +139,8 @@ async function handleLogout() {
   } catch {
     // 忽略退出接口错误，继续清理
   }
-  userStore.clear()
-  router.push('/login')
+  void userStore.clear()
+  router.push('/login').catch(() => {})
 }
 </script>
 

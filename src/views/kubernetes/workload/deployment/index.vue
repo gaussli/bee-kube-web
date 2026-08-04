@@ -294,7 +294,7 @@ function handleSearch() {
   queryForm.id = searchKey.value
   queryForm.name = searchKey.value
   pagination.page = 1
-  loadData()
+  void loadData()
 }
 
 /**
@@ -308,7 +308,7 @@ function handleReset() {
   pagination.page = 1
   pagination.pageSize = 10
   searchKey.value = ''
-  loadData()
+  void loadData()
 }
 
 // ==================== Selection ====================
@@ -330,7 +330,7 @@ function handleClearSelection() {
 
 /** 跳转创建页面 */
 function handleCreate() {
-  router.push({ name: 'kubernetes:workload:deployment:create', params: { clusterId: clusterId.value } })
+  router.push({ name: 'kubernetes:workload:deployment:create', params: { clusterId: clusterId.value } }).catch(() => {})
 }
 
 /** YAML 方式创建（功能开发中） */
@@ -350,11 +350,13 @@ function handleImport() {
 
 /** 跳转编辑页面 */
 function handleEdit(row: DeploymentListVo) {
-  router.push({
-    name: 'kubernetes:workload:deployment:edit',
-    params: { clusterId: row.clusterId },
-    query: { namespace: row.namespace, name: row.name },
-  })
+  router
+    .push({
+      name: 'kubernetes:workload:deployment:edit',
+      params: { clusterId: row.clusterId },
+      query: { namespace: row.namespace, name: row.name },
+    })
+    .catch(() => {})
 }
 
 /** 编辑 YAML */
@@ -364,11 +366,13 @@ function handleEditYaml(row: DeploymentListVo) {
 
 /** 跳转详情页面 */
 function handleViewDetail(row: DeploymentListVo) {
-  router.push({
-    name: 'kubernetes:workload:deployment:detail',
-    params: { clusterId: row.clusterId },
-    query: { namespace: row.namespace, name: row.name },
-  })
+  router
+    .push({
+      name: 'kubernetes:workload:deployment:detail',
+      params: { clusterId: row.clusterId },
+      query: { namespace: row.namespace, name: row.name },
+    })
+    .catch(() => {})
 }
 
 /** 扩缩容 */
@@ -406,7 +410,7 @@ async function handleConfirmDelete() {
     ElMessage.success('删除成功')
     deleteDialogVisible.value = false
     currentTargetRow.value = null
-    loadData()
+    await loadData()
   } catch (err) {
     console.error('[handleConfirmDelete]', err)
   }
@@ -432,7 +436,7 @@ async function handleConfirmBatchDelete() {
     ElMessage.success(`成功删除 ${names.length} 个 Deployment`)
     batchDeleteDialogVisible.value = false
     selectedRows.value = []
-    loadData()
+    await loadData()
   } catch (err) {
     console.error('[handleConfirmBatchDelete]', err)
   }
@@ -477,8 +481,8 @@ function getActions(row: DeploymentListVo): ActionItem[] {
 // ==================== Lifecycle ====================
 
 onMounted(() => {
-  loadNamespaceOptions()
-  loadData()
+  void loadNamespaceOptions()
+  void loadData()
 })
 </script>
 

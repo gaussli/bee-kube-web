@@ -93,9 +93,12 @@ export default [
     languageOptions: {
       parser: parserVue,          // Vue SFC 解析器（处理 template / script / style）
       parserOptions: {
-        ecmaVersion: 'latest',    // 使用最新 ECMAScript 语法标准
-        sourceType: 'module',     // ES Module 模式
-        parser: tseslintParser    // <script lang="ts"> 委托给 TypeScript 解析器
+        ecmaVersion: 'latest',            // 使用最新 ECMAScript 语法标准
+        sourceType: 'module',             // ES Module 模式
+        parser: tseslintParser,           // <script lang="ts"> 委托给 TypeScript 解析器
+        projectService: true,             // 启用 TS 项目服务，支持类型感知规则
+        tsconfigRootDir: import.meta.dirname,  // 项目根目录
+        extraFileExtensions: ['.vue']     // 让 TS 解析器识别 .vue SFC 文件
       }
     },
     plugins: {
@@ -121,7 +124,12 @@ export default [
           argsIgnorePattern: '^_'                         // _ 前缀参数允许未使用
         }
       ],
-      'no-prototype-builtins': 'off'                      // 允许直接调用 hasOwnProperty 等原型方法
+      'no-prototype-builtins': 'off',                     // 允许直接调用 hasOwnProperty 等原型方法
+
+      // --- 类型感知规则（需 projectService）---
+      '@typescript-eslint/no-floating-promises': 'error', // 禁止未处理的 Promise（await/.then/.catch）
+      '@typescript-eslint/await-thenable': 'error',       // 禁止对非 Promise 对象使用 await
+      '@typescript-eslint/no-misused-promises': 'error'   // 禁止在需要布尔/数组的地方误用 Promise
     }
   },
 
@@ -138,7 +146,9 @@ export default [
       parser: tseslintParser,
       parserOptions: {
         ecmaVersion: 'latest',
-        sourceType: 'module'
+        sourceType: 'module',
+        projectService: true,             // 启用 TS 项目服务，支持类型感知规则
+        tsconfigRootDir: import.meta.dirname  // 项目根目录
       }
     },
     plugins: {
@@ -157,7 +167,12 @@ export default [
           argsIgnorePattern: '^_'                         // 以 _ 开头的参数允许未使用（如 _event）
         }
       ],
-      'no-prototype-builtins': 'off'                      // 允许直接在对象上调用 hasOwnProperty 等原型方法
+      'no-prototype-builtins': 'off',                     // 允许直接在对象上调用 hasOwnProperty 等原型方法
+
+      // --- 类型感知规则（需 projectService）---
+      '@typescript-eslint/no-floating-promises': 'error', // 禁止未处理的 Promise（await/.then/.catch）
+      '@typescript-eslint/await-thenable': 'error',       // 禁止对非 Promise 对象使用 await
+      '@typescript-eslint/no-misused-promises': 'error'   // 禁止在需要布尔/数组的地方误用 Promise
     }
   },
 

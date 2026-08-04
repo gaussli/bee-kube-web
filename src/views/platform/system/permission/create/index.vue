@@ -61,7 +61,7 @@ async function handleCreate() {
     const formData = permissionFormRef.value?.getFormData()
     await createPermission(formData!)
     ElMessage.success('创建成功')
-    router.push({ name: 'platform:system:permission' })
+    router.push({ name: 'platform:system:permission' }).catch(() => {})
   } catch {
     // 验证失败
   }

@@ -290,7 +290,7 @@ async function loadData() {
 function handleSelect(selectValue?: string | number) {
   queryForm.status = selectValue as number | undefined
   pagination.page = 1
-  loadData()
+  void loadData()
 }
 
 function handleReset() {
@@ -302,7 +302,7 @@ function handleReset() {
   queryForm.pageSize = 10
   pagination.page = 1
   pagination.pageSize = 10
-  loadData()
+  void loadData()
 }
 
 function handleSelectionChange(rows: UserResp[]) {
@@ -310,15 +310,15 @@ function handleSelectionChange(rows: UserResp[]) {
 }
 
 function handleView(row: UserResp) {
-  router.push({ name: 'platform:system:user:detail', params: { id: row.id } })
+  router.push({ name: 'platform:system:user:detail', params: { id: row.id } }).catch(() => {})
 }
 
 function handleCreate() {
-  router.push({ name: 'platform:system:user:create' })
+  router.push({ name: 'platform:system:user:create' }).catch(() => {})
 }
 
 function handleEdit(row: UserResp) {
-  router.push({ name: 'platform:system:user:edit', params: { id: row.id } })
+  router.push({ name: 'platform:system:user:edit', params: { id: row.id } }).catch(() => {})
 }
 
 function handleToggleStatus(row: UserResp) {
@@ -327,7 +327,7 @@ function handleToggleStatus(row: UserResp) {
 }
 
 function handleAssignRoles(row: UserResp) {
-  router.push({ name: 'platform:system:user:assign-roles', params: { id: row.id } })
+  router.push({ name: 'platform:system:user:assign-roles', params: { id: row.id } }).catch(() => {})
 }
 
 function handleDelete(row: UserResp) {
@@ -342,7 +342,7 @@ async function handleConfirmDelete() {
     ElMessage.success('删除成功')
     deleteDialogVisible.value = false
     currentTargetRow.value = null
-    loadData()
+    await loadData()
   } catch {
     // 失败处理
   }
@@ -357,7 +357,7 @@ async function handleConfirmStatus() {
     ElMessage.success(`${actionText}成功`)
     statusDialogVisible.value = false
     currentTargetRow.value = null
-    loadData()
+    await loadData()
   } catch {
     // 失败处理
   }
@@ -374,14 +374,14 @@ async function handleConfirmBatchDelete() {
     ElMessage.success(`成功删除 ${ids.length} 个用户`)
     batchDeleteDialogVisible.value = false
     selectedRows.value = []
-    loadData()
+    await loadData()
   } catch {
     // 失败处理
   }
 }
 
 onMounted(() => {
-  loadData()
+  void loadData()
 })
 </script>
 

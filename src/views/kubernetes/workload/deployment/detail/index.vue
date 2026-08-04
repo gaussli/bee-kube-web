@@ -106,7 +106,7 @@ function handleAction(key: string) {
 }
 
 onMounted(() => {
-  loadData()
+  void loadData()
 })
 </script>
 

@@ -255,7 +255,7 @@ function handleBack() {
 }
 
 onMounted(() => {
-  loadData()
+  void loadData()
 })
 </script>
 

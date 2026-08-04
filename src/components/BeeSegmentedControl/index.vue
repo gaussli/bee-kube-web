@@ -76,7 +76,7 @@ function syncActiveIndex(value?: string | number) {
 
 // DOM 就绪后同步初始选中状态（避免首屏滑块宽度闪动）
 onMounted(() => {
-  nextTick(() => {
+  void nextTick(() => {
     syncActiveIndex(props.modelValue)
   })
 })

@@ -107,7 +107,7 @@ async function loadData() {
 }
 
 onMounted(() => {
-  loadData()
+  void loadData()
 })
 </script>
 

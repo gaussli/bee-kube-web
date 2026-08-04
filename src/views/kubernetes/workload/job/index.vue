@@ -284,7 +284,7 @@ async function loadData() {
 function handleSearch() {
   queryForm.name = searchKey.value
   pagination.page = 1
-  loadData()
+  void loadData()
 }
 
 /**
@@ -297,7 +297,7 @@ function handleReset() {
   pagination.page = 1
   pagination.pageSize = 10
   searchKey.value = ''
-  loadData()
+  void loadData()
 }
 
 // ==================== Selection ====================
@@ -314,25 +314,29 @@ function handleSelectionChange(rows: Record<string, unknown>[]) {
 
 /** 跳转创建页面 */
 function handleCreate() {
-  router.push({ name: 'kubernetes:workload:job:create', params: { clusterId: clusterId.value } })
+  router.push({ name: 'kubernetes:workload:job:create', params: { clusterId: clusterId.value } }).catch(() => {})
 }
 
 /** 跳转编辑页面 */
 function handleEdit(row: JobListResp) {
-  router.push({
-    name: 'kubernetes:workload:job:edit',
-    params: { clusterId: row.clusterId },
-    query: { namespace: row.namespace, name: row.name },
-  })
+  router
+    .push({
+      name: 'kubernetes:workload:job:edit',
+      params: { clusterId: row.clusterId },
+      query: { namespace: row.namespace, name: row.name },
+    })
+    .catch(() => {})
 }
 
 /** 跳转详情页面 */
 function handleViewDetail(row: JobListResp) {
-  router.push({
-    name: 'kubernetes:workload:job:detail',
-    params: { clusterId: row.clusterId },
-    query: { namespace: row.namespace, name: row.name },
-  })
+  router
+    .push({
+      name: 'kubernetes:workload:job:detail',
+      params: { clusterId: row.clusterId },
+      query: { namespace: row.namespace, name: row.name },
+    })
+    .catch(() => {})
 }
 
 /** 编辑 YAML */
@@ -356,7 +360,7 @@ async function handleConfirmDelete() {
     ElMessage.success('删除成功')
     deleteDialogVisible.value = false
     currentTargetRow.value = null
-    loadData()
+    await loadData()
   } catch (err) {
     console.error('[handleConfirmDelete]', err)
   }
@@ -378,7 +382,7 @@ async function handleConfirmBatchDelete() {
     ElMessage.success(`成功删除 ${names.length} 个 Job`)
     batchDeleteDialogVisible.value = false
     selectedRows.value = []
-    loadData()
+    await loadData()
   } catch (err) {
     console.error('[handleConfirmBatchDelete]', err)
   }
@@ -423,8 +427,8 @@ function getActions(row: JobListResp): ActionItem[] {
 // ==================== Lifecycle ====================
 
 onMounted(() => {
-  loadNamespaceOptions()
-  loadData()
+  void loadNamespaceOptions()
+  void loadData()
 })
 </script>
 

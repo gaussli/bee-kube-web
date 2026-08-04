@@ -293,7 +293,7 @@ function handleSelect(selectValue?: string | number) {
   queryForm.status = selectValue as number | undefined
   pagination.page = 1
   pagination.pageSize = 10
-  loadData()
+  void loadData()
 }
 
 function handleReset() {
@@ -304,7 +304,7 @@ function handleReset() {
   queryForm.status = undefined
   pagination.page = 1
   pagination.pageSize = 10
-  loadData()
+  void loadData()
 }
 
 function handleSelectionChange(rows: RoleResp[]) {
@@ -312,23 +312,23 @@ function handleSelectionChange(rows: RoleResp[]) {
 }
 
 function handleView(row: RoleResp) {
-  router.push({ name: 'platform:system:role:detail', params: { id: row.id } })
+  router.push({ name: 'platform:system:role:detail', params: { id: row.id } }).catch(() => {})
 }
 
 function handleCreate() {
-  router.push({ name: 'platform:system:role:create' })
+  router.push({ name: 'platform:system:role:create' }).catch(() => {})
 }
 
 function handleEdit(row: RoleResp) {
-  router.push({ name: 'platform:system:role:edit', params: { id: row.id } })
+  router.push({ name: 'platform:system:role:edit', params: { id: row.id } }).catch(() => {})
 }
 
 function handleAssignPermissions(row: RoleResp) {
-  router.push({ name: 'platform:system:role:assign-permissions', params: { roleId: row.id } })
+  router.push({ name: 'platform:system:role:assign-permissions', params: { roleId: row.id } }).catch(() => {})
 }
 
 function handleAssignUsers(row: RoleResp) {
-  router.push({ name: ':system:role:assign-users', params: { roleId: row.id } })
+  router.push({ name: ':system:role:assign-users', params: { roleId: row.id } }).catch(() => {})
 }
 
 function handleToggleStatus(row: RoleResp) {
@@ -350,7 +350,7 @@ async function handleConfirmStatus() {
     ElMessage.success(`${actionText}成功`)
     statusDialogVisible.value = false
     currentTargetRow.value = null
-    loadData()
+    await loadData()
   } catch {
     // 失败处理
   }
@@ -363,7 +363,7 @@ async function handleConfirmDelete() {
     ElMessage.success('删除成功')
     deleteDialogVisible.value = false
     currentTargetRow.value = null
-    loadData()
+    await loadData()
   } catch {
     // 失败处理
   }
@@ -380,14 +380,14 @@ async function handleConfirmBatchDelete() {
     ElMessage.success(`成功删除 ${ids.length} 个角色`)
     batchDeleteDialogVisible.value = false
     selectedRows.value = []
-    loadData()
+    await loadData()
   } catch {
     // 失败处理
   }
 }
 
 onMounted(() => {
-  loadData()
+  void loadData()
 })
 </script>
 

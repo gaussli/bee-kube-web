@@ -63,15 +63,17 @@ function handleSelect(index: string | number) {
   const routeName = String(index)
   // 集群管理特殊处理：存在 activeClusterId 则跳转 dashboard，否则跳转列表
   if (routeName === CLUSTER_ROUTE && kubernetesStore.activeClusterId) {
-    router.push({ name: CLUSTER_DASHBOARD_ROUTE, params: { clusterId: kubernetesStore.activeClusterId } })
+    router
+      .push({ name: CLUSTER_DASHBOARD_ROUTE, params: { clusterId: kubernetesStore.activeClusterId } })
+      .catch(() => {})
     return
   }
   // kubernetes 子资源路由需要携带 clusterId
   if (routeName.startsWith('kubernetes:') && routeName !== CLUSTER_ROUTE && routeName !== CLUSTER_DASHBOARD_ROUTE) {
-    router.push({ name: routeName, params: { clusterId: kubernetesStore.activeClusterId } })
+    router.push({ name: routeName, params: { clusterId: kubernetesStore.activeClusterId } }).catch(() => {})
     return
   }
-  router.push({ name: routeName })
+  router.push({ name: routeName }).catch(() => {})
 }
 </script>
 

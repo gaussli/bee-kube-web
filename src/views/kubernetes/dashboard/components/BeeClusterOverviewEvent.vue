@@ -78,7 +78,7 @@ async function loadEvents() {
 }
 
 onMounted(() => {
-  loadEvents()
+  void loadEvents()
 })
 </script>
 

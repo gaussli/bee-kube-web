@@ -220,7 +220,7 @@ function handleSearch() {
   queryForm.id = key
   queryForm.name = key
   pagination.page = 1
-  loadData()
+  void loadData()
 }
 
 /**
@@ -233,7 +233,7 @@ function handleReset() {
   pagination.page = 1
   pagination.pageSize = 10
   searchKey.value = ''
-  loadData()
+  void loadData()
 }
 
 /**
@@ -247,14 +247,14 @@ function handleSelectionChange(rows: Record<string, unknown>[]) {
  * 跳转纳管页面
  */
 function handleCreate() {
-  router.push({ name: 'kubernetes:cluster:create' })
+  router.push({ name: 'kubernetes:cluster:create' }).catch(() => {})
 }
 
 /**
  * 跳转编辑页面
  */
 function handleEdit(row: ClusterListResp) {
-  router.push({ name: 'kubernetes:cluster:edit', query: { id: row.id } })
+  router.push({ name: 'kubernetes:cluster:edit', query: { id: row.id } }).catch(() => {})
 }
 
 /**
@@ -262,7 +262,7 @@ function handleEdit(row: ClusterListResp) {
  */
 function handleSelectCluster(row: ClusterListResp) {
   kubernetesStore.setActiveClusterId(row.id)
-  router.push({ name: 'kubernetes:dashboard', params: { clusterId: row.id } })
+  router.push({ name: 'kubernetes:dashboard', params: { clusterId: row.id } }).catch(() => {})
 }
 
 /**
@@ -283,7 +283,7 @@ async function handleConfirmDelete() {
     ElMessage.success('删除成功')
     deleteDialogVisible.value = false
     currentTargetRow.value = null
-    loadData()
+    await loadData()
   } catch {
     // 删除失败，接口层已提示
   }
@@ -306,14 +306,14 @@ async function handleConfirmBatchDelete() {
     ElMessage.success(`成功删除 ${ids.length} 个集群`)
     batchDeleteDialogVisible.value = false
     selectedRows.value = []
-    loadData()
+    await loadData()
   } catch {
     // 删除失败，接口层已提示
   }
 }
 
 onMounted(() => {
-  loadData()
+  void loadData()
 })
 </script>
 

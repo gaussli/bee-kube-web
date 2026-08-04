@@ -254,7 +254,7 @@ function handleSelect(selectValue?: string | number) {
   queryForm.status = selectValue as number | undefined
   pagination.page = 1
   pagination.pageSize = 10
-  loadData()
+  void loadData()
 }
 
 function handleReset() {
@@ -265,7 +265,7 @@ function handleReset() {
   queryForm.status = undefined
   pagination.page = 1
   pagination.pageSize = 10
-  loadData()
+  void loadData()
 }
 
 function handleSelectionChange(rows: PermissionResp[]) {
@@ -273,15 +273,15 @@ function handleSelectionChange(rows: PermissionResp[]) {
 }
 
 function handleView(row: PermissionResp) {
-  router.push({ name: 'platform:system:permission:detail', params: { id: row.id } })
+  router.push({ name: 'platform:system:permission:detail', params: { id: row.id } }).catch(() => {})
 }
 
 function handleCreate() {
-  router.push({ name: 'platform:system:permission:create' })
+  router.push({ name: 'platform:system:permission:create' }).catch(() => {})
 }
 
 function handleEdit(row: PermissionResp) {
-  router.push({ name: 'platform:system:permission:edit', params: { id: row.id } })
+  router.push({ name: 'platform:system:permission:edit', params: { id: row.id } }).catch(() => {})
 }
 
 function handleDelete(row: PermissionResp) {
@@ -298,7 +298,7 @@ async function handleConfirmStatus() {
     ElMessage.success(`${actionText}成功`)
     statusDialogVisible.value = false
     currentTargetRow.value = null
-    loadData()
+    await loadData()
   } catch {
     // 失败处理
   }
@@ -311,7 +311,7 @@ async function handleConfirmDelete() {
     ElMessage.success('删除成功')
     deleteDialogVisible.value = false
     currentTargetRow.value = null
-    loadData()
+    await loadData()
   } catch {
     // 失败处理
   }
@@ -328,14 +328,14 @@ async function handleConfirmBatchDelete() {
     ElMessage.success(`成功删除 ${ids.length} 个权限`)
     batchDeleteDialogVisible.value = false
     selectedRows.value = []
-    loadData()
+    await loadData()
   } catch {
     // 失败处理
   }
 }
 
 onMounted(() => {
-  loadData()
+  void loadData()
 })
 </script>
 

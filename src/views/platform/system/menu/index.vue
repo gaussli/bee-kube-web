@@ -326,14 +326,14 @@ function handleSelect(selectValue?: string | number) {
   queryForm.status = selectValue as number | undefined
   pagination.page = 1
   pagination.pageSize = 10
-  loadData()
+  void loadData()
 }
 
 function handleTypeSelect(selectValue?: string | number) {
   queryForm.type = selectValue as number | undefined
   pagination.page = 1
   pagination.pageSize = 10
-  loadData()
+  void loadData()
 }
 
 function handleReset() {
@@ -345,7 +345,7 @@ function handleReset() {
   queryForm.status = undefined
   pagination.page = 1
   pagination.pageSize = 10
-  loadData()
+  void loadData()
 }
 
 function handleSelectionChange(rows: MenuResp[]) {
@@ -353,19 +353,19 @@ function handleSelectionChange(rows: MenuResp[]) {
 }
 
 function handleView(row: MenuResp) {
-  router.push({ name: 'platform:system:menu:detail', params: { id: row.id } })
+  router.push({ name: 'platform:system:menu:detail', params: { id: row.id } }).catch(() => {})
 }
 
 function handleCreate() {
-  router.push({ name: 'platform:system:menu:create' })
+  router.push({ name: 'platform:system:menu:create' }).catch(() => {})
 }
 
 function handleEdit(row: MenuResp) {
-  router.push({ name: 'platform:system:menu:edit', params: { id: row.id } })
+  router.push({ name: 'platform:system:menu:edit', params: { id: row.id } }).catch(() => {})
 }
 
 function handleAssignRoles(row: MenuResp) {
-  router.push({ name: 'platform:system:menu:assign-roles', params: { menuId: row.id } })
+  router.push({ name: 'platform:system:menu:assign-roles', params: { menuId: row.id } }).catch(() => {})
 }
 
 function handleToggleStatus(row: MenuResp) {
@@ -387,7 +387,7 @@ async function handleConfirmStatus() {
     ElMessage.success(`${actionText}成功`)
     statusDialogVisible.value = false
     currentTargetRow.value = null
-    loadData()
+    await loadData()
   } catch {
     // 失败处理
   }
@@ -400,7 +400,7 @@ async function handleConfirmDelete() {
     ElMessage.success('删除成功')
     deleteDialogVisible.value = false
     currentTargetRow.value = null
-    loadData()
+    await loadData()
   } catch {
     // 失败处理
   }
@@ -417,14 +417,14 @@ async function handleConfirmBatchDelete() {
     ElMessage.success(`成功删除 ${ids.length} 个菜单`)
     batchDeleteDialogVisible.value = false
     selectedRows.value = []
-    loadData()
+    await loadData()
   } catch {
     // 失败处理
   }
 }
 
 onMounted(() => {
-  loadData()
+  void loadData()
 })
 </script>
 

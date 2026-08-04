@@ -182,11 +182,13 @@ function handleBack() {
 }
 
 function handleEdit() {
-  router.push({ name: 'kubernetes:node:edit', params: { clusterId: clusterId.value }, query: { name: nodeName.value } })
+  router
+    .push({ name: 'kubernetes:node:edit', params: { clusterId: clusterId.value }, query: { name: nodeName.value } })
+    .catch(() => {})
 }
 
 onMounted(() => {
-  loadData()
+  void loadData()
 })
 </script>
 

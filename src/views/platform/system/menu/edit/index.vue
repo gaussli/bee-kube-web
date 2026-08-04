@@ -82,14 +82,14 @@ async function handleUpdate() {
     const formData = menuFormRef.value?.getFormData()
     await updateMenu(menuId, formData!)
     ElMessage.success('保存成功')
-    router.push({ name: 'platform:system:menu' })
+    router.push({ name: 'platform:system:menu' }).catch(() => {})
   } catch {
     // 验证失败
   }
 }
 
 onMounted(() => {
-  loadData()
+  void loadData()
 })
 </script>
 

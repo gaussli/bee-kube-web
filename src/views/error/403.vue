@@ -27,7 +27,7 @@ defineOptions({ name: 'NoPermission' })
 const router = useRouter()
 
 function handleGoHome() {
-  router.push('/')
+  router.push('/').catch(() => {})
 }
 
 function handleGoBack() {

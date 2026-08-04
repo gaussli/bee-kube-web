@@ -109,14 +109,16 @@ function handleBack() {
   router.back()
 }
 function handleEdit() {
-  router.push({
-    name: 'kubernetes:workload:job:edit',
-    params: { clusterId: clusterId.value },
-    query: { namespace: namespace.value, name: jobName.value },
-  })
+  router
+    .push({
+      name: 'kubernetes:workload:job:edit',
+      params: { clusterId: clusterId.value },
+      query: { namespace: namespace.value, name: jobName.value },
+    })
+    .catch(() => {})
 }
 onMounted(() => {
-  loadData()
+  void loadData()
 })
 </script>
 

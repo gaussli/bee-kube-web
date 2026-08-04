@@ -80,7 +80,7 @@ async function handleSubmit() {
   }
 }
 onMounted(() => {
-  loadData()
+  void loadData()
 })
 </script>
 

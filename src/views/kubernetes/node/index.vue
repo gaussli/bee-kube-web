@@ -226,7 +226,7 @@ function handleSearch() {
   queryForm.name = key
   queryForm.ip = key
   pagination.page = 1
-  loadData()
+  void loadData()
 }
 
 /**
@@ -240,7 +240,7 @@ function handleReset() {
   pagination.page = 1
   pagination.pageSize = 10
   searchKey.value = ''
-  loadData()
+  void loadData()
 }
 
 /**
@@ -256,7 +256,9 @@ function handleSelectionChange(rows: Record<string, unknown>[]) {
  * @param row - 当前行节点数据
  */
 function handleViewDetail(row: NodeListResp) {
-  router.push({ name: 'kubernetes:node:detail', params: { clusterId: clusterId.value }, query: { name: row.name } })
+  router
+    .push({ name: 'kubernetes:node:detail', params: { clusterId: clusterId.value }, query: { name: row.name } })
+    .catch(() => {})
 }
 
 /**
@@ -264,14 +266,16 @@ function handleViewDetail(row: NodeListResp) {
  * @param row - 当前行节点数据
  */
 function handleEdit(row: NodeListResp) {
-  router.push({ name: 'kubernetes:node:edit', params: { clusterId: clusterId.value }, query: { name: row.name } })
+  router
+    .push({ name: 'kubernetes:node:edit', params: { clusterId: clusterId.value }, query: { name: row.name } })
+    .catch(() => {})
 }
 
 async function handleCordon(row: NodeListResp, unschedulable: boolean) {
   try {
     await cordonNode(row.clusterId, row.name, unschedulable)
     ElMessage.success(unschedulable ? '已设置为不可调度' : '已设置为可调度')
-    loadData()
+    await loadData()
   } catch (err) {
     console.error('[handleCordon]', err)
   }
@@ -281,14 +285,14 @@ async function handleDrain(row: NodeListResp) {
   try {
     await drainNode(row.clusterId, row.name)
     ElMessage.success('已开始驱逐节点上的 Pod')
-    loadData()
+    await loadData()
   } catch (err) {
     console.error('[handleDrain]', err)
   }
 }
 
 onMounted(() => {
-  loadData()
+  void loadData()
 })
 </script>
 

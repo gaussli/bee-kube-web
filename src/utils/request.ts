@@ -64,7 +64,7 @@ service.interceptors.response.use(
     } else if (code === 10002 || code === 10003) {
       ElMessage.error('登录已过期，请重新登录')
       storage.clear()
-      router.push('/login')
+      router.push('/login').catch(() => {})
     } else {
       ElMessage.error(`[${code}]: ${message || '请求失败'}`)
     }

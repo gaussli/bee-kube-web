@@ -69,7 +69,7 @@ async function handleSubmit() {
     const formData = roleFormRef.value?.getFormData()
     await updateRole(roleId, formData!)
     ElMessage.success('保存成功')
-    router.push({ name: 'platform:system:role' })
+    router.push({ name: 'platform:system:role' }).catch(() => {})
   } catch {
     // 验证失败
   }
@@ -86,7 +86,7 @@ async function loadRoleDetail() {
 }
 
 onMounted(() => {
-  loadRoleDetail()
+  void loadRoleDetail()
 })
 </script>
 

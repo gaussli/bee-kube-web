@@ -81,14 +81,14 @@ async function handleUpdate() {
   try {
     await formRef.value?.validate()
     // TODO: 调用更新集群 API
-    router.push({ name: 'kubernetes:cluster' })
+    router.push({ name: 'kubernetes:cluster' }).catch(() => {})
   } catch {
     // 验证失败
   }
 }
 
 onMounted(() => {
-  loadData()
+  void loadData()
 })
 </script>
 

@@ -73,7 +73,7 @@ async function handleCreate() {
   try {
     await formRef.value?.validate()
     // TODO: 调用创建集群 API
-    router.push({ name: 'kubernetes:cluster' })
+    router.push({ name: 'kubernetes:cluster' }).catch(() => {})
   } catch {
     // 验证失败
   }

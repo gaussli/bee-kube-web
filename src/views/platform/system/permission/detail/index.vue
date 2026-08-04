@@ -185,7 +185,7 @@ function handleBack() {
 }
 
 function handleEdit() {
-  router.push({ path: '/platform/system/permission/edit', query: { id: permissionId } })
+  router.push({ path: '/platform/system/permission/edit', query: { id: permissionId } }).catch(() => {})
 }
 
 async function loadPermissionDetail() {
@@ -199,7 +199,7 @@ async function loadPermissionDetail() {
 }
 
 onMounted(() => {
-  loadPermissionDetail()
+  void loadPermissionDetail()
 })
 </script>
 

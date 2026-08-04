@@ -334,7 +334,7 @@ function animate() {
 
 // 组件挂载时触发动画
 onMounted(() => {
-  nextTick(() => {
+  void nextTick(() => {
     if (props.showAnimation) {
       setTimeout(animate, 100) // 延迟100ms开始动画
     } else {

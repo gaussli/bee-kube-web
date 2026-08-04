@@ -101,14 +101,16 @@ function handleBack() {
   router.back()
 }
 function handleEdit() {
-  router.push({
-    name: 'kubernetes:workload:cronjob:edit',
-    params: { clusterId: clusterId.value },
-    query: { namespace: namespace.value, name: cronjobName.value },
-  })
+  router
+    .push({
+      name: 'kubernetes:workload:cronjob:edit',
+      params: { clusterId: clusterId.value },
+      query: { namespace: namespace.value, name: cronjobName.value },
+    })
+    .catch(() => {})
 }
 onMounted(() => {
-  loadData()
+  void loadData()
 })
 </script>
 

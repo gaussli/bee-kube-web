@@ -111,14 +111,16 @@ function handleBack() {
   router.back()
 }
 function handleEdit() {
-  router.push({
-    name: 'kubernetes:workload:statefulset:edit',
-    params: { clusterId: clusterId.value },
-    query: { namespace: namespace.value, name: statefulsetName.value },
-  })
+  router
+    .push({
+      name: 'kubernetes:workload:statefulset:edit',
+      params: { clusterId: clusterId.value },
+      query: { namespace: namespace.value, name: statefulsetName.value },
+    })
+    .catch(() => {})
 }
 onMounted(() => {
-  loadData()
+  void loadData()
 })
 </script>
 

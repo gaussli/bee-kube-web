@@ -73,7 +73,7 @@ async function handleLogin() {
     })
     ElMessage.success('登录成功')
     const redirect = (route.query.redirect as string) || '/'
-    router.push(redirect)
+    router.push(redirect).catch(() => {})
   } catch (error) {
     console.error('登录失败:', error)
   } finally {

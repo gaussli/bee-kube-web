@@ -64,7 +64,7 @@ const sortOptions = [
  */
 function handleSortChange(value?: string | number) {
   sortKey.value = (value as SortKey) || 'cpu'
-  loadData()
+  void loadData()
 }
 
 /** TopN 节点原始数据 */
@@ -114,7 +114,7 @@ function handleViewMore() {
 }
 
 onMounted(() => {
-  loadData()
+  void loadData()
 })
 </script>
 

@@ -61,7 +61,7 @@ async function handleCreate() {
     const formData = roleFormRef.value?.getFormData()
     await createRole(formData!)
     ElMessage.success('创建成功')
-    router.push({ name: 'platform:system:role' })
+    router.push({ name: 'platform:system:role' }).catch(() => {})
   } catch {
     // 验证失败
   }

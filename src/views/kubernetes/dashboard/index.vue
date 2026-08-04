@@ -66,7 +66,7 @@ async function loadClusterOverview() {
 }
 
 onMounted(() => {
-  loadClusterOverview()
+  void loadClusterOverview()
 })
 </script>
 

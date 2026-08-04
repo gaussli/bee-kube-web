@@ -218,7 +218,7 @@ function handleSearch() {
   queryForm.id = searchKey.value
   queryForm.name = searchKey.value
   pagination.page = 1
-  loadData()
+  void loadData()
 }
 
 /**
@@ -231,7 +231,7 @@ function handleReset() {
   pagination.page = 1
   pagination.pageSize = 10
   searchKey.value = ''
-  loadData()
+  void loadData()
 }
 
 /**
@@ -242,19 +242,25 @@ function handleSelectionChange(rows: Record<string, unknown>[]) {
 }
 
 function handleCreate() {
-  router.push({ name: 'kubernetes:namespace:create', params: { clusterId: clusterId.value } })
+  router.push({ name: 'kubernetes:namespace:create', params: { clusterId: clusterId.value } }).catch(() => {})
 }
 
 function handleEdit(row: NamespaceListResp) {
-  router.push({ name: 'kubernetes:namespace:edit', params: { clusterId: row.clusterId }, query: { name: row.name } })
+  router
+    .push({ name: 'kubernetes:namespace:edit', params: { clusterId: row.clusterId }, query: { name: row.name } })
+    .catch(() => {})
 }
 
 function handleViewDetail(row: NamespaceListResp) {
-  router.push({ name: 'kubernetes:namespace:detail', params: { clusterId: row.clusterId }, query: { name: row.name } })
+  router
+    .push({ name: 'kubernetes:namespace:detail', params: { clusterId: row.clusterId }, query: { name: row.name } })
+    .catch(() => {})
 }
 
 function handleResourceQuota(row: NamespaceListResp) {
-  router.push({ name: 'kubernetes:resourcequota:list', query: { clusterId: row.clusterId, namespace: row.name } })
+  router
+    .push({ name: 'kubernetes:resourcequota:list', query: { clusterId: row.clusterId, namespace: row.name } })
+    .catch(() => {})
 }
 
 function handleDelete(row: NamespaceListResp) {
@@ -269,7 +275,7 @@ async function handleConfirmDelete() {
     ElMessage.success('删除成功')
     deleteDialogVisible.value = false
     currentTargetRow.value = null
-    loadData()
+    await loadData()
   } catch {
     // 失败处理
   }
@@ -288,14 +294,14 @@ async function handleConfirmBatchDelete() {
     ElMessage.success(`成功删除 ${names.length} 个命名空间`)
     batchDeleteDialogVisible.value = false
     selectedRows.value = []
-    loadData()
+    await loadData()
   } catch {
     // 失败处理
   }
 }
 
 onMounted(() => {
-  loadData()
+  void loadData()
 })
 </script>
 

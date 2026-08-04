@@ -69,7 +69,7 @@ async function handleSubmit() {
     const formData = permissionFormRef.value?.getFormData()
     await updatePermission(permissionId, formData!)
     ElMessage.success('保存成功')
-    router.push({ name: 'platform:system:permission' })
+    router.push({ name: 'platform:system:permission' }).catch(() => {})
   } catch {
     // 验证失败
   }
@@ -86,7 +86,7 @@ async function loadPermissionDetail() {
 }
 
 onMounted(() => {
-  loadPermissionDetail()
+  void loadPermissionDetail()
 })
 </script>
 
