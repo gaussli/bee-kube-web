@@ -10,6 +10,7 @@
  */
 
 import { resolve } from 'path'
+
 import vue from '@vitejs/plugin-vue'
 import { defineConfig } from 'vite'
 import { createSvgIconsPlugin } from 'vite-plugin-svg-icons'
@@ -39,19 +40,19 @@ export default defineConfig({
      *    使得图标颜色可通过 CSS color 属性控制（继承父元素颜色）
      * ------------------------------------------------------------------ */
     createSvgIconsPlugin({
-      iconDirs: [resolve(__dirname, 'src/assets/icons')],  // SVG 图标存放目录
-      symbolId: 'icon-[dir]-[name]',                       // 生成的 symbol ID 格式
+      iconDirs: [resolve(__dirname, 'src/assets/icons')], // SVG 图标存放目录
+      symbolId: 'icon-[dir]-[name]', // 生成的 symbol ID 格式
       svgoOptions: {
         plugins: [
           {
             name: 'removeAttrs',
             params: {
-              attrs: '(fill|stroke)'  // 移除内联 fill 和 stroke，让图标可通过 CSS 控制颜色
-            }
-          }
-        ]
-      }
-    })
+              attrs: '(fill|stroke)', // 移除内联 fill 和 stroke，让图标可通过 CSS 控制颜色
+            },
+          },
+        ],
+      },
+    }),
   ],
 
   /* ======================================================================
@@ -61,9 +62,9 @@ export default defineConfig({
    * ====================================================================== */
   resolve: {
     alias: {
-      '@': resolve(__dirname, 'src'),                              // @/api/xxx → src/api/xxx
-      '@components': resolve(__dirname, 'src/components')          // @components/BeeCard → src/components/BeeCard
-    }
+      '@': resolve(__dirname, 'src'), // @/api/xxx → src/api/xxx
+      '@components': resolve(__dirname, 'src/components'), // @components/BeeCard → src/components/BeeCard
+    },
   },
 
   /* ======================================================================
@@ -75,9 +76,9 @@ export default defineConfig({
   css: {
     preprocessorOptions: {
       scss: {
-        additionalData: `@use "@/styles/variables.scss" as *;`  // 全局注入 SCSS 变量
-      }
-    }
+        additionalData: `@use "@/styles/variables.scss" as *;`, // 全局注入 SCSS 变量
+      },
+    },
   },
 
   /* ======================================================================
@@ -93,8 +94,8 @@ export default defineConfig({
     proxy: {
       '/api': {
         target: 'http://localhost:3000', // 本地后端/Mock 服务地址
-        changeOrigin: true               // 修改请求头中的 origin 为目标地址
-      }
-    }
-  }
+        changeOrigin: true, // 修改请求头中的 origin 为目标地址
+      },
+    },
+  },
 })

@@ -15,8 +15,8 @@ export default {
   /* ======================================================================
    * 基础配置
    * ====================================================================== */
-  extends: ['stylelint-config-standard-scss'],  // SCSS 标准规则（含缩进、引号、空行等）
-  plugins: ['stylelint-order'],                 // CSS 属性排序插件
+  extends: ['stylelint-config-standard-scss'], // SCSS 标准规则（含缩进、引号、空行等）
+  plugins: ['stylelint-order'], // CSS 属性排序插件
 
   /* ======================================================================
    * 规则定义
@@ -32,8 +32,8 @@ export default {
       '^([a-z][a-z0-9]*)((-|--|__)[a-z0-9]+)*$',
       {
         message: selector => `Expected class selector "${selector}" to be kebab-case`,
-        resolveNestedSelectors: true    // 检查 SCSS 嵌套内的选择器
-      }
+        resolveNestedSelectors: true, // 检查 SCSS 嵌套内的选择器
+      },
     ],
 
     /* ------------------------------------------------------------------
@@ -44,8 +44,8 @@ export default {
     'value-keyword-case': [
       'lower',
       {
-        ignoreFunctions: [/^v-bind/]  // 忽略 v-bind() 中的值，如 v-bind(color)
-      }
+        ignoreFunctions: [/^v-bind/], // 忽略 v-bind() 中的值，如 v-bind(color)
+      },
     ],
 
     /* ------------------------------------------------------------------
@@ -137,8 +137,8 @@ export default {
             'grid-column',
             'grid-area',
             'justify-self',
-            'place-self'
-          ]
+            'place-self',
+          ],
         },
 
         // 盒模型
@@ -202,8 +202,8 @@ export default {
             'overflow',
             'overflow-x',
             'overflow-y',
-            'overflow-clip-margin'
-          ]
+            'overflow-clip-margin',
+          ],
         },
 
         // 文本排版
@@ -231,8 +231,8 @@ export default {
             'text-transform',
             'word-break',
             'word-wrap',
-            'white-space'
-          ]
+            'white-space',
+          ],
         },
 
         // 视觉效果
@@ -258,8 +258,8 @@ export default {
             'user-select',
             'transform',
             'transform-origin',
-            'transform-style'
-          ]
+            'transform-style',
+          ],
         },
 
         // SVG 属性
@@ -276,7 +276,7 @@ export default {
             'stroke-linejoin',
             'stop-color',
             'stop-opacity'
-          ]
+          ],
         },
 
         // 内容生成（伪元素相关）
@@ -288,7 +288,7 @@ export default {
             'counter-reset',
             'counter-increment',
             'quotes'
-          ]
+          ],
         },
 
         // 动画过渡
@@ -307,8 +307,8 @@ export default {
             'animation-name',
             'animation-play-state',
             'animation-timing-function',
-            'animation-fill-mode'
-          ]
+            'animation-fill-mode',
+          ],
         },
 
         // 滚动条与滚动行为
@@ -324,13 +324,13 @@ export default {
             'scroll-padding',
             'scroll-padding-top',
             'scroll-padding-bottom'
-          ]
-        }
+          ],
+        },
       ],
       {
-        unspecified: 'top',                 // 未分组的属性放在最前面（bottom → top 变更，更符合直觉）
-        emptyLineBeforeUnspecified: 'always' // 未分组属性前保留一个空行，与分组属性隔离
-      }
+        unspecified: 'top', // 未分组的属性放在最前面（bottom → top 变更，更符合直觉）
+        emptyLineBeforeUnspecified: 'always', // 未分组属性前保留一个空行，与分组属性隔离
+      },
     ],
 
     /* ------------------------------------------------------------------
@@ -342,8 +342,8 @@ export default {
     'max-nesting-depth': [
       4,
       {
-        ignore: ['pseudo-classes']
-      }
+        ignore: ['pseudo-classes'],
+      },
     ],
 
     /** 禁止冗余的 SCSS 嵌套选择器，如 & { .foo { &__bar {} } } */
@@ -369,9 +369,9 @@ export default {
    * ====================================================================== */
   overrides: [
     {
-      files: ['*.vue', '**/*.vue'],                          // 匹配所有 .vue 文件
-      extends: ['stylelint-config-standard-vue/scss'],       // Vue SCSS 标准规则
-      customSyntax: 'postcss-html'                           // 解析 Vue SFC 中的 <style> 块
-    }
-  ]
+      files: ['*.vue', '**/*.vue'], // 匹配所有 .vue 文件
+      extends: ['stylelint-config-standard-vue/scss'], // Vue SCSS 标准规则
+      customSyntax: 'postcss-html', // 解析 Vue SFC 中的 <style> 块
+    },
+  ],
 }

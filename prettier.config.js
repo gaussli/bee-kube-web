@@ -9,22 +9,22 @@ export default {
   /* ======================================================================
    * 基础格式
    * ====================================================================== */
-  printWidth: 120,      // 单行最大字符数，超过后自动折行（兼顾可读性与模板/链式调用）
-  tabWidth: 2,          // 缩进空格数
-  useTabs: false,       // 使用空格缩进而非 Tab
-  endOfLine: 'lf',      // 统一换行符为 LF（Unix 风格，避免 Windows CRLF 混入）
+  printWidth: 120, // 单行最大字符数，超过后自动折行（兼顾可读性与模板/链式调用）
+  tabWidth: 2, // 缩进空格数
+  useTabs: false, // 使用空格缩进而非 Tab
+  endOfLine: 'lf', // 统一换行符为 LF（Unix 风格，避免 Windows CRLF 混入）
 
   /* ======================================================================
    * 语句与表达式
    * ====================================================================== */
-  semi: false,                           // 语句结尾不加分号（Vue/JS 代码风格）
-  singleQuote: true,                     // 使用单引号而非双引号
-  trailingComma: 'all',                  // 多行时添加尾逗号，git diff 更干净
-  arrowParens: 'avoid',                  // 箭头函数参数只有一个时省略括号 (x) => x → x => x
-  quoteProps: 'consistent',             // 对象属性引号：只要有一个需要引号，就全部加引号
+  semi: false, // 语句结尾不加分号（Vue/JS 代码风格）
+  singleQuote: true, // 使用单引号而非双引号
+  trailingComma: 'all', // 多行时添加尾逗号，git diff 更干净
+  arrowParens: 'avoid', // 箭头函数参数只有一个时省略括号 (x) => x → x => x
+  quoteProps: 'consistent', // 对象属性引号：只要有一个需要引号，就全部加引号
 
   /* ======================================================================
    * 插件
    * ====================================================================== */
-  plugins: ['prettier-plugin-packagejson']  // 对 package.json 的字段按约定顺序排列
+  plugins: ['prettier-plugin-packagejson'], // 对 package.json 的字段按约定顺序排列
 }
