@@ -45,7 +45,7 @@ const activeIndex = ref(0)
 
 const sliderStyle = computed(() => ({
   width: `calc((100% - 4px) / ${props.tabs.length})`,
-  transform: `translateX(${activeIndex.value * 100}%)`
+  transform: `translateX(${activeIndex.value * 100}%)`,
 }))
 
 watch(
@@ -56,7 +56,7 @@ watch(
       activeIndex.value = index
     }
   },
-  { immediate: true }
+  { immediate: true },
 )
 
 watch(
@@ -65,7 +65,7 @@ watch(
     const index = tabs.findIndex(t => t.key === props.modelValue)
     activeIndex.value = index !== -1 ? index : 0
   },
-  { immediate: true }
+  { immediate: true },
 )
 
 function handleClick(index: number) {

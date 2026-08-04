@@ -114,8 +114,11 @@
 
 <script setup lang="ts">
 import { computed, reactive, ref, watch } from 'vue'
+
 import { Document, Folder, FolderOpened, Key, Link, Lock, Menu, Picture, Sort, Switch } from '@element-plus/icons-vue'
+
 import type { FormInstance, FormRules } from 'element-plus'
+
 import type { MenuDetailResp } from '@/types'
 
 defineOptions({ name: 'MenuForm' })
@@ -138,7 +141,7 @@ const formData = reactive({
   type: 1,
   permission: '',
   sort: 0,
-  status: 1
+  status: 1,
 })
 
 const formRules: FormRules = {
@@ -147,14 +150,14 @@ const formRules: FormRules = {
     {
       pattern: /^[a-zA-Z][a-zA-Z0-9_:]*$/,
       message: '菜单编码以字母开头，只能包含字母、数字、冒号和下划线',
-      trigger: 'blur'
-    }
+      trigger: 'blur',
+    },
   ],
   name: [
     { required: true, message: '请输入菜单名称', trigger: 'blur' },
-    { min: 2, max: 20, message: '菜单名称长度为 2-20 个字符', trigger: 'blur' }
+    { min: 2, max: 20, message: '菜单名称长度为 2-20 个字符', trigger: 'blur' },
   ],
-  type: [{ required: true, message: '请选择菜单类型', trigger: 'change' }]
+  type: [{ required: true, message: '请选择菜单类型', trigger: 'change' }],
 }
 
 watch(
@@ -164,7 +167,7 @@ watch(
       Object.assign(formData, val)
     }
   },
-  { immediate: true }
+  { immediate: true },
 )
 
 function validate() {

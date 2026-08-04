@@ -8,6 +8,7 @@
  * @module components/BeeTable/BeeTableColumn
  */
 import { getCurrentInstance, inject, onMounted, onUnmounted, useSlots } from 'vue'
+
 import type { ColumnConfig } from '@/components/BeeTable/index.vue'
 
 defineOptions({ name: 'BeeTableColumn' })
@@ -48,7 +49,7 @@ const columnConfig: ColumnConfig = {
   width: props.width,
   minWidth: props.minWidth,
   fixed: props.fixed,
-  slots: { ...slots } as ColumnConfig['slots']
+  slots: { ...slots } as ColumnConfig['slots'],
 }
 
 onMounted(() => {

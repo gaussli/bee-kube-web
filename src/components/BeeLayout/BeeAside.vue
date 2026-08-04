@@ -24,10 +24,13 @@
  * @module components/BeeLayout/BeeAside
  */
 import { computed } from 'vue'
+
 import { useRoute, useRouter } from 'vue-router'
+
 import BeeMenu from '@/components/BeeMenu/BeeMenu.vue'
 import BeeMenuItem from '@/components/BeeMenu/BeeMenuItem.vue'
 import BeeSubMenu from '@/components/BeeMenu/BeeSubMenu.vue'
+
 import { useAppStore, useUserStore, useKubernetesStore } from '@/stores'
 
 defineOptions({ name: 'BeeAside' })

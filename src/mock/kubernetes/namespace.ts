@@ -12,8 +12,9 @@ import type {
   NamespaceLabelsReq,
   NamespaceAnnotationsReq,
   NamespaceQuotaReq,
-  NamespaceImportReq
+  NamespaceImportReq,
 } from '@/types/kubernetes/namespace'
+
 import { generateId } from '@/mock/utils'
 
 /**
@@ -40,83 +41,83 @@ export default [
     url: '/kubernetes/clusters/:clusterId/namespaces',
     handler: (
       pathParams: Record<string, string>,
-      params: Partial<NamespaceQueryReq>
-    ): PageVo<NamespaceListResp> | NamespaceSimpleListResp[] => getNamespacePage(pathParams.clusterId, params)
+      params: Partial<NamespaceQueryReq>,
+    ): PageVo<NamespaceListResp> | NamespaceSimpleListResp[] => getNamespacePage(pathParams.clusterId, params),
   },
   {
     method: 'get',
     url: '/kubernetes/clusters/:clusterId/namespaces/:name',
     handler: (pathParams: Record<string, string>): NamespaceDetailResp =>
-      getNamespaceDetail(pathParams.clusterId, pathParams.name)
+      getNamespaceDetail(pathParams.clusterId, pathParams.name),
   },
   {
     method: 'get',
     url: '/kubernetes/clusters/:clusterId/namespaces/:name/yaml',
-    handler: (pathParams: Record<string, string>): string => getNamespaceYaml(pathParams.clusterId, pathParams.name)
+    handler: (pathParams: Record<string, string>): string => getNamespaceYaml(pathParams.clusterId, pathParams.name),
   },
   {
     method: 'post',
     url: '/kubernetes/clusters/:clusterId/namespaces',
     handler: (pathParams: Record<string, string>, data: Partial<NamespaceReq>): void =>
-      createNamespace(pathParams.clusterId, data)
+      createNamespace(pathParams.clusterId, data),
   },
   {
     method: 'put',
     url: '/kubernetes/clusters/:clusterId/namespaces/:name',
     handler: (pathParams: Record<string, string>, data: Partial<NamespaceReq>): void =>
-      updateNamespace(pathParams.clusterId, pathParams.name, data)
+      updateNamespace(pathParams.clusterId, pathParams.name, data),
   },
   {
     method: 'post',
     url: '/kubernetes/clusters/:clusterId/namespaces/:name/labels',
     handler: (pathParams: Record<string, string>, data: Partial<NamespaceLabelsReq>): void =>
-      manageNamespaceLabels(pathParams.clusterId, pathParams.name, data)
+      manageNamespaceLabels(pathParams.clusterId, pathParams.name, data),
   },
   {
     method: 'post',
     url: '/kubernetes/clusters/:clusterId/namespaces/:name/annotations',
     handler: (pathParams: Record<string, string>, data: Partial<NamespaceAnnotationsReq>): void =>
-      manageNamespaceAnnotations(pathParams.clusterId, pathParams.name, data)
+      manageNamespaceAnnotations(pathParams.clusterId, pathParams.name, data),
   },
   {
     method: 'delete',
     url: '/kubernetes/clusters/:clusterId/namespaces/:name',
-    handler: (pathParams: Record<string, string>): void => deleteNamespace(pathParams.clusterId, pathParams.name)
+    handler: (pathParams: Record<string, string>): void => deleteNamespace(pathParams.clusterId, pathParams.name),
   },
   {
     method: 'delete',
     url: '/kubernetes/clusters/:clusterId/namespaces/batch',
-    handler: (pathParams: Record<string, string>, data: string[]): void => deleteNamespaces(pathParams.clusterId, data)
+    handler: (pathParams: Record<string, string>, data: string[]): void => deleteNamespaces(pathParams.clusterId, data),
   },
   {
     method: 'get',
     url: '/kubernetes/clusters/:clusterId/namespaces/export',
     handler: (pathParams: Record<string, string>, params: Partial<NamespaceQueryReq>): void =>
-      exportNamespaces(pathParams.clusterId, params)
+      exportNamespaces(pathParams.clusterId, params),
   },
   {
     method: 'post',
     url: '/kubernetes/clusters/:clusterId/namespaces/import',
     handler: (pathParams: Record<string, string>, data: Partial<NamespaceImportReq>): void =>
-      importNamespaces(pathParams.clusterId, data)
+      importNamespaces(pathParams.clusterId, data),
   },
   {
     method: 'post',
     url: '/kubernetes/clusters/:clusterId/namespaces/:name/quota',
     handler: (pathParams: Record<string, string>, data: Partial<NamespaceQuotaReq>): void =>
-      createNamespaceQuota(pathParams.clusterId, pathParams.name, data)
+      createNamespaceQuota(pathParams.clusterId, pathParams.name, data),
   },
   {
     method: 'put',
     url: '/kubernetes/clusters/:clusterId/namespaces/:name/quota',
     handler: (pathParams: Record<string, string>, data: Partial<NamespaceQuotaReq>): void =>
-      updateNamespaceQuota(pathParams.clusterId, pathParams.name, data)
+      updateNamespaceQuota(pathParams.clusterId, pathParams.name, data),
   },
   {
     method: 'delete',
     url: '/kubernetes/clusters/:clusterId/namespaces/:name/quota',
-    handler: (pathParams: Record<string, string>): void => deleteNamespaceQuota(pathParams.clusterId, pathParams.name)
-  }
+    handler: (pathParams: Record<string, string>): void => deleteNamespaceQuota(pathParams.clusterId, pathParams.name),
+  },
 ]
 
 /**
@@ -127,7 +128,7 @@ export default [
  */
 function getNamespacePage(
   _clusterId: string,
-  params: Partial<NamespaceQueryReq>
+  params: Partial<NamespaceQueryReq>,
 ): PageVo<NamespaceListResp> | NamespaceSimpleListResp[] {
   const { id, name, status, mode = 'normal', page = 1, pageSize = 10 } = params || {}
 
@@ -161,7 +162,7 @@ function getNamespacePage(
     return filtered.map(ns => ({
       id: ns.id,
       uid: ns.uid,
-      name: ns.name
+      name: ns.name,
     }))
   }
 
@@ -196,7 +197,7 @@ function getNamespaceDetail(clusterId: string, name: string): NamespaceDetailRes
       persistentvolumeclaims: 10,
       servicesLoadbalancers: 2,
       countDeploymentsApps: 20,
-      countPods: 50
+      countPods: 50,
     },
     limitRange: {
       container: {
@@ -207,9 +208,9 @@ function getNamespaceDetail(clusterId: string, name: string): NamespaceDetailRes
         maxCpu: 2,
         maxMemory: 4096,
         minCpu: 0.1,
-        minMemory: 128
-      }
-    }
+        minMemory: 128,
+      },
+    },
   }
 }
 
@@ -373,7 +374,7 @@ const mockNamespaces: NamespaceListResp[] = [
     createBy: 'system',
     createAt: '2024-01-15 10:30:25',
     updateBy: 'system',
-    updateAt: '2024-01-15 10:30:25'
+    updateAt: '2024-01-15 10:30:25',
   },
   {
     id: generateId(),
@@ -387,7 +388,7 @@ const mockNamespaces: NamespaceListResp[] = [
     createBy: 'system',
     createAt: '2024-01-15 10:30:30',
     updateBy: 'system',
-    updateAt: '2024-01-15 10:30:30'
+    updateAt: '2024-01-15 10:30:30',
   },
   {
     id: generateId(),
@@ -401,7 +402,7 @@ const mockNamespaces: NamespaceListResp[] = [
     createBy: 'system',
     createAt: '2024-01-15 10:30:35',
     updateBy: 'system',
-    updateAt: '2024-01-15 10:30:35'
+    updateAt: '2024-01-15 10:30:35',
   },
   {
     id: generateId(),
@@ -415,7 +416,7 @@ const mockNamespaces: NamespaceListResp[] = [
     createBy: 'system',
     createAt: '2024-01-15 10:30:40',
     updateBy: 'system',
-    updateAt: '2024-01-15 10:30:40'
+    updateAt: '2024-01-15 10:30:40',
   },
   {
     id: generateId(),
@@ -429,7 +430,7 @@ const mockNamespaces: NamespaceListResp[] = [
     createBy: 'system',
     createAt: '2024-01-20 09:00:00',
     updateBy: 'system',
-    updateAt: '2024-03-10 11:20:00'
+    updateAt: '2024-03-10 11:20:00',
   },
   {
     id: generateId(),
@@ -443,7 +444,7 @@ const mockNamespaces: NamespaceListResp[] = [
     createBy: 'system',
     createAt: '2024-02-01 10:00:00',
     updateBy: 'system',
-    updateAt: '2024-02-01 10:00:00'
+    updateAt: '2024-02-01 10:00:00',
   },
   {
     id: generateId(),
@@ -457,7 +458,7 @@ const mockNamespaces: NamespaceListResp[] = [
     createBy: 'system',
     createAt: '2024-01-18 14:00:00',
     updateBy: 'system',
-    updateAt: '2024-05-10 08:30:00'
+    updateAt: '2024-05-10 08:30:00',
   },
   {
     id: generateId(),
@@ -471,7 +472,7 @@ const mockNamespaces: NamespaceListResp[] = [
     createBy: 'admin',
     createAt: '2024-02-01 08:00:00',
     updateBy: 'admin',
-    updateAt: '2024-03-15 14:22:18'
+    updateAt: '2024-03-15 14:22:18',
   },
   {
     id: generateId(),
@@ -485,7 +486,7 @@ const mockNamespaces: NamespaceListResp[] = [
     createBy: 'admin',
     createAt: '2024-02-01 08:05:00',
     updateBy: 'admin',
-    updateAt: '2024-03-20 09:15:30'
+    updateAt: '2024-03-20 09:15:30',
   },
   {
     id: generateId(),
@@ -499,7 +500,7 @@ const mockNamespaces: NamespaceListResp[] = [
     createBy: 'admin',
     createAt: '2024-02-05 09:00:00',
     updateBy: 'devops',
-    updateAt: '2024-04-12 16:45:00'
+    updateAt: '2024-04-12 16:45:00',
   },
   {
     id: generateId(),
@@ -513,7 +514,7 @@ const mockNamespaces: NamespaceListResp[] = [
     createBy: 'devops',
     createAt: '2024-02-08 10:30:00',
     updateBy: 'devops',
-    updateAt: '2024-05-01 09:00:00'
+    updateAt: '2024-05-01 09:00:00',
   },
   {
     id: generateId(),
@@ -527,7 +528,7 @@ const mockNamespaces: NamespaceListResp[] = [
     createBy: 'admin',
     createAt: '2024-02-12 08:00:00',
     updateBy: 'admin',
-    updateAt: '2024-03-25 14:10:00'
+    updateAt: '2024-03-25 14:10:00',
   },
   {
     id: generateId(),
@@ -541,7 +542,7 @@ const mockNamespaces: NamespaceListResp[] = [
     createBy: 'devops',
     createAt: '2024-02-15 11:00:00',
     updateBy: 'devops',
-    updateAt: '2024-05-20 10:30:00'
+    updateAt: '2024-05-20 10:30:00',
   },
   {
     id: generateId(),
@@ -555,7 +556,7 @@ const mockNamespaces: NamespaceListResp[] = [
     createBy: 'admin',
     createAt: '2024-02-18 09:30:00',
     updateBy: 'admin',
-    updateAt: '2024-04-28 17:00:00'
+    updateAt: '2024-04-28 17:00:00',
   },
   {
     id: generateId(),
@@ -569,7 +570,7 @@ const mockNamespaces: NamespaceListResp[] = [
     createBy: 'devops',
     createAt: '2024-02-20 08:15:00',
     updateBy: 'devops',
-    updateAt: '2024-05-05 13:40:00'
+    updateAt: '2024-05-05 13:40:00',
   },
   {
     id: generateId(),
@@ -583,7 +584,7 @@ const mockNamespaces: NamespaceListResp[] = [
     createBy: 'admin',
     createAt: '2024-03-01 10:00:00',
     updateBy: 'admin',
-    updateAt: '2024-05-15 11:20:00'
+    updateAt: '2024-05-15 11:20:00',
   },
   {
     id: generateId(),
@@ -597,7 +598,7 @@ const mockNamespaces: NamespaceListResp[] = [
     createBy: 'admin',
     createAt: '2024-02-10 14:20:00',
     updateBy: 'admin',
-    updateAt: '2024-02-10 14:20:00'
+    updateAt: '2024-02-10 14:20:00',
   },
   {
     id: generateId(),
@@ -612,7 +613,7 @@ const mockNamespaces: NamespaceListResp[] = [
     createBy: 'admin',
     createAt: '2024-02-15 09:00:00',
     updateBy: 'admin',
-    updateAt: '2024-04-01 16:30:00'
+    updateAt: '2024-04-01 16:30:00',
   },
   {
     id: generateId(),
@@ -626,7 +627,7 @@ const mockNamespaces: NamespaceListResp[] = [
     createBy: 'developer',
     createAt: '2024-03-05 08:00:00',
     updateBy: 'developer',
-    updateAt: '2024-06-01 09:30:00'
+    updateAt: '2024-06-01 09:30:00',
   },
   {
     id: generateId(),
@@ -640,7 +641,7 @@ const mockNamespaces: NamespaceListResp[] = [
     createBy: 'developer',
     createAt: '2024-03-10 14:00:00',
     updateBy: 'developer',
-    updateAt: '2024-06-10 16:45:00'
+    updateAt: '2024-06-10 16:45:00',
   },
   {
     id: generateId(),
@@ -654,7 +655,7 @@ const mockNamespaces: NamespaceListResp[] = [
     createBy: 'admin',
     createAt: '2024-02-15 10:00:00',
     updateBy: 'admin',
-    updateAt: '2024-02-15 10:00:00'
+    updateAt: '2024-02-15 10:00:00',
   },
   {
     id: generateId(),
@@ -668,7 +669,7 @@ const mockNamespaces: NamespaceListResp[] = [
     createBy: 'developer',
     createAt: '2024-03-15 09:00:00',
     updateBy: 'developer',
-    updateAt: '2024-04-20 11:00:00'
+    updateAt: '2024-04-20 11:00:00',
   },
   {
     id: generateId(),
@@ -682,7 +683,7 @@ const mockNamespaces: NamespaceListResp[] = [
     createBy: 'admin',
     createAt: '2024-03-01 09:00:00',
     updateBy: 'admin',
-    updateAt: '2024-03-01 09:00:00'
+    updateAt: '2024-03-01 09:00:00',
   },
   {
     id: generateId(),
@@ -697,6 +698,6 @@ const mockNamespaces: NamespaceListResp[] = [
     createBy: 'developer',
     createAt: '2024-04-01 08:00:00',
     updateBy: 'developer',
-    updateAt: '2024-05-20 18:00:00'
-  }
+    updateAt: '2024-05-20 18:00:00',
+  },
 ]

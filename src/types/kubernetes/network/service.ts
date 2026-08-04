@@ -3,7 +3,9 @@
  * @module types/kubernetes/network/service
  */
 import type { PageForm } from '@/types/common'
+
 import type { Namespaced } from '../types'
+
 import type { ServicePort } from './types'
 
 // ==================== 1. 基础枚举 ====================

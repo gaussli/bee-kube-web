@@ -9,8 +9,8 @@ export const crdRoutes: RouteRecordRaw[] = [
       title: '资源定义',
       icon: 'Coin',
       permission: 'kubernetes:crd:view',
-      activeCode: 'kubernetes:crd'
-    }
+      activeCode: 'kubernetes:crd',
+    },
   },
   {
     path: '/kubernetes/clusters/:clusterId/crd/create',
@@ -20,8 +20,8 @@ export const crdRoutes: RouteRecordRaw[] = [
       title: '创建资源定义',
       icon: 'Coin',
       permission: 'kubernetes:crd:create',
-      activeCode: 'kubernetes:crd'
-    }
+      activeCode: 'kubernetes:crd',
+    },
   },
   {
     path: '/kubernetes/clusters/:clusterId/crd/edit',
@@ -31,8 +31,8 @@ export const crdRoutes: RouteRecordRaw[] = [
       title: '编辑资源定义',
       icon: 'Coin',
       permission: 'kubernetes:crd:edit',
-      activeCode: 'kubernetes:crd'
-    }
+      activeCode: 'kubernetes:crd',
+    },
   },
   {
     path: '/kubernetes/clusters/:clusterId/crd/detail',
@@ -42,7 +42,7 @@ export const crdRoutes: RouteRecordRaw[] = [
       title: '资源定义详情',
       icon: 'Coin',
       permission: 'kubernetes:crd:view',
-      activeCode: 'kubernetes:crd'
-    }
-  }
+      activeCode: 'kubernetes:crd',
+    },
+  },
 ]

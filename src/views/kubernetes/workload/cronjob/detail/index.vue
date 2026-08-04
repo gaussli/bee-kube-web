@@ -63,13 +63,19 @@
 
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
+
 import { useRoute, useRouter } from 'vue-router'
+
 import { Clock, ArrowLeft, EditPen } from '@element-plus/icons-vue'
+
 import type { CronJobDetailResp } from '@/types/kubernetes/workload/cronjob'
+
 import { getCronJobDetail } from '@/api/kubernetes/workload/cronjob'
+
 import BeeButton from '@/components/BeeButton/index.vue'
 import BeePageTitle from '@/components/BeePageTitle/index.vue'
 import TimeCell from '@/components/TimeCell/index.vue'
+
 import { usePermission } from '@/composables/usePermission'
 
 defineOptions({ name: 'CronJobDetail' })
@@ -98,7 +104,7 @@ function handleEdit() {
   router.push({
     name: 'kubernetes:workload:cronjob:edit',
     params: { clusterId: clusterId.value },
-    query: { namespace: namespace.value, name: cronjobName.value }
+    query: { namespace: namespace.value, name: cronjobName.value },
   })
 }
 onMounted(() => {

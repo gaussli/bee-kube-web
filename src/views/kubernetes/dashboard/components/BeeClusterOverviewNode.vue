@@ -30,9 +30,13 @@
 
 <script setup lang="ts">
 import { computed, onMounted, ref } from 'vue'
+
 import type { NodeListResp } from '@/types/kubernetes/node'
+
 import { getNodeTopN } from '@/api/kubernetes/node'
+
 import { useKubernetesStore } from '@/stores/kubernetes'
+
 import BeeButton from '@/components/BeeButton/index.vue'
 import BeeCard from '@/components/BeeCard/index.vue'
 import BeeIcon from '@/components/BeeIcon/index.vue'
@@ -51,7 +55,7 @@ type SortKey = 'cpu' | 'memory'
 const sortKey = ref<SortKey>('cpu')
 const sortOptions = [
   { label: 'CPU排名', value: 'cpu' },
-  { label: '内存排名', value: 'memory' }
+  { label: '内存排名', value: 'memory' },
 ]
 
 /**
@@ -84,7 +88,7 @@ async function loadData() {
   if (!kubernetesStore.activeClusterId) return
   topNNodes.value = await getNodeTopN(kubernetesStore.activeClusterId, {
     metric: sortKey.value,
-    count: 5
+    count: 5,
   })
 }
 
@@ -97,7 +101,7 @@ const nodeListData = computed(() => {
     name: node.name,
     description: node.description || '',
     cpuUsagePercentage: calcPercentage(node.resource.usage.cpu, node.resource.allocation.cpu),
-    memoryUsagePercentage: calcPercentage(node.resource.usage.memory, node.resource.allocation.memory)
+    memoryUsagePercentage: calcPercentage(node.resource.usage.memory, node.resource.allocation.memory),
   }))
 })
 

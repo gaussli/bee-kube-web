@@ -9,8 +9,9 @@ import type {
   ServiceAccountReq,
   ServiceAccountLabelsReq,
   ServiceAccountAnnotationsReq,
-  ServiceAccountImagePullSecretsReq
+  ServiceAccountImagePullSecretsReq,
 } from '@/types/kubernetes/security/serviceAccount'
+
 import { request } from '@/utils'
 
 /**
@@ -23,7 +24,7 @@ import { request } from '@/utils'
 export function getServiceAccountPage(
   clusterId: string,
   namespaceName: string,
-  params: Partial<ServiceAccountQueryReq>
+  params: Partial<ServiceAccountQueryReq>,
 ): Promise<PageVo<ServiceAccountResp>> {
   return request.get(`/kubernetes/clusters/${clusterId}/namespaces/${namespaceName}/serviceaccounts`, { params })
 }
@@ -38,7 +39,7 @@ export function getServiceAccountPage(
 export function getServiceAccountDetail(
   clusterId: string,
   namespaceName: string,
-  name: string
+  name: string,
 ): Promise<ServiceAccountResp> {
   return request.get(`/kubernetes/clusters/${clusterId}/namespaces/${namespaceName}/serviceaccounts/${name}`)
 }
@@ -61,7 +62,7 @@ export function createServiceAccount(clusterId: string, data: Partial<ServiceAcc
  */
 export function updateServiceAccount(clusterId: string, data: Partial<ServiceAccountReq>): Promise<void> {
   return request.put(`/kubernetes/clusters/${clusterId}/namespaces/${data.namespace}/serviceaccounts/${data.name}`, {
-    data
+    data,
   })
 }
 
@@ -76,10 +77,10 @@ export function manageServiceAccountLabels(
   clusterId: string,
   namespaceName: string,
   name: string,
-  data: Partial<ServiceAccountLabelsReq>
+  data: Partial<ServiceAccountLabelsReq>,
 ): Promise<void> {
   return request.put(`/kubernetes/clusters/${clusterId}/namespaces/${namespaceName}/serviceaccounts/${name}/labels`, {
-    data
+    data,
   })
 }
 
@@ -94,11 +95,11 @@ export function manageServiceAccountAnnotations(
   clusterId: string,
   namespaceName: string,
   name: string,
-  data: Partial<ServiceAccountAnnotationsReq>
+  data: Partial<ServiceAccountAnnotationsReq>,
 ): Promise<void> {
   return request.put(
     `/kubernetes/clusters/${clusterId}/namespaces/${namespaceName}/serviceaccounts/${name}/annotations`,
-    { data }
+    { data },
   )
 }
 
@@ -113,11 +114,11 @@ export function manageServiceAccountImagePullSecrets(
   clusterId: string,
   namespaceName: string,
   name: string,
-  data: Partial<ServiceAccountImagePullSecretsReq>
+  data: Partial<ServiceAccountImagePullSecretsReq>,
 ): Promise<void> {
   return request.put(
     `/kubernetes/clusters/${clusterId}/namespaces/${namespaceName}/serviceaccounts/${name}/imagepullsecrets`,
-    { data }
+    { data },
   )
 }
 
@@ -139,6 +140,6 @@ export function deleteServiceAccount(clusterId: string, namespaceName: string, n
  */
 export function deleteServiceAccounts(clusterId: string, namespaceName: string, names: string[]): Promise<void> {
   return request.delete(`/kubernetes/clusters/${clusterId}/namespaces/${namespaceName}/serviceaccounts`, {
-    data: names
+    data: names,
   })
 }

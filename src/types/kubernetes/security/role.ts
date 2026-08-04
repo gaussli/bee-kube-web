@@ -3,6 +3,7 @@
  * @module types/kubernetes/role
  */
 import type { BaseEntity, PageForm } from '@/types/common'
+
 import type { ClusterRolePolicyRule } from './clusterRole'
 
 /**

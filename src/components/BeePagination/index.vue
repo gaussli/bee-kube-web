@@ -57,6 +57,7 @@
  * BeePagination 分页组件
  */
 import { ref, computed, watch } from 'vue'
+
 import BeeIcon from '@/components/BeeIcon/index.vue'
 import BeeSelect from '@/components/BeeSelect/index.vue'
 
@@ -78,8 +79,8 @@ const props = withDefaults(
     total: 0,
     modelValue: 1,
     pageSize: 10,
-    pageSizes: () => [10, 20, 30]
-  }
+    pageSizes: () => [10, 20, 30],
+  },
 )
 
 /** 组件事件 */
@@ -99,7 +100,7 @@ const currentPage = computed({
     const targetPage = Math.max(1, Math.min(val, totalPages.value))
     emit('update:modelValue', targetPage)
     emit('change', targetPage, currentPageSize.value)
-  }
+  },
 })
 
 /** 当前每页数量 */
@@ -108,7 +109,7 @@ const currentPageSize = computed({
   set: (val: number) => {
     emit('update:pageSize', val)
     emit('change', currentPage.value, val)
-  }
+  },
 })
 
 /** 页码输入框的值 */
@@ -118,8 +119,8 @@ const pageInput = ref(String(props.modelValue))
 const pageSizeOptions = computed(() =>
   props.pageSizes.map(size => ({
     label: `${size}条/页`,
-    value: size
-  }))
+    value: size,
+  })),
 )
 
 /** 计算总页数 */
@@ -139,7 +140,7 @@ watch(
   () => props.modelValue,
   val => {
     pageInput.value = String(val)
-  }
+  },
 )
 
 /** 监听每页数量变化，重置到第一页 */
@@ -151,7 +152,7 @@ watch(
       currentPage.value = totalPages.value
     }
     pageInput.value = String(currentPage.value)
-  }
+  },
 )
 
 /** 上一页 */

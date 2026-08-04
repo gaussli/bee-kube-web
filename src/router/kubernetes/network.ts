@@ -9,8 +9,8 @@ const serviceRoutes: RouteRecordRaw[] = [
       title: '服务',
       icon: 'Share',
       permission: 'kubernetes:network:service:view',
-      activeCode: 'kubernetes:network:service'
-    }
+      activeCode: 'kubernetes:network:service',
+    },
   },
   {
     path: '/kubernetes/clusters/:clusterId/network/service/create',
@@ -20,8 +20,8 @@ const serviceRoutes: RouteRecordRaw[] = [
       title: '创建服务',
       icon: 'Share',
       permission: 'kubernetes:network:service:create',
-      activeCode: 'kubernetes:network:service'
-    }
+      activeCode: 'kubernetes:network:service',
+    },
   },
   {
     path: '/kubernetes/clusters/:clusterId/network/service/edit',
@@ -31,8 +31,8 @@ const serviceRoutes: RouteRecordRaw[] = [
       title: '编辑服务',
       icon: 'Share',
       permission: 'kubernetes:network:service:edit',
-      activeCode: 'kubernetes:network:service'
-    }
+      activeCode: 'kubernetes:network:service',
+    },
   },
   {
     path: '/kubernetes/clusters/:clusterId/network/service/detail',
@@ -42,9 +42,9 @@ const serviceRoutes: RouteRecordRaw[] = [
       title: '服务详情',
       icon: 'Share',
       permission: 'kubernetes:network:service:view',
-      activeCode: 'kubernetes:network:service'
-    }
-  }
+      activeCode: 'kubernetes:network:service',
+    },
+  },
 ]
 
 const ingressRoutes: RouteRecordRaw[] = [
@@ -56,8 +56,8 @@ const ingressRoutes: RouteRecordRaw[] = [
       title: '入口',
       icon: 'Guide',
       permission: 'kubernetes:network:ingress:view',
-      activeCode: 'kubernetes:network:ingress'
-    }
+      activeCode: 'kubernetes:network:ingress',
+    },
   },
   {
     path: '/kubernetes/clusters/:clusterId/network/ingress/create',
@@ -67,8 +67,8 @@ const ingressRoutes: RouteRecordRaw[] = [
       title: '创建入口',
       icon: 'Guide',
       permission: 'kubernetes:network:ingress:create',
-      activeCode: 'kubernetes:network:ingress'
-    }
+      activeCode: 'kubernetes:network:ingress',
+    },
   },
   {
     path: '/kubernetes/clusters/:clusterId/network/ingress/edit',
@@ -78,8 +78,8 @@ const ingressRoutes: RouteRecordRaw[] = [
       title: '编辑入口',
       icon: 'Guide',
       permission: 'kubernetes:network:ingress:edit',
-      activeCode: 'kubernetes:network:ingress'
-    }
+      activeCode: 'kubernetes:network:ingress',
+    },
   },
   {
     path: '/kubernetes/clusters/:clusterId/network/ingress/detail',
@@ -89,9 +89,9 @@ const ingressRoutes: RouteRecordRaw[] = [
       title: '入口详情',
       icon: 'Guide',
       permission: 'kubernetes:network:ingress:view',
-      activeCode: 'kubernetes:network:ingress'
-    }
-  }
+      activeCode: 'kubernetes:network:ingress',
+    },
+  },
 ]
 
 const networkPolicyRoutes: RouteRecordRaw[] = [
@@ -103,8 +103,8 @@ const networkPolicyRoutes: RouteRecordRaw[] = [
       title: '网络策略',
       icon: 'Aim',
       permission: 'kubernetes:network:networkpolicy:view',
-      activeCode: 'kubernetes:network:networkpolicy'
-    }
+      activeCode: 'kubernetes:network:networkpolicy',
+    },
   },
   {
     path: '/kubernetes/clusters/:clusterId/network/networkpolicy/create',
@@ -114,8 +114,8 @@ const networkPolicyRoutes: RouteRecordRaw[] = [
       title: '创建网络策略',
       icon: 'Aim',
       permission: 'kubernetes:network:networkpolicy:create',
-      activeCode: 'kubernetes:network:networkpolicy'
-    }
+      activeCode: 'kubernetes:network:networkpolicy',
+    },
   },
   {
     path: '/kubernetes/clusters/:clusterId/network/networkpolicy/edit',
@@ -125,8 +125,8 @@ const networkPolicyRoutes: RouteRecordRaw[] = [
       title: '编辑网络策略',
       icon: 'Aim',
       permission: 'kubernetes:network:networkpolicy:edit',
-      activeCode: 'kubernetes:network:networkpolicy'
-    }
+      activeCode: 'kubernetes:network:networkpolicy',
+    },
   },
   {
     path: '/kubernetes/clusters/:clusterId/network/networkpolicy/detail',
@@ -136,9 +136,9 @@ const networkPolicyRoutes: RouteRecordRaw[] = [
       title: '网络策略详情',
       icon: 'Aim',
       permission: 'kubernetes:network:networkpolicy:view',
-      activeCode: 'kubernetes:network:networkpolicy'
-    }
-  }
+      activeCode: 'kubernetes:network:networkpolicy',
+    },
+  },
 ]
 
 export const networkRoutes: RouteRecordRaw[] = [
@@ -148,8 +148,8 @@ export const networkRoutes: RouteRecordRaw[] = [
     redirect: '/kubernetes/clusters/:clusterId/network/service',
     meta: {
       title: '网络',
-      icon: 'Connection'
+      icon: 'Connection',
     },
-    children: [...serviceRoutes, ...ingressRoutes, ...networkPolicyRoutes]
-  }
+    children: [...serviceRoutes, ...ingressRoutes, ...networkPolicyRoutes],
+  },
 ]

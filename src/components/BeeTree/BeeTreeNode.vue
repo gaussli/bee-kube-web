@@ -61,7 +61,9 @@
 
 <script setup lang="ts">
 import { computed } from 'vue'
+
 import { CaretRight } from '@element-plus/icons-vue'
+
 import type { BeeTreeNodeData } from './index.vue'
 
 interface Props {
@@ -83,7 +85,7 @@ const props = withDefaults(defineProps<Props>(), {
   indent: 16,
   showCheckbox: true,
   expandAll: false,
-  expandedKeys: () => []
+  expandedKeys: () => [],
 })
 
 const emit = defineEmits<{

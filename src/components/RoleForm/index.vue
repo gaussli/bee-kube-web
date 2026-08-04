@@ -59,8 +59,11 @@
 
 <script setup lang="ts">
 import { computed, reactive, ref, watch } from 'vue'
+
 import { Collection, Document, Key, Switch, UserFilled } from '@element-plus/icons-vue'
+
 import type { FormInstance, FormRules } from 'element-plus'
+
 import type { RoleDetailResp } from '@/types'
 
 defineOptions({ name: 'RoleForm' })
@@ -77,18 +80,18 @@ const formData = reactive({
   name: '',
   description: '',
   sort: 0,
-  status: 1
+  status: 1,
 })
 
 const formRules: FormRules = {
   code: [
     { required: true, message: '请输入角色编码', trigger: 'blur' },
-    { pattern: /^[a-zA-Z][a-zA-Z0-9_]*$/, message: '角色编码以字母开头，只能包含字母、数字和下划线', trigger: 'blur' }
+    { pattern: /^[a-zA-Z][a-zA-Z0-9_]*$/, message: '角色编码以字母开头，只能包含字母、数字和下划线', trigger: 'blur' },
   ],
   name: [
     { required: true, message: '请输入角色名称', trigger: 'blur' },
-    { min: 2, max: 20, message: '角色名称长度为 2-20 个字符', trigger: 'blur' }
-  ]
+    { min: 2, max: 20, message: '角色名称长度为 2-20 个字符', trigger: 'blur' },
+  ],
 }
 
 watch(
@@ -98,7 +101,7 @@ watch(
       Object.assign(formData, val)
     }
   },
-  { immediate: true }
+  { immediate: true },
 )
 
 function validate() {

@@ -4,6 +4,7 @@
  */
 import type { PageVo } from '@/types/common'
 import type { ClusterRoleResp, ClusterRoleQueryReq, ClusterRoleReq } from '@/types/kubernetes/security/clusterRole'
+
 import { generateId } from '@/mock/utils'
 
 /**
@@ -53,7 +54,7 @@ function createClusterRole(clusterId: string, data: Partial<ClusterRoleReq>): vo
     createAt: new Date().toLocaleString(),
     createBy: 'admin',
     updateAt: new Date().toLocaleString(),
-    updateBy: 'admin'
+    updateBy: 'admin',
   }
   mockClusterRoles.push(created)
 }
@@ -73,7 +74,7 @@ function updateClusterRole(clusterId: string, data: Partial<ClusterRoleReq>): vo
     ...mockClusterRoles[index],
     ...data,
     updateBy: 'admin',
-    updateAt: new Date().toLocaleString()
+    updateAt: new Date().toLocaleString(),
   }
   mockClusterRoles[index] = updated
 }
@@ -89,7 +90,7 @@ function manageClusterRoleLabels(
   clusterId: string,
   name: string,
   labels: Record<string, string>,
-  operation: number
+  operation: number,
 ): void {
   const index = mockClusterRoles.findIndex(c => c.clusterId === clusterId && c.name === name)
   if (index === -1) {
@@ -119,7 +120,7 @@ function manageClusterRoleAnnotations(
   clusterId: string,
   name: string,
   annotations: Record<string, string>,
-  operation: number
+  operation: number,
 ): void {
   const index = mockClusterRoles.findIndex(c => c.clusterId === clusterId && c.name === name)
   if (index === -1) {
@@ -203,24 +204,24 @@ export default [
     method: 'get',
     url: '/kubernetes/clusters/:clusterId/clusterroles',
     handler: (pathParams: Record<string, string>, params: Partial<ClusterRoleQueryReq>) =>
-      getClusterRolePage(pathParams.clusterId, params)
+      getClusterRolePage(pathParams.clusterId, params),
   },
   {
     method: 'get',
     url: '/kubernetes/clusters/:clusterId/clusterroles/:name',
-    handler: (pathParams: Record<string, string>) => getClusterRoleDetail(pathParams.clusterId, pathParams.name)
+    handler: (pathParams: Record<string, string>) => getClusterRoleDetail(pathParams.clusterId, pathParams.name),
   },
   {
     method: 'post',
     url: '/kubernetes/clusters/:clusterId/clusterroles',
     handler: (pathParams: Record<string, string>, _params: unknown, data: Partial<ClusterRoleReq>) =>
-      createClusterRole(pathParams.clusterId, data)
+      createClusterRole(pathParams.clusterId, data),
   },
   {
     method: 'put',
     url: '/kubernetes/clusters/:clusterId/clusterroles/:name',
     handler: (pathParams: Record<string, string>, _params: unknown, data: Partial<ClusterRoleReq>) =>
-      updateClusterRole(pathParams.clusterId, data)
+      updateClusterRole(pathParams.clusterId, data),
   },
   {
     method: 'put',
@@ -228,8 +229,8 @@ export default [
     handler: (
       pathParams: Record<string, string>,
       _params: unknown,
-      data: { labels: Record<string, string>; operation: number }
-    ) => manageClusterRoleLabels(pathParams.clusterId, pathParams.name, data.labels, data.operation)
+      data: { labels: Record<string, string>; operation: number },
+    ) => manageClusterRoleLabels(pathParams.clusterId, pathParams.name, data.labels, data.operation),
   },
   {
     method: 'put',
@@ -237,26 +238,26 @@ export default [
     handler: (
       pathParams: Record<string, string>,
       _params: unknown,
-      data: { annotations: Record<string, string>; operation: number }
-    ) => manageClusterRoleAnnotations(pathParams.clusterId, pathParams.name, data.annotations, data.operation)
+      data: { annotations: Record<string, string>; operation: number },
+    ) => manageClusterRoleAnnotations(pathParams.clusterId, pathParams.name, data.annotations, data.operation),
   },
   {
     method: 'put',
     url: '/kubernetes/clusters/:clusterId/clusterroles/:name/rules',
     handler: (pathParams: Record<string, string>, _params: unknown, data: { rules: ClusterRoleReq['rules'] }) =>
-      updateClusterRoleRules(pathParams.clusterId, pathParams.name, data.rules)
+      updateClusterRoleRules(pathParams.clusterId, pathParams.name, data.rules),
   },
   {
     method: 'delete',
     url: '/kubernetes/clusters/:clusterId/clusterroles/:name',
-    handler: (pathParams: Record<string, string>) => deleteClusterRole(pathParams.clusterId, pathParams.name)
+    handler: (pathParams: Record<string, string>) => deleteClusterRole(pathParams.clusterId, pathParams.name),
   },
   {
     method: 'delete',
     url: '/kubernetes/clusters/:clusterId/clusterroles',
     handler: (pathParams: Record<string, string>, _params: unknown, data: string[]) =>
-      deleteClusterRoles(pathParams.clusterId, data)
-  }
+      deleteClusterRoles(pathParams.clusterId, data),
+  },
 ]
 
 /**
@@ -273,13 +274,13 @@ const mockClusterRoles: ClusterRoleResp[] = [
     labels: { 'kubernetes.io/bootstrapping': 'rbac-defaults' },
     annotations: {
       'rbac.authorization.kubernetes.io/autoupdate': 'true',
-      'description': 'Provides full access to most resources'
+      'description': 'Provides full access to most resources',
     },
     deletable: false,
     createAt: '2024-01-01T00:00:00Z',
     createBy: 'system',
     updateAt: '2024-01-01T00:00:00Z',
-    updateBy: 'system'
+    updateBy: 'system',
   },
   {
     id: generateId(),
@@ -288,18 +289,18 @@ const mockClusterRoles: ClusterRoleResp[] = [
     clusterName: 'prod-cluster',
     isSystem: true,
     rules: [
-      { apiGroups: [''], resources: ['pods', 'services', 'configmaps', 'secrets'], verbs: ['get', 'list', 'watch'] }
+      { apiGroups: [''], resources: ['pods', 'services', 'configmaps', 'secrets'], verbs: ['get', 'list', 'watch'] },
     ],
     labels: { 'kubernetes.io/bootstrapping': 'rbac-defaults' },
     annotations: {
       'rbac.authorization.kubernetes.io/autoupdate': 'true',
-      'description': 'Allows read-only access to most resources'
+      'description': 'Allows read-only access to most resources',
     },
     deletable: false,
     createAt: '2024-01-01T00:00:00Z',
     createBy: 'system',
     updateAt: '2024-01-01T00:00:00Z',
-    updateBy: 'system'
+    updateBy: 'system',
   },
   {
     id: generateId(),
@@ -309,18 +310,18 @@ const mockClusterRoles: ClusterRoleResp[] = [
     isSystem: true,
     rules: [
       { apiGroups: ['*'], resources: ['*'], verbs: ['*'] },
-      { nonResourceURLs: ['*'], verbs: ['*'] }
+      { nonResourceURLs: ['*'], verbs: ['*'] },
     ],
     labels: { 'kubernetes.io/bootstrapping': 'rbac-defaults' },
     annotations: {
       'rbac.authorization.kubernetes.io/autoupdate': 'true',
-      'description': 'Super-user access to all resources'
+      'description': 'Super-user access to all resources',
     },
     deletable: false,
     createAt: '2024-01-01T00:00:00Z',
     createBy: 'system',
     updateAt: '2024-01-01T00:00:00Z',
-    updateBy: 'system'
+    updateBy: 'system',
   },
   {
     id: generateId(),
@@ -332,19 +333,19 @@ const mockClusterRoles: ClusterRoleResp[] = [
       {
         apiGroups: [''],
         resources: ['pods', 'services', 'configmaps', 'secrets', 'endpoints'],
-        verbs: ['get', 'list', 'watch', 'create', 'update', 'patch', 'delete']
+        verbs: ['get', 'list', 'watch', 'create', 'update', 'patch', 'delete'],
       },
       {
         apiGroups: ['apps'],
         resources: ['deployments', 'statefulsets'],
-        verbs: ['get', 'list', 'watch', 'create', 'update', 'patch', 'delete']
-      }
+        verbs: ['get', 'list', 'watch', 'create', 'update', 'patch', 'delete'],
+      },
     ],
     labels: { 'app.kubernetes.io/name': 'developer-role' },
     deletable: true,
     createAt: '2024-03-15T10:00:00Z',
     createBy: 'admin',
     updateAt: '2024-03-15T10:00:00Z',
-    updateBy: 'admin'
-  }
+    updateBy: 'admin',
+  },
 ]

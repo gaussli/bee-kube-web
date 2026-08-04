@@ -4,6 +4,7 @@
  */
 import type { PageVo } from '@/types/common'
 import type { StorageClassResp, StorageClassQueryReq } from '@/types/kubernetes/storage/storageClass'
+
 import { generateId } from '@/mock/utils'
 
 /**
@@ -45,7 +46,7 @@ function manageStorageClassLabels(
   clusterId: string,
   name: string,
   labels: Record<string, string>,
-  operation: number
+  operation: number,
 ): void {
   const index = mockSCs.findIndex(s => s.clusterId === clusterId && s.name === name)
   if (index === -1) {
@@ -75,7 +76,7 @@ function manageStorageClassAnnotations(
   clusterId: string,
   name: string,
   annotations: Record<string, string>,
-  operation: number
+  operation: number,
 ): void {
   const index = mockSCs.findIndex(s => s.clusterId === clusterId && s.name === name)
   if (index === -1) {
@@ -107,12 +108,12 @@ export default [
     method: 'get',
     url: '/kubernetes/clusters/:clusterId/storageclasses',
     handler: (pathParams: Record<string, string>, params: Partial<StorageClassQueryReq>) =>
-      getStorageClassPage(pathParams.clusterId, params)
+      getStorageClassPage(pathParams.clusterId, params),
   },
   {
     method: 'get',
     url: '/kubernetes/clusters/:clusterId/storageclasses/:name',
-    handler: (pathParams: Record<string, string>) => getStorageClassDetail(pathParams.clusterId, pathParams.name)
+    handler: (pathParams: Record<string, string>) => getStorageClassDetail(pathParams.clusterId, pathParams.name),
   },
   {
     method: 'put',
@@ -120,8 +121,8 @@ export default [
     handler: (
       pathParams: Record<string, string>,
       _params: unknown,
-      data: { labels: Record<string, string>; operation: number }
-    ) => manageStorageClassLabels(pathParams.clusterId, pathParams.name, data.labels, data.operation)
+      data: { labels: Record<string, string>; operation: number },
+    ) => manageStorageClassLabels(pathParams.clusterId, pathParams.name, data.labels, data.operation),
   },
   {
     method: 'put',
@@ -129,9 +130,9 @@ export default [
     handler: (
       pathParams: Record<string, string>,
       _params: unknown,
-      data: { annotations: Record<string, string>; operation: number }
-    ) => manageStorageClassAnnotations(pathParams.clusterId, pathParams.name, data.annotations, data.operation)
-  }
+      data: { annotations: Record<string, string>; operation: number },
+    ) => manageStorageClassAnnotations(pathParams.clusterId, pathParams.name, data.annotations, data.operation),
+  },
 ]
 
 /**
@@ -152,7 +153,7 @@ const mockSCs: StorageClassResp[] = [
     createAt: '2024-01-15T10:00:00Z',
     createBy: 'admin',
     updateAt: '2024-03-15T14:00:00Z',
-    updateBy: 'admin'
+    updateBy: 'admin',
   },
   {
     id: generateId(),
@@ -168,7 +169,7 @@ const mockSCs: StorageClassResp[] = [
     createAt: '2024-01-15T10:05:00Z',
     createBy: 'admin',
     updateAt: '2024-03-10T11:00:00Z',
-    updateBy: 'admin'
+    updateBy: 'admin',
   },
   {
     id: generateId(),
@@ -185,7 +186,7 @@ const mockSCs: StorageClassResp[] = [
     createAt: '2024-02-01T09:00:00Z',
     createBy: 'admin',
     updateAt: '2024-03-12T16:00:00Z',
-    updateBy: 'admin'
+    updateBy: 'admin',
   },
   {
     id: generateId(),
@@ -201,7 +202,7 @@ const mockSCs: StorageClassResp[] = [
     createAt: '2024-02-15T14:00:00Z',
     createBy: 'admin',
     updateAt: '2024-03-01T10:00:00Z',
-    updateBy: 'admin'
+    updateBy: 'admin',
   },
   {
     id: generateId(),
@@ -217,6 +218,6 @@ const mockSCs: StorageClassResp[] = [
     createAt: '2024-03-01T10:00:00Z',
     createBy: 'admin',
     updateAt: '2024-03-19T08:00:00Z',
-    updateBy: 'admin'
-  }
+    updateBy: 'admin',
+  },
 ]

@@ -1,9 +1,14 @@
 import axios from 'axios'
+
 import { ElMessage } from 'element-plus'
+
 import type { AxiosInstance, AxiosRequestConfig, AxiosResponse, InternalAxiosRequestConfig } from 'axios'
+
 import { mockRequest } from '@/mock'
+
 import router from '@/router'
 import { useUserStore } from '@/stores'
+
 import { BizError } from './error'
 import { storage } from './storage'
 
@@ -15,8 +20,8 @@ const service: AxiosInstance = axios.create({
   timeout: 15000,
   headers: {
     'Content-Type': 'application/json;charset=utf-8',
-    'Accept': 'application/json'
-  }
+    'Accept': 'application/json',
+  },
 })
 
 // 开发环境使用 mock adapter
@@ -46,7 +51,7 @@ service.interceptors.request.use(
   error => {
     console.error('请求错误:', error)
     return Promise.reject(error)
-  }
+  },
 )
 
 // 响应拦截器
@@ -79,7 +84,7 @@ service.interceptors.response.use(
       ElMessage.error('网络异常')
     }
     return Promise.reject(error)
-  }
+  },
 )
 
 function handleRefreshToken(headers: any) {
@@ -109,7 +114,7 @@ export const request = {
 
   patch<T = any>(url: string, data?: object, config?: AxiosRequestConfig): Promise<T> {
     return service.patch(url, data, config)
-  }
+  },
 }
 
 export default service

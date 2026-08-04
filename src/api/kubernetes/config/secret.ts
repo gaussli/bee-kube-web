@@ -11,8 +11,9 @@ import type {
   SecretListResp,
   SecretQueryReq,
   SecretReq,
-  SecretYamlReq
+  SecretYamlReq,
 } from '@/types/kubernetes/config/secret'
+
 import { request } from '@/utils'
 
 /**
@@ -68,7 +69,7 @@ export function updateSecret(
   clusterId: string,
   namespace: string,
   name: string,
-  data: Partial<SecretReq>
+  data: Partial<SecretReq>,
 ): Promise<void> {
   return request.put(`/kubernetes/clusters/${clusterId}/namespaces/${namespace}/secrets/${name}`, data)
 }
@@ -84,7 +85,7 @@ export function manageSecretLabels(
   clusterId: string,
   namespace: string,
   name: string,
-  data: SecretLabelsReq
+  data: SecretLabelsReq,
 ): Promise<void> {
   return request.put(`/kubernetes/clusters/${clusterId}/namespaces/${namespace}/secrets/${name}/labels`, data)
 }
@@ -100,7 +101,7 @@ export function manageSecretAnnotations(
   clusterId: string,
   namespace: string,
   name: string,
-  data: SecretAnnotationsReq
+  data: SecretAnnotationsReq,
 ): Promise<void> {
   return request.put(`/kubernetes/clusters/${clusterId}/namespaces/${namespace}/secrets/${name}/annotations`, data)
 }
@@ -154,7 +155,7 @@ export function manageSecretData(
   clusterId: string,
   namespace: string,
   name: string,
-  data: SecretDataReq
+  data: SecretDataReq,
 ): Promise<void> {
   return request.put(`/kubernetes/clusters/${clusterId}/namespaces/${namespace}/secrets/${name}/data`, data)
 }

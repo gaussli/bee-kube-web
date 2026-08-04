@@ -35,10 +35,15 @@
 
 <script setup lang="ts">
 import { onMounted, ref } from 'vue'
+
 import { useRouter } from 'vue-router'
+
 import { ElMessage } from 'element-plus'
+
 import { ArrowLeft, Close, Check } from '@element-plus/icons-vue'
+
 import type { UserDetailResp } from '@/types'
+
 import BeeButton from '@/components/BeeButton/index.vue'
 import BeeDivider from '@/components/BeeDivider/index.vue'
 import UserForm from '@/components/UserForm/index.vue'
@@ -65,7 +70,7 @@ const userData = ref<UserDetailResp>({
   createBy: 'system',
   createAt: '2024-01-01 10:00:00',
   updateBy: 'admin',
-  updateAt: '2024-01-15 14:30:00'
+  updateAt: '2024-01-15 14:30:00',
 })
 
 function handleBack() {

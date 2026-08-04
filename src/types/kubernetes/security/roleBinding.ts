@@ -3,6 +3,7 @@
  * @module types/kubernetes/roleBinding
  */
 import type { BaseEntity, PageForm } from '@/types/common'
+
 import type { ClusterRoleBindingSubject } from './clusterRoleBinding'
 
 /**

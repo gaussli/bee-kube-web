@@ -17,7 +17,9 @@
 
 <script setup lang="ts">
 import { useRouter } from 'vue-router'
+
 import { Lock } from '@element-plus/icons-vue'
+
 import BeeButton from '@/components/BeeButton/index.vue'
 
 defineOptions({ name: 'NoPermission' })

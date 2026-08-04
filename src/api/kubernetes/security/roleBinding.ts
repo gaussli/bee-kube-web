@@ -9,8 +9,9 @@ import type {
   RoleBindingReq,
   RoleBindingLabelsReq,
   RoleBindingAnnotationsReq,
-  RoleBindingSubjectsReq
+  RoleBindingSubjectsReq,
 } from '@/types/kubernetes/security/roleBinding'
+
 import { request } from '@/utils'
 
 /**
@@ -23,7 +24,7 @@ import { request } from '@/utils'
 export function getRoleBindingPage(
   clusterId: string,
   namespaceName: string,
-  params: Partial<RoleBindingQueryReq>
+  params: Partial<RoleBindingQueryReq>,
 ): Promise<PageVo<RoleBindingResp>> {
   return request.get(`/kubernetes/clusters/${clusterId}/namespaces/${namespaceName}/rolebindings`, { params })
 }
@@ -57,7 +58,7 @@ export function createRoleBinding(clusterId: string, data: Partial<RoleBindingRe
  */
 export function updateRoleBinding(clusterId: string, data: Partial<RoleBindingReq>): Promise<void> {
   return request.put(`/kubernetes/clusters/${clusterId}/namespaces/${data.namespace}/rolebindings/${data.name}`, {
-    data
+    data,
   })
 }
 
@@ -72,10 +73,10 @@ export function manageRoleBindingLabels(
   clusterId: string,
   namespaceName: string,
   name: string,
-  data: Partial<RoleBindingLabelsReq>
+  data: Partial<RoleBindingLabelsReq>,
 ): Promise<void> {
   return request.put(`/kubernetes/clusters/${clusterId}/namespaces/${namespaceName}/rolebindings/${name}/labels`, {
-    data
+    data,
   })
 }
 
@@ -90,10 +91,10 @@ export function manageRoleBindingAnnotations(
   clusterId: string,
   namespaceName: string,
   name: string,
-  data: Partial<RoleBindingAnnotationsReq>
+  data: Partial<RoleBindingAnnotationsReq>,
 ): Promise<void> {
   return request.put(`/kubernetes/clusters/${clusterId}/namespaces/${namespaceName}/rolebindings/${name}/annotations`, {
-    data
+    data,
   })
 }
 
@@ -108,10 +109,10 @@ export function manageRoleBindingSubjects(
   clusterId: string,
   namespaceName: string,
   name: string,
-  data: Partial<RoleBindingSubjectsReq>
+  data: Partial<RoleBindingSubjectsReq>,
 ): Promise<void> {
   return request.put(`/kubernetes/clusters/${clusterId}/namespaces/${namespaceName}/rolebindings/${name}/subjects`, {
-    data
+    data,
   })
 }
 

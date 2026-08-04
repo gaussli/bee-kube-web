@@ -87,13 +87,19 @@
 
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
+
 import { useRoute, useRouter } from 'vue-router'
+
 import { FolderOpened, ArrowLeft, EditPen } from '@element-plus/icons-vue'
+
 import type { NamespaceListResp } from '@/types/kubernetes/namespace'
+
 import { getNamespaceDetail } from '@/api/kubernetes/namespace'
+
 import BeeButton from '@/components/BeeButton/index.vue'
 import BeePageTitle from '@/components/BeePageTitle/index.vue'
 import BeeTag from '@/components/BeeTag/index.vue'
+
 import { usePermission } from '@/composables/usePermission'
 
 defineOptions({ name: 'NamespaceDetail' })
@@ -137,7 +143,7 @@ function handleEdit() {
   router.push({
     name: 'kubernetes:namespace:edit',
     params: { clusterId: clusterId.value },
-    query: { name: namespaceName.value }
+    query: { name: namespaceName.value },
   })
 }
 

@@ -137,11 +137,17 @@
 
 <script setup lang="ts">
 import { computed, onMounted, reactive, ref } from 'vue'
+
 import { useRoute, useRouter } from 'vue-router'
+
 import { ElMessage } from 'element-plus'
+
 import type { NodeQueryReq, NodeListResp } from '@/types/kubernetes/node'
+
 import { calcPercentage } from '@/utils/kubernetes'
+
 import { getNodePage, cordonNode, drainNode } from '@/api/kubernetes/node'
+
 import BeeAuditCell from '@/components/BeeAuditCell/index.vue'
 import BeeButton from '@/components/BeeButton/index.vue'
 import BeeCard from '@/components/BeeCard/index.vue'
@@ -158,6 +164,7 @@ import BeeSelect from '@/components/BeeSelect/index.vue'
 import BeeStatusCell from '@/components/BeeStatusCell/index.vue'
 import BeeTableColumn from '@/components/BeeTable/BeeTableColumn.vue'
 import BeeTable from '@/components/BeeTable/index.vue'
+
 import { usePermission } from '@/composables/usePermission'
 import { NODE_STATUS_OPTIONS } from '@/config/kubernetes'
 
@@ -178,12 +185,12 @@ const queryForm = reactive<Partial<NodeQueryReq>>({
   id: undefined,
   name: undefined,
   ip: undefined,
-  status: undefined
+  status: undefined,
 })
 const pagination = reactive({
   page: 1,
   pageSize: 10,
-  total: 0
+  total: 0,
 })
 
 /**
@@ -200,7 +207,7 @@ async function loadData() {
     const resp = await getNodePage(clusterId.value, {
       ...queryForm,
       page: pagination.page,
-      pageSize: pagination.pageSize
+      pageSize: pagination.pageSize,
     })
     tableData.value = resp.list
     pagination.total = resp.total

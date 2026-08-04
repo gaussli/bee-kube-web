@@ -10,8 +10,9 @@ import type {
   DaemonSetListResp,
   DaemonSetQueryReq,
   DaemonSetReq,
-  DaemonSetYamlReq
+  DaemonSetYamlReq,
 } from '@/types/kubernetes/workload/daemonset'
+
 import { generateId } from '@/mock/utils'
 
 /**
@@ -35,74 +36,74 @@ export default [
     method: 'get',
     url: '/kubernetes/clusters/:clusterId/daemonsets',
     handler: (pathParams: Record<string, string>, params: Partial<DaemonSetQueryReq>): PageVo<DaemonSetListResp> =>
-      getDaemonSetList(pathParams.clusterId, params)
+      getDaemonSetList(pathParams.clusterId, params),
   },
   {
     method: 'get',
     url: '/kubernetes/clusters/:clusterId/namespaces/:namespace/daemonsets/:name',
     handler: (pathParams: Record<string, string>): DaemonSetDetailResp =>
-      getDaemonSetDetail(pathParams.clusterId, pathParams.namespace, pathParams.name)
+      getDaemonSetDetail(pathParams.clusterId, pathParams.namespace, pathParams.name),
   },
   {
     method: 'get',
     url: '/kubernetes/clusters/:clusterId/namespaces/:namespace/daemonsets/:name/yaml',
     handler: (pathParams: Record<string, string>): string =>
-      getDaemonSetYaml(pathParams.clusterId, pathParams.namespace, pathParams.name)
+      getDaemonSetYaml(pathParams.clusterId, pathParams.namespace, pathParams.name),
   },
   {
     method: 'post',
     url: '/kubernetes/clusters/:clusterId/namespaces/:namespace/daemonsets',
     handler: (pathParams: Record<string, string>, data: DaemonSetReq): void =>
-      createDaemonSet(pathParams.clusterId, pathParams.namespace, data)
+      createDaemonSet(pathParams.clusterId, pathParams.namespace, data),
   },
   {
     method: 'put',
     url: '/kubernetes/clusters/:clusterId/namespaces/:namespace/daemonsets/:name',
     handler: (pathParams: Record<string, string>, data: Partial<DaemonSetReq>): void =>
-      updateDaemonSet(pathParams.clusterId, pathParams.namespace, pathParams.name, data)
+      updateDaemonSet(pathParams.clusterId, pathParams.namespace, pathParams.name, data),
   },
   {
     method: 'post',
     url: '/kubernetes/clusters/:clusterId/namespaces/:namespace/daemonsets/:name/restart',
     handler: (pathParams: Record<string, string>): void =>
-      restartDaemonSet(pathParams.clusterId, pathParams.namespace, pathParams.name)
+      restartDaemonSet(pathParams.clusterId, pathParams.namespace, pathParams.name),
   },
   {
     method: 'post',
     url: '/kubernetes/clusters/:clusterId/namespaces/:namespace/daemonsets/:name/labels',
     handler: (pathParams: Record<string, string>, data: DaemonSetLabelsReq): void =>
-      manageDaemonSetLabels(pathParams.clusterId, pathParams.namespace, pathParams.name, data)
+      manageDaemonSetLabels(pathParams.clusterId, pathParams.namespace, pathParams.name, data),
   },
   {
     method: 'post',
     url: '/kubernetes/clusters/:clusterId/namespaces/:namespace/daemonsets/:name/annotations',
     handler: (pathParams: Record<string, string>, data: DaemonSetAnnotationsReq): void =>
-      manageDaemonSetAnnotations(pathParams.clusterId, pathParams.namespace, pathParams.name, data)
+      manageDaemonSetAnnotations(pathParams.clusterId, pathParams.namespace, pathParams.name, data),
   },
   {
     method: 'delete',
     url: '/kubernetes/clusters/:clusterId/namespaces/:namespace/daemonsets/:name',
     handler: (pathParams: Record<string, string>): void =>
-      deleteDaemonSet(pathParams.clusterId, pathParams.namespace, pathParams.name)
+      deleteDaemonSet(pathParams.clusterId, pathParams.namespace, pathParams.name),
   },
   {
     method: 'delete',
     url: '/kubernetes/clusters/:clusterId/namespaces/:namespace/daemonsets/batch',
     handler: (pathParams: Record<string, string>, data: string[]): void =>
-      deleteDaemonSets(pathParams.clusterId, pathParams.namespace, data)
+      deleteDaemonSets(pathParams.clusterId, pathParams.namespace, data),
   },
   {
     method: 'get',
     url: '/kubernetes/clusters/:clusterId/daemonsets/export',
     handler: (pathParams: Record<string, string>, params: Partial<DaemonSetQueryReq>): void =>
-      exportDaemonSet(pathParams.clusterId, params)
+      exportDaemonSet(pathParams.clusterId, params),
   },
   {
     method: 'post',
     url: '/kubernetes/clusters/:clusterId/daemonsets/import',
     handler: (pathParams: Record<string, string>, data: DaemonSetYamlReq): void =>
-      importDaemonSet(pathParams.clusterId, data)
-  }
+      importDaemonSet(pathParams.clusterId, data),
+  },
 ]
 
 /**
@@ -167,9 +168,9 @@ function getDaemonSetDetail(clusterId: string, namespace: string, name: string):
     containers: [
       {
         name: ds!.name,
-        image: `${ds!.name}:latest`
-      }
-    ]
+        image: `${ds!.name}:latest`,
+      },
+    ],
   }
 }
 
@@ -267,7 +268,7 @@ function manageDaemonSetAnnotations(
   clusterId: string,
   namespace: string,
   name: string,
-  data: DaemonSetAnnotationsReq
+  data: DaemonSetAnnotationsReq,
 ): void {
   console.log('[Mock] manageDaemonSetAnnotations', { clusterId, namespace, name, data })
 }
@@ -331,7 +332,7 @@ const mockDaemonSets: DaemonSetListResp[] = [
     createBy: 'admin',
     updateAt: '2024-03-20 14:00:00',
     updateBy: 'admin',
-    deletable: false
+    deletable: false,
   },
   {
     id: generateId(),
@@ -348,7 +349,7 @@ const mockDaemonSets: DaemonSetListResp[] = [
     createBy: 'admin',
     updateAt: '2024-03-19 16:30:00',
     updateBy: 'admin',
-    deletable: true
+    deletable: true,
   },
   {
     id: generateId(),
@@ -365,7 +366,7 @@ const mockDaemonSets: DaemonSetListResp[] = [
     createBy: 'system',
     updateAt: '2024-03-18 10:00:00',
     updateBy: 'system',
-    deletable: false
+    deletable: false,
   },
   // ==================== Available（部分就绪）- 2 条 ====================
   {
@@ -384,7 +385,7 @@ const mockDaemonSets: DaemonSetListResp[] = [
     createBy: 'developer',
     updateAt: '2024-03-20 11:00:00',
     updateBy: 'developer',
-    deletable: true
+    deletable: true,
   },
   {
     id: generateId(),
@@ -402,7 +403,7 @@ const mockDaemonSets: DaemonSetListResp[] = [
     createBy: 'admin',
     updateAt: '2024-03-19 12:00:00',
     updateBy: 'admin',
-    deletable: true
+    deletable: true,
   },
   // ==================== Updating（更新中）- 2 条 ====================
   {
@@ -421,7 +422,7 @@ const mockDaemonSets: DaemonSetListResp[] = [
     createBy: 'developer',
     updateAt: '2024-03-20 16:00:00',
     updateBy: 'developer',
-    deletable: true
+    deletable: true,
   },
   {
     id: generateId(),
@@ -439,7 +440,7 @@ const mockDaemonSets: DaemonSetListResp[] = [
     createBy: 'admin',
     updateAt: '2024-03-20 15:30:00',
     updateBy: 'admin',
-    deletable: false
+    deletable: false,
   },
   // ==================== Creating（创建中）- 1 条 ====================
   {
@@ -458,7 +459,7 @@ const mockDaemonSets: DaemonSetListResp[] = [
     createBy: 'admin',
     updateAt: '2024-03-19 15:00:00',
     updateBy: 'admin',
-    deletable: false
+    deletable: false,
   },
   // ==================== Failed（失败异常）- 1 条 ====================
   {
@@ -477,7 +478,7 @@ const mockDaemonSets: DaemonSetListResp[] = [
     createBy: 'admin',
     updateAt: '2024-03-18 09:00:00',
     updateBy: 'admin',
-    deletable: true
+    deletable: true,
   },
   // ==================== Unknown（未知）- 1 条 ====================
   {
@@ -496,6 +497,6 @@ const mockDaemonSets: DaemonSetListResp[] = [
     createBy: 'admin',
     updateAt: '2024-03-20 17:00:00',
     updateBy: 'admin',
-    deletable: true
-  }
+    deletable: true,
+  },
 ]

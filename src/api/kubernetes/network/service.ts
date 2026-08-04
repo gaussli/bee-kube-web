@@ -8,8 +8,9 @@ import type {
   ServiceQueryReq,
   ServiceReq,
   ServiceLabelsReq,
-  ServiceAnnotationsReq
+  ServiceAnnotationsReq,
 } from '@/types/kubernetes/network/service'
+
 import { request } from '@/utils'
 
 /**
@@ -22,7 +23,7 @@ import { request } from '@/utils'
 export function getServicePage(
   clusterId: string,
   namespaceName: string,
-  params: Partial<ServiceQueryReq>
+  params: Partial<ServiceQueryReq>,
 ): Promise<PageVo<ServiceListVo>> {
   return request.get(`/kubernetes/clusters/${clusterId}/namespaces/${namespaceName}/services`, { params })
 }
@@ -69,7 +70,7 @@ export function manageServiceLabels(
   clusterId: string,
   namespaceName: string,
   name: string,
-  data: Partial<ServiceLabelsReq>
+  data: Partial<ServiceLabelsReq>,
 ): Promise<void> {
   return request.put(`/kubernetes/clusters/${clusterId}/namespaces/${namespaceName}/services/${name}/labels`, { data })
 }
@@ -85,10 +86,10 @@ export function manageServiceAnnotations(
   clusterId: string,
   namespaceName: string,
   name: string,
-  data: Partial<ServiceAnnotationsReq>
+  data: Partial<ServiceAnnotationsReq>,
 ): Promise<void> {
   return request.put(`/kubernetes/clusters/${clusterId}/namespaces/${namespaceName}/services/${name}/annotations`, {
-    data
+    data,
   })
 }
 

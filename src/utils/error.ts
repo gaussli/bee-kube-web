@@ -13,5 +13,5 @@ export class BizError extends Error {
 export const createError = {
   unauthorized: () => new BizError(401, '未授权'),
   forbidden: () => new BizError(403, '无权限'),
-  notFound: () => new BizError(404, '资源不存在')
+  notFound: () => new BizError(404, '资源不存在'),
 }

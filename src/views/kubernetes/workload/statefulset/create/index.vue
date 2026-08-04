@@ -39,11 +39,17 @@
 
 <script setup lang="ts">
 import { ref } from 'vue'
+
 import { useRouter } from 'vue-router'
+
 import { ElMessage, type FormInstance } from 'element-plus'
+
 import { Collection, Close, Check } from '@element-plus/icons-vue'
+
 import type { StatefulSetCreateForm } from '@/types/kubernetes/workload/statefulset'
+
 import { createStatefulSet } from '@/api/kubernetes/workload/statefulset'
+
 import BeeButton from '@/components/BeeButton/index.vue'
 import BeePageTitle from '@/components/BeePageTitle/index.vue'
 
@@ -56,14 +62,14 @@ const formData = ref<Partial<StatefulSetCreateForm>>({
   namespace: 'default',
   clusterId: 'default',
   replicas: 1,
-  serviceName: ''
+  serviceName: '',
 })
 const formRules = {
   clusterId: [{ required: true, message: '请选择集群', trigger: 'change' }],
   namespace: [{ required: true, message: '请选择命名空间', trigger: 'change' }],
   name: [{ required: true, message: '请输入应用名称', trigger: 'blur' }],
   replicas: [{ required: true, message: '请输入副本数量', trigger: 'blur' }],
-  serviceName: [{ required: true, message: '请输入服务名称', trigger: 'blur' }]
+  serviceName: [{ required: true, message: '请输入服务名称', trigger: 'blur' }],
 }
 function handleCancel() {
   router.back()

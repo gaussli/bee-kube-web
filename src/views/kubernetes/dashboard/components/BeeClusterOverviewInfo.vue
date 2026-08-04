@@ -38,11 +38,14 @@
 
 <script setup lang="ts">
 import { computed } from 'vue'
+
 import { calcRemainDays, formatTimeElapsed } from '@/utils/datetime'
+
 import BeeCard from '@/components/BeeCard/index.vue'
 import BeeFieldCard from '@/components/BeeFieldCard/index.vue'
 import BeeFieldItem from '@/components/BeeFieldItem/index.vue'
 import BeeIcon from '@/components/BeeIcon/index.vue'
+
 import { CERT_EXPIRE_WARNING_DAYS, CLUSTER_STATUS_OPTIONS } from '@/config/kubernetes'
 
 defineOptions({ name: 'BeeClusterOverviewInfo' })

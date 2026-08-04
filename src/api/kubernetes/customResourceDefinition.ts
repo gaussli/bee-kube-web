@@ -4,6 +4,7 @@
  */
 import type { PageVo } from '@/types/common'
 import type { CrdResp, CrdQueryReq, CrdLabelsReq, CrdAnnotationsReq } from '@/types/kubernetes/crd'
+
 import request from '@/utils/request'
 
 /**
@@ -14,7 +15,7 @@ import request from '@/utils/request'
  */
 export function getCrdPage(clusterId: string, params: Partial<CrdQueryReq>): Promise<PageVo<CrdResp>> {
   return request.get(`/kubernetes/clusters/${clusterId}/crds`, {
-    params
+    params,
   })
 }
 
@@ -64,6 +65,6 @@ export function deleteCrd(clusterId: string, name: string): Promise<void> {
  */
 export function deleteCrds(clusterId: string, data: { names: string[] }): Promise<void> {
   return request.delete(`/kubernetes/clusters/${clusterId}/crds`, {
-    data
+    data,
   })
 }

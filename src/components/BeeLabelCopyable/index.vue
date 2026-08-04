@@ -7,6 +7,7 @@
 
 <script setup lang="ts">
 import { ElMessage } from 'element-plus'
+
 import BeeIcon from '@/components/BeeIcon/index.vue'
 
 defineOptions({ name: 'BeeLabelCopyable' })

@@ -38,6 +38,7 @@
  * @description 基于 @floating-ui/vue 的悬浮提示框，支持智能定位、边界翻转和箭头指示。默认 slot 作为触发器，label slot 自定义提示内容。支持 hover 时短暂延迟隐藏，防止鼠标移动时闪烁。
  */
 import { ref, computed } from 'vue'
+
 import { arrow, flip, offset, shift, useFloating } from '@floating-ui/vue'
 
 defineOptions({ name: 'BeeTooltip' })
@@ -59,8 +60,8 @@ const props = withDefaults(
     label: '',
     placement: 'top',
     size: 'default',
-    disabled: false
-  }
+    disabled: false,
+  },
 )
 
 // ==================== Refs ====================
@@ -93,8 +94,8 @@ const { floatingStyles, middlewareData, placement } = useFloating(triggerRef, fl
     offset(12), // tooltip 与触发器间距 12px
     flip(), // 超出视口时自动翻转方向
     shift({ padding: 8 }), // 防止超出视口，保留 8px 安全边距
-    arrow({ element: arrowRef }) // 箭头定位
-  ]
+    arrow({ element: arrowRef }), // 箭头定位
+  ],
 })
 
 // ==================== Computed ====================
@@ -115,14 +116,14 @@ const arrowStyle = computed(() => {
     top: 'bottom',
     right: 'left',
     bottom: 'top',
-    left: 'right'
+    left: 'right',
   }
   const side = placement.value.split('-')[0]
   const staticSide = staticSideMap[side] || 'bottom'
 
   const style: Record<string, string> = {
     left: x != null ? `${x}px` : '',
-    top: y != null ? `${y}px` : ''
+    top: y != null ? `${y}px` : '',
   }
   style[staticSide] = '-4px'
   return style
@@ -192,7 +193,7 @@ defineExpose({ show, hide })
 
 <script lang="ts">
 export default {
-  inheritAttrs: false
+  inheritAttrs: false,
 }
 </script>
 

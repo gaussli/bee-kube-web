@@ -27,11 +27,17 @@
 
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
+
 import { useRoute, useRouter } from 'vue-router'
+
 import { ElMessage, type FormInstance } from 'element-plus'
+
 import { Collection, Close, Check } from '@element-plus/icons-vue'
+
 import type { StatefulSetUpdateForm } from '@/types/kubernetes/workload/statefulset'
+
 import { getStatefulSetDetail, updateStatefulSet } from '@/api/kubernetes/workload/statefulset'
+
 import BeeButton from '@/components/BeeButton/index.vue'
 import BeePageTitle from '@/components/BeePageTitle/index.vue'
 

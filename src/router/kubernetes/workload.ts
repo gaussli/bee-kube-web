@@ -9,8 +9,8 @@ const deploymentRoutes: RouteRecordRaw[] = [
       title: '无状态应用',
       icon: 'Document',
       permission: 'kubernetes:workload:deployment:view',
-      activeCode: 'kubernetes:workload:deployment'
-    }
+      activeCode: 'kubernetes:workload:deployment',
+    },
   },
   {
     path: '/kubernetes/clusters/:clusterId/workload/deployment/create',
@@ -20,8 +20,8 @@ const deploymentRoutes: RouteRecordRaw[] = [
       title: '创建无状态应用',
       icon: 'Document',
       permission: 'kubernetes:workload:deployment:create',
-      activeCode: 'kubernetes:workload:deployment'
-    }
+      activeCode: 'kubernetes:workload:deployment',
+    },
   },
   {
     path: '/kubernetes/clusters/:clusterId/workload/deployment/edit',
@@ -31,8 +31,8 @@ const deploymentRoutes: RouteRecordRaw[] = [
       title: '编辑无状态应用',
       icon: 'Document',
       permission: 'kubernetes:workload:deployment:edit',
-      activeCode: 'kubernetes:workload:deployment'
-    }
+      activeCode: 'kubernetes:workload:deployment',
+    },
   },
   {
     path: '/kubernetes/clusters/:clusterId/workload/deployment/detail',
@@ -42,9 +42,9 @@ const deploymentRoutes: RouteRecordRaw[] = [
       title: '无状态应用详情',
       icon: 'Document',
       permission: 'kubernetes:workload:deployment:view',
-      activeCode: 'kubernetes:workload:deployment'
-    }
-  }
+      activeCode: 'kubernetes:workload:deployment',
+    },
+  },
 ]
 
 const statefulsetRoutes: RouteRecordRaw[] = [
@@ -56,8 +56,8 @@ const statefulsetRoutes: RouteRecordRaw[] = [
       title: '有状态应用',
       icon: 'Collection',
       permission: 'kubernetes:workload:statefulset:view',
-      activeCode: 'kubernetes:workload:statefulset'
-    }
+      activeCode: 'kubernetes:workload:statefulset',
+    },
   },
   {
     path: '/kubernetes/clusters/:clusterId/workload/statefulset/create',
@@ -67,8 +67,8 @@ const statefulsetRoutes: RouteRecordRaw[] = [
       title: '创建有状态应用',
       icon: 'Collection',
       permission: 'kubernetes:workload:statefulset:create',
-      activeCode: 'kubernetes:workload:statefulset'
-    }
+      activeCode: 'kubernetes:workload:statefulset',
+    },
   },
   {
     path: '/kubernetes/clusters/:clusterId/workload/statefulset/edit',
@@ -78,8 +78,8 @@ const statefulsetRoutes: RouteRecordRaw[] = [
       title: '编辑有状态应用',
       icon: 'Collection',
       permission: 'kubernetes:workload:statefulset:edit',
-      activeCode: 'kubernetes:workload:statefulset'
-    }
+      activeCode: 'kubernetes:workload:statefulset',
+    },
   },
   {
     path: '/kubernetes/clusters/:clusterId/workload/statefulset/detail',
@@ -89,9 +89,9 @@ const statefulsetRoutes: RouteRecordRaw[] = [
       title: '有状态应用详情',
       icon: 'Collection',
       permission: 'kubernetes:workload:statefulset:view',
-      activeCode: 'kubernetes:workload:statefulset'
-    }
-  }
+      activeCode: 'kubernetes:workload:statefulset',
+    },
+  },
 ]
 
 const daemonsetRoutes: RouteRecordRaw[] = [
@@ -103,8 +103,8 @@ const daemonsetRoutes: RouteRecordRaw[] = [
       title: '守护进程',
       icon: 'Monitor',
       permission: 'kubernetes:workload:daemonset:view',
-      activeCode: 'kubernetes:workload:daemonset'
-    }
+      activeCode: 'kubernetes:workload:daemonset',
+    },
   },
   {
     path: '/kubernetes/clusters/:clusterId/workload/daemonset/create',
@@ -114,8 +114,8 @@ const daemonsetRoutes: RouteRecordRaw[] = [
       title: '创建守护进程',
       icon: 'Monitor',
       permission: 'kubernetes:workload:daemonset:create',
-      activeCode: 'kubernetes:workload:daemonset'
-    }
+      activeCode: 'kubernetes:workload:daemonset',
+    },
   },
   {
     path: '/kubernetes/clusters/:clusterId/workload/daemonset/edit',
@@ -125,8 +125,8 @@ const daemonsetRoutes: RouteRecordRaw[] = [
       title: '编辑守护进程',
       icon: 'Monitor',
       permission: 'kubernetes:workload:daemonset:edit',
-      activeCode: 'kubernetes:workload:daemonset'
-    }
+      activeCode: 'kubernetes:workload:daemonset',
+    },
   },
   {
     path: '/kubernetes/clusters/:clusterId/workload/daemonset/detail',
@@ -136,9 +136,9 @@ const daemonsetRoutes: RouteRecordRaw[] = [
       title: '守护进程详情',
       icon: 'Monitor',
       permission: 'kubernetes:workload:daemonset:view',
-      activeCode: 'kubernetes:workload:daemonset'
-    }
-  }
+      activeCode: 'kubernetes:workload:daemonset',
+    },
+  },
 ]
 
 const jobRoutes: RouteRecordRaw[] = [
@@ -150,8 +150,8 @@ const jobRoutes: RouteRecordRaw[] = [
       title: '任务',
       icon: 'Timer',
       permission: 'kubernetes:workload:job:view',
-      activeCode: 'kubernetes:workload:job'
-    }
+      activeCode: 'kubernetes:workload:job',
+    },
   },
   {
     path: '/kubernetes/clusters/:clusterId/workload/job/create',
@@ -161,8 +161,8 @@ const jobRoutes: RouteRecordRaw[] = [
       title: '创建任务',
       icon: 'Timer',
       permission: 'kubernetes:workload:job:create',
-      activeCode: 'kubernetes:workload:job'
-    }
+      activeCode: 'kubernetes:workload:job',
+    },
   },
   {
     path: '/kubernetes/clusters/:clusterId/workload/job/edit',
@@ -172,8 +172,8 @@ const jobRoutes: RouteRecordRaw[] = [
       title: '编辑任务',
       icon: 'Timer',
       permission: 'kubernetes:workload:job:edit',
-      activeCode: 'kubernetes:workload:job'
-    }
+      activeCode: 'kubernetes:workload:job',
+    },
   },
   {
     path: '/kubernetes/clusters/:clusterId/workload/job/detail',
@@ -183,9 +183,9 @@ const jobRoutes: RouteRecordRaw[] = [
       title: '任务详情',
       icon: 'Timer',
       permission: 'kubernetes:workload:job:view',
-      activeCode: 'kubernetes:workload:job'
-    }
-  }
+      activeCode: 'kubernetes:workload:job',
+    },
+  },
 ]
 
 const cronjobRoutes: RouteRecordRaw[] = [
@@ -197,8 +197,8 @@ const cronjobRoutes: RouteRecordRaw[] = [
       title: '定时任务',
       icon: 'Clock',
       permission: 'kubernetes:workload:cronjob:view',
-      activeCode: 'kubernetes:workload:cronjob'
-    }
+      activeCode: 'kubernetes:workload:cronjob',
+    },
   },
   {
     path: '/kubernetes/clusters/:clusterId/workload/cronjob/create',
@@ -208,8 +208,8 @@ const cronjobRoutes: RouteRecordRaw[] = [
       title: '创建定时任务',
       icon: 'Clock',
       permission: 'kubernetes:workload:cronjob:create',
-      activeCode: 'kubernetes:workload:cronjob'
-    }
+      activeCode: 'kubernetes:workload:cronjob',
+    },
   },
   {
     path: '/kubernetes/clusters/:clusterId/workload/cronjob/edit',
@@ -219,8 +219,8 @@ const cronjobRoutes: RouteRecordRaw[] = [
       title: '编辑定时任务',
       icon: 'Clock',
       permission: 'kubernetes:workload:cronjob:edit',
-      activeCode: 'kubernetes:workload:cronjob'
-    }
+      activeCode: 'kubernetes:workload:cronjob',
+    },
   },
   {
     path: '/kubernetes/clusters/:clusterId/workload/cronjob/detail',
@@ -230,9 +230,9 @@ const cronjobRoutes: RouteRecordRaw[] = [
       title: '定时任务详情',
       icon: 'Clock',
       permission: 'kubernetes:workload:cronjob:view',
-      activeCode: 'kubernetes:workload:cronjob'
-    }
-  }
+      activeCode: 'kubernetes:workload:cronjob',
+    },
+  },
 ]
 
 export const workloadRoutes: RouteRecordRaw[] = [
@@ -242,8 +242,8 @@ export const workloadRoutes: RouteRecordRaw[] = [
     redirect: '/kubernetes/clusters/:clusterId/workload/deployment',
     meta: {
       title: '工作负载',
-      icon: 'Cpu'
+      icon: 'Cpu',
     },
-    children: [...deploymentRoutes, ...statefulsetRoutes, ...daemonsetRoutes, ...jobRoutes, ...cronjobRoutes]
-  }
+    children: [...deploymentRoutes, ...statefulsetRoutes, ...daemonsetRoutes, ...jobRoutes, ...cronjobRoutes],
+  },
 ]

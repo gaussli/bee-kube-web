@@ -9,8 +9,8 @@ const persistentVolumeClaimRoutes: RouteRecordRaw[] = [
       title: '持久卷声明',
       icon: 'Document',
       permission: 'kubernetes:storage:persistentvolumeclaim:view',
-      activeCode: 'kubernetes:storage:persistentvolumeclaim'
-    }
+      activeCode: 'kubernetes:storage:persistentvolumeclaim',
+    },
   },
   {
     path: '/kubernetes/clusters/:clusterId/storage/persistentvolumeclaim/create',
@@ -20,8 +20,8 @@ const persistentVolumeClaimRoutes: RouteRecordRaw[] = [
       title: '创建持久卷声明',
       icon: 'Document',
       permission: 'kubernetes:storage:persistentvolumeclaim:create',
-      activeCode: 'kubernetes:storage:persistentvolumeclaim'
-    }
+      activeCode: 'kubernetes:storage:persistentvolumeclaim',
+    },
   },
   {
     path: '/kubernetes/clusters/:clusterId/storage/persistentvolumeclaim/edit',
@@ -31,8 +31,8 @@ const persistentVolumeClaimRoutes: RouteRecordRaw[] = [
       title: '编辑持久卷声明',
       icon: 'Document',
       permission: 'kubernetes:storage:persistentvolumeclaim:edit',
-      activeCode: 'kubernetes:storage:persistentvolumeclaim'
-    }
+      activeCode: 'kubernetes:storage:persistentvolumeclaim',
+    },
   },
   {
     path: '/kubernetes/clusters/:clusterId/storage/persistentvolumeclaim/detail',
@@ -42,9 +42,9 @@ const persistentVolumeClaimRoutes: RouteRecordRaw[] = [
       title: '持久卷声明详情',
       icon: 'Document',
       permission: 'kubernetes:storage:persistentvolumeclaim:view',
-      activeCode: 'kubernetes:storage:persistentvolumeclaim'
-    }
-  }
+      activeCode: 'kubernetes:storage:persistentvolumeclaim',
+    },
+  },
 ]
 
 const persistentVolumeRoutes: RouteRecordRaw[] = [
@@ -56,8 +56,8 @@ const persistentVolumeRoutes: RouteRecordRaw[] = [
       title: '持久卷',
       icon: 'Files',
       permission: 'kubernetes:storage:persistentvolume:view',
-      activeCode: 'kubernetes:storage:persistentvolume'
-    }
+      activeCode: 'kubernetes:storage:persistentvolume',
+    },
   },
   {
     path: '/kubernetes/clusters/:clusterId/storage/persistentvolume/create',
@@ -67,8 +67,8 @@ const persistentVolumeRoutes: RouteRecordRaw[] = [
       title: '创建持久卷',
       icon: 'Files',
       permission: 'kubernetes:storage:persistentvolume:create',
-      activeCode: 'kubernetes:storage:persistentvolume'
-    }
+      activeCode: 'kubernetes:storage:persistentvolume',
+    },
   },
   {
     path: '/kubernetes/clusters/:clusterId/storage/persistentvolume/edit',
@@ -78,8 +78,8 @@ const persistentVolumeRoutes: RouteRecordRaw[] = [
       title: '编辑持久卷',
       icon: 'Files',
       permission: 'kubernetes:storage:persistentvolume:edit',
-      activeCode: 'kubernetes:storage:persistentvolume'
-    }
+      activeCode: 'kubernetes:storage:persistentvolume',
+    },
   },
   {
     path: '/kubernetes/clusters/:clusterId/storage/persistentvolume/detail',
@@ -89,9 +89,9 @@ const persistentVolumeRoutes: RouteRecordRaw[] = [
       title: '持久卷详情',
       icon: 'Files',
       permission: 'kubernetes:storage:persistentvolume:view',
-      activeCode: 'kubernetes:storage:persistentvolume'
-    }
-  }
+      activeCode: 'kubernetes:storage:persistentvolume',
+    },
+  },
 ]
 
 const storageclassRoutes: RouteRecordRaw[] = [
@@ -103,8 +103,8 @@ const storageclassRoutes: RouteRecordRaw[] = [
       title: '存储类',
       icon: 'Grid',
       permission: 'kubernetes:storage:storageclass:view',
-      activeCode: 'kubernetes:storage:storageclass'
-    }
+      activeCode: 'kubernetes:storage:storageclass',
+    },
   },
   {
     path: '/kubernetes/clusters/:clusterId/storage/storageclass/create',
@@ -114,8 +114,8 @@ const storageclassRoutes: RouteRecordRaw[] = [
       title: '创建存储类',
       icon: 'Grid',
       permission: 'kubernetes:storage:storageclass:create',
-      activeCode: 'kubernetes:storage:storageclass'
-    }
+      activeCode: 'kubernetes:storage:storageclass',
+    },
   },
   {
     path: '/kubernetes/clusters/:clusterId/storage/storageclass/edit',
@@ -125,8 +125,8 @@ const storageclassRoutes: RouteRecordRaw[] = [
       title: '编辑存储类',
       icon: 'Grid',
       permission: 'kubernetes:storage:storageclass:edit',
-      activeCode: 'kubernetes:storage:storageclass'
-    }
+      activeCode: 'kubernetes:storage:storageclass',
+    },
   },
   {
     path: '/kubernetes/clusters/:clusterId/storage/storageclass/detail',
@@ -136,9 +136,9 @@ const storageclassRoutes: RouteRecordRaw[] = [
       title: '存储类详情',
       icon: 'Grid',
       permission: 'kubernetes:storage:storageclass:view',
-      activeCode: 'kubernetes:storage:storageclass'
-    }
-  }
+      activeCode: 'kubernetes:storage:storageclass',
+    },
+  },
 ]
 
 export const storageRoutes: RouteRecordRaw[] = [
@@ -148,8 +148,8 @@ export const storageRoutes: RouteRecordRaw[] = [
     redirect: '/kubernetes/clusters/:clusterId/storage/persistentvolumeclaim',
     meta: {
       title: '存储',
-      icon: 'Box'
+      icon: 'Box',
     },
-    children: [...persistentVolumeClaimRoutes, ...persistentVolumeRoutes, ...storageclassRoutes]
-  }
+    children: [...persistentVolumeClaimRoutes, ...persistentVolumeRoutes, ...storageclassRoutes],
+  },
 ]

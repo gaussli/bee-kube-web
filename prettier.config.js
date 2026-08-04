@@ -19,7 +19,7 @@ export default {
    * ====================================================================== */
   semi: false,                           // 语句结尾不加分号（Vue/JS 代码风格）
   singleQuote: true,                     // 使用单引号而非双引号
-  trailingComma: 'none',                 // 多行时不添加尾逗号
+  trailingComma: 'all',                  // 多行时添加尾逗号，git diff 更干净
   arrowParens: 'avoid',                  // 箭头函数参数只有一个时省略括号 (x) => x → x => x
   quoteProps: 'consistent',             // 对象属性引号：只要有一个需要引号，就全部加引号
 

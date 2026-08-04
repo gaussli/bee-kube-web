@@ -43,11 +43,17 @@
 
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
+
 import { useRoute, useRouter } from 'vue-router'
+
 import { ElMessage } from 'element-plus'
+
 import { Clock, Plus, Delete, Close, Check, InfoFilled } from '@element-plus/icons-vue'
+
 import type { CronJobDetailResp } from '@/types/kubernetes/workload/cronjob'
+
 import { getCronJobDetail, updateCronJob } from '@/api/kubernetes/workload/cronjob'
+
 import BeeButton from '@/components/BeeButton/index.vue'
 import BeePageTitle from '@/components/BeePageTitle/index.vue'
 

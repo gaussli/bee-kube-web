@@ -95,11 +95,16 @@
 
 <script setup lang="ts">
 import { computed, onMounted, ref } from 'vue'
+
 import { useRouter } from 'vue-router'
+
 import { ElMessage } from 'element-plus'
+
 import { ArrowLeft, Message, User, UserFilled } from '@element-plus/icons-vue'
+
 import type { UserResp } from '@/types'
 import type { RoleDetailResp } from '@/types'
+
 import BeeButton from '@/components/BeeButton/index.vue'
 import BeeDivider from '@/components/BeeDivider/index.vue'
 import BeeLabelCopyable from '@/components/BeeLabelCopyable/index.vue'
@@ -116,7 +121,7 @@ const roleData = ref<RoleDetailResp>({
   id: roleId,
   code: 'admin',
   name: '管理员',
-  status: 1
+  status: 1,
 })
 
 // 模拟所有用户数据
@@ -129,7 +134,7 @@ for (let i = 1; i <= 55; i++) {
     email: `user${i}@example.com`,
     status: i % 5 === 0 ? 0 : 1,
     createAt: '',
-    updateAt: ''
+    updateAt: '',
   })
 }
 

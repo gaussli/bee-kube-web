@@ -11,8 +11,9 @@ import type {
   ConfigMapListResp,
   ConfigMapQueryReq,
   ConfigMapReq,
-  ConfigMapYamlReq
+  ConfigMapYamlReq,
 } from '@/types/kubernetes/config/configmap'
+
 import { request } from '@/utils'
 
 /**
@@ -23,7 +24,7 @@ import { request } from '@/utils'
  */
 export function getConfigMapList(
   clusterId: string,
-  params: Partial<ConfigMapQueryReq>
+  params: Partial<ConfigMapQueryReq>,
 ): Promise<PageVo<ConfigMapListResp>> {
   return request.get(`/kubernetes/clusters/${clusterId}/configmaps`, params)
 }
@@ -71,7 +72,7 @@ export function updateConfigMap(
   clusterId: string,
   namespace: string,
   name: string,
-  data: Partial<ConfigMapReq>
+  data: Partial<ConfigMapReq>,
 ): Promise<void> {
   return request.put(`/kubernetes/clusters/${clusterId}/namespaces/${namespace}/configmaps/${name}`, data)
 }
@@ -87,7 +88,7 @@ export function manageConfigMapLabels(
   clusterId: string,
   namespace: string,
   name: string,
-  data: ConfigMapLabelsReq
+  data: ConfigMapLabelsReq,
 ): Promise<void> {
   return request.put(`/kubernetes/clusters/${clusterId}/namespaces/${namespace}/configmaps/${name}/labels`, data)
 }
@@ -103,7 +104,7 @@ export function manageConfigMapAnnotations(
   clusterId: string,
   namespace: string,
   name: string,
-  data: ConfigMapAnnotationsReq
+  data: ConfigMapAnnotationsReq,
 ): Promise<void> {
   return request.put(`/kubernetes/clusters/${clusterId}/namespaces/${namespace}/configmaps/${name}/annotations`, data)
 }
@@ -157,7 +158,7 @@ export function manageConfigMapData(
   clusterId: string,
   namespace: string,
   name: string,
-  data: ConfigMapDataReq
+  data: ConfigMapDataReq,
 ): Promise<void> {
   return request.put(`/kubernetes/clusters/${clusterId}/namespaces/${namespace}/configmaps/${name}/data`, data)
 }

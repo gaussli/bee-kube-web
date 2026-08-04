@@ -146,7 +146,9 @@
 
 <script setup lang="ts">
 import { onMounted, ref } from 'vue'
+
 import { useRouter } from 'vue-router'
+
 import {
   ArrowLeft,
   Clock,
@@ -157,10 +159,13 @@ import {
   Lock,
   Plus,
   Timer,
-  UserFilled
+  UserFilled,
 } from '@element-plus/icons-vue'
+
 import type { RoleDetailResp } from '@/types/platform/role'
+
 import { getRoleDetail } from '@/api/platform/role'
+
 import BeeButton from '@/components/BeeButton/index.vue'
 import BeeDivider from '@/components/BeeDivider/index.vue'
 import BeeLabelCopyable from '@/components/BeeLabelCopyable/index.vue'
@@ -182,7 +187,7 @@ const roleData = ref<RoleDetailResp>({
   createBy: 'system',
   createAt: '2024-01-01 10:00:00',
   updateBy: 'admin',
-  updateAt: '2024-01-15 14:30:00'
+  updateAt: '2024-01-15 14:30:00',
 })
 
 async function loadData() {

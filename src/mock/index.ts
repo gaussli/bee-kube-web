@@ -65,7 +65,7 @@ export async function mockRequest(config: AxiosRequestConfig): Promise<AxiosResp
         statusText: 'OK',
         headers: {},
         config: config as InternalAxiosRequestConfig,
-        request: {}
+        request: {},
       }
     }
   }

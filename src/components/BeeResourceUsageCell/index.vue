@@ -17,6 +17,7 @@
  * @module components/BeeResourceUsageCell
  */
 import { computed } from 'vue'
+
 import { COLOR_SUCCESS, COLOR_WARNING, COLOR_DANGER } from '@/config/color'
 
 defineOptions({ name: 'BeeResourceUsageCell' })

@@ -4,6 +4,7 @@
  */
 import type { PageVo } from '@/types/common'
 import type { ServiceListVo, ServiceQueryReq, ServiceReq } from '@/types/kubernetes/network/service'
+
 import { generateId } from '@/mock/utils'
 
 /**
@@ -16,7 +17,7 @@ import { generateId } from '@/mock/utils'
 function getServicePage(
   clusterId: string,
   namespaceName: string,
-  params: Partial<ServiceQueryReq>
+  params: Partial<ServiceQueryReq>,
 ): PageVo<ServiceListVo> {
   const { name, type, page = 1, pageSize = 10 } = params || {}
   let filtered = mockServices.filter(s => s.clusterId === clusterId && s.namespace === namespaceName)
@@ -62,7 +63,7 @@ function createService(clusterId: string, data: Partial<ServiceReq>): void {
     createAt: new Date().toLocaleString(),
     createBy: 'admin',
     updateAt: new Date().toLocaleString(),
-    updateBy: 'admin'
+    updateBy: 'admin',
   }
   mockServices.push(created)
 }
@@ -74,7 +75,7 @@ function createService(clusterId: string, data: Partial<ServiceReq>): void {
  */
 function updateService(clusterId: string, data: Partial<ServiceReq>): void {
   const index = mockServices.findIndex(
-    s => s.clusterId === clusterId && s.namespace === data.namespace && s.name === data.name
+    s => s.clusterId === clusterId && s.namespace === data.namespace && s.name === data.name,
   )
   if (index === -1) {
     console.error('[Update Service] can not find service:', data.name)
@@ -84,7 +85,7 @@ function updateService(clusterId: string, data: Partial<ServiceReq>): void {
     ...mockServices[index],
     ...data,
     updateBy: 'admin',
-    updateAt: new Date().toLocaleString()
+    updateAt: new Date().toLocaleString(),
   }
   mockServices[index] = updated
 }
@@ -102,10 +103,10 @@ function manageServiceLabels(
   namespaceName: string,
   name: string,
   labels: Record<string, string>,
-  operation: number
+  operation: number,
 ): void {
   const index = mockServices.findIndex(
-    s => s.clusterId === clusterId && s.namespace === namespaceName && s.name === name
+    s => s.clusterId === clusterId && s.namespace === namespaceName && s.name === name,
   )
   if (index === -1) {
     console.error('[Update Service Labels] can not find service:', name)
@@ -136,10 +137,10 @@ function manageServiceAnnotations(
   namespaceName: string,
   name: string,
   annotations: Record<string, string>,
-  operation: number
+  operation: number,
 ): void {
   const index = mockServices.findIndex(
-    s => s.clusterId === clusterId && s.namespace === namespaceName && s.name === name
+    s => s.clusterId === clusterId && s.namespace === namespaceName && s.name === name,
   )
   if (index === -1) {
     console.error('[Update Service Annotations] can not find service:', name)
@@ -165,7 +166,7 @@ function manageServiceAnnotations(
  */
 function deleteService(clusterId: string, namespaceName: string, name: string): void {
   const index = mockServices.findIndex(
-    s => s.clusterId === clusterId && s.namespace === namespaceName && s.name === name
+    s => s.clusterId === clusterId && s.namespace === namespaceName && s.name === name,
   )
   if (index === -1) {
     console.error('[Delete Service] can not find service:', name)
@@ -183,7 +184,7 @@ function deleteService(clusterId: string, namespaceName: string, name: string): 
 function deleteServices(clusterId: string, namespaceName: string, names: string[]): void {
   names.forEach(name => {
     const index = mockServices.findIndex(
-      s => s.clusterId === clusterId && s.namespace === namespaceName && s.name === name
+      s => s.clusterId === clusterId && s.namespace === namespaceName && s.name === name,
     )
     if (index === -1) {
       console.error('[Delete Services] can not find service:', name)
@@ -210,25 +211,25 @@ export default [
     method: 'get',
     url: '/kubernetes/clusters/:clusterId/namespaces/:namespaceName/services',
     handler: (pathParams: Record<string, string>, params: Partial<ServiceQueryReq>) =>
-      getServicePage(pathParams.clusterId, pathParams.namespaceName, params)
+      getServicePage(pathParams.clusterId, pathParams.namespaceName, params),
   },
   {
     method: 'get',
     url: '/kubernetes/clusters/:clusterId/namespaces/:namespaceName/services/:name',
     handler: (pathParams: Record<string, string>) =>
-      getServiceDetail(pathParams.clusterId, pathParams.namespaceName, pathParams.name)
+      getServiceDetail(pathParams.clusterId, pathParams.namespaceName, pathParams.name),
   },
   {
     method: 'post',
     url: '/kubernetes/clusters/:clusterId/namespaces/:namespaceName/services',
     handler: (pathParams: Record<string, string>, _params: unknown, data: Partial<ServiceReq>) =>
-      createService(pathParams.clusterId, data)
+      createService(pathParams.clusterId, data),
   },
   {
     method: 'put',
     url: '/kubernetes/clusters/:clusterId/namespaces/:namespaceName/services/:name',
     handler: (pathParams: Record<string, string>, _params: unknown, data: Partial<ServiceReq>) =>
-      updateService(pathParams.clusterId, data)
+      updateService(pathParams.clusterId, data),
   },
   {
     method: 'put',
@@ -236,9 +237,9 @@ export default [
     handler: (
       pathParams: Record<string, string>,
       _params: unknown,
-      data: { labels: Record<string, string>; operation: number }
+      data: { labels: Record<string, string>; operation: number },
     ) =>
-      manageServiceLabels(pathParams.clusterId, pathParams.namespaceName, pathParams.name, data.labels, data.operation)
+      manageServiceLabels(pathParams.clusterId, pathParams.namespaceName, pathParams.name, data.labels, data.operation),
   },
   {
     method: 'put',
@@ -246,28 +247,28 @@ export default [
     handler: (
       pathParams: Record<string, string>,
       _params: unknown,
-      data: { annotations: Record<string, string>; operation: number }
+      data: { annotations: Record<string, string>; operation: number },
     ) =>
       manageServiceAnnotations(
         pathParams.clusterId,
         pathParams.namespaceName,
         pathParams.name,
         data.annotations,
-        data.operation
-      )
+        data.operation,
+      ),
   },
   {
     method: 'delete',
     url: '/kubernetes/clusters/:clusterId/namespaces/:namespaceName/services/:name',
     handler: (pathParams: Record<string, string>) =>
-      deleteService(pathParams.clusterId, pathParams.namespaceName, pathParams.name)
+      deleteService(pathParams.clusterId, pathParams.namespaceName, pathParams.name),
   },
   {
     method: 'delete',
     url: '/kubernetes/clusters/:clusterId/namespaces/:namespaceName/services',
     handler: (pathParams: Record<string, string>, _params: unknown, data: string[]) =>
-      deleteServices(pathParams.clusterId, pathParams.namespaceName, data)
-  }
+      deleteServices(pathParams.clusterId, pathParams.namespaceName, data),
+  },
 ]
 
 /**
@@ -289,7 +290,7 @@ const mockServices: ServiceListVo[] = [
     createAt: '2024-01-01T00:00:00Z',
     createBy: 'system',
     updateAt: '2024-01-01T00:00:00Z',
-    updateBy: 'system'
+    updateBy: 'system',
   },
   {
     id: generateId(),
@@ -301,7 +302,7 @@ const mockServices: ServiceListVo[] = [
     clusterIp: '10.96.0.10',
     ports: [
       { name: 'dns', protocol: 'UDP', port: 53, targetPort: 53 },
-      { name: 'dns-tcp', protocol: 'TCP', port: 53, targetPort: 53 }
+      { name: 'dns-tcp', protocol: 'TCP', port: 53, targetPort: 53 },
     ],
     selector: { 'k8s-app': 'kube-dns' },
     labels: { 'k8s-app': 'kube-dns', 'kubernetes.io/cluster-service': 'true' },
@@ -309,7 +310,7 @@ const mockServices: ServiceListVo[] = [
     createAt: '2024-01-01T00:00:00Z',
     createBy: 'system',
     updateAt: '2024-01-01T00:00:00Z',
-    updateBy: 'system'
+    updateBy: 'system',
   },
   {
     id: generateId(),
@@ -326,7 +327,7 @@ const mockServices: ServiceListVo[] = [
     createAt: '2024-03-10T09:00:00Z',
     createBy: 'admin',
     updateAt: '2024-03-10T09:00:00Z',
-    updateBy: 'admin'
+    updateBy: 'admin',
   },
   {
     id: generateId(),
@@ -343,7 +344,7 @@ const mockServices: ServiceListVo[] = [
     createAt: '2024-03-15T10:30:00Z',
     createBy: 'admin',
     updateAt: '2024-03-15T10:30:00Z',
-    updateBy: 'admin'
+    updateBy: 'admin',
   },
   {
     id: generateId(),
@@ -355,7 +356,7 @@ const mockServices: ServiceListVo[] = [
     clusterIp: '10.96.0.102',
     ports: [
       { name: 'http', protocol: 'TCP', port: 80, targetPort: 8080 },
-      { name: 'https', protocol: 'TCP', port: 443, targetPort: 8443 }
+      { name: 'https', protocol: 'TCP', port: 443, targetPort: 8443 },
     ],
     selector: { app: 'api' },
     loadBalancer: { ip: '203.0.113.10', ingress: [{ ip: '203.0.113.10' }] },
@@ -365,6 +366,6 @@ const mockServices: ServiceListVo[] = [
     createAt: '2024-03-20T14:00:00Z',
     createBy: 'admin',
     updateAt: '2024-03-20T14:00:00Z',
-    updateBy: 'admin'
-  }
+    updateBy: 'admin',
+  },
 ]

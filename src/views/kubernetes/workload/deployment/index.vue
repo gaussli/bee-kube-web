@@ -153,17 +153,23 @@
  * @module views/kubernetes/workload/deployment
  */
 import { computed, onMounted, reactive, ref } from 'vue'
+
 import { useRoute, useRouter } from 'vue-router'
+
 import { ElMessage } from 'element-plus'
+
 import type { NamespaceSimpleListResp } from '@/types/kubernetes/namespace'
 import type {
   DeploymentQueryForm,
   DeploymentListVo,
-  DeploymentStrategyType
+  DeploymentStrategyType,
 } from '@/types/kubernetes/workload/deployment'
+
 import type { ActionItem } from '@/components/BeeActionCell/index.vue'
+
 import { getNamespacePage } from '@/api/kubernetes/namespace'
 import { getDeploymentList, deleteDeployment, deleteDeployments } from '@/api/kubernetes/workload/deployment'
+
 import BeeActionCell from '@/components/BeeActionCell/index.vue'
 import BeeAuditCell from '@/components/BeeAuditCell/index.vue'
 import BeeButton from '@/components/BeeButton/index.vue'
@@ -180,6 +186,7 @@ import BeeTableCommonCell from '@/components/BeeTable/BeeTableCommonCell.vue'
 import BeeTable from '@/components/BeeTable/index.vue'
 import BeeTag from '@/components/BeeTag/index.vue'
 import BeeWorkloadInfoCell from '@/components/BeeWorkloadInfoCell/index.vue'
+
 import { usePermission } from '@/composables/usePermission'
 import { DEPLOYMENT_STATUS_OPTIONS } from '@/config/kubernetes'
 
@@ -217,13 +224,13 @@ const pagination = reactive({ page: 1, pageSize: 10, total: 0 })
 
 /** 命名空间选项 */
 const namespaceOptions = ref<{ label: string; value: string | undefined }[]>([
-  { label: '全部命名空间', value: undefined }
+  { label: '全部命名空间', value: undefined },
 ])
 
 /** 更新策略中文映射 */
 const STRATEGY_TYPE_LABEL: Record<DeploymentStrategyType, string> = {
   RollingUpdate: '滚动更新',
-  Recreate: '重建'
+  Recreate: '重建',
 }
 
 /**
@@ -247,7 +254,7 @@ async function loadNamespaceOptions() {
     const namespaces = (await getNamespacePage(clusterId.value, { mode: 'simple' })) as NamespaceSimpleListResp[]
     namespaceOptions.value = [
       { label: '全部命名空间', value: undefined },
-      ...namespaces.map(ns => ({ label: ns.name, value: ns.name }))
+      ...namespaces.map(ns => ({ label: ns.name, value: ns.name })),
     ]
   } catch {
     // 加载失败时保留默认选项
@@ -268,7 +275,7 @@ async function loadData() {
     const resp = await getDeploymentList(clusterId.value, {
       ...queryForm,
       page: pagination.page,
-      pageSize: pagination.pageSize
+      pageSize: pagination.pageSize,
     })
     tableData.value = resp.list
     pagination.total = resp.total
@@ -346,7 +353,7 @@ function handleEdit(row: DeploymentListVo) {
   router.push({
     name: 'kubernetes:workload:deployment:edit',
     params: { clusterId: row.clusterId },
-    query: { namespace: row.namespace, name: row.name }
+    query: { namespace: row.namespace, name: row.name },
   })
 }
 
@@ -360,7 +367,7 @@ function handleViewDetail(row: DeploymentListVo) {
   router.push({
     name: 'kubernetes:workload:deployment:detail',
     params: { clusterId: row.clusterId },
-    query: { namespace: row.namespace, name: row.name }
+    query: { namespace: row.namespace, name: row.name },
   })
 }
 
@@ -394,7 +401,7 @@ async function handleConfirmDelete() {
     await deleteDeployment(
       currentTargetRow.value.clusterId,
       currentTargetRow.value.namespace,
-      currentTargetRow.value.name
+      currentTargetRow.value.name,
     )
     ElMessage.success('删除成功')
     deleteDialogVisible.value = false
@@ -438,7 +445,7 @@ const perm: Record<string, boolean> = {
   create: hasPermission('kubernetes:workload:deployment:create'),
   edit: hasPermission('kubernetes:workload:deployment:edit'),
   view: hasPermission('kubernetes:workload:deployment:view'),
-  delete: hasPermission('kubernetes:workload:deployment:delete')
+  delete: hasPermission('kubernetes:workload:deployment:delete'),
 }
 
 /**
@@ -458,7 +465,7 @@ function getActions(row: DeploymentListVo): ActionItem[] {
       { value: 'yamledit', label: '编辑 YAML', icon: 'basic-code', handler: () => handleEditYaml(row) },
       { value: 'scale', label: '扩缩容', icon: 'kubernetes-namespace', handler: () => handleScale(row) },
       { value: 'restart', label: '重启', icon: 'basic-refresh', handler: () => handleRestart(row) },
-      { value: 'rollback', label: '回滚', icon: 'kubernetes-namespace', handler: () => handleRollback(row) }
+      { value: 'rollback', label: '回滚', icon: 'kubernetes-namespace', handler: () => handleRollback(row) },
     )
   }
   if (perm.delete && row.deletable !== false) {

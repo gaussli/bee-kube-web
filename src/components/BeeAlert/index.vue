@@ -12,6 +12,7 @@
  * @module components/BeeAlert
  */
 import { computed } from 'vue'
+
 import BeeIcon from '@/components/BeeIcon/index.vue'
 
 defineOptions({ name: 'BeeAlert' })
@@ -28,8 +29,8 @@ const props = withDefaults(
   {
     type: 'default',
     label: '',
-    showIcon: true
-  }
+    showIcon: true,
+  },
 )
 
 /** Alert 类型 → 图标名称映射 */
@@ -38,7 +39,7 @@ const iconMap: Record<AlertType, string> = {
   primary: 'basic-primary-filled',
   success: 'basic-success-filled',
   warning: 'basic-warning-filled',
-  danger: 'basic-danger-filled'
+  danger: 'basic-danger-filled',
 }
 
 const iconName = computed(() => iconMap[props.type])

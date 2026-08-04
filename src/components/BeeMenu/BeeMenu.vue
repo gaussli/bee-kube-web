@@ -11,6 +11,7 @@
  * @module components/BeeMenu/BeeMenu
  */
 import { ref, provide, readonly, watch } from 'vue'
+
 import { MenuContextKey } from './types'
 
 defineOptions({ name: 'BeeMenu' })
@@ -20,7 +21,7 @@ const props = withDefaults(
     /** 默认激活的菜单项 index */
     defaultActive?: string | number
   }>(),
-  { defaultActive: undefined }
+  { defaultActive: undefined },
 )
 
 const emit = defineEmits<{
@@ -39,7 +40,7 @@ watch(
   () => props.defaultActive,
   val => {
     activeIndex.value = val
-  }
+  },
 )
 
 /** 当前展开的子菜单 index（最多 1 个） */
@@ -75,7 +76,7 @@ provide(MenuContextKey, {
   activeIndex: readonly(activeIndex),
   selectItem,
   toggleSubMenu,
-  isSubMenuExpanded
+  isSubMenuExpanded,
 })
 </script>
 

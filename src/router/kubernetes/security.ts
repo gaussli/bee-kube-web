@@ -9,8 +9,8 @@ const serviceAccountRoutes: RouteRecordRaw[] = [
       title: '服务账号',
       icon: 'User',
       permission: 'kubernetes:security:serviceaccount:view',
-      activeCode: 'kubernetes:security:serviceaccount'
-    }
+      activeCode: 'kubernetes:security:serviceaccount',
+    },
   },
   {
     path: '/kubernetes/clusters/:clusterId/security/serviceaccount/create',
@@ -20,8 +20,8 @@ const serviceAccountRoutes: RouteRecordRaw[] = [
       title: '创建服务账号',
       icon: 'User',
       permission: 'kubernetes:security:serviceaccount:create',
-      activeCode: 'kubernetes:security:serviceaccount'
-    }
+      activeCode: 'kubernetes:security:serviceaccount',
+    },
   },
   {
     path: '/kubernetes/clusters/:clusterId/security/serviceaccount/edit',
@@ -31,8 +31,8 @@ const serviceAccountRoutes: RouteRecordRaw[] = [
       title: '编辑服务账号',
       icon: 'User',
       permission: 'kubernetes:security:serviceaccount:edit',
-      activeCode: 'kubernetes:security:serviceaccount'
-    }
+      activeCode: 'kubernetes:security:serviceaccount',
+    },
   },
   {
     path: '/kubernetes/clusters/:clusterId/security/serviceaccount/detail',
@@ -42,9 +42,9 @@ const serviceAccountRoutes: RouteRecordRaw[] = [
       title: '服务账号详情',
       icon: 'User',
       permission: 'kubernetes:security:serviceaccount:view',
-      activeCode: 'kubernetes:security:serviceaccount'
-    }
-  }
+      activeCode: 'kubernetes:security:serviceaccount',
+    },
+  },
 ]
 
 const clusteRoleRoutes: RouteRecordRaw[] = [
@@ -56,8 +56,8 @@ const clusteRoleRoutes: RouteRecordRaw[] = [
       title: '集群角色',
       icon: 'Avatar',
       permission: 'kubernetes:security:clusterrole:view',
-      activeCode: 'kubernetes:security:clusterrole'
-    }
+      activeCode: 'kubernetes:security:clusterrole',
+    },
   },
   {
     path: '/kubernetes/clusters/:clusterId/security/clusterrole/create',
@@ -67,8 +67,8 @@ const clusteRoleRoutes: RouteRecordRaw[] = [
       title: '创建集群角色',
       icon: 'Avatar',
       permission: 'kubernetes:security:clusterrole:create',
-      activeCode: 'kubernetes:security:clusterrole'
-    }
+      activeCode: 'kubernetes:security:clusterrole',
+    },
   },
   {
     path: '/kubernetes/clusters/:clusterId/security/clusterrole/edit',
@@ -78,8 +78,8 @@ const clusteRoleRoutes: RouteRecordRaw[] = [
       title: '编辑集群角色',
       icon: 'Avatar',
       permission: 'kubernetes:security:clusterrole:edit',
-      activeCode: 'kubernetes:security:clusterrole'
-    }
+      activeCode: 'kubernetes:security:clusterrole',
+    },
   },
   {
     path: '/kubernetes/clusters/:clusterId/security/clusterrole/detail',
@@ -89,9 +89,9 @@ const clusteRoleRoutes: RouteRecordRaw[] = [
       title: '集群角色详情',
       icon: 'Avatar',
       permission: 'kubernetes:security:clusterrole:view',
-      activeCode: 'kubernetes:security:clusterrole'
-    }
-  }
+      activeCode: 'kubernetes:security:clusterrole',
+    },
+  },
 ]
 
 const roleRoutes: RouteRecordRaw[] = [
@@ -103,8 +103,8 @@ const roleRoutes: RouteRecordRaw[] = [
       title: '角色',
       icon: 'UserFilled',
       permission: 'kubernetes:security:role:view',
-      activeCode: 'kubernetes:security:role'
-    }
+      activeCode: 'kubernetes:security:role',
+    },
   },
   {
     path: '/kubernetes/clusters/:clusterId/security/role/create',
@@ -114,8 +114,8 @@ const roleRoutes: RouteRecordRaw[] = [
       title: '创建角色',
       icon: 'UserFilled',
       permission: 'kubernetes:security:role:create',
-      activeCode: 'kubernetes:security:role'
-    }
+      activeCode: 'kubernetes:security:role',
+    },
   },
   {
     path: '/kubernetes/clusters/:clusterId/security/role/edit',
@@ -125,8 +125,8 @@ const roleRoutes: RouteRecordRaw[] = [
       title: '编辑角色',
       icon: 'UserFilled',
       permission: 'kubernetes:security:role:edit',
-      activeCode: 'kubernetes:security:role'
-    }
+      activeCode: 'kubernetes:security:role',
+    },
   },
   {
     path: '/kubernetes/clusters/:clusterId/security/role/detail',
@@ -136,9 +136,9 @@ const roleRoutes: RouteRecordRaw[] = [
       title: '角色详情',
       icon: 'UserFilled',
       permission: 'kubernetes:security:role:view',
-      activeCode: 'kubernetes:security:role'
-    }
-  }
+      activeCode: 'kubernetes:security:role',
+    },
+  },
 ]
 
 const clusteRoleBindingRoutes: RouteRecordRaw[] = [
@@ -150,8 +150,8 @@ const clusteRoleBindingRoutes: RouteRecordRaw[] = [
       title: '集群角色绑定',
       icon: 'Connection',
       permission: 'kubernetes:security:clusterrolebinding:view',
-      activeCode: 'kubernetes:security:clusterrolebinding'
-    }
+      activeCode: 'kubernetes:security:clusterrolebinding',
+    },
   },
   {
     path: '/kubernetes/clusters/:clusterId/security/clusterrolebinding/create',
@@ -161,8 +161,8 @@ const clusteRoleBindingRoutes: RouteRecordRaw[] = [
       title: '创建集群角色绑定',
       icon: 'Connection',
       permission: 'kubernetes:security:clusterrolebinding:create',
-      activeCode: 'kubernetes:security:clusterrolebinding'
-    }
+      activeCode: 'kubernetes:security:clusterrolebinding',
+    },
   },
   {
     path: '/kubernetes/clusters/:clusterId/security/clusterrolebinding/edit',
@@ -172,8 +172,8 @@ const clusteRoleBindingRoutes: RouteRecordRaw[] = [
       title: '编辑集群角色绑定',
       icon: 'Connection',
       permission: 'kubernetes:security:clusterrolebinding:edit',
-      activeCode: 'kubernetes:security:clusterrolebinding'
-    }
+      activeCode: 'kubernetes:security:clusterrolebinding',
+    },
   },
   {
     path: '/kubernetes/clusters/:clusterId/security/clusterrolebinding/detail',
@@ -183,9 +183,9 @@ const clusteRoleBindingRoutes: RouteRecordRaw[] = [
       title: '集群角色绑定详情',
       icon: 'Connection',
       permission: 'kubernetes:security:clusterrolebinding:view',
-      activeCode: 'kubernetes:security:clusterrolebinding'
-    }
-  }
+      activeCode: 'kubernetes:security:clusterrolebinding',
+    },
+  },
 ]
 
 const roleBindingRoutes: RouteRecordRaw[] = [
@@ -197,8 +197,8 @@ const roleBindingRoutes: RouteRecordRaw[] = [
       title: '角色绑定',
       icon: 'Link',
       permission: 'kubernetes:security:rolebinding:view',
-      activeCode: 'kubernetes:security:rolebinding'
-    }
+      activeCode: 'kubernetes:security:rolebinding',
+    },
   },
   {
     path: '/kubernetes/clusters/:clusterId/security/rolebinding/create',
@@ -208,8 +208,8 @@ const roleBindingRoutes: RouteRecordRaw[] = [
       title: '创建角色绑定',
       icon: 'Link',
       permission: 'kubernetes:security:rolebinding:create',
-      activeCode: 'kubernetes:security:rolebinding'
-    }
+      activeCode: 'kubernetes:security:rolebinding',
+    },
   },
   {
     path: '/kubernetes/clusters/:clusterId/security/rolebinding/edit',
@@ -219,8 +219,8 @@ const roleBindingRoutes: RouteRecordRaw[] = [
       title: '编辑角色绑定',
       icon: 'Link',
       permission: 'kubernetes:security:rolebinding:edit',
-      activeCode: 'kubernetes:security:rolebinding'
-    }
+      activeCode: 'kubernetes:security:rolebinding',
+    },
   },
   {
     path: '/kubernetes/clusters/:clusterId/security/rolebinding/detail',
@@ -230,9 +230,9 @@ const roleBindingRoutes: RouteRecordRaw[] = [
       title: '角色绑定详情',
       icon: 'Link',
       permission: 'kubernetes:security:rolebinding:view',
-      activeCode: 'kubernetes:security:rolebinding'
-    }
-  }
+      activeCode: 'kubernetes:security:rolebinding',
+    },
+  },
 ]
 
 export const securityRoutes: RouteRecordRaw[] = [
@@ -242,14 +242,14 @@ export const securityRoutes: RouteRecordRaw[] = [
     redirect: '/kubernetes/clusters/:clusterId/security/serviceaccount',
     meta: {
       title: '安全',
-      icon: 'Key'
+      icon: 'Key',
     },
     children: [
       ...serviceAccountRoutes,
       ...clusteRoleRoutes,
       ...roleRoutes,
       ...clusteRoleBindingRoutes,
-      ...roleBindingRoutes
-    ]
-  }
+      ...roleBindingRoutes,
+    ],
+  },
 ]

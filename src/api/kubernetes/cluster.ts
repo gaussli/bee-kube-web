@@ -11,8 +11,9 @@ import type {
   ClusterQueryReq,
   ClusterRegistrationReq,
   ClusterReq,
-  ClusterResourceResp
+  ClusterResourceResp,
 } from '@/types/kubernetes/cluster'
+
 import { request } from '@/utils'
 
 /**
@@ -50,7 +51,7 @@ export function getClusterResource(id: string): Promise<ClusterResourceResp> {
  */
 export function getClusterEventPage(
   clusterId: string,
-  params: Partial<ClusterEventQueryReq>
+  params: Partial<ClusterEventQueryReq>,
 ): Promise<PageVo<ClusterEventResp>> {
   return request.get<PageVo<ClusterEventResp>>(`/kubernetes/clusters/${clusterId}/events`, params)
 }

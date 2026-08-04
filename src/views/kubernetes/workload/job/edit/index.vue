@@ -35,11 +35,17 @@
 
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
+
 import { useRoute, useRouter } from 'vue-router'
+
 import { ElMessage } from 'element-plus'
+
 import { Timer, Plus, Delete, Close, Check } from '@element-plus/icons-vue'
+
 import type { JobResp } from '@/types/kubernetes/workload/job'
+
 import { getJobDetail, updateJob } from '@/api/kubernetes/workload/job'
+
 import BeeButton from '@/components/BeeButton/index.vue'
 import BeePageTitle from '@/components/BeePageTitle/index.vue'
 

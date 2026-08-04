@@ -56,11 +56,17 @@
 
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
+
 import { useRoute, useRouter } from 'vue-router'
+
 import { ElMessage, type FormInstance } from 'element-plus'
+
 import { Document, Plus, Delete, Close, Check } from '@element-plus/icons-vue'
+
 import type { DeploymentUpdateForm } from '@/types/kubernetes/workload/deployment'
+
 import { getDeploymentDetail, updateDeployment } from '@/api/kubernetes/workload/deployment'
+
 import BeeButton from '@/components/BeeButton/index.vue'
 import BeePageTitle from '@/components/BeePageTitle/index.vue'
 
@@ -79,12 +85,12 @@ const submitting = ref(false)
 const formData = ref<Partial<DeploymentUpdateForm>>({
   replicas: 1,
   strategy: 'RollingUpdate',
-  labels: {}
+  labels: {},
 })
 
 const formRules = {
   replicas: [{ required: true, message: '请输入副本数量', trigger: 'blur' }],
-  strategy: [{ required: true, message: '请选择更新策略', trigger: 'change' }]
+  strategy: [{ required: true, message: '请选择更新策略', trigger: 'change' }],
 }
 
 const labelList = ref<Array<{ key: string; value: string }>>([])
@@ -128,7 +134,7 @@ async function handleSubmit() {
 
   const data = {
     ...formData.value,
-    labels
+    labels,
   }
 
   submitting.value = true

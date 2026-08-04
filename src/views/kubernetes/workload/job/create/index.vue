@@ -39,11 +39,17 @@
 
 <script setup lang="ts">
 import { ref } from 'vue'
+
 import { useRouter } from 'vue-router'
+
 import { ElMessage, type FormInstance } from 'element-plus'
+
 import { Timer, Close, Check } from '@element-plus/icons-vue'
+
 import type { JobResp } from '@/types/kubernetes/workload/job'
+
 import { createJob } from '@/api/kubernetes/workload/job'
+
 import BeeButton from '@/components/BeeButton/index.vue'
 import BeePageTitle from '@/components/BeePageTitle/index.vue'
 
@@ -56,14 +62,14 @@ const formData = ref<Partial<JobResp>>({
   namespace: 'default',
   clusterId: 'default',
   parallelism: 1,
-  completions: 1
+  completions: 1,
 })
 const formRules = {
   clusterId: [{ required: true, message: '请选择集群', trigger: 'change' }],
   namespace: [{ required: true, message: '请选择命名空间', trigger: 'change' }],
   name: [{ required: true, message: '请输入任务名称', trigger: 'blur' }],
   parallelism: [{ required: true, message: '请输入并行度', trigger: 'blur' }],
-  completions: [{ required: true, message: '请输入完成数', trigger: 'blur' }]
+  completions: [{ required: true, message: '请输入完成数', trigger: 'blur' }],
 }
 function handleCancel() {
   router.back()

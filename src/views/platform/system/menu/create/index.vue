@@ -33,10 +33,15 @@
 
 <script setup lang="ts">
 import { ref } from 'vue'
+
 import { useRouter } from 'vue-router'
+
 import { ElMessage } from 'element-plus'
+
 import { ArrowLeft, Check, Close } from '@element-plus/icons-vue'
+
 import { createMenu } from '@/api/platform/menu'
+
 import BeeButton from '@/components/BeeButton/index.vue'
 import BeeDivider from '@/components/BeeDivider/index.vue'
 import MenuForm from '@/components/MenuForm/index.vue'

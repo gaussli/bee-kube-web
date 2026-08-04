@@ -9,8 +9,8 @@ export const clusterRoutes: RouteRecordRaw[] = [
       title: '集群',
       icon: 'Grid',
       permission: 'kubernetes:cluster:view',
-      activeCode: 'kubernetes:cluster'
-    }
+      activeCode: 'kubernetes:cluster',
+    },
   },
   {
     path: '/kubernetes/cluster/create',
@@ -20,8 +20,8 @@ export const clusterRoutes: RouteRecordRaw[] = [
       title: '创建集群',
       icon: 'Grid',
       permission: 'kubernetes:cluster:create',
-      activeCode: 'kubernetes:cluster'
-    }
+      activeCode: 'kubernetes:cluster',
+    },
   },
   {
     path: '/kubernetes/cluster/edit',
@@ -31,7 +31,7 @@ export const clusterRoutes: RouteRecordRaw[] = [
       title: '编辑集群',
       icon: 'Grid',
       permission: 'kubernetes:cluster:edit',
-      activeCode: 'kubernetes:cluster'
-    }
-  }
+      activeCode: 'kubernetes:cluster',
+    },
+  },
 ]

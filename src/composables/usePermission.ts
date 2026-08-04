@@ -53,7 +53,7 @@ export function usePermission() {
     hasPermission,
     hasEveryPermission,
     hasSomePermission,
-    isLogin
+    isLogin,
   }
 }
 
@@ -85,5 +85,5 @@ export const vPermission = {
       }
       updateVisibility()
     }
-  }
+  },
 }

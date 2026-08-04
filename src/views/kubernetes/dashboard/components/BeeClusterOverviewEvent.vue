@@ -45,9 +45,13 @@
 
 <script setup lang="ts">
 import { onMounted, ref } from 'vue'
+
 import type { ClusterEventResp } from '@/types/kubernetes/cluster'
+
 import { getClusterEventPage } from '@/api/kubernetes/cluster'
+
 import { useKubernetesStore } from '@/stores/kubernetes'
+
 import BeeCard from '@/components/BeeCard/index.vue'
 import BeeCircleButton from '@/components/BeeCircleButton/index.vue'
 import BeeIcon from '@/components/BeeIcon/index.vue'

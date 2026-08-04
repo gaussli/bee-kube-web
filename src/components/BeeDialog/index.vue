@@ -32,6 +32,7 @@
  * @description 基于 Teleport 的模态对话框，支持标题、自定义内容、确认/取消操作
  */
 import { computed } from 'vue'
+
 import BeeButton from '@/components/BeeButton/index.vue'
 import BeeCircleButton from '@/components/BeeCircleButton/index.vue'
 
@@ -53,8 +54,8 @@ const props = withDefaults(
   {
     title: '提示',
     content: '',
-    width: 400
-  }
+    width: 400,
+  },
 )
 
 // ==================== Emits ====================
@@ -74,7 +75,7 @@ const emit = defineEmits<{
 const dialogStyle = computed(() => {
   const widthValue = typeof props.width === 'number' ? `${props.width}px` : props.width
   return {
-    '--dialog-width': widthValue
+    '--dialog-width': widthValue,
   }
 })
 

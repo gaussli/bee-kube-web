@@ -44,11 +44,17 @@
 
 <script setup lang="ts">
 import { ref } from 'vue'
+
 import { useRouter } from 'vue-router'
+
 import { ElMessage, type FormInstance } from 'element-plus'
+
 import { Clock, Close, Check, InfoFilled } from '@element-plus/icons-vue'
+
 import type { CronJobDetailResp } from '@/types/kubernetes/workload/cronjob'
+
 import { createCronJob } from '@/api/kubernetes/workload/cronjob'
+
 import BeeButton from '@/components/BeeButton/index.vue'
 import BeePageTitle from '@/components/BeePageTitle/index.vue'
 
@@ -61,13 +67,13 @@ const formData = ref<Partial<CronJobDetailResp>>({
   namespace: 'default',
   clusterId: 'default',
   schedule: '*/5 * * * *',
-  suspend: false
+  suspend: false,
 })
 const formRules = {
   clusterId: [{ required: true, message: '请选择集群', trigger: 'change' }],
   namespace: [{ required: true, message: '请选择命名空间', trigger: 'change' }],
   name: [{ required: true, message: '请输入任务名称', trigger: 'blur' }],
-  schedule: [{ required: true, message: '请输入调度规则', trigger: 'blur' }]
+  schedule: [{ required: true, message: '请输入调度规则', trigger: 'blur' }],
 }
 function handleCancel() {
   router.back()

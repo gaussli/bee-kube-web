@@ -18,10 +18,15 @@
 
 <script setup lang="ts">
 import { onMounted, ref } from 'vue'
+
 import type { ClusterOverviewInfoData } from './components/BeeClusterOverviewInfo.vue'
+
 import { getClusterDetail } from '@/api/kubernetes/cluster'
+
 import { useKubernetesStore } from '@/stores/kubernetes'
+
 import BeePage from '@/components/BeePage/index.vue'
+
 import BeeClusterOverviewEvent from './components/BeeClusterOverviewEvent.vue'
 import BeeClusterOverviewInfo from './components/BeeClusterOverviewInfo.vue'
 import BeeClusterOverviewNode from './components/BeeClusterOverviewNode.vue'
@@ -39,7 +44,7 @@ const clusterOverviewInfoData = ref<ClusterOverviewInfoData>({
   createdAt: '',
   k8sVersion: '',
   apiServer: '',
-  certExpireAt: ''
+  certExpireAt: '',
 })
 
 /**
@@ -56,7 +61,7 @@ async function loadClusterOverview() {
     createdAt: detail.createAt || '',
     k8sVersion: detail.k8sVersion,
     apiServer: detail.apiServer,
-    certExpireAt: detail.certExpireAt
+    certExpireAt: detail.certExpireAt,
   }
 }
 

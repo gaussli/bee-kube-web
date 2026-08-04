@@ -20,7 +20,9 @@
  * @module components/BeeStatusCell
  */
 import { computed } from 'vue'
+
 import type { StatusOption } from '@/config/kubernetes'
+
 import BeeIcon from '@/components/BeeIcon/index.vue'
 import BeeTooltip from '@/components/BeeTooltip/index.vue'
 

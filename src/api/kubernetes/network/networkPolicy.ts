@@ -8,8 +8,9 @@ import type {
   NetworkPolicyQueryReq,
   NetworkPolicyReq,
   NetworkPolicyLabelsReq,
-  NetworkPolicyAnnotationsReq
+  NetworkPolicyAnnotationsReq,
 } from '@/types/kubernetes/network/networkPolicy'
+
 import { request } from '@/utils'
 
 /**
@@ -22,7 +23,7 @@ import { request } from '@/utils'
 export function getNetworkPolicyPage(
   clusterId: string,
   namespaceName: string,
-  params: Partial<NetworkPolicyQueryReq>
+  params: Partial<NetworkPolicyQueryReq>,
 ): Promise<PageVo<NetworkPolicyResp>> {
   return request.get(`/kubernetes/clusters/${clusterId}/namespaces/${namespaceName}/networkpolicies`, { params })
 }
@@ -37,7 +38,7 @@ export function getNetworkPolicyPage(
 export function getNetworkPolicyDetail(
   clusterId: string,
   namespaceName: string,
-  name: string
+  name: string,
 ): Promise<NetworkPolicyResp> {
   return request.get(`/kubernetes/clusters/${clusterId}/namespaces/${namespaceName}/networkpolicies/${name}`)
 }
@@ -60,7 +61,7 @@ export function createNetworkPolicy(clusterId: string, data: Partial<NetworkPoli
  */
 export function updateNetworkPolicy(clusterId: string, data: Partial<NetworkPolicyReq>): Promise<void> {
   return request.put(`/kubernetes/clusters/${clusterId}/namespaces/${data.namespace}/networkpolicies/${data.name}`, {
-    data
+    data,
   })
 }
 
@@ -75,10 +76,10 @@ export function manageNetworkPolicyLabels(
   clusterId: string,
   namespaceName: string,
   name: string,
-  data: Partial<NetworkPolicyLabelsReq>
+  data: Partial<NetworkPolicyLabelsReq>,
 ): Promise<void> {
   return request.put(`/kubernetes/clusters/${clusterId}/namespaces/${namespaceName}/networkpolicies/${name}/labels`, {
-    data
+    data,
   })
 }
 
@@ -93,11 +94,11 @@ export function manageNetworkPolicyAnnotations(
   clusterId: string,
   namespaceName: string,
   name: string,
-  data: Partial<NetworkPolicyAnnotationsReq>
+  data: Partial<NetworkPolicyAnnotationsReq>,
 ): Promise<void> {
   return request.put(
     `/kubernetes/clusters/${clusterId}/namespaces/${namespaceName}/networkpolicies/${name}/annotations`,
-    { data }
+    { data },
   )
 }
 
@@ -119,6 +120,6 @@ export function deleteNetworkPolicy(clusterId: string, namespaceName: string, na
  */
 export function deleteNetworkPolicys(clusterId: string, namespaceName: string, names: string[]): Promise<void> {
   return request.delete(`/kubernetes/clusters/${clusterId}/namespaces/${namespaceName}/networkpolicies`, {
-    data: names
+    data: names,
   })
 }

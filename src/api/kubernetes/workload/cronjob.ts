@@ -10,8 +10,9 @@ import type {
   CronJobListResp,
   CronJobQueryReq,
   CronJobReq,
-  CronJobYamlReq
+  CronJobYamlReq,
 } from '@/types/kubernetes/workload/cronjob'
+
 import { request } from '@/utils'
 
 /**
@@ -67,7 +68,7 @@ export function updateCronJob(
   clusterId: string,
   namespace: string,
   name: string,
-  data: Partial<CronJobReq>
+  data: Partial<CronJobReq>,
 ): Promise<void> {
   return request.put(`/kubernetes/clusters/${clusterId}/namespaces/${namespace}/cronjobs/${name}`, data)
 }
@@ -83,7 +84,7 @@ export function manageCronJobLabels(
   clusterId: string,
   namespace: string,
   name: string,
-  data: CronJobLabelsReq
+  data: CronJobLabelsReq,
 ): Promise<void> {
   return request.put(`/kubernetes/clusters/${clusterId}/namespaces/${namespace}/cronjobs/${name}/labels`, data)
 }
@@ -99,7 +100,7 @@ export function manageCronJobAnnotations(
   clusterId: string,
   namespace: string,
   name: string,
-  data: CronJobAnnotationsReq
+  data: CronJobAnnotationsReq,
 ): Promise<void> {
   return request.put(`/kubernetes/clusters/${clusterId}/namespaces/${namespace}/cronjobs/${name}/annotations`, data)
 }

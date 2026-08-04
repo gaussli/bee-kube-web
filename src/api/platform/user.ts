@@ -5,8 +5,9 @@ import type {
   UserChangeStatusReq,
   UserDetailResp,
   UserQueryReq,
-  UserResp
+  UserResp,
 } from '@/types'
+
 import { request } from '@/utils'
 
 // 分页查询用户列表

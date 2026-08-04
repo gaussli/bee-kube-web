@@ -66,11 +66,17 @@
 
 <script setup lang="ts">
 import { ref } from 'vue'
+
 import { useRouter } from 'vue-router'
+
 import { ElMessage, type FormInstance } from 'element-plus'
+
 import { FolderOpened, Plus, Delete, Close, Check } from '@element-plus/icons-vue'
+
 import type { NamespaceReq } from '@/types'
+
 import { createNamespace } from '@/api/kubernetes/namespace'
+
 import BeeButton from '@/components/BeeButton/index.vue'
 import BeePageTitle from '@/components/BeePageTitle/index.vue'
 
@@ -84,15 +90,15 @@ const formData = ref<NamespaceReq>({
   name: '',
   clusterId: 'default',
   labels: {},
-  annotations: {}
+  annotations: {},
 })
 
 const formRules = {
   clusterId: [{ required: true, message: '请选择集群', trigger: 'change' }],
   name: [
     { required: true, message: '请输入命名空间名称', trigger: 'blur' },
-    { pattern: /^[a-z0-9]([-a-z0-9]*[a-z0-9])?$/, message: '名称只能包含小写字母、数字和连字符', trigger: 'blur' }
-  ]
+    { pattern: /^[a-z0-9]([-a-z0-9]*[a-z0-9])?$/, message: '名称只能包含小写字母、数字和连字符', trigger: 'blur' },
+  ],
 }
 
 const labelList = ref<Array<{ key: string; value: string }>>([])
@@ -136,7 +142,7 @@ async function handleSubmit() {
   const data: NamespaceReq = {
     ...formData.value,
     labels,
-    annotations
+    annotations,
   }
 
   submitting.value = true

@@ -6,8 +6,9 @@ import type { PageVo } from '@/types/common'
 import type {
   NetworkPolicyResp,
   NetworkPolicyQueryReq,
-  NetworkPolicyReq
+  NetworkPolicyReq,
 } from '@/types/kubernetes/network/networkPolicy'
+
 import { generateId } from '@/mock/utils'
 
 /**
@@ -20,7 +21,7 @@ import { generateId } from '@/mock/utils'
 function getNetworkPolicyPage(
   clusterId: string,
   namespaceName: string,
-  params: Partial<NetworkPolicyQueryReq>
+  params: Partial<NetworkPolicyQueryReq>,
 ): PageVo<NetworkPolicyResp> {
   const { name, page = 1, pageSize = 10 } = params || {}
   let filtered = mockNetworkPolicys.filter(n => n.clusterId === clusterId && n.namespace === namespaceName)
@@ -66,7 +67,7 @@ function createNetworkPolicy(clusterId: string, data: Partial<NetworkPolicyReq>)
     createAt: new Date().toLocaleString(),
     createBy: 'admin',
     updateAt: new Date().toLocaleString(),
-    updateBy: 'admin'
+    updateBy: 'admin',
   }
   mockNetworkPolicys.push(created)
 }
@@ -78,7 +79,7 @@ function createNetworkPolicy(clusterId: string, data: Partial<NetworkPolicyReq>)
  */
 function updateNetworkPolicy(clusterId: string, data: Partial<NetworkPolicyReq>): void {
   const index = mockNetworkPolicys.findIndex(
-    n => n.clusterId === clusterId && n.namespace === data.namespace && n.name === data.name
+    n => n.clusterId === clusterId && n.namespace === data.namespace && n.name === data.name,
   )
   if (index === -1) {
     console.error('[Update NetworkPolicy] can not find networkpolicy:', data.name)
@@ -88,7 +89,7 @@ function updateNetworkPolicy(clusterId: string, data: Partial<NetworkPolicyReq>)
     ...mockNetworkPolicys[index],
     ...data,
     updateBy: 'admin',
-    updateAt: new Date().toLocaleString()
+    updateAt: new Date().toLocaleString(),
   }
   mockNetworkPolicys[index] = updated
 }
@@ -106,10 +107,10 @@ function manageNetworkPolicyLabels(
   namespaceName: string,
   name: string,
   labels: Record<string, string>,
-  operation: number
+  operation: number,
 ): void {
   const index = mockNetworkPolicys.findIndex(
-    n => n.clusterId === clusterId && n.namespace === namespaceName && n.name === name
+    n => n.clusterId === clusterId && n.namespace === namespaceName && n.name === name,
   )
   if (index === -1) {
     console.error('[Update NetworkPolicy Labels] can not find networkpolicy:', name)
@@ -140,10 +141,10 @@ function manageNetworkPolicyAnnotations(
   namespaceName: string,
   name: string,
   annotations: Record<string, string>,
-  operation: number
+  operation: number,
 ): void {
   const index = mockNetworkPolicys.findIndex(
-    n => n.clusterId === clusterId && n.namespace === namespaceName && n.name === name
+    n => n.clusterId === clusterId && n.namespace === namespaceName && n.name === name,
   )
   if (index === -1) {
     console.error('[Update NetworkPolicy Annotations] can not find networkpolicy:', name)
@@ -169,7 +170,7 @@ function manageNetworkPolicyAnnotations(
  */
 function deleteNetworkPolicy(clusterId: string, namespaceName: string, name: string): void {
   const index = mockNetworkPolicys.findIndex(
-    n => n.clusterId === clusterId && n.namespace === namespaceName && n.name === name
+    n => n.clusterId === clusterId && n.namespace === namespaceName && n.name === name,
   )
   if (index === -1) {
     console.error('[Delete NetworkPolicy] can not find networkpolicy:', name)
@@ -187,7 +188,7 @@ function deleteNetworkPolicy(clusterId: string, namespaceName: string, name: str
 function deleteNetworkPolicys(clusterId: string, namespaceName: string, names: string[]): void {
   names.forEach(name => {
     const index = mockNetworkPolicys.findIndex(
-      n => n.clusterId === clusterId && n.namespace === namespaceName && n.name === name
+      n => n.clusterId === clusterId && n.namespace === namespaceName && n.name === name,
     )
     if (index === -1) {
       console.error('[Delete NetworkPolicys] can not find networkpolicy:', name)
@@ -214,25 +215,25 @@ export default [
     method: 'get',
     url: '/kubernetes/clusters/:clusterId/namespaces/:namespaceName/networkpolicies',
     handler: (pathParams: Record<string, string>, params: Partial<NetworkPolicyQueryReq>) =>
-      getNetworkPolicyPage(pathParams.clusterId, pathParams.namespaceName, params)
+      getNetworkPolicyPage(pathParams.clusterId, pathParams.namespaceName, params),
   },
   {
     method: 'get',
     url: '/kubernetes/clusters/:clusterId/namespaces/:namespaceName/networkpolicies/:name',
     handler: (pathParams: Record<string, string>) =>
-      getNetworkPolicyDetail(pathParams.clusterId, pathParams.namespaceName, pathParams.name)
+      getNetworkPolicyDetail(pathParams.clusterId, pathParams.namespaceName, pathParams.name),
   },
   {
     method: 'post',
     url: '/kubernetes/clusters/:clusterId/namespaces/:namespaceName/networkpolicies',
     handler: (pathParams: Record<string, string>, _params: unknown, data: Partial<NetworkPolicyReq>) =>
-      createNetworkPolicy(pathParams.clusterId, data)
+      createNetworkPolicy(pathParams.clusterId, data),
   },
   {
     method: 'put',
     url: '/kubernetes/clusters/:clusterId/namespaces/:namespaceName/networkpolicies/:name',
     handler: (pathParams: Record<string, string>, _params: unknown, data: Partial<NetworkPolicyReq>) =>
-      updateNetworkPolicy(pathParams.clusterId, data)
+      updateNetworkPolicy(pathParams.clusterId, data),
   },
   {
     method: 'put',
@@ -240,15 +241,15 @@ export default [
     handler: (
       pathParams: Record<string, string>,
       _params: unknown,
-      data: { labels: Record<string, string>; operation: number }
+      data: { labels: Record<string, string>; operation: number },
     ) =>
       manageNetworkPolicyLabels(
         pathParams.clusterId,
         pathParams.namespaceName,
         pathParams.name,
         data.labels,
-        data.operation
-      )
+        data.operation,
+      ),
   },
   {
     method: 'put',
@@ -256,28 +257,28 @@ export default [
     handler: (
       pathParams: Record<string, string>,
       _params: unknown,
-      data: { annotations: Record<string, string>; operation: number }
+      data: { annotations: Record<string, string>; operation: number },
     ) =>
       manageNetworkPolicyAnnotations(
         pathParams.clusterId,
         pathParams.namespaceName,
         pathParams.name,
         data.annotations,
-        data.operation
-      )
+        data.operation,
+      ),
   },
   {
     method: 'delete',
     url: '/kubernetes/clusters/:clusterId/namespaces/:namespaceName/networkpolicies/:name',
     handler: (pathParams: Record<string, string>) =>
-      deleteNetworkPolicy(pathParams.clusterId, pathParams.namespaceName, pathParams.name)
+      deleteNetworkPolicy(pathParams.clusterId, pathParams.namespaceName, pathParams.name),
   },
   {
     method: 'delete',
     url: '/kubernetes/clusters/:clusterId/namespaces/:namespaceName/networkpolicies',
     handler: (pathParams: Record<string, string>, _params: unknown, data: string[]) =>
-      deleteNetworkPolicys(pathParams.clusterId, pathParams.namespaceName, data)
-  }
+      deleteNetworkPolicys(pathParams.clusterId, pathParams.namespaceName, data),
+  },
 ]
 
 /**
@@ -297,7 +298,7 @@ const mockNetworkPolicys: NetworkPolicyResp[] = [
     createAt: '2024-03-01T10:00:00Z',
     createBy: 'admin',
     updateAt: '2024-03-01T10:00:00Z',
-    updateBy: 'admin'
+    updateBy: 'admin',
   },
   {
     id: generateId(),
@@ -310,10 +311,10 @@ const mockNetworkPolicys: NetworkPolicyResp[] = [
       {
         ports: [
           { protocol: 'UDP', port: 53 },
-          { protocol: 'TCP', port: 53 }
+          { protocol: 'TCP', port: 53 },
         ],
-        to: [{ kind: 'NamespaceSelector', namespaceSelector: { 'kubernetes.io/metadata.name': 'kube-system' } }]
-      }
+        to: [{ kind: 'NamespaceSelector', namespaceSelector: { 'kubernetes.io/metadata.name': 'kube-system' } }],
+      },
     ],
     policyTypes: ['Egress'],
     labels: { 'app.kubernetes.io/name': 'allow-dns' },
@@ -321,7 +322,7 @@ const mockNetworkPolicys: NetworkPolicyResp[] = [
     createAt: '2024-03-05T09:00:00Z',
     createBy: 'admin',
     updateAt: '2024-03-05T09:00:00Z',
-    updateBy: 'admin'
+    updateBy: 'admin',
   },
   {
     id: generateId(),
@@ -331,10 +332,10 @@ const mockNetworkPolicys: NetworkPolicyResp[] = [
     clusterName: 'prod-cluster',
     podSelector: { app: 'frontend' },
     ingress: [
-      { ports: [{ protocol: 'TCP', port: 8080 }], from: [{ kind: 'PodSelector', podSelector: { app: 'nginx' } }] }
+      { ports: [{ protocol: 'TCP', port: 8080 }], from: [{ kind: 'PodSelector', podSelector: { app: 'nginx' } }] },
     ],
     egress: [
-      { ports: [{ protocol: 'TCP', port: 6379 }], to: [{ kind: 'PodSelector', podSelector: { app: 'redis' } }] }
+      { ports: [{ protocol: 'TCP', port: 6379 }], to: [{ kind: 'PodSelector', podSelector: { app: 'redis' } }] },
     ],
     policyTypes: ['Ingress', 'Egress'],
     labels: { 'app.kubernetes.io/name': 'frontend-network-policy' },
@@ -342,6 +343,6 @@ const mockNetworkPolicys: NetworkPolicyResp[] = [
     createAt: '2024-03-10T14:00:00Z',
     createBy: 'admin',
     updateAt: '2024-03-10T14:00:00Z',
-    updateBy: 'admin'
-  }
+    updateBy: 'admin',
+  },
 ]

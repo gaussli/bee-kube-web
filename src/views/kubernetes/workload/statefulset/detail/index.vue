@@ -45,7 +45,7 @@
                     'detail-value',
                     statefulsetData?.replicas.readyReplicas === statefulsetData?.replicas.replicas
                       ? 'replicas-ready'
-                      : 'replicas-pending'
+                      : 'replicas-pending',
                   ]"
                   >{{ statefulsetData?.replicas.readyReplicas }}</span
                 >
@@ -74,12 +74,18 @@
 
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
+
 import { useRoute, useRouter } from 'vue-router'
+
 import { Collection, ArrowLeft, EditPen } from '@element-plus/icons-vue'
+
 import type { StatefulSetDetailVo } from '@/types/kubernetes/workload/statefulset'
+
 import { getStatefulSetDetail } from '@/api/kubernetes/workload/statefulset'
+
 import BeeButton from '@/components/BeeButton/index.vue'
 import BeePageTitle from '@/components/BeePageTitle/index.vue'
+
 import { usePermission } from '@/composables/usePermission'
 
 defineOptions({ name: 'StatefulSetDetail' })
@@ -108,7 +114,7 @@ function handleEdit() {
   router.push({
     name: 'kubernetes:workload:statefulset:edit',
     params: { clusterId: clusterId.value },
-    query: { namespace: namespace.value, name: statefulsetName.value }
+    query: { namespace: namespace.value, name: statefulsetName.value },
   })
 }
 onMounted(() => {

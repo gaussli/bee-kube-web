@@ -43,8 +43,11 @@
 
 <script setup lang="ts">
 import { onMounted, ref } from 'vue'
+
 import { useRouter } from 'vue-router'
+
 import { ArrowLeft, Check, Close } from '@element-plus/icons-vue'
+
 import BeeButton from '@/components/BeeButton/index.vue'
 import BeeDivider from '@/components/BeeDivider/index.vue'
 
@@ -57,7 +60,7 @@ const loaded = ref(false)
 const formData = ref({
   name: '',
   apiServer: '',
-  description: ''
+  description: '',
 })
 const rules = {}
 

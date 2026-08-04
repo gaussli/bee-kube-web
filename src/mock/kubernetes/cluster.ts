@@ -11,8 +11,9 @@ import type {
   ClusterQueryReq,
   ClusterRegistrationReq,
   ClusterReq,
-  ClusterResourceResp
+  ClusterResourceResp,
 } from '@/types/kubernetes/cluster'
+
 import { generateId } from '@/mock/utils'
 
 /**
@@ -32,49 +33,50 @@ export default [
   {
     method: 'get',
     url: '/kubernetes/clusters',
-    handler: (params: Partial<ClusterQueryReq>): PageVo<ClusterListResp> => getClusterPage(params)
+    handler: (params: Partial<ClusterQueryReq>): PageVo<ClusterListResp> => getClusterPage(params),
   },
   {
     method: 'get',
     url: '/kubernetes/clusters/:id',
-    handler: (pathParams: Record<string, string>): ClusterDetailResp => getClusterDetail(pathParams.id)
+    handler: (pathParams: Record<string, string>): ClusterDetailResp => getClusterDetail(pathParams.id),
   },
   {
     method: 'get',
     url: '/kubernetes/clusters/:id/resource',
-    handler: (pathParams: Record<string, string>): ClusterResourceResp => getClusterResource(pathParams.id)
+    handler: (pathParams: Record<string, string>): ClusterResourceResp => getClusterResource(pathParams.id),
   },
   {
     method: 'post',
     url: '/kubernetes/clusters',
-    handler: (data: Partial<ClusterReq>): void => createCluster(data)
+    handler: (data: Partial<ClusterReq>): void => createCluster(data),
   },
   {
     method: 'post',
     url: '/kubernetes/clusters/register',
-    handler: (data: Partial<ClusterRegistrationReq>): void => registerCluster(data)
+    handler: (data: Partial<ClusterRegistrationReq>): void => registerCluster(data),
   },
   {
     method: 'put',
     url: '/kubernetes/clusters/:id',
-    handler: (pathParams: Record<string, string>, data: Partial<ClusterReq>): void => updateCluster(pathParams.id, data)
+    handler: (pathParams: Record<string, string>, data: Partial<ClusterReq>): void =>
+      updateCluster(pathParams.id, data),
   },
   {
     method: 'delete',
     url: '/kubernetes/clusters/:id',
-    handler: (pathParams: Record<string, string>): void => deleteCluster(pathParams.id)
+    handler: (pathParams: Record<string, string>): void => deleteCluster(pathParams.id),
   },
   {
     method: 'delete',
     url: '/kubernetes/clusters/batch',
-    handler: (data: string[]): void => deleteClusters(data)
+    handler: (data: string[]): void => deleteClusters(data),
   },
   {
     method: 'get',
     url: '/kubernetes/clusters/:id/events',
     handler: (pathParams: Record<string, string>, params: Partial<ClusterEventQueryReq>): PageVo<ClusterEventResp> =>
-      getClusterEventPage(pathParams.id, params)
-  }
+      getClusterEventPage(pathParams.id, params),
+  },
 ]
 
 /**
@@ -128,12 +130,12 @@ function getClusterDetail(id: string): ClusterDetailResp {
     console.error('[getClusterDetail] can not find cluster:', id)
     return {
       ...mockClusters[0],
-      certExpireAt: '2026-12-31 23:59:59'
+      certExpireAt: '2026-12-31 23:59:59',
     }
   }
   return {
     ...cluster,
-    certExpireAt: '2026-12-31 23:59:59'
+    certExpireAt: '2026-12-31 23:59:59',
   }
 }
 
@@ -158,21 +160,21 @@ function getClusterResource(id: string): ClusterResourceResp {
       cpu: totalCpu,
       memory: totalMemory,
       storage: totalStorage,
-      pod: totalPod
+      pod: totalPod,
     },
     allocation: {
       // Kubernetes 可分配容量略低于物理容量，模拟操作系统预留
       cpu: Math.floor(totalCpu * (0.9 + Math.random() * 0.08)),
       memory: Math.floor(totalMemory * (0.88 + Math.random() * 0.1)),
       storage: Math.floor(totalStorage * (0.85 + Math.random() * 0.12)),
-      pod: Math.floor(totalPod * (0.9 + Math.random() * 0.08))
+      pod: Math.floor(totalPod * (0.9 + Math.random() * 0.08)),
     },
     usage: {
       cpu: Math.floor(totalCpu * (0.1 + Math.random() * 0.7)),
       memory: Math.floor(totalMemory * (0.1 + Math.random() * 0.7)),
       storage: Math.floor(totalStorage * (0.1 + Math.random() * 0.7)),
-      pod: Math.floor(totalPod * (0.1 + Math.random() * 0.7))
-    }
+      pod: Math.floor(totalPod * (0.1 + Math.random() * 0.7)),
+    },
   }
 }
 
@@ -192,7 +194,7 @@ function createCluster(data: Partial<ClusterReq>): void {
     createBy: 'admin',
     createAt: new Date().toLocaleString(),
     updateBy: 'admin',
-    updateAt: new Date().toLocaleString()
+    updateAt: new Date().toLocaleString(),
   }
   mockClusters.push(created)
 }
@@ -213,7 +215,7 @@ function registerCluster(data: Partial<ClusterRegistrationReq>): void {
     createBy: 'admin',
     createAt: new Date().toLocaleString(),
     updateBy: 'admin',
-    updateAt: new Date().toLocaleString()
+    updateAt: new Date().toLocaleString(),
   }
   mockClusters.push(created)
 }
@@ -233,7 +235,7 @@ function updateCluster(id: string, data: Partial<ClusterReq>): void {
     ...mockClusters[index],
     ...data,
     updateBy: 'admin',
-    updateAt: new Date().toLocaleString()
+    updateAt: new Date().toLocaleString(),
   }
   mockClusters[index] = updated
 }
@@ -315,7 +317,7 @@ const mockClusterEvents: ClusterEventResp[] = [
     createBy: 'system',
     createAt: '2024-01-15 10:30:25',
     updateBy: 'system',
-    updateAt: '2024-01-15 10:30:25'
+    updateAt: '2024-01-15 10:30:25',
   },
   {
     id: generateId(),
@@ -330,7 +332,7 @@ const mockClusterEvents: ClusterEventResp[] = [
     createBy: 'system',
     createAt: '2024-01-15 10:28:14',
     updateBy: 'system',
-    updateAt: '2024-01-15 10:32:18'
+    updateAt: '2024-01-15 10:32:18',
   },
   {
     id: generateId(),
@@ -345,7 +347,7 @@ const mockClusterEvents: ClusterEventResp[] = [
     createBy: 'system',
     createAt: '2024-01-15 10:25:33',
     updateBy: 'system',
-    updateAt: '2024-01-15 10:25:33'
+    updateAt: '2024-01-15 10:25:33',
   },
   {
     id: generateId(),
@@ -360,7 +362,7 @@ const mockClusterEvents: ClusterEventResp[] = [
     createBy: 'system',
     createAt: '2024-01-15 10:25:34',
     updateBy: 'system',
-    updateAt: '2024-01-15 10:25:34'
+    updateAt: '2024-01-15 10:25:34',
   },
   {
     id: generateId(),
@@ -375,7 +377,7 @@ const mockClusterEvents: ClusterEventResp[] = [
     createBy: 'system',
     createAt: '2024-01-15 10:25:35',
     updateBy: 'system',
-    updateAt: '2024-01-15 10:25:35'
+    updateAt: '2024-01-15 10:25:35',
   },
   {
     id: generateId(),
@@ -390,7 +392,7 @@ const mockClusterEvents: ClusterEventResp[] = [
     createBy: 'system',
     createAt: '2024-01-15 10:22:18',
     updateBy: 'system',
-    updateAt: '2024-01-15 10:45:22'
+    updateAt: '2024-01-15 10:45:22',
   },
   {
     id: generateId(),
@@ -405,7 +407,7 @@ const mockClusterEvents: ClusterEventResp[] = [
     createBy: 'system',
     createAt: '2024-01-15 09:15:00',
     updateBy: 'system',
-    updateAt: '2024-01-15 09:15:00'
+    updateAt: '2024-01-15 09:15:00',
   },
   {
     id: generateId(),
@@ -420,7 +422,7 @@ const mockClusterEvents: ClusterEventResp[] = [
     createBy: 'system',
     createAt: '2024-01-15 08:45:22',
     updateBy: 'system',
-    updateAt: '2024-01-15 10:50:15'
+    updateAt: '2024-01-15 10:50:15',
   },
   {
     id: generateId(),
@@ -431,7 +433,7 @@ const mockClusterEvents: ClusterEventResp[] = [
       kind: 'ReplicaSet',
       name: 'nginx-deployment-7fb96c846b',
       namespace: 'default',
-      uid: generateId()
+      uid: generateId(),
     },
     source: { component: 'replicaset-controller', host: '' },
     count: 1,
@@ -440,7 +442,7 @@ const mockClusterEvents: ClusterEventResp[] = [
     createBy: 'system',
     createAt: '2024-01-15 10:30:20',
     updateBy: 'system',
-    updateAt: '2024-01-15 10:30:20'
+    updateAt: '2024-01-15 10:30:20',
   },
   {
     id: generateId(),
@@ -455,7 +457,7 @@ const mockClusterEvents: ClusterEventResp[] = [
     createBy: 'system',
     createAt: '2024-01-15 06:12:00',
     updateBy: 'system',
-    updateAt: '2024-01-15 10:55:30'
+    updateAt: '2024-01-15 10:55:30',
   },
   {
     id: generateId(),
@@ -470,7 +472,7 @@ const mockClusterEvents: ClusterEventResp[] = [
     createBy: 'system',
     createAt: '2024-01-15 10:00:00',
     updateBy: 'system',
-    updateAt: '2024-01-15 10:00:00'
+    updateAt: '2024-01-15 10:00:00',
   },
   {
     id: generateId(),
@@ -486,8 +488,8 @@ const mockClusterEvents: ClusterEventResp[] = [
     createBy: 'system',
     createAt: '2024-01-15 09:30:00',
     updateBy: 'system',
-    updateAt: '2024-01-15 10:58:00'
-  }
+    updateAt: '2024-01-15 10:58:00',
+  },
 ]
 
 /**
@@ -507,7 +509,7 @@ const mockClusters: ClusterListResp[] = [
     createBy: 'admin',
     createAt: '2024-01-15 10:30:25',
     updateBy: 'admin',
-    updateAt: '2024-03-20 14:22:18'
+    updateAt: '2024-03-20 14:22:18',
   },
   {
     id: generateId(),
@@ -520,7 +522,7 @@ const mockClusters: ClusterListResp[] = [
     createBy: 'admin',
     createAt: '2024-02-10 09:15:00',
     updateBy: 'admin',
-    updateAt: '2024-03-18 16:45:30'
+    updateAt: '2024-03-18 16:45:30',
   },
   {
     id: generateId(),
@@ -533,7 +535,7 @@ const mockClusters: ClusterListResp[] = [
     createBy: 'developer',
     createAt: '2024-02-25 14:20:10',
     updateBy: 'developer',
-    updateAt: '2024-03-15 11:30:45'
+    updateAt: '2024-03-15 11:30:45',
   },
   {
     id: generateId(),
@@ -546,7 +548,7 @@ const mockClusters: ClusterListResp[] = [
     createBy: 'tester',
     createAt: '2024-03-01 08:00:00',
     updateBy: 'tester',
-    updateAt: '2024-03-22 10:15:30'
+    updateAt: '2024-03-22 10:15:30',
   },
   {
     id: generateId(),
@@ -559,7 +561,7 @@ const mockClusters: ClusterListResp[] = [
     createBy: 'admin',
     createAt: '2024-03-05 13:30:00',
     updateBy: 'admin',
-    updateAt: '2024-03-21 09:45:20'
+    updateAt: '2024-03-21 09:45:20',
   },
   {
     id: generateId(),
@@ -572,7 +574,7 @@ const mockClusters: ClusterListResp[] = [
     createBy: 'admin',
     createAt: '2024-01-20 11:00:00',
     updateBy: 'admin',
-    updateAt: '2024-03-19 15:30:00'
+    updateAt: '2024-03-19 15:30:00',
   },
   {
     id: generateId(),
@@ -585,7 +587,7 @@ const mockClusters: ClusterListResp[] = [
     createBy: 'admin',
     createAt: '2024-01-22 09:00:00',
     updateBy: 'admin',
-    updateAt: '2024-03-18 14:00:00'
+    updateAt: '2024-03-18 14:00:00',
   },
   {
     id: generateId(),
@@ -598,7 +600,7 @@ const mockClusters: ClusterListResp[] = [
     createBy: 'admin',
     createAt: '2024-02-01 10:00:00',
     updateBy: 'admin',
-    updateAt: '2024-03-17 16:00:00'
+    updateAt: '2024-03-17 16:00:00',
   },
   {
     id: generateId(),
@@ -611,7 +613,7 @@ const mockClusters: ClusterListResp[] = [
     createBy: 'admin',
     createAt: '2024-02-05 08:00:00',
     updateBy: 'admin',
-    updateAt: '2024-03-16 12:00:00'
+    updateAt: '2024-03-16 12:00:00',
   },
   {
     id: generateId(),
@@ -624,7 +626,7 @@ const mockClusters: ClusterListResp[] = [
     createBy: 'developer',
     createAt: '2024-02-08 11:00:00',
     updateBy: 'developer',
-    updateAt: '2024-03-15 10:00:00'
+    updateAt: '2024-03-15 10:00:00',
   },
   {
     id: generateId(),
@@ -637,7 +639,7 @@ const mockClusters: ClusterListResp[] = [
     createBy: 'developer',
     createAt: '2024-02-12 14:00:00',
     updateBy: 'developer',
-    updateAt: '2024-03-14 09:00:00'
+    updateAt: '2024-03-14 09:00:00',
   },
   {
     id: generateId(),
@@ -650,7 +652,7 @@ const mockClusters: ClusterListResp[] = [
     createBy: 'developer',
     createAt: '2024-02-15 09:00:00',
     updateBy: 'developer',
-    updateAt: '2024-03-13 11:00:00'
+    updateAt: '2024-03-13 11:00:00',
   },
   {
     id: generateId(),
@@ -663,7 +665,7 @@ const mockClusters: ClusterListResp[] = [
     createBy: 'developer',
     createAt: '2024-02-16 10:00:00',
     updateBy: 'developer',
-    updateAt: '2024-03-12 14:00:00'
+    updateAt: '2024-03-12 14:00:00',
   },
   {
     id: generateId(),
@@ -676,7 +678,7 @@ const mockClusters: ClusterListResp[] = [
     createBy: 'ops',
     createAt: '2024-02-17 08:00:00',
     updateBy: 'ops',
-    updateAt: '2024-03-11 15:00:00'
+    updateAt: '2024-03-11 15:00:00',
   },
   {
     id: generateId(),
@@ -689,7 +691,7 @@ const mockClusters: ClusterListResp[] = [
     createBy: 'devops',
     createAt: '2024-02-18 12:00:00',
     updateBy: 'devops',
-    updateAt: '2024-03-10 16:00:00'
+    updateAt: '2024-03-10 16:00:00',
   },
   {
     id: generateId(),
@@ -702,7 +704,7 @@ const mockClusters: ClusterListResp[] = [
     createBy: 'mlengineer',
     createAt: '2024-02-19 13:00:00',
     updateBy: 'mlengineer',
-    updateAt: '2024-03-09 10:00:00'
+    updateAt: '2024-03-09 10:00:00',
   },
   {
     id: generateId(),
@@ -715,7 +717,7 @@ const mockClusters: ClusterListResp[] = [
     createBy: 'dataeng',
     createAt: '2024-02-20 14:00:00',
     updateBy: 'dataeng',
-    updateAt: '2024-03-08 11:00:00'
+    updateAt: '2024-03-08 11:00:00',
   },
   {
     id: generateId(),
@@ -728,7 +730,7 @@ const mockClusters: ClusterListResp[] = [
     createBy: 'security',
     createAt: '2024-02-21 15:00:00',
     updateBy: 'security',
-    updateAt: '2024-03-07 09:00:00'
+    updateAt: '2024-03-07 09:00:00',
   },
   {
     id: generateId(),
@@ -741,7 +743,7 @@ const mockClusters: ClusterListResp[] = [
     createBy: 'qa',
     createAt: '2024-02-22 16:00:00',
     updateBy: 'qa',
-    updateAt: '2024-03-06 14:00:00'
+    updateAt: '2024-03-06 14:00:00',
   },
   {
     id: generateId(),
@@ -754,7 +756,7 @@ const mockClusters: ClusterListResp[] = [
     createBy: 'qa',
     createAt: '2024-02-23 17:00:00',
     updateBy: 'qa',
-    updateAt: '2024-03-05 13:00:00'
+    updateAt: '2024-03-05 13:00:00',
   },
   {
     id: generateId(),
@@ -767,7 +769,7 @@ const mockClusters: ClusterListResp[] = [
     createBy: 'qa',
     createAt: '2024-02-24 08:00:00',
     updateBy: 'qa',
-    updateAt: '2024-03-04 12:00:00'
+    updateAt: '2024-03-04 12:00:00',
   },
   {
     id: generateId(),
@@ -780,7 +782,7 @@ const mockClusters: ClusterListResp[] = [
     createBy: 'admin',
     createAt: '2024-02-26 09:00:00',
     updateBy: 'admin',
-    updateAt: '2024-03-03 11:00:00'
+    updateAt: '2024-03-03 11:00:00',
   },
   {
     id: generateId(),
@@ -793,7 +795,7 @@ const mockClusters: ClusterListResp[] = [
     createBy: 'edgeops',
     createAt: '2024-02-27 10:00:00',
     updateBy: 'edgeops',
-    updateAt: '2024-03-02 10:00:00'
+    updateAt: '2024-03-02 10:00:00',
   },
   {
     id: generateId(),
@@ -806,7 +808,7 @@ const mockClusters: ClusterListResp[] = [
     createBy: 'edgeops',
     createAt: '2024-02-28 11:00:00',
     updateBy: 'edgeops',
-    updateAt: '2024-03-01 09:00:00'
+    updateAt: '2024-03-01 09:00:00',
   },
   {
     id: generateId(),
@@ -819,7 +821,7 @@ const mockClusters: ClusterListResp[] = [
     createBy: 'edgeops',
     createAt: '2024-02-28 12:00:00',
     updateBy: 'edgeops',
-    updateAt: '2024-02-29 08:00:00'
+    updateAt: '2024-02-29 08:00:00',
   },
   {
     id: generateId(),
@@ -832,7 +834,7 @@ const mockClusters: ClusterListResp[] = [
     createBy: 'edgeops',
     createAt: '2024-02-28 13:00:00',
     updateBy: 'edgeops',
-    updateAt: '2024-02-28 14:00:00'
+    updateAt: '2024-02-28 14:00:00',
   },
   {
     id: generateId(),
@@ -845,7 +847,7 @@ const mockClusters: ClusterListResp[] = [
     createBy: 'edgeops',
     createAt: '2024-02-28 14:00:00',
     updateBy: 'edgeops',
-    updateAt: '2024-02-28 15:00:00'
+    updateAt: '2024-02-28 15:00:00',
   },
   {
     id: generateId(),
@@ -858,7 +860,7 @@ const mockClusters: ClusterListResp[] = [
     createBy: 'edgeops',
     createAt: '2024-02-28 15:00:00',
     updateBy: 'edgeops',
-    updateAt: '2024-02-28 16:00:00'
+    updateAt: '2024-02-28 16:00:00',
   },
   {
     id: generateId(),
@@ -871,7 +873,7 @@ const mockClusters: ClusterListResp[] = [
     createBy: 'edgeops',
     createAt: '2024-02-28 16:00:00',
     updateBy: 'edgeops',
-    updateAt: '2024-02-28 17:00:00'
+    updateAt: '2024-02-28 17:00:00',
   },
   {
     id: generateId(),
@@ -884,7 +886,7 @@ const mockClusters: ClusterListResp[] = [
     createBy: 'edgeops',
     createAt: '2024-02-28 17:00:00',
     updateBy: 'edgeops',
-    updateAt: '2024-02-28 18:00:00'
+    updateAt: '2024-02-28 18:00:00',
   },
   {
     id: generateId(),
@@ -897,7 +899,7 @@ const mockClusters: ClusterListResp[] = [
     createBy: 'edgeops',
     createAt: '2024-02-28 18:00:00',
     updateBy: 'edgeops',
-    updateAt: '2024-02-28 19:00:00'
+    updateAt: '2024-02-28 19:00:00',
   },
   {
     id: generateId(),
@@ -910,7 +912,7 @@ const mockClusters: ClusterListResp[] = [
     createBy: 'edgeops',
     createAt: '2024-02-28 19:00:00',
     updateBy: 'edgeops',
-    updateAt: '2024-02-28 20:00:00'
+    updateAt: '2024-02-28 20:00:00',
   },
   {
     id: generateId(),
@@ -923,7 +925,7 @@ const mockClusters: ClusterListResp[] = [
     createBy: 'admin',
     createAt: '2024-02-28 20:00:00',
     updateBy: 'admin',
-    updateAt: '2024-02-28 21:00:00'
+    updateAt: '2024-02-28 21:00:00',
   },
   {
     id: generateId(),
@@ -936,7 +938,7 @@ const mockClusters: ClusterListResp[] = [
     createBy: 'admin',
     createAt: '2024-02-28 21:00:00',
     updateBy: 'admin',
-    updateAt: '2024-02-28 22:00:00'
+    updateAt: '2024-02-28 22:00:00',
   },
   {
     id: generateId(),
@@ -949,7 +951,7 @@ const mockClusters: ClusterListResp[] = [
     createBy: 'admin',
     createAt: '2024-02-28 22:00:00',
     updateBy: 'admin',
-    updateAt: '2024-02-28 23:00:00'
+    updateAt: '2024-02-28 23:00:00',
   },
   {
     id: generateId(),
@@ -962,7 +964,7 @@ const mockClusters: ClusterListResp[] = [
     createBy: 'backend',
     createAt: '2024-02-28 23:00:00',
     updateBy: 'backend',
-    updateAt: '2024-03-01 00:00:00'
+    updateAt: '2024-03-01 00:00:00',
   },
   {
     id: generateId(),
@@ -975,7 +977,7 @@ const mockClusters: ClusterListResp[] = [
     createBy: 'backend',
     createAt: '2024-03-01 00:00:00',
     updateBy: 'backend',
-    updateAt: '2024-03-01 01:00:00'
+    updateAt: '2024-03-01 01:00:00',
   },
   {
     id: generateId(),
@@ -988,7 +990,7 @@ const mockClusters: ClusterListResp[] = [
     createBy: 'dba',
     createAt: '2024-03-01 01:00:00',
     updateBy: 'dba',
-    updateAt: '2024-03-01 02:00:00'
+    updateAt: '2024-03-01 02:00:00',
   },
   {
     id: generateId(),
@@ -1001,7 +1003,7 @@ const mockClusters: ClusterListResp[] = [
     createBy: 'dba',
     createAt: '2024-03-01 02:00:00',
     updateBy: 'dba',
-    updateAt: '2024-03-01 03:00:00'
+    updateAt: '2024-03-01 03:00:00',
   },
   {
     id: generateId(),
@@ -1014,7 +1016,7 @@ const mockClusters: ClusterListResp[] = [
     createBy: 'searcheng',
     createAt: '2024-03-01 03:00:00',
     updateBy: 'searcheng',
-    updateAt: '2024-03-01 04:00:00'
+    updateAt: '2024-03-01 04:00:00',
   },
   {
     id: generateId(),
@@ -1027,7 +1029,7 @@ const mockClusters: ClusterListResp[] = [
     createBy: 'cdnops',
     createAt: '2024-03-01 04:00:00',
     updateBy: 'cdnops',
-    updateAt: '2024-03-01 05:00:00'
+    updateAt: '2024-03-01 05:00:00',
   },
   {
     id: generateId(),
@@ -1040,7 +1042,7 @@ const mockClusters: ClusterListResp[] = [
     createBy: 'gateway',
     createAt: '2024-03-01 05:00:00',
     updateBy: 'gateway',
-    updateAt: '2024-03-01 06:00:00'
+    updateAt: '2024-03-01 06:00:00',
   },
   {
     id: generateId(),
@@ -1053,7 +1055,7 @@ const mockClusters: ClusterListResp[] = [
     createBy: 'security',
     createAt: '2024-03-01 06:00:00',
     updateBy: 'security',
-    updateAt: '2024-03-01 07:00:00'
+    updateAt: '2024-03-01 07:00:00',
   },
   {
     id: generateId(),
@@ -1066,7 +1068,7 @@ const mockClusters: ClusterListResp[] = [
     createBy: 'backend',
     createAt: '2024-03-01 07:00:00',
     updateBy: 'backend',
-    updateAt: '2024-03-01 08:00:00'
+    updateAt: '2024-03-01 08:00:00',
   },
   {
     id: generateId(),
@@ -1079,7 +1081,7 @@ const mockClusters: ClusterListResp[] = [
     createBy: 'backend',
     createAt: '2024-03-01 08:00:00',
     updateBy: 'backend',
-    updateAt: '2024-03-01 09:00:00'
+    updateAt: '2024-03-01 09:00:00',
   },
   {
     id: generateId(),
@@ -1092,7 +1094,7 @@ const mockClusters: ClusterListResp[] = [
     createBy: 'backend',
     createAt: '2024-03-01 09:00:00',
     updateBy: 'backend',
-    updateAt: '2024-03-01 10:00:00'
+    updateAt: '2024-03-01 10:00:00',
   },
   {
     id: generateId(),
@@ -1105,7 +1107,7 @@ const mockClusters: ClusterListResp[] = [
     createBy: 'storage',
     createAt: '2024-03-01 10:00:00',
     updateBy: 'storage',
-    updateAt: '2024-03-01 11:00:00'
+    updateAt: '2024-03-01 11:00:00',
   },
   {
     id: generateId(),
@@ -1118,7 +1120,7 @@ const mockClusters: ClusterListResp[] = [
     createBy: 'backup',
     createAt: '2024-03-01 11:00:00',
     updateBy: 'backup',
-    updateAt: '2024-03-01 12:00:00'
+    updateAt: '2024-03-01 12:00:00',
   },
   {
     id: generateId(),
@@ -1131,7 +1133,7 @@ const mockClusters: ClusterListResp[] = [
     createBy: 'archive',
     createAt: '2024-03-01 12:00:00',
     updateBy: 'archive',
-    updateAt: '2024-03-01 13:00:00'
+    updateAt: '2024-03-01 13:00:00',
   },
   {
     id: generateId(),
@@ -1144,7 +1146,7 @@ const mockClusters: ClusterListResp[] = [
     createBy: 'aiops',
     createAt: '2024-03-01 13:00:00',
     updateBy: 'aiops',
-    updateAt: '2024-03-01 14:00:00'
+    updateAt: '2024-03-01 14:00:00',
   },
   {
     id: generateId(),
@@ -1157,7 +1159,7 @@ const mockClusters: ClusterListResp[] = [
     createBy: 'compute',
     createAt: '2024-03-01 14:00:00',
     updateBy: 'compute',
-    updateAt: '2024-03-01 15:00:00'
+    updateAt: '2024-03-01 15:00:00',
   },
   {
     id: generateId(),
@@ -1170,7 +1172,7 @@ const mockClusters: ClusterListResp[] = [
     createBy: 'serverless',
     createAt: '2024-03-01 15:00:00',
     updateBy: 'serverless',
-    updateAt: '2024-03-01 16:00:00'
+    updateAt: '2024-03-01 16:00:00',
   },
   {
     id: generateId(),
@@ -1183,6 +1185,6 @@ const mockClusters: ClusterListResp[] = [
     createBy: 'realtime',
     createAt: '2024-03-01 16:00:00',
     updateBy: 'realtime',
-    updateAt: '2024-03-01 17:00:00'
-  }
+    updateAt: '2024-03-01 17:00:00',
+  },
 ]

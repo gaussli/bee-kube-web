@@ -7,8 +7,9 @@ import type {
   StorageClassQueryReq,
   StorageClassResp,
   StorageClassLabelsReq,
-  StorageClassAnnotationsReq
+  StorageClassAnnotationsReq,
 } from '@/types/kubernetes/storage/storageClass'
+
 import { request } from '@/utils'
 
 /**
@@ -19,7 +20,7 @@ import { request } from '@/utils'
  */
 export function getStorageClassPage(
   clusterId: string,
-  params: Partial<StorageClassQueryReq>
+  params: Partial<StorageClassQueryReq>,
 ): Promise<PageVo<StorageClassResp>> {
   return request.get(`/kubernetes/clusters/${clusterId}/storageclasses`, { params })
 }
@@ -43,7 +44,7 @@ export function getStorageClassDetail(clusterId: string, name: string): Promise<
 export function manageStorageClassLabels(
   clusterId: string,
   name: string,
-  data: Partial<StorageClassLabelsReq>
+  data: Partial<StorageClassLabelsReq>,
 ): Promise<void> {
   return request.put(`/kubernetes/clusters/${clusterId}/storageclasses/${name}/labels`, { data })
 }
@@ -57,7 +58,7 @@ export function manageStorageClassLabels(
 export function manageStorageClassAnnotations(
   clusterId: string,
   name: string,
-  data: Partial<StorageClassAnnotationsReq>
+  data: Partial<StorageClassAnnotationsReq>,
 ): Promise<void> {
   return request.put(`/kubernetes/clusters/${clusterId}/storageclasses/${name}/annotations`, { data })
 }

@@ -26,6 +26,7 @@
 
 <script setup lang="ts">
 import { computed } from 'vue'
+
 import { COLOR_GRAY_50, COLOR_PRIMARY } from '@/config/color'
 
 defineOptions({ name: 'BeeRingChart' })
@@ -44,8 +45,8 @@ const props = withDefaults(
     strokeWidth: 4,
     color: COLOR_PRIMARY,
     bgColor: COLOR_GRAY_50,
-    showAnimation: true
-  }
+    showAnimation: true,
+  },
 )
 
 const center = computed(() => props.size / 2)

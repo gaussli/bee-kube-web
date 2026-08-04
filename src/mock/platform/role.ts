@@ -23,7 +23,7 @@ let mockRoles: RoleResp[] = [
     createAt: '2024-01-15 09:30:22',
     createBy: 'system',
     updateAt: '2024-04-10 14:22:35',
-    updateBy: 'admin'
+    updateBy: 'admin',
   },
   {
     id: generateId(),
@@ -36,7 +36,7 @@ let mockRoles: RoleResp[] = [
     createAt: '2024-01-15 10:00:00',
     createBy: 'system',
     updateAt: '2024-04-08 16:30:42',
-    updateBy: 'admin'
+    updateBy: 'admin',
   },
   {
     id: generateId(),
@@ -49,7 +49,7 @@ let mockRoles: RoleResp[] = [
     createAt: '2024-02-01 14:15:36',
     createBy: 'admin',
     updateAt: '2024-04-12 10:05:18',
-    updateBy: 'admin'
+    updateBy: 'admin',
   },
   {
     id: generateId(),
@@ -61,7 +61,7 @@ let mockRoles: RoleResp[] = [
     createAt: '2024-02-10 11:22:08',
     createBy: 'admin',
     updateAt: '2024-03-15 09:45:27',
-    updateBy: 'admin'
+    updateBy: 'admin',
   },
   {
     id: generateId(),
@@ -74,7 +74,7 @@ let mockRoles: RoleResp[] = [
     createAt: '2024-02-20 08:55:43',
     createBy: 'admin',
     updateAt: '2024-04-01 13:42:51',
-    updateBy: 'admin'
+    updateBy: 'admin',
   },
   {
     id: generateId(),
@@ -86,7 +86,7 @@ let mockRoles: RoleResp[] = [
     createAt: '2024-03-01 16:30:57',
     createBy: 'admin',
     updateAt: '2024-04-05 11:58:33',
-    updateBy: 'admin'
+    updateBy: 'admin',
   },
   {
     id: generateId(),
@@ -98,7 +98,7 @@ let mockRoles: RoleResp[] = [
     createAt: '2024-03-10 10:45:22',
     createBy: 'admin',
     updateAt: '2024-04-10 08:25:16',
-    updateBy: 'admin'
+    updateBy: 'admin',
   },
   {
     id: generateId(),
@@ -110,7 +110,7 @@ let mockRoles: RoleResp[] = [
     createAt: '2024-03-15 14:20:18',
     createBy: 'admin',
     updateAt: '2024-04-08 17:35:09',
-    updateBy: 'admin'
+    updateBy: 'admin',
   },
   {
     id: generateId(),
@@ -122,7 +122,7 @@ let mockRoles: RoleResp[] = [
     createAt: '2024-03-20 09:15:34',
     createBy: 'admin',
     updateAt: '2024-04-02 15:22:41',
-    updateBy: 'admin'
+    updateBy: 'admin',
   },
   {
     id: generateId(),
@@ -134,7 +134,7 @@ let mockRoles: RoleResp[] = [
     createAt: '2024-03-25 11:30:45',
     createBy: 'admin',
     updateAt: '2024-04-12 14:08:52',
-    updateBy: 'admin'
+    updateBy: 'admin',
   },
   {
     id: generateId(),
@@ -146,7 +146,7 @@ let mockRoles: RoleResp[] = [
     createAt: '2024-04-01 08:42:18',
     createBy: 'admin',
     updateAt: '2024-04-11 10:15:33',
-    updateBy: 'admin'
+    updateBy: 'admin',
   },
   {
     id: generateId(),
@@ -158,8 +158,8 @@ let mockRoles: RoleResp[] = [
     createAt: '2024-04-05 15:55:28',
     createBy: 'admin',
     updateAt: '2024-04-14 16:42:17',
-    updateBy: 'admin'
-  }
+    updateBy: 'admin',
+  },
 ]
 
 // 获取角色详情
@@ -210,9 +210,9 @@ export default [
         list,
         total: filtered.length,
         page,
-        pageSize
+        pageSize,
       }
-    }
+    },
   },
 
   // 获取角色详情
@@ -221,7 +221,7 @@ export default [
     url: '/system/roles/:id',
     handler: (params: { id: string }): RoleDetailResp | undefined => {
       return getRoleDetail(params.id)
-    }
+    },
   },
 
   // 创建角色
@@ -239,11 +239,11 @@ export default [
         createAt: new Date().toISOString().replace('T', ' ').slice(0, 19),
         createBy: 'admin',
         updateAt: new Date().toISOString().replace('T', ' ').slice(0, 19),
-        updateBy: 'admin'
+        updateBy: 'admin',
       }
       mockRoles.unshift(newRole)
       return newRole.id
-    }
+    },
   },
 
   // 更新角色
@@ -257,12 +257,12 @@ export default [
           ...mockRoles[index],
           ...payload,
           updateAt: new Date().toISOString().replace('T', ' ').slice(0, 19),
-          updateBy: 'admin'
+          updateBy: 'admin',
         }
         return mockRoles[index].id
       }
       throw new Error('角色不存在')
-    }
+    },
   },
 
   // 修改角色状态
@@ -276,7 +276,7 @@ export default [
         role.updateAt = new Date().toISOString().replace('T', ' ').slice(0, 19)
         role.updateBy = 'admin'
       }
-    }
+    },
   },
 
   // 删除角色
@@ -288,7 +288,7 @@ export default [
       if (index !== -1) {
         mockRoles.splice(index, 1)
       }
-    }
+    },
   },
 
   // 批量删除角色
@@ -297,6 +297,6 @@ export default [
     url: '/system/roles',
     handler: (params: { ids: string[] }): void => {
       mockRoles = mockRoles.filter(r => !params.ids.includes(r.id))
-    }
-  }
+    },
+  },
 ]

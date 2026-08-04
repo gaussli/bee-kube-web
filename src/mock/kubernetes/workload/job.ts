@@ -10,8 +10,9 @@ import type {
   JobListResp,
   JobQueryReq,
   JobReq,
-  JobYamlReq
+  JobYamlReq,
 } from '@/types/kubernetes/workload/job'
+
 import { generateId } from '@/mock/utils'
 
 /**
@@ -34,67 +35,67 @@ export default [
     method: 'get',
     url: '/kubernetes/clusters/:clusterId/jobs',
     handler: (pathParams: Record<string, string>, params: Partial<JobQueryReq>): PageVo<JobListResp> =>
-      getJobList(pathParams.clusterId, params)
+      getJobList(pathParams.clusterId, params),
   },
   {
     method: 'get',
     url: '/kubernetes/clusters/:clusterId/namespaces/:namespace/jobs/:name',
     handler: (pathParams: Record<string, string>): JobDetailResp =>
-      getJobDetail(pathParams.clusterId, pathParams.namespace, pathParams.name)
+      getJobDetail(pathParams.clusterId, pathParams.namespace, pathParams.name),
   },
   {
     method: 'get',
     url: '/kubernetes/clusters/:clusterId/namespaces/:namespace/jobs/:name/yaml',
     handler: (pathParams: Record<string, string>): string =>
-      getJobYaml(pathParams.clusterId, pathParams.namespace, pathParams.name)
+      getJobYaml(pathParams.clusterId, pathParams.namespace, pathParams.name),
   },
   {
     method: 'post',
     url: '/kubernetes/clusters/:clusterId/namespaces/:namespace/jobs',
     handler: (pathParams: Record<string, string>, data: JobReq): void =>
-      createJob(pathParams.clusterId, pathParams.namespace, data)
+      createJob(pathParams.clusterId, pathParams.namespace, data),
   },
   {
     method: 'put',
     url: '/kubernetes/clusters/:clusterId/namespaces/:namespace/jobs/:name',
     handler: (pathParams: Record<string, string>, data: Partial<JobReq>): void =>
-      updateJob(pathParams.clusterId, pathParams.namespace, pathParams.name, data)
+      updateJob(pathParams.clusterId, pathParams.namespace, pathParams.name, data),
   },
   {
     method: 'put',
     url: '/kubernetes/clusters/:clusterId/namespaces/:namespace/jobs/:name/labels',
     handler: (pathParams: Record<string, string>, data: JobLabelsReq): void =>
-      manageJobLabels(pathParams.clusterId, pathParams.namespace, pathParams.name, data)
+      manageJobLabels(pathParams.clusterId, pathParams.namespace, pathParams.name, data),
   },
   {
     method: 'put',
     url: '/kubernetes/clusters/:clusterId/namespaces/:namespace/jobs/:name/annotations',
     handler: (pathParams: Record<string, string>, data: JobAnnotationsReq): void =>
-      manageJobAnnotations(pathParams.clusterId, pathParams.namespace, pathParams.name, data)
+      manageJobAnnotations(pathParams.clusterId, pathParams.namespace, pathParams.name, data),
   },
   {
     method: 'delete',
     url: '/kubernetes/clusters/:clusterId/namespaces/:namespace/jobs/:name',
     handler: (pathParams: Record<string, string>): void =>
-      deleteJob(pathParams.clusterId, pathParams.namespace, pathParams.name)
+      deleteJob(pathParams.clusterId, pathParams.namespace, pathParams.name),
   },
   {
     method: 'delete',
     url: '/kubernetes/clusters/:clusterId/namespaces/:namespace/jobs/batch',
     handler: (pathParams: Record<string, string>, data: string[]): void =>
-      deleteJobs(pathParams.clusterId, pathParams.namespace, data)
+      deleteJobs(pathParams.clusterId, pathParams.namespace, data),
   },
   {
     method: 'get',
     url: '/kubernetes/clusters/:clusterId/jobs/export',
     handler: (pathParams: Record<string, string>, params: Partial<JobQueryReq>): void =>
-      exportJob(pathParams.clusterId, params)
+      exportJob(pathParams.clusterId, params),
   },
   {
     method: 'post',
     url: '/kubernetes/clusters/:clusterId/jobs/import',
-    handler: (pathParams: Record<string, string>, data: JobYamlReq): void => importJob(pathParams.clusterId, data)
-  }
+    handler: (pathParams: Record<string, string>, data: JobYamlReq): void => importJob(pathParams.clusterId, data),
+  },
 ]
 
 /**
@@ -165,9 +166,9 @@ function getJobDetail(clusterId: string, namespace: string, name: string): JobDe
         imagePullPolicy: 'IfNotPresent',
         resources: { requests: { cpu: '100m', memory: '128Mi' }, limits: { cpu: '500m', memory: '512Mi' } },
         command: ['/bin/sh', '-c'],
-        args: [`echo "Running ${job.name}"`]
-      }
-    ]
+        args: [`echo "Running ${job.name}"`],
+      },
+    ],
   }
 }
 
@@ -315,7 +316,7 @@ const mockJobs: JobListResp[] = [
     createBy: 'system',
     updateAt: '2024-03-20 02:15:00',
     updateBy: 'system',
-    deletable: true
+    deletable: true,
   },
   {
     id: generateId(),
@@ -336,7 +337,7 @@ const mockJobs: JobListResp[] = [
     createBy: 'developer',
     updateAt: '2024-03-19 10:30:00',
     updateBy: 'system',
-    deletable: true
+    deletable: true,
   },
   {
     id: generateId(),
@@ -357,7 +358,7 @@ const mockJobs: JobListResp[] = [
     createBy: 'ml-engineer',
     updateAt: '2024-03-20 08:00:00',
     updateBy: 'ml-engineer',
-    deletable: true
+    deletable: true,
   },
   {
     id: generateId(),
@@ -378,7 +379,7 @@ const mockJobs: JobListResp[] = [
     createBy: 'system',
     updateAt: '2024-03-19 00:10:00',
     updateBy: 'system',
-    deletable: true
+    deletable: true,
   },
   {
     id: generateId(),
@@ -399,7 +400,7 @@ const mockJobs: JobListResp[] = [
     createBy: 'system',
     updateAt: '2024-03-21 01:08:00',
     updateBy: 'system',
-    deletable: true
+    deletable: true,
   },
   {
     id: generateId(),
@@ -420,7 +421,7 @@ const mockJobs: JobListResp[] = [
     createBy: 'analyst',
     updateAt: '2024-03-21 09:30:00',
     updateBy: 'analyst',
-    deletable: true
+    deletable: true,
   },
   {
     id: generateId(),
@@ -441,7 +442,7 @@ const mockJobs: JobListResp[] = [
     createBy: 'system',
     updateAt: '2024-03-20 23:05:00',
     updateBy: 'system',
-    deletable: false
+    deletable: false,
   },
   {
     id: generateId(),
@@ -462,6 +463,6 @@ const mockJobs: JobListResp[] = [
     createBy: 'devops',
     updateAt: '2024-03-20 04:45:00',
     updateBy: 'devops',
-    deletable: true
-  }
+    deletable: true,
+  },
 ]

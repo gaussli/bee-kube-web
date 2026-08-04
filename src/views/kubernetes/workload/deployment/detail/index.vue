@@ -22,15 +22,21 @@
 
 <script setup lang="ts">
 import { computed, onMounted, ref } from 'vue'
+
 import { useRoute } from 'vue-router'
+
 import type { DeploymentDetailVo } from '@/types/kubernetes/workload/deployment'
+
 import { getDeploymentDetail } from '@/api/kubernetes/workload/deployment'
+
 import BeeBackHeader from '@/components/BeeBackHeader/index.vue'
 import BeeCard from '@/components/BeeCard/index.vue'
 import BeePage from '@/components/BeePage/index.vue'
 import BeeSegmentedControl from '@/components/BeeSegmentedControl/index.vue'
+
 import { type ResourceOverviewInfoData } from '@/views/kubernetes/dashboard/components/BeeResourceOverviewInfo.vue'
 import BeeResourceOverviewInfo from '@/views/kubernetes/dashboard/components/BeeResourceOverviewInfo.vue'
+
 import DeploymentAdvanced from './advanced.vue'
 import DeploymentEvents from './events.vue'
 import DeploymentHistory from './history.vue'
@@ -67,7 +73,7 @@ const tabOptions = [
   { label: '监控数据', value: 'monitor', icon: 'basic-id' },
   { label: '事件信息', value: 'events', icon: 'basic-id' },
   { label: '高级配置', value: 'advanced', icon: 'basic-id' },
-  { label: 'YAML', value: 'yaml', icon: 'basic-id' }
+  { label: 'YAML', value: 'yaml', icon: 'basic-id' },
 ]
 
 /** 从详情数据映射为资源概览数据 */
@@ -76,7 +82,7 @@ const resourceData = computed<ResourceOverviewInfoData>(() => ({
   name: detailData.value?.basic.name || '',
   description: detailData.value?.basic.description,
   status: detailData.value?.basic.status || 'Unknown',
-  createdAt: detailData.value?.basic.createAt || ''
+  createdAt: detailData.value?.basic.createAt || '',
 }))
 
 /** 加载 Deployment 详情 */

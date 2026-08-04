@@ -108,6 +108,7 @@
 
 <script setup lang="ts">
 import { computed, reactive, ref, watch } from 'vue'
+
 import {
   User,
   UserFilled,
@@ -120,9 +121,11 @@ import {
   Message,
   Calendar,
   Switch,
-  Document
+  Document,
 } from '@element-plus/icons-vue'
+
 import type { FormInstance, FormRules } from 'element-plus'
+
 import type { UserDetailResp } from '@/types'
 
 defineOptions({ name: 'UserForm' })
@@ -144,17 +147,17 @@ const formData = reactive({
   email: '',
   birthday: '',
   status: 1,
-  description: ''
+  description: '',
 })
 
 const formRules: FormRules = {
   username: [
     { required: true, message: '请输入用户名', trigger: 'blur' },
-    { min: 3, max: 20, message: '用户名长度为 3-20 个字符', trigger: 'blur' }
+    { min: 3, max: 20, message: '用户名长度为 3-20 个字符', trigger: 'blur' },
   ],
   nickname: [{ required: true, message: '请输入昵称', trigger: 'blur' }],
   email: [{ type: 'email', message: '请输入正确的邮箱格式', trigger: 'blur' }],
-  mobile: [{ pattern: /^1[3-9]\d{9}$/, message: '请输入正确的手机号', trigger: 'blur' }]
+  mobile: [{ pattern: /^1[3-9]\d{9}$/, message: '请输入正确的手机号', trigger: 'blur' }],
 }
 
 watch(
@@ -164,7 +167,7 @@ watch(
       Object.assign(formData, val)
     }
   },
-  { immediate: true }
+  { immediate: true },
 )
 
 function validate() {

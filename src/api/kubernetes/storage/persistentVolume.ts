@@ -7,8 +7,9 @@ import type {
   PersistentVolumeQueryReq,
   PersistentVolumeResp,
   PersistentVolumeLabelsReq,
-  PersistentVolumeAnnotationsReq
+  PersistentVolumeAnnotationsReq,
 } from '@/types/kubernetes/storage/persistentVolume'
+
 import { request } from '@/utils'
 
 /**
@@ -19,7 +20,7 @@ import { request } from '@/utils'
  */
 export function getPersistentVolumePage(
   clusterId: string,
-  params: Partial<PersistentVolumeQueryReq>
+  params: Partial<PersistentVolumeQueryReq>,
 ): Promise<PageVo<PersistentVolumeResp>> {
   return request.get(`/kubernetes/clusters/${clusterId}/persistentvolumes`, { params })
 }
@@ -43,7 +44,7 @@ export function getPersistentVolumeDetail(clusterId: string, name: string): Prom
 export function managePersistentVolumeLabels(
   clusterId: string,
   name: string,
-  data: Partial<PersistentVolumeLabelsReq>
+  data: Partial<PersistentVolumeLabelsReq>,
 ): Promise<void> {
   return request.put(`/kubernetes/clusters/${clusterId}/persistentvolumes/${name}/labels`, { data })
 }
@@ -57,7 +58,7 @@ export function managePersistentVolumeLabels(
 export function managePersistentVolumeAnnotations(
   clusterId: string,
   name: string,
-  data: Partial<PersistentVolumeAnnotationsReq>
+  data: Partial<PersistentVolumeAnnotationsReq>,
 ): Promise<void> {
   return request.put(`/kubernetes/clusters/${clusterId}/persistentvolumes/${name}/annotations`, { data })
 }

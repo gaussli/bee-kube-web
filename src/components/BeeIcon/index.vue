@@ -18,7 +18,7 @@ defineOptions({ name: 'BeeIcon' })
 const props = withDefaults(defineProps<Props>(), {
   type: 'basic',
   size: 24,
-  color: ''
+  color: '',
 })
 
 const iconName = computed(() => `#icon-${props.name}`)

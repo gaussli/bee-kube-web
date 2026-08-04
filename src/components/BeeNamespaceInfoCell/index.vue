@@ -32,6 +32,7 @@
 import BeeIcon from '@/components/BeeIcon/index.vue'
 import BeeTag from '@/components/BeeTag/index.vue'
 import BeeTooltip from '@/components/BeeTooltip/index.vue'
+
 import { useClipboard } from '@/composables/useClipboard'
 
 defineOptions({ name: 'BeeNamespaceInfoCell' })
@@ -49,8 +50,8 @@ const props = withDefaults(
   }>(),
   {
     iconSize: 48,
-    description: ''
-  }
+    description: '',
+  },
 )
 </script>
 

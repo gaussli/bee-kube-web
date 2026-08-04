@@ -7,8 +7,9 @@ import type {
   MenuUpdateReq,
   PageVo,
   RoleQueryReq,
-  RoleResp
+  RoleResp,
 } from '@/types'
+
 import { request } from '@/utils'
 
 // 分页查询菜单列表

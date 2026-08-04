@@ -1,4 +1,5 @@
 import type { RouteRecordRaw } from 'vue-router'
+
 import { clusterRoutes } from './cluster'
 import { configRoutes } from './config'
 import { crdRoutes } from './crd'
@@ -13,7 +14,7 @@ export const kubernetesRoutes: RouteRecordRaw[] = [
   {
     path: '/kubernetes/clusters/:clusterId',
     name: 'kubernetes',
-    redirect: '/kubernetes/clusters/:clusterId/dashboard'
+    redirect: '/kubernetes/clusters/:clusterId/dashboard',
   },
   {
     path: '/kubernetes/clusters/:clusterId/dashboard',
@@ -21,8 +22,8 @@ export const kubernetesRoutes: RouteRecordRaw[] = [
     component: () => import('@/views/kubernetes/dashboard/index.vue'),
     meta: {
       title: 'Dashboard',
-      icon: 'Odometer'
-    }
+      icon: 'Odometer',
+    },
   },
   ...clusterRoutes,
   ...nodeRoutes,
@@ -32,5 +33,5 @@ export const kubernetesRoutes: RouteRecordRaw[] = [
   ...networkRoutes,
   ...storageRoutes,
   ...crdRoutes,
-  ...securityRoutes
+  ...securityRoutes,
 ]

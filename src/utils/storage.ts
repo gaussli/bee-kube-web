@@ -8,7 +8,7 @@ export const storage = {
   set<T = any>(key: string, value: T, expire?: number): void {
     const data = {
       value,
-      expire: expire ? Date.now() + expire * 1000 : null
+      expire: expire ? Date.now() + expire * 1000 : null,
     }
     localStorage.setItem(STORAGE_PREFIX + key, JSON.stringify(data))
   },
@@ -50,5 +50,5 @@ export const storage = {
   keys(): string[] {
     const keys = Object.keys(localStorage)
     return keys.filter(key => key.startsWith(STORAGE_PREFIX)).map(key => key.replace(STORAGE_PREFIX, ''))
-  }
+  },
 }

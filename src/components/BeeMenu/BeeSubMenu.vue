@@ -25,7 +25,9 @@
  * @module components/BeeMenu/BeeSubMenu
  */
 import { computed, inject } from 'vue'
+
 import BeeIcon from '@/components/BeeIcon/index.vue'
+
 import { MenuContextKey } from './types'
 
 defineOptions({ name: 'BeeSubMenu' })

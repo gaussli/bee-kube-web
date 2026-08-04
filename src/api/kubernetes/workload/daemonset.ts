@@ -10,8 +10,9 @@ import type {
   DaemonSetListResp,
   DaemonSetQueryReq,
   DaemonSetReq,
-  DaemonSetYamlReq
+  DaemonSetYamlReq,
 } from '@/types/kubernetes/workload/daemonset'
+
 import { request } from '@/utils'
 
 /**
@@ -22,7 +23,7 @@ import { request } from '@/utils'
  */
 export function getDaemonSetList(
   clusterId: string,
-  params: Partial<DaemonSetQueryReq>
+  params: Partial<DaemonSetQueryReq>,
 ): Promise<PageVo<DaemonSetListResp>> {
   return request.get<PageVo<DaemonSetListResp>>(`/kubernetes/clusters/${clusterId}/daemonsets`, params)
 }
@@ -36,7 +37,7 @@ export function getDaemonSetList(
  */
 export function getDaemonSetDetail(clusterId: string, namespace: string, name: string): Promise<DaemonSetDetailResp> {
   return request.get<DaemonSetDetailResp>(
-    `/kubernetes/clusters/${clusterId}/namespaces/${namespace}/daemonsets/${name}`
+    `/kubernetes/clusters/${clusterId}/namespaces/${namespace}/daemonsets/${name}`,
   )
 }
 
@@ -72,7 +73,7 @@ export function updateDaemonSet(
   clusterId: string,
   namespace: string,
   name: string,
-  data: Partial<DaemonSetReq>
+  data: Partial<DaemonSetReq>,
 ): Promise<void> {
   return request.put(`/kubernetes/clusters/${clusterId}/namespaces/${namespace}/daemonsets/${name}`, data)
 }
@@ -88,7 +89,7 @@ export function manageDaemonSetLabels(
   clusterId: string,
   namespace: string,
   name: string,
-  data: DaemonSetLabelsReq
+  data: DaemonSetLabelsReq,
 ): Promise<void> {
   return request.post(`/kubernetes/clusters/${clusterId}/namespaces/${namespace}/daemonsets/${name}/labels`, data)
 }
@@ -104,7 +105,7 @@ export function manageDaemonSetAnnotations(
   clusterId: string,
   namespace: string,
   name: string,
-  data: DaemonSetAnnotationsReq
+  data: DaemonSetAnnotationsReq,
 ): Promise<void> {
   return request.post(`/kubernetes/clusters/${clusterId}/namespaces/${namespace}/daemonsets/${name}/annotations`, data)
 }

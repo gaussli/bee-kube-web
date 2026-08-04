@@ -83,11 +83,17 @@
 
 <script setup lang="ts">
 import { ref } from 'vue'
+
 import { useRouter } from 'vue-router'
+
 import { ElMessage, type FormInstance } from 'element-plus'
+
 import { Document, Plus, Delete, Close, Check } from '@element-plus/icons-vue'
+
 import type { DeploymentCreateForm } from '@/types/kubernetes/workload/deployment'
+
 import { createDeployment } from '@/api/kubernetes/workload/deployment'
+
 import BeeButton from '@/components/BeeButton/index.vue'
 import BeePageTitle from '@/components/BeePageTitle/index.vue'
 
@@ -104,7 +110,7 @@ const formData = ref<Partial<DeploymentCreateForm>>({
   replicas: 1,
   strategy: 'RollingUpdate',
   selector: {},
-  labels: {}
+  labels: {},
 })
 
 const formRules = {
@@ -112,10 +118,10 @@ const formRules = {
   namespace: [{ required: true, message: '请选择命名空间', trigger: 'change' }],
   name: [
     { required: true, message: '请输入应用名称', trigger: 'blur' },
-    { pattern: /^[a-z0-9]([-a-z0-9]*[a-z0-9])?$/, message: '名称只能包含小写字母、数字和连字符', trigger: 'blur' }
+    { pattern: /^[a-z0-9]([-a-z0-9]*[a-z0-9])?$/, message: '名称只能包含小写字母、数字和连字符', trigger: 'blur' },
   ],
   replicas: [{ required: true, message: '请输入副本数量', trigger: 'blur' }],
-  strategy: [{ required: true, message: '请选择更新策略', trigger: 'change' }]
+  strategy: [{ required: true, message: '请选择更新策略', trigger: 'change' }],
 }
 
 const selectorList = ref<Array<{ key: string; value: string }>>([])
@@ -160,7 +166,7 @@ async function handleSubmit() {
   const data = {
     ...formData.value,
     selector,
-    labels
+    labels,
   }
 
   submitting.value = true

@@ -10,8 +10,9 @@ import type {
   CronJobListResp,
   CronJobQueryReq,
   CronJobReq,
-  CronJobYamlReq
+  CronJobYamlReq,
 } from '@/types/kubernetes/workload/cronjob'
+
 import { generateId } from '@/mock/utils'
 
 /**
@@ -37,86 +38,86 @@ export default [
     method: 'get',
     url: '/kubernetes/clusters/:clusterId/cronjobs',
     handler: (pathParams: Record<string, string>, params: Partial<CronJobQueryReq>): PageVo<CronJobListResp> =>
-      getCronJobList(pathParams.clusterId, params)
+      getCronJobList(pathParams.clusterId, params),
   },
   {
     method: 'get',
     url: '/kubernetes/clusters/:clusterId/namespaces/:namespace/cronjobs/:name',
     handler: (pathParams: Record<string, string>): CronJobDetailResp =>
-      getCronJobDetail(pathParams.clusterId, pathParams.namespace, pathParams.name)
+      getCronJobDetail(pathParams.clusterId, pathParams.namespace, pathParams.name),
   },
   {
     method: 'get',
     url: '/kubernetes/clusters/:clusterId/namespaces/:namespace/cronjobs/:name/yaml',
     handler: (pathParams: Record<string, string>): string =>
-      getCronJobYaml(pathParams.clusterId, pathParams.namespace, pathParams.name)
+      getCronJobYaml(pathParams.clusterId, pathParams.namespace, pathParams.name),
   },
   {
     method: 'post',
     url: '/kubernetes/clusters/:clusterId/namespaces/:namespace/cronjobs',
     handler: (pathParams: Record<string, string>, data: CronJobReq): void =>
-      createCronJob(pathParams.clusterId, pathParams.namespace, data)
+      createCronJob(pathParams.clusterId, pathParams.namespace, data),
   },
   {
     method: 'put',
     url: '/kubernetes/clusters/:clusterId/namespaces/:namespace/cronjobs/:name',
     handler: (pathParams: Record<string, string>, data: Partial<CronJobReq>): void =>
-      updateCronJob(pathParams.clusterId, pathParams.namespace, pathParams.name, data)
+      updateCronJob(pathParams.clusterId, pathParams.namespace, pathParams.name, data),
   },
   {
     method: 'post',
     url: '/kubernetes/clusters/:clusterId/namespaces/:namespace/cronjobs/:name/suspend',
     handler: (pathParams: Record<string, string>): void =>
-      suspendCronJob(pathParams.clusterId, pathParams.namespace, pathParams.name)
+      suspendCronJob(pathParams.clusterId, pathParams.namespace, pathParams.name),
   },
   {
     method: 'post',
     url: '/kubernetes/clusters/:clusterId/namespaces/:namespace/cronjobs/:name/resume',
     handler: (pathParams: Record<string, string>): void =>
-      resumeCronJob(pathParams.clusterId, pathParams.namespace, pathParams.name)
+      resumeCronJob(pathParams.clusterId, pathParams.namespace, pathParams.name),
   },
   {
     method: 'post',
     url: '/kubernetes/clusters/:clusterId/namespaces/:namespace/cronjobs/:name/trigger',
     handler: (pathParams: Record<string, string>): void =>
-      triggerCronJob(pathParams.clusterId, pathParams.namespace, pathParams.name)
+      triggerCronJob(pathParams.clusterId, pathParams.namespace, pathParams.name),
   },
   {
     method: 'put',
     url: '/kubernetes/clusters/:clusterId/namespaces/:namespace/cronjobs/:name/labels',
     handler: (pathParams: Record<string, string>, data: CronJobLabelsReq): void =>
-      manageCronJobLabels(pathParams.clusterId, pathParams.namespace, pathParams.name, data)
+      manageCronJobLabels(pathParams.clusterId, pathParams.namespace, pathParams.name, data),
   },
   {
     method: 'put',
     url: '/kubernetes/clusters/:clusterId/namespaces/:namespace/cronjobs/:name/annotations',
     handler: (pathParams: Record<string, string>, data: CronJobAnnotationsReq): void =>
-      manageCronJobAnnotations(pathParams.clusterId, pathParams.namespace, pathParams.name, data)
+      manageCronJobAnnotations(pathParams.clusterId, pathParams.namespace, pathParams.name, data),
   },
   {
     method: 'delete',
     url: '/kubernetes/clusters/:clusterId/namespaces/:namespace/cronjobs/:name',
     handler: (pathParams: Record<string, string>): void =>
-      deleteCronJob(pathParams.clusterId, pathParams.namespace, pathParams.name)
+      deleteCronJob(pathParams.clusterId, pathParams.namespace, pathParams.name),
   },
   {
     method: 'delete',
     url: '/kubernetes/clusters/:clusterId/namespaces/:namespace/cronjobs/batch',
     handler: (pathParams: Record<string, string>, data: string[]): void =>
-      deleteCronJobs(pathParams.clusterId, pathParams.namespace, data)
+      deleteCronJobs(pathParams.clusterId, pathParams.namespace, data),
   },
   {
     method: 'get',
     url: '/kubernetes/clusters/:clusterId/cronjobs/export',
     handler: (pathParams: Record<string, string>, params: Partial<CronJobQueryReq>): void =>
-      exportCronJob(pathParams.clusterId, params)
+      exportCronJob(pathParams.clusterId, params),
   },
   {
     method: 'post',
     url: '/kubernetes/clusters/:clusterId/cronjobs/import',
     handler: (pathParams: Record<string, string>, data: CronJobYamlReq): void =>
-      importCronJob(pathParams.clusterId, data)
-  }
+      importCronJob(pathParams.clusterId, data),
+  },
 ]
 
 /**
@@ -188,9 +189,9 @@ function getCronJobDetail(clusterId: string, namespace: string, name: string): C
         image: 'busybox:latest',
         resources: { requests: { cpu: '100m', memory: '128Mi' }, limits: { cpu: '500m', memory: '512Mi' } },
         command: ['/bin/sh', '-c'],
-        args: [`echo "Running ${job.name}"`]
-      }
-    ]
+        args: [`echo "Running ${job.name}"`],
+      },
+    ],
   }
 }
 
@@ -308,7 +309,7 @@ function manageCronJobAnnotations(
   clusterId: string,
   namespace: string,
   name: string,
-  data: CronJobAnnotationsReq
+  data: CronJobAnnotationsReq,
 ): void {
   console.log('[Mock] manageCronJobAnnotations', { clusterId, namespace, name, data })
 }
@@ -371,7 +372,7 @@ const mockCronJobs: CronJobListResp[] = [
     createBy: 'admin',
     updateAt: '2024-03-15 14:00:00',
     updateBy: 'admin',
-    deletable: true
+    deletable: true,
   },
   {
     id: generateId(),
@@ -388,7 +389,7 @@ const mockCronJobs: CronJobListResp[] = [
     createBy: 'admin',
     updateAt: '2024-03-10 11:00:00',
     updateBy: 'admin',
-    deletable: true
+    deletable: true,
   },
   {
     id: generateId(),
@@ -405,7 +406,7 @@ const mockCronJobs: CronJobListResp[] = [
     createBy: 'admin',
     updateAt: '2024-03-12 16:00:00',
     updateBy: 'admin',
-    deletable: true
+    deletable: true,
   },
   {
     id: generateId(),
@@ -422,6 +423,6 @@ const mockCronJobs: CronJobListResp[] = [
     createBy: 'admin',
     updateAt: '2024-03-19 08:00:00',
     updateBy: 'admin',
-    deletable: true
-  }
+    deletable: true,
+  },
 ]

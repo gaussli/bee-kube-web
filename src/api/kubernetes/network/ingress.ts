@@ -8,8 +8,9 @@ import type {
   IngressQueryReq,
   IngressReq,
   IngressLabelsReq,
-  IngressAnnotationsReq
+  IngressAnnotationsReq,
 } from '@/types/kubernetes/network/ingress'
+
 import { request } from '@/utils'
 
 /**
@@ -22,7 +23,7 @@ import { request } from '@/utils'
 export function getIngressPage(
   clusterId: string,
   namespaceName: string,
-  params: Partial<IngressQueryReq>
+  params: Partial<IngressQueryReq>,
 ): Promise<PageVo<IngressListVo>> {
   return request.get(`/kubernetes/clusters/${clusterId}/namespaces/${namespaceName}/ingresses`, { params })
 }
@@ -69,7 +70,7 @@ export function manageIngressLabels(
   clusterId: string,
   namespaceName: string,
   name: string,
-  data: Partial<IngressLabelsReq>
+  data: Partial<IngressLabelsReq>,
 ): Promise<void> {
   return request.put(`/kubernetes/clusters/${clusterId}/namespaces/${namespaceName}/ingresses/${name}/labels`, { data })
 }
@@ -85,10 +86,10 @@ export function manageIngressAnnotations(
   clusterId: string,
   namespaceName: string,
   name: string,
-  data: Partial<IngressAnnotationsReq>
+  data: Partial<IngressAnnotationsReq>,
 ): Promise<void> {
   return request.put(`/kubernetes/clusters/${clusterId}/namespaces/${namespaceName}/ingresses/${name}/annotations`, {
-    data
+    data,
   })
 }
 

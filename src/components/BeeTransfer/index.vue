@@ -77,7 +77,9 @@
 
 <script setup lang="ts">
 import { computed, ref } from 'vue'
+
 import { ArrowLeft, ArrowRight } from '@element-plus/icons-vue'
+
 import BeeButton from '@/components/BeeButton/index.vue'
 import BeeInputSearch from '@/components/BeeInputSearch/index.vue'
 
@@ -97,8 +99,8 @@ const props = withDefaults(
     leftTitle: '列表一',
     rightTitle: '列表二',
     labelKey: 'label',
-    valueKey: 'value'
-  }
+    valueKey: 'value',
+  },
 )
 
 const emit = defineEmits<{
@@ -146,12 +148,12 @@ const rightIndeterminate = computed(() => {
 
 const leftCheckedAll = computed({
   get: () => leftFilteredData.value.length > 0 && leftCheckedKeys.value.size === leftFilteredData.value.length,
-  set: () => {}
+  set: () => {},
 })
 
 const rightCheckedAll = computed({
   get: () => rightFilteredData.value.size === rightFilteredData.value.length,
-  set: () => {}
+  set: () => {},
 })
 
 function handleLeftCheckAll(checked: boolean) {
@@ -204,7 +206,7 @@ function handleMoveToRight() {
   const newRightData = [...props.rightData, ...itemsToMove]
   emit(
     'update:modelValue',
-    newRightData.map(item => getItemKey(item))
+    newRightData.map(item => getItemKey(item)),
   )
   leftCheckedKeys.value.clear()
 }
@@ -215,7 +217,7 @@ function handleMoveToLeft() {
   const newRightData = props.rightData.filter(item => !keysToRemove.has(getItemKey(item)))
   emit(
     'update:modelValue',
-    newRightData.map(item => getItemKey(item))
+    newRightData.map(item => getItemKey(item)),
   )
   rightCheckedKeys.value.clear()
 }

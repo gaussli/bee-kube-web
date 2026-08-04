@@ -35,11 +35,17 @@
 
 <script setup lang="ts">
 import { onMounted, ref } from 'vue'
+
 import { useRouter } from 'vue-router'
+
 import { ElMessage } from 'element-plus'
+
 import { ArrowLeft, Close, Check } from '@element-plus/icons-vue'
+
 import type { PermissionDetailResp } from '@/types/platform/permission'
+
 import { getPermissionDetail, updatePermission } from '@/api/platform/permission'
+
 import BeeButton from '@/components/BeeButton/index.vue'
 import BeeDivider from '@/components/BeeDivider/index.vue'
 import PermissionForm from '@/components/PermissionForm/index.vue'

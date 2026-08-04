@@ -16,6 +16,7 @@
 
 <script setup lang="ts">
 import { ref } from 'vue'
+
 import BeeIcon from '@/components/BeeIcon/index.vue'
 
 defineOptions({ name: 'BeeButton' })
@@ -29,8 +30,8 @@ withDefaults(
   {
     type: 'default',
     disabled: false,
-    icon: ''
-  }
+    icon: '',
+  },
 )
 
 const emit = defineEmits<{

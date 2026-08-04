@@ -9,8 +9,9 @@ import type {
   RoleReq,
   RoleLabelsReq,
   RoleAnnotationsReq,
-  RoleRulesReq
+  RoleRulesReq,
 } from '@/types/kubernetes/security/role'
+
 import { request } from '@/utils'
 
 /**
@@ -23,7 +24,7 @@ import { request } from '@/utils'
 export function getRolePage(
   clusterId: string,
   namespaceName: string,
-  params: Partial<RoleQueryReq>
+  params: Partial<RoleQueryReq>,
 ): Promise<PageVo<RoleResp>> {
   return request.get(`/kubernetes/clusters/${clusterId}/namespaces/${namespaceName}/roles`, { params })
 }
@@ -70,7 +71,7 @@ export function manageRoleLabels(
   clusterId: string,
   namespaceName: string,
   name: string,
-  data: Partial<RoleLabelsReq>
+  data: Partial<RoleLabelsReq>,
 ): Promise<void> {
   return request.put(`/kubernetes/clusters/${clusterId}/namespaces/${namespaceName}/roles/${name}/labels`, { data })
 }
@@ -86,10 +87,10 @@ export function manageRoleAnnotations(
   clusterId: string,
   namespaceName: string,
   name: string,
-  data: Partial<RoleAnnotationsReq>
+  data: Partial<RoleAnnotationsReq>,
 ): Promise<void> {
   return request.put(`/kubernetes/clusters/${clusterId}/namespaces/${namespaceName}/roles/${name}/annotations`, {
-    data
+    data,
   })
 }
 
@@ -104,7 +105,7 @@ export function updateRoleRules(
   clusterId: string,
   namespaceName: string,
   name: string,
-  data: Partial<RoleRulesReq>
+  data: Partial<RoleRulesReq>,
 ): Promise<void> {
   return request.put(`/kubernetes/clusters/${clusterId}/namespaces/${namespaceName}/roles/${name}/rules`, { data })
 }

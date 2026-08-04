@@ -19,8 +19,9 @@ import type {
   DeploymentQueryForm,
   DeploymentScaleForm,
   DeploymentScheduleVo,
-  DeploymentYamlForm
+  DeploymentYamlForm,
 } from '@/types/kubernetes/workload/deployment'
+
 import { request } from '@/utils'
 
 /**
@@ -31,7 +32,7 @@ import { request } from '@/utils'
  */
 export function getDeploymentList(
   clusterId: string,
-  params: Partial<DeploymentQueryForm>
+  params: Partial<DeploymentQueryForm>,
 ): Promise<PageVo<DeploymentListVo>> {
   return request.get<PageVo<DeploymentListVo>>(`/kubernetes/clusters/${clusterId}/deployments`, params)
 }
@@ -45,7 +46,7 @@ export function getDeploymentList(
  */
 export function getDeploymentDetail(clusterId: string, namespace: string, name: string): Promise<DeploymentDetailVo> {
   return request.get<DeploymentDetailVo>(
-    `/kubernetes/clusters/${clusterId}/namespaces/${namespace}/deployments/${name}`
+    `/kubernetes/clusters/${clusterId}/namespaces/${namespace}/deployments/${name}`,
   )
 }
 
@@ -59,10 +60,10 @@ export function getDeploymentDetail(clusterId: string, namespace: string, name: 
 export function getDeploymentPodList(
   clusterId: string,
   namespace: string,
-  name: string
+  name: string,
 ): Promise<DeploymentPodListVo[]> {
   return request.get<DeploymentPodListVo[]>(
-    `/kubernetes/clusters/${clusterId}/namespaces/${namespace}/deployments/${name}/pods`
+    `/kubernetes/clusters/${clusterId}/namespaces/${namespace}/deployments/${name}/pods`,
   )
 }
 
@@ -76,10 +77,10 @@ export function getDeploymentPodList(
 export function getDeploymentSchedule(
   clusterId: string,
   namespace: string,
-  name: string
+  name: string,
 ): Promise<DeploymentScheduleVo> {
   return request.get<DeploymentScheduleVo>(
-    `/kubernetes/clusters/${clusterId}/namespaces/${namespace}/deployments/${name}/schedule`
+    `/kubernetes/clusters/${clusterId}/namespaces/${namespace}/deployments/${name}/schedule`,
   )
 }
 
@@ -93,10 +94,10 @@ export function getDeploymentSchedule(
 export function getDeploymentHistoryRevisionList(
   clusterId: string,
   namespace: string,
-  name: string
+  name: string,
 ): Promise<DeploymentHistoryRevisionListVo[]> {
   return request.get<DeploymentHistoryRevisionListVo[]>(
-    `/kubernetes/clusters/${clusterId}/namespaces/${namespace}/deployments/${name}/history`
+    `/kubernetes/clusters/${clusterId}/namespaces/${namespace}/deployments/${name}/history`,
   )
 }
 
@@ -109,7 +110,7 @@ export function getDeploymentHistoryRevisionList(
  */
 export function getDeploymentNetwork(clusterId: string, namespace: string, name: string): Promise<DeploymentNetworkVo> {
   return request.get<DeploymentNetworkVo>(
-    `/kubernetes/clusters/${clusterId}/namespaces/${namespace}/deployments/${name}/network`
+    `/kubernetes/clusters/${clusterId}/namespaces/${namespace}/deployments/${name}/network`,
   )
 }
 
@@ -123,10 +124,10 @@ export function getDeploymentNetwork(clusterId: string, namespace: string, name:
 export function getDeploymentStorageList(
   clusterId: string,
   namespace: string,
-  name: string
+  name: string,
 ): Promise<DeploymentStorageListVo[]> {
   return request.get<DeploymentStorageListVo[]>(
-    `/kubernetes/clusters/${clusterId}/namespaces/${namespace}/deployments/${name}/storages`
+    `/kubernetes/clusters/${clusterId}/namespaces/${namespace}/deployments/${name}/storages`,
   )
 }
 
@@ -139,7 +140,7 @@ export function getDeploymentStorageList(
  */
 export function getDeploymentMonitor(clusterId: string, namespace: string, name: string): Promise<DeploymentMonitorVo> {
   return request.get<DeploymentMonitorVo>(
-    `/kubernetes/clusters/${clusterId}/namespaces/${namespace}/deployments/${name}/monitor`
+    `/kubernetes/clusters/${clusterId}/namespaces/${namespace}/deployments/${name}/monitor`,
   )
 }
 
@@ -153,10 +154,10 @@ export function getDeploymentMonitor(clusterId: string, namespace: string, name:
 export function getDeploymentEventList(
   clusterId: string,
   namespace: string,
-  name: string
+  name: string,
 ): Promise<DeploymentEventListVo[]> {
   return request.get<DeploymentEventListVo[]>(
-    `/kubernetes/clusters/${clusterId}/namespaces/${namespace}/deployments/${name}/events`
+    `/kubernetes/clusters/${clusterId}/namespaces/${namespace}/deployments/${name}/events`,
   )
 }
 
@@ -192,7 +193,7 @@ export function updateDeployment(
   clusterId: string,
   namespace: string,
   name: string,
-  data: Partial<DeploymentUpdateForm>
+  data: Partial<DeploymentUpdateForm>,
 ): Promise<void> {
   return request.put(`/kubernetes/clusters/${clusterId}/namespaces/${namespace}/deployments/${name}`, data)
 }
@@ -208,7 +209,7 @@ export function manageDeploymentLabels(
   clusterId: string,
   namespace: string,
   name: string,
-  data: DeploymentLabelForm
+  data: DeploymentLabelForm,
 ): Promise<void> {
   return request.post(`/kubernetes/clusters/${clusterId}/namespaces/${namespace}/deployments/${name}/labels`, data)
 }
@@ -224,7 +225,7 @@ export function manageDeploymentAnnotations(
   clusterId: string,
   namespace: string,
   name: string,
-  data: DeploymentAnnotationForm
+  data: DeploymentAnnotationForm,
 ): Promise<void> {
   return request.post(`/kubernetes/clusters/${clusterId}/namespaces/${namespace}/deployments/${name}/annotations`, data)
 }
@@ -278,7 +279,7 @@ export function scaleDeployment(
   clusterId: string,
   namespace: string,
   name: string,
-  data: DeploymentScaleForm
+  data: DeploymentScaleForm,
 ): Promise<void> {
   return request.post(`/kubernetes/clusters/${clusterId}/namespaces/${namespace}/deployments/${name}/scale`, data)
 }

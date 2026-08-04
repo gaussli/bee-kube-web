@@ -46,7 +46,7 @@ onMounted(() => {
     dropdown.addItem({
       value: props.value,
       label: props.label,
-      icon: props.icon
+      icon: props.icon,
     })
   }
 })
@@ -70,6 +70,6 @@ function handleClick() {
 
 // 暴露方法供指令使用
 defineExpose({
-  setHidden
+  setHidden,
 })
 </script>

@@ -26,8 +26,9 @@ import type {
   DeploymentScaleForm,
   DeploymentScheduleVo,
   DeploymentStrategyVo,
-  DeploymentYamlForm
+  DeploymentYamlForm,
 } from '@/types/kubernetes/workload/deployment'
+
 import { generateId } from '@/mock/utils'
 
 /**
@@ -60,128 +61,128 @@ export default [
     method: 'get',
     url: '/kubernetes/clusters/:clusterId/deployments',
     handler: (pathParams: Record<string, string>, params: Partial<DeploymentQueryForm>): PageVo<DeploymentListVo> =>
-      getDeploymentList(pathParams.clusterId, params)
+      getDeploymentList(pathParams.clusterId, params),
   },
   {
     method: 'get',
     url: '/kubernetes/clusters/:clusterId/namespaces/:namespace/deployments/:name',
     handler: (pathParams: Record<string, string>): DeploymentDetailVo =>
-      getDeploymentDetail(pathParams.clusterId, pathParams.namespace, pathParams.name)
+      getDeploymentDetail(pathParams.clusterId, pathParams.namespace, pathParams.name),
   },
   {
     method: 'get',
     url: '/kubernetes/clusters/:clusterId/namespaces/:namespace/deployments/:name/pods',
     handler: (pathParams: Record<string, string>): DeploymentPodListVo[] =>
-      getDeploymentPodList(pathParams.clusterId, pathParams.namespace, pathParams.name)
+      getDeploymentPodList(pathParams.clusterId, pathParams.namespace, pathParams.name),
   },
   {
     method: 'get',
     url: '/kubernetes/clusters/:clusterId/namespaces/:namespace/deployments/:name/schedule',
     handler: (pathParams: Record<string, string>): DeploymentScheduleVo =>
-      getDeploymentSchedule(pathParams.clusterId, pathParams.namespace, pathParams.name)
+      getDeploymentSchedule(pathParams.clusterId, pathParams.namespace, pathParams.name),
   },
   {
     method: 'get',
     url: '/kubernetes/clusters/:clusterId/namespaces/:namespace/deployments/:name/history',
     handler: (pathParams: Record<string, string>): DeploymentHistoryRevisionListVo[] =>
-      getDeploymentHistoryRevisionList(pathParams.clusterId, pathParams.namespace, pathParams.name)
+      getDeploymentHistoryRevisionList(pathParams.clusterId, pathParams.namespace, pathParams.name),
   },
   {
     method: 'get',
     url: '/kubernetes/clusters/:clusterId/namespaces/:namespace/deployments/:name/network',
     handler: (pathParams: Record<string, string>): DeploymentNetworkVo =>
-      getDeploymentNetwork(pathParams.clusterId, pathParams.namespace, pathParams.name)
+      getDeploymentNetwork(pathParams.clusterId, pathParams.namespace, pathParams.name),
   },
   {
     method: 'get',
     url: '/kubernetes/clusters/:clusterId/namespaces/:namespace/deployments/:name/storages',
     handler: (pathParams: Record<string, string>): DeploymentStorageListVo[] =>
-      getDeploymentStorageList(pathParams.clusterId, pathParams.namespace, pathParams.name)
+      getDeploymentStorageList(pathParams.clusterId, pathParams.namespace, pathParams.name),
   },
   {
     method: 'get',
     url: '/kubernetes/clusters/:clusterId/namespaces/:namespace/deployments/:name/monitor',
     handler: (pathParams: Record<string, string>): DeploymentMonitorVo =>
-      getDeploymentMonitor(pathParams.clusterId, pathParams.namespace, pathParams.name)
+      getDeploymentMonitor(pathParams.clusterId, pathParams.namespace, pathParams.name),
   },
   {
     method: 'get',
     url: '/kubernetes/clusters/:clusterId/namespaces/:namespace/deployments/:name/events',
     handler: (pathParams: Record<string, string>): DeploymentEventListVo[] =>
-      getDeploymentEventList(pathParams.clusterId, pathParams.namespace, pathParams.name)
+      getDeploymentEventList(pathParams.clusterId, pathParams.namespace, pathParams.name),
   },
   {
     method: 'get',
     url: '/kubernetes/clusters/:clusterId/namespaces/:namespace/deployments/:name/yaml',
     handler: (pathParams: Record<string, string>): string =>
-      getDeploymentYaml(pathParams.clusterId, pathParams.namespace, pathParams.name)
+      getDeploymentYaml(pathParams.clusterId, pathParams.namespace, pathParams.name),
   },
   {
     method: 'post',
     url: '/kubernetes/clusters/:clusterId/namespaces/:namespace/deployments',
     handler: (pathParams: Record<string, string>, data: DeploymentCreateForm): void =>
-      createDeployment(pathParams.clusterId, pathParams.namespace, data)
+      createDeployment(pathParams.clusterId, pathParams.namespace, data),
   },
   {
     method: 'put',
     url: '/kubernetes/clusters/:clusterId/namespaces/:namespace/deployments/:name',
     handler: (pathParams: Record<string, string>, data: Partial<DeploymentUpdateForm>): void =>
-      updateDeployment(pathParams.clusterId, pathParams.namespace, pathParams.name, data)
+      updateDeployment(pathParams.clusterId, pathParams.namespace, pathParams.name, data),
   },
   {
     method: 'post',
     url: '/kubernetes/clusters/:clusterId/namespaces/:namespace/deployments/:name/labels',
     handler: (pathParams: Record<string, string>, data: DeploymentLabelForm): void =>
-      manageDeploymentLabels(pathParams.clusterId, pathParams.namespace, pathParams.name, data)
+      manageDeploymentLabels(pathParams.clusterId, pathParams.namespace, pathParams.name, data),
   },
   {
     method: 'post',
     url: '/kubernetes/clusters/:clusterId/namespaces/:namespace/deployments/:name/annotations',
     handler: (pathParams: Record<string, string>, data: DeploymentAnnotationForm): void =>
-      manageDeploymentAnnotations(pathParams.clusterId, pathParams.namespace, pathParams.name, data)
+      manageDeploymentAnnotations(pathParams.clusterId, pathParams.namespace, pathParams.name, data),
   },
   {
     method: 'delete',
     url: '/kubernetes/clusters/:clusterId/namespaces/:namespace/deployments/:name',
     handler: (pathParams: Record<string, string>): void =>
-      deleteDeployment(pathParams.clusterId, pathParams.namespace, pathParams.name)
+      deleteDeployment(pathParams.clusterId, pathParams.namespace, pathParams.name),
   },
   {
     method: 'delete',
     url: '/kubernetes/clusters/:clusterId/namespaces/:namespace/deployments/batch',
     handler: (pathParams: Record<string, string>, data: string[]): void =>
-      deleteDeployments(pathParams.clusterId, pathParams.namespace, data)
+      deleteDeployments(pathParams.clusterId, pathParams.namespace, data),
   },
   {
     method: 'get',
     url: '/kubernetes/clusters/:clusterId/deployments/export',
     handler: (pathParams: Record<string, string>, params: Partial<DeploymentQueryForm>): void =>
-      exportDeployment(pathParams.clusterId, params)
+      exportDeployment(pathParams.clusterId, params),
   },
   {
     method: 'post',
     url: '/kubernetes/clusters/:clusterId/deployments/import',
     handler: (pathParams: Record<string, string>, data: DeploymentYamlForm): void =>
-      importDeployment(pathParams.clusterId, data)
+      importDeployment(pathParams.clusterId, data),
   },
   {
     method: 'post',
     url: '/kubernetes/clusters/:clusterId/namespaces/:namespace/deployments/:name/scale',
     handler: (pathParams: Record<string, string>, data: DeploymentScaleForm): void =>
-      scaleDeployment(pathParams.clusterId, pathParams.namespace, pathParams.name, data)
+      scaleDeployment(pathParams.clusterId, pathParams.namespace, pathParams.name, data),
   },
   {
     method: 'post',
     url: '/kubernetes/clusters/:clusterId/namespaces/:namespace/deployments/:name/restart',
     handler: (pathParams: Record<string, string>): void =>
-      restartDeployment(pathParams.clusterId, pathParams.namespace, pathParams.name)
+      restartDeployment(pathParams.clusterId, pathParams.namespace, pathParams.name),
   },
   {
     method: 'post',
     url: '/kubernetes/clusters/:clusterId/namespaces/:namespace/deployments/:name/rollback',
     handler: (pathParams: Record<string, string>): void =>
-      rollbackDeployment(pathParams.clusterId, pathParams.namespace, pathParams.name)
-  }
+      rollbackDeployment(pathParams.clusterId, pathParams.namespace, pathParams.name),
+  },
 ]
 
 /**
@@ -244,7 +245,7 @@ function getDeploymentDetail(_clusterId: string, _namespace: string, _name: stri
     resource: mockDeploymentResource,
     conditions: mockDeploymentConditions,
     strategy: mockDeploymentStrategy,
-    advanced: mockDeploymentAdvanced
+    advanced: mockDeploymentAdvanced,
   }
 }
 
@@ -283,7 +284,7 @@ function getDeploymentPodList(_clusterId: string, _namespace: string, _name: str
       createAt: deploy.createAt,
       createBy: deploy.createBy,
       updateAt: deploy.updateAt,
-      updateBy: deploy.updateBy
+      updateBy: deploy.updateBy,
     },
     {
       id: generateId(),
@@ -308,7 +309,7 @@ function getDeploymentPodList(_clusterId: string, _namespace: string, _name: str
       createAt: deploy.createAt,
       createBy: deploy.createBy,
       updateAt: deploy.updateAt,
-      updateBy: deploy.updateBy
+      updateBy: deploy.updateBy,
     },
     {
       id: generateId(),
@@ -333,7 +334,7 @@ function getDeploymentPodList(_clusterId: string, _namespace: string, _name: str
       createAt: new Date().toLocaleString(),
       createBy: deploy.createBy,
       updateAt: new Date().toLocaleString(),
-      updateBy: deploy.updateBy
+      updateBy: deploy.updateBy,
     },
     {
       id: generateId(),
@@ -358,7 +359,7 @@ function getDeploymentPodList(_clusterId: string, _namespace: string, _name: str
       createAt: deploy.createAt,
       createBy: deploy.createBy,
       updateAt: deploy.updateAt,
-      updateBy: deploy.updateBy
+      updateBy: deploy.updateBy,
     },
     {
       id: generateId(),
@@ -383,8 +384,8 @@ function getDeploymentPodList(_clusterId: string, _namespace: string, _name: str
       createAt: deploy.createAt,
       createBy: deploy.createBy,
       updateAt: deploy.updateAt,
-      updateBy: deploy.updateBy
-    }
+      updateBy: deploy.updateBy,
+    },
   ]
 }
 
@@ -397,7 +398,7 @@ function getDeploymentPodList(_clusterId: string, _namespace: string, _name: str
  */
 function getDeploymentSchedule(clusterId: string, namespace: string, name: string): DeploymentScheduleVo {
   const deployment = mockDeployments.find(
-    d => d.clusterId === clusterId && d.namespace === namespace && d.name === name
+    d => d.clusterId === clusterId && d.namespace === namespace && d.name === name,
   )
   if (!deployment) {
     console.error('[Get Deployment Schedule] can not find deployment:', clusterId, namespace, name)
@@ -408,15 +409,15 @@ function getDeploymentSchedule(clusterId: string, namespace: string, name: strin
       nodeAffinity: {
         required: [
           {
-            matchExpressions: [{ key: 'kubernetes.io/os', operator: 'In', values: ['linux'] }]
-          }
+            matchExpressions: [{ key: 'kubernetes.io/os', operator: 'In', values: ['linux'] }],
+          },
         ],
         preferred: [
           {
             weight: 80,
-            matchExpressions: [{ key: 'node-type', operator: 'In', values: ['ssd', 'high-memory'] }]
-          }
-        ]
+            matchExpressions: [{ key: 'node-type', operator: 'In', values: ['ssd', 'high-memory'] }],
+          },
+        ],
       },
       podAffinity: {
         required: [],
@@ -428,9 +429,9 @@ function getDeploymentSchedule(clusterId: string, namespace: string, name: strin
             namespaceSelector: { matchLabels: {}, matchExpressions: [] },
             topologyKey: 'kubernetes.io/hostname',
             matchLabelKeys: [],
-            mismatchLabelKeys: []
-          }
-        ]
+            mismatchLabelKeys: [],
+          },
+        ],
       },
       podAntiAffinity: {
         required: [
@@ -440,11 +441,11 @@ function getDeploymentSchedule(clusterId: string, namespace: string, name: strin
             namespaceSelector: { matchLabels: {}, matchExpressions: [] },
             topologyKey: 'kubernetes.io/hostname',
             matchLabelKeys: [],
-            mismatchLabelKeys: []
-          }
+            mismatchLabelKeys: [],
+          },
         ],
-        preferred: []
-      }
+        preferred: [],
+      },
     },
     tolerations: [
       {
@@ -452,16 +453,16 @@ function getDeploymentSchedule(clusterId: string, namespace: string, name: strin
         operator: 'Exists',
         value: '',
         effect: 'NoExecute',
-        tolerationSeconds: 300
+        tolerationSeconds: 300,
       },
       {
         key: 'node.kubernetes.io/unreachable',
         operator: 'Exists',
         value: '',
         effect: 'NoExecute',
-        tolerationSeconds: 300
-      }
-    ]
+        tolerationSeconds: 300,
+      },
+    ],
   }
 }
 
@@ -475,34 +476,34 @@ function getDeploymentSchedule(clusterId: string, namespace: string, name: strin
 function getDeploymentHistoryRevisionList(
   _clusterId: string,
   _namespace: string,
-  _name: string
+  _name: string,
 ): DeploymentHistoryRevisionListVo[] {
   return [
     {
       revision: 5,
       changeCause: 'kubectl set image deployment=' + _name + '=' + _name + ':v2.1.0',
       createAt: '2024-07-01 14:30:00',
-      active: true
+      active: true,
     },
     { revision: 4, changeCause: 'kubectl edit deployment/' + _name, createAt: '2024-06-28 09:15:00', active: false },
     {
       revision: 3,
       changeCause: 'kubectl set resources deployment/' + _name + ' --limits=cpu=500m,memory=512Mi',
       createAt: '2024-06-25 16:45:00',
-      active: false
+      active: false,
     },
     {
       revision: 2,
       changeCause: 'kubectl apply -f ' + _name + '.yaml --record',
       createAt: '2024-06-20 11:00:00',
-      active: false
+      active: false,
     },
     {
       revision: 1,
       changeCause: 'kubectl create deployment ' + _name + ' --image=' + _name + ':v1.0.0',
       createAt: '2024-06-15 08:30:00',
-      active: false
-    }
+      active: false,
+    },
   ]
 }
 
@@ -537,7 +538,7 @@ function getDeploymentNetwork(_clusterId: string, _namespace: string, _name: str
         createAt: deploy.createAt,
         createBy: deploy.createBy,
         updateAt: deploy.updateAt,
-        updateBy: deploy.updateBy
+        updateBy: deploy.updateBy,
       },
       {
         id: generateId(),
@@ -559,7 +560,7 @@ function getDeploymentNetwork(_clusterId: string, _namespace: string, _name: str
         createAt: deploy.createAt,
         createBy: deploy.createBy,
         updateAt: deploy.updateAt,
-        updateBy: deploy.updateBy
+        updateBy: deploy.updateBy,
       },
       {
         id: generateId(),
@@ -581,8 +582,8 @@ function getDeploymentNetwork(_clusterId: string, _namespace: string, _name: str
         createAt: deploy.createAt,
         createBy: deploy.createBy,
         updateAt: deploy.updateAt,
-        updateBy: deploy.updateBy
-      }
+        updateBy: deploy.updateBy,
+      },
     ],
     ingresses: [
       {
@@ -594,8 +595,8 @@ function getDeploymentNetwork(_clusterId: string, _namespace: string, _name: str
         rules: [
           {
             host: deploy.name + '.example.com',
-            paths: [{ path: '/', pathType: 'Prefix', serviceName: deploy.name + '-svc', servicePort: 80 }]
-          }
+            paths: [{ path: '/', pathType: 'Prefix', serviceName: deploy.name + '-svc', servicePort: 80 }],
+          },
         ],
         clusterId: deploy.clusterId,
         clusterUid: deploy.clusterUid,
@@ -606,7 +607,7 @@ function getDeploymentNetwork(_clusterId: string, _namespace: string, _name: str
         createAt: deploy.createAt,
         createBy: deploy.createBy,
         updateAt: deploy.updateAt,
-        updateBy: deploy.updateBy
+        updateBy: deploy.updateBy,
       },
       {
         id: generateId(),
@@ -617,8 +618,8 @@ function getDeploymentNetwork(_clusterId: string, _namespace: string, _name: str
         rules: [
           {
             host: 'api.example.com',
-            paths: [{ path: '/v1', pathType: 'Prefix', serviceName: deploy.name + '-svc', servicePort: 8080 }]
-          }
+            paths: [{ path: '/v1', pathType: 'Prefix', serviceName: deploy.name + '-svc', servicePort: 8080 }],
+          },
         ],
         tls: [{ hosts: ['api.example.com'], secretName: 'api-tls-cert' }],
         clusterId: deploy.clusterId,
@@ -630,9 +631,9 @@ function getDeploymentNetwork(_clusterId: string, _namespace: string, _name: str
         createAt: deploy.createAt,
         createBy: deploy.createBy,
         updateAt: deploy.updateAt,
-        updateBy: deploy.updateBy
-      }
-    ]
+        updateBy: deploy.updateBy,
+      },
+    ],
   }
 }
 
@@ -650,8 +651,8 @@ function getDeploymentStorageList(_clusterId: string, _namespace: string, _name:
       type: 'ConfigMap',
       extraFields: { configMapName: 'app-config-v3', defaultMode: '420' },
       containerMounts: [
-        { containerId: generateId(), container: 'main-container', mountPath: '/etc/config', subPath: '' }
-      ]
+        { containerId: generateId(), container: 'main-container', mountPath: '/etc/config', subPath: '' },
+      ],
     },
     {
       name: 'app-secret',
@@ -663,15 +664,15 @@ function getDeploymentStorageList(_clusterId: string, _namespace: string, _name:
           containerId: generateId(),
           container: 'sidecar-container',
           mountPath: '/etc/shared-secret',
-          subPath: 'db-password'
-        }
-      ]
+          subPath: 'db-password',
+        },
+      ],
     },
     {
       name: 'app-data',
       type: 'PersistentVolumeClaim',
       extraFields: { claimName: 'app-data-pvc', readOnly: 'false', storageClassName: 'ssd' },
-      containerMounts: [{ containerId: generateId(), container: 'main-container', mountPath: '/data', subPath: '' }]
+      containerMounts: [{ containerId: generateId(), container: 'main-container', mountPath: '/data', subPath: '' }],
     },
     {
       name: 'app-logs',
@@ -679,17 +680,17 @@ function getDeploymentStorageList(_clusterId: string, _namespace: string, _name:
       extraFields: { medium: '', sizeLimit: '1Gi' },
       containerMounts: [
         { containerId: generateId(), container: 'main-container', mountPath: '/var/log/app', subPath: '' },
-        { containerId: generateId(), container: 'fluentd-sidecar', mountPath: '/var/log/app', subPath: '' }
-      ]
+        { containerId: generateId(), container: 'fluentd-sidecar', mountPath: '/var/log/app', subPath: '' },
+      ],
     },
     {
       name: 'host-timezone',
       type: 'HostPath',
       extraFields: { path: '/etc/localtime', type: 'File' },
       containerMounts: [
-        { containerId: generateId(), container: 'main-container', mountPath: '/etc/localtime', subPath: '' }
-      ]
-    }
+        { containerId: generateId(), container: 'main-container', mountPath: '/etc/localtime', subPath: '' },
+      ],
+    },
   ]
 }
 
@@ -722,7 +723,7 @@ function getDeploymentEventList(_clusterId: string, _namespace: string, _name: s
       source: { component: 'deployment-controller' },
       count: 1,
       firstTimestamp: deploy.updateAt,
-      lastTimestamp: deploy.updateAt
+      lastTimestamp: deploy.updateAt,
     },
     {
       type: 'Normal',
@@ -732,7 +733,7 @@ function getDeploymentEventList(_clusterId: string, _namespace: string, _name: s
       source: { component: 'replicaset-controller' },
       count: 3,
       firstTimestamp: deploy.createAt,
-      lastTimestamp: deploy.updateAt
+      lastTimestamp: deploy.updateAt,
     },
     {
       type: 'Warning',
@@ -743,7 +744,7 @@ function getDeploymentEventList(_clusterId: string, _namespace: string, _name: s
       source: { component: 'kubelet', host: 'node-001' },
       count: 2,
       firstTimestamp: deploy.createAt,
-      lastTimestamp: deploy.updateAt
+      lastTimestamp: deploy.updateAt,
     },
     {
       type: 'Normal',
@@ -753,7 +754,7 @@ function getDeploymentEventList(_clusterId: string, _namespace: string, _name: s
       source: { component: 'kubelet', host: 'node-001' },
       count: 1,
       firstTimestamp: deploy.createAt,
-      lastTimestamp: deploy.createAt
+      lastTimestamp: deploy.createAt,
     },
     {
       type: 'Warning',
@@ -763,8 +764,8 @@ function getDeploymentEventList(_clusterId: string, _namespace: string, _name: s
       source: { component: 'default-scheduler' },
       count: 5,
       firstTimestamp: deploy.createAt,
-      lastTimestamp: deploy.updateAt
-    }
+      lastTimestamp: deploy.updateAt,
+    },
   ]
 }
 
@@ -777,7 +778,7 @@ function getDeploymentEventList(_clusterId: string, _namespace: string, _name: s
  */
 function getDeploymentYaml(clusterId: string, namespace: string, name: string): string {
   const deployment = mockDeployments.find(
-    d => d.clusterId === clusterId && d.namespace === namespace && d.name === name
+    d => d.clusterId === clusterId && d.namespace === namespace && d.name === name,
   )
   if (!deployment) {
     console.error('[Get Deployment Yaml] can not find deployment:', clusterId, namespace, name)
@@ -929,7 +930,7 @@ function updateDeployment(
   clusterId: string,
   namespace: string,
   name: string,
-  data: Partial<DeploymentUpdateForm>
+  data: Partial<DeploymentUpdateForm>,
 ): void {
   console.log('[Mock] updateDeployment', { clusterId, namespace, name, data })
 }
@@ -956,7 +957,7 @@ function manageDeploymentAnnotations(
   clusterId: string,
   namespace: string,
   name: string,
-  data: DeploymentAnnotationForm
+  data: DeploymentAnnotationForm,
 ): void {
   console.log('[Mock] manageDeploymentAnnotations', { clusterId, namespace, name, data })
 }
@@ -1056,7 +1057,7 @@ const mockDeployments: DeploymentListVo[] = [
     createBy: 'admin',
     updateAt: '2024-03-20 14:22:18',
     updateBy: 'admin',
-    deletable: false
+    deletable: false,
   },
   {
     id: generateId(),
@@ -1077,7 +1078,7 @@ const mockDeployments: DeploymentListVo[] = [
     createBy: 'system',
     updateAt: '2024-03-19 16:45:30',
     updateBy: 'admin',
-    deletable: true
+    deletable: true,
   },
   {
     id: generateId(),
@@ -1098,7 +1099,7 @@ const mockDeployments: DeploymentListVo[] = [
     createBy: 'admin',
     updateAt: '2024-03-18 14:00:00',
     updateBy: 'admin',
-    deletable: true
+    deletable: true,
   },
   // ==================== Available（部分就绪）- 3 条 ====================
   {
@@ -1120,7 +1121,7 @@ const mockDeployments: DeploymentListVo[] = [
     createBy: 'developer',
     updateAt: '2024-03-20 10:00:00',
     updateBy: 'admin',
-    deletable: true
+    deletable: true,
   },
   {
     id: generateId(),
@@ -1141,7 +1142,7 @@ const mockDeployments: DeploymentListVo[] = [
     createBy: 'developer',
     updateAt: '2024-03-20 11:00:00',
     updateBy: 'admin',
-    deletable: true
+    deletable: true,
   },
   {
     id: generateId(),
@@ -1162,7 +1163,7 @@ const mockDeployments: DeploymentListVo[] = [
     createBy: 'developer',
     updateAt: '2024-03-18 14:00:00',
     updateBy: 'admin',
-    deletable: true
+    deletable: true,
   },
   // ==================== Stopped（已停止）- 2 条 ====================
   {
@@ -1185,7 +1186,7 @@ const mockDeployments: DeploymentListVo[] = [
     createBy: 'developer',
     updateAt: '2024-03-19 15:00:00',
     updateBy: 'admin',
-    deletable: true
+    deletable: true,
   },
   {
     id: generateId(),
@@ -1207,7 +1208,7 @@ const mockDeployments: DeploymentListVo[] = [
     createBy: 'developer',
     updateAt: '2024-03-20 16:00:00',
     updateBy: 'admin',
-    deletable: true
+    deletable: true,
   },
   // ==================== Creating（创建中）- 2 条 ====================
   {
@@ -1230,7 +1231,7 @@ const mockDeployments: DeploymentListVo[] = [
     createBy: 'developer',
     updateAt: '2024-03-19 14:00:00',
     updateBy: 'admin',
-    deletable: true
+    deletable: true,
   },
   {
     id: generateId(),
@@ -1252,7 +1253,7 @@ const mockDeployments: DeploymentListVo[] = [
     createBy: 'developer',
     updateAt: '2024-03-20 09:30:00',
     updateBy: 'admin',
-    deletable: true
+    deletable: true,
   },
   // ==================== Updating（更新中）- 2 条 ====================
   {
@@ -1275,7 +1276,7 @@ const mockDeployments: DeploymentListVo[] = [
     createBy: 'developer',
     updateAt: '2024-03-19 16:00:00',
     updateBy: 'admin',
-    deletable: true
+    deletable: true,
   },
   {
     id: generateId(),
@@ -1297,7 +1298,7 @@ const mockDeployments: DeploymentListVo[] = [
     createBy: 'developer',
     updateAt: '2024-03-20 15:30:00',
     updateBy: 'admin',
-    deletable: true
+    deletable: true,
   },
   // ==================== Terminating（终止中）- 2 条 ====================
   {
@@ -1320,7 +1321,7 @@ const mockDeployments: DeploymentListVo[] = [
     createBy: 'admin',
     updateAt: '2024-03-15 09:30:00',
     updateBy: 'admin',
-    deletable: true
+    deletable: true,
   },
   {
     id: generateId(),
@@ -1342,7 +1343,7 @@ const mockDeployments: DeploymentListVo[] = [
     createBy: 'admin',
     updateAt: '2024-03-15 09:35:00',
     updateBy: 'admin',
-    deletable: true
+    deletable: true,
   },
   // ==================== CreateTimeout（创建超时）- 2 条 ====================
   {
@@ -1365,7 +1366,7 @@ const mockDeployments: DeploymentListVo[] = [
     createBy: 'developer',
     updateAt: '2024-03-20 10:30:00',
     updateBy: 'admin',
-    deletable: true
+    deletable: true,
   },
   {
     id: generateId(),
@@ -1387,7 +1388,7 @@ const mockDeployments: DeploymentListVo[] = [
     createBy: 'developer',
     updateAt: '2024-03-19 17:12:00',
     updateBy: 'admin',
-    deletable: true
+    deletable: true,
   },
   // ==================== UpdateTimeout（更新超时）- 2 条 ====================
   {
@@ -1410,7 +1411,7 @@ const mockDeployments: DeploymentListVo[] = [
     createBy: 'developer',
     updateAt: '2024-03-20 08:00:00',
     updateBy: 'admin',
-    deletable: true
+    deletable: true,
   },
   {
     id: generateId(),
@@ -1432,7 +1433,7 @@ const mockDeployments: DeploymentListVo[] = [
     createBy: 'developer',
     updateAt: '2024-03-17 11:00:00',
     updateBy: 'admin',
-    deletable: true
+    deletable: true,
   },
   // ==================== Failed（失败异常）- 2 条 ====================
   {
@@ -1455,7 +1456,7 @@ const mockDeployments: DeploymentListVo[] = [
     createBy: 'admin',
     updateAt: '2024-03-20 16:00:00',
     updateBy: 'admin',
-    deletable: true
+    deletable: true,
   },
   {
     id: generateId(),
@@ -1477,7 +1478,7 @@ const mockDeployments: DeploymentListVo[] = [
     createBy: 'developer',
     updateAt: '2024-03-19 15:05:00',
     updateBy: 'admin',
-    deletable: true
+    deletable: true,
   },
   // ==================== Unknown（未知）- 2 条 ====================
   {
@@ -1500,7 +1501,7 @@ const mockDeployments: DeploymentListVo[] = [
     createBy: 'developer',
     updateAt: '2024-03-20 17:00:00',
     updateBy: 'admin',
-    deletable: true
+    deletable: true,
   },
   {
     id: generateId(),
@@ -1522,8 +1523,8 @@ const mockDeployments: DeploymentListVo[] = [
     createBy: 'admin',
     updateAt: '2024-03-20 10:00:00',
     updateBy: 'admin',
-    deletable: true
-  }
+    deletable: true,
+  },
 ]
 
 /**
@@ -1544,7 +1545,7 @@ const mockDeploymentBasic: DeploymentBasicVo = {
     'app.kubernetes.io/name': 'nginx-ingress-controller',
     'app.kubernetes.io/instance': 'nginx-ingress-controller',
     'app.kubernetes.io/component': 'kube-system',
-    'app.kubernetes.io/managed-by': 'bee-kube'
+    'app.kubernetes.io/managed-by': 'bee-kube',
   },
   clusterId: generateId(),
   clusterUid: generateId(),
@@ -1555,7 +1556,7 @@ const mockDeploymentBasic: DeploymentBasicVo = {
   createAt: '2024-01-15 10:30:25',
   createBy: 'admin',
   updateAt: '2024-03-20 14:22:18',
-  updateBy: 'admin'
+  updateBy: 'admin',
 }
 
 /**
@@ -1565,7 +1566,7 @@ const mockDeploymentReplicas: DeploymentReplicasVo = {
   replicas: 3,
   readyReplicas: 2,
   availableReplicas: 2,
-  updatedReplicas: 3
+  updatedReplicas: 3,
 }
 
 /**
@@ -1577,15 +1578,15 @@ const mockDeploymentMetadata: DeploymentMetadataVo = {
     'app.kubernetes.io/name': 'nginx-ingress-controller',
     'app.kubernetes.io/instance': 'nginx-ingress-controller',
     'app.kubernetes.io/component': 'kube-system',
-    'app.kubernetes.io/managed-by': 'bee-kube'
+    'app.kubernetes.io/managed-by': 'bee-kube',
   },
   annotations: {
     'description': 'Kubernetes Ingress 控制器，管理集群七层流量入口和路由规则',
     'kubernetes.io/change-cause': 'kubectl apply',
     'deployment.kubernetes.io/revision': '3',
     'meta.helm.sh/release-name': 'nginx-ingress-controller',
-    'meta.helm.sh/release-namespace': 'kube-system'
-  }
+    'meta.helm.sh/release-namespace': 'kube-system',
+  },
 }
 
 /**
@@ -1593,7 +1594,7 @@ const mockDeploymentMetadata: DeploymentMetadataVo = {
  */
 const mockDeploymentResource: DeploymentResourceVo = {
   request: { cpu: 200, memory: 268435456 },
-  limit: { cpu: 1000, memory: 536870912 }
+  limit: { cpu: 1000, memory: 536870912 },
 }
 
 /**
@@ -1606,7 +1607,7 @@ const mockDeploymentConditions: DeploymentConditionVo[] = [
     reason: 'MinimumReplicasAvailable',
     message: 'Deployment has minimum availability.',
     lastTransitionTime: '2024-03-20 14:22:18',
-    lastUpdateTime: '2024-03-20 14:22:18'
+    lastUpdateTime: '2024-03-20 14:22:18',
   },
   {
     type: 'Progressing',
@@ -1614,7 +1615,7 @@ const mockDeploymentConditions: DeploymentConditionVo[] = [
     reason: 'NewReplicaSetAvailable',
     message: 'ReplicaSet "nginx-ingress-controller" has successfully progressed.',
     lastTransitionTime: '2024-01-15 10:30:25',
-    lastUpdateTime: '2024-03-20 14:22:18'
+    lastUpdateTime: '2024-03-20 14:22:18',
   },
   {
     type: 'Available',
@@ -1622,7 +1623,7 @@ const mockDeploymentConditions: DeploymentConditionVo[] = [
     reason: 'MinimumReplicasUnavailable',
     message: 'Deployment does not have minimum availability.',
     lastTransitionTime: '2024-01-15 10:30:25',
-    lastUpdateTime: '2024-01-15 10:30:25'
+    lastUpdateTime: '2024-01-15 10:30:25',
   },
   {
     type: 'Progressing',
@@ -1630,7 +1631,7 @@ const mockDeploymentConditions: DeploymentConditionVo[] = [
     reason: 'NewReplicaSetCreated',
     message: 'ReplicaSet "nginx-ingress-controller" is progressing.',
     lastTransitionTime: '2024-01-15 10:30:25',
-    lastUpdateTime: '2024-01-15 10:30:25'
+    lastUpdateTime: '2024-01-15 10:30:25',
   },
   {
     type: 'ReplicaFailure',
@@ -1638,8 +1639,8 @@ const mockDeploymentConditions: DeploymentConditionVo[] = [
     reason: 'FailedCreate',
     message: 'Replica has been created successfully.',
     lastTransitionTime: '2024-01-15 10:30:25',
-    lastUpdateTime: '2024-03-20 14:22:18'
-  }
+    lastUpdateTime: '2024-03-20 14:22:18',
+  },
 ]
 
 /**
@@ -1648,7 +1649,7 @@ const mockDeploymentConditions: DeploymentConditionVo[] = [
 const mockDeploymentStrategy: DeploymentStrategyVo = {
   type: 'RollingUpdate',
   maxUnavailable: '25%',
-  maxSurge: '25%'
+  maxSurge: '25%',
 }
 
 /**
@@ -1664,5 +1665,5 @@ const mockDeploymentAdvanced: DeploymentAdvancedVo = {
   hostname: 'nginx-ingress-controller-0',
   subdomain: 'nginx-ingress-headless',
   imagePullSecrets: ['registry-harbor-secret', 'dockerhub-registry-secret'],
-  priorityClass: 'high-priority'
+  priorityClass: 'high-priority',
 }

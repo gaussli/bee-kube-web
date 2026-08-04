@@ -1,4 +1,5 @@
 import type { RouteRecordRaw } from 'vue-router'
+
 import type { CurrentMenu } from '@/types'
 
 // 使用 glob 预加载所有 views 下的 .vue 文件
@@ -20,9 +21,9 @@ export function generateRoutes(menus: CurrentMenu[]): RouteRecordRaw[] {
         title: menu.name,
         icon: menu.frontIcon,
         permission: menu.permission,
-        activeCode: menu.activeCode ?? menu.code
+        activeCode: menu.activeCode ?? menu.code,
       },
-      children: []
+      children: [],
     }
 
     if (menu.frontRedirect) {

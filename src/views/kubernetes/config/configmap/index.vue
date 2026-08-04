@@ -133,13 +133,19 @@
  * @module views/kubernetes/config/configmap
  */
 import { onMounted, reactive, ref } from 'vue'
+
 import { useRoute, useRouter } from 'vue-router'
+
 import { ElMessage } from 'element-plus'
+
 import type { ConfigMapQueryReq, ConfigMapListResp } from '@/types/kubernetes/config/configmap'
 import type { NamespaceSimpleListResp } from '@/types/kubernetes/namespace'
+
 import type { ActionItem } from '@/components/BeeActionCell/index.vue'
+
 import { getConfigMapList, deleteConfigMap, deleteConfigMaps } from '@/api/kubernetes/config/configmap'
 import { getNamespacePage } from '@/api/kubernetes/namespace'
+
 import BeeActionCell from '@/components/BeeActionCell/index.vue'
 import BeeAuditCell from '@/components/BeeAuditCell/index.vue'
 import BeeButton from '@/components/BeeButton/index.vue'
@@ -155,6 +161,7 @@ import BeeTableColumn from '@/components/BeeTable/BeeTableColumn.vue'
 import BeeTableCommonCell from '@/components/BeeTable/BeeTableCommonCell.vue'
 import BeeTable from '@/components/BeeTable/index.vue'
 import BeeTag from '@/components/BeeTag/index.vue'
+
 import { usePermission } from '@/composables/usePermission'
 
 defineOptions({ name: 'ConfigMapManage' })
@@ -183,7 +190,7 @@ const pagination = reactive({ page: 1, pageSize: 10, total: 0 })
 
 /** 命名空间选项 */
 const namespaceOptions = ref<{ label: string; value: string | undefined }[]>([
-  { label: '全部命名空间', value: undefined }
+  { label: '全部命名空间', value: undefined },
 ])
 
 // ==================== Data Loading ====================
@@ -198,7 +205,7 @@ async function loadNamespaceOptions() {
     const namespaces = (await getNamespacePage(clusterId.value, { mode: 'simple' })) as NamespaceSimpleListResp[]
     namespaceOptions.value = [
       { label: '全部命名空间', value: undefined },
-      ...namespaces.map(ns => ({ label: ns.name, value: ns.name }))
+      ...namespaces.map(ns => ({ label: ns.name, value: ns.name })),
     ]
   } catch {
     // 加载失败时保留默认选项
@@ -220,7 +227,7 @@ async function loadData() {
       name: queryForm.name,
       namespace: queryForm.namespace || undefined,
       page: pagination.page,
-      pageSize: pagination.pageSize
+      pageSize: pagination.pageSize,
     })
     tableData.value = resp.list
     pagination.total = resp.total
@@ -278,7 +285,7 @@ function handleEdit(row: ConfigMapListResp) {
   router.push({
     name: 'kubernetes:config:configmap:edit',
     params: { clusterId: row.clusterId },
-    query: { namespace: row.namespace, name: row.name }
+    query: { namespace: row.namespace, name: row.name },
   })
 }
 
@@ -287,7 +294,7 @@ function handleViewDetail(row: ConfigMapListResp) {
   router.push({
     name: 'kubernetes:config:configmap:detail',
     params: { clusterId: row.clusterId },
-    query: { namespace: row.namespace, name: row.name }
+    query: { namespace: row.namespace, name: row.name },
   })
 }
 
@@ -311,7 +318,7 @@ async function handleConfirmDelete() {
     await deleteConfigMap(
       currentTargetRow.value.clusterId,
       currentTargetRow.value.namespace,
-      currentTargetRow.value.name
+      currentTargetRow.value.name,
     )
     ElMessage.success('删除成功')
     deleteDialogVisible.value = false
@@ -350,7 +357,7 @@ async function handleConfirmBatchDelete() {
 const perm: Record<string, boolean> = {
   edit: hasPermission('kubernetes:config:configmap:edit'),
   view: hasPermission('kubernetes:config:configmap:view'),
-  delete: hasPermission('kubernetes:config:configmap:delete')
+  delete: hasPermission('kubernetes:config:configmap:delete'),
 }
 
 /**
@@ -369,7 +376,7 @@ function getActions(row: ConfigMapListResp): ActionItem[] {
   if (perm.edit) {
     actions.push(
       { value: 'edit', label: '编辑', icon: 'basic-edit', handler: () => handleEdit(row) },
-      { value: 'yamledit', label: '编辑 YAML', icon: 'basic-code', handler: () => handleEditYaml(row) }
+      { value: 'yamledit', label: '编辑 YAML', icon: 'basic-code', handler: () => handleEditYaml(row) },
     )
   }
   // 删除权限 + deletable 条件

@@ -9,8 +9,8 @@ export const namespaceRoutes: RouteRecordRaw[] = [
       title: '命名空间',
       icon: 'FolderOpened',
       permission: 'kubernetes:namespace:view',
-      activeCode: 'kubernetes:namespace'
-    }
+      activeCode: 'kubernetes:namespace',
+    },
   },
   {
     path: '/kubernetes/clusters/:clusterId/namespace/detail',
@@ -20,8 +20,8 @@ export const namespaceRoutes: RouteRecordRaw[] = [
       title: '命名空间详情',
       icon: 'FolderOpened',
       permission: 'kubernetes:namespace:view',
-      activeCode: 'kubernetes:namespace'
-    }
+      activeCode: 'kubernetes:namespace',
+    },
   },
   {
     path: '/kubernetes/clusters/:clusterId/namespace/create',
@@ -31,8 +31,8 @@ export const namespaceRoutes: RouteRecordRaw[] = [
       title: '创建命名空间',
       icon: 'FolderOpened',
       permission: 'kubernetes:namespace:create',
-      activeCode: 'kubernetes:namespace'
-    }
+      activeCode: 'kubernetes:namespace',
+    },
   },
   {
     path: '/kubernetes/clusters/:clusterId/namespace/edit',
@@ -42,7 +42,7 @@ export const namespaceRoutes: RouteRecordRaw[] = [
       title: '编辑命名空间',
       icon: 'FolderOpened',
       permission: 'kubernetes:namespace:edit',
-      activeCode: 'kubernetes:namespace'
-    }
-  }
+      activeCode: 'kubernetes:namespace',
+    },
+  },
 ]

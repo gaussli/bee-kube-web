@@ -9,8 +9,8 @@ const configmapRoutes: RouteRecordRaw[] = [
       title: '配置映射',
       icon: 'DocumentCopy',
       permission: 'kubernetes:config:configmap:view',
-      activeCode: 'kubernetes:config:configmap'
-    }
+      activeCode: 'kubernetes:config:configmap',
+    },
   },
   {
     path: '/kubernetes/clusters/:clusterId/config/configmap/create',
@@ -20,8 +20,8 @@ const configmapRoutes: RouteRecordRaw[] = [
       title: '创建配置映射',
       icon: 'DocumentCopy',
       permission: 'kubernetes:config:configmap:create',
-      activeCode: 'kubernetes:config:configmap'
-    }
+      activeCode: 'kubernetes:config:configmap',
+    },
   },
   {
     path: '/kubernetes/clusters/:clusterId/config/configmap/edit',
@@ -31,8 +31,8 @@ const configmapRoutes: RouteRecordRaw[] = [
       title: '编辑配置映射',
       icon: 'DocumentCopy',
       permission: 'kubernetes:config:configmap:edit',
-      activeCode: 'kubernetes:config:configmap'
-    }
+      activeCode: 'kubernetes:config:configmap',
+    },
   },
   {
     path: '/kubernetes/clusters/:clusterId/config/configmap/detail',
@@ -42,9 +42,9 @@ const configmapRoutes: RouteRecordRaw[] = [
       title: '配置映射详情',
       icon: 'DocumentCopy',
       permission: 'kubernetes:config:configmap:view',
-      activeCode: 'kubernetes:config:configmap'
-    }
-  }
+      activeCode: 'kubernetes:config:configmap',
+    },
+  },
 ]
 
 const secretRoutes: RouteRecordRaw[] = [
@@ -56,8 +56,8 @@ const secretRoutes: RouteRecordRaw[] = [
       title: '密钥',
       icon: 'Lock',
       permission: 'kubernetes:config:secret:view',
-      activeCode: 'kubernetes:config:secret'
-    }
+      activeCode: 'kubernetes:config:secret',
+    },
   },
   {
     path: '/kubernetes/clusters/:clusterId/config/secret/create',
@@ -67,8 +67,8 @@ const secretRoutes: RouteRecordRaw[] = [
       title: '创建密钥',
       icon: 'Lock',
       permission: 'kubernetes:config:secret:create',
-      activeCode: 'kubernetes:config:secret'
-    }
+      activeCode: 'kubernetes:config:secret',
+    },
   },
   {
     path: '/kubernetes/clusters/:clusterId/config/secret/edit',
@@ -78,8 +78,8 @@ const secretRoutes: RouteRecordRaw[] = [
       title: '编辑密钥',
       icon: 'Lock',
       permission: 'kubernetes:config:secret:edit',
-      activeCode: 'kubernetes:config:secret'
-    }
+      activeCode: 'kubernetes:config:secret',
+    },
   },
   {
     path: '/kubernetes/clusters/:clusterId/config/secret/detail',
@@ -89,9 +89,9 @@ const secretRoutes: RouteRecordRaw[] = [
       title: '密钥详情',
       icon: 'Lock',
       permission: 'kubernetes:config:secret:view',
-      activeCode: 'kubernetes:config:secret'
-    }
-  }
+      activeCode: 'kubernetes:config:secret',
+    },
+  },
 ]
 
 export const configRoutes: RouteRecordRaw[] = [
@@ -101,8 +101,8 @@ export const configRoutes: RouteRecordRaw[] = [
     redirect: '/kubernetes/clusters/:clusterId/config/configmap',
     meta: {
       title: '配置',
-      icon: 'Setting'
+      icon: 'Setting',
     },
-    children: [...configmapRoutes, ...secretRoutes]
-  }
+    children: [...configmapRoutes, ...secretRoutes],
+  },
 ]

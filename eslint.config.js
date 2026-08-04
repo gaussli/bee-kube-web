@@ -210,7 +210,7 @@ export default [
             'index',     // 目录的 index 入口文件
             'object'     // import * as 对象导入
           ],
-          'newlines-between': 'never',                  // 不同分组之间不插入空行
+          'newlines-between': 'always',                 // 不同分组之间插入空行，提升可读性
           pathGroupsExcludedImportTypes: ['builtin'],   // Node 内置模块不作为 pathGroups 候选
           pathGroups: [
             // --- external 组：核心依赖按固定顺序排在 npm 包最前面 ---

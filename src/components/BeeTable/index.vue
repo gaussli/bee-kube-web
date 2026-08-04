@@ -15,7 +15,7 @@
             :key="getRowKey(row, rowIndex)"
             class="bee-table__row"
             :class="{
-              'bee-table__row--selected': selectable && isRowSelected(row, rowIndex)
+              'bee-table__row--selected': selectable && isRowSelected(row, rowIndex),
             }"
             :style="{ cursor: selectable ? 'pointer' : undefined }"
             @click="selectable && handleRowClick(row, rowIndex)"
@@ -50,7 +50,9 @@
  * @module components/BeeTable
  */
 import { provide, ref } from 'vue'
+
 import type { VNode } from 'vue'
+
 import BeeIcon from '@/components/BeeIcon/index.vue'
 
 defineOptions({ name: 'BeeTable' })
@@ -86,8 +88,8 @@ const props = withDefaults(
     data: () => [],
     loading: false,
     rowKey: 'id',
-    selectable: false
-  }
+    selectable: false,
+  },
 )
 
 const emit = defineEmits<{
@@ -202,7 +204,7 @@ function getFixedClass(col: ColumnConfig) {
   if (!col.fixed) return {}
   return {
     'bee-table__cell--fixed-left': col.fixed === 'left',
-    'bee-table__cell--fixed-right': col.fixed === 'right'
+    'bee-table__cell--fixed-right': col.fixed === 'right',
   }
 }
 

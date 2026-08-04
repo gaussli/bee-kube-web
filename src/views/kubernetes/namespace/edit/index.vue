@@ -60,11 +60,17 @@
 
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
+
 import { useRoute, useRouter } from 'vue-router'
+
 import { ElMessage, type FormInstance } from 'element-plus'
+
 import { FolderOpened, Plus, Delete, Close, Check } from '@element-plus/icons-vue'
+
 import type { NamespaceListResp, NamespaceReq } from '@/types/kubernetes/namespace'
+
 import { getNamespaceDetail, updateNamespace } from '@/api/kubernetes/namespace'
+
 import BeeButton from '@/components/BeeButton/index.vue'
 import BeePageTitle from '@/components/BeePageTitle/index.vue'
 
@@ -82,7 +88,7 @@ const namespaceData = ref<NamespaceListResp>()
 
 const formData = ref<NamespaceReq>({
   labels: {},
-  annotations: {}
+  annotations: {},
 })
 
 const formRules = {}
@@ -145,7 +151,7 @@ async function handleSubmit() {
 
   const data: NamespaceReq = {
     labels,
-    annotations
+    annotations,
   }
 
   submitting.value = true

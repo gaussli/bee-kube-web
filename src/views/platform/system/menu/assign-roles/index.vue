@@ -95,11 +95,16 @@
 
 <script setup lang="ts">
 import { computed, onMounted, ref } from 'vue'
+
 import { useRouter } from 'vue-router'
+
 import { ElMessage } from 'element-plus'
+
 import { ArrowLeft, Collection, UserFilled } from '@element-plus/icons-vue'
+
 import type { MenuDetailResp } from '@/types'
 import type { RoleResp } from '@/types'
+
 import BeeButton from '@/components/BeeButton/index.vue'
 import BeeDivider from '@/components/BeeDivider/index.vue'
 import BeeLabelCopyable from '@/components/BeeLabelCopyable/index.vue'
@@ -116,7 +121,7 @@ const menuData = ref<MenuDetailResp>({
   id: menuId,
   code: 'system_menu',
   name: '系统菜单',
-  status: 1
+  status: 1,
 })
 
 // 模拟所有角色数据
@@ -130,7 +135,7 @@ for (let i = 1; i <= 20; i++) {
     status: i % 5 === 0 ? 0 : 1,
     isSystem: i <= 2,
     createAt: '',
-    updateAt: ''
+    updateAt: '',
   })
 }
 

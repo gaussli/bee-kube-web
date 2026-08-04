@@ -135,10 +135,15 @@
 
 <script setup lang="ts">
 import { onMounted, reactive, ref } from 'vue'
+
 import { useRoute, useRouter } from 'vue-router'
+
 import { ElMessage } from 'element-plus'
+
 import type { NamespaceQueryReq, NamespaceListResp } from '@/types/kubernetes/namespace'
+
 import { getNamespacePage, deleteNamespace, deleteNamespaces } from '@/api/kubernetes/namespace'
+
 import BeeAuditCell from '@/components/BeeAuditCell/index.vue'
 import BeeButton from '@/components/BeeButton/index.vue'
 import BeeCard from '@/components/BeeCard/index.vue'
@@ -156,6 +161,7 @@ import BeeStatusCell from '@/components/BeeStatusCell/index.vue'
 import BeeTableColumn from '@/components/BeeTable/BeeTableColumn.vue'
 import BeeTable from '@/components/BeeTable/index.vue'
 import BeeTag from '@/components/BeeTag/index.vue'
+
 import { usePermission } from '@/composables/usePermission'
 import { NAMESPACE_STATUS_OPTIONS } from '@/config/kubernetes'
 
@@ -177,12 +183,12 @@ const currentTargetRow = ref<NamespaceListResp | null>(null)
 const queryForm = reactive<Partial<NamespaceQueryReq>>({
   id: undefined,
   name: undefined,
-  status: undefined
+  status: undefined,
 })
 const pagination = reactive({
   page: 1,
   pageSize: 10,
-  total: 0
+  total: 0,
 })
 
 async function loadData() {
@@ -195,7 +201,7 @@ async function loadData() {
     const resp = await getNamespacePage(clusterId.value, {
       ...queryForm,
       page: pagination.page,
-      pageSize: pagination.pageSize
+      pageSize: pagination.pageSize,
     })
     tableData.value = resp.list
     pagination.total = resp.total

@@ -20,6 +20,7 @@
  * @module components/BeeSegmentedControl
  */
 import { computed, ref, watch, nextTick, onMounted } from 'vue'
+
 import BeeIcon from '@/components/BeeIcon/index.vue'
 
 defineOptions({ name: 'BeeSegmentedControl' })
@@ -61,7 +62,7 @@ const sliderStyle = computed(() => {
   if (!activeItem) return {}
   return {
     transform: `translateX(${activeItem.offsetLeft}px)`,
-    width: `${activeItem.offsetWidth}px`
+    width: `${activeItem.offsetWidth}px`,
   }
 })
 
@@ -85,7 +86,7 @@ watch(
   () => props.modelValue,
   value => {
     syncActiveIndex(value)
-  }
+  },
 )
 
 // options 变化时防止 activeIndex 越界
@@ -95,7 +96,7 @@ watch(
     if (activeIndex.value >= props.options.length) {
       activeIndex.value = 0
     }
-  }
+  },
 )
 
 /**

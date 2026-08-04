@@ -29,14 +29,20 @@
  * @module components/BeeLayout/BeeHeader
  */
 import { computed, ref, onMounted, onUnmounted } from 'vue'
+
 import { useRouter } from 'vue-router'
+
 import { ElMessage, ElMessageBox } from 'element-plus'
+
 import type { TabType } from '@/stores/app'
+
 import { logout } from '@/api/auth/auth'
+
 import BeeCircleButton from '@/components/BeeCircleButton/index.vue'
 import BeeDropdown from '@/components/BeeDropdown/index.vue'
 import BeeHeaderUserInfo from '@/components/BeeHeaderUserInfo/index.vue'
 import BeeSegmentedControl from '@/components/BeeSegmentedControl/index.vue'
+
 import { useAppStore, useKubernetesStore, useUserStore } from '@/stores'
 
 defineOptions({ name: 'BeeHeader' })
@@ -57,7 +63,7 @@ const currentMenus = computed(() => userStore.getCurrentMenus())
 
 const currentTab = computed({
   get: () => appStore.currentTab,
-  set: (val: TabType) => appStore.setCurrentTab(val)
+  set: (val: TabType) => appStore.setCurrentTab(val),
 })
 
 const activeClusterId = computed(() => kubernetesStore.activeClusterId)
@@ -68,15 +74,15 @@ const tabOptions = computed(
     currentMenus.value?.map(menu => ({
       label: menu.name,
       value: menu.code,
-      icon: menu.icon
-    })) ?? []
+      icon: menu.icon,
+    })) ?? [],
 )
 
 /** 用户下拉菜单选项 */
 const dropdownOptions: { label: string; value: string; icon: string; divided?: boolean }[] = [
   { label: '用户信息', value: 'profile', icon: 'basic-userinfo' },
   { label: '系统设置', value: 'setting', icon: 'basic-system-setting' },
-  { label: '退出登录', value: 'logout', icon: 'basic-logout', divided: true }
+  { label: '退出登录', value: 'logout', icon: 'basic-logout', divided: true },
 ]
 
 function handleTabChange(tab?: string | number) {

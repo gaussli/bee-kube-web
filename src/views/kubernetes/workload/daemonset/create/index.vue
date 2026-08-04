@@ -33,11 +33,17 @@
 
 <script setup lang="ts">
 import { ref } from 'vue'
+
 import { useRouter } from 'vue-router'
+
 import { ElMessage, type FormInstance } from 'element-plus'
+
 import { Monitor, Close, Check } from '@element-plus/icons-vue'
+
 import type { DaemonSetResp } from '@/types/kubernetes/workload/daemonset'
+
 import { createDaemonSet } from '@/api/kubernetes/workload/daemonset'
+
 import BeeButton from '@/components/BeeButton/index.vue'
 import BeePageTitle from '@/components/BeePageTitle/index.vue'
 
@@ -49,7 +55,7 @@ const formData = ref<Partial<DaemonSetResp>>({ name: '', namespace: 'default', c
 const formRules = {
   clusterId: [{ required: true, message: '请选择集群', trigger: 'change' }],
   namespace: [{ required: true, message: '请选择命名空间', trigger: 'change' }],
-  name: [{ required: true, message: '请输入应用名称', trigger: 'blur' }]
+  name: [{ required: true, message: '请输入应用名称', trigger: 'blur' }],
 }
 function handleCancel() {
   router.back()

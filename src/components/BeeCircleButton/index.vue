@@ -5,7 +5,7 @@
       :class="[
         `bee-circle-button--${type}`,
         `bee-circle-button--${size}`,
-        { 'bee-circle-button--bordered': border, 'is-disabled': disabled, 'is-loading': loading }
+        { 'bee-circle-button--bordered': border, 'is-disabled': disabled, 'is-loading': loading },
       ]"
       :disabled="disabled || loading"
       @click.stop="handleClick"
@@ -23,6 +23,7 @@
 
 <script setup lang="ts">
 import { computed, ref } from 'vue'
+
 import BeeIcon from '@/components/BeeIcon/index.vue'
 import BeeTooltip from '@/components/BeeTooltip/index.vue'
 
@@ -50,15 +51,15 @@ const props = withDefaults(
     size: 'default',
     disabled: false,
     border: true,
-    iconSize: 16
-  }
+    iconSize: 16,
+  },
 )
 
 /** 各尺寸下 bordered / plain 的图标默认值 */
 const iconSizeMap: Record<string, { bordered: number; plain: number }> = {
   large: { bordered: 18, plain: 32 },
   default: { bordered: 14, plain: 24 },
-  small: { bordered: 12, plain: 18 }
+  small: { bordered: 12, plain: 18 },
 }
 
 /** 根据 size 和 border 计算图标实际尺寸 */

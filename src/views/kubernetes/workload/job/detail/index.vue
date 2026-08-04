@@ -38,7 +38,7 @@
                 ><span
                   :class="[
                     'detail-value',
-                    jobData?.succeeded === jobData?.completions ? 'replicas-ready' : 'replicas-pending'
+                    jobData?.succeeded === jobData?.completions ? 'replicas-ready' : 'replicas-pending',
                   ]"
                   >{{ jobData?.succeeded }}</span
                 >
@@ -72,12 +72,18 @@
 
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
+
 import { useRoute, useRouter } from 'vue-router'
+
 import { Timer, ArrowLeft, EditPen } from '@element-plus/icons-vue'
+
 import type { JobResp } from '@/types/kubernetes/workload/job'
+
 import { getJobDetail } from '@/api/kubernetes/workload/job'
+
 import BeeButton from '@/components/BeeButton/index.vue'
 import BeePageTitle from '@/components/BeePageTitle/index.vue'
+
 import { usePermission } from '@/composables/usePermission'
 
 defineOptions({ name: 'JobDetail' })
@@ -106,7 +112,7 @@ function handleEdit() {
   router.push({
     name: 'kubernetes:workload:job:edit',
     params: { clusterId: clusterId.value },
-    query: { namespace: namespace.value, name: jobName.value }
+    query: { namespace: namespace.value, name: jobName.value },
   })
 }
 onMounted(() => {

@@ -33,9 +33,13 @@
 
 <script setup lang="ts">
 import { reactive, ref } from 'vue'
+
 import { useRoute, useRouter } from 'vue-router'
+
 import { ElMessage } from 'element-plus'
+
 import { getCurrentUser, login } from '@/api/auth/auth'
+
 import { useUserStore } from '@/stores'
 
 const route = useRoute()
@@ -46,12 +50,12 @@ const loading = ref(false)
 
 const loginForm = reactive({
   username: '',
-  password: ''
+  password: '',
 })
 
 const rules = {
   username: [{ required: true, message: '请输入用户名', trigger: 'blur' }],
-  password: [{ required: true, message: '请输入密码', trigger: 'blur' }]
+  password: [{ required: true, message: '请输入密码', trigger: 'blur' }],
 }
 
 async function handleLogin() {

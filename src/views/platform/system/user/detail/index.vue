@@ -163,7 +163,9 @@
 
 <script setup lang="ts">
 import { computed, onMounted, ref } from 'vue'
+
 import { useRouter } from 'vue-router'
+
 import {
   ArrowLeft,
   Calendar,
@@ -174,9 +176,11 @@ import {
   Phone,
   Plus,
   Postcard,
-  User
+  User,
 } from '@element-plus/icons-vue'
+
 import type { UserDetailResp } from '@/types'
+
 import BeeButton from '@/components/BeeButton/index.vue'
 import BeeDivider from '@/components/BeeDivider/index.vue'
 import BeeLabelCopyable from '@/components/BeeLabelCopyable/index.vue'
@@ -202,7 +206,7 @@ const userData = ref<UserDetailResp>({
   createBy: 'system',
   createAt: '2024-01-01 10:00:00',
   updateBy: 'admin',
-  updateAt: '2024-01-15 14:30:00'
+  updateAt: '2024-01-15 14:30:00',
 })
 
 const genderText = computed(() => {

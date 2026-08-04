@@ -6,8 +6,9 @@ import type { PageVo } from '@/types/common'
 import type {
   ClusterRoleBindingResp,
   ClusterRoleBindingQueryReq,
-  ClusterRoleBindingReq
+  ClusterRoleBindingReq,
 } from '@/types/kubernetes/security/clusterRoleBinding'
+
 import { generateId } from '@/mock/utils'
 
 /**
@@ -18,7 +19,7 @@ import { generateId } from '@/mock/utils'
  */
 function getClusterRoleBindingPage(
   clusterId: string,
-  params: Partial<ClusterRoleBindingQueryReq>
+  params: Partial<ClusterRoleBindingQueryReq>,
 ): PageVo<ClusterRoleBindingResp> {
   const { name, showSystem, page = 1, pageSize = 10 } = params || {}
   let filtered = mockClusterRoleBindings.filter(b => b.clusterId === clusterId)
@@ -60,7 +61,7 @@ function createClusterRoleBinding(clusterId: string, data: Partial<ClusterRoleBi
     createAt: new Date().toLocaleString(),
     createBy: 'admin',
     updateAt: new Date().toLocaleString(),
-    updateBy: 'admin'
+    updateBy: 'admin',
   }
   mockClusterRoleBindings.push(created)
 }
@@ -80,7 +81,7 @@ function updateClusterRoleBinding(clusterId: string, data: Partial<ClusterRoleBi
     ...mockClusterRoleBindings[index],
     ...data,
     updateBy: 'admin',
-    updateAt: new Date().toLocaleString()
+    updateAt: new Date().toLocaleString(),
   }
   mockClusterRoleBindings[index] = updated
 }
@@ -96,7 +97,7 @@ function manageClusterRoleBindingLabels(
   clusterId: string,
   name: string,
   labels: Record<string, string>,
-  operation: number
+  operation: number,
 ): void {
   const index = mockClusterRoleBindings.findIndex(b => b.clusterId === clusterId && b.name === name)
   if (index === -1) {
@@ -126,7 +127,7 @@ function manageClusterRoleBindingAnnotations(
   clusterId: string,
   name: string,
   annotations: Record<string, string>,
-  operation: number
+  operation: number,
 ): void {
   const index = mockClusterRoleBindings.findIndex(b => b.clusterId === clusterId && b.name === name)
   if (index === -1) {
@@ -156,7 +157,7 @@ function manageClusterRoleBindingSubjects(
   clusterId: string,
   name: string,
   subjects: ClusterRoleBindingReq['subjects'],
-  operation: number
+  operation: number,
 ): void {
   const index = mockClusterRoleBindings.findIndex(b => b.clusterId === clusterId && b.name === name)
   if (index === -1) {
@@ -167,7 +168,7 @@ function manageClusterRoleBindingSubjects(
     mockClusterRoleBindings[index].subjects = [...mockClusterRoleBindings[index].subjects, ...subjects]
   } else if (operation === 2) {
     mockClusterRoleBindings[index].subjects = mockClusterRoleBindings[index].subjects.filter(
-      s => !subjects.some(ns => ns.name === s.name && ns.kind === s.kind)
+      s => !subjects.some(ns => ns.name === s.name && ns.kind === s.kind),
     )
   } else if (operation === 3) {
     mockClusterRoleBindings[index].subjects = subjects
@@ -222,24 +223,24 @@ export default [
     method: 'get',
     url: '/kubernetes/clusters/:clusterId/clusterrolebindings',
     handler: (pathParams: Record<string, string>, params: Partial<ClusterRoleBindingQueryReq>) =>
-      getClusterRoleBindingPage(pathParams.clusterId, params)
+      getClusterRoleBindingPage(pathParams.clusterId, params),
   },
   {
     method: 'get',
     url: '/kubernetes/clusters/:clusterId/clusterrolebindings/:name',
-    handler: (pathParams: Record<string, string>) => getClusterRoleBindingDetail(pathParams.clusterId, pathParams.name)
+    handler: (pathParams: Record<string, string>) => getClusterRoleBindingDetail(pathParams.clusterId, pathParams.name),
   },
   {
     method: 'post',
     url: '/kubernetes/clusters/:clusterId/clusterrolebindings',
     handler: (pathParams: Record<string, string>, _params: unknown, data: Partial<ClusterRoleBindingReq>) =>
-      createClusterRoleBinding(pathParams.clusterId, data)
+      createClusterRoleBinding(pathParams.clusterId, data),
   },
   {
     method: 'put',
     url: '/kubernetes/clusters/:clusterId/clusterrolebindings/:name',
     handler: (pathParams: Record<string, string>, _params: unknown, data: Partial<ClusterRoleBindingReq>) =>
-      updateClusterRoleBinding(pathParams.clusterId, data)
+      updateClusterRoleBinding(pathParams.clusterId, data),
   },
   {
     method: 'put',
@@ -247,8 +248,8 @@ export default [
     handler: (
       pathParams: Record<string, string>,
       _params: unknown,
-      data: { labels: Record<string, string>; operation: number }
-    ) => manageClusterRoleBindingLabels(pathParams.clusterId, pathParams.name, data.labels, data.operation)
+      data: { labels: Record<string, string>; operation: number },
+    ) => manageClusterRoleBindingLabels(pathParams.clusterId, pathParams.name, data.labels, data.operation),
   },
   {
     method: 'put',
@@ -256,8 +257,8 @@ export default [
     handler: (
       pathParams: Record<string, string>,
       _params: unknown,
-      data: { annotations: Record<string, string>; operation: number }
-    ) => manageClusterRoleBindingAnnotations(pathParams.clusterId, pathParams.name, data.annotations, data.operation)
+      data: { annotations: Record<string, string>; operation: number },
+    ) => manageClusterRoleBindingAnnotations(pathParams.clusterId, pathParams.name, data.annotations, data.operation),
   },
   {
     method: 'put',
@@ -265,20 +266,20 @@ export default [
     handler: (
       pathParams: Record<string, string>,
       _params: unknown,
-      data: { subjects: ClusterRoleBindingReq['subjects']; operation: number }
-    ) => manageClusterRoleBindingSubjects(pathParams.clusterId, pathParams.name, data.subjects, data.operation)
+      data: { subjects: ClusterRoleBindingReq['subjects']; operation: number },
+    ) => manageClusterRoleBindingSubjects(pathParams.clusterId, pathParams.name, data.subjects, data.operation),
   },
   {
     method: 'delete',
     url: '/kubernetes/clusters/:clusterId/clusterrolebindings/:name',
-    handler: (pathParams: Record<string, string>) => deleteClusterRoleBinding(pathParams.clusterId, pathParams.name)
+    handler: (pathParams: Record<string, string>) => deleteClusterRoleBinding(pathParams.clusterId, pathParams.name),
   },
   {
     method: 'delete',
     url: '/kubernetes/clusters/:clusterId/clusterrolebindings',
     handler: (pathParams: Record<string, string>, _params: unknown, data: string[]) =>
-      deleteClusterRoleBindings(pathParams.clusterId, data)
-  }
+      deleteClusterRoleBindings(pathParams.clusterId, data),
+  },
 ]
 
 /**
@@ -300,7 +301,7 @@ const mockClusterRoleBindings: ClusterRoleBindingResp[] = [
     createAt: '2024-01-01T00:00:00Z',
     createBy: 'system',
     updateAt: '2024-01-01T00:00:00Z',
-    updateBy: 'system'
+    updateBy: 'system',
   },
   {
     id: generateId(),
@@ -310,7 +311,7 @@ const mockClusterRoleBindings: ClusterRoleBindingResp[] = [
     isSystem: true,
     roleRef: { kind: 'ClusterRole', name: 'system:node-bootstrap' },
     subjects: [
-      { kind: 'Group', name: 'system:bootstrappers:kubeadm:default-node-token', apiGroup: 'rbac.authorization.k8s.io' }
+      { kind: 'Group', name: 'system:bootstrappers:kubeadm:default-node-token', apiGroup: 'rbac.authorization.k8s.io' },
     ],
     creationTimestamp: '2024-01-01T00:00:00Z',
     labels: { 'kubernetes.io/bootstrapping': 'rbac-defaults' },
@@ -319,7 +320,7 @@ const mockClusterRoleBindings: ClusterRoleBindingResp[] = [
     createAt: '2024-01-01T00:00:00Z',
     createBy: 'system',
     updateAt: '2024-01-01T00:00:00Z',
-    updateBy: 'system'
+    updateBy: 'system',
   },
   {
     id: generateId(),
@@ -330,7 +331,7 @@ const mockClusterRoleBindings: ClusterRoleBindingResp[] = [
     roleRef: { kind: 'ClusterRole', name: 'cluster-developer' },
     subjects: [
       { kind: 'User', name: 'developer@example.com', apiGroup: 'rbac.authorization.k8s.io' },
-      { kind: 'Group', name: 'engineering', apiGroup: 'rbac.authorization.k8s.io' }
+      { kind: 'Group', name: 'engineering', apiGroup: 'rbac.authorization.k8s.io' },
     ],
     creationTimestamp: '2024-03-10T10:00:00Z',
     labels: { 'app.kubernetes.io/name': 'developer-binding' },
@@ -338,6 +339,6 @@ const mockClusterRoleBindings: ClusterRoleBindingResp[] = [
     createAt: '2024-03-10T10:00:00Z',
     createBy: 'admin',
     updateAt: '2024-03-10T10:00:00Z',
-    updateBy: 'admin'
-  }
+    updateBy: 'admin',
+  },
 ]

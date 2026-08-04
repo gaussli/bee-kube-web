@@ -36,9 +36,13 @@
 
 <script setup lang="ts">
 import { onMounted, ref } from 'vue'
+
 import { formatCpu, formatDisk, formatMemory } from '@/utils/kubernetes'
+
 import { getClusterResource } from '@/api/kubernetes/cluster'
+
 import { useKubernetesStore } from '@/stores/kubernetes'
+
 import BeeCard from '@/components/BeeCard/index.vue'
 import BeeCircleButton from '@/components/BeeCircleButton/index.vue'
 import BeeIcon from '@/components/BeeIcon/index.vue'
@@ -54,7 +58,7 @@ const radarData = ref([
   { label: 'CPU', value: 0, used: '0', total: '0' },
   { label: '内存', value: 0, used: '0', total: '0' },
   { label: '磁盘', value: 0, used: '0', total: '0' },
-  { label: '容器数', value: 0, used: '0 个', total: '0 个' }
+  { label: '容器数', value: 0, used: '0 个', total: '0 个' },
 ])
 
 /**
@@ -79,26 +83,26 @@ async function loadData() {
       label: 'CPU',
       value: calcPercentage(res.usage.cpu, res.allocation.cpu),
       used: formatCpu(res.usage.cpu),
-      total: formatCpu(res.allocation.cpu)
+      total: formatCpu(res.allocation.cpu),
     },
     {
       label: '内存',
       value: calcPercentage(res.usage.memory, res.allocation.memory),
       used: formatMemory(res.usage.memory, 'B'),
-      total: formatMemory(res.allocation.memory, 'B')
+      total: formatMemory(res.allocation.memory, 'B'),
     },
     {
       label: '磁盘',
       value: calcPercentage(res.usage.storage, res.allocation.storage),
       used: formatDisk(res.usage.storage, 'B'),
-      total: formatDisk(res.allocation.storage, 'B')
+      total: formatDisk(res.allocation.storage, 'B'),
     },
     {
       label: '容器数',
       value: calcPercentage(res.usage.pod, res.allocation.pod),
       used: `${res.usage.pod} 个`,
-      total: `${res.allocation.pod} 个`
-    }
+      total: `${res.allocation.pod} 个`,
+    },
   ]
 }
 

@@ -32,11 +32,17 @@
 
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
+
 import { useRoute, useRouter } from 'vue-router'
+
 import { ElMessage } from 'element-plus'
+
 import { Monitor, Plus, Delete, Close, Check } from '@element-plus/icons-vue'
+
 import type { DaemonSetResp } from '@/types/kubernetes/workload/daemonset'
+
 import { getDaemonSetDetail, updateDaemonSet } from '@/api/kubernetes/workload/daemonset'
+
 import BeeButton from '@/components/BeeButton/index.vue'
 import BeePageTitle from '@/components/BeePageTitle/index.vue'
 

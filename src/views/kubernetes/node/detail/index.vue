@@ -129,13 +129,19 @@
 
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
+
 import { useRoute, useRouter } from 'vue-router'
+
 import { Box, ArrowLeft, EditPen } from '@element-plus/icons-vue'
+
 import type { NodeListResp } from '@/types/kubernetes/node'
+
 import { getNodeDetail } from '@/api/kubernetes/node'
+
 import BeeButton from '@/components/BeeButton/index.vue'
 import BeePageTitle from '@/components/BeePageTitle/index.vue'
 import BeeTag from '@/components/BeeTag/index.vue'
+
 import { usePermission } from '@/composables/usePermission'
 
 defineOptions({ name: 'NodeDetail' })

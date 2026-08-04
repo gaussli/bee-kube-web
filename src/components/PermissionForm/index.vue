@@ -59,8 +59,11 @@
 
 <script setup lang="ts">
 import { computed, reactive, ref, watch } from 'vue'
+
 import { Collection, Document, Key, Switch } from '@element-plus/icons-vue'
+
 import type { FormInstance, FormRules } from 'element-plus'
+
 import type { PermissionDetailResp } from '@/types'
 
 defineOptions({ name: 'PermissionForm' })
@@ -77,7 +80,7 @@ const formData = reactive({
   name: '',
   description: '',
   sort: 0,
-  status: 1
+  status: 1,
 })
 
 const formRules: FormRules = {
@@ -86,13 +89,13 @@ const formRules: FormRules = {
     {
       pattern: /^[a-zA-Z][a-zA-Z0-9_:]*$/,
       message: '权限编码以字母开头，只能包含字母、数字、冒号和下划线',
-      trigger: 'blur'
-    }
+      trigger: 'blur',
+    },
   ],
   name: [
     { required: true, message: '请输入权限名称', trigger: 'blur' },
-    { min: 2, max: 20, message: '权限名称长度为 2-20 个字符', trigger: 'blur' }
-  ]
+    { min: 2, max: 20, message: '权限名称长度为 2-20 个字符', trigger: 'blur' },
+  ],
 }
 
 watch(
@@ -102,7 +105,7 @@ watch(
       Object.assign(formData, val)
     }
   },
-  { immediate: true }
+  { immediate: true },
 )
 
 function validate() {

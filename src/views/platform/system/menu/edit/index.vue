@@ -33,11 +33,17 @@
 
 <script setup lang="ts">
 import { onMounted, ref } from 'vue'
+
 import { useRouter } from 'vue-router'
+
 import { ElMessage } from 'element-plus'
+
 import { ArrowLeft, Check, Close } from '@element-plus/icons-vue'
+
 import type { MenuDetailResp } from '@/types/platform/menu'
+
 import { getMenuDetail, updateMenu } from '@/api/platform/menu'
+
 import BeeButton from '@/components/BeeButton/index.vue'
 import BeeDivider from '@/components/BeeDivider/index.vue'
 import MenuForm from '@/components/MenuForm/index.vue'
@@ -54,7 +60,7 @@ const menuData = ref<MenuDetailResp>({
   code: '',
   name: '',
   type: 1,
-  status: 1
+  status: 1,
 })
 
 async function loadData() {

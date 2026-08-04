@@ -6,8 +6,9 @@ import type { PageVo } from '@/types/common'
 import type {
   ServiceAccountResp,
   ServiceAccountQueryReq,
-  ServiceAccountReq
+  ServiceAccountReq,
 } from '@/types/kubernetes/security/serviceAccount'
+
 import { generateId } from '@/mock/utils'
 
 /**
@@ -20,7 +21,7 @@ import { generateId } from '@/mock/utils'
 function getServiceAccountPage(
   clusterId: string,
   namespaceName: string,
-  params: Partial<ServiceAccountQueryReq>
+  params: Partial<ServiceAccountQueryReq>,
 ): PageVo<ServiceAccountResp> {
   const { name, page = 1, pageSize = 10 } = params || {}
   let filtered = mockServiceAccounts.filter(s => s.clusterId === clusterId && s.namespace === namespaceName)
@@ -65,7 +66,7 @@ function createServiceAccount(clusterId: string, data: Partial<ServiceAccountReq
     createAt: new Date().toLocaleString(),
     createBy: 'admin',
     updateAt: new Date().toLocaleString(),
-    updateBy: 'admin'
+    updateBy: 'admin',
   }
   mockServiceAccounts.push(created)
 }
@@ -77,7 +78,7 @@ function createServiceAccount(clusterId: string, data: Partial<ServiceAccountReq
  */
 function updateServiceAccount(clusterId: string, data: Partial<ServiceAccountReq>): void {
   const index = mockServiceAccounts.findIndex(
-    s => s.clusterId === clusterId && s.namespace === data.namespace && s.name === data.name
+    s => s.clusterId === clusterId && s.namespace === data.namespace && s.name === data.name,
   )
   if (index === -1) {
     console.error('[Update ServiceAccount] can not find serviceaccount:', data.name)
@@ -87,7 +88,7 @@ function updateServiceAccount(clusterId: string, data: Partial<ServiceAccountReq
     ...mockServiceAccounts[index],
     ...data,
     updateBy: 'admin',
-    updateAt: new Date().toLocaleString()
+    updateAt: new Date().toLocaleString(),
   }
   mockServiceAccounts[index] = updated
 }
@@ -105,10 +106,10 @@ function manageServiceAccountLabels(
   namespaceName: string,
   name: string,
   labels: Record<string, string>,
-  operation: number
+  operation: number,
 ): void {
   const index = mockServiceAccounts.findIndex(
-    s => s.clusterId === clusterId && s.namespace === namespaceName && s.name === name
+    s => s.clusterId === clusterId && s.namespace === namespaceName && s.name === name,
   )
   if (index === -1) {
     console.error('[Update ServiceAccount Labels] can not find serviceaccount:', name)
@@ -139,10 +140,10 @@ function manageServiceAccountAnnotations(
   namespaceName: string,
   name: string,
   annotations: Record<string, string>,
-  operation: number
+  operation: number,
 ): void {
   const index = mockServiceAccounts.findIndex(
-    s => s.clusterId === clusterId && s.namespace === namespaceName && s.name === name
+    s => s.clusterId === clusterId && s.namespace === namespaceName && s.name === name,
   )
   if (index === -1) {
     console.error('[Update ServiceAccount Annotations] can not find serviceaccount:', name)
@@ -173,10 +174,10 @@ function manageServiceAccountImagePullSecrets(
   namespaceName: string,
   name: string,
   imagePullSecrets: string[],
-  operation: number
+  operation: number,
 ): void {
   const index = mockServiceAccounts.findIndex(
-    s => s.clusterId === clusterId && s.namespace === namespaceName && s.name === name
+    s => s.clusterId === clusterId && s.namespace === namespaceName && s.name === name,
   )
   if (index === -1) {
     console.error('[Update ServiceAccount ImagePullSecrets] can not find serviceaccount:', name)
@@ -185,11 +186,11 @@ function manageServiceAccountImagePullSecrets(
   if (operation === 1) {
     mockServiceAccounts[index].imagePullSecrets = [
       ...mockServiceAccounts[index].imagePullSecrets,
-      ...imagePullSecrets.map(name => ({ name }))
+      ...imagePullSecrets.map(name => ({ name })),
     ]
   } else if (operation === 2) {
     mockServiceAccounts[index].imagePullSecrets = mockServiceAccounts[index].imagePullSecrets.filter(
-      s => !imagePullSecrets.includes(s.name)
+      s => !imagePullSecrets.includes(s.name),
     )
   } else if (operation === 3) {
     mockServiceAccounts[index].imagePullSecrets = imagePullSecrets.map(name => ({ name }))
@@ -204,7 +205,7 @@ function manageServiceAccountImagePullSecrets(
  */
 function deleteServiceAccount(clusterId: string, namespaceName: string, name: string): void {
   const index = mockServiceAccounts.findIndex(
-    s => s.clusterId === clusterId && s.namespace === namespaceName && s.name === name
+    s => s.clusterId === clusterId && s.namespace === namespaceName && s.name === name,
   )
   if (index === -1) {
     console.error('[Delete ServiceAccount] can not find serviceaccount:', name)
@@ -222,7 +223,7 @@ function deleteServiceAccount(clusterId: string, namespaceName: string, name: st
 function deleteServiceAccounts(clusterId: string, namespaceName: string, names: string[]): void {
   names.forEach(name => {
     const index = mockServiceAccounts.findIndex(
-      s => s.clusterId === clusterId && s.namespace === namespaceName && s.name === name
+      s => s.clusterId === clusterId && s.namespace === namespaceName && s.name === name,
     )
     if (index === -1) {
       console.error('[Delete ServiceAccounts] can not find serviceaccount:', name)
@@ -250,25 +251,25 @@ export default [
     method: 'get',
     url: '/kubernetes/clusters/:clusterId/namespaces/:namespaceName/serviceaccounts',
     handler: (pathParams: Record<string, string>, params: Partial<ServiceAccountQueryReq>) =>
-      getServiceAccountPage(pathParams.clusterId, pathParams.namespaceName, params)
+      getServiceAccountPage(pathParams.clusterId, pathParams.namespaceName, params),
   },
   {
     method: 'get',
     url: '/kubernetes/clusters/:clusterId/namespaces/:namespaceName/serviceaccounts/:name',
     handler: (pathParams: Record<string, string>) =>
-      getServiceAccountDetail(pathParams.clusterId, pathParams.namespaceName, pathParams.name)
+      getServiceAccountDetail(pathParams.clusterId, pathParams.namespaceName, pathParams.name),
   },
   {
     method: 'post',
     url: '/kubernetes/clusters/:clusterId/namespaces/:namespaceName/serviceaccounts',
     handler: (pathParams: Record<string, string>, _params: unknown, data: Partial<ServiceAccountReq>) =>
-      createServiceAccount(pathParams.clusterId, data)
+      createServiceAccount(pathParams.clusterId, data),
   },
   {
     method: 'put',
     url: '/kubernetes/clusters/:clusterId/namespaces/:namespaceName/serviceaccounts/:name',
     handler: (pathParams: Record<string, string>, _params: unknown, data: Partial<ServiceAccountReq>) =>
-      updateServiceAccount(pathParams.clusterId, data)
+      updateServiceAccount(pathParams.clusterId, data),
   },
   {
     method: 'put',
@@ -276,15 +277,15 @@ export default [
     handler: (
       pathParams: Record<string, string>,
       _params: unknown,
-      data: { labels: Record<string, string>; operation: number }
+      data: { labels: Record<string, string>; operation: number },
     ) =>
       manageServiceAccountLabels(
         pathParams.clusterId,
         pathParams.namespaceName,
         pathParams.name,
         data.labels,
-        data.operation
-      )
+        data.operation,
+      ),
   },
   {
     method: 'put',
@@ -292,15 +293,15 @@ export default [
     handler: (
       pathParams: Record<string, string>,
       _params: unknown,
-      data: { annotations: Record<string, string>; operation: number }
+      data: { annotations: Record<string, string>; operation: number },
     ) =>
       manageServiceAccountAnnotations(
         pathParams.clusterId,
         pathParams.namespaceName,
         pathParams.name,
         data.annotations,
-        data.operation
-      )
+        data.operation,
+      ),
   },
   {
     method: 'put',
@@ -308,28 +309,28 @@ export default [
     handler: (
       pathParams: Record<string, string>,
       _params: unknown,
-      data: { imagePullSecrets: string[]; operation: number }
+      data: { imagePullSecrets: string[]; operation: number },
     ) =>
       manageServiceAccountImagePullSecrets(
         pathParams.clusterId,
         pathParams.namespaceName,
         pathParams.name,
         data.imagePullSecrets,
-        data.operation
-      )
+        data.operation,
+      ),
   },
   {
     method: 'delete',
     url: '/kubernetes/clusters/:clusterId/namespaces/:namespaceName/serviceaccounts/:name',
     handler: (pathParams: Record<string, string>) =>
-      deleteServiceAccount(pathParams.clusterId, pathParams.namespaceName, pathParams.name)
+      deleteServiceAccount(pathParams.clusterId, pathParams.namespaceName, pathParams.name),
   },
   {
     method: 'delete',
     url: '/kubernetes/clusters/:clusterId/namespaces/:namespaceName/serviceaccounts',
     handler: (pathParams: Record<string, string>, _params: unknown, data: string[]) =>
-      deleteServiceAccounts(pathParams.clusterId, pathParams.namespaceName, data)
-  }
+      deleteServiceAccounts(pathParams.clusterId, pathParams.namespaceName, data),
+  },
 ]
 
 /**
@@ -350,7 +351,7 @@ const mockServiceAccounts: ServiceAccountResp[] = [
     createAt: '2024-01-15T08:00:00Z',
     createBy: 'system',
     updateAt: '2024-01-15T08:00:00Z',
-    updateBy: 'system'
+    updateBy: 'system',
   },
   {
     id: generateId(),
@@ -367,7 +368,7 @@ const mockServiceAccounts: ServiceAccountResp[] = [
     createAt: '2024-01-01T00:00:00Z',
     createBy: 'system',
     updateAt: '2024-01-01T00:00:00Z',
-    updateBy: 'system'
+    updateBy: 'system',
   },
   {
     id: generateId(),
@@ -383,6 +384,6 @@ const mockServiceAccounts: ServiceAccountResp[] = [
     createAt: '2024-03-10T10:30:00Z',
     createBy: 'admin',
     updateAt: '2024-03-10T10:30:00Z',
-    updateBy: 'admin'
-  }
+    updateBy: 'admin',
+  },
 ]

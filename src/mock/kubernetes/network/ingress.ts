@@ -4,6 +4,7 @@
  */
 import type { PageVo } from '@/types/common'
 import type { IngressListVo, IngressQueryReq, IngressReq } from '@/types/kubernetes/network/ingress'
+
 import { generateId } from '@/mock/utils'
 
 /**
@@ -16,7 +17,7 @@ import { generateId } from '@/mock/utils'
 function getIngressPage(
   clusterId: string,
   namespaceName: string,
-  params: Partial<IngressQueryReq>
+  params: Partial<IngressQueryReq>,
 ): PageVo<IngressListVo> {
   const { name, ingressClassName, page = 1, pageSize = 10 } = params || {}
   let filtered = mockIngresses.filter(i => i.clusterId === clusterId && i.namespace === namespaceName)
@@ -60,7 +61,7 @@ function createIngress(clusterId: string, data: Partial<IngressReq>): void {
     createAt: new Date().toLocaleString(),
     createBy: 'admin',
     updateAt: new Date().toLocaleString(),
-    updateBy: 'admin'
+    updateBy: 'admin',
   }
   mockIngresses.push(created)
 }
@@ -72,7 +73,7 @@ function createIngress(clusterId: string, data: Partial<IngressReq>): void {
  */
 function updateIngress(clusterId: string, data: Partial<IngressReq>): void {
   const index = mockIngresses.findIndex(
-    i => i.clusterId === clusterId && i.namespace === data.namespace && i.name === data.name
+    i => i.clusterId === clusterId && i.namespace === data.namespace && i.name === data.name,
   )
   if (index === -1) {
     console.error('[Update Ingress] can not find ingress:', data.name)
@@ -82,7 +83,7 @@ function updateIngress(clusterId: string, data: Partial<IngressReq>): void {
     ...mockIngresses[index],
     ...data,
     updateBy: 'admin',
-    updateAt: new Date().toLocaleString()
+    updateAt: new Date().toLocaleString(),
   }
   mockIngresses[index] = updated
 }
@@ -100,10 +101,10 @@ function manageIngressLabels(
   namespaceName: string,
   name: string,
   labels: Record<string, string>,
-  operation: number
+  operation: number,
 ): void {
   const index = mockIngresses.findIndex(
-    i => i.clusterId === clusterId && i.namespace === namespaceName && i.name === name
+    i => i.clusterId === clusterId && i.namespace === namespaceName && i.name === name,
   )
   if (index === -1) {
     console.error('[Update Ingress Labels] can not find ingress:', name)
@@ -134,10 +135,10 @@ function manageIngressAnnotations(
   namespaceName: string,
   name: string,
   annotations: Record<string, string>,
-  operation: number
+  operation: number,
 ): void {
   const index = mockIngresses.findIndex(
-    i => i.clusterId === clusterId && i.namespace === namespaceName && i.name === name
+    i => i.clusterId === clusterId && i.namespace === namespaceName && i.name === name,
   )
   if (index === -1) {
     console.error('[Update Ingress Annotations] can not find ingress:', name)
@@ -163,7 +164,7 @@ function manageIngressAnnotations(
  */
 function deleteIngress(clusterId: string, namespaceName: string, name: string): void {
   const index = mockIngresses.findIndex(
-    i => i.clusterId === clusterId && i.namespace === namespaceName && i.name === name
+    i => i.clusterId === clusterId && i.namespace === namespaceName && i.name === name,
   )
   if (index === -1) {
     console.error('[Delete Ingress] can not find ingress:', name)
@@ -181,7 +182,7 @@ function deleteIngress(clusterId: string, namespaceName: string, name: string): 
 function deleteIngresses(clusterId: string, namespaceName: string, names: string[]): void {
   names.forEach(name => {
     const index = mockIngresses.findIndex(
-      i => i.clusterId === clusterId && i.namespace === namespaceName && i.name === name
+      i => i.clusterId === clusterId && i.namespace === namespaceName && i.name === name,
     )
     if (index === -1) {
       console.error('[Delete Ingresses] can not find ingress:', name)
@@ -208,25 +209,25 @@ export default [
     method: 'get',
     url: '/kubernetes/clusters/:clusterId/namespaces/:namespaceName/ingresses',
     handler: (pathParams: Record<string, string>, params: Partial<IngressQueryReq>) =>
-      getIngressPage(pathParams.clusterId, pathParams.namespaceName, params)
+      getIngressPage(pathParams.clusterId, pathParams.namespaceName, params),
   },
   {
     method: 'get',
     url: '/kubernetes/clusters/:clusterId/namespaces/:namespaceName/ingresses/:name',
     handler: (pathParams: Record<string, string>) =>
-      getIngressDetail(pathParams.clusterId, pathParams.namespaceName, pathParams.name)
+      getIngressDetail(pathParams.clusterId, pathParams.namespaceName, pathParams.name),
   },
   {
     method: 'post',
     url: '/kubernetes/clusters/:clusterId/namespaces/:namespaceName/ingresses',
     handler: (pathParams: Record<string, string>, _params: unknown, data: Partial<IngressReq>) =>
-      createIngress(pathParams.clusterId, data)
+      createIngress(pathParams.clusterId, data),
   },
   {
     method: 'put',
     url: '/kubernetes/clusters/:clusterId/namespaces/:namespaceName/ingresses/:name',
     handler: (pathParams: Record<string, string>, _params: unknown, data: Partial<IngressReq>) =>
-      updateIngress(pathParams.clusterId, data)
+      updateIngress(pathParams.clusterId, data),
   },
   {
     method: 'put',
@@ -234,9 +235,9 @@ export default [
     handler: (
       pathParams: Record<string, string>,
       _params: unknown,
-      data: { labels: Record<string, string>; operation: number }
+      data: { labels: Record<string, string>; operation: number },
     ) =>
-      manageIngressLabels(pathParams.clusterId, pathParams.namespaceName, pathParams.name, data.labels, data.operation)
+      manageIngressLabels(pathParams.clusterId, pathParams.namespaceName, pathParams.name, data.labels, data.operation),
   },
   {
     method: 'put',
@@ -244,28 +245,28 @@ export default [
     handler: (
       pathParams: Record<string, string>,
       _params: unknown,
-      data: { annotations: Record<string, string>; operation: number }
+      data: { annotations: Record<string, string>; operation: number },
     ) =>
       manageIngressAnnotations(
         pathParams.clusterId,
         pathParams.namespaceName,
         pathParams.name,
         data.annotations,
-        data.operation
-      )
+        data.operation,
+      ),
   },
   {
     method: 'delete',
     url: '/kubernetes/clusters/:clusterId/namespaces/:namespaceName/ingresses/:name',
     handler: (pathParams: Record<string, string>) =>
-      deleteIngress(pathParams.clusterId, pathParams.namespaceName, pathParams.name)
+      deleteIngress(pathParams.clusterId, pathParams.namespaceName, pathParams.name),
   },
   {
     method: 'delete',
     url: '/kubernetes/clusters/:clusterId/namespaces/:namespaceName/ingresses',
     handler: (pathParams: Record<string, string>, _params: unknown, data: string[]) =>
-      deleteIngresses(pathParams.clusterId, pathParams.namespaceName, data)
-  }
+      deleteIngresses(pathParams.clusterId, pathParams.namespaceName, data),
+  },
 ]
 
 /**
@@ -282,8 +283,8 @@ const mockIngresses: IngressListVo[] = [
     rules: [
       {
         host: 'api.example.com',
-        paths: [{ path: '/', pathType: 'Prefix', serviceName: 'api-service', servicePort: 8080 }]
-      }
+        paths: [{ path: '/', pathType: 'Prefix', serviceName: 'api-service', servicePort: 8080 }],
+      },
     ],
     tls: [{ hosts: ['api.example.com'], secretName: 'api-tls-secret' }],
     loadBalancer: [
@@ -292,20 +293,20 @@ const mockIngresses: IngressListVo[] = [
         hostname: 'api.example.com',
         ports: [
           { port: 80, protocol: 'TCP', name: 'http' },
-          { port: 443, protocol: 'TCP', name: 'https' }
-        ]
-      }
+          { port: 443, protocol: 'TCP', name: 'https' },
+        ],
+      },
     ],
     labels: { 'app.kubernetes.io/name': 'api-ingress' },
     annotations: {
       'nginx.ingress.kubernetes.io/rewrite-target': '/',
-      'nginx.ingress.kubernetes.io/ssl-redirect': 'true'
+      'nginx.ingress.kubernetes.io/ssl-redirect': 'true',
     },
     deletable: true,
     createAt: '2024-03-10T10:00:00Z',
     createBy: 'admin',
     updateAt: '2024-03-10T10:00:00Z',
-    updateBy: 'admin'
+    updateBy: 'admin',
   },
   {
     id: generateId(),
@@ -317,12 +318,12 @@ const mockIngresses: IngressListVo[] = [
     rules: [
       {
         host: 'www.example.com',
-        paths: [{ path: '/', pathType: 'Prefix', serviceName: 'frontend-service', servicePort: 80 }]
+        paths: [{ path: '/', pathType: 'Prefix', serviceName: 'frontend-service', servicePort: 80 }],
       },
       {
         host: 'app.example.com',
-        paths: [{ path: '/', pathType: 'Prefix', serviceName: 'frontend-service', servicePort: 80 }]
-      }
+        paths: [{ path: '/', pathType: 'Prefix', serviceName: 'frontend-service', servicePort: 80 }],
+      },
     ],
     tls: [{ hosts: ['www.example.com', 'app.example.com'], secretName: 'web-tls-secret' }],
     loadBalancer: [
@@ -330,20 +331,20 @@ const mockIngresses: IngressListVo[] = [
         ip: '203.0.113.11',
         ports: [
           { port: 80, protocol: 'TCP', name: 'http' },
-          { port: 443, protocol: 'TCP', name: 'https' }
-        ]
-      }
+          { port: 443, protocol: 'TCP', name: 'https' },
+        ],
+      },
     ],
     labels: { 'app.kubernetes.io/name': 'frontend-ingress' },
     annotations: {
       'nginx.ingress.kubernetes.io/proxy-body-size': '50m',
-      'nginx.ingress.kubernetes.io/proxy-connect-timeout': '30'
+      'nginx.ingress.kubernetes.io/proxy-connect-timeout': '30',
     },
     deletable: true,
     createAt: '2024-03-15T09:30:00Z',
     createBy: 'admin',
     updateAt: '2024-03-15T09:30:00Z',
-    updateBy: 'admin'
+    updateBy: 'admin',
   },
   {
     id: generateId(),
@@ -355,8 +356,8 @@ const mockIngresses: IngressListVo[] = [
     rules: [
       {
         host: 'prometheus.example.com',
-        paths: [{ path: '/', pathType: 'Prefix', serviceName: 'prometheus', servicePort: 9090 }]
-      }
+        paths: [{ path: '/', pathType: 'Prefix', serviceName: 'prometheus', servicePort: 9090 }],
+      },
     ],
     tls: [{ hosts: ['prometheus.example.com'], secretName: 'monitoring-tls-secret' }],
     loadBalancer: [{ ip: '203.0.113.12', ports: [{ port: 443, protocol: 'TCP', name: 'https' }] }],
@@ -364,12 +365,12 @@ const mockIngresses: IngressListVo[] = [
     annotations: {
       'nginx.ingress.kubernetes.io/auth-type': 'basic',
       'nginx.ingress.kubernetes.io/auth-secret': 'basic-auth',
-      'nginx.ingress.kubernetes.io/auth-realm': 'Prometheus Monitoring'
+      'nginx.ingress.kubernetes.io/auth-realm': 'Prometheus Monitoring',
     },
     deletable: true,
     createAt: '2024-03-20T14:00:00Z',
     createBy: 'admin',
     updateAt: '2024-03-20T14:00:00Z',
-    updateBy: 'admin'
-  }
+    updateBy: 'admin',
+  },
 ]

@@ -22,8 +22,8 @@ withDefaults(
     icon: '',
     size: 'inherit',
     color: 'inherit',
-    fontWeight: 'inherit'
-  }
+    fontWeight: 'inherit',
+  },
 )
 </script>
 

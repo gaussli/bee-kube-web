@@ -11,8 +11,9 @@ import type {
   SecretListResp,
   SecretQueryReq,
   SecretReq,
-  SecretYamlReq
+  SecretYamlReq,
 } from '@/types/kubernetes/config/secret'
+
 import { generateId } from '@/mock/utils'
 
 /**
@@ -36,73 +37,74 @@ export default [
     method: 'get',
     url: '/kubernetes/clusters/:clusterId/secrets',
     handler: (pathParams: Record<string, string>, params: Partial<SecretQueryReq>): PageVo<SecretListResp> =>
-      getSecretList(pathParams.clusterId, params)
+      getSecretList(pathParams.clusterId, params),
   },
   {
     method: 'get',
     url: '/kubernetes/clusters/:clusterId/namespaces/:namespace/secrets/:name',
     handler: (pathParams: Record<string, string>): SecretDetailResp =>
-      getSecretDetail(pathParams.clusterId, pathParams.namespace, pathParams.name)
+      getSecretDetail(pathParams.clusterId, pathParams.namespace, pathParams.name),
   },
   {
     method: 'get',
     url: '/kubernetes/clusters/:clusterId/namespaces/:namespace/secrets/:name/yaml',
     handler: (pathParams: Record<string, string>): string =>
-      getSecretYaml(pathParams.clusterId, pathParams.namespace, pathParams.name)
+      getSecretYaml(pathParams.clusterId, pathParams.namespace, pathParams.name),
   },
   {
     method: 'post',
     url: '/kubernetes/clusters/:clusterId/namespaces/:namespace/secrets',
     handler: (pathParams: Record<string, string>, data: SecretReq): void =>
-      createSecret(pathParams.clusterId, pathParams.namespace, data)
+      createSecret(pathParams.clusterId, pathParams.namespace, data),
   },
   {
     method: 'put',
     url: '/kubernetes/clusters/:clusterId/namespaces/:namespace/secrets/:name',
     handler: (pathParams: Record<string, string>, data: Partial<SecretReq>): void =>
-      updateSecret(pathParams.clusterId, pathParams.namespace, pathParams.name, data)
+      updateSecret(pathParams.clusterId, pathParams.namespace, pathParams.name, data),
   },
   {
     method: 'put',
     url: '/kubernetes/clusters/:clusterId/namespaces/:namespace/secrets/:name/data',
     handler: (pathParams: Record<string, string>, data: SecretDataReq): void =>
-      manageSecretData(pathParams.clusterId, pathParams.namespace, pathParams.name, data)
+      manageSecretData(pathParams.clusterId, pathParams.namespace, pathParams.name, data),
   },
   {
     method: 'put',
     url: '/kubernetes/clusters/:clusterId/namespaces/:namespace/secrets/:name/labels',
     handler: (pathParams: Record<string, string>, data: SecretLabelsReq): void =>
-      manageSecretLabels(pathParams.clusterId, pathParams.namespace, pathParams.name, data)
+      manageSecretLabels(pathParams.clusterId, pathParams.namespace, pathParams.name, data),
   },
   {
     method: 'put',
     url: '/kubernetes/clusters/:clusterId/namespaces/:namespace/secrets/:name/annotations',
     handler: (pathParams: Record<string, string>, data: SecretAnnotationsReq): void =>
-      manageSecretAnnotations(pathParams.clusterId, pathParams.namespace, pathParams.name, data)
+      manageSecretAnnotations(pathParams.clusterId, pathParams.namespace, pathParams.name, data),
   },
   {
     method: 'delete',
     url: '/kubernetes/clusters/:clusterId/namespaces/:namespace/secrets/:name',
     handler: (pathParams: Record<string, string>): void =>
-      deleteSecret(pathParams.clusterId, pathParams.namespace, pathParams.name)
+      deleteSecret(pathParams.clusterId, pathParams.namespace, pathParams.name),
   },
   {
     method: 'delete',
     url: '/kubernetes/clusters/:clusterId/namespaces/:namespace/secrets/batch',
     handler: (pathParams: Record<string, string>, data: string[]): void =>
-      deleteSecrets(pathParams.clusterId, pathParams.namespace, data)
+      deleteSecrets(pathParams.clusterId, pathParams.namespace, data),
   },
   {
     method: 'get',
     url: '/kubernetes/clusters/:clusterId/secrets/export',
     handler: (pathParams: Record<string, string>, params: Partial<SecretQueryReq>): void =>
-      exportSecret(pathParams.clusterId, params)
+      exportSecret(pathParams.clusterId, params),
   },
   {
     method: 'post',
     url: '/kubernetes/clusters/:clusterId/secrets/import',
-    handler: (pathParams: Record<string, string>, data: SecretYamlReq): void => importSecret(pathParams.clusterId, data)
-  }
+    handler: (pathParams: Record<string, string>, data: SecretYamlReq): void =>
+      importSecret(pathParams.clusterId, data),
+  },
 ]
 
 /**
@@ -166,7 +168,7 @@ function getSecretDetail(clusterId: string, namespace: string, name: string): Se
     stringData: {},
     labels: {},
     annotations: {},
-    dataKeysCount: s.dataKeysCount || 0
+    dataKeysCount: s.dataKeysCount || 0,
   }
 }
 
@@ -309,7 +311,7 @@ const mockSecrets: SecretListResp[] = [
     createAt: '2024-01-15 10:00:00',
     createBy: 'admin',
     updateAt: '2024-03-15 14:00:00',
-    updateBy: 'admin'
+    updateBy: 'admin',
   },
   {
     id: generateId(),
@@ -325,7 +327,7 @@ const mockSecrets: SecretListResp[] = [
     createAt: '2024-02-01 09:00:00',
     createBy: 'admin',
     updateAt: '2024-03-10 11:00:00',
-    updateBy: 'admin'
+    updateBy: 'admin',
   },
   {
     id: generateId(),
@@ -341,7 +343,7 @@ const mockSecrets: SecretListResp[] = [
     createAt: '2024-02-01 09:30:00',
     createBy: 'admin',
     updateAt: '2024-03-10 11:00:00',
-    updateBy: 'admin'
+    updateBy: 'admin',
   },
   // ==================== kube-system 命名空间 - 3 条 ====================
   {
@@ -358,7 +360,7 @@ const mockSecrets: SecretListResp[] = [
     createAt: '2024-01-15 10:00:00',
     createBy: 'system',
     updateAt: '2024-01-15 10:00:00',
-    updateBy: 'system'
+    updateBy: 'system',
   },
   {
     id: generateId(),
@@ -374,7 +376,7 @@ const mockSecrets: SecretListResp[] = [
     createAt: '2024-01-15 10:00:00',
     createBy: 'system',
     updateAt: '2024-01-15 10:00:00',
-    updateBy: 'system'
+    updateBy: 'system',
   },
   {
     id: generateId(),
@@ -390,7 +392,7 @@ const mockSecrets: SecretListResp[] = [
     createAt: '2024-01-15 10:00:00',
     createBy: 'system',
     updateAt: '2024-03-20 09:00:00',
-    updateBy: 'system'
+    updateBy: 'system',
   },
   // ==================== app-backend 命名空间 - 5 条 ====================
   {
@@ -407,7 +409,7 @@ const mockSecrets: SecretListResp[] = [
     createAt: '2024-02-15 10:00:00',
     createBy: 'developer',
     updateAt: '2024-04-20 16:00:00',
-    updateBy: 'developer'
+    updateBy: 'developer',
   },
   {
     id: generateId(),
@@ -423,7 +425,7 @@ const mockSecrets: SecretListResp[] = [
     createAt: '2024-02-01 09:00:00',
     createBy: 'developer',
     updateAt: '2024-03-15 11:00:00',
-    updateBy: 'developer'
+    updateBy: 'developer',
   },
   {
     id: generateId(),
@@ -439,7 +441,7 @@ const mockSecrets: SecretListResp[] = [
     createAt: '2024-03-01 10:00:00',
     createBy: 'admin',
     updateAt: '2024-06-01 08:00:00',
-    updateBy: 'admin'
+    updateBy: 'admin',
   },
   {
     id: generateId(),
@@ -455,7 +457,7 @@ const mockSecrets: SecretListResp[] = [
     createAt: '2024-02-15 10:05:00',
     createBy: 'developer',
     updateAt: '2024-05-18 14:00:00',
-    updateBy: 'admin'
+    updateBy: 'admin',
   },
   {
     id: generateId(),
@@ -471,7 +473,7 @@ const mockSecrets: SecretListResp[] = [
     createAt: '2024-03-15 10:00:00',
     createBy: 'developer',
     updateAt: '2024-06-02 14:00:00',
-    updateBy: 'admin'
+    updateBy: 'admin',
   },
   // ==================== app-frontend 命名空间 - 3 条 ====================
   {
@@ -488,7 +490,7 @@ const mockSecrets: SecretListResp[] = [
     createAt: '2024-03-01 10:00:00',
     createBy: 'admin',
     updateAt: '2024-03-19 08:00:00',
-    updateBy: 'admin'
+    updateBy: 'admin',
   },
   {
     id: generateId(),
@@ -504,7 +506,7 @@ const mockSecrets: SecretListResp[] = [
     createAt: '2024-02-10 09:00:00',
     createBy: 'developer',
     updateAt: '2024-05-01 11:00:00',
-    updateBy: 'developer'
+    updateBy: 'developer',
   },
   {
     id: generateId(),
@@ -520,7 +522,7 @@ const mockSecrets: SecretListResp[] = [
     createAt: '2024-03-15 10:00:00',
     createBy: 'developer',
     updateAt: '2024-06-02 14:00:00',
-    updateBy: 'admin'
+    updateBy: 'admin',
   },
   // ==================== monitoring 命名空间 - 3 条 ====================
   {
@@ -537,7 +539,7 @@ const mockSecrets: SecretListResp[] = [
     createAt: '2024-02-10 14:00:00',
     createBy: 'admin',
     updateAt: '2024-03-12 16:00:00',
-    updateBy: 'admin'
+    updateBy: 'admin',
   },
   {
     id: generateId(),
@@ -553,7 +555,7 @@ const mockSecrets: SecretListResp[] = [
     createAt: '2024-02-10 14:30:00',
     createBy: 'admin',
     updateAt: '2024-04-01 10:00:00',
-    updateBy: 'admin'
+    updateBy: 'admin',
   },
   {
     id: generateId(),
@@ -569,7 +571,7 @@ const mockSecrets: SecretListResp[] = [
     createAt: '2024-02-10 15:00:00',
     createBy: 'admin',
     updateAt: '2024-05-15 09:00:00',
-    updateBy: 'admin'
+    updateBy: 'admin',
   },
   // ==================== middleware 命名空间 - 3 条 ====================
   {
@@ -586,7 +588,7 @@ const mockSecrets: SecretListResp[] = [
     createAt: '2024-02-20 10:00:00',
     createBy: 'admin',
     updateAt: '2024-04-10 11:00:00',
-    updateBy: 'admin'
+    updateBy: 'admin',
   },
   {
     id: generateId(),
@@ -602,7 +604,7 @@ const mockSecrets: SecretListResp[] = [
     createAt: '2024-02-20 10:30:00',
     createBy: 'admin',
     updateAt: '2024-05-20 15:00:00',
-    updateBy: 'admin'
+    updateBy: 'admin',
   },
   {
     id: generateId(),
@@ -618,7 +620,7 @@ const mockSecrets: SecretListResp[] = [
     createAt: '2024-03-01 09:00:00',
     createBy: 'admin',
     updateAt: '2024-06-05 10:00:00',
-    updateBy: 'admin'
+    updateBy: 'admin',
   },
   // ==================== logging 命名空间 - 2 条 ====================
   {
@@ -635,7 +637,7 @@ const mockSecrets: SecretListResp[] = [
     createAt: '2024-03-10 08:00:00',
     createBy: 'admin',
     updateAt: '2024-06-12 09:00:00',
-    updateBy: 'admin'
+    updateBy: 'admin',
   },
   {
     id: generateId(),
@@ -651,7 +653,7 @@ const mockSecrets: SecretListResp[] = [
     createAt: '2024-03-10 08:30:00',
     createBy: 'admin',
     updateAt: '2024-06-12 10:00:00',
-    updateBy: 'admin'
+    updateBy: 'admin',
   },
   // ==================== staging 命名空间 - 2 条 ====================
   {
@@ -668,7 +670,7 @@ const mockSecrets: SecretListResp[] = [
     createAt: '2024-04-01 10:00:00',
     createBy: 'developer',
     updateAt: '2024-06-08 14:00:00',
-    updateBy: 'developer'
+    updateBy: 'developer',
   },
   {
     id: generateId(),
@@ -684,6 +686,6 @@ const mockSecrets: SecretListResp[] = [
     createAt: '2024-04-01 10:30:00',
     createBy: 'developer',
     updateAt: '2024-05-25 16:00:00',
-    updateBy: 'developer'
-  }
+    updateBy: 'developer',
+  },
 ]

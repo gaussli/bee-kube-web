@@ -12,6 +12,7 @@
  * @module components/BeeInputSearch
  */
 import { computed } from 'vue'
+
 import BeeIcon from '@/components/BeeIcon/index.vue'
 
 defineOptions({ name: 'BeeInputSearch' })
@@ -23,8 +24,8 @@ const props = withDefaults(
   }>(),
   {
     modelValue: '',
-    placeholder: '搜索'
-  }
+    placeholder: '搜索',
+  },
 )
 
 const emit = defineEmits<{
@@ -33,7 +34,7 @@ const emit = defineEmits<{
 
 const inputValue = computed({
   get: () => props.modelValue,
-  set: val => emit('update:modelValue', val)
+  set: val => emit('update:modelValue', val),
 })
 </script>
 

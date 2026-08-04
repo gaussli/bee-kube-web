@@ -173,16 +173,22 @@
 
 <script setup lang="ts">
 import { onMounted, reactive, ref } from 'vue'
+
 import { useRouter } from 'vue-router'
+
 import { ElMessage } from 'element-plus'
+
 import { Delete, EditPen, Plus, Refresh, View } from '@element-plus/icons-vue'
+
 import type { PermissionQueryReq, PermissionResp } from '@/types/platform/permission'
+
 import {
   changePermissionStatus,
   getPermissionPage,
   removePermission,
-  batchRemovePermissions
+  batchRemovePermissions,
 } from '@/api/platform/permission'
+
 import BeeAuditCell from '@/components/BeeAuditCell/index.vue'
 import BeeButton from '@/components/BeeButton/index.vue'
 import BeeDialog from '@/components/BeeDialog/index.vue'
@@ -192,6 +198,7 @@ import BeeLabelCopyable from '@/components/BeeLabelCopyable/index.vue'
 import BeeSegmentedControl from '@/components/BeeSegmentedControl/index.vue'
 import BeeTag from '@/components/BeeTag/index.vue'
 import PermissionCell from '@/components/PermissionCell/index.vue'
+
 import { usePermission } from '@/composables/usePermission'
 
 defineOptions({ name: 'PermissionManage' })
@@ -202,13 +209,13 @@ const { hasPermission } = usePermission()
 
 const permissionStatusConfig = [
   { value: 1, label: '启用', color: 'rgb(103, 194, 58)' },
-  { value: 0, label: '禁用', color: 'rgb(245, 108, 108)' }
+  { value: 0, label: '禁用', color: 'rgb(245, 108, 108)' },
 ]
 
 const statusOptions = [
   { label: '所有', value: undefined },
   { label: '启用', value: 1 },
-  { label: '禁用', value: 0 }
+  { label: '禁用', value: 0 },
 ]
 
 const loading = ref(false)
@@ -224,12 +231,12 @@ const queryForm = reactive<PermissionQueryReq>({
   code: undefined,
   status: undefined,
   page: 1,
-  pageSize: 10
+  pageSize: 10,
 })
 const pagination = reactive({
   page: 1,
   pageSize: 10,
-  total: 0
+  total: 0,
 })
 
 async function loadData() {

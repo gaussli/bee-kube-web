@@ -13,6 +13,7 @@
 
 <script setup lang="ts">
 import { computed } from 'vue'
+
 import UserAvatar from '@/components/UserAvatar/index.vue'
 
 defineOptions({ name: 'UserProfile' })

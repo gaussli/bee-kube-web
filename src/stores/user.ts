@@ -1,6 +1,9 @@
 import { ref } from 'vue'
+
 import { defineStore } from 'pinia'
+
 import type { CurrentMenu, CurrentUser } from '@/types'
+
 import { storage } from '@/utils'
 
 /**
@@ -110,6 +113,6 @@ export const useUserStore = defineStore('user', () => {
     getCurrentMenus,
     getCurrentPermissions,
     clear,
-    isLogin
+    isLogin,
   }
 })

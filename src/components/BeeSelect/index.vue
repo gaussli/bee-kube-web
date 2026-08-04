@@ -47,8 +47,11 @@
  * @module components/BeeSelect
  */
 import { computed, onBeforeUnmount, onMounted, ref } from 'vue'
+
 import { arrow, flip, offset, shift, useFloating } from '@floating-ui/vue'
+
 import type { SelectOption } from './types'
+
 import BeeIcon from '@/components/BeeIcon/index.vue'
 
 defineOptions({ name: 'BeeSelect' })
@@ -73,8 +76,8 @@ const props = withDefaults(
     options: () => [],
     placeholder: '请选择',
     width: 120,
-    menuHeight: undefined
-  }
+    menuHeight: undefined,
+  },
 )
 
 // ==================== Emits ====================
@@ -115,7 +118,7 @@ const menuStyle = computed(() => {
   if (props.menuHeight === undefined) return {}
   return {
     maxHeight: `${props.menuHeight}px`,
-    overflowY: 'auto' as const
+    overflowY: 'auto' as const,
   }
 })
 
@@ -123,7 +126,7 @@ const menuStyle = computed(() => {
 
 const { floatingStyles, middlewareData, placement } = useFloating(triggerRef, floatingRef, {
   placement: 'bottom-start',
-  middleware: [offset(12), flip(), shift({ padding: 8 }), arrow({ element: arrowRef })]
+  middleware: [offset(12), flip(), shift({ padding: 8 }), arrow({ element: arrowRef })],
 })
 
 /** 箭头定位样式 */
@@ -135,7 +138,7 @@ const arrowStyle = computed(() => {
     top: 'bottom',
     right: 'left',
     bottom: 'top',
-    left: 'right'
+    left: 'right',
   }
   const { x, y } = arrowData
   const side = placement.value.split('-')[0]
@@ -144,7 +147,7 @@ const arrowStyle = computed(() => {
   return {
     left: x != null ? `${x}px` : '',
     top: y != null ? `${y}px` : '',
-    [staticSide]: '-4px'
+    [staticSide]: '-4px',
   }
 })
 
@@ -202,7 +205,7 @@ defineExpose({
   /** 获取当前选中值 */
   getValue: () => props.modelValue,
   /** 获取当前选中项 */
-  getSelected: () => props.options.find(opt => opt.value === props.modelValue)
+  getSelected: () => props.options.find(opt => opt.value === props.modelValue),
 })
 </script>
 

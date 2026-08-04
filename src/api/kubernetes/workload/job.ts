@@ -10,8 +10,9 @@ import type {
   JobListResp,
   JobQueryReq,
   JobReq,
-  JobYamlReq
+  JobYamlReq,
 } from '@/types/kubernetes/workload/job'
+
 import { request } from '@/utils'
 
 /**
@@ -89,7 +90,7 @@ export function manageJobAnnotations(
   clusterId: string,
   namespace: string,
   name: string,
-  data: JobAnnotationsReq
+  data: JobAnnotationsReq,
 ): Promise<void> {
   return request.put(`/kubernetes/clusters/${clusterId}/namespaces/${namespace}/jobs/${name}/annotations`, data)
 }

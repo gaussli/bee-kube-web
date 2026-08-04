@@ -127,6 +127,7 @@
 </template>
 <script setup lang="ts">
 import { ref, computed, onMounted, watch, nextTick } from 'vue'
+
 import { COLOR_GRAY_50, COLOR_PRIMARY } from '@/config/color'
 
 // 组件名称配置
@@ -163,8 +164,8 @@ const props = withDefaults(
     color: COLOR_PRIMARY, // 数据区域颜色
     gridColor: COLOR_GRAY_50, // 网格颜色
     showAnimation: true, // 是否显示动画
-    animationDuration: 1500 // 动画持续时间（毫秒）
-  }
+    animationDuration: 1500, // 动画持续时间（毫秒）
+  },
 )
 
 // 生成唯一ID，用于SVG元素ID
@@ -185,7 +186,7 @@ const tooltipPosition = ref({ x: 0, y: 0 })
 // Tooltip 样式计算属性
 const tooltipStyle = computed(() => ({
   left: `${tooltipPosition.value.x + 15}px`,
-  top: `${tooltipPosition.value.y - 10}px`
+  top: `${tooltipPosition.value.y - 10}px`,
 }))
 
 // 显示 Tooltip
@@ -195,7 +196,7 @@ function showTooltip(event: MouseEvent, index: number) {
     label: axis.label,
     value: axis.value,
     used: axis.used || '-',
-    total: axis.total || '-'
+    total: axis.total || '-',
   }
   tooltipPosition.value = { x: event.offsetX, y: event.offsetY }
   tooltipVisible.value = true
@@ -236,7 +237,7 @@ const axes = computed(() => {
 
   return data.map((item, index) => ({
     ...item,
-    angle: index * angleStep - 90 // 从顶部开始，顺时针分布
+    angle: index * angleStep - 90, // 从顶部开始，顺时针分布
   }))
 })
 
@@ -267,7 +268,7 @@ const dataPoints = computed(() => {
     const r = radius.value * (axis.value / 100) * animationProgress.value
     return {
       x: r * Math.cos(angleToRad(axis.angle)),
-      y: r * Math.sin(angleToRad(axis.angle))
+      y: r * Math.sin(angleToRad(axis.angle)),
     }
   })
 })
@@ -305,7 +306,7 @@ function labelBaseline(index: number): string {
 
 // 数据区域透明度（随动画进度变化）
 const dataAreaStyle = computed(() => ({
-  opacity: animationProgress.value
+  opacity: animationProgress.value,
 }))
 
 // 动画持续时间
@@ -355,7 +356,7 @@ watch(
     } else {
       animationProgress.value = 1
     }
-  }
+  },
 )
 </script>
 

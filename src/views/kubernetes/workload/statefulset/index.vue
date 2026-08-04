@@ -156,18 +156,24 @@
  * @module views/kubernetes/workload/statefulset
  */
 import { onMounted, reactive, ref } from 'vue'
+
 import { useRoute, useRouter } from 'vue-router'
+
 import { ElMessage } from 'element-plus'
+
 import type { NamespaceSimpleListResp } from '@/types/kubernetes/namespace'
 import type {
   StatefulSetQueryForm,
   StatefulSetListVo,
   StatefulSetStrategyType,
-  PodManagementPolicyType
+  PodManagementPolicyType,
 } from '@/types/kubernetes/workload/statefulset'
+
 import type { ActionItem } from '@/components/BeeActionCell/index.vue'
+
 import { getNamespacePage } from '@/api/kubernetes/namespace'
 import { getStatefulSetList, deleteStatefulSet, deleteStatefulSets } from '@/api/kubernetes/workload/statefulset'
+
 import BeeActionCell from '@/components/BeeActionCell/index.vue'
 import BeeAuditCell from '@/components/BeeAuditCell/index.vue'
 import BeeButton from '@/components/BeeButton/index.vue'
@@ -184,6 +190,7 @@ import BeeTableCommonCell from '@/components/BeeTable/BeeTableCommonCell.vue'
 import BeeTable from '@/components/BeeTable/index.vue'
 import BeeTag from '@/components/BeeTag/index.vue'
 import BeeWorkloadInfoCell from '@/components/BeeWorkloadInfoCell/index.vue'
+
 import { usePermission } from '@/composables/usePermission'
 import { STATEFULSET_STATUS_OPTIONS } from '@/config/kubernetes'
 
@@ -213,19 +220,19 @@ const pagination = reactive({ page: 1, pageSize: 10, total: 0 })
 
 /** 命名空间选项 */
 const namespaceOptions = ref<{ label: string; value: string | undefined }[]>([
-  { label: '全部命名空间', value: undefined }
+  { label: '全部命名空间', value: undefined },
 ])
 
 /** 更新策略中文映射 */
 const UPDATE_STRATEGY_LABEL: Record<StatefulSetStrategyType, string> = {
   RollingUpdate: '滚动更新',
-  OnDelete: '手动删除'
+  OnDelete: '手动删除',
 }
 
 /** Pod 管理策略中文映射 */
 const POD_MANAGEMENT_POLICY_LABEL: Record<PodManagementPolicyType, string> = {
   OrderedReady: '按序就绪',
-  Parallel: '并行管理'
+  Parallel: '并行管理',
 }
 
 /**
@@ -258,7 +265,7 @@ async function loadNamespaceOptions() {
     const namespaces = (await getNamespacePage(clusterId.value, { mode: 'simple' })) as NamespaceSimpleListResp[]
     namespaceOptions.value = [
       { label: '全部命名空间', value: undefined },
-      ...namespaces.map(ns => ({ label: ns.name, value: ns.name }))
+      ...namespaces.map(ns => ({ label: ns.name, value: ns.name })),
     ]
   } catch {
     // 加载失败时保留默认选项
@@ -279,7 +286,7 @@ async function loadData() {
     const resp = await getStatefulSetList(clusterId.value, {
       ...queryForm,
       page: pagination.page,
-      pageSize: pagination.pageSize
+      pageSize: pagination.pageSize,
     })
     tableData.value = resp.list
     pagination.total = resp.total
@@ -337,7 +344,7 @@ function handleEdit(row: StatefulSetListVo) {
   router.push({
     name: 'kubernetes:workload:statefulset:edit',
     params: { clusterId: row.clusterId },
-    query: { namespace: row.namespace, name: row.name }
+    query: { namespace: row.namespace, name: row.name },
   })
 }
 
@@ -346,7 +353,7 @@ function handleViewDetail(row: StatefulSetListVo) {
   router.push({
     name: 'kubernetes:workload:statefulset:detail',
     params: { clusterId: row.clusterId },
-    query: { namespace: row.namespace, name: row.name }
+    query: { namespace: row.namespace, name: row.name },
   })
 }
 
@@ -380,7 +387,7 @@ async function handleConfirmDelete() {
     await deleteStatefulSet(
       currentTargetRow.value.clusterId,
       currentTargetRow.value.namespace,
-      currentTargetRow.value.name
+      currentTargetRow.value.name,
     )
     ElMessage.success('删除成功')
     deleteDialogVisible.value = false
@@ -419,7 +426,7 @@ async function handleConfirmBatchDelete() {
 const perm: Record<string, boolean> = {
   edit: hasPermission('kubernetes:workload:statefulset:edit'),
   view: hasPermission('kubernetes:workload:statefulset:view'),
-  delete: hasPermission('kubernetes:workload:statefulset:delete')
+  delete: hasPermission('kubernetes:workload:statefulset:delete'),
 }
 
 /**
@@ -440,7 +447,7 @@ function getActions(row: StatefulSetListVo): ActionItem[] {
       { value: 'edit', label: '编辑', icon: 'basic-edit', handler: () => handleEdit(row) },
       { value: 'yamledit', label: '编辑 YAML', icon: 'basic-code', handler: () => handleEditYaml(row) },
       { value: 'scale', label: '扩缩容', icon: 'kubernetes-scale', handler: () => handleScale(row) },
-      { value: 'restart', label: '重启', icon: 'basic-refresh', handler: () => handleRestart(row) }
+      { value: 'restart', label: '重启', icon: 'basic-refresh', handler: () => handleRestart(row) },
     )
   }
   // 删除权限 + deletable 条件

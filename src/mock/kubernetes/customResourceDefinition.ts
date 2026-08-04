@@ -4,6 +4,7 @@
  */
 import type { PageVo } from '@/types/common'
 import type { CrdResp, CrdQueryReq, CrdLabelsReq, CrdAnnotationsReq } from '@/types/kubernetes/crd'
+
 import { generateId } from '@/mock/utils'
 
 /**
@@ -21,36 +22,36 @@ export default [
     method: 'GET',
     url: '/kubernetes/clusters/:clusterId/crds',
     handler: (pathParams: Record<string, string>, params: Partial<CrdQueryReq>): PageVo<CrdResp> =>
-      getCrdPage(pathParams.clusterId, params)
+      getCrdPage(pathParams.clusterId, params),
   },
   {
     method: 'GET',
     url: '/kubernetes/clusters/:clusterId/crds/:name',
-    handler: (pathParams: Record<string, string>): CrdResp => getCrdDetail(pathParams.clusterId, pathParams.name)
+    handler: (pathParams: Record<string, string>): CrdResp => getCrdDetail(pathParams.clusterId, pathParams.name),
   },
   {
     method: 'POST',
     url: '/kubernetes/clusters/:clusterId/crds/:name/labels',
     handler: (pathParams: Record<string, string>, data: Partial<CrdLabelsReq>): void =>
-      manageCrdLabels(pathParams.clusterId, pathParams.name, data)
+      manageCrdLabels(pathParams.clusterId, pathParams.name, data),
   },
   {
     method: 'POST',
     url: '/kubernetes/clusters/:clusterId/crds/:name/annotations',
     handler: (pathParams: Record<string, string>, data: Partial<CrdAnnotationsReq>): void =>
-      manageCrdAnnotations(pathParams.clusterId, pathParams.name, data)
+      manageCrdAnnotations(pathParams.clusterId, pathParams.name, data),
   },
   {
     method: 'DELETE',
     url: '/kubernetes/clusters/:clusterId/crds/:name',
-    handler: (pathParams: Record<string, string>): void => deleteCrd(pathParams.clusterId, pathParams.name)
+    handler: (pathParams: Record<string, string>): void => deleteCrd(pathParams.clusterId, pathParams.name),
   },
   {
     method: 'DELETE',
     url: '/kubernetes/clusters/:clusterId/crds',
     handler: (pathParams: Record<string, string>, data: { names: string[] }): void =>
-      deleteCrds(pathParams.clusterId, data)
-  }
+      deleteCrds(pathParams.clusterId, data),
+  },
 ]
 
 /**
@@ -199,7 +200,7 @@ const mockCrds: CrdResp[] = [
       name: 'alertmanagers',
       kind: 'Alertmanager',
       namespaced: true,
-      versions: ['v1']
+      versions: ['v1'],
     },
     creationTimestamp: '2024-01-15T10:00:00Z',
     labels: { 'k8s-app': 'alertmanager' },
@@ -207,7 +208,7 @@ const mockCrds: CrdResp[] = [
     createAt: '2024-01-15T10:00:00Z',
     createBy: 'system',
     updateAt: '2024-01-15T10:00:00Z',
-    updateBy: 'system'
+    updateBy: 'system',
   },
   {
     id: generateId(),
@@ -221,7 +222,7 @@ const mockCrds: CrdResp[] = [
       name: 'prometheuses',
       kind: 'Prometheus',
       namespaced: true,
-      versions: ['v1']
+      versions: ['v1'],
     },
     creationTimestamp: '2024-01-15T10:00:00Z',
     labels: { 'k8s-app': 'prometheus' },
@@ -229,7 +230,7 @@ const mockCrds: CrdResp[] = [
     createAt: '2024-01-15T10:00:00Z',
     createBy: 'system',
     updateAt: '2024-01-15T10:00:00Z',
-    updateBy: 'system'
+    updateBy: 'system',
   },
   {
     id: generateId(),
@@ -243,7 +244,7 @@ const mockCrds: CrdResp[] = [
       name: 'servicemonitors',
       kind: 'ServiceMonitor',
       namespaced: true,
-      versions: ['v1']
+      versions: ['v1'],
     },
     creationTimestamp: '2024-01-15T10:00:00Z',
     labels: { 'k8s-app': 'servicemonitor' },
@@ -251,7 +252,7 @@ const mockCrds: CrdResp[] = [
     createAt: '2024-01-15T10:00:00Z',
     createBy: 'system',
     updateAt: '2024-01-15T10:00:00Z',
-    updateBy: 'system'
+    updateBy: 'system',
   },
   {
     id: generateId(),
@@ -266,7 +267,7 @@ const mockCrds: CrdResp[] = [
       kind: 'Ingress',
       namespaced: true,
       versions: ['v1'],
-      shortNames: ['ing']
+      shortNames: ['ing'],
     },
     creationTimestamp: '2024-01-01T00:00:00Z',
     labels: { 'kubernetes.io/bootstrapping': 'rbac-defaults' },
@@ -274,7 +275,7 @@ const mockCrds: CrdResp[] = [
     createAt: '2024-01-01T00:00:00Z',
     createBy: 'system',
     updateAt: '2024-01-01T00:00:00Z',
-    updateBy: 'system'
+    updateBy: 'system',
   },
   {
     id: generateId(),
@@ -285,7 +286,7 @@ const mockCrds: CrdResp[] = [
     versions: [
       { name: 'v1', served: true, storage: true },
       { name: 'v1alpha2', served: true, storage: false },
-      { name: 'v1alpha3', served: true, storage: false }
+      { name: 'v1alpha3', served: true, storage: false },
     ],
     scope: 'Namespaced',
     resource: {
@@ -293,7 +294,7 @@ const mockCrds: CrdResp[] = [
       kind: 'Certificate',
       namespaced: true,
       versions: ['v1', 'v1alpha2', 'v1alpha3'],
-      shortNames: ['cert', 'certs']
+      shortNames: ['cert', 'certs'],
     },
     creationTimestamp: '2024-02-10T14:00:00Z',
     labels: { app: 'cert-manager' },
@@ -301,7 +302,7 @@ const mockCrds: CrdResp[] = [
     createAt: '2024-02-10T14:00:00Z',
     createBy: 'system',
     updateAt: '2024-02-10T14:00:00Z',
-    updateBy: 'system'
+    updateBy: 'system',
   },
   {
     id: generateId(),
@@ -315,7 +316,7 @@ const mockCrds: CrdResp[] = [
       name: 'volumesnapshotclasses',
       kind: 'VolumeSnapshotClass',
       namespaced: false,
-      versions: ['v1']
+      versions: ['v1'],
     },
     creationTimestamp: '2024-02-20T09:00:00Z',
     labels: { app: 'csi-snapshot' },
@@ -323,7 +324,7 @@ const mockCrds: CrdResp[] = [
     createAt: '2024-02-20T09:00:00Z',
     createBy: 'system',
     updateAt: '2024-02-20T09:00:00Z',
-    updateBy: 'system'
+    updateBy: 'system',
   },
   {
     id: generateId(),
@@ -337,7 +338,7 @@ const mockCrds: CrdResp[] = [
       name: 'clusterissuers',
       kind: 'ClusterIssuer',
       namespaced: false,
-      versions: ['v1']
+      versions: ['v1'],
     },
     creationTimestamp: '2024-02-10T14:00:00Z',
     labels: { app: 'cert-manager' },
@@ -345,7 +346,7 @@ const mockCrds: CrdResp[] = [
     createAt: '2024-02-10T14:00:00Z',
     createBy: 'system',
     updateAt: '2024-02-10T14:00:00Z',
-    updateBy: 'system'
+    updateBy: 'system',
   },
   {
     id: generateId(),
@@ -359,7 +360,7 @@ const mockCrds: CrdResp[] = [
       name: 'applicationsets',
       kind: 'ApplicationSet',
       namespaced: true,
-      versions: ['v1alpha1']
+      versions: ['v1alpha1'],
     },
     creationTimestamp: '2024-03-05T11:00:00Z',
     labels: { app: 'argocd-applicationset' },
@@ -367,6 +368,6 @@ const mockCrds: CrdResp[] = [
     createAt: '2024-03-05T11:00:00Z',
     createBy: 'system',
     updateAt: '2024-03-05T11:00:00Z',
-    updateBy: 'system'
-  }
+    updateBy: 'system',
+  },
 ]

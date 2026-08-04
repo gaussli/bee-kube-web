@@ -29,7 +29,7 @@ const mockMenus: MenuResp[] = [
     createAt: '2024-01-15 09:30:22',
     createBy: 'system',
     updateAt: '2024-04-10 14:22:35',
-    updateBy: 'admin'
+    updateBy: 'admin',
   },
   {
     id: userId,
@@ -45,7 +45,7 @@ const mockMenus: MenuResp[] = [
     createAt: '2024-01-15 10:00:00',
     createBy: 'system',
     updateAt: '2024-04-12 10:05:18',
-    updateBy: 'admin'
+    updateBy: 'admin',
   },
   {
     id: generateId(),
@@ -61,7 +61,7 @@ const mockMenus: MenuResp[] = [
     createAt: '2024-01-15 10:05:00',
     createBy: 'system',
     updateAt: '2024-04-11 16:30:42',
-    updateBy: 'admin'
+    updateBy: 'admin',
   },
   {
     id: generateId(),
@@ -77,7 +77,7 @@ const mockMenus: MenuResp[] = [
     createAt: '2024-01-15 10:10:00',
     createBy: 'system',
     updateAt: '2024-04-09 11:15:27',
-    updateBy: 'admin'
+    updateBy: 'admin',
   },
   {
     id: generateId(),
@@ -92,7 +92,7 @@ const mockMenus: MenuResp[] = [
     createAt: '2024-01-16 09:00:00',
     createBy: 'admin',
     updateAt: '2024-02-20 14:30:00',
-    updateBy: 'admin'
+    updateBy: 'admin',
   },
   {
     id: generateId(),
@@ -107,7 +107,7 @@ const mockMenus: MenuResp[] = [
     createAt: '2024-01-16 09:05:00',
     createBy: 'admin',
     updateAt: '2024-02-20 14:35:00',
-    updateBy: 'admin'
+    updateBy: 'admin',
   },
   {
     id: generateId(),
@@ -122,7 +122,7 @@ const mockMenus: MenuResp[] = [
     createAt: '2024-01-16 09:10:00',
     createBy: 'admin',
     updateAt: '2024-02-20 14:40:00',
-    updateBy: 'admin'
+    updateBy: 'admin',
   },
   {
     id: businessId,
@@ -135,7 +135,7 @@ const mockMenus: MenuResp[] = [
     createAt: '2024-02-01 14:15:36',
     createBy: 'admin',
     updateAt: '2024-04-08 09:42:51',
-    updateBy: 'admin'
+    updateBy: 'admin',
   },
   {
     id: generateId(),
@@ -151,7 +151,7 @@ const mockMenus: MenuResp[] = [
     createAt: '2024-02-05 10:45:22',
     createBy: 'admin',
     updateAt: '2024-04-05 15:30:00',
-    updateBy: 'admin'
+    updateBy: 'admin',
   },
   {
     id: generateId(),
@@ -167,7 +167,7 @@ const mockMenus: MenuResp[] = [
     createAt: '2024-02-10 11:22:08',
     createBy: 'admin',
     updateAt: '2024-04-03 16:25:16',
-    updateBy: 'admin'
+    updateBy: 'admin',
   },
   {
     id: reportId,
@@ -180,7 +180,7 @@ const mockMenus: MenuResp[] = [
     createAt: '2024-03-01 16:30:57',
     createBy: 'admin',
     updateAt: '2024-04-02 11:58:33',
-    updateBy: 'admin'
+    updateBy: 'admin',
   },
   {
     id: generateId(),
@@ -196,8 +196,8 @@ const mockMenus: MenuResp[] = [
     createAt: '2024-03-05 08:55:43',
     createBy: 'admin',
     updateAt: '2024-04-01 13:42:51',
-    updateBy: 'admin'
-  }
+    updateBy: 'admin',
+  },
 ]
 
 export default [
@@ -249,9 +249,9 @@ export default [
         list,
         total: filtered.length,
         page,
-        pageSize
+        pageSize,
       }
-    }
+    },
   },
 
   // 获取菜单详情
@@ -264,12 +264,12 @@ export default [
         const detail: MenuDetailResp = {
           ...menu,
           description: '菜单描述信息，用于说明该菜单的功能和用途',
-          frontComponent: menu.type === 1 ? `${menu.code}/index` : undefined
+          frontComponent: menu.type === 1 ? `${menu.code}/index` : undefined,
         }
         return detail
       }
       return undefined
-    }
+    },
   },
 
   // 创建菜单
@@ -293,11 +293,11 @@ export default [
         createAt: new Date().toISOString().replace('T', ' ').slice(0, 19),
         createBy: 'admin',
         updateAt: new Date().toISOString().replace('T', ' ').slice(0, 19),
-        updateBy: 'admin'
+        updateBy: 'admin',
       }
       mockMenus.unshift(newMenu)
       return newMenu.id
-    }
+    },
   },
 
   // 更新菜单
@@ -311,12 +311,12 @@ export default [
           ...mockMenus[index],
           ...payload,
           updateAt: new Date().toISOString().replace('T', ' ').slice(0, 19),
-          updateBy: 'admin'
+          updateBy: 'admin',
         }
         return mockMenus[index].id
       }
       throw new Error('菜单不存在')
-    }
+    },
   },
 
   // 修改菜单状态
@@ -330,7 +330,7 @@ export default [
         menu.updateAt = new Date().toISOString().replace('T', ' ').slice(0, 19)
         menu.updateBy = 'admin'
       }
-    }
+    },
   },
 
   // 删除菜单
@@ -342,7 +342,7 @@ export default [
       if (index !== -1) {
         mockMenus.splice(index, 1)
       }
-    }
+    },
   },
 
   // 批量删除菜单
@@ -356,6 +356,6 @@ export default [
           mockMenus.splice(index, 1)
         }
       }
-    }
-  }
+    },
+  },
 ]

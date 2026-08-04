@@ -11,8 +11,9 @@ import type {
   ConfigMapListResp,
   ConfigMapQueryReq,
   ConfigMapReq,
-  ConfigMapYamlReq
+  ConfigMapYamlReq,
 } from '@/types/kubernetes/config/configmap'
+
 import { generateId } from '@/mock/utils'
 
 /**
@@ -36,74 +37,74 @@ export default [
     method: 'get',
     url: '/kubernetes/clusters/:clusterId/configmaps',
     handler: (pathParams: Record<string, string>, params: Partial<ConfigMapQueryReq>): PageVo<ConfigMapListResp> =>
-      getConfigMapList(pathParams.clusterId, params)
+      getConfigMapList(pathParams.clusterId, params),
   },
   {
     method: 'get',
     url: '/kubernetes/clusters/:clusterId/namespaces/:namespace/configmaps/:name',
     handler: (pathParams: Record<string, string>): ConfigMapDetailResp =>
-      getConfigMapDetail(pathParams.clusterId, pathParams.namespace, pathParams.name)
+      getConfigMapDetail(pathParams.clusterId, pathParams.namespace, pathParams.name),
   },
   {
     method: 'get',
     url: '/kubernetes/clusters/:clusterId/namespaces/:namespace/configmaps/:name/yaml',
     handler: (pathParams: Record<string, string>): string =>
-      getConfigMapYaml(pathParams.clusterId, pathParams.namespace, pathParams.name)
+      getConfigMapYaml(pathParams.clusterId, pathParams.namespace, pathParams.name),
   },
   {
     method: 'post',
     url: '/kubernetes/clusters/:clusterId/namespaces/:namespace/configmaps',
     handler: (pathParams: Record<string, string>, data: ConfigMapReq): void =>
-      createConfigMap(pathParams.clusterId, pathParams.namespace, data)
+      createConfigMap(pathParams.clusterId, pathParams.namespace, data),
   },
   {
     method: 'put',
     url: '/kubernetes/clusters/:clusterId/namespaces/:namespace/configmaps/:name',
     handler: (pathParams: Record<string, string>, data: Partial<ConfigMapReq>): void =>
-      updateConfigMap(pathParams.clusterId, pathParams.namespace, pathParams.name, data)
+      updateConfigMap(pathParams.clusterId, pathParams.namespace, pathParams.name, data),
   },
   {
     method: 'put',
     url: '/kubernetes/clusters/:clusterId/namespaces/:namespace/configmaps/:name/data',
     handler: (pathParams: Record<string, string>, data: ConfigMapDataReq): void =>
-      manageConfigMapData(pathParams.clusterId, pathParams.namespace, pathParams.name, data)
+      manageConfigMapData(pathParams.clusterId, pathParams.namespace, pathParams.name, data),
   },
   {
     method: 'put',
     url: '/kubernetes/clusters/:clusterId/namespaces/:namespace/configmaps/:name/labels',
     handler: (pathParams: Record<string, string>, data: ConfigMapLabelsReq): void =>
-      manageConfigMapLabels(pathParams.clusterId, pathParams.namespace, pathParams.name, data)
+      manageConfigMapLabels(pathParams.clusterId, pathParams.namespace, pathParams.name, data),
   },
   {
     method: 'put',
     url: '/kubernetes/clusters/:clusterId/namespaces/:namespace/configmaps/:name/annotations',
     handler: (pathParams: Record<string, string>, data: ConfigMapAnnotationsReq): void =>
-      manageConfigMapAnnotations(pathParams.clusterId, pathParams.namespace, pathParams.name, data)
+      manageConfigMapAnnotations(pathParams.clusterId, pathParams.namespace, pathParams.name, data),
   },
   {
     method: 'delete',
     url: '/kubernetes/clusters/:clusterId/namespaces/:namespace/configmaps/:name',
     handler: (pathParams: Record<string, string>): void =>
-      deleteConfigMap(pathParams.clusterId, pathParams.namespace, pathParams.name)
+      deleteConfigMap(pathParams.clusterId, pathParams.namespace, pathParams.name),
   },
   {
     method: 'delete',
     url: '/kubernetes/clusters/:clusterId/namespaces/:namespace/configmaps/batch',
     handler: (pathParams: Record<string, string>, data: string[]): void =>
-      deleteConfigMaps(pathParams.clusterId, pathParams.namespace, data)
+      deleteConfigMaps(pathParams.clusterId, pathParams.namespace, data),
   },
   {
     method: 'get',
     url: '/kubernetes/clusters/:clusterId/configmaps/export',
     handler: (pathParams: Record<string, string>, params: Partial<ConfigMapQueryReq>): void =>
-      exportConfigMap(pathParams.clusterId, params)
+      exportConfigMap(pathParams.clusterId, params),
   },
   {
     method: 'post',
     url: '/kubernetes/clusters/:clusterId/configmaps/import',
     handler: (pathParams: Record<string, string>, data: ConfigMapYamlReq): void =>
-      importConfigMap(pathParams.clusterId, data)
-  }
+      importConfigMap(pathParams.clusterId, data),
+  },
 ]
 
 /**
@@ -162,7 +163,7 @@ function getConfigMapDetail(clusterId: string, namespace: string, name: string):
     data: {},
     labels: {},
     annotations: {},
-    dataKeysCount: cm.dataKeysCount || 0
+    dataKeysCount: cm.dataKeysCount || 0,
   }
 }
 
@@ -246,7 +247,7 @@ function manageConfigMapAnnotations(
   clusterId: string,
   namespace: string,
   name: string,
-  data: ConfigMapAnnotationsReq
+  data: ConfigMapAnnotationsReq,
 ): void {
   console.log('[Mock] manageConfigMapAnnotations', { clusterId, namespace, name, data })
 }
@@ -308,7 +309,7 @@ const mockConfigMaps: ConfigMapListResp[] = [
     createAt: '2024-01-15 10:00:00',
     createBy: 'admin',
     updateAt: '2024-03-10 14:00:00',
-    updateBy: 'admin'
+    updateBy: 'admin',
   },
   {
     id: generateId(),
@@ -323,7 +324,7 @@ const mockConfigMaps: ConfigMapListResp[] = [
     createAt: '2024-02-01 09:00:00',
     createBy: 'developer',
     updateAt: '2024-03-15 11:00:00',
-    updateBy: 'developer'
+    updateBy: 'developer',
   },
   {
     id: generateId(),
@@ -338,7 +339,7 @@ const mockConfigMaps: ConfigMapListResp[] = [
     createAt: '2024-01-20 08:30:00',
     createBy: 'admin',
     updateAt: '2024-06-15 10:00:00',
-    updateBy: 'admin'
+    updateBy: 'admin',
   },
   // ==================== kube-system 命名空间 - 3 条 ====================
   {
@@ -354,7 +355,7 @@ const mockConfigMaps: ConfigMapListResp[] = [
     createAt: '2024-01-15 10:00:00',
     createBy: 'system',
     updateAt: '2024-03-20 09:00:00',
-    updateBy: 'system'
+    updateBy: 'system',
   },
   {
     id: generateId(),
@@ -369,7 +370,7 @@ const mockConfigMaps: ConfigMapListResp[] = [
     createAt: '2024-01-15 10:00:00',
     createBy: 'system',
     updateAt: '2024-01-15 10:00:00',
-    updateBy: 'system'
+    updateBy: 'system',
   },
   {
     id: generateId(),
@@ -384,7 +385,7 @@ const mockConfigMaps: ConfigMapListResp[] = [
     createAt: '2024-01-15 10:00:00',
     createBy: 'system',
     updateAt: '2024-02-28 16:00:00',
-    updateBy: 'admin'
+    updateBy: 'admin',
   },
   // ==================== app-backend 命名空间 - 5 条 ====================
   {
@@ -400,7 +401,7 @@ const mockConfigMaps: ConfigMapListResp[] = [
     createAt: '2024-02-01 09:00:00',
     createBy: 'developer',
     updateAt: '2024-03-15 11:00:00',
-    updateBy: 'developer'
+    updateBy: 'developer',
   },
   {
     id: generateId(),
@@ -415,7 +416,7 @@ const mockConfigMaps: ConfigMapListResp[] = [
     createAt: '2024-03-01 14:00:00',
     createBy: 'developer',
     updateAt: '2024-06-10 09:30:00',
-    updateBy: 'developer'
+    updateBy: 'developer',
   },
   {
     id: generateId(),
@@ -430,7 +431,7 @@ const mockConfigMaps: ConfigMapListResp[] = [
     createAt: '2024-02-15 10:00:00',
     createBy: 'developer',
     updateAt: '2024-04-20 16:00:00',
-    updateBy: 'developer'
+    updateBy: 'developer',
   },
   {
     id: generateId(),
@@ -445,7 +446,7 @@ const mockConfigMaps: ConfigMapListResp[] = [
     createAt: '2024-02-15 10:05:00',
     createBy: 'developer',
     updateAt: '2024-05-18 14:00:00',
-    updateBy: 'admin'
+    updateBy: 'admin',
   },
   {
     id: generateId(),
@@ -460,7 +461,7 @@ const mockConfigMaps: ConfigMapListResp[] = [
     createAt: '2024-03-01 10:00:00',
     createBy: 'admin',
     updateAt: '2024-06-01 08:00:00',
-    updateBy: 'admin'
+    updateBy: 'admin',
   },
   // ==================== app-frontend 命名空间 - 3 条 ====================
   {
@@ -476,7 +477,7 @@ const mockConfigMaps: ConfigMapListResp[] = [
     createAt: '2024-03-01 10:00:00',
     createBy: 'developer',
     updateAt: '2024-03-19 08:00:00',
-    updateBy: 'developer'
+    updateBy: 'developer',
   },
   {
     id: generateId(),
@@ -491,7 +492,7 @@ const mockConfigMaps: ConfigMapListResp[] = [
     createAt: '2024-02-10 09:00:00',
     createBy: 'developer',
     updateAt: '2024-05-01 11:00:00',
-    updateBy: 'developer'
+    updateBy: 'developer',
   },
   {
     id: generateId(),
@@ -506,7 +507,7 @@ const mockConfigMaps: ConfigMapListResp[] = [
     createAt: '2024-03-15 10:00:00',
     createBy: 'developer',
     updateAt: '2024-06-02 14:00:00',
-    updateBy: 'admin'
+    updateBy: 'admin',
   },
   // ==================== monitoring 命名空间 - 3 条 ====================
   {
@@ -522,7 +523,7 @@ const mockConfigMaps: ConfigMapListResp[] = [
     createAt: '2024-02-10 14:00:00',
     createBy: 'admin',
     updateAt: '2024-03-12 16:00:00',
-    updateBy: 'admin'
+    updateBy: 'admin',
   },
   {
     id: generateId(),
@@ -537,7 +538,7 @@ const mockConfigMaps: ConfigMapListResp[] = [
     createAt: '2024-02-10 14:30:00',
     createBy: 'admin',
     updateAt: '2024-04-01 10:00:00',
-    updateBy: 'admin'
+    updateBy: 'admin',
   },
   {
     id: generateId(),
@@ -552,7 +553,7 @@ const mockConfigMaps: ConfigMapListResp[] = [
     createAt: '2024-02-10 15:00:00',
     createBy: 'admin',
     updateAt: '2024-05-15 09:00:00',
-    updateBy: 'admin'
+    updateBy: 'admin',
   },
   // ==================== middleware 命名空间 - 3 条 ====================
   {
@@ -568,7 +569,7 @@ const mockConfigMaps: ConfigMapListResp[] = [
     createAt: '2024-02-20 10:00:00',
     createBy: 'admin',
     updateAt: '2024-04-10 11:00:00',
-    updateBy: 'admin'
+    updateBy: 'admin',
   },
   {
     id: generateId(),
@@ -583,7 +584,7 @@ const mockConfigMaps: ConfigMapListResp[] = [
     createAt: '2024-02-20 10:30:00',
     createBy: 'admin',
     updateAt: '2024-05-20 15:00:00',
-    updateBy: 'admin'
+    updateBy: 'admin',
   },
   {
     id: generateId(),
@@ -598,7 +599,7 @@ const mockConfigMaps: ConfigMapListResp[] = [
     createAt: '2024-03-01 09:00:00',
     createBy: 'admin',
     updateAt: '2024-06-05 10:00:00',
-    updateBy: 'admin'
+    updateBy: 'admin',
   },
   // ==================== logging 命名空间 - 2 条 ====================
   {
@@ -614,7 +615,7 @@ const mockConfigMaps: ConfigMapListResp[] = [
     createAt: '2024-03-10 08:00:00',
     createBy: 'admin',
     updateAt: '2024-06-12 09:00:00',
-    updateBy: 'admin'
+    updateBy: 'admin',
   },
   {
     id: generateId(),
@@ -629,7 +630,7 @@ const mockConfigMaps: ConfigMapListResp[] = [
     createAt: '2024-03-10 08:30:00',
     createBy: 'admin',
     updateAt: '2024-06-12 10:00:00',
-    updateBy: 'admin'
+    updateBy: 'admin',
   },
   // ==================== staging 命名空间 - 2 条 ====================
   {
@@ -645,7 +646,7 @@ const mockConfigMaps: ConfigMapListResp[] = [
     createAt: '2024-04-01 10:00:00',
     createBy: 'developer',
     updateAt: '2024-06-08 14:00:00',
-    updateBy: 'developer'
+    updateBy: 'developer',
   },
   {
     id: generateId(),
@@ -660,6 +661,6 @@ const mockConfigMaps: ConfigMapListResp[] = [
     createAt: '2024-04-01 10:30:00',
     createBy: 'developer',
     updateAt: '2024-05-25 16:00:00',
-    updateBy: 'developer'
-  }
+    updateBy: 'developer',
+  },
 ]

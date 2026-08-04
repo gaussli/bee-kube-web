@@ -11,8 +11,9 @@ import type {
   NodeLabelsReq,
   NodeAnnotationsReq,
   NodeTaintsReq,
-  NodeResourceResp
+  NodeResourceResp,
 } from '@/types/kubernetes/node'
+
 import { generateId } from '@/mock/utils'
 
 /**
@@ -34,60 +35,60 @@ export default [
     method: 'get',
     url: '/kubernetes/clusters/:clusterId/nodes',
     handler: (pathParams: Record<string, string>, params: Partial<NodeQueryReq>): PageVo<NodeListResp> =>
-      getNodePage(pathParams.clusterId, params)
+      getNodePage(pathParams.clusterId, params),
   },
   {
     method: 'get',
     url: '/kubernetes/clusters/:clusterId/nodes/topn',
     handler: (pathParams: Record<string, string>, params: Partial<{ metric: string; count: number }>): NodeListResp[] =>
-      getNodeTopN(pathParams.clusterId, params)
+      getNodeTopN(pathParams.clusterId, params),
   },
   {
     method: 'get',
     url: '/kubernetes/clusters/:clusterId/nodes/:name',
-    handler: (pathParams: Record<string, string>): NodeListResp => getNodeDetail(pathParams.clusterId, pathParams.name)
+    handler: (pathParams: Record<string, string>): NodeListResp => getNodeDetail(pathParams.clusterId, pathParams.name),
   },
   {
     method: 'get',
     url: '/kubernetes/clusters/:clusterId/nodes/:name/resource',
     handler: (pathParams: Record<string, string>): NodeResourceResp =>
-      getNodeResource(pathParams.clusterId, pathParams.name)
+      getNodeResource(pathParams.clusterId, pathParams.name),
   },
   {
     method: 'put',
     url: '/kubernetes/clusters/:clusterId/nodes/:name',
     handler: (pathParams: Record<string, string>, data: Partial<NodeReq>): void =>
-      updateNode(pathParams.clusterId, pathParams.name, data)
+      updateNode(pathParams.clusterId, pathParams.name, data),
   },
   {
     method: 'post',
     url: '/kubernetes/clusters/:clusterId/nodes/:name/drain',
-    handler: (pathParams: Record<string, string>): void => drainNode(pathParams.clusterId, pathParams.name)
+    handler: (pathParams: Record<string, string>): void => drainNode(pathParams.clusterId, pathParams.name),
   },
   {
     method: 'post',
     url: '/kubernetes/clusters/:clusterId/nodes/:name/cordon',
     handler: (pathParams: Record<string, string>, data: NodeCordonReq): void =>
-      cordonNode(pathParams.clusterId, pathParams.name, data)
+      cordonNode(pathParams.clusterId, pathParams.name, data),
   },
   {
     method: 'post',
     url: '/kubernetes/clusters/:clusterId/nodes/:name/labels',
     handler: (pathParams: Record<string, string>, data: Partial<NodeLabelsReq>): void =>
-      manageNodeLabels(pathParams.clusterId, pathParams.name, data)
+      manageNodeLabels(pathParams.clusterId, pathParams.name, data),
   },
   {
     method: 'post',
     url: '/kubernetes/clusters/:clusterId/nodes/:name/annotations',
     handler: (pathParams: Record<string, string>, data: Partial<NodeAnnotationsReq>): void =>
-      manageNodeAnnotations(pathParams.clusterId, pathParams.name, data)
+      manageNodeAnnotations(pathParams.clusterId, pathParams.name, data),
   },
   {
     method: 'post',
     url: '/kubernetes/clusters/:clusterId/nodes/:name/taints',
     handler: (pathParams: Record<string, string>, data: Partial<NodeTaintsReq>): void =>
-      manageNodeTaints(pathParams.clusterId, pathParams.name, data)
-  }
+      manageNodeTaints(pathParams.clusterId, pathParams.name, data),
+  },
 ]
 
 /**
@@ -243,21 +244,21 @@ function generateNodeResources() {
       cpu: capacityCpu,
       memory: capacityMemory,
       storage: capacityStorage,
-      pod: capacityPod
+      pod: capacityPod,
     },
     allocation: {
       // Kubernetes 可分配容量略低于物理容量，模拟操作系统预留
       cpu: Math.floor(capacityCpu * (0.9 + Math.random() * 0.08)),
       memory: Math.floor(capacityMemory * (0.88 + Math.random() * 0.1)),
       storage: Math.floor(capacityStorage * (0.85 + Math.random() * 0.12)),
-      pod: Math.floor(capacityPod * (0.9 + Math.random() * 0.08))
+      pod: Math.floor(capacityPod * (0.9 + Math.random() * 0.08)),
     },
     usage: {
       cpu: Math.floor(capacityCpu * (0.1 + Math.random() * 0.7)),
       memory: Math.floor(capacityMemory * (0.1 + Math.random() * 0.7)),
       storage: Math.floor(capacityStorage * (0.1 + Math.random() * 0.7)),
-      pod: Math.floor(capacityPod * (0.1 + Math.random() * 0.7))
-    }
+      pod: Math.floor(capacityPod * (0.1 + Math.random() * 0.7)),
+    },
   }
 }
 
@@ -280,7 +281,7 @@ const mockNodes: NodeListResp[] = [
     createAt: '2024-01-15 10:30:25',
     updateBy: 'admin',
     updateAt: '2024-01-15 10:30:25',
-    resource: generateNodeResources()
+    resource: generateNodeResources(),
   },
   {
     id: generateId(),
@@ -296,7 +297,7 @@ const mockNodes: NodeListResp[] = [
     createAt: '2024-01-15 11:00:12',
     updateBy: 'admin',
     updateAt: '2024-03-20 09:15:30',
-    resource: generateNodeResources()
+    resource: generateNodeResources(),
   },
   {
     id: generateId(),
@@ -312,7 +313,7 @@ const mockNodes: NodeListResp[] = [
     createAt: '2024-01-15 11:10:45',
     updateBy: 'admin',
     updateAt: '2024-05-10 14:22:08',
-    resource: generateNodeResources()
+    resource: generateNodeResources(),
   },
   {
     id: generateId(),
@@ -328,7 +329,7 @@ const mockNodes: NodeListResp[] = [
     createAt: '2024-01-16 08:00:00',
     updateBy: 'ops',
     updateAt: '2024-06-01 10:00:00',
-    resource: generateNodeResources()
+    resource: generateNodeResources(),
   },
   {
     id: generateId(),
@@ -344,7 +345,7 @@ const mockNodes: NodeListResp[] = [
     createAt: '2024-02-20 09:30:00',
     updateBy: 'admin',
     updateAt: '2024-02-20 09:30:00',
-    resource: generateNodeResources()
+    resource: generateNodeResources(),
   },
   {
     id: generateId(),
@@ -361,7 +362,7 @@ const mockNodes: NodeListResp[] = [
     createAt: '2024-03-01 10:00:00',
     updateBy: 'admin',
     updateAt: '2024-06-15 16:45:00',
-    resource: generateNodeResources()
+    resource: generateNodeResources(),
   },
   {
     id: generateId(),
@@ -378,7 +379,7 @@ const mockNodes: NodeListResp[] = [
     createAt: '2024-02-10 10:30:25',
     updateBy: 'admin',
     updateAt: '2024-02-10 10:30:25',
-    resource: generateNodeResources()
+    resource: generateNodeResources(),
   },
   {
     id: generateId(),
@@ -394,7 +395,7 @@ const mockNodes: NodeListResp[] = [
     createAt: '2024-02-10 11:00:00',
     updateBy: 'qa',
     updateAt: '2024-04-15 13:25:10',
-    resource: generateNodeResources()
+    resource: generateNodeResources(),
   },
   {
     id: generateId(),
@@ -410,7 +411,7 @@ const mockNodes: NodeListResp[] = [
     createAt: '2024-02-10 11:10:00',
     updateBy: 'qa',
     updateAt: '2024-05-20 10:00:00',
-    resource: generateNodeResources()
+    resource: generateNodeResources(),
   },
   {
     id: generateId(),
@@ -426,7 +427,7 @@ const mockNodes: NodeListResp[] = [
     createAt: '2024-03-15 14:00:00',
     updateBy: 'ops',
     updateAt: '2024-06-10 12:00:00',
-    resource: generateNodeResources()
+    resource: generateNodeResources(),
   },
   {
     id: generateId(),
@@ -442,7 +443,7 @@ const mockNodes: NodeListResp[] = [
     createAt: '2024-01-10 09:00:00',
     updateBy: 'devops',
     updateAt: '2024-03-18 16:00:00',
-    resource: generateNodeResources()
+    resource: generateNodeResources(),
   },
   {
     id: generateId(),
@@ -458,7 +459,7 @@ const mockNodes: NodeListResp[] = [
     createAt: '2024-01-10 09:30:00',
     updateBy: 'dev1',
     updateAt: '2024-04-02 11:30:00',
-    resource: generateNodeResources()
+    resource: generateNodeResources(),
   },
   {
     id: generateId(),
@@ -474,7 +475,7 @@ const mockNodes: NodeListResp[] = [
     createAt: '2024-01-10 10:00:00',
     updateBy: 'devops',
     updateAt: '2024-05-05 08:45:00',
-    resource: generateNodeResources()
+    resource: generateNodeResources(),
   },
   {
     id: generateId(),
@@ -491,7 +492,7 @@ const mockNodes: NodeListResp[] = [
     createAt: '2024-01-20 10:00:00',
     updateBy: 'devops',
     updateAt: '2024-06-18 15:00:00',
-    resource: generateNodeResources()
+    resource: generateNodeResources(),
   },
   {
     id: generateId(),
@@ -507,7 +508,7 @@ const mockNodes: NodeListResp[] = [
     createAt: '2024-02-01 09:00:00',
     updateBy: 'qa',
     updateAt: '2024-02-01 09:00:00',
-    resource: generateNodeResources()
+    resource: generateNodeResources(),
   },
   {
     id: generateId(),
@@ -523,7 +524,7 @@ const mockNodes: NodeListResp[] = [
     createAt: '2024-02-01 09:30:00',
     updateBy: 'qa',
     updateAt: '2024-03-10 14:00:00',
-    resource: generateNodeResources()
+    resource: generateNodeResources(),
   },
   {
     id: generateId(),
@@ -539,7 +540,7 @@ const mockNodes: NodeListResp[] = [
     createAt: '2024-02-01 10:00:00',
     updateBy: 'qa',
     updateAt: '2024-05-22 09:20:00',
-    resource: generateNodeResources()
+    resource: generateNodeResources(),
   },
   {
     id: generateId(),
@@ -555,7 +556,7 @@ const mockNodes: NodeListResp[] = [
     createAt: '2024-04-01 10:00:00',
     updateBy: 'admin',
     updateAt: '2024-04-01 10:00:00',
-    resource: generateNodeResources()
+    resource: generateNodeResources(),
   },
   {
     id: generateId(),
@@ -571,7 +572,7 @@ const mockNodes: NodeListResp[] = [
     createAt: '2024-04-01 10:30:00',
     updateBy: 'admin',
     updateAt: '2024-06-12 11:00:00',
-    resource: generateNodeResources()
+    resource: generateNodeResources(),
   },
   {
     id: generateId(),
@@ -587,6 +588,6 @@ const mockNodes: NodeListResp[] = [
     createAt: '2024-03-20 10:00:00',
     updateBy: 'qa',
     updateAt: '2024-05-28 16:30:00',
-    resource: generateNodeResources()
-  }
+    resource: generateNodeResources(),
+  },
 ]

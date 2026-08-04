@@ -26,8 +26,9 @@ import type {
   StatefulSetScaleForm,
   StatefulSetScheduleVo,
   StatefulSetStrategyVo,
-  StatefulSetYamlForm
+  StatefulSetYamlForm,
 } from '@/types/kubernetes/workload/statefulset'
+
 import { generateId } from '@/mock/utils'
 
 /**
@@ -60,128 +61,128 @@ export default [
     method: 'get',
     url: '/kubernetes/clusters/:clusterId/statefulsets',
     handler: (pathParams: Record<string, string>, params: Partial<StatefulSetQueryForm>): PageVo<StatefulSetListVo> =>
-      getStatefulSetList(pathParams.clusterId, params)
+      getStatefulSetList(pathParams.clusterId, params),
   },
   {
     method: 'get',
     url: '/kubernetes/clusters/:clusterId/namespaces/:namespace/statefulsets/:name',
     handler: (pathParams: Record<string, string>): StatefulSetDetailVo =>
-      getStatefulSetDetail(pathParams.clusterId, pathParams.namespace, pathParams.name)
+      getStatefulSetDetail(pathParams.clusterId, pathParams.namespace, pathParams.name),
   },
   {
     method: 'get',
     url: '/kubernetes/clusters/:clusterId/namespaces/:namespace/statefulsets/:name/pods',
     handler: (pathParams: Record<string, string>): StatefulSetPodListVo[] =>
-      getStatefulSetPodList(pathParams.clusterId, pathParams.namespace, pathParams.name)
+      getStatefulSetPodList(pathParams.clusterId, pathParams.namespace, pathParams.name),
   },
   {
     method: 'get',
     url: '/kubernetes/clusters/:clusterId/namespaces/:namespace/statefulsets/:name/schedule',
     handler: (pathParams: Record<string, string>): StatefulSetScheduleVo =>
-      getStatefulSetSchedule(pathParams.clusterId, pathParams.namespace, pathParams.name)
+      getStatefulSetSchedule(pathParams.clusterId, pathParams.namespace, pathParams.name),
   },
   {
     method: 'get',
     url: '/kubernetes/clusters/:clusterId/namespaces/:namespace/statefulsets/:name/history',
     handler: (pathParams: Record<string, string>): StatefulSetHistoryRevisionListVo[] =>
-      getStatefulSetHistoryRevisionList(pathParams.clusterId, pathParams.namespace, pathParams.name)
+      getStatefulSetHistoryRevisionList(pathParams.clusterId, pathParams.namespace, pathParams.name),
   },
   {
     method: 'get',
     url: '/kubernetes/clusters/:clusterId/namespaces/:namespace/statefulsets/:name/network',
     handler: (pathParams: Record<string, string>): StatefulSetNetworkVo =>
-      getStatefulSetNetwork(pathParams.clusterId, pathParams.namespace, pathParams.name)
+      getStatefulSetNetwork(pathParams.clusterId, pathParams.namespace, pathParams.name),
   },
   {
     method: 'get',
     url: '/kubernetes/clusters/:clusterId/namespaces/:namespace/statefulsets/:name/storages',
     handler: (pathParams: Record<string, string>): StatefulSetStorageListVo[] =>
-      getStatefulSetStorageList(pathParams.clusterId, pathParams.namespace, pathParams.name)
+      getStatefulSetStorageList(pathParams.clusterId, pathParams.namespace, pathParams.name),
   },
   {
     method: 'get',
     url: '/kubernetes/clusters/:clusterId/namespaces/:namespace/statefulsets/:name/monitor',
     handler: (pathParams: Record<string, string>): StatefulSetMonitorVo =>
-      getStatefulSetMonitor(pathParams.clusterId, pathParams.namespace, pathParams.name)
+      getStatefulSetMonitor(pathParams.clusterId, pathParams.namespace, pathParams.name),
   },
   {
     method: 'get',
     url: '/kubernetes/clusters/:clusterId/namespaces/:namespace/statefulsets/:name/events',
     handler: (pathParams: Record<string, string>): StatefulSetEventListVo[] =>
-      getStatefulSetEventList(pathParams.clusterId, pathParams.namespace, pathParams.name)
+      getStatefulSetEventList(pathParams.clusterId, pathParams.namespace, pathParams.name),
   },
   {
     method: 'get',
     url: '/kubernetes/clusters/:clusterId/namespaces/:namespace/statefulsets/:name/yaml',
     handler: (pathParams: Record<string, string>): string =>
-      getStatefulSetYaml(pathParams.clusterId, pathParams.namespace, pathParams.name)
+      getStatefulSetYaml(pathParams.clusterId, pathParams.namespace, pathParams.name),
   },
   {
     method: 'post',
     url: '/kubernetes/clusters/:clusterId/namespaces/:namespace/statefulsets',
     handler: (pathParams: Record<string, string>, data: StatefulSetCreateForm): void =>
-      createStatefulSet(pathParams.clusterId, pathParams.namespace, data)
+      createStatefulSet(pathParams.clusterId, pathParams.namespace, data),
   },
   {
     method: 'put',
     url: '/kubernetes/clusters/:clusterId/namespaces/:namespace/statefulsets/:name',
     handler: (pathParams: Record<string, string>, data: Partial<StatefulSetUpdateForm>): void =>
-      updateStatefulSet(pathParams.clusterId, pathParams.namespace, pathParams.name, data)
+      updateStatefulSet(pathParams.clusterId, pathParams.namespace, pathParams.name, data),
   },
   {
     method: 'post',
     url: '/kubernetes/clusters/:clusterId/namespaces/:namespace/statefulsets/:name/labels',
     handler: (pathParams: Record<string, string>, data: StatefulSetLabelForm): void =>
-      manageStatefulSetLabels(pathParams.clusterId, pathParams.namespace, pathParams.name, data)
+      manageStatefulSetLabels(pathParams.clusterId, pathParams.namespace, pathParams.name, data),
   },
   {
     method: 'post',
     url: '/kubernetes/clusters/:clusterId/namespaces/:namespace/statefulsets/:name/annotations',
     handler: (pathParams: Record<string, string>, data: StatefulSetAnnotationForm): void =>
-      manageStatefulSetAnnotations(pathParams.clusterId, pathParams.namespace, pathParams.name, data)
+      manageStatefulSetAnnotations(pathParams.clusterId, pathParams.namespace, pathParams.name, data),
   },
   {
     method: 'delete',
     url: '/kubernetes/clusters/:clusterId/namespaces/:namespace/statefulsets/:name',
     handler: (pathParams: Record<string, string>): void =>
-      deleteStatefulSet(pathParams.clusterId, pathParams.namespace, pathParams.name)
+      deleteStatefulSet(pathParams.clusterId, pathParams.namespace, pathParams.name),
   },
   {
     method: 'delete',
     url: '/kubernetes/clusters/:clusterId/namespaces/:namespace/statefulsets/batch',
     handler: (pathParams: Record<string, string>, data: string[]): void =>
-      deleteStatefulSets(pathParams.clusterId, pathParams.namespace, data)
+      deleteStatefulSets(pathParams.clusterId, pathParams.namespace, data),
   },
   {
     method: 'get',
     url: '/kubernetes/clusters/:clusterId/statefulsets/export',
     handler: (pathParams: Record<string, string>, params: Partial<StatefulSetQueryForm>): void =>
-      exportStatefulSet(pathParams.clusterId, params)
+      exportStatefulSet(pathParams.clusterId, params),
   },
   {
     method: 'post',
     url: '/kubernetes/clusters/:clusterId/statefulsets/import',
     handler: (pathParams: Record<string, string>, data: StatefulSetYamlForm): void =>
-      importStatefulSet(pathParams.clusterId, data)
+      importStatefulSet(pathParams.clusterId, data),
   },
   {
     method: 'post',
     url: '/kubernetes/clusters/:clusterId/namespaces/:namespace/statefulsets/:name/scale',
     handler: (pathParams: Record<string, string>, data: StatefulSetScaleForm): void =>
-      scaleStatefulSet(pathParams.clusterId, pathParams.namespace, pathParams.name, data)
+      scaleStatefulSet(pathParams.clusterId, pathParams.namespace, pathParams.name, data),
   },
   {
     method: 'post',
     url: '/kubernetes/clusters/:clusterId/namespaces/:namespace/statefulsets/:name/restart',
     handler: (pathParams: Record<string, string>): void =>
-      restartStatefulSet(pathParams.clusterId, pathParams.namespace, pathParams.name)
+      restartStatefulSet(pathParams.clusterId, pathParams.namespace, pathParams.name),
   },
   {
     method: 'post',
     url: '/kubernetes/clusters/:clusterId/namespaces/:namespace/statefulsets/:name/rollback',
     handler: (pathParams: Record<string, string>): void =>
-      rollbackStatefulSet(pathParams.clusterId, pathParams.namespace, pathParams.name)
-  }
+      rollbackStatefulSet(pathParams.clusterId, pathParams.namespace, pathParams.name),
+  },
 ]
 
 /**
@@ -242,7 +243,7 @@ function getStatefulSetDetail(_clusterId: string, _namespace: string, _name: str
     resource: mockStatefulSetResource,
     conditions: mockStatefulSetConditions,
     strategy: mockStatefulSetStrategy,
-    advanced: mockStatefulSetAdvanced
+    advanced: mockStatefulSetAdvanced,
   }
 }
 
@@ -281,7 +282,7 @@ function getStatefulSetPodList(_clusterId: string, _namespace: string, _name: st
       createAt: sts.createAt,
       createBy: sts.createBy,
       updateAt: sts.updateAt,
-      updateBy: sts.updateBy
+      updateBy: sts.updateBy,
     },
     {
       id: generateId(),
@@ -306,7 +307,7 @@ function getStatefulSetPodList(_clusterId: string, _namespace: string, _name: st
       createAt: sts.createAt,
       createBy: sts.createBy,
       updateAt: sts.updateAt,
-      updateBy: sts.updateBy
+      updateBy: sts.updateBy,
     },
     {
       id: generateId(),
@@ -331,8 +332,8 @@ function getStatefulSetPodList(_clusterId: string, _namespace: string, _name: st
       createAt: sts.createAt,
       createBy: sts.createBy,
       updateAt: sts.updateAt,
-      updateBy: sts.updateBy
-    }
+      updateBy: sts.updateBy,
+    },
   ]
 }
 
@@ -354,15 +355,15 @@ function getStatefulSetSchedule(clusterId: string, namespace: string, name: stri
       nodeAffinity: {
         required: [
           {
-            matchExpressions: [{ key: 'kubernetes.io/os', operator: 'In', values: ['linux'] }]
-          }
+            matchExpressions: [{ key: 'kubernetes.io/os', operator: 'In', values: ['linux'] }],
+          },
         ],
         preferred: [
           {
             weight: 80,
-            matchExpressions: [{ key: 'node-type', operator: 'In', values: ['ssd', 'high-memory'] }]
-          }
-        ]
+            matchExpressions: [{ key: 'node-type', operator: 'In', values: ['ssd', 'high-memory'] }],
+          },
+        ],
       },
       podAffinity: {
         required: [],
@@ -374,9 +375,9 @@ function getStatefulSetSchedule(clusterId: string, namespace: string, name: stri
             namespaceSelector: { matchLabels: {}, matchExpressions: [] },
             topologyKey: 'kubernetes.io/hostname',
             matchLabelKeys: [],
-            mismatchLabelKeys: []
-          }
-        ]
+            mismatchLabelKeys: [],
+          },
+        ],
       },
       podAntiAffinity: {
         required: [
@@ -386,11 +387,11 @@ function getStatefulSetSchedule(clusterId: string, namespace: string, name: stri
             namespaceSelector: { matchLabels: {}, matchExpressions: [] },
             topologyKey: 'kubernetes.io/hostname',
             matchLabelKeys: [],
-            mismatchLabelKeys: []
-          }
+            mismatchLabelKeys: [],
+          },
         ],
-        preferred: []
-      }
+        preferred: [],
+      },
     },
     tolerations: [
       {
@@ -398,16 +399,16 @@ function getStatefulSetSchedule(clusterId: string, namespace: string, name: stri
         operator: 'Exists',
         value: '',
         effect: 'NoExecute',
-        tolerationSeconds: 300
+        tolerationSeconds: 300,
       },
       {
         key: 'node.kubernetes.io/unreachable',
         operator: 'Exists',
         value: '',
         effect: 'NoExecute',
-        tolerationSeconds: 300
-      }
-    ]
+        tolerationSeconds: 300,
+      },
+    ],
   }
 }
 
@@ -421,22 +422,22 @@ function getStatefulSetSchedule(clusterId: string, namespace: string, name: stri
 function getStatefulSetHistoryRevisionList(
   _clusterId: string,
   _namespace: string,
-  _name: string
+  _name: string,
 ): StatefulSetHistoryRevisionListVo[] {
   return [
     {
       revision: 3,
       changeCause: `kubectl set image statefulset/${_name}=${_name}:v2.1.0`,
       createAt: '2024-07-01 14:30:00',
-      active: true
+      active: true,
     },
     { revision: 2, changeCause: `kubectl edit statefulset/${_name}`, createAt: '2024-06-20 09:15:00', active: false },
     {
       revision: 1,
       changeCause: `kubectl create statefulset ${_name} --image=${_name}:v1.0.0`,
       createAt: '2024-06-15 08:30:00',
-      active: false
-    }
+      active: false,
+    },
   ]
 }
 
@@ -471,7 +472,7 @@ function getStatefulSetNetwork(_clusterId: string, _namespace: string, _name: st
         createAt: sts.createAt,
         createBy: sts.createBy,
         updateAt: sts.updateAt,
-        updateBy: sts.updateBy
+        updateBy: sts.updateBy,
       },
       {
         id: generateId(),
@@ -493,10 +494,10 @@ function getStatefulSetNetwork(_clusterId: string, _namespace: string, _name: st
         createAt: sts.createAt,
         createBy: sts.createBy,
         updateAt: sts.updateAt,
-        updateBy: sts.updateBy
-      }
+        updateBy: sts.updateBy,
+      },
     ],
-    ingresses: []
+    ingresses: [],
   }
 }
 
@@ -515,33 +516,33 @@ function getStatefulSetStorageList(_clusterId: string, _namespace: string, _name
       type: 'PersistentVolumeClaim',
       extraFields: { claimName: `${sts.name}-data-${sts.name}-0`, readOnly: 'false', storageClassName: 'ssd' },
       containerMounts: [
-        { containerId: generateId(), container: `${sts.name}-container`, mountPath: '/var/lib/mysql', subPath: '' }
-      ]
+        { containerId: generateId(), container: `${sts.name}-container`, mountPath: '/var/lib/mysql', subPath: '' },
+      ],
     },
     {
       name: `${sts.name}-config`,
       type: 'ConfigMap',
       extraFields: { configMapName: `${sts.name}-config`, defaultMode: '420' },
       containerMounts: [
-        { containerId: generateId(), container: `${sts.name}-container`, mountPath: '/etc/config', subPath: '' }
-      ]
+        { containerId: generateId(), container: `${sts.name}-container`, mountPath: '/etc/config', subPath: '' },
+      ],
     },
     {
       name: `${sts.name}-secret`,
       type: 'Secret',
       extraFields: { secretName: `${sts.name}-secret`, defaultMode: '400', optional: 'false' },
       containerMounts: [
-        { containerId: generateId(), container: `${sts.name}-container`, mountPath: '/etc/secret', subPath: '' }
-      ]
+        { containerId: generateId(), container: `${sts.name}-container`, mountPath: '/etc/secret', subPath: '' },
+      ],
     },
     {
       name: `${sts.name}-logs`,
       type: 'EmptyDir',
       extraFields: { medium: '', sizeLimit: '1Gi' },
       containerMounts: [
-        { containerId: generateId(), container: `${sts.name}-container`, mountPath: '/var/log/app', subPath: '' }
-      ]
-    }
+        { containerId: generateId(), container: `${sts.name}-container`, mountPath: '/var/log/app', subPath: '' },
+      ],
+    },
   ]
 }
 
@@ -574,7 +575,7 @@ function getStatefulSetEventList(_clusterId: string, _namespace: string, _name: 
       source: { component: 'statefulset-controller' },
       count: 1,
       firstTimestamp: sts.createAt,
-      lastTimestamp: sts.createAt
+      lastTimestamp: sts.createAt,
     },
     {
       type: 'Normal',
@@ -584,7 +585,7 @@ function getStatefulSetEventList(_clusterId: string, _namespace: string, _name: 
       source: { component: 'statefulset-controller' },
       count: 1,
       firstTimestamp: sts.createAt,
-      lastTimestamp: sts.createAt
+      lastTimestamp: sts.createAt,
     },
     {
       type: 'Normal',
@@ -594,7 +595,7 @@ function getStatefulSetEventList(_clusterId: string, _namespace: string, _name: 
       source: { component: 'statefulset-controller' },
       count: 1,
       firstTimestamp: sts.createAt,
-      lastTimestamp: sts.createAt
+      lastTimestamp: sts.createAt,
     },
     {
       type: 'Normal',
@@ -604,7 +605,7 @@ function getStatefulSetEventList(_clusterId: string, _namespace: string, _name: 
       source: { component: 'statefulset-controller' },
       count: 1,
       firstTimestamp: sts.updateAt,
-      lastTimestamp: sts.updateAt
+      lastTimestamp: sts.updateAt,
     },
     {
       type: 'Warning',
@@ -614,8 +615,8 @@ function getStatefulSetEventList(_clusterId: string, _namespace: string, _name: 
       source: { component: 'statefulset-controller' },
       count: 2,
       firstTimestamp: sts.createAt,
-      lastTimestamp: sts.updateAt
-    }
+      lastTimestamp: sts.updateAt,
+    },
   ]
 }
 
@@ -765,7 +766,7 @@ function updateStatefulSet(
   clusterId: string,
   namespace: string,
   name: string,
-  data: Partial<StatefulSetUpdateForm>
+  data: Partial<StatefulSetUpdateForm>,
 ): void {
   console.log('[Mock] updateStatefulSet', { clusterId, namespace, name, data })
 }
@@ -792,7 +793,7 @@ function manageStatefulSetAnnotations(
   clusterId: string,
   namespace: string,
   name: string,
-  data: StatefulSetAnnotationForm
+  data: StatefulSetAnnotationForm,
 ): void {
   console.log('[Mock] manageStatefulSetAnnotations', { clusterId, namespace, name, data })
 }
@@ -892,7 +893,7 @@ const mockStatefulSets: StatefulSetListVo[] = [
     createAt: '2024-01-20 10:00:00',
     updateBy: 'admin',
     deletable: true,
-    updateAt: '2024-03-15 14:00:00'
+    updateAt: '2024-03-15 14:00:00',
   },
   {
     id: generateId(),
@@ -914,7 +915,7 @@ const mockStatefulSets: StatefulSetListVo[] = [
     createAt: '2024-02-01 09:00:00',
     updateBy: 'admin',
     deletable: true,
-    updateAt: '2024-03-10 11:00:00'
+    updateAt: '2024-03-10 11:00:00',
   },
   {
     id: generateId(),
@@ -936,7 +937,7 @@ const mockStatefulSets: StatefulSetListVo[] = [
     createAt: '2024-02-15 10:00:00',
     updateBy: 'admin',
     deletable: true,
-    updateAt: '2024-03-15 12:00:00'
+    updateAt: '2024-03-15 12:00:00',
   },
   // ==================== Available（部分就绪）- 3 条 ====================
   {
@@ -959,7 +960,7 @@ const mockStatefulSets: StatefulSetListVo[] = [
     createAt: '2024-01-20 10:05:00',
     updateBy: 'admin',
     deletable: true,
-    updateAt: '2024-03-15 14:05:00'
+    updateAt: '2024-03-15 14:05:00',
   },
   {
     id: generateId(),
@@ -981,7 +982,7 @@ const mockStatefulSets: StatefulSetListVo[] = [
     createAt: '2024-02-05 14:00:00',
     updateBy: 'admin',
     deletable: true,
-    updateAt: '2024-03-12 10:00:00'
+    updateAt: '2024-03-12 10:00:00',
   },
   {
     id: generateId(),
@@ -1003,7 +1004,7 @@ const mockStatefulSets: StatefulSetListVo[] = [
     createAt: '2024-02-20 11:00:00',
     updateBy: 'admin',
     deletable: true,
-    updateAt: '2024-03-18 15:00:00'
+    updateAt: '2024-03-18 15:00:00',
   },
   // ==================== Stopped（已停止）- 2 条 ====================
   {
@@ -1027,7 +1028,7 @@ const mockStatefulSets: StatefulSetListVo[] = [
     createAt: '2024-02-10 08:00:00',
     updateBy: 'admin',
     deletable: true,
-    updateAt: '2024-03-08 09:00:00'
+    updateAt: '2024-03-08 09:00:00',
   },
   {
     id: generateId(),
@@ -1050,7 +1051,7 @@ const mockStatefulSets: StatefulSetListVo[] = [
     createAt: '2024-03-10 10:00:00',
     updateBy: 'admin',
     deletable: true,
-    updateAt: '2024-03-20 09:30:00'
+    updateAt: '2024-03-20 09:30:00',
   },
   // ==================== Creating（创建中）- 2 条 ====================
   {
@@ -1074,7 +1075,7 @@ const mockStatefulSets: StatefulSetListVo[] = [
     createAt: '2024-03-19 16:00:00',
     updateBy: 'admin',
     deletable: true,
-    updateAt: '2024-03-19 16:00:00'
+    updateAt: '2024-03-19 16:00:00',
   },
   {
     id: generateId(),
@@ -1097,7 +1098,7 @@ const mockStatefulSets: StatefulSetListVo[] = [
     createAt: '2024-03-20 14:00:00',
     updateBy: 'admin',
     deletable: true,
-    updateAt: '2024-03-20 14:00:00'
+    updateAt: '2024-03-20 14:00:00',
   },
   // ==================== Updating（更新中）- 2 条 ====================
   {
@@ -1121,7 +1122,7 @@ const mockStatefulSets: StatefulSetListVo[] = [
     createAt: '2024-03-01 09:00:00',
     updateBy: 'admin',
     deletable: true,
-    updateAt: '2024-03-19 16:00:00'
+    updateAt: '2024-03-19 16:00:00',
   },
   {
     id: generateId(),
@@ -1144,7 +1145,7 @@ const mockStatefulSets: StatefulSetListVo[] = [
     createAt: '2024-02-28 10:00:00',
     updateBy: 'admin',
     deletable: true,
-    updateAt: '2024-03-20 10:00:00'
+    updateAt: '2024-03-20 10:00:00',
   },
   // ==================== Terminating（终止中）- 2 条 ====================
   {
@@ -1168,7 +1169,7 @@ const mockStatefulSets: StatefulSetListVo[] = [
     createAt: '2024-01-15 09:00:00',
     updateBy: 'admin',
     deletable: true,
-    updateAt: '2024-03-20 11:00:00'
+    updateAt: '2024-03-20 11:00:00',
   },
   {
     id: generateId(),
@@ -1191,7 +1192,7 @@ const mockStatefulSets: StatefulSetListVo[] = [
     createAt: '2024-02-05 08:00:00',
     updateBy: 'admin',
     deletable: true,
-    updateAt: '2024-03-18 10:00:00'
+    updateAt: '2024-03-18 10:00:00',
   },
   // ==================== CreateTimeout（创建超时）- 2 条 ====================
   {
@@ -1215,7 +1216,7 @@ const mockStatefulSets: StatefulSetListVo[] = [
     createAt: '2024-03-20 08:30:00',
     updateBy: 'admin',
     deletable: true,
-    updateAt: '2024-03-20 09:00:00'
+    updateAt: '2024-03-20 09:00:00',
   },
   {
     id: generateId(),
@@ -1238,7 +1239,7 @@ const mockStatefulSets: StatefulSetListVo[] = [
     createAt: '2024-03-19 10:00:00',
     updateBy: 'developer',
     deletable: true,
-    updateAt: '2024-03-19 10:15:00'
+    updateAt: '2024-03-19 10:15:00',
   },
   // ==================== UpdateTimeout（更新超时）- 2 条 ====================
   {
@@ -1262,7 +1263,7 @@ const mockStatefulSets: StatefulSetListVo[] = [
     createAt: '2024-01-10 09:00:00',
     updateBy: 'admin',
     deletable: true,
-    updateAt: '2024-03-20 13:00:00'
+    updateAt: '2024-03-20 13:00:00',
   },
   {
     id: generateId(),
@@ -1285,7 +1286,7 @@ const mockStatefulSets: StatefulSetListVo[] = [
     createAt: '2024-01-01 00:00:00',
     updateBy: 'admin',
     deletable: true,
-    updateAt: '2024-03-20 15:30:00'
+    updateAt: '2024-03-20 15:30:00',
   },
   // ==================== Failed（失败异常）- 2 条 ====================
   {
@@ -1309,7 +1310,7 @@ const mockStatefulSets: StatefulSetListVo[] = [
     createAt: '2024-02-10 14:00:00',
     updateBy: 'admin',
     deletable: true,
-    updateAt: '2024-03-19 08:00:00'
+    updateAt: '2024-03-19 08:00:00',
   },
   {
     id: generateId(),
@@ -1332,7 +1333,7 @@ const mockStatefulSets: StatefulSetListVo[] = [
     createAt: '2024-02-20 10:00:00',
     updateBy: 'admin',
     deletable: true,
-    updateAt: '2024-03-18 06:00:00'
+    updateAt: '2024-03-18 06:00:00',
   },
   // ==================== Unknown（未知）- 2 条 ====================
   {
@@ -1356,7 +1357,7 @@ const mockStatefulSets: StatefulSetListVo[] = [
     createAt: '2024-01-05 09:00:00',
     updateBy: 'admin',
     deletable: true,
-    updateAt: '2024-03-20 16:30:00'
+    updateAt: '2024-03-20 16:30:00',
   },
   {
     id: generateId(),
@@ -1379,8 +1380,8 @@ const mockStatefulSets: StatefulSetListVo[] = [
     createAt: '2024-04-01 10:00:00',
     updateBy: 'admin',
     deletable: true,
-    updateAt: '2024-04-01 10:00:00'
-  }
+    updateAt: '2024-04-01 10:00:00',
+  },
 ]
 
 /**
@@ -1400,7 +1401,7 @@ const mockStatefulSetBasic: StatefulSetBasicVo = {
     'app.kubernetes.io/name': 'mysql-primary',
     'app.kubernetes.io/instance': 'mysql-primary',
     'app.kubernetes.io/component': 'database',
-    'app.kubernetes.io/managed-by': 'bee-kube'
+    'app.kubernetes.io/managed-by': 'bee-kube',
   },
   serviceName: 'mysql-primary-headless',
   currentRevision: 'mysql-primary-6d4f8c9b7',
@@ -1414,7 +1415,7 @@ const mockStatefulSetBasic: StatefulSetBasicVo = {
   createAt: '2024-01-20 10:00:00',
   createBy: 'admin',
   updateAt: '2024-03-15 14:00:00',
-  updateBy: 'admin'
+  updateBy: 'admin',
 }
 
 /**
@@ -1424,7 +1425,7 @@ const mockStatefulSetReplicas: StatefulSetReplicasVo = {
   replicas: 3,
   readyReplicas: 3,
   availableReplicas: 3,
-  updatedReplicas: 3
+  updatedReplicas: 3,
 }
 
 /**
@@ -1436,15 +1437,15 @@ const mockStatefulSetMetadata: StatefulSetMetadataVo = {
     'app.kubernetes.io/name': 'mysql-primary',
     'app.kubernetes.io/instance': 'mysql-primary',
     'app.kubernetes.io/component': 'database',
-    'app.kubernetes.io/managed-by': 'bee-kube'
+    'app.kubernetes.io/managed-by': 'bee-kube',
   },
   annotations: {
     'description': 'MySQL 主库集群，负责核心业务数据的读写操作',
     'kubernetes.io/change-cause': 'kubectl apply',
     'statefulset.kubernetes.io/revision': '3',
     'meta.helm.sh/release-name': 'mysql-primary',
-    'meta.helm.sh/release-namespace': 'data'
-  }
+    'meta.helm.sh/release-namespace': 'data',
+  },
 }
 
 /**
@@ -1452,7 +1453,7 @@ const mockStatefulSetMetadata: StatefulSetMetadataVo = {
  */
 const mockStatefulSetResource: StatefulSetResourceVo = {
   request: { cpu: 500, memory: 1073741824 },
-  limit: { cpu: 2000, memory: 2147483648 }
+  limit: { cpu: 2000, memory: 2147483648 },
 }
 
 /**
@@ -1465,7 +1466,7 @@ const mockStatefulSetConditions: StatefulSetConditionVo[] = [
     reason: 'MinimumReplicasAvailable',
     message: 'StatefulSet has minimum availability.',
     lastTransitionTime: '2024-03-15 14:00:00',
-    lastUpdateTime: '2024-03-15 14:00:00'
+    lastUpdateTime: '2024-03-15 14:00:00',
   },
   {
     type: 'Progressing',
@@ -1473,7 +1474,7 @@ const mockStatefulSetConditions: StatefulSetConditionVo[] = [
     reason: 'NewReplicaSetAvailable',
     message: 'StatefulSet "mysql-primary" has successfully progressed.',
     lastTransitionTime: '2024-01-20 10:00:00',
-    lastUpdateTime: '2024-03-15 14:00:00'
+    lastUpdateTime: '2024-03-15 14:00:00',
   },
   {
     type: 'Available',
@@ -1481,7 +1482,7 @@ const mockStatefulSetConditions: StatefulSetConditionVo[] = [
     reason: 'MinimumReplicasUnavailable',
     message: 'StatefulSet does not have minimum availability.',
     lastTransitionTime: '2024-01-20 10:00:00',
-    lastUpdateTime: '2024-01-20 10:00:00'
+    lastUpdateTime: '2024-01-20 10:00:00',
   },
   {
     type: 'Progressing',
@@ -1489,7 +1490,7 @@ const mockStatefulSetConditions: StatefulSetConditionVo[] = [
     reason: 'NewStatefulSetCreated',
     message: 'StatefulSet "mysql-primary" is progressing.',
     lastTransitionTime: '2024-01-20 10:00:00',
-    lastUpdateTime: '2024-01-20 10:00:00'
+    lastUpdateTime: '2024-01-20 10:00:00',
   },
   {
     type: 'ReplicaFailure',
@@ -1497,8 +1498,8 @@ const mockStatefulSetConditions: StatefulSetConditionVo[] = [
     reason: 'FailedCreate',
     message: 'Replica has been created successfully.',
     lastTransitionTime: '2024-01-20 10:00:00',
-    lastUpdateTime: '2024-03-15 14:00:00'
-  }
+    lastUpdateTime: '2024-03-15 14:00:00',
+  },
 ]
 
 /**
@@ -1507,7 +1508,7 @@ const mockStatefulSetConditions: StatefulSetConditionVo[] = [
 const mockStatefulSetStrategy: StatefulSetStrategyVo = {
   type: 'RollingUpdate',
   partition: 0,
-  podManagementPolicy: 'OrderedReady'
+  podManagementPolicy: 'OrderedReady',
 }
 
 /**
@@ -1523,5 +1524,5 @@ const mockStatefulSetAdvanced: StatefulSetAdvancedVo = {
   hostname: 'mysql-primary-0',
   subdomain: 'mysql-primary-headless',
   imagePullSecrets: ['registry-harbor-secret'],
-  priorityClass: 'high-priority'
+  priorityClass: 'high-priority',
 }

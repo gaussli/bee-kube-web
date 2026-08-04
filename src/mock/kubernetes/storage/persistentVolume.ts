@@ -4,6 +4,7 @@
  */
 import type { PageVo } from '@/types/common'
 import type { PersistentVolumeResp, PersistentVolumeQueryReq } from '@/types/kubernetes/storage/persistentVolume'
+
 import { generateId } from '@/mock/utils'
 
 /**
@@ -14,7 +15,7 @@ import { generateId } from '@/mock/utils'
  */
 function getPersistentVolumePage(
   clusterId: string,
-  params: Partial<PersistentVolumeQueryReq>
+  params: Partial<PersistentVolumeQueryReq>,
 ): PageVo<PersistentVolumeResp> {
   const { name, status, storageClassName, page = 1, pageSize = 10 } = params || {}
   let filtered = mockPVs.filter(p => p.clusterId === clusterId)
@@ -49,7 +50,7 @@ function managePersistentVolumeLabels(
   clusterId: string,
   name: string,
   labels: Record<string, string>,
-  operation: number
+  operation: number,
 ): void {
   const index = mockPVs.findIndex(p => p.clusterId === clusterId && p.name === name)
   if (index === -1) {
@@ -79,7 +80,7 @@ function managePersistentVolumeAnnotations(
   clusterId: string,
   name: string,
   annotations: Record<string, string>,
-  operation: number
+  operation: number,
 ): void {
   const index = mockPVs.findIndex(p => p.clusterId === clusterId && p.name === name)
   if (index === -1) {
@@ -143,12 +144,12 @@ export default [
     method: 'get',
     url: '/kubernetes/clusters/:clusterId/persistentvolumes',
     handler: (pathParams: Record<string, string>, params: Partial<PersistentVolumeQueryReq>) =>
-      getPersistentVolumePage(pathParams.clusterId, params)
+      getPersistentVolumePage(pathParams.clusterId, params),
   },
   {
     method: 'get',
     url: '/kubernetes/clusters/:clusterId/persistentvolumes/:name',
-    handler: (pathParams: Record<string, string>) => getPersistentVolumeDetail(pathParams.clusterId, pathParams.name)
+    handler: (pathParams: Record<string, string>) => getPersistentVolumeDetail(pathParams.clusterId, pathParams.name),
   },
   {
     method: 'put',
@@ -156,8 +157,8 @@ export default [
     handler: (
       pathParams: Record<string, string>,
       _params: unknown,
-      data: { labels: Record<string, string>; operation: number }
-    ) => managePersistentVolumeLabels(pathParams.clusterId, pathParams.name, data.labels, data.operation)
+      data: { labels: Record<string, string>; operation: number },
+    ) => managePersistentVolumeLabels(pathParams.clusterId, pathParams.name, data.labels, data.operation),
   },
   {
     method: 'put',
@@ -165,20 +166,20 @@ export default [
     handler: (
       pathParams: Record<string, string>,
       _params: unknown,
-      data: { annotations: Record<string, string>; operation: number }
-    ) => managePersistentVolumeAnnotations(pathParams.clusterId, pathParams.name, data.annotations, data.operation)
+      data: { annotations: Record<string, string>; operation: number },
+    ) => managePersistentVolumeAnnotations(pathParams.clusterId, pathParams.name, data.annotations, data.operation),
   },
   {
     method: 'delete',
     url: '/kubernetes/clusters/:clusterId/persistentvolumes/:name',
-    handler: (pathParams: Record<string, string>) => deletePersistentVolume(pathParams.clusterId, pathParams.name)
+    handler: (pathParams: Record<string, string>) => deletePersistentVolume(pathParams.clusterId, pathParams.name),
   },
   {
     method: 'delete',
     url: '/kubernetes/clusters/:clusterId/persistentvolumes',
     handler: (pathParams: Record<string, string>, _params: unknown, data: string[]) =>
-      deletePersistentVolumes(pathParams.clusterId, data)
-  }
+      deletePersistentVolumes(pathParams.clusterId, data),
+  },
 ]
 
 /**
@@ -203,7 +204,7 @@ const mockPVs: PersistentVolumeResp[] = [
     createAt: '2024-01-15T10:00:00Z',
     createBy: 'admin',
     updateAt: '2024-03-15T14:00:00Z',
-    updateBy: 'admin'
+    updateBy: 'admin',
   },
   {
     id: generateId(),
@@ -223,7 +224,7 @@ const mockPVs: PersistentVolumeResp[] = [
     createAt: '2024-01-20T10:00:00Z',
     createBy: 'admin',
     updateAt: '2024-03-10T11:00:00Z',
-    updateBy: 'admin'
+    updateBy: 'admin',
   },
   {
     id: generateId(),
@@ -242,7 +243,7 @@ const mockPVs: PersistentVolumeResp[] = [
     createAt: '2024-03-01T10:00:00Z',
     createBy: 'admin',
     updateAt: '2024-03-01T10:00:00Z',
-    updateBy: 'admin'
+    updateBy: 'admin',
   },
   {
     id: generateId(),
@@ -260,6 +261,6 @@ const mockPVs: PersistentVolumeResp[] = [
     createAt: '2024-02-10T14:00:00Z',
     createBy: 'admin',
     updateAt: '2024-03-19T08:00:00Z',
-    updateBy: 'admin'
-  }
+    updateBy: 'admin',
+  },
 ]

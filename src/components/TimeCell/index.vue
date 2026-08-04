@@ -15,7 +15,7 @@ interface Props {
 
 withDefaults(defineProps<Props>(), {
   time: '',
-  showRelative: false
+  showRelative: false,
 })
 
 function formatTime(time?: string): string {
@@ -26,7 +26,7 @@ function formatTime(time?: string): string {
     month: '2-digit',
     day: '2-digit',
     hour: '2-digit',
-    minute: '2-digit'
+    minute: '2-digit',
   })
 }
 

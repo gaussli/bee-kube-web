@@ -32,6 +32,7 @@
 import BeeIcon from '@/components/BeeIcon/index.vue'
 import BeeTag from '@/components/BeeTag/index.vue'
 import BeeTooltip from '@/components/BeeTooltip/index.vue'
+
 import { useClipboard } from '@/composables/useClipboard'
 
 defineOptions({ name: 'BeeConfigmapInfoCell' })
@@ -52,8 +53,8 @@ const props = withDefaults(
   {
     icon: 'kubernetes-namespace',
     iconSize: 48,
-    description: ''
-  }
+    description: '',
+  },
 )
 </script>
 

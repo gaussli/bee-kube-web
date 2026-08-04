@@ -9,8 +9,9 @@ import type {
   ClusterRoleBindingReq,
   ClusterRoleBindingLabelsReq,
   ClusterRoleBindingAnnotationsReq,
-  ClusterRoleBindingSubjectsReq
+  ClusterRoleBindingSubjectsReq,
 } from '@/types/kubernetes/security/clusterRoleBinding'
+
 import { request } from '@/utils'
 
 /**
@@ -21,7 +22,7 @@ import { request } from '@/utils'
  */
 export function getClusterRoleBindingPage(
   clusterId: string,
-  params: Partial<ClusterRoleBindingQueryReq>
+  params: Partial<ClusterRoleBindingQueryReq>,
 ): Promise<PageVo<ClusterRoleBindingResp>> {
   return request.get(`/kubernetes/clusters/${clusterId}/clusterrolebindings`, { params })
 }
@@ -65,7 +66,7 @@ export function updateClusterRoleBinding(clusterId: string, data: Partial<Cluste
 export function manageClusterRoleBindingLabels(
   clusterId: string,
   name: string,
-  data: Partial<ClusterRoleBindingLabelsReq>
+  data: Partial<ClusterRoleBindingLabelsReq>,
 ): Promise<void> {
   return request.put(`/kubernetes/clusters/${clusterId}/clusterrolebindings/${name}/labels`, { data })
 }
@@ -79,7 +80,7 @@ export function manageClusterRoleBindingLabels(
 export function manageClusterRoleBindingAnnotations(
   clusterId: string,
   name: string,
-  data: Partial<ClusterRoleBindingAnnotationsReq>
+  data: Partial<ClusterRoleBindingAnnotationsReq>,
 ): Promise<void> {
   return request.put(`/kubernetes/clusters/${clusterId}/clusterrolebindings/${name}/annotations`, { data })
 }
@@ -93,7 +94,7 @@ export function manageClusterRoleBindingAnnotations(
 export function manageClusterRoleBindingSubjects(
   clusterId: string,
   name: string,
-  data: Partial<ClusterRoleBindingSubjectsReq>
+  data: Partial<ClusterRoleBindingSubjectsReq>,
 ): Promise<void> {
   return request.put(`/kubernetes/clusters/${clusterId}/clusterrolebindings/${name}/subjects`, { data })
 }

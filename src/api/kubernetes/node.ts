@@ -11,8 +11,9 @@ import type {
   NodeLabelsReq,
   NodeAnnotationsReq,
   NodeTaintsReq,
-  NodeResourceResp
+  NodeResourceResp,
 } from '@/types/kubernetes/node'
+
 import { request } from '@/utils'
 
 /**
@@ -53,7 +54,7 @@ export function getNodeResource(clusterId: string, name: string): Promise<NodeRe
  */
 export function getNodeTopN(
   clusterId: string,
-  params: Partial<{ metric: string; count: number }>
+  params: Partial<{ metric: string; count: number }>,
 ): Promise<NodeListResp[]> {
   return request.get<NodeListResp[]>(`/kubernetes/clusters/${clusterId}/nodes/topn`, params)
 }
@@ -108,7 +109,7 @@ export function manageNodeLabels(clusterId: string, name: string, data: Partial<
 export function manageNodeAnnotations(
   clusterId: string,
   name: string,
-  data: Partial<NodeAnnotationsReq>
+  data: Partial<NodeAnnotationsReq>,
 ): Promise<void> {
   return request.post(`/kubernetes/clusters/${clusterId}/nodes/${name}/annotations`, data)
 }

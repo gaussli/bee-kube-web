@@ -20,8 +20,8 @@ const props = withDefaults(
     color: undefined,
     thickness: 1,
     length: 100,
-    margin: 0
-  }
+    margin: 0,
+  },
 )
 
 const dividerStyle = computed(() => {
@@ -31,7 +31,7 @@ const dividerStyle = computed(() => {
     '--divider-color': props.color,
     '--divider-thickness': `${props.thickness}px`,
     '--divider-length': heightValue,
-    '--divider-margin': marginValue
+    '--divider-margin': marginValue,
   }
 })
 </script>

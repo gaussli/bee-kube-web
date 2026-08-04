@@ -1,6 +1,9 @@
 import { createRouter, createWebHistory } from 'vue-router'
+
 import type { RouteRecordRaw } from 'vue-router'
+
 import { useUserStore } from '@/stores/user'
+
 import { kubernetesRoutes } from './kubernetes'
 import { platformRoutes } from './platform'
 
@@ -10,7 +13,7 @@ export const constantRoutes: RouteRecordRaw[] = [
     path: '/login',
     name: 'login',
     component: () => import('@/views/login/index.vue'),
-    meta: { title: '登录' }
+    meta: { title: '登录' },
   },
   {
     path: '/',
@@ -25,18 +28,18 @@ export const constantRoutes: RouteRecordRaw[] = [
         component: () => import('@/views/error/403.vue'),
         meta: {
           title: '403',
-          icon: 'Box'
-        }
-      }
-    ]
-  }
+          icon: 'Box',
+        },
+      },
+    ],
+  },
 ]
 
 // 创建路由实例
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: constantRoutes,
-  scrollBehavior: () => ({ left: 0, top: 0 })
+  scrollBehavior: () => ({ left: 0, top: 0 }),
 })
 
 // 路由守卫

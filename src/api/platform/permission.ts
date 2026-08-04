@@ -5,8 +5,9 @@ import type {
   PermissionDetailResp,
   PermissionQueryReq,
   PermissionResp,
-  PermissionUpdateReq
+  PermissionUpdateReq,
 } from '@/types'
+
 import { request } from '@/utils'
 
 // 分页查询权限列表

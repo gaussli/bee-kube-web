@@ -144,13 +144,19 @@
  * @module views/kubernetes/workload/job
  */
 import { onMounted, reactive, ref } from 'vue'
+
 import { useRoute, useRouter } from 'vue-router'
+
 import { ElMessage } from 'element-plus'
+
 import type { NamespaceSimpleListResp } from '@/types/kubernetes/namespace'
 import type { JobQueryReq, JobListResp } from '@/types/kubernetes/workload/job'
+
 import type { ActionItem } from '@/components/BeeActionCell/index.vue'
+
 import { getNamespacePage } from '@/api/kubernetes/namespace'
 import { getJobList, deleteJob, deleteJobs } from '@/api/kubernetes/workload/job'
+
 import BeeActionCell from '@/components/BeeActionCell/index.vue'
 import BeeAuditCell from '@/components/BeeAuditCell/index.vue'
 import BeeButton from '@/components/BeeButton/index.vue'
@@ -167,6 +173,7 @@ import BeeTableCommonCell from '@/components/BeeTable/BeeTableCommonCell.vue'
 import BeeTable from '@/components/BeeTable/index.vue'
 import BeeTag from '@/components/BeeTag/index.vue'
 import BeeWorkloadInfoCell from '@/components/BeeWorkloadInfoCell/index.vue'
+
 import { usePermission } from '@/composables/usePermission'
 import { JOB_STATUS_OPTIONS } from '@/config/kubernetes'
 
@@ -196,7 +203,7 @@ const pagination = reactive({ page: 1, pageSize: 10, total: 0 })
 
 /** 命名空间选项 */
 const namespaceOptions = ref<{ label: string; value: string | undefined }[]>([
-  { label: '全部命名空间', value: undefined }
+  { label: '全部命名空间', value: undefined },
 ])
 
 // ==================== Data Loading ====================
@@ -211,7 +218,7 @@ async function loadNamespaceOptions() {
     const namespaces = (await getNamespacePage(clusterId.value, { mode: 'simple' })) as NamespaceSimpleListResp[]
     namespaceOptions.value = [
       { label: '全部命名空间', value: undefined },
-      ...namespaces.map(ns => ({ label: ns.name, value: ns.name }))
+      ...namespaces.map(ns => ({ label: ns.name, value: ns.name })),
     ]
   } catch {
     // 加载失败时保留默认选项
@@ -259,7 +266,7 @@ async function loadData() {
       namespace: queryForm.namespace || undefined,
       status: queryForm.status,
       page: pagination.page,
-      pageSize: pagination.pageSize
+      pageSize: pagination.pageSize,
     })
     tableData.value = resp.list
     pagination.total = resp.total
@@ -315,7 +322,7 @@ function handleEdit(row: JobListResp) {
   router.push({
     name: 'kubernetes:workload:job:edit',
     params: { clusterId: row.clusterId },
-    query: { namespace: row.namespace, name: row.name }
+    query: { namespace: row.namespace, name: row.name },
   })
 }
 
@@ -324,7 +331,7 @@ function handleViewDetail(row: JobListResp) {
   router.push({
     name: 'kubernetes:workload:job:detail',
     params: { clusterId: row.clusterId },
-    query: { namespace: row.namespace, name: row.name }
+    query: { namespace: row.namespace, name: row.name },
   })
 }
 
@@ -383,7 +390,7 @@ async function handleConfirmBatchDelete() {
 const perm: Record<string, boolean> = {
   edit: hasPermission('kubernetes:workload:job:edit'),
   view: hasPermission('kubernetes:workload:job:view'),
-  delete: hasPermission('kubernetes:workload:job:delete')
+  delete: hasPermission('kubernetes:workload:job:delete'),
 }
 
 /**
@@ -402,7 +409,7 @@ function getActions(row: JobListResp): ActionItem[] {
   if (perm.edit) {
     actions.push(
       { value: 'edit', label: '编辑', icon: 'basic-edit', handler: () => handleEdit(row) },
-      { value: 'yamledit', label: '编辑 YAML', icon: 'basic-code', handler: () => handleEditYaml(row) }
+      { value: 'yamledit', label: '编辑 YAML', icon: 'basic-code', handler: () => handleEditYaml(row) },
     )
   }
   // 删除权限 + deletable 条件

@@ -24,6 +24,7 @@
 
 <script setup lang="ts">
 import { ref, watch } from 'vue'
+
 import BeeTreeNode from './BeeTreeNode.vue'
 
 export interface BeeTreeNodeData {
@@ -51,7 +52,7 @@ const props = withDefaults(defineProps<BeeTreeProps>(), {
   defaultCheckedKeys: () => [],
   defaultExpandedKeys: () => [],
   disabled: false,
-  nodeKey: 'id'
+  nodeKey: 'id',
 })
 
 const emit = defineEmits<{
@@ -80,7 +81,7 @@ watch(
       checkedKeys.value = [...newVal]
     }
   },
-  { deep: true }
+  { deep: true },
 )
 
 // 扁平化所有节点
@@ -214,7 +215,7 @@ function handleCheck(key: string | number, checked: boolean) {
   emit(
     'check',
     [...checkedKeys.value],
-    flattenNodes(props.data).filter(n => checkedKeys.value.includes(n[nodeKey]))
+    flattenNodes(props.data).filter(n => checkedKeys.value.includes(n[nodeKey])),
   )
 }
 
@@ -262,7 +263,7 @@ defineExpose({
   setCheckedKeys,
   setChecked,
   expandAll,
-  collapseAll
+  collapseAll,
 })
 </script>
 

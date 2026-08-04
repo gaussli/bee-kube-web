@@ -43,8 +43,11 @@
 
 <script setup lang="ts">
 import { ref } from 'vue'
+
 import { useRouter } from 'vue-router'
+
 import { ArrowLeft, Check, Close } from '@element-plus/icons-vue'
+
 import BeeButton from '@/components/BeeButton/index.vue'
 import BeeDivider from '@/components/BeeDivider/index.vue'
 
@@ -55,11 +58,11 @@ const formRef = ref()
 const formData = ref({
   name: '',
   apiServer: '',
-  description: ''
+  description: '',
 })
 const rules = {
   name: [{ required: true, message: '请输入集群名称', trigger: 'blur' }],
-  apiServer: [{ required: true, message: '请输入 API Server 地址', trigger: 'blur' }]
+  apiServer: [{ required: true, message: '请输入 API Server 地址', trigger: 'blur' }],
 }
 
 function handleBack() {

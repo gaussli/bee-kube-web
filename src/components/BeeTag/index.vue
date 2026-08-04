@@ -16,8 +16,8 @@ withDefaults(
   }>(),
   {
     type: 'default',
-    size: 'default'
-  }
+    size: 'default',
+  },
 )
 </script>
 
@@ -28,29 +28,29 @@ withDefaults(
   $tag-hover-colors: (
     'primary': map.get($colors, 'primary', 50),
     'warning': map.get($colors, 'warning', 50),
-    'danger': map.get($colors, 'danger', 50)
+    'danger': map.get($colors, 'danger', 50),
   );
   $tag-sizes: (
     'large': (
       height: 40px,
       font-size: 16px,
-      padding: 0 16px
+      padding: 0 16px,
     ),
     'default': (
       height: 32px,
       font-size: 14px,
-      padding: 0 12px
+      padding: 0 12px,
     ),
     'small': (
       height: 24px,
       font-size: 12px,
-      padding: 0 8px
+      padding: 0 8px,
     ),
     'tiny': (
       height: 18px,
       font-size: 10px,
-      padding: 0 6px
-    )
+      padding: 0 6px,
+    ),
   );
 
   display: inline-flex;

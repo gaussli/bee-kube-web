@@ -93,11 +93,16 @@
 
 <script setup lang="ts">
 import { computed, onMounted, ref } from 'vue'
+
 import { useRouter } from 'vue-router'
+
 import { ElMessage } from 'element-plus'
+
 import { ArrowLeft, Collection, UserFilled } from '@element-plus/icons-vue'
+
 import type { UserDetailResp, UserAssignRoleReq } from '@/types'
 import type { RoleResp } from '@/types'
+
 import BeeButton from '@/components/BeeButton/index.vue'
 import BeeDivider from '@/components/BeeDivider/index.vue'
 import BeeLabelCopyable from '@/components/BeeLabelCopyable/index.vue'
@@ -115,7 +120,7 @@ const userData = ref<UserDetailResp>({
   id: userId,
   username: 'admin',
   nickname: '管理员',
-  status: 1
+  status: 1,
 })
 
 // 模拟所有角色数据
@@ -129,7 +134,7 @@ for (let i = 1; i <= 55; i++) {
     status: i % 5 === 0 ? 0 : 1,
     isSystem: i <= 2,
     createAt: '',
-    updateAt: ''
+    updateAt: '',
   })
 }
 
@@ -153,7 +158,7 @@ function handleBack() {
 async function handleSubmit() {
   const params: UserAssignRoleReq = {
     userId,
-    roleIds: selectedRoleIds.value
+    roleIds: selectedRoleIds.value,
   }
   console.log('提交参数:', params)
   // TODO: 调用 API

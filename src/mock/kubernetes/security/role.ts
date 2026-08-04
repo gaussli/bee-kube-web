@@ -4,6 +4,7 @@
  */
 import type { PageVo } from '@/types/common'
 import type { RoleResp, RoleQueryReq, RoleReq } from '@/types/kubernetes/security/role'
+
 import { generateId } from '@/mock/utils'
 
 /**
@@ -55,7 +56,7 @@ function createRole(clusterId: string, data: Partial<RoleReq>): void {
     createAt: new Date().toLocaleString(),
     createBy: 'admin',
     updateAt: new Date().toLocaleString(),
-    updateBy: 'admin'
+    updateBy: 'admin',
   }
   mockRoles.push(created)
 }
@@ -67,7 +68,7 @@ function createRole(clusterId: string, data: Partial<RoleReq>): void {
  */
 function updateRole(clusterId: string, data: Partial<RoleReq>): void {
   const index = mockRoles.findIndex(
-    r => r.clusterId === clusterId && r.namespace === data.namespace && r.name === data.name
+    r => r.clusterId === clusterId && r.namespace === data.namespace && r.name === data.name,
   )
   if (index === -1) {
     console.error('[Update Role] can not find role:', data.name)
@@ -77,7 +78,7 @@ function updateRole(clusterId: string, data: Partial<RoleReq>): void {
     ...mockRoles[index],
     ...data,
     updateBy: 'admin',
-    updateAt: new Date().toLocaleString()
+    updateAt: new Date().toLocaleString(),
   }
   mockRoles[index] = updated
 }
@@ -95,7 +96,7 @@ function manageRoleLabels(
   namespaceName: string,
   name: string,
   labels: Record<string, string>,
-  operation: number
+  operation: number,
 ): void {
   const index = mockRoles.findIndex(r => r.clusterId === clusterId && r.namespace === namespaceName && r.name === name)
   if (index === -1) {
@@ -127,7 +128,7 @@ function manageRoleAnnotations(
   namespaceName: string,
   name: string,
   annotations: Record<string, string>,
-  operation: number
+  operation: number,
 ): void {
   const index = mockRoles.findIndex(r => r.clusterId === clusterId && r.namespace === namespaceName && r.name === name)
   if (index === -1) {
@@ -188,7 +189,7 @@ function deleteRole(clusterId: string, namespaceName: string, name: string): voi
 function deleteRoles(clusterId: string, namespaceName: string, names: string[]): void {
   names.forEach(name => {
     const index = mockRoles.findIndex(
-      r => r.clusterId === clusterId && r.namespace === namespaceName && r.name === name
+      r => r.clusterId === clusterId && r.namespace === namespaceName && r.name === name,
     )
     if (index === -1) {
       console.error('[Delete Roles] can not find role:', name)
@@ -216,25 +217,25 @@ export default [
     method: 'get',
     url: '/kubernetes/clusters/:clusterId/namespaces/:namespaceName/roles',
     handler: (pathParams: Record<string, string>, params: Partial<RoleQueryReq>) =>
-      getRolePage(pathParams.clusterId, pathParams.namespaceName, params)
+      getRolePage(pathParams.clusterId, pathParams.namespaceName, params),
   },
   {
     method: 'get',
     url: '/kubernetes/clusters/:clusterId/namespaces/:namespaceName/roles/:name',
     handler: (pathParams: Record<string, string>) =>
-      getRoleDetail(pathParams.clusterId, pathParams.namespaceName, pathParams.name)
+      getRoleDetail(pathParams.clusterId, pathParams.namespaceName, pathParams.name),
   },
   {
     method: 'post',
     url: '/kubernetes/clusters/:clusterId/namespaces/:namespaceName/roles',
     handler: (pathParams: Record<string, string>, _params: unknown, data: Partial<RoleReq>) =>
-      createRole(pathParams.clusterId, data)
+      createRole(pathParams.clusterId, data),
   },
   {
     method: 'put',
     url: '/kubernetes/clusters/:clusterId/namespaces/:namespaceName/roles/:name',
     handler: (pathParams: Record<string, string>, _params: unknown, data: Partial<RoleReq>) =>
-      updateRole(pathParams.clusterId, data)
+      updateRole(pathParams.clusterId, data),
   },
   {
     method: 'put',
@@ -242,8 +243,8 @@ export default [
     handler: (
       pathParams: Record<string, string>,
       _params: unknown,
-      data: { labels: Record<string, string>; operation: number }
-    ) => manageRoleLabels(pathParams.clusterId, pathParams.namespaceName, pathParams.name, data.labels, data.operation)
+      data: { labels: Record<string, string>; operation: number },
+    ) => manageRoleLabels(pathParams.clusterId, pathParams.namespaceName, pathParams.name, data.labels, data.operation),
   },
   {
     method: 'put',
@@ -251,34 +252,34 @@ export default [
     handler: (
       pathParams: Record<string, string>,
       _params: unknown,
-      data: { annotations: Record<string, string>; operation: number }
+      data: { annotations: Record<string, string>; operation: number },
     ) =>
       manageRoleAnnotations(
         pathParams.clusterId,
         pathParams.namespaceName,
         pathParams.name,
         data.annotations,
-        data.operation
-      )
+        data.operation,
+      ),
   },
   {
     method: 'put',
     url: '/kubernetes/clusters/:clusterId/namespaces/:namespaceName/roles/:name/rules',
     handler: (pathParams: Record<string, string>, _params: unknown, data: { rules: RoleReq['rules'] }) =>
-      updateRoleRules(pathParams.clusterId, pathParams.namespaceName, pathParams.name, data.rules)
+      updateRoleRules(pathParams.clusterId, pathParams.namespaceName, pathParams.name, data.rules),
   },
   {
     method: 'delete',
     url: '/kubernetes/clusters/:clusterId/namespaces/:namespaceName/roles/:name',
     handler: (pathParams: Record<string, string>) =>
-      deleteRole(pathParams.clusterId, pathParams.namespaceName, pathParams.name)
+      deleteRole(pathParams.clusterId, pathParams.namespaceName, pathParams.name),
   },
   {
     method: 'delete',
     url: '/kubernetes/clusters/:clusterId/namespaces/:namespaceName/roles',
     handler: (pathParams: Record<string, string>, _params: unknown, data: string[]) =>
-      deleteRoles(pathParams.clusterId, pathParams.namespaceName, data)
-  }
+      deleteRoles(pathParams.clusterId, pathParams.namespaceName, data),
+  },
 ]
 
 /**
@@ -293,7 +294,7 @@ const mockRoles: RoleResp[] = [
     clusterName: 'prod-cluster',
     isSystem: true,
     rules: [
-      { apiGroups: [''], resources: ['endpoints'], verbs: ['get', 'list', 'watch', 'create', 'update', 'patch'] }
+      { apiGroups: [''], resources: ['endpoints'], verbs: ['get', 'list', 'watch', 'create', 'update', 'patch'] },
     ],
     labels: { 'kubernetes.io/bootstrapping': 'rbac-defaults' },
     annotations: { 'rbac.authorization.kubernetes.io/autoupdate': 'true' },
@@ -301,7 +302,7 @@ const mockRoles: RoleResp[] = [
     createAt: '2024-01-01T00:00:00Z',
     createBy: 'system',
     updateAt: '2024-01-01T00:00:00Z',
-    updateBy: 'system'
+    updateBy: 'system',
   },
   {
     id: generateId(),
@@ -314,20 +315,20 @@ const mockRoles: RoleResp[] = [
       {
         apiGroups: ['apps'],
         resources: ['deployments', 'statefulsets'],
-        verbs: ['get', 'list', 'watch', 'create', 'update', 'patch', 'delete']
+        verbs: ['get', 'list', 'watch', 'create', 'update', 'patch', 'delete'],
       },
       {
         apiGroups: [''],
         resources: ['services', 'configmaps', 'secrets'],
-        verbs: ['get', 'list', 'watch', 'create', 'update', 'patch', 'delete']
-      }
+        verbs: ['get', 'list', 'watch', 'create', 'update', 'patch', 'delete'],
+      },
     ],
     labels: { 'app.kubernetes.io/name': 'developer-role' },
     deletable: true,
     createAt: '2024-03-10T09:00:00Z',
     createBy: 'admin',
     updateAt: '2024-03-10T09:00:00Z',
-    updateBy: 'admin'
+    updateBy: 'admin',
   },
   {
     id: generateId(),
@@ -338,7 +339,7 @@ const mockRoles: RoleResp[] = [
     isSystem: false,
     rules: [
       { apiGroups: ['apps'], resources: ['deployments'], verbs: ['get', 'list', 'watch'] },
-      { apiGroups: [''], resources: ['services', 'configmaps'], verbs: ['get', 'list', 'watch'] }
+      { apiGroups: [''], resources: ['services', 'configmaps'], verbs: ['get', 'list', 'watch'] },
     ],
     labels: { 'app.kubernetes.io/name': 'readonly-role' },
     annotations: { description: 'Read-only access within namespace' },
@@ -346,6 +347,6 @@ const mockRoles: RoleResp[] = [
     createAt: '2024-03-15T11:00:00Z',
     createBy: 'admin',
     updateAt: '2024-03-15T11:00:00Z',
-    updateBy: 'admin'
-  }
+    updateBy: 'admin',
+  },
 ]

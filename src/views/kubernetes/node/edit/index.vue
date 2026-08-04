@@ -78,11 +78,17 @@
 
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
+
 import { useRoute, useRouter } from 'vue-router'
+
 import { ElMessage, type FormInstance } from 'element-plus'
+
 import { Box, Plus, Delete, Close, Check } from '@element-plus/icons-vue'
+
 import type { NodeListResp, NodeReq } from '@/types/kubernetes/node'
+
 import { getNodeDetail, updateNode } from '@/api/kubernetes/node'
+
 import BeeButton from '@/components/BeeButton/index.vue'
 import BeePageTitle from '@/components/BeePageTitle/index.vue'
 
@@ -101,7 +107,7 @@ const nodeData = ref<NodeListResp>()
 const formData = ref<NodeReq>({
   labels: {},
   annotations: {},
-  taints: []
+  taints: [],
 })
 
 const formRules = {}
@@ -177,13 +183,13 @@ async function handleSubmit() {
     .map(item => ({
       key: item.key,
       value: item.value,
-      effect: item.effect
+      effect: item.effect,
     }))
 
   const data: NodeReq = {
     labels,
     annotations,
-    taints
+    taints,
   }
 
   submitting.value = true

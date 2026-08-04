@@ -27,7 +27,7 @@ const mockUsers: UserResp[] = [
     createAt: '2024-01-15 09:30:22',
     createBy: 'system',
     updateAt: '2024-04-10 14:22:35',
-    updateBy: 'admin'
+    updateBy: 'admin',
   },
   {
     id: generateId(),
@@ -38,7 +38,7 @@ const mockUsers: UserResp[] = [
     createAt: '2024-02-08 14:15:36',
     createBy: 'admin',
     updateAt: '2024-04-12 10:05:18',
-    updateBy: 'admin'
+    updateBy: 'admin',
   },
   {
     id: generateId(),
@@ -49,7 +49,7 @@ const mockUsers: UserResp[] = [
     createAt: '2024-02-20 10:45:11',
     createBy: 'admin',
     updateAt: '2024-04-08 16:30:42',
-    updateBy: 'zhangsan'
+    updateBy: 'zhangsan',
   },
   {
     id: generateId(),
@@ -60,7 +60,7 @@ const mockUsers: UserResp[] = [
     createAt: '2024-03-05 16:22:08',
     createBy: 'admin',
     updateAt: '2024-04-11 11:15:27',
-    updateBy: 'admin'
+    updateBy: 'admin',
   },
   {
     id: generateId(),
@@ -71,7 +71,7 @@ const mockUsers: UserResp[] = [
     createAt: '2024-03-12 08:55:43',
     createBy: 'zhangsan',
     updateAt: '2024-04-09 09:42:51',
-    updateBy: 'zhangsan'
+    updateBy: 'zhangsan',
   },
   {
     id: generateId(),
@@ -81,7 +81,7 @@ const mockUsers: UserResp[] = [
     createAt: '2024-03-18 11:30:57',
     createBy: 'zhangsan',
     updateAt: '2024-04-07 14:58:33',
-    updateBy: 'lisi'
+    updateBy: 'lisi',
   },
   {
     id: generateId(),
@@ -92,7 +92,7 @@ const mockUsers: UserResp[] = [
     createAt: '2024-03-25 15:10:22',
     createBy: 'lisi',
     updateAt: '2024-04-13 08:25:16',
-    updateBy: 'lisi'
+    updateBy: 'lisi',
   },
   {
     id: generateId(),
@@ -102,7 +102,7 @@ const mockUsers: UserResp[] = [
     createAt: '2024-04-02 09:42:18',
     createBy: 'lisi',
     updateAt: '2024-04-14 17:35:09',
-    updateBy: 'admin'
+    updateBy: 'admin',
   },
   {
     id: generateId(),
@@ -113,7 +113,7 @@ const mockUsers: UserResp[] = [
     createAt: '2024-04-10 13:25:34',
     createBy: 'admin',
     updateAt: '2024-04-10 13:25:34',
-    updateBy: 'admin'
+    updateBy: 'admin',
   },
   {
     id: generateId(),
@@ -123,7 +123,7 @@ const mockUsers: UserResp[] = [
     createAt: '2024-04-15 17:08:45',
     createBy: 'zhangsan',
     updateAt: '2024-04-15 17:08:45',
-    updateBy: 'zhangsan'
+    updateBy: 'zhangsan',
   },
   {
     id: generateId(),
@@ -134,7 +134,7 @@ const mockUsers: UserResp[] = [
     createAt: randomDate(new Date('2024-01-01'), new Date()),
     createBy: 'admin',
     updateAt: randomDate(new Date('2024-03-01'), new Date()),
-    updateBy: 'admin'
+    updateBy: 'admin',
   },
   {
     id: generateId(),
@@ -145,7 +145,7 @@ const mockUsers: UserResp[] = [
     createAt: randomDate(new Date('2024-01-01'), new Date()),
     createBy: 'admin',
     updateAt: randomDate(new Date('2024-03-01'), new Date()),
-    updateBy: 'zhangsan'
+    updateBy: 'zhangsan',
   },
   {
     id: generateId(),
@@ -156,7 +156,7 @@ const mockUsers: UserResp[] = [
     createAt: randomDate(new Date('2024-01-01'), new Date()),
     createBy: 'zhangsan',
     updateAt: randomDate(new Date('2024-03-01'), new Date()),
-    updateBy: 'admin'
+    updateBy: 'admin',
   },
   {
     id: generateId(),
@@ -167,7 +167,7 @@ const mockUsers: UserResp[] = [
     createAt: randomDate(new Date('2024-01-01'), new Date()),
     createBy: 'lisi',
     updateAt: randomDate(new Date('2024-03-01'), new Date()),
-    updateBy: 'lisi'
+    updateBy: 'lisi',
   },
   {
     id: generateId(),
@@ -178,7 +178,7 @@ const mockUsers: UserResp[] = [
     createAt: randomDate(new Date('2024-01-01'), new Date()),
     createBy: 'lisi',
     updateAt: randomDate(new Date('2024-03-01'), new Date()),
-    updateBy: 'zhangsan'
+    updateBy: 'zhangsan',
   },
   {
     id: generateId(),
@@ -189,7 +189,7 @@ const mockUsers: UserResp[] = [
     createAt: randomDate(new Date('2024-01-01'), new Date()),
     createBy: 'admin',
     updateAt: randomDate(new Date('2024-03-01'), new Date()),
-    updateBy: 'admin'
+    updateBy: 'admin',
   },
   {
     id: generateId(),
@@ -200,7 +200,7 @@ const mockUsers: UserResp[] = [
     createAt: randomDate(new Date('2024-01-01'), new Date()),
     createBy: 'admin',
     updateAt: randomDate(new Date('2024-03-01'), new Date()),
-    updateBy: 'lisi'
+    updateBy: 'lisi',
   },
   {
     id: generateId(),
@@ -211,7 +211,7 @@ const mockUsers: UserResp[] = [
     createAt: randomDate(new Date('2024-01-01'), new Date()),
     createBy: 'zhangsan',
     updateAt: randomDate(new Date('2024-03-01'), new Date()),
-    updateBy: 'admin'
+    updateBy: 'admin',
   },
   {
     id: generateId(),
@@ -222,7 +222,7 @@ const mockUsers: UserResp[] = [
     createAt: randomDate(new Date('2024-01-01'), new Date()),
     createBy: 'lisi',
     updateAt: randomDate(new Date('2024-03-01'), new Date()),
-    updateBy: 'lisi'
+    updateBy: 'lisi',
   },
   {
     id: generateId(),
@@ -233,7 +233,7 @@ const mockUsers: UserResp[] = [
     createAt: randomDate(new Date('2024-01-01'), new Date()),
     createBy: 'admin',
     updateAt: randomDate(new Date('2024-03-01'), new Date()),
-    updateBy: 'admin'
+    updateBy: 'admin',
   },
   {
     id: generateId(),
@@ -244,7 +244,7 @@ const mockUsers: UserResp[] = [
     createAt: randomDate(new Date('2024-01-01'), new Date()),
     createBy: 'zhangsan',
     updateAt: randomDate(new Date('2024-03-01'), new Date()),
-    updateBy: 'zhangsan'
+    updateBy: 'zhangsan',
   },
   {
     id: generateId(),
@@ -255,7 +255,7 @@ const mockUsers: UserResp[] = [
     createAt: randomDate(new Date('2024-01-01'), new Date()),
     createBy: 'lisi',
     updateAt: randomDate(new Date('2024-03-01'), new Date()),
-    updateBy: 'admin'
+    updateBy: 'admin',
   },
   {
     id: generateId(),
@@ -266,7 +266,7 @@ const mockUsers: UserResp[] = [
     createAt: randomDate(new Date('2024-01-01'), new Date()),
     createBy: 'admin',
     updateAt: randomDate(new Date('2024-03-01'), new Date()),
-    updateBy: 'lisi'
+    updateBy: 'lisi',
   },
   {
     id: generateId(),
@@ -277,7 +277,7 @@ const mockUsers: UserResp[] = [
     createAt: randomDate(new Date('2024-01-01'), new Date()),
     createBy: 'lisi',
     updateAt: randomDate(new Date('2024-03-01'), new Date()),
-    updateBy: 'zhangsan'
+    updateBy: 'zhangsan',
   },
   {
     id: generateId(),
@@ -288,7 +288,7 @@ const mockUsers: UserResp[] = [
     createAt: randomDate(new Date('2024-01-01'), new Date()),
     createBy: 'admin',
     updateAt: randomDate(new Date('2024-03-01'), new Date()),
-    updateBy: 'admin'
+    updateBy: 'admin',
   },
   {
     id: generateId(),
@@ -299,7 +299,7 @@ const mockUsers: UserResp[] = [
     createAt: randomDate(new Date('2024-01-01'), new Date()),
     createBy: 'zhangsan',
     updateAt: randomDate(new Date('2024-03-01'), new Date()),
-    updateBy: 'admin'
+    updateBy: 'admin',
   },
   {
     id: generateId(),
@@ -310,7 +310,7 @@ const mockUsers: UserResp[] = [
     createAt: randomDate(new Date('2024-01-01'), new Date()),
     createBy: 'lisi',
     updateAt: randomDate(new Date('2024-03-01'), new Date()),
-    updateBy: 'lisi'
+    updateBy: 'lisi',
   },
   {
     id: generateId(),
@@ -321,7 +321,7 @@ const mockUsers: UserResp[] = [
     createAt: randomDate(new Date('2024-01-01'), new Date()),
     createBy: 'admin',
     updateAt: randomDate(new Date('2024-03-01'), new Date()),
-    updateBy: 'zhangsan'
+    updateBy: 'zhangsan',
   },
   {
     id: generateId(),
@@ -332,7 +332,7 @@ const mockUsers: UserResp[] = [
     createAt: randomDate(new Date('2024-01-01'), new Date()),
     createBy: 'lisi',
     updateAt: randomDate(new Date('2024-03-01'), new Date()),
-    updateBy: 'admin'
+    updateBy: 'admin',
   },
   {
     id: generateId(),
@@ -343,7 +343,7 @@ const mockUsers: UserResp[] = [
     createAt: randomDate(new Date('2024-01-01'), new Date()),
     createBy: 'admin',
     updateAt: randomDate(new Date('2024-03-01'), new Date()),
-    updateBy: 'admin'
+    updateBy: 'admin',
   },
   {
     id: generateId(),
@@ -354,7 +354,7 @@ const mockUsers: UserResp[] = [
     createAt: randomDate(new Date('2024-01-01'), new Date()),
     createBy: 'zhangsan',
     updateAt: randomDate(new Date('2024-03-01'), new Date()),
-    updateBy: 'zhangsan'
+    updateBy: 'zhangsan',
   },
   {
     id: generateId(),
@@ -365,7 +365,7 @@ const mockUsers: UserResp[] = [
     createAt: randomDate(new Date('2024-01-01'), new Date()),
     createBy: 'lisi',
     updateAt: randomDate(new Date('2024-03-01'), new Date()),
-    updateBy: 'admin'
+    updateBy: 'admin',
   },
   {
     id: generateId(),
@@ -376,7 +376,7 @@ const mockUsers: UserResp[] = [
     createAt: randomDate(new Date('2024-01-01'), new Date()),
     createBy: 'admin',
     updateAt: randomDate(new Date('2024-03-01'), new Date()),
-    updateBy: 'lisi'
+    updateBy: 'lisi',
   },
   {
     id: generateId(),
@@ -387,7 +387,7 @@ const mockUsers: UserResp[] = [
     createAt: randomDate(new Date('2024-01-01'), new Date()),
     createBy: 'lisi',
     updateAt: randomDate(new Date('2024-03-01'), new Date()),
-    updateBy: 'zhangsan'
+    updateBy: 'zhangsan',
   },
   {
     id: generateId(),
@@ -398,7 +398,7 @@ const mockUsers: UserResp[] = [
     createAt: randomDate(new Date('2024-01-01'), new Date()),
     createBy: 'admin',
     updateAt: randomDate(new Date('2024-03-01'), new Date()),
-    updateBy: 'admin'
+    updateBy: 'admin',
   },
   {
     id: generateId(),
@@ -409,7 +409,7 @@ const mockUsers: UserResp[] = [
     createAt: randomDate(new Date('2024-01-01'), new Date()),
     createBy: 'zhangsan',
     updateAt: randomDate(new Date('2024-03-01'), new Date()),
-    updateBy: 'admin'
+    updateBy: 'admin',
   },
   {
     id: generateId(),
@@ -420,7 +420,7 @@ const mockUsers: UserResp[] = [
     createAt: randomDate(new Date('2024-01-01'), new Date()),
     createBy: 'lisi',
     updateAt: randomDate(new Date('2024-03-01'), new Date()),
-    updateBy: 'lisi'
+    updateBy: 'lisi',
   },
   {
     id: generateId(),
@@ -431,7 +431,7 @@ const mockUsers: UserResp[] = [
     createAt: randomDate(new Date('2024-01-01'), new Date()),
     createBy: 'admin',
     updateAt: randomDate(new Date('2024-03-01'), new Date()),
-    updateBy: 'zhangsan'
+    updateBy: 'zhangsan',
   },
   {
     id: generateId(),
@@ -442,7 +442,7 @@ const mockUsers: UserResp[] = [
     createAt: randomDate(new Date('2024-01-01'), new Date()),
     createBy: 'lisi',
     updateAt: randomDate(new Date('2024-03-01'), new Date()),
-    updateBy: 'admin'
+    updateBy: 'admin',
   },
   {
     id: generateId(),
@@ -453,7 +453,7 @@ const mockUsers: UserResp[] = [
     createAt: randomDate(new Date('2024-01-01'), new Date()),
     createBy: 'admin',
     updateAt: randomDate(new Date('2024-03-01'), new Date()),
-    updateBy: 'admin'
+    updateBy: 'admin',
   },
   {
     id: generateId(),
@@ -464,7 +464,7 @@ const mockUsers: UserResp[] = [
     createAt: randomDate(new Date('2024-01-01'), new Date()),
     createBy: 'zhangsan',
     updateAt: randomDate(new Date('2024-03-01'), new Date()),
-    updateBy: 'zhangsan'
+    updateBy: 'zhangsan',
   },
   {
     id: generateId(),
@@ -475,7 +475,7 @@ const mockUsers: UserResp[] = [
     createAt: randomDate(new Date('2024-01-01'), new Date()),
     createBy: 'lisi',
     updateAt: randomDate(new Date('2024-03-01'), new Date()),
-    updateBy: 'admin'
+    updateBy: 'admin',
   },
   {
     id: generateId(),
@@ -486,7 +486,7 @@ const mockUsers: UserResp[] = [
     createAt: randomDate(new Date('2024-01-01'), new Date()),
     createBy: 'admin',
     updateAt: randomDate(new Date('2024-03-01'), new Date()),
-    updateBy: 'lisi'
+    updateBy: 'lisi',
   },
   {
     id: generateId(),
@@ -497,7 +497,7 @@ const mockUsers: UserResp[] = [
     createAt: randomDate(new Date('2024-01-01'), new Date()),
     createBy: 'lisi',
     updateAt: randomDate(new Date('2024-03-01'), new Date()),
-    updateBy: 'zhangsan'
+    updateBy: 'zhangsan',
   },
   {
     id: generateId(),
@@ -508,7 +508,7 @@ const mockUsers: UserResp[] = [
     createAt: randomDate(new Date('2024-01-01'), new Date()),
     createBy: 'admin',
     updateAt: randomDate(new Date('2024-03-01'), new Date()),
-    updateBy: 'admin'
+    updateBy: 'admin',
   },
   {
     id: generateId(),
@@ -519,7 +519,7 @@ const mockUsers: UserResp[] = [
     createAt: randomDate(new Date('2024-01-01'), new Date()),
     createBy: 'zhangsan',
     updateAt: randomDate(new Date('2024-03-01'), new Date()),
-    updateBy: 'admin'
+    updateBy: 'admin',
   },
   {
     id: generateId(),
@@ -530,7 +530,7 @@ const mockUsers: UserResp[] = [
     createAt: randomDate(new Date('2024-01-01'), new Date()),
     createBy: 'lisi',
     updateAt: randomDate(new Date('2024-03-01'), new Date()),
-    updateBy: 'lisi'
+    updateBy: 'lisi',
   },
   {
     id: generateId(),
@@ -541,7 +541,7 @@ const mockUsers: UserResp[] = [
     createAt: randomDate(new Date('2024-01-01'), new Date()),
     createBy: 'admin',
     updateAt: randomDate(new Date('2024-03-01'), new Date()),
-    updateBy: 'zhangsan'
+    updateBy: 'zhangsan',
   },
   {
     id: generateId(),
@@ -552,7 +552,7 @@ const mockUsers: UserResp[] = [
     createAt: randomDate(new Date('2024-01-01'), new Date()),
     createBy: 'lisi',
     updateAt: randomDate(new Date('2024-03-01'), new Date()),
-    updateBy: 'admin'
+    updateBy: 'admin',
   },
   {
     id: generateId(),
@@ -563,7 +563,7 @@ const mockUsers: UserResp[] = [
     createAt: randomDate(new Date('2024-01-01'), new Date()),
     createBy: 'admin',
     updateAt: randomDate(new Date('2024-03-01'), new Date()),
-    updateBy: 'admin'
+    updateBy: 'admin',
   },
   {
     id: generateId(),
@@ -574,7 +574,7 @@ const mockUsers: UserResp[] = [
     createAt: randomDate(new Date('2024-01-01'), new Date()),
     createBy: 'zhangsan',
     updateAt: randomDate(new Date('2024-03-01'), new Date()),
-    updateBy: 'zhangsan'
+    updateBy: 'zhangsan',
   },
   {
     id: generateId(),
@@ -585,7 +585,7 @@ const mockUsers: UserResp[] = [
     createAt: randomDate(new Date('2024-01-01'), new Date()),
     createBy: 'lisi',
     updateAt: randomDate(new Date('2024-03-01'), new Date()),
-    updateBy: 'admin'
+    updateBy: 'admin',
   },
   {
     id: generateId(),
@@ -596,7 +596,7 @@ const mockUsers: UserResp[] = [
     createAt: randomDate(new Date('2024-01-01'), new Date()),
     createBy: 'admin',
     updateAt: randomDate(new Date('2024-03-01'), new Date()),
-    updateBy: 'lisi'
+    updateBy: 'lisi',
   },
   {
     id: generateId(),
@@ -607,7 +607,7 @@ const mockUsers: UserResp[] = [
     createAt: randomDate(new Date('2024-01-01'), new Date()),
     createBy: 'lisi',
     updateAt: randomDate(new Date('2024-03-01'), new Date()),
-    updateBy: 'zhangsan'
+    updateBy: 'zhangsan',
   },
   {
     id: generateId(),
@@ -618,7 +618,7 @@ const mockUsers: UserResp[] = [
     createAt: randomDate(new Date('2024-01-01'), new Date()),
     createBy: 'admin',
     updateAt: randomDate(new Date('2024-03-01'), new Date()),
-    updateBy: 'admin'
+    updateBy: 'admin',
   },
   {
     id: generateId(),
@@ -629,7 +629,7 @@ const mockUsers: UserResp[] = [
     createAt: randomDate(new Date('2024-01-01'), new Date()),
     createBy: 'zhangsan',
     updateAt: randomDate(new Date('2024-03-01'), new Date()),
-    updateBy: 'admin'
+    updateBy: 'admin',
   },
   {
     id: generateId(),
@@ -640,7 +640,7 @@ const mockUsers: UserResp[] = [
     createAt: randomDate(new Date('2024-01-01'), new Date()),
     createBy: 'lisi',
     updateAt: randomDate(new Date('2024-03-01'), new Date()),
-    updateBy: 'lisi'
+    updateBy: 'lisi',
   },
   {
     id: generateId(),
@@ -651,7 +651,7 @@ const mockUsers: UserResp[] = [
     createAt: randomDate(new Date('2024-01-01'), new Date()),
     createBy: 'admin',
     updateAt: randomDate(new Date('2024-03-01'), new Date()),
-    updateBy: 'zhangsan'
+    updateBy: 'zhangsan',
   },
   {
     id: generateId(),
@@ -662,7 +662,7 @@ const mockUsers: UserResp[] = [
     createAt: randomDate(new Date('2024-01-01'), new Date()),
     createBy: 'lisi',
     updateAt: randomDate(new Date('2024-03-01'), new Date()),
-    updateBy: 'admin'
+    updateBy: 'admin',
   },
   {
     id: generateId(),
@@ -673,8 +673,8 @@ const mockUsers: UserResp[] = [
     createAt: randomDate(new Date('2024-01-01'), new Date()),
     createBy: 'admin',
     updateAt: randomDate(new Date('2024-03-01'), new Date()),
-    updateBy: 'admin'
-  }
+    updateBy: 'admin',
+  },
 ]
 
 function getUserPage(params: UserQueryReq): PageVo<UserResp> {
@@ -683,7 +683,7 @@ function getUserPage(params: UserQueryReq): PageVo<UserResp> {
   let filtered = [...mockUsers]
   if (id && id === username && nickname === username) {
     filtered = filtered.filter(
-      u => u.id == id || u.username.includes(username.toLowerCase()) || u.nickname.includes(nickname)
+      u => u.id == id || u.username.includes(username.toLowerCase()) || u.nickname.includes(nickname),
     )
   } else {
     if (username) {
@@ -708,6 +708,6 @@ export default [
   {
     method: 'get',
     url: '/system/users',
-    handler: (params: any) => getUserPage(params)
-  }
+    handler: (params: any) => getUserPage(params),
+  },
 ]

@@ -9,8 +9,8 @@ export const nodeRoutes: RouteRecordRaw[] = [
       title: '节点',
       icon: 'Box',
       permission: 'kubernetes:node:view',
-      activeCode: 'kubernetes:node'
-    }
+      activeCode: 'kubernetes:node',
+    },
   },
   {
     path: '/kubernetes/clusters/:clusterId/nodes/detail',
@@ -20,8 +20,8 @@ export const nodeRoutes: RouteRecordRaw[] = [
       title: '节点详情',
       icon: 'Box',
       permission: 'kubernetes:node:view',
-      activeCode: 'kubernetes:node'
-    }
+      activeCode: 'kubernetes:node',
+    },
   },
   {
     path: '/kubernetes/clusters/:clusterId/nodes/edit',
@@ -31,7 +31,7 @@ export const nodeRoutes: RouteRecordRaw[] = [
       title: '编辑节点',
       icon: 'Box',
       permission: 'kubernetes:node:edit',
-      activeCode: 'kubernetes:node'
-    }
-  }
+      activeCode: 'kubernetes:node',
+    },
+  },
 ]

@@ -19,8 +19,9 @@ import type {
   StatefulSetQueryForm,
   StatefulSetScaleForm,
   StatefulSetScheduleVo,
-  StatefulSetYamlForm
+  StatefulSetYamlForm,
 } from '@/types/kubernetes/workload/statefulset'
+
 import { request } from '@/utils'
 
 /**
@@ -31,7 +32,7 @@ import { request } from '@/utils'
  */
 export function getStatefulSetList(
   clusterId: string,
-  params: Partial<StatefulSetQueryForm>
+  params: Partial<StatefulSetQueryForm>,
 ): Promise<PageVo<StatefulSetListVo>> {
   return request.get<PageVo<StatefulSetListVo>>(`/kubernetes/clusters/${clusterId}/statefulsets`, params)
 }
@@ -45,7 +46,7 @@ export function getStatefulSetList(
  */
 export function getStatefulSetDetail(clusterId: string, namespace: string, name: string): Promise<StatefulSetDetailVo> {
   return request.get<StatefulSetDetailVo>(
-    `/kubernetes/clusters/${clusterId}/namespaces/${namespace}/statefulsets/${name}`
+    `/kubernetes/clusters/${clusterId}/namespaces/${namespace}/statefulsets/${name}`,
   )
 }
 
@@ -59,10 +60,10 @@ export function getStatefulSetDetail(clusterId: string, namespace: string, name:
 export function getStatefulSetPodList(
   clusterId: string,
   namespace: string,
-  name: string
+  name: string,
 ): Promise<StatefulSetPodListVo[]> {
   return request.get<StatefulSetPodListVo[]>(
-    `/kubernetes/clusters/${clusterId}/namespaces/${namespace}/statefulsets/${name}/pods`
+    `/kubernetes/clusters/${clusterId}/namespaces/${namespace}/statefulsets/${name}/pods`,
   )
 }
 
@@ -76,10 +77,10 @@ export function getStatefulSetPodList(
 export function getStatefulSetSchedule(
   clusterId: string,
   namespace: string,
-  name: string
+  name: string,
 ): Promise<StatefulSetScheduleVo> {
   return request.get<StatefulSetScheduleVo>(
-    `/kubernetes/clusters/${clusterId}/namespaces/${namespace}/statefulsets/${name}/schedule`
+    `/kubernetes/clusters/${clusterId}/namespaces/${namespace}/statefulsets/${name}/schedule`,
   )
 }
 
@@ -93,10 +94,10 @@ export function getStatefulSetSchedule(
 export function getStatefulSetHistoryRevisionList(
   clusterId: string,
   namespace: string,
-  name: string
+  name: string,
 ): Promise<StatefulSetHistoryRevisionListVo[]> {
   return request.get<StatefulSetHistoryRevisionListVo[]>(
-    `/kubernetes/clusters/${clusterId}/namespaces/${namespace}/statefulsets/${name}/history`
+    `/kubernetes/clusters/${clusterId}/namespaces/${namespace}/statefulsets/${name}/history`,
   )
 }
 
@@ -110,10 +111,10 @@ export function getStatefulSetHistoryRevisionList(
 export function getStatefulSetNetwork(
   clusterId: string,
   namespace: string,
-  name: string
+  name: string,
 ): Promise<StatefulSetNetworkVo> {
   return request.get<StatefulSetNetworkVo>(
-    `/kubernetes/clusters/${clusterId}/namespaces/${namespace}/statefulsets/${name}/network`
+    `/kubernetes/clusters/${clusterId}/namespaces/${namespace}/statefulsets/${name}/network`,
   )
 }
 
@@ -127,10 +128,10 @@ export function getStatefulSetNetwork(
 export function getStatefulSetStorageList(
   clusterId: string,
   namespace: string,
-  name: string
+  name: string,
 ): Promise<StatefulSetStorageListVo[]> {
   return request.get<StatefulSetStorageListVo[]>(
-    `/kubernetes/clusters/${clusterId}/namespaces/${namespace}/statefulsets/${name}/storages`
+    `/kubernetes/clusters/${clusterId}/namespaces/${namespace}/statefulsets/${name}/storages`,
   )
 }
 
@@ -144,10 +145,10 @@ export function getStatefulSetStorageList(
 export function getStatefulSetMonitor(
   clusterId: string,
   namespace: string,
-  name: string
+  name: string,
 ): Promise<StatefulSetMonitorVo> {
   return request.get<StatefulSetMonitorVo>(
-    `/kubernetes/clusters/${clusterId}/namespaces/${namespace}/statefulsets/${name}/monitor`
+    `/kubernetes/clusters/${clusterId}/namespaces/${namespace}/statefulsets/${name}/monitor`,
   )
 }
 
@@ -161,10 +162,10 @@ export function getStatefulSetMonitor(
 export function getStatefulSetEventList(
   clusterId: string,
   namespace: string,
-  name: string
+  name: string,
 ): Promise<StatefulSetEventListVo[]> {
   return request.get<StatefulSetEventListVo[]>(
-    `/kubernetes/clusters/${clusterId}/namespaces/${namespace}/statefulsets/${name}/events`
+    `/kubernetes/clusters/${clusterId}/namespaces/${namespace}/statefulsets/${name}/events`,
   )
 }
 
@@ -200,7 +201,7 @@ export function updateStatefulSet(
   clusterId: string,
   namespace: string,
   name: string,
-  data: Partial<StatefulSetUpdateForm>
+  data: Partial<StatefulSetUpdateForm>,
 ): Promise<void> {
   return request.put(`/kubernetes/clusters/${clusterId}/namespaces/${namespace}/statefulsets/${name}`, data)
 }
@@ -216,7 +217,7 @@ export function manageStatefulSetLabels(
   clusterId: string,
   namespace: string,
   name: string,
-  data: StatefulSetLabelForm
+  data: StatefulSetLabelForm,
 ): Promise<void> {
   return request.post(`/kubernetes/clusters/${clusterId}/namespaces/${namespace}/statefulsets/${name}/labels`, data)
 }
@@ -232,11 +233,11 @@ export function manageStatefulSetAnnotations(
   clusterId: string,
   namespace: string,
   name: string,
-  data: StatefulSetAnnotationForm
+  data: StatefulSetAnnotationForm,
 ): Promise<void> {
   return request.post(
     `/kubernetes/clusters/${clusterId}/namespaces/${namespace}/statefulsets/${name}/annotations`,
-    data
+    data,
   )
 }
 
@@ -289,7 +290,7 @@ export function scaleStatefulSet(
   clusterId: string,
   namespace: string,
   name: string,
-  data: StatefulSetScaleForm
+  data: StatefulSetScaleForm,
 ): Promise<void> {
   return request.post(`/kubernetes/clusters/${clusterId}/namespaces/${namespace}/statefulsets/${name}/scale`, data)
 }

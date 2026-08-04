@@ -8,8 +8,9 @@ import type {
   PersistentVolumeClaimResp,
   PersistentVolumeClaimReq,
   PersistentVolumeClaimLabelsReq,
-  PersistentVolumeClaimAnnotationsReq
+  PersistentVolumeClaimAnnotationsReq,
 } from '@/types/kubernetes/storage/persistentVolumeClaim'
+
 import { request } from '@/utils'
 
 /**
@@ -22,7 +23,7 @@ import { request } from '@/utils'
 export function getPersistentVolumeClaimPage(
   clusterId: string,
   namespaceName: string,
-  params: Partial<PersistentVolumeClaimQueryReq>
+  params: Partial<PersistentVolumeClaimQueryReq>,
 ): Promise<PageVo<PersistentVolumeClaimResp>> {
   return request.get(`/kubernetes/clusters/${clusterId}/namespaces/${namespaceName}/persistentvolumeclaims`, { params })
 }
@@ -37,7 +38,7 @@ export function getPersistentVolumeClaimPage(
 export function getPersistentVolumeClaimDetail(
   clusterId: string,
   namespaceName: string,
-  name: string
+  name: string,
 ): Promise<PersistentVolumeClaimResp> {
   return request.get(`/kubernetes/clusters/${clusterId}/namespaces/${namespaceName}/persistentvolumeclaims/${name}`)
 }
@@ -61,7 +62,7 @@ export function createPersistentVolumeClaim(clusterId: string, data: Partial<Per
 export function updatePersistentVolumeClaim(clusterId: string, data: Partial<PersistentVolumeClaimReq>): Promise<void> {
   return request.put(
     `/kubernetes/clusters/${clusterId}/namespaces/${data.namespace}/persistentvolumeclaims/${data.name}`,
-    { data }
+    { data },
   )
 }
 
@@ -76,11 +77,11 @@ export function managePersistentVolumeClaimLabels(
   clusterId: string,
   namespaceName: string,
   name: string,
-  data: Partial<PersistentVolumeClaimLabelsReq>
+  data: Partial<PersistentVolumeClaimLabelsReq>,
 ): Promise<void> {
   return request.put(
     `/kubernetes/clusters/${clusterId}/namespaces/${namespaceName}/persistentvolumeclaims/${name}/labels`,
-    { data }
+    { data },
   )
 }
 
@@ -95,11 +96,11 @@ export function managePersistentVolumeClaimAnnotations(
   clusterId: string,
   namespaceName: string,
   name: string,
-  data: Partial<PersistentVolumeClaimAnnotationsReq>
+  data: Partial<PersistentVolumeClaimAnnotationsReq>,
 ): Promise<void> {
   return request.put(
     `/kubernetes/clusters/${clusterId}/namespaces/${namespaceName}/persistentvolumeclaims/${name}/annotations`,
-    { data }
+    { data },
   )
 }
 
@@ -121,6 +122,6 @@ export function deletePersistentVolumeClaim(clusterId: string, namespaceName: st
  */
 export function deletePersistentVolumeClaims(clusterId: string, namespaceName: string, names: string[]): Promise<void> {
   return request.delete(`/kubernetes/clusters/${clusterId}/namespaces/${namespaceName}/persistentvolumeclaims`, {
-    data: names
+    data: names,
   })
 }

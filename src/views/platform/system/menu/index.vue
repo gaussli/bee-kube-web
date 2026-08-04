@@ -229,8 +229,11 @@
 
 <script setup lang="ts">
 import { onMounted, reactive, ref } from 'vue'
+
 import { useRouter } from 'vue-router'
+
 import { ElMessage } from 'element-plus'
+
 import {
   CircleCheck,
   CircleClose,
@@ -240,10 +243,13 @@ import {
   Plus,
   Refresh,
   Setting,
-  View
+  View,
 } from '@element-plus/icons-vue'
+
 import type { MenuQueryReq, MenuResp } from '@/types/platform/menu'
+
 import { changeMenuStatus, getMenuPage, removeMenu, batchRemoveMenus } from '@/api/platform/menu'
+
 import BeeAuditCell from '@/components/BeeAuditCell/index.vue'
 import BeeButton from '@/components/BeeButton/index.vue'
 import BeeDialog from '@/components/BeeDialog/index.vue'
@@ -253,6 +259,7 @@ import BeeLabelCopyable from '@/components/BeeLabelCopyable/index.vue'
 import BeeSegmentedControl from '@/components/BeeSegmentedControl/index.vue'
 import BeeTag from '@/components/BeeTag/index.vue'
 import MenuCell from '@/components/MenuCell/index.vue'
+
 import { usePermission } from '@/composables/usePermission'
 
 defineOptions({ name: 'MenuManage' })
@@ -263,7 +270,7 @@ const { hasPermission } = usePermission()
 
 const menuStatusConfig = [
   { value: 1, label: '启用', color: 'rgb(103, 194, 58)' },
-  { value: 0, label: '禁用', color: 'rgb(245, 108, 108)' }
+  { value: 0, label: '禁用', color: 'rgb(245, 108, 108)' },
 ]
 
 const typeTextMap: Record<number, string> = { 0: '目录', 1: '菜单', 2: '按钮' }
@@ -272,14 +279,14 @@ const typeTagMap: Record<number, string> = { 0: 'warning', 1: 'primary', 2: 'inf
 const statusOptions = [
   { label: '所有', value: undefined },
   { label: '启用', value: 1 },
-  { label: '禁用', value: 0 }
+  { label: '禁用', value: 0 },
 ]
 
 const typeOptions = [
   { label: '全部', value: undefined },
   { label: '目录', value: 0 },
   { label: '菜单', value: 1 },
-  { label: '按钮', value: 2 }
+  { label: '按钮', value: 2 },
 ]
 
 const loading = ref(false)
@@ -296,12 +303,12 @@ const queryForm = reactive<MenuQueryReq>({
   type: undefined,
   status: undefined,
   page: 1,
-  pageSize: 10
+  pageSize: 10,
 })
 const pagination = reactive({
   page: 1,
   pageSize: 10,
-  total: 0
+  total: 0,
 })
 
 async function loadData() {

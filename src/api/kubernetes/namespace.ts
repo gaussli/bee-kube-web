@@ -12,8 +12,9 @@ import type {
   NamespaceReq,
   NamespaceAnnotationsReq,
   NamespaceQuotaReq,
-  NamespaceImportReq
+  NamespaceImportReq,
 } from '@/types/kubernetes/namespace'
+
 import { request } from '@/utils'
 
 /**
@@ -24,11 +25,11 @@ import { request } from '@/utils'
  */
 export function getNamespacePage(
   clusterId: string,
-  params: Partial<NamespaceQueryReq>
+  params: Partial<NamespaceQueryReq>,
 ): Promise<PageVo<NamespaceListResp> | NamespaceSimpleListResp[]> {
   return request.get<PageVo<NamespaceListResp> | NamespaceSimpleListResp[]>(
     `/kubernetes/clusters/${clusterId}/namespaces`,
-    params
+    params,
   )
 }
 
@@ -70,7 +71,7 @@ export function updateNamespace(clusterId: string, name: string, data: Partial<N
 export function manageNamespaceLabels(
   clusterId: string,
   name: string,
-  data: Partial<NamespaceLabelsReq>
+  data: Partial<NamespaceLabelsReq>,
 ): Promise<void> {
   return request.post(`/kubernetes/clusters/${clusterId}/namespaces/${name}/labels`, data)
 }
@@ -84,7 +85,7 @@ export function manageNamespaceLabels(
 export function manageNamespaceAnnotations(
   clusterId: string,
   name: string,
-  data: Partial<NamespaceAnnotationsReq>
+  data: Partial<NamespaceAnnotationsReq>,
 ): Promise<void> {
   return request.post(`/kubernetes/clusters/${clusterId}/namespaces/${name}/annotations`, data)
 }

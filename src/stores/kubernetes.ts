@@ -1,4 +1,5 @@
 import { ref } from 'vue'
+
 import { defineStore } from 'pinia'
 
 export const useKubernetesStore = defineStore('kubernetes', () => {
@@ -11,6 +12,6 @@ export const useKubernetesStore = defineStore('kubernetes', () => {
 
   return {
     activeClusterId,
-    setActiveClusterId
+    setActiveClusterId,
   }
 })

@@ -35,11 +35,17 @@
 
 <script setup lang="ts">
 import { onMounted, ref } from 'vue'
+
 import { useRouter } from 'vue-router'
+
 import { ElMessage } from 'element-plus'
+
 import { ArrowLeft, Close, Check } from '@element-plus/icons-vue'
+
 import type { RoleDetailResp } from '@/types/platform/role'
+
 import { getRoleDetail, updateRole } from '@/api/platform/role'
+
 import BeeButton from '@/components/BeeButton/index.vue'
 import BeeDivider from '@/components/BeeDivider/index.vue'
 import RoleForm from '@/components/RoleForm/index.vue'

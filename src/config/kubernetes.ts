@@ -21,20 +21,20 @@ export const CLUSTER_STATUS_OPTIONS: StatusOption[] = [
   { value: 1, label: '健康', labelEn: 'Healthy', color: COLOR_SUCCESS },
   { value: 2, label: '异常', labelEn: 'Unhealthy', color: COLOR_DANGER },
   { value: 3, label: '纳管中', labelEn: 'Registering', color: COLOR_PRIMARY },
-  { value: 4, label: '失败', labelEn: 'Failed', color: COLOR_DANGER }
+  { value: 4, label: '失败', labelEn: 'Failed', color: COLOR_DANGER },
 ]
 
 export const NODE_STATUS_OPTIONS: StatusOption[] = [
   { value: undefined, label: '所有状态', labelEn: 'ALL', color: COLOR_SUCCESS },
   { value: 'Ready', label: '就绪', labelEn: 'Ready', color: COLOR_SUCCESS },
   { value: 'NotReady', label: '未就绪', labelEn: 'NotReady', color: COLOR_DANGER },
-  { value: 'Unknown', label: '未知', labelEn: 'Unknown', color: COLOR_GRAY_70 }
+  { value: 'Unknown', label: '未知', labelEn: 'Unknown', color: COLOR_GRAY_70 },
 ]
 
 export const NAMESPACE_STATUS_OPTIONS: StatusOption[] = [
   { value: undefined, label: '所有状态', labelEn: 'ALL', color: COLOR_SUCCESS },
   { value: 'Active', label: '活跃', labelEn: 'Active', color: COLOR_SUCCESS },
-  { value: 'Terminating', label: '终止中', labelEn: 'Terminating', color: COLOR_PRIMARY }
+  { value: 'Terminating', label: '终止中', labelEn: 'Terminating', color: COLOR_PRIMARY },
 ]
 
 /** Deployment 状态配置选项 */
@@ -49,7 +49,7 @@ export const DEPLOYMENT_STATUS_OPTIONS: StatusOption[] = [
   { value: 'CreateTimeout', label: '创建超时', labelEn: 'CreateTimeout', color: COLOR_DANGER },
   { value: 'UpdateTimeout', label: '更新超时', labelEn: 'UpdateTimeout', color: COLOR_DANGER },
   { value: 'Failed', label: '失败异常', labelEn: 'Failed', color: COLOR_DANGER },
-  { value: 'Unknown', label: '未知', labelEn: 'Unknown', color: COLOR_GRAY_70 }
+  { value: 'Unknown', label: '未知', labelEn: 'Unknown', color: COLOR_GRAY_70 },
 ]
 
 /** StatefulSet 状态配置选项 */
@@ -64,7 +64,7 @@ export const STATEFULSET_STATUS_OPTIONS: StatusOption[] = [
   { value: 'CreateTimeout', label: '创建超时', labelEn: 'CreateTimeout', color: COLOR_DANGER },
   { value: 'UpdateTimeout', label: '更新超时', labelEn: 'UpdateTimeout', color: COLOR_DANGER },
   { value: 'Failed', label: '失败异常', labelEn: 'Failed', color: COLOR_DANGER },
-  { value: 'Unknown', label: '未知', labelEn: 'Unknown', color: COLOR_GRAY_70 }
+  { value: 'Unknown', label: '未知', labelEn: 'Unknown', color: COLOR_GRAY_70 },
 ]
 
 /** DaemonSet 状态配置选项 */
@@ -79,7 +79,7 @@ export const DAEMONSET_STATUS_OPTIONS: StatusOption[] = [
   { value: 'CreateTimeout', label: '创建超时', labelEn: 'CreateTimeout', color: COLOR_DANGER },
   { value: 'UpdateTimeout', label: '更新超时', labelEn: 'UpdateTimeout', color: COLOR_DANGER },
   { value: 'Failed', label: '失败异常', labelEn: 'Failed', color: COLOR_DANGER },
-  { value: 'Unknown', label: '未知', labelEn: 'Unknown', color: COLOR_GRAY_70 }
+  { value: 'Unknown', label: '未知', labelEn: 'Unknown', color: COLOR_GRAY_70 },
 ]
 
 /** Job 状态配置选项 */
@@ -87,7 +87,7 @@ export const JOB_STATUS_OPTIONS: StatusOption[] = [
   { value: undefined, label: '全部状态', labelEn: 'ALL', color: COLOR_SUCCESS },
   { value: 'Active', label: '运行中', labelEn: 'Active', color: COLOR_SUCCESS },
   { value: 'Succeeded', label: '已完成', labelEn: 'Succeeded', color: COLOR_SUCCESS },
-  { value: 'Failed', label: '已失败', labelEn: 'Failed', color: COLOR_DANGER }
+  { value: 'Failed', label: '已失败', labelEn: 'Failed', color: COLOR_DANGER },
 ]
 
 /** CronJob 状态配置选项 */
@@ -95,7 +95,7 @@ export const CRONJOB_STATUS_OPTIONS: StatusOption[] = [
   { value: undefined, label: '全部状态', labelEn: 'ALL', color: COLOR_SUCCESS },
   { value: 'Active', label: '运行中', labelEn: 'Active', color: COLOR_SUCCESS },
   { value: 'Suspended', label: '已暂停', labelEn: 'Suspended', color: COLOR_WARNING },
-  { value: 'Unknown', label: '未知', labelEn: 'Unknown', color: COLOR_GRAY_70 }
+  { value: 'Unknown', label: '未知', labelEn: 'Unknown', color: COLOR_GRAY_70 },
 ]
 
 /** 证书即将过期告警阈值（天） */

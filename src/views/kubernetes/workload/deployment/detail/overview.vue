@@ -11,7 +11,7 @@
         <div
           class="replica-stats__ring"
           :style="{
-            background: `conic-gradient(${replicaRingColor} 0% ${replicaPercentage}%, $color-bg-elevated ${replicaPercentage}% 100%)`
+            background: `conic-gradient(${replicaRingColor} 0% ${replicaPercentage}%, $color-bg-elevated ${replicaPercentage}% 100%)`,
           }"
         >
           <div class="replica-stats__ring-inner">
@@ -153,8 +153,11 @@
 
 <script setup lang="ts">
 import { computed } from 'vue'
+
 import type { DeploymentDetailVo } from '@/types/kubernetes/workload/deployment'
+
 import { calcPercentage, formatCpu } from '@/utils/kubernetes'
+
 import BeeCard from '@/components/BeeCard/index.vue'
 import BeeFieldItem from '@/components/BeeFieldItem/index.vue'
 
@@ -196,7 +199,7 @@ const annotations = computed(() => Object.entries(props.data.metadata.annotation
 /** 更新策略中文名称映射 */
 const strategyLabelMap: Record<string, string> = {
   RollingUpdate: '滚动更新 / RollingUpdate',
-  Recreate: '重建 / Recreate'
+  Recreate: '重建 / Recreate',
 }
 
 /** 更新策略展示文本 */

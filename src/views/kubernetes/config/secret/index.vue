@@ -139,13 +139,19 @@
  * @module views/kubernetes/config/secret
  */
 import { onMounted, reactive, ref } from 'vue'
+
 import { useRoute, useRouter } from 'vue-router'
+
 import { ElMessage } from 'element-plus'
+
 import type { SecretQueryReq, SecretListResp } from '@/types/kubernetes/config/secret'
 import type { NamespaceSimpleListResp } from '@/types/kubernetes/namespace'
+
 import type { ActionItem } from '@/components/BeeActionCell/index.vue'
+
 import { getSecretList, deleteSecret, deleteSecrets } from '@/api/kubernetes/config/secret'
 import { getNamespacePage } from '@/api/kubernetes/namespace'
+
 import BeeActionCell from '@/components/BeeActionCell/index.vue'
 import BeeAuditCell from '@/components/BeeAuditCell/index.vue'
 import BeeButton from '@/components/BeeButton/index.vue'
@@ -161,6 +167,7 @@ import BeeTableColumn from '@/components/BeeTable/BeeTableColumn.vue'
 import BeeTableCommonCell from '@/components/BeeTable/BeeTableCommonCell.vue'
 import BeeTable from '@/components/BeeTable/index.vue'
 import BeeTag from '@/components/BeeTag/index.vue'
+
 import { usePermission } from '@/composables/usePermission'
 
 defineOptions({ name: 'SecretManage' })
@@ -189,7 +196,7 @@ const pagination = reactive({ page: 1, pageSize: 10, total: 0 })
 
 /** 命名空间选项 */
 const namespaceOptions = ref<{ label: string; value: string | undefined }[]>([
-  { label: '全部命名空间', value: undefined }
+  { label: '全部命名空间', value: undefined },
 ])
 
 /** Secret 类型选项 */
@@ -202,7 +209,7 @@ const typeOptions = ref([
   { label: 'kubernetes.io/ssh-auth', value: 'kubernetes.io/ssh-auth' },
   { label: 'kubernetes.io/service-account-token', value: 'kubernetes.io/service-account-token' },
   { label: 'kubernetes.io/dockercfg', value: 'kubernetes.io/dockercfg' },
-  { label: 'kubernetes.io/boot-straph-token', value: 'kubernetes.io/boot-straph-token' }
+  { label: 'kubernetes.io/boot-straph-token', value: 'kubernetes.io/boot-straph-token' },
 ])
 
 // ==================== Data Loading ====================
@@ -217,7 +224,7 @@ async function loadNamespaceOptions() {
     const namespaces = (await getNamespacePage(clusterId.value, { mode: 'simple' })) as NamespaceSimpleListResp[]
     namespaceOptions.value = [
       { label: '全部命名空间', value: undefined },
-      ...namespaces.map(ns => ({ label: ns.name, value: ns.name }))
+      ...namespaces.map(ns => ({ label: ns.name, value: ns.name })),
     ]
   } catch {
     // 加载失败时保留默认选项
@@ -240,7 +247,7 @@ async function loadData() {
       namespace: queryForm.namespace || undefined,
       type: queryForm.type || undefined,
       page: pagination.page,
-      pageSize: pagination.pageSize
+      pageSize: pagination.pageSize,
     })
     tableData.value = resp.list
     pagination.total = resp.total
@@ -299,7 +306,7 @@ function handleEdit(row: SecretListResp) {
   router.push({
     name: 'kubernetes:config:secret:edit',
     params: { clusterId: row.clusterId },
-    query: { namespace: row.namespace, name: row.name }
+    query: { namespace: row.namespace, name: row.name },
   })
 }
 
@@ -308,7 +315,7 @@ function handleViewDetail(row: SecretListResp) {
   router.push({
     name: 'kubernetes:config:secret:detail',
     params: { clusterId: row.clusterId },
-    query: { namespace: row.namespace, name: row.name }
+    query: { namespace: row.namespace, name: row.name },
   })
 }
 
@@ -367,7 +374,7 @@ async function handleConfirmBatchDelete() {
 const perm: Record<string, boolean> = {
   edit: hasPermission('kubernetes:config:secret:edit'),
   view: hasPermission('kubernetes:config:secret:view'),
-  delete: hasPermission('kubernetes:config:secret:delete')
+  delete: hasPermission('kubernetes:config:secret:delete'),
 }
 
 /**
@@ -386,7 +393,7 @@ function getActions(row: SecretListResp): ActionItem[] {
   if (perm.edit) {
     actions.push(
       { value: 'edit', label: '编辑', icon: 'basic-edit', handler: () => handleEdit(row) },
-      { value: 'yamledit', label: '编辑 YAML', icon: 'basic-code', handler: () => handleEditYaml(row) }
+      { value: 'yamledit', label: '编辑 YAML', icon: 'basic-code', handler: () => handleEditYaml(row) },
     )
   }
   // 删除权限 + deletable 条件

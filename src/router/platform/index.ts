@@ -9,8 +9,8 @@ const platformUserRoutes: RouteRecordRaw[] = [
       title: '用户管理',
       icon: 'User',
       permission: 'platform:system:user:view',
-      activeCode: 'platform:system:user'
-    }
+      activeCode: 'platform:system:user',
+    },
   },
   {
     path: '/platform/system/user/:id/detail',
@@ -20,8 +20,8 @@ const platformUserRoutes: RouteRecordRaw[] = [
       title: '用户详情',
       icon: 'InfoFilled',
       permission: 'platform:system:user:view',
-      activeCode: 'platform:system:user'
-    }
+      activeCode: 'platform:system:user',
+    },
   },
   {
     path: '/platform/system/user/create',
@@ -31,8 +31,8 @@ const platformUserRoutes: RouteRecordRaw[] = [
       title: '创建用户',
       icon: 'Plus',
       permission: 'platform:system:user:create',
-      activeCode: 'platform:system:user'
-    }
+      activeCode: 'platform:system:user',
+    },
   },
   {
     path: '/platform/system/user/:id/edit',
@@ -42,8 +42,8 @@ const platformUserRoutes: RouteRecordRaw[] = [
       title: '编辑用户',
       icon: 'EditPen',
       permission: 'platform:system:user:edit',
-      activeCode: 'platform:system:user'
-    }
+      activeCode: 'platform:system:user',
+    },
   },
   {
     path: '/platform/system/user/:id/assign-roles',
@@ -53,9 +53,9 @@ const platformUserRoutes: RouteRecordRaw[] = [
       title: '配置角色',
       icon: 'Key',
       permission: 'platform:system:user:edit',
-      activeCode: 'platform:system:user'
-    }
-  }
+      activeCode: 'platform:system:user',
+    },
+  },
 ]
 
 const platformRoleRoutes: RouteRecordRaw[] = [
@@ -67,8 +67,8 @@ const platformRoleRoutes: RouteRecordRaw[] = [
       title: '角色管理',
       icon: 'Avatar',
       permission: 'platform:system:role:view',
-      activeCode: 'platform:system:role'
-    }
+      activeCode: 'platform:system:role',
+    },
   },
   {
     path: '/platform/system/role/:id/detail',
@@ -78,8 +78,8 @@ const platformRoleRoutes: RouteRecordRaw[] = [
       title: '角色详情',
       icon: 'InfoFilled',
       permission: 'platform:system:role:view',
-      activeCode: 'platform:system:role'
-    }
+      activeCode: 'platform:system:role',
+    },
   },
   {
     path: '/platform/system/role/create',
@@ -89,8 +89,8 @@ const platformRoleRoutes: RouteRecordRaw[] = [
       title: '创建角色',
       icon: 'Plus',
       permission: 'platform:system:role:create',
-      activeCode: 'platform:system:role'
-    }
+      activeCode: 'platform:system:role',
+    },
   },
   {
     path: '/platform/system/role/:id/edit',
@@ -100,8 +100,8 @@ const platformRoleRoutes: RouteRecordRaw[] = [
       title: '编辑角色',
       icon: 'EditPen',
       permission: 'platform:system:role:edit',
-      activeCode: 'platform:system:role'
-    }
+      activeCode: 'platform:system:role',
+    },
   },
   {
     path: '/platform/system/role/:id/assign-permissions',
@@ -111,8 +111,8 @@ const platformRoleRoutes: RouteRecordRaw[] = [
       title: '配置权限',
       icon: 'Key',
       permission: 'platform:system:role:edit',
-      activeCode: 'platform:system:role'
-    }
+      activeCode: 'platform:system:role',
+    },
   },
   {
     path: '/platform/system/role/:id/assign-users',
@@ -122,9 +122,9 @@ const platformRoleRoutes: RouteRecordRaw[] = [
       title: '配置用户',
       icon: 'User',
       permission: 'platform:system:role:edit',
-      activeCode: 'platform:system:role'
-    }
-  }
+      activeCode: 'platform:system:role',
+    },
+  },
 ]
 
 const platformMenuRoutes: RouteRecordRaw[] = [
@@ -136,8 +136,8 @@ const platformMenuRoutes: RouteRecordRaw[] = [
       title: '菜单管理',
       icon: 'Menu',
       permission: 'platform:system:menu:view',
-      activeCode: 'platform:system:menu'
-    }
+      activeCode: 'platform:system:menu',
+    },
   },
   {
     path: '/platform/system/menu/:id/detail',
@@ -147,8 +147,8 @@ const platformMenuRoutes: RouteRecordRaw[] = [
       title: '菜单详情',
       icon: 'InfoFilled',
       permission: 'platform:system:menu:view',
-      activeCode: 'platform:system:menu'
-    }
+      activeCode: 'platform:system:menu',
+    },
   },
   {
     path: '/platform/system/menu/create',
@@ -158,8 +158,8 @@ const platformMenuRoutes: RouteRecordRaw[] = [
       title: '创建菜单',
       icon: 'Plus',
       permission: 'platform:system:menu:create',
-      activeCode: 'platform:system:menu'
-    }
+      activeCode: 'platform:system:menu',
+    },
   },
   {
     path: '/platform/system/menu/:id/edit',
@@ -169,8 +169,8 @@ const platformMenuRoutes: RouteRecordRaw[] = [
       title: '编辑菜单',
       icon: 'EditPen',
       permission: 'platform:system:menu:edit',
-      activeCode: 'platform:system:menu'
-    }
+      activeCode: 'platform:system:menu',
+    },
   },
   {
     path: '/platform/system/menu/:id/assign-roles',
@@ -180,9 +180,9 @@ const platformMenuRoutes: RouteRecordRaw[] = [
       title: '配置角色',
       icon: 'Key',
       permission: 'platform:system:menu:edit',
-      activeCode: 'platform:system:menu'
-    }
-  }
+      activeCode: 'platform:system:menu',
+    },
+  },
 ]
 
 const platformPermissionRoutes: RouteRecordRaw[] = [
@@ -194,8 +194,8 @@ const platformPermissionRoutes: RouteRecordRaw[] = [
       title: '权限管理',
       icon: 'Key',
       permission: 'platform:system:permission:view',
-      activeCode: 'platform:system:permission'
-    }
+      activeCode: 'platform:system:permission',
+    },
   },
   {
     path: '/platform/system/permission/:id/detail',
@@ -205,8 +205,8 @@ const platformPermissionRoutes: RouteRecordRaw[] = [
       title: '权限详情',
       icon: 'InfoFilled',
       permission: 'platform:system:permission:view',
-      activeCode: 'platform:system:permission'
-    }
+      activeCode: 'platform:system:permission',
+    },
   },
   {
     path: '/platform/system/permission/create',
@@ -216,8 +216,8 @@ const platformPermissionRoutes: RouteRecordRaw[] = [
       title: '新增权限',
       icon: 'Plus',
       permission: 'platform:system:permission:create',
-      activeCode: 'platform:system:permission'
-    }
+      activeCode: 'platform:system:permission',
+    },
   },
   {
     path: '/platform/system/permission/:id/edit',
@@ -227,16 +227,16 @@ const platformPermissionRoutes: RouteRecordRaw[] = [
       title: '编辑权限',
       icon: 'EditPen',
       permission: 'platform:system:permission:edit',
-      activeCode: 'platform:system:permission'
-    }
-  }
+      activeCode: 'platform:system:permission',
+    },
+  },
 ]
 
 export const platformRoutes: RouteRecordRaw[] = [
   {
     path: '/platform',
     name: 'platform',
-    redirect: '/platform/dashboard'
+    redirect: '/platform/dashboard',
   },
   {
     path: '/platform/dashboard',
@@ -244,16 +244,16 @@ export const platformRoutes: RouteRecordRaw[] = [
     component: () => import('@/views/platform/dashboard/index.vue'),
     meta: {
       title: '仪表盘',
-      icon: 'Odometer'
-    }
+      icon: 'Odometer',
+    },
   },
   {
     path: '/platform/system',
     name: 'platform:system',
     meta: {
       title: '系统配置',
-      icon: 'Setting'
+      icon: 'Setting',
     },
-    children: [...platformUserRoutes, ...platformRoleRoutes, ...platformMenuRoutes, ...platformPermissionRoutes]
-  }
+    children: [...platformUserRoutes, ...platformRoleRoutes, ...platformMenuRoutes, ...platformPermissionRoutes],
+  },
 ]

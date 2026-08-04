@@ -12,6 +12,7 @@
 
 <script setup lang="ts">
 import { computed } from 'vue'
+
 import defaultAvatarImg from '@/assets/user_avatar.png'
 
 defineOptions({ name: 'BeeHeaderUserInfo' })
@@ -28,8 +29,8 @@ const props = withDefaults(
   {
     img: '',
     nickname: '',
-    username: ''
-  }
+    username: '',
+  },
 )
 
 /** 头像地址，为空时使用默认头像 */

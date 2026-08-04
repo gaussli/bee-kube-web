@@ -74,11 +74,17 @@
 
 <script setup lang="ts">
 import { onMounted, ref } from 'vue'
+
 import { useRouter } from 'vue-router'
+
 import { ElMessage } from 'element-plus'
+
 import { ArrowLeft, Key, Menu } from '@element-plus/icons-vue'
+
 import type { RoleDetailResp, MenuResp } from '@/types/platform/role'
+
 import { bindRoleMenus, getRoleDetail, getRoleMenus, getMenuPage } from '@/api/platform/role'
+
 import BeeButton from '@/components/BeeButton/index.vue'
 import BeeDivider from '@/components/BeeDivider/index.vue'
 import BeeLabelCopyable from '@/components/BeeLabelCopyable/index.vue'
@@ -104,7 +110,7 @@ const mockMenus: MenuResp[] = [
     type: 1,
     status: 1,
     createAt: '',
-    updateAt: ''
+    updateAt: '',
   },
   {
     id: '2',
@@ -123,7 +129,7 @@ const mockMenus: MenuResp[] = [
         type: 1,
         status: 1,
         createAt: '',
-        updateAt: ''
+        updateAt: '',
       },
       {
         id: '2-2',
@@ -133,7 +139,7 @@ const mockMenus: MenuResp[] = [
         type: 1,
         status: 1,
         createAt: '',
-        updateAt: ''
+        updateAt: '',
       },
       {
         id: '2-3',
@@ -143,9 +149,9 @@ const mockMenus: MenuResp[] = [
         type: 1,
         status: 1,
         createAt: '',
-        updateAt: ''
-      }
-    ]
+        updateAt: '',
+      },
+    ],
   },
   {
     id: '3',
@@ -164,7 +170,7 @@ const mockMenus: MenuResp[] = [
         type: 1,
         status: 1,
         createAt: '',
-        updateAt: ''
+        updateAt: '',
       },
       {
         id: '3-2',
@@ -174,10 +180,10 @@ const mockMenus: MenuResp[] = [
         type: 2,
         status: 1,
         createAt: '',
-        updateAt: ''
-      }
-    ]
-  }
+        updateAt: '',
+      },
+    ],
+  },
 ]
 
 function handleBack() {
@@ -217,7 +223,7 @@ async function loadData() {
       status: 1,
       isSystem: true,
       createAt: '',
-      updateAt: ''
+      updateAt: '',
     }
     menuTreeData.value = mockMenus
     loaded.value = true

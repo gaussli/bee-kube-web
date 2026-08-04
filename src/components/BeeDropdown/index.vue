@@ -27,8 +27,11 @@
  * 支持 provide/inject 模式让 BeeDropdownItem 自动注册
  */
 import { ref, computed, onMounted, onBeforeUnmount, provide, watch } from 'vue'
+
 import { arrow, flip, offset, shift, useFloating } from '@floating-ui/vue'
+
 import type { DropdownOption } from './types'
+
 import BeeIcon from '@/components/BeeIcon/index.vue'
 
 defineOptions({ name: 'BeeDropdown' })
@@ -49,8 +52,8 @@ const props = withDefaults(
     modelValue: undefined,
     options: () => [],
     trigger: 'click',
-    placement: 'bottom'
-  }
+    placement: 'bottom',
+  },
 )
 
 /** 组件事件 */
@@ -80,7 +83,7 @@ watch(
   newOptions => {
     menuItems.value = newOptions ? [...newOptions] : []
   },
-  { immediate: true }
+  { immediate: true },
 )
 
 /** 添加菜单项（供 BeeDropdownItem 调用） */
@@ -91,7 +94,7 @@ function addItem(item: { value: string | number; label?: string; icon?: string; 
       value: item.value,
       label: item.label,
       icon: item.icon,
-      onClick: item.onClick
+      onClick: item.onClick,
     })
   }
 }
@@ -118,7 +121,7 @@ provide('beeDropdown', {
   updateValue: (value: string | number) => {
     emit('update:modelValue', value)
     emit('change', value)
-  }
+  },
 })
 
 /** floating-ui 定位 */
@@ -128,8 +131,8 @@ const { floatingStyles, middlewareData, placement } = useFloating(triggerRef, fl
     offset(10), // dropdown-menu 与触发元素之间的距离
     flip(), // 边界翻转
     shift({ padding: 8 }), // 防止超出视窗
-    arrow({ element: arrowRef }) // 箭头
-  ]
+    arrow({ element: arrowRef }), // 箭头
+  ],
 })
 
 /** 箭头样式 */
@@ -142,14 +145,14 @@ const arrowStyle = computed(() => {
     top: 'bottom',
     right: 'left',
     bottom: 'top',
-    left: 'right'
+    left: 'right',
   }
   const side = placement.value.split('-')[0]
   const staticSide = staticSideMap[side] || 'bottom'
 
   const style: Record<string, string> = {
     left: x != null ? `${x}px` : '',
-    top: y != null ? `${y}px` : ''
+    top: y != null ? `${y}px` : '',
   }
   style[staticSide] = '-5px'
   return style
@@ -223,7 +226,7 @@ defineExpose({
   hide: () => {
     isOpen.value = false
     emit('visible-change', false)
-  }
+  },
 })
 </script>
 

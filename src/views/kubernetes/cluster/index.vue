@@ -136,10 +136,15 @@
  * @module views/kubernetes/cluster
  */
 import { onMounted, reactive, ref } from 'vue'
+
 import { useRouter } from 'vue-router'
+
 import { ElMessage } from 'element-plus'
+
 import type { ClusterListResp, ClusterQueryReq } from '@/types/kubernetes/cluster'
+
 import { getClusterPage, deleteCluster, deleteClusters } from '@/api/kubernetes/cluster'
+
 import BeeAlert from '@/components/BeeAlert/index.vue'
 import BeeAuditCell from '@/components/BeeAuditCell/index.vue'
 import BeeButton from '@/components/BeeButton/index.vue'
@@ -158,6 +163,7 @@ import BeeTableColumn from '@/components/BeeTable/BeeTableColumn.vue'
 import BeeTableCommonCell from '@/components/BeeTable/BeeTableCommonCell.vue'
 import BeeTable from '@/components/BeeTable/index.vue'
 import BeeTag from '@/components/BeeTag/index.vue'
+
 import { usePermission } from '@/composables/usePermission'
 import { CLUSTER_STATUS_OPTIONS } from '@/config/kubernetes'
 import { useKubernetesStore } from '@/stores'
@@ -174,7 +180,7 @@ const searchKey = ref('')
 const queryForm = reactive<Partial<ClusterQueryReq>>({
   id: undefined,
   name: undefined,
-  status: undefined
+  status: undefined,
 })
 const pagination = reactive({ page: 1, pageSize: 10, total: 0 })
 
@@ -197,7 +203,7 @@ async function loadData() {
     const resp = await getClusterPage({
       ...queryForm,
       page: pagination.page,
-      pageSize: pagination.pageSize
+      pageSize: pagination.pageSize,
     })
     tableData.value = resp.list
     pagination.total = resp.total
