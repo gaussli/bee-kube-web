@@ -67,7 +67,10 @@ function handleSelect(index: string | number) {
     router.push({ name: CLUSTER_ROUTE }).catch(() => {})
     return
   }
-  router.push({ name: routeName, params: { clusterId: kubernetesStore.activeClusterId } }).catch(() => {})
+  // 仅 kubernetes 子资源路由需要携带 clusterId（排除 cluster 管理路由和平台路由）
+  const needsClusterId = routeName.startsWith('kubernetes:') && !routeName.startsWith('kubernetes:cluster')
+  const params = needsClusterId ? { clusterId: kubernetesStore.activeClusterId } : undefined
+  router.push({ name: routeName, params }).catch(() => {})
 }
 </script>
 

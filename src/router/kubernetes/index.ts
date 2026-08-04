@@ -12,9 +12,9 @@ import { workloadRoutes } from './workload'
 
 export const kubernetesRoutes: RouteRecordRaw[] = [
   {
-    path: '/kubernetes/clusters/:clusterId',
+    path: '/kubernetes',
     name: 'kubernetes',
-    redirect: '/kubernetes/clusters/:clusterId/dashboard',
+    redirect: '/kubernetes/cluster',
   },
   {
     path: '/kubernetes/clusters/:clusterId/dashboard',

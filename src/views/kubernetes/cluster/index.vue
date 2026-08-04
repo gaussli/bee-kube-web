@@ -317,6 +317,12 @@ async function handleConfirmBatchDelete() {
 }
 
 onMounted(() => {
+  const kubernetesStore = useKubernetesStore()
+  // 已有选中集群时，直接跳转到集群概览
+  if (kubernetesStore.activeClusterId) {
+    router.push({ name: 'kubernetes:dashboard', params: { clusterId: kubernetesStore.activeClusterId } }).catch(() => {})
+    return
+  }
   void loadData()
 })
 </script>

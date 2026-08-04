@@ -2,6 +2,7 @@ import { createRouter, createWebHistory } from 'vue-router'
 
 import type { RouteRecordRaw } from 'vue-router'
 
+import { useKubernetesStore } from '@/stores/kubernetes'
 import { useUserStore } from '@/stores/user'
 
 import { kubernetesRoutes } from './kubernetes'
@@ -62,6 +63,13 @@ router.beforeEach(async (to, from) => {
   const requiredPermission = to.meta.permission as string | undefined
   if (requiredPermission && !permissions.includes(requiredPermission)) {
     return '/403'
+  }
+
+  // 路由包含 :clusterId 参数时，同步到 kubernetesStore
+  const clusterId = to.params.clusterId as string | undefined
+  if (clusterId) {
+    const kubernetesStore = useKubernetesStore()
+    kubernetesStore.setActiveClusterId(clusterId)
   }
 
   return true
