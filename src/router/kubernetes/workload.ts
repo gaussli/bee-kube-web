@@ -140,7 +140,7 @@ const statefulsetRoutes: RouteRecordRaw[] = [
 
 const daemonsetRoutes: RouteRecordRaw[] = [
   {
-    path: '/kubernetes/clusters/:clusterId/workload/daemonset',
+    path: '/kubernetes/clusters/:clusterId/daemonsets',
     name: 'kubernetes:workload:daemonset',
     component: () => import('@/views/kubernetes/workload/daemonset/index.vue'),
     meta: {
@@ -151,7 +151,18 @@ const daemonsetRoutes: RouteRecordRaw[] = [
     },
   },
   {
-    path: '/kubernetes/clusters/:clusterId/workload/daemonset/create',
+    path: '/kubernetes/clusters/:clusterId/namespaces/:namespace/daemonsets/:name',
+    name: 'kubernetes:workload:daemonset:detail',
+    component: () => import('@/views/kubernetes/workload/daemonset/detail/index.vue'),
+    meta: {
+      title: '守护进程详情',
+      icon: 'Monitor',
+      permission: 'kubernetes:workload:daemonset:view',
+      activeCode: 'kubernetes:workload:daemonset',
+    },
+  },
+  {
+    path: '/kubernetes/clusters/:clusterId/daemonsets/create',
     name: 'kubernetes:workload:daemonset:create',
     component: () => import('@/views/kubernetes/workload/daemonset/create/index.vue'),
     meta: {
@@ -162,7 +173,18 @@ const daemonsetRoutes: RouteRecordRaw[] = [
     },
   },
   {
-    path: '/kubernetes/clusters/:clusterId/workload/daemonset/edit',
+    path: '/kubernetes/clusters/:clusterId/daemonsets/create/yaml',
+    name: 'kubernetes:workload:daemonset:create:yaml',
+    component: () => import('@/views/kubernetes/workload/daemonset/create/yaml.vue'),
+    meta: {
+      title: '创建守护进程 YAML',
+      icon: 'Monitor',
+      permission: 'kubernetes:workload:daemonset:create',
+      activeCode: 'kubernetes:workload:daemonset',
+    },
+  },
+  {
+    path: '/kubernetes/clusters/:clusterId/namespaces/:namespace/daemonsets/:name/edit',
     name: 'kubernetes:workload:daemonset:edit',
     component: () => import('@/views/kubernetes/workload/daemonset/edit/index.vue'),
     meta: {
@@ -173,13 +195,13 @@ const daemonsetRoutes: RouteRecordRaw[] = [
     },
   },
   {
-    path: '/kubernetes/clusters/:clusterId/workload/daemonset/detail',
-    name: 'kubernetes:workload:daemonset:detail',
-    component: () => import('@/views/kubernetes/workload/daemonset/detail/index.vue'),
+    path: '/kubernetes/clusters/:clusterId/namespaces/:namespace/daemonsets/:name/edit/yaml',
+    name: 'kubernetes:workload:daemonset:edit:yaml',
+    component: () => import('@/views/kubernetes/workload/daemonset/edit/yaml.vue'),
     meta: {
-      title: '守护进程详情',
+      title: '编辑守护进程 YAML',
       icon: 'Monitor',
-      permission: 'kubernetes:workload:daemonset:view',
+      permission: 'kubernetes:workload:daemonset:edit',
       activeCode: 'kubernetes:workload:daemonset',
     },
   },
@@ -187,7 +209,7 @@ const daemonsetRoutes: RouteRecordRaw[] = [
 
 const jobRoutes: RouteRecordRaw[] = [
   {
-    path: '/kubernetes/clusters/:clusterId/workload/job',
+    path: '/kubernetes/clusters/:clusterId/jobs',
     name: 'kubernetes:workload:job',
     component: () => import('@/views/kubernetes/workload/job/index.vue'),
     meta: {
@@ -198,7 +220,18 @@ const jobRoutes: RouteRecordRaw[] = [
     },
   },
   {
-    path: '/kubernetes/clusters/:clusterId/workload/job/create',
+    path: '/kubernetes/clusters/:clusterId/namespaces/:namespace/jobs/:name',
+    name: 'kubernetes:workload:job:detail',
+    component: () => import('@/views/kubernetes/workload/job/detail/index.vue'),
+    meta: {
+      title: '任务详情',
+      icon: 'Timer',
+      permission: 'kubernetes:workload:job:view',
+      activeCode: 'kubernetes:workload:job',
+    },
+  },
+  {
+    path: '/kubernetes/clusters/:clusterId/jobs/create',
     name: 'kubernetes:workload:job:create',
     component: () => import('@/views/kubernetes/workload/job/create/index.vue'),
     meta: {
@@ -209,7 +242,18 @@ const jobRoutes: RouteRecordRaw[] = [
     },
   },
   {
-    path: '/kubernetes/clusters/:clusterId/workload/job/edit',
+    path: '/kubernetes/clusters/:clusterId/jobs/create/yaml',
+    name: 'kubernetes:workload:job:create:yaml',
+    component: () => import('@/views/kubernetes/workload/job/create/yaml.vue'),
+    meta: {
+      title: '创建任务 YAML',
+      icon: 'Timer',
+      permission: 'kubernetes:workload:job:create',
+      activeCode: 'kubernetes:workload:job',
+    },
+  },
+  {
+    path: '/kubernetes/clusters/:clusterId/namespaces/:namespace/jobs/:name/edit',
     name: 'kubernetes:workload:job:edit',
     component: () => import('@/views/kubernetes/workload/job/edit/index.vue'),
     meta: {
@@ -220,13 +264,13 @@ const jobRoutes: RouteRecordRaw[] = [
     },
   },
   {
-    path: '/kubernetes/clusters/:clusterId/workload/job/detail',
-    name: 'kubernetes:workload:job:detail',
-    component: () => import('@/views/kubernetes/workload/job/detail/index.vue'),
+    path: '/kubernetes/clusters/:clusterId/namespaces/:namespace/jobs/:name/edit/yaml',
+    name: 'kubernetes:workload:job:edit:yaml',
+    component: () => import('@/views/kubernetes/workload/job/edit/yaml.vue'),
     meta: {
-      title: '任务详情',
+      title: '编辑任务 YAML',
       icon: 'Timer',
-      permission: 'kubernetes:workload:job:view',
+      permission: 'kubernetes:workload:job:edit',
       activeCode: 'kubernetes:workload:job',
     },
   },
@@ -234,7 +278,7 @@ const jobRoutes: RouteRecordRaw[] = [
 
 const cronjobRoutes: RouteRecordRaw[] = [
   {
-    path: '/kubernetes/clusters/:clusterId/workload/cronjob',
+    path: '/kubernetes/clusters/:clusterId/cronjobs',
     name: 'kubernetes:workload:cronjob',
     component: () => import('@/views/kubernetes/workload/cronjob/index.vue'),
     meta: {
@@ -245,7 +289,18 @@ const cronjobRoutes: RouteRecordRaw[] = [
     },
   },
   {
-    path: '/kubernetes/clusters/:clusterId/workload/cronjob/create',
+    path: '/kubernetes/clusters/:clusterId/namespaces/:namespace/cronjobs/:name',
+    name: 'kubernetes:workload:cronjob:detail',
+    component: () => import('@/views/kubernetes/workload/cronjob/detail/index.vue'),
+    meta: {
+      title: '定时任务详情',
+      icon: 'Clock',
+      permission: 'kubernetes:workload:cronjob:view',
+      activeCode: 'kubernetes:workload:cronjob',
+    },
+  },
+  {
+    path: '/kubernetes/clusters/:clusterId/cronjobs/create',
     name: 'kubernetes:workload:cronjob:create',
     component: () => import('@/views/kubernetes/workload/cronjob/create/index.vue'),
     meta: {
@@ -256,7 +311,18 @@ const cronjobRoutes: RouteRecordRaw[] = [
     },
   },
   {
-    path: '/kubernetes/clusters/:clusterId/workload/cronjob/edit',
+    path: '/kubernetes/clusters/:clusterId/cronjobs/create/yaml',
+    name: 'kubernetes:workload:cronjob:create:yaml',
+    component: () => import('@/views/kubernetes/workload/cronjob/create/yaml.vue'),
+    meta: {
+      title: '创建定时任务 YAML',
+      icon: 'Clock',
+      permission: 'kubernetes:workload:cronjob:create',
+      activeCode: 'kubernetes:workload:cronjob',
+    },
+  },
+  {
+    path: '/kubernetes/clusters/:clusterId/namespaces/:namespace/cronjobs/:name/edit',
     name: 'kubernetes:workload:cronjob:edit',
     component: () => import('@/views/kubernetes/workload/cronjob/edit/index.vue'),
     meta: {
@@ -267,13 +333,13 @@ const cronjobRoutes: RouteRecordRaw[] = [
     },
   },
   {
-    path: '/kubernetes/clusters/:clusterId/workload/cronjob/detail',
-    name: 'kubernetes:workload:cronjob:detail',
-    component: () => import('@/views/kubernetes/workload/cronjob/detail/index.vue'),
+    path: '/kubernetes/clusters/:clusterId/namespaces/:namespace/cronjobs/:name/edit/yaml',
+    name: 'kubernetes:workload:cronjob:edit:yaml',
+    component: () => import('@/views/kubernetes/workload/cronjob/edit/yaml.vue'),
     meta: {
-      title: '定时任务详情',
+      title: '编辑定时任务 YAML',
       icon: 'Clock',
-      permission: 'kubernetes:workload:cronjob:view',
+      permission: 'kubernetes:workload:cronjob:edit',
       activeCode: 'kubernetes:workload:cronjob',
     },
   },
