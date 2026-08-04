@@ -53,8 +53,8 @@ defineOptions({ name: 'DeploymentDetail' })
 const route = useRoute()
 
 const clusterId = ref(route.params.clusterId as string)
-const namespace = ref(route.query.namespace as string)
-const deploymentName = ref(route.query.name as string)
+const namespace = ref(route.params.namespace as string)
+const deploymentName = ref(route.params.name as string)
 const loading = ref(false)
 
 const detailData = ref<DeploymentDetailVo>()

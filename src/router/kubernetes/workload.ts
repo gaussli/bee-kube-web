@@ -45,6 +45,17 @@ const deploymentRoutes: RouteRecordRaw[] = [
       activeCode: 'kubernetes:workload:deployment',
     },
   },
+  {
+    path: '/kubernetes/clusters/:clusterId/namespaces/:namespace/deployments/:name/edit/yaml',
+    name: 'kubernetes:workload:deployment:edit:yaml',
+    component: () => import('@/views/kubernetes/workload/deployment/edit/yaml.vue'),
+    meta: {
+      title: '编辑无状态应用 YAML',
+      icon: 'Document',
+      permission: 'kubernetes:workload:deployment:edit',
+      activeCode: 'kubernetes:workload:deployment',
+    },
+  },
 ]
 
 const statefulsetRoutes: RouteRecordRaw[] = [

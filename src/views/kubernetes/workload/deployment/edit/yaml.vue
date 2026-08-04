@@ -1,7 +1,7 @@
 <template>
-  <BeePage class="deployment-create">
-    <BeeBackHeader title="创建Deployment" @back="handleBack" />
-    <BeeCard class="deployment-create__placeholder"> 创建Deployment </BeeCard>
+  <BeePage class="deployment-yaml">
+    <BeeBackHeader title="编辑Deployment YAML" @back="handleBack" />
+    <BeeCard class="deployment-yaml__placeholder"> 编辑Deployment YAML </BeeCard>
   </BeePage>
 </template>
 
@@ -12,7 +12,7 @@ import BeeBackHeader from '@/components/BeeBackHeader/index.vue'
 import BeeCard from '@/components/BeeCard/index.vue'
 import BeePage from '@/components/BeePage/index.vue'
 
-defineOptions({ name: 'DeploymentCreate' })
+defineOptions({ name: 'DeploymentYaml' })
 
 const router = useRouter()
 
@@ -23,7 +23,7 @@ function handleBack() {
 </script>
 
 <style lang="scss" scoped>
-.deployment-create__placeholder {
+.deployment-yaml__placeholder {
   display: flex;
   justify-content: center;
   align-items: center;

@@ -46,12 +46,7 @@ withDefaults(
   }>(),
   {
     title: '',
-    actions: () => [
-      { key: 'edit', label: '编辑' },
-      { key: 'scale', label: '扩缩容' },
-      { key: 'restart', label: '重启' },
-      { key: 'delete', label: '删除', type: 'danger' },
-    ],
+    actions: () => [],
   },
 )
 
