@@ -15,8 +15,8 @@
           <el-divider
             v-if="hasPermission('platform:system:user:create')"
             type="primary"
-            @click="handleCreate"
             direction="vertical"
+            @click="handleCreate"
           />
           <BeeButton v-if="hasPermission('platform:system:user:create')" type="primary" @click="handleCreate">
             <template #icon><Plus /></template>

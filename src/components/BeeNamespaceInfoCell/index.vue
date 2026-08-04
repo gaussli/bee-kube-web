@@ -48,7 +48,8 @@ const props = withDefaults(
     description?: string
   }>(),
   {
-    iconSize: 48
+    iconSize: 48,
+    description: ''
   }
 )
 </script>

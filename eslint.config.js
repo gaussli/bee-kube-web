@@ -76,11 +76,17 @@ export default [
   },
 
   /* ======================================================================
-   * 5. Vue 文件解析器 + TypeScript 规则
-   *    .vue 文件使用 vue-eslint-parser 作为顶层解析器，
-   *    通过 parserOptions.parser 将 <script lang="ts"> 委托给 TypeScript 解析器。
-   *    同时注入 @typescript-eslint 插件规则，确保 .vue 文件中的 TS 代码与 .ts
-   *    文件享有同等级别的类型安全检查。
+   * 5. Vue 推荐规则集（eslint-plugin-vue flat/recommended）
+   *    包含 118 条规则，覆盖 essential（错误预防）+ strongly-recommended（可读性）+
+   *    recommended（最佳实践）。先应用推荐规则，后续 Block 5a 再做项目级覆盖。
+   * ====================================================================== */
+  ...pluginVue.configs['flat/recommended'],
+
+  /* ======================================================================
+   * 5a. Vue 文件解析器 + 项目级规则覆盖
+   *     .vue 文件使用 vue-eslint-parser 作为顶层解析器，委托 TypeScript 解析器
+   *     处理 <script lang="ts">。此处对 Vue 推荐规则做项目定制，并注入
+   *     @typescript-eslint 规则，确保 .vue 文件中的 TS 代码与 .ts 文件享有同等检查。
    * ====================================================================== */
   {
     files: ['**/*.vue'],
@@ -97,9 +103,10 @@ export default [
       '@typescript-eslint': tseslintPlugin
     },
     rules: {
-      // --- Vue 规则 ---
-      'vue/multi-word-component-names': 'off',  // 允许单单词组件名（如 Index / Login）
-      'vue/no-v-html': 'off',                   // 允许 v-html（YAML 高亮等场景需要）
+      // --- Vue 规则项目级覆盖 ---
+      'vue/multi-word-component-names': 'off',               // 允许单单词组件名（如 Index / Login）
+      'vue/no-v-html': 'off',                                // 允许 v-html（YAML 高亮等场景需要）
+      'vue/require-toggle-inside-transition': 'off',         // 页面入场动画无需 v-if/v-show（静态子元素 + mode="out-in" 即可）
 
       // --- TypeScript 规则（与 Block 6 保持一致，确保 .vue 脚本享有同等检查）---
       'no-redeclare': 'off',                              // 关闭 ESLint 原生规则

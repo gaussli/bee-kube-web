@@ -34,7 +34,7 @@
         <BeeTable :data="tableData" :loading="loading" selectable @selection-change="handleSelectionChange">
           <BeeTableColumn :width="500">
             <template #default="{ row }">
-              <BeeClusterInfoCell :name="row.name" :id="row.id" :description="row.description" />
+              <BeeClusterInfoCell :id="row.id" :name="row.name" :description="row.description" />
             </template>
           </BeeTableColumn>
           <BeeTableColumn :min-width="300">
@@ -100,7 +100,7 @@
         </div>
         <BeePagination
           v-model="pagination.page"
-          v-model:pageSize="pagination.pageSize"
+          v-model:page-size="pagination.pageSize"
           :total="pagination.total"
           :page-sizes="[10, 20, 50]"
           @change="loadData"

@@ -6,7 +6,7 @@
           <span>Bee Kube 管理平台</span>
         </div>
       </template>
-      <el-form :model="loginForm" :rules="rules" ref="formRef" label-width="0">
+      <el-form ref="formRef" :model="loginForm" :rules="rules" label-width="0">
         <el-form-item prop="username">
           <el-input v-model="loginForm.username" placeholder="请输入用户名" prefix-icon="User" size="large" />
         </el-form-item>

@@ -25,8 +25,8 @@
           <BeeTableColumn :width="500">
             <template #default="{ row }">
               <BeeNodeInfoCell
-                :name="row.name"
                 :id="row.id"
+                :name="row.name"
                 :ip="row.ip"
                 :description="row.description"
                 :icon-size="32"
@@ -125,7 +125,7 @@
       <div class="table-footer">
         <BeePagination
           v-model="pagination.page"
-          v-model:pageSize="pagination.pageSize"
+          v-model:page-size="pagination.pageSize"
           :total="pagination.total"
           :page-sizes="[10, 20, 50]"
           @change="loadData"

@@ -32,7 +32,7 @@
         <BeeTable :data="tableData" :loading="loading" selectable @selection-change="handleSelectionChange">
           <BeeTableColumn>
             <template #default="{ row }">
-              <BeeNamespaceInfoCell :name="row.name" :id="row.id" :description="row.description" :icon-size="32" />
+              <BeeNamespaceInfoCell :id="row.id" :name="row.name" :description="row.description" :icon-size="32" />
             </template>
           </BeeTableColumn>
           <BeeTableColumn :width="160">
@@ -98,7 +98,7 @@
         </div>
         <BeePagination
           v-model="pagination.page"
-          v-model:pageSize="pagination.pageSize"
+          v-model:page-size="pagination.pageSize"
           :total="pagination.total"
           :page-sizes="[10, 20, 50]"
           @change="loadData"

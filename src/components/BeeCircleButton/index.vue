@@ -49,7 +49,8 @@ const props = withDefaults(
     type: 'primary',
     size: 'default',
     disabled: false,
-    border: true
+    border: true,
+    iconSize: 16
   }
 )
 

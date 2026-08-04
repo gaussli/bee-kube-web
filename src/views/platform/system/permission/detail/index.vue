@@ -12,7 +12,7 @@
 
     <!-- 详情主体 -->
     <transition name="fade-slide" mode="out-in">
-      <div class="detail-body" v-if="loaded">
+      <div v-if="loaded" class="detail-body">
         <!-- 权限关键信息 -->
         <div class="permission-header">
           <div class="permission-icon">

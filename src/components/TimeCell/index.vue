@@ -14,6 +14,7 @@ interface Props {
 }
 
 withDefaults(defineProps<Props>(), {
+  time: '',
   showRelative: false
 })
 

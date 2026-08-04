@@ -35,7 +35,7 @@ export interface BeeTreeNodeData {
 }
 
 interface BeeTreeProps {
-  data: BeeTreeNodeData[]
+  data?: BeeTreeNodeData[]
   modelValue?: (string | number)[]
   defaultExpandAll?: boolean
   defaultCheckedKeys?: (string | number)[]

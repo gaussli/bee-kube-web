@@ -19,6 +19,7 @@ withDefaults(
     fontWeight?: number | string
   }>(),
   {
+    icon: '',
     size: 'inherit',
     color: 'inherit',
     fontWeight: 'inherit'

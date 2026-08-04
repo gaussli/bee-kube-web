@@ -10,7 +10,7 @@
     <div class="page-body">
       <el-tabs v-model="activeTab" type="border-card">
         <el-tab-pane label="基本信息" name="basic">
-          <div class="detail-section" v-loading="loading">
+          <div v-loading="loading" class="detail-section">
             <div class="detail-row">
               <div class="detail-item">
                 <span class="detail-label">应用名称:</span

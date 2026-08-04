@@ -40,7 +40,7 @@ defineOptions({ name: 'BeeBackHeader' })
 withDefaults(
   defineProps<{
     /** 标题文本 */
-    title: string
+    title?: string
     /** 右侧操作按钮组 */
     actions?: ActionItem[]
   }>(),

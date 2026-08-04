@@ -273,7 +273,7 @@ function deleteClusters(ids: string[]): void {
  * @param params - 查询参数
  * @returns 分页后的集群事件数据
  */
-function getClusterEventPage(clusterId: string, params: Partial<ClusterEventQueryReq>): PageVo<ClusterEventResp> {
+function getClusterEventPage(_clusterId: string, params: Partial<ClusterEventQueryReq>): PageVo<ClusterEventResp> {
   const { type, reason, involvedObjectName, involvedObjectKind, page = 1, pageSize = 10 } = params || {}
 
   let filtered = [...mockClusterEvents]

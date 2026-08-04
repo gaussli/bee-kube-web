@@ -59,6 +59,7 @@ const namespace = ref(route.query.namespace as string)
 const cronjobName = ref(route.query.name as string)
 const loading = ref(false)
 const submitting = ref(false)
+const formRef = ref()
 const cronjobData = ref<CronJobDetailResp>()
 const formData = ref<Partial<CronJobDetailResp>>({ schedule: '', suspend: false })
 const labelList = ref<Array<{ key: string; value: string }>>([])
@@ -98,6 +99,7 @@ async function handleSubmit() {
     ElMessage.success('保存成功')
     router.back()
   } catch {
+    /* 请求失败已由 request 拦截器统一弹窗提示，无需额外处理 */
   } finally {
     submitting.value = false
   }

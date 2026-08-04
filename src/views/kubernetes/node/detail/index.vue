@@ -14,7 +14,7 @@
       <el-tabs v-model="activeTab" type="border-card">
         <!-- 基本信息 -->
         <el-tab-pane label="基本信息" name="basic">
-          <div class="detail-section" v-loading="loading">
+          <div v-loading="loading" class="detail-section">
             <div class="detail-row">
               <div class="detail-item">
                 <span class="detail-label">节点名称:</span>
@@ -66,7 +66,7 @@
 
         <!-- 资源信息 -->
         <el-tab-pane label="资源信息" name="resources">
-          <div class="detail-section" v-loading="loading">
+          <div v-loading="loading" class="detail-section">
             <div class="detail-row">
               <div class="detail-item">
                 <span class="detail-label">CPU:</span>
@@ -88,7 +88,7 @@
 
         <!-- 标签 -->
         <el-tab-pane label="标签" name="labels">
-          <div class="detail-section" v-loading="loading">
+          <div v-loading="loading" class="detail-section">
             <div v-if="nodeData?.labels && Object.keys(nodeData.labels).length > 0">
               <div v-for="(value, key) in nodeData.labels" :key="key" class="label-item">
                 <BeeTag>{{ key }}: {{ value }}</BeeTag>
@@ -100,7 +100,7 @@
 
         <!-- 注解 -->
         <el-tab-pane label="注解" name="annotations">
-          <div class="detail-section" v-loading="loading">
+          <div v-loading="loading" class="detail-section">
             <div v-if="nodeData?.annotations && Object.keys(nodeData.annotations).length > 0">
               <div v-for="(value, key) in nodeData.annotations" :key="key" class="annotation-item">
                 <div class="annotation-key">{{ key }}</div>

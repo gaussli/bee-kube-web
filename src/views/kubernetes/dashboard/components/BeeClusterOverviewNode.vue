@@ -14,9 +14,9 @@
     <div class="bee-cluster-overview-node__body">
       <div v-for="node in nodeListData" :key="node.name" class="bee-cluster-overview-node__item">
         <BeeNodeInfoCell
+          :id="node.id"
           class="bee-cluster-overview-node__item-info"
           :name="node.name"
-          :id="node.id"
           :ip="node.ip"
           :description="node.description"
           :icon-size="32"

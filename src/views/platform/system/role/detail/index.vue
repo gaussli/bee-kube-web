@@ -12,7 +12,7 @@
 
     <!-- 详情主体 -->
     <transition name="fade-slide" mode="out-in">
-      <div class="detail-body" v-if="loaded">
+      <div v-if="loaded" class="detail-body">
         <!-- 角色关键信息 -->
         <div class="role-header">
           <div class="role-icon">

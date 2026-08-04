@@ -51,7 +51,8 @@ const props = withDefaults(
   }>(),
   {
     icon: 'kubernetes-deployment',
-    iconSize: 48
+    iconSize: 48,
+    description: ''
   }
 )
 </script>

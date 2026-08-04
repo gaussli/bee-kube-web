@@ -51,7 +51,8 @@ const props = withDefaults(
   }>(),
   {
     icon: 'kubernetes-namespace',
-    iconSize: 48
+    iconSize: 48,
+    description: ''
   }
 )
 </script>

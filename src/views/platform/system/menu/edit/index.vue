@@ -12,7 +12,7 @@
 
     <!-- 表单主体 -->
     <transition name="fade-slide" mode="out-in">
-      <div class="form-body" v-if="loaded">
+      <div v-if="loaded" class="form-body">
         <MenuForm ref="menuFormRef" :data="menuData" />
       </div>
     </transition>

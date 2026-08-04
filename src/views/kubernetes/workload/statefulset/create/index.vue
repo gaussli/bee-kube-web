@@ -77,6 +77,7 @@ async function handleSubmit() {
     ElMessage.success('创建成功')
     router.back()
   } catch {
+    /* 请求失败已由 request 拦截器统一弹窗提示，无需额外处理 */
   } finally {
     submitting.value = false
   }

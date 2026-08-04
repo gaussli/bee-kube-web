@@ -12,7 +12,7 @@
 
     <!-- 详情主体 -->
     <transition name="fade-slide" mode="out-in">
-      <div class="detail-body" v-if="loaded">
+      <div v-if="loaded" class="detail-body">
         <!-- 用户关键信息 -->
         <div class="user-header">
           <UserAvatar :name="userData.username" :size="72" />

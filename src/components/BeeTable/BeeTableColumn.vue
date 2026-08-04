@@ -1,3 +1,4 @@
+<!-- eslint-disable vue/valid-template-root -->
 <template><!-- renderless: column definition only --></template>
 
 <script setup lang="ts">
