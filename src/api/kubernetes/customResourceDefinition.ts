@@ -61,7 +61,8 @@ export function deleteCrd(clusterId: string, name: string): Promise<void> {
 /**
  * 批量删除 CRD
  * @param clusterId - 集群 ID
- * @param data - 待删除的 CRD 名称列表
+ * @param data - 批量删除参数
+ * @param data.names - 待删除的 CRD 名称列表
  */
 export function deleteCrds(clusterId: string, data: { names: string[] }): Promise<void> {
   return request.delete(`/kubernetes/clusters/${clusterId}/crds`, {

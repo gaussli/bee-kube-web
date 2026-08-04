@@ -271,7 +271,7 @@ function deleteClusters(ids: string[]): void {
 
 /**
  * 获取集群事件分页列表
- * @param clusterId - 集群 ID
+ * @param _clusterId - 集群 ID
  * @param params - 查询参数
  * @returns 分页后的集群事件数据
  */

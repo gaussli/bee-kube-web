@@ -238,6 +238,7 @@ function handleReset() {
 
 /**
  * 表格选中行变化
+ * @param rows
  */
 function handleSelectionChange(rows: Record<string, unknown>[]) {
   selectedRows.value = rows as unknown as ClusterListResp[]
@@ -252,6 +253,7 @@ function handleCreate() {
 
 /**
  * 跳转编辑页面
+ * @param row
  */
 function handleEdit(row: ClusterListResp) {
   router.push({ name: 'kubernetes:cluster:edit', query: { id: row.id } }).catch(() => {})
@@ -259,6 +261,7 @@ function handleEdit(row: ClusterListResp) {
 
 /**
  * 切换集群
+ * @param row
  */
 function handleSelectCluster(row: ClusterListResp) {
   kubernetesStore.setActiveClusterId(row.id)
@@ -267,6 +270,7 @@ function handleSelectCluster(row: ClusterListResp) {
 
 /**
  * 打开删除确认 Dialog
+ * @param row
  */
 function handleDelete(row: ClusterListResp) {
   currentTargetRow.value = row

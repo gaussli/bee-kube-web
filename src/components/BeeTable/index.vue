@@ -208,7 +208,10 @@ function getFixedClass(col: ColumnConfig) {
   }
 }
 
-/** 将数值转为带 px 单位的 CSS 值 */
+/**
+ * 将数值转为带 px 单位的 CSS 值
+ * @param val
+ */
 function toCssWidth(val: number): string {
   return `${val}px`
 }

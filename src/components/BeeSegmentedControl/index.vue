@@ -68,6 +68,7 @@ const sliderStyle = computed(() => {
 
 /**
  * 根据 v-model 值同步 activeIndex
+ * @param value
  */
 function syncActiveIndex(value?: string | number) {
   const index = props.options.findIndex(o => o.value === value)

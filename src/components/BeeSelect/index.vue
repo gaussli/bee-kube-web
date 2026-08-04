@@ -159,7 +159,10 @@ function toggle() {
   emit('visible-change', isOpen.value)
 }
 
-/** 选中选项 */
+/**
+ * 选中选项
+ * @param option
+ */
 function handleSelect(option: SelectOption) {
   emit('update:modelValue', option.value)
   emit('change', option.value)
@@ -167,7 +170,10 @@ function handleSelect(option: SelectOption) {
   emit('visible-change', false)
 }
 
-/** 点击外部区域关闭菜单 */
+/**
+ * 点击外部区域关闭菜单
+ * @param event
+ */
 function handleClickOutside(event: MouseEvent) {
   if (!isOpen.value) return
   const target = event.target as Node

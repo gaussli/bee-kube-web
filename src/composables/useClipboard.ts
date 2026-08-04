@@ -1,5 +1,8 @@
 import { ElMessage } from 'element-plus'
 
+/**
+ *
+ */
 export function useClipboard() {
   async function copy(text: string) {
     try {

@@ -304,6 +304,7 @@ function handleReset() {
 
 /**
  * 表格选中行变化
+ * @param rows
  * @remarks BeeTable 的 selection-change 事件固定返回 Record<string, unknown>[]，需通过 unknown 桥接断言为目标类型
  */
 function handleSelectionChange(rows: Record<string, unknown>[]) {
@@ -317,7 +318,10 @@ function handleCreate() {
   router.push({ name: 'kubernetes:workload:job:create', params: { clusterId: clusterId.value } }).catch(() => {})
 }
 
-/** 跳转编辑页面 */
+/**
+ * 跳转编辑页面
+ * @param row
+ */
 function handleEdit(row: JobListResp) {
   router
     .push({
@@ -328,7 +332,10 @@ function handleEdit(row: JobListResp) {
     .catch(() => {})
 }
 
-/** 跳转详情页面 */
+/**
+ * 跳转详情页面
+ * @param row
+ */
 function handleViewDetail(row: JobListResp) {
   router
     .push({
@@ -339,14 +346,20 @@ function handleViewDetail(row: JobListResp) {
     .catch(() => {})
 }
 
-/** 编辑 YAML */
+/**
+ * 编辑 YAML
+ * @param row
+ */
 function handleEditYaml(row: JobListResp) {
   ElMessage.info(`编辑 YAML: ${row.name}`)
 }
 
 // ==================== CRUD: Delete ====================
 
-/** 打开删除确认弹窗 */
+/**
+ * 打开删除确认弹窗
+ * @param row
+ */
 function handleDelete(row: JobListResp) {
   currentTargetRow.value = row
   deleteDialogVisible.value = true

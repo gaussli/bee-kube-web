@@ -122,7 +122,7 @@ export default [
 
 /**
  * 获取命名空间分页列表
- * @param clusterId - 集群ID
+ * @param _clusterId - 集群ID
  * @param params - 查询参数
  * @returns 分页数据（normal）或简化列表（simple）
  */

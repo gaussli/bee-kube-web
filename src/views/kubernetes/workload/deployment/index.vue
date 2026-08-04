@@ -315,6 +315,7 @@ function handleReset() {
 
 /**
  * 表格选中行变化
+ * @param rows
  * @remarks BeeTable 的 selection-change 事件固定返回 Record<string, unknown>[]，需通过 unknown 桥接断言为目标类型
  */
 function handleSelectionChange(rows: Record<string, unknown>[]) {
@@ -348,7 +349,10 @@ function handleImport() {
   ElMessage.info('功能开发中')
 }
 
-/** 跳转编辑页面 */
+/**
+ * 跳转编辑页面
+ * @param row
+ */
 function handleEdit(row: DeploymentListVo) {
   router
     .push({
@@ -359,12 +363,18 @@ function handleEdit(row: DeploymentListVo) {
     .catch(() => {})
 }
 
-/** 编辑 YAML */
+/**
+ * 编辑 YAML
+ * @param row
+ */
 function handleEditYaml(row: DeploymentListVo) {
   ElMessage.info(`编辑 YAML: ${row.name}`)
 }
 
-/** 跳转详情页面 */
+/**
+ * 跳转详情页面
+ * @param row
+ */
 function handleViewDetail(row: DeploymentListVo) {
   router
     .push({
@@ -375,24 +385,36 @@ function handleViewDetail(row: DeploymentListVo) {
     .catch(() => {})
 }
 
-/** 扩缩容 */
+/**
+ * 扩缩容
+ * @param row
+ */
 function handleScale(row: DeploymentListVo) {
   ElMessage.info(`扩缩容: ${row.name}`)
 }
 
-/** 重启 */
+/**
+ * 重启
+ * @param row
+ */
 function handleRestart(row: DeploymentListVo) {
   ElMessage.info(`重启: ${row.name}`)
 }
 
-/** 回滚 */
+/**
+ * 回滚
+ * @param row
+ */
 function handleRollback(row: DeploymentListVo) {
   ElMessage.info(`回滚: ${row.name}`)
 }
 
 // ==================== CRUD: Delete ====================
 
-/** 打开删除确认弹窗 */
+/**
+ * 打开删除确认弹窗
+ * @param row
+ */
 function handleDelete(row: DeploymentListVo) {
   currentTargetRow.value = row
   deleteDialogVisible.value = true

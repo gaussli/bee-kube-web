@@ -187,7 +187,7 @@ export default [
 
 /**
  * 获取 Deployment 分页列表
- * @param clusterId - 集群ID
+ * @param _clusterId - 集群ID
  * @param params - 查询参数
  * @returns 分页数据
  */
@@ -232,9 +232,9 @@ function getDeploymentList(_clusterId: string, params: Partial<DeploymentQueryFo
 
 /**
  * 获取 Deployment 详情
- * @param clusterId - 集群ID
- * @param namespace - 命名空间
- * @param name - Deployment 名称
+ * @param _clusterId - 集群ID
+ * @param _namespace - 命名空间
+ * @param _name - Deployment 名称
  * @returns Deployment 详情
  */
 function getDeploymentDetail(_clusterId: string, _namespace: string, _name: string): DeploymentDetailVo {
@@ -251,9 +251,9 @@ function getDeploymentDetail(_clusterId: string, _namespace: string, _name: stri
 
 /**
  * 获取 Deployment Pod 列表
- * @param clusterId - 集群ID
- * @param namespace - 命名空间
- * @param name - Deployment 名称
+ * @param _clusterId - 集群ID
+ * @param _namespace - 命名空间
+ * @param _name - Deployment 名称
  * @returns Pod 列表
  */
 function getDeploymentPodList(_clusterId: string, _namespace: string, _name: string): DeploymentPodListVo[] {
@@ -468,9 +468,9 @@ function getDeploymentSchedule(clusterId: string, namespace: string, name: strin
 
 /**
  * 获取 Deployment 历史版本列表
- * @param clusterId - 集群ID
- * @param namespace - 命名空间
- * @param name - Deployment 名称
+ * @param _clusterId - 集群ID
+ * @param _namespace - 命名空间
+ * @param _name - Deployment 名称
  * @returns 历史版本列表
  */
 function getDeploymentHistoryRevisionList(
@@ -509,9 +509,9 @@ function getDeploymentHistoryRevisionList(
 
 /**
  * 获取 Deployment 网络资源
- * @param clusterId - 集群ID
- * @param namespace - 命名空间
- * @param name - Deployment 名称
+ * @param _clusterId - 集群ID
+ * @param _namespace - 命名空间
+ * @param _name - Deployment 名称
  * @returns 网络资源
  */
 function getDeploymentNetwork(_clusterId: string, _namespace: string, _name: string): DeploymentNetworkVo {
@@ -639,9 +639,9 @@ function getDeploymentNetwork(_clusterId: string, _namespace: string, _name: str
 
 /**
  * 获取 Deployment 存储列表
- * @param clusterId - 集群ID
- * @param namespace - 命名空间
- * @param name - Deployment 名称
+ * @param _clusterId - 集群ID
+ * @param _namespace - 命名空间
+ * @param _name - Deployment 名称
  * @returns 存储列表
  */
 function getDeploymentStorageList(_clusterId: string, _namespace: string, _name: string): DeploymentStorageListVo[] {
@@ -696,9 +696,9 @@ function getDeploymentStorageList(_clusterId: string, _namespace: string, _name:
 
 /**
  * 获取 Deployment 监控数据
- * @param clusterId - 集群ID
- * @param namespace - 命名空间
- * @param name - Deployment 名称
+ * @param _clusterId - 集群ID
+ * @param _namespace - 命名空间
+ * @param _name - Deployment 名称
  * @returns 监控数据
  */
 function getDeploymentMonitor(_clusterId: string, _namespace: string, _name: string): DeploymentMonitorVo {
@@ -707,9 +707,9 @@ function getDeploymentMonitor(_clusterId: string, _namespace: string, _name: str
 
 /**
  * 获取 Deployment 事件列表
- * @param clusterId - 集群ID
- * @param namespace - 命名空间
- * @param name - Deployment 名称
+ * @param _clusterId - 集群ID
+ * @param _namespace - 命名空间
+ * @param _name - Deployment 名称
  * @returns 事件列表
  */
 function getDeploymentEventList(_clusterId: string, _namespace: string, _name: string): DeploymentEventListVo[] {

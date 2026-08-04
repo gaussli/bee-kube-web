@@ -207,7 +207,10 @@ const strategyLabel = computed(() => {
   return strategyLabelMap[props.data.strategy.type] || props.data.strategy.type
 })
 
-/** 格式化内存容量 */
+/**
+ * 格式化内存容量
+ * @param bytes
+ */
 function formatMemoryBytes(bytes: number): string {
   if (bytes === 0) return '0'
   const units = ['B', 'Ki', 'Mi', 'Gi', 'Ti']

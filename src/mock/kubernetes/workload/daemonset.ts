@@ -108,7 +108,7 @@ export default [
 
 /**
  * 获取 DaemonSet 分页列表
- * @param clusterId - 集群ID
+ * @param _clusterId - 集群ID
  * @param params - 查询参数
  * @returns 分页数据
  */

@@ -245,6 +245,7 @@ function handleReset() {
 
 /**
  * 表格选中行变化
+ * @param rows
  * @remarks BeeTable 的 selection-change 事件固定返回 Record<string, unknown>[]，需通过 unknown 桥接断言为目标类型
  */
 function handleSelectionChange(rows: Record<string, unknown>[]) {

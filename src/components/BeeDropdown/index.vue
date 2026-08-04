@@ -86,7 +86,14 @@ watch(
   { immediate: true },
 )
 
-/** 添加菜单项（供 BeeDropdownItem 调用） */
+/**
+ * 添加菜单项（供 BeeDropdownItem 调用）
+ * @param item
+ * @param item.value
+ * @param item.label
+ * @param item.icon
+ * @param item.onClick
+ */
 function addItem(item: { value: string | number; label?: string; icon?: string; onClick?: () => void }) {
   const existing = menuItems.value.findIndex(i => i.value === item.value)
   if (existing === -1) {
@@ -99,7 +106,10 @@ function addItem(item: { value: string | number; label?: string; icon?: string; 
   }
 }
 
-/** 移除菜单项（供 BeeDropdownItem 调用） */
+/**
+ * 移除菜单项（供 BeeDropdownItem 调用）
+ * @param value
+ */
 function removeItem(value: string | number) {
   const index = menuItems.value.findIndex(i => i.value === value)
   if (index !== -1) {
@@ -166,7 +176,10 @@ function toggle() {
   }
 }
 
-/** 处理选项选中 */
+/**
+ * 处理选项选中
+ * @param option
+ */
 function handleSelect(option: DropdownOption) {
   // 先触发 BeeDropdownItem 注册的 @click 回调
   option.onClick?.()
@@ -175,7 +188,10 @@ function handleSelect(option: DropdownOption) {
   close()
 }
 
-/** 判断目标是否在 trigger 或 menu 内部 */
+/**
+ * 判断目标是否在 trigger 或 menu 内部
+ * @param target
+ */
 function isInside(target: Node): boolean {
   return !!(triggerRef.value?.contains(target) || floatingRef.value?.contains(target))
 }
@@ -188,14 +204,20 @@ function close() {
   }
 }
 
-/** 点击外部关闭 */
+/**
+ * 点击外部关闭
+ * @param event
+ */
 function handleClickOutside(event: MouseEvent) {
   if (!isInside(event.target as Node)) {
     close()
   }
 }
 
-/** 焦点移出时关闭（Tab 键、点击其他可聚焦元素等场景） */
+/**
+ * 焦点移出时关闭（Tab 键、点击其他可聚焦元素等场景）
+ * @param event
+ */
 function handleFocusIn(event: FocusEvent) {
   if (!isInside(event.target as Node)) {
     close()

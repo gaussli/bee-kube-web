@@ -75,7 +75,10 @@ const emit = defineEmits<{
 
 const loading = ref(false)
 
-/** 点击事件处理，带 loading 防重 */
+/**
+ * 点击事件处理，带 loading 防重
+ * @param event
+ */
 function handleClick(event: Event) {
   if (loading.value) return
   loading.value = true

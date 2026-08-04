@@ -1,7 +1,15 @@
 // 业务异常类
+/**
+ *
+ */
 export class BizError extends Error {
   code: number
 
+  /**
+   *
+   * @param code
+   * @param message
+   */
   constructor(code: number, message: string) {
     super(message)
     this.name = 'BizError'

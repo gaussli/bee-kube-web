@@ -230,9 +230,9 @@ function getStatefulSetList(_clusterId: string, params: Partial<StatefulSetQuery
 
 /**
  * 获取 StatefulSet 详情
- * @param clusterId - 集群ID
- * @param namespace - 命名空间
- * @param name - StatefulSet 名称
+ * @param _clusterId - 集群ID
+ * @param _namespace - 命名空间
+ * @param _name - StatefulSet 名称
  * @returns StatefulSet 详情
  */
 function getStatefulSetDetail(_clusterId: string, _namespace: string, _name: string): StatefulSetDetailVo {
@@ -249,9 +249,9 @@ function getStatefulSetDetail(_clusterId: string, _namespace: string, _name: str
 
 /**
  * 获取 StatefulSet Pod 列表
- * @param clusterId - 集群ID
- * @param namespace - 命名空间
- * @param name - StatefulSet 名称
+ * @param _clusterId - 集群ID
+ * @param _namespace - 命名空间
+ * @param _name - StatefulSet 名称
  * @returns Pod 列表
  */
 function getStatefulSetPodList(_clusterId: string, _namespace: string, _name: string): StatefulSetPodListVo[] {
@@ -414,9 +414,9 @@ function getStatefulSetSchedule(clusterId: string, namespace: string, name: stri
 
 /**
  * 获取 StatefulSet 历史版本列表
- * @param clusterId - 集群ID
- * @param namespace - 命名空间
- * @param name - StatefulSet 名称
+ * @param _clusterId - 集群ID
+ * @param _namespace - 命名空间
+ * @param _name - StatefulSet 名称
  * @returns 历史版本列表
  */
 function getStatefulSetHistoryRevisionList(
@@ -443,9 +443,9 @@ function getStatefulSetHistoryRevisionList(
 
 /**
  * 获取 StatefulSet 网络资源
- * @param clusterId - 集群ID
- * @param namespace - 命名空间
- * @param name - StatefulSet 名称
+ * @param _clusterId - 集群ID
+ * @param _namespace - 命名空间
+ * @param _name - StatefulSet 名称
  * @returns 网络资源
  */
 function getStatefulSetNetwork(_clusterId: string, _namespace: string, _name: string): StatefulSetNetworkVo {
@@ -503,9 +503,9 @@ function getStatefulSetNetwork(_clusterId: string, _namespace: string, _name: st
 
 /**
  * 获取 StatefulSet 存储列表
- * @param clusterId - 集群ID
- * @param namespace - 命名空间
- * @param name - StatefulSet 名称
+ * @param _clusterId - 集群ID
+ * @param _namespace - 命名空间
+ * @param _name - StatefulSet 名称
  * @returns 存储列表
  */
 function getStatefulSetStorageList(_clusterId: string, _namespace: string, _name: string): StatefulSetStorageListVo[] {
@@ -548,9 +548,9 @@ function getStatefulSetStorageList(_clusterId: string, _namespace: string, _name
 
 /**
  * 获取 StatefulSet 监控数据
- * @param clusterId - 集群ID
- * @param namespace - 命名空间
- * @param name - StatefulSet 名称
+ * @param _clusterId - 集群ID
+ * @param _namespace - 命名空间
+ * @param _name - StatefulSet 名称
  * @returns 监控数据
  */
 function getStatefulSetMonitor(_clusterId: string, _namespace: string, _name: string): StatefulSetMonitorVo {
@@ -559,9 +559,9 @@ function getStatefulSetMonitor(_clusterId: string, _namespace: string, _name: st
 
 /**
  * 获取 StatefulSet 事件列表
- * @param clusterId - 集群ID
- * @param namespace - 命名空间
- * @param name - StatefulSet 名称
+ * @param _clusterId - 集群ID
+ * @param _namespace - 命名空间
+ * @param _name - StatefulSet 名称
  * @returns 事件列表
  */
 function getStatefulSetEventList(_clusterId: string, _namespace: string, _name: string): StatefulSetEventListVo[] {

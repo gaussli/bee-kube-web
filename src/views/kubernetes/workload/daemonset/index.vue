@@ -296,6 +296,7 @@ function handleReset() {
 
 /**
  * 表格选中行变化
+ * @param rows
  * @remarks BeeTable 的 selection-change 事件固定返回 Record<string, unknown>[]，需通过 unknown 桥接断言为目标类型
  */
 function handleSelectionChange(rows: Record<string, unknown>[]) {
@@ -309,7 +310,10 @@ function handleCreate() {
   router.push({ name: 'kubernetes:workload:daemonset:create', params: { clusterId: clusterId.value } }).catch(() => {})
 }
 
-/** 跳转编辑页面 */
+/**
+ * 跳转编辑页面
+ * @param row
+ */
 function handleEdit(row: DaemonSetListResp) {
   router
     .push({
@@ -320,7 +324,10 @@ function handleEdit(row: DaemonSetListResp) {
     .catch(() => {})
 }
 
-/** 跳转详情页面 */
+/**
+ * 跳转详情页面
+ * @param row
+ */
 function handleViewDetail(row: DaemonSetListResp) {
   router
     .push({
@@ -331,19 +338,28 @@ function handleViewDetail(row: DaemonSetListResp) {
     .catch(() => {})
 }
 
-/** 重启 */
+/**
+ * 重启
+ * @param row
+ */
 function handleRestart(row: DaemonSetListResp) {
   ElMessage.info(`重启: ${row.name}`)
 }
 
-/** 编辑 YAML */
+/**
+ * 编辑 YAML
+ * @param row
+ */
 function handleEditYaml(row: DaemonSetListResp) {
   ElMessage.info(`编辑 YAML: ${row.name}`)
 }
 
 // ==================== CRUD: Delete ====================
 
-/** 打开删除确认弹窗 */
+/**
+ * 打开删除确认弹窗
+ * @param row
+ */
 function handleDelete(row: DaemonSetListResp) {
   currentTargetRow.value = row
   deleteDialogVisible.value = true

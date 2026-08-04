@@ -6,6 +6,10 @@ import type { CurrentMenu } from '@/types'
 const modules = import.meta.glob('@/views/**/*.vue')
 
 // 将菜单转换为路由配置（子路由版本）
+/**
+ *
+ * @param menus
+ */
 export function generateRoutes(menus: CurrentMenu[]): RouteRecordRaw[] {
   const routes: RouteRecordRaw[] = []
 

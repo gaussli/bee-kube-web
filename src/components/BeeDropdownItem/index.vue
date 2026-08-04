@@ -35,7 +35,10 @@ const dropdown = inject<DropdownContext | null>('beeDropdown', null)
 /** 是否隐藏（用于 v-permission 等指令） */
 const hidden = ref(false)
 
-/** 通知隐藏 */
+/**
+ * 通知隐藏
+ * @param val
+ */
 function setHidden(val: boolean) {
   hidden.value = val
 }

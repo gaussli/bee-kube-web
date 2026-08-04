@@ -109,7 +109,7 @@ export default [
 
 /**
  * 获取 ConfigMap 分页列表
- * @param clusterId - 集群ID
+ * @param _clusterId - 集群ID
  * @param params - 查询参数（含 namespace 筛选）
  * @returns 分页数据
  */

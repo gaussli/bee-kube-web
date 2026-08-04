@@ -236,6 +236,7 @@ function handleReset() {
 
 /**
  * 表格选中行变化
+ * @param rows
  */
 function handleSelectionChange(rows: Record<string, unknown>[]) {
   selectedRows.value = rows as unknown as NamespaceListResp[]

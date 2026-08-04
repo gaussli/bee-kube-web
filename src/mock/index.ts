@@ -24,7 +24,10 @@ for (const path in modules) {
   }
 }
 
-/** 将 URL 路径转换为正则表达式，支持 :param 格式 */
+/**
+ * 将 URL 路径转换为正则表达式，支持 :param 格式
+ * @param url
+ */
 function pathToRegex(url: string): { regex: RegExp; paramNames: string[] } {
   const paramNames: string[] = []
   const regexStr = url.replace(/:([^/]+)/g, (_, paramName) => {
@@ -34,7 +37,12 @@ function pathToRegex(url: string): { regex: RegExp; paramNames: string[] } {
   return { regex: new RegExp(`^${regexStr}$`), paramNames }
 }
 
-/** 提取 URL 中的路径参数 */
+/**
+ * 提取 URL 中的路径参数
+ * @param url
+ * @param regex
+ * @param paramNames
+ */
 function extractParams(url: string, regex: RegExp, paramNames: string[]): Record<string, string> {
   const match = url.match(regex)
   if (!match) return {}
@@ -45,6 +53,10 @@ function extractParams(url: string, regex: RegExp, paramNames: string[]): Record
   return params
 }
 
+/**
+ *
+ * @param config
+ */
 export async function mockRequest(config: AxiosRequestConfig): Promise<AxiosResponse> {
   const { method, url, data, params } = config
 

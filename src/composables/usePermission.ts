@@ -30,6 +30,7 @@ export function usePermission() {
 
   /**
    * 检查是否具有所有指定权限
+   * @param permission
    */
   function hasEveryPermission(permission: string | string[]): boolean {
     return hasPermission(permission, 'every')
@@ -37,6 +38,7 @@ export function usePermission() {
 
   /**
    * 检查是否具有任一指定权限
+   * @param permission
    */
   function hasSomePermission(permission: string | string[]): boolean {
     return hasPermission(permission, 'some')

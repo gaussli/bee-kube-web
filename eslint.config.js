@@ -18,6 +18,7 @@ import tseslintParser from '@typescript-eslint/parser'
 import eslintConfigPrettier from 'eslint-config-prettier'
 import importPlugin from 'eslint-plugin-import'
 import prettier from 'eslint-plugin-prettier'
+import jsdoc from 'eslint-plugin-jsdoc'
 import unusedImports from 'eslint-plugin-unused-imports'
 import pluginVue from 'eslint-plugin-vue'
 import globals from 'globals'
@@ -58,7 +59,39 @@ export default [
   },
 
   /* ======================================================================
-   * 4. 未使用导入检测（unused-imports 插件）
+   * 4. JSDoc 注释规范（eslint-plugin-jsdoc）
+   *    对齐项目编码规范：文件级 @module 注释 + 导出函数 @param/@returns。
+   *    先用 warn 级别摸底，后续可逐步收紧为 error。
+   * ====================================================================== */
+  {
+    files: ['**/*.ts', '**/*.vue', '**/*.tsx'],
+    plugins: { jsdoc },
+    rules: {
+      // --- 要求导出函数/类有 JSDoc ---
+      'jsdoc/require-jsdoc': [
+        'warn',
+        {
+          publicOnly: true,                          // 仅检查导出符号
+          require: {
+            FunctionDeclaration: true,               // function foo() {}
+            MethodDefinition: true,                  // class 中的方法
+            ClassDeclaration: true,                  // class Foo {}
+            ArrowFunctionExpression: false,          // 跳过箭头函数（回调和组件 setup 太常见）
+            FunctionExpression: false                // 跳过函数表达式
+          }
+        }
+      ],
+      // --- 有 JSDoc 的函数必须写明 @param ---
+      'jsdoc/require-param': 'warn',
+      // --- 有返回值的函数必须写明 @returns ---
+      'jsdoc/require-returns': 'warn',
+      // --- 参数名必须与实际一致（防止拷贝后未更新）---
+      'jsdoc/check-param-names': 'warn'
+    }
+  },
+
+  /* ======================================================================
+   * 5. 未使用导入检测（unused-imports 插件）
    *    关掉 ESLint 原生的 no-unused-vars（与 TS 版本冲突），
    *    改用 unused-imports 插件单独检测未被引用的 import 语句。
    *    执行 pnpm lint 时会自动移除这些冗余导入。

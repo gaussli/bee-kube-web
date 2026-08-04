@@ -93,7 +93,7 @@ export default [
 
 /**
  * 获取节点分页列表
- * @param clusterId - 集群ID
+ * @param _clusterId - 集群ID
  * @param params - 查询参数
  * @returns 分页数据
  */
@@ -152,8 +152,8 @@ function getNodeDetail(clusterId: string, name: string): NodeListResp {
 
 /**
  * 获取节点资源用量
- * @param clusterId - 集群ID
- * @param name - 节点名称
+ * @param _clusterId - 集群ID
+ * @param _name - 节点名称
  * @returns 节点资源用量数据
  */
 function getNodeResource(_clusterId: string, _name: string): NodeResourceResp {
