@@ -2,7 +2,7 @@ import type { RouteRecordRaw } from 'vue-router'
 
 export const nodeRoutes: RouteRecordRaw[] = [
   {
-    path: '/kubernetes/clusters/:clusterId/nodes',
+    path: '/kubernetes/clusters/:clusterUid/nodes',
     name: 'kubernetes:node',
     component: () => import('@/views/kubernetes/node/index.vue'),
     meta: {
@@ -13,7 +13,7 @@ export const nodeRoutes: RouteRecordRaw[] = [
     },
   },
   {
-    path: '/kubernetes/clusters/:clusterId/nodes/detail',
+    path: '/kubernetes/clusters/:clusterUid/nodes/detail',
     name: 'kubernetes:node:detail',
     component: () => import('@/views/kubernetes/node/detail/index.vue'),
     meta: {
@@ -24,7 +24,7 @@ export const nodeRoutes: RouteRecordRaw[] = [
     },
   },
   {
-    path: '/kubernetes/clusters/:clusterId/nodes/edit',
+    path: '/kubernetes/clusters/:clusterUid/nodes/edit',
     name: 'kubernetes:node:edit',
     component: () => import('@/views/kubernetes/node/edit/index.vue'),
     meta: {

@@ -6,7 +6,7 @@
     <div class="bee-cluster-info-cell__content">
       <div class="bee-cluster-info-cell__top">
         <span class="bee-cluster-info-cell__name">{{ name }}</span>
-        <BeeTooltip :label="id">
+        <BeeTooltip :label="uid">
           <BeeTag type="primary" size="tiny">UID</BeeTag>
         </BeeTooltip>
       </div>
@@ -38,10 +38,10 @@ import BeeTooltip from '@/components/BeeTooltip/index.vue'
 defineOptions({ name: 'BeeClusterInfoCell' })
 
 defineProps<{
+  /** 集群 UID，hover UID 标签时显示 */
+  uid: string
   /** 集群名称 */
   name: string
-  /** 集群 ID，hover UID 标签时显示 */
-  id: string
   /** 集群描述 */
   description?: string
 }>()

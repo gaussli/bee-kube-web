@@ -1,12 +1,12 @@
 <template>
   <div class="job-create">
     <div class="page-header">
-      <BeePageTitle :icon="Timer" title="创建任务" description="创建一个新的 Kubernetes Job。" />
+      <BeePageHeader :icon="Timer" title="创建任务" description="创建一个新的 Kubernetes Job。" />
     </div>
     <div class="page-body">
       <el-form ref="formRef" :model="formData" :rules="formRules" label-width="140px" class="create-form">
-        <el-form-item label="所属集群" prop="clusterId">
-          <el-select v-model="formData.clusterId" placeholder="选择集群" style="width: 300px"
+        <el-form-item label="所属集群" prop="clusterUid">
+          <el-select v-model="formData.clusterUid" placeholder="选择集群" style="width: 300px"
             ><el-option label="默认集群" value="default"
           /></el-select>
         </el-form-item>
@@ -52,7 +52,7 @@ import { createJob } from '@/api/kubernetes/workload/job'
 
 import BeeButton from '@/components/BeeButton/index.vue'
 import { BeeMessage } from '@/components/BeeMessage'
-import BeePageTitle from '@/components/BeePageTitle/index.vue'
+import BeePageHeader from '@/components/BeePageHeader/index.vue'
 
 defineOptions({ name: 'JobCreate' })
 const router = useRouter()
@@ -61,12 +61,12 @@ const submitting = ref(false)
 const formData = ref<Partial<JobResp>>({
   name: '',
   namespace: 'default',
-  clusterId: 'default',
+  clusterUid: 'default',
   parallelism: 1,
   completions: 1,
 })
 const formRules = {
-  clusterId: [{ required: true, message: '请选择集群', trigger: 'change' }],
+  clusterUid: [{ required: true, message: '请选择集群', trigger: 'change' }],
   namespace: [{ required: true, message: '请选择命名空间', trigger: 'change' }],
   name: [{ required: true, message: '请输入任务名称', trigger: 'blur' }],
   parallelism: [{ required: true, message: '请输入并行度', trigger: 'blur' }],

@@ -45,8 +45,8 @@ import BeeSegmentedControl from '@/components/BeeSegmentedControl/index.vue'
 defineOptions({ name: 'BeeClusterOverviewNode' })
 
 const props = defineProps<{
-  /** 集群 ID */
-  clusterId: string
+  /** 集群 UID */
+  clusterUid: string
 }>()
 
 /**
@@ -86,8 +86,8 @@ function calcPercentage(used: number, total: number): number {
  * 加载节点 TopN 数据
  */
 async function loadData() {
-  if (!props.clusterId) return
-  topNNodes.value = await getNodeTopN(props.clusterId, {
+  if (!props.clusterUid) return
+  topNNodes.value = await getNodeTopN(props.clusterUid, {
     metric: sortKey.value,
     count: 5,
   })

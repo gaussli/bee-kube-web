@@ -1,7 +1,7 @@
 <template>
   <div class="statefulset-detail">
     <div class="page-header">
-      <BeePageTitle
+      <BeePageHeader
         :icon="Collection"
         :title="`有状态应用详情: ${statefulsetName}`"
         description="查看 StatefulSet 详细信息。"
@@ -25,7 +25,7 @@
               <div class="detail-item">
                 <span class="detail-label">集群:</span
                 ><span class="detail-value">{{
-                  statefulsetData?.basic.clusterName || statefulsetData?.basic.clusterId
+                  statefulsetData?.basic.clusterName || statefulsetData?.basic.clusterUid
                 }}</span>
               </div>
               <div class="detail-item">
@@ -84,7 +84,7 @@ import type { StatefulSetDetailVo } from '@/types/kubernetes/workload/statefulse
 import { getStatefulSetDetail } from '@/api/kubernetes/workload/statefulset'
 
 import BeeButton from '@/components/BeeButton/index.vue'
-import BeePageTitle from '@/components/BeePageTitle/index.vue'
+import BeePageHeader from '@/components/BeePageHeader/index.vue'
 
 import { usePermission } from '@/composables/usePermission'
 
@@ -92,17 +92,17 @@ defineOptions({ name: 'StatefulSetDetail' })
 const { hasPermission } = usePermission()
 const route = useRoute()
 const router = useRouter()
-const clusterId = ref(route.params.clusterId as string)
+const clusterUid = ref(route.params.clusterUid as string)
 const namespace = ref(route.query.namespace as string)
 const statefulsetName = ref(route.query.name as string)
 const loading = ref(false)
 const statefulsetData = ref<StatefulSetDetailVo>()
 const activeTab = ref('basic')
 async function loadData() {
-  if (!clusterId.value || !namespace.value || !statefulsetName.value) return
+  if (!clusterUid.value || !namespace.value || !statefulsetName.value) return
   loading.value = true
   try {
-    statefulsetData.value = await getStatefulSetDetail(clusterId.value, namespace.value, statefulsetName.value)
+    statefulsetData.value = await getStatefulSetDetail(clusterUid.value, namespace.value, statefulsetName.value)
   } finally {
     loading.value = false
   }
@@ -114,7 +114,7 @@ function handleEdit() {
   router
     .push({
       name: 'kubernetes:workload:statefulset:edit',
-      params: { clusterId: clusterId.value },
+      params: { clusterUid: clusterUid.value },
       query: { namespace: namespace.value, name: statefulsetName.value },
     })
     .catch(() => {})

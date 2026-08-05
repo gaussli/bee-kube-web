@@ -12,7 +12,7 @@ export interface StorageClassResp extends BaseEntity {
   /** StorageClass 名称 */
   name: string
   /** 所属集群 ID */
-  clusterId: string
+  clusterUid: string
   /** 所属集群名称 */
   clusterName?: string
   /** 存储提供者 */

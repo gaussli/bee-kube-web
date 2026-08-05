@@ -29,6 +29,7 @@ if (useMock) {
   service.defaults.adapter = async (config: InternalAxiosRequestConfig) => {
     try {
       console.log('running mock request...', config.url)
+      console.log(config.params)
       const response = await mockRequest(config)
       return response
     } catch (error) {

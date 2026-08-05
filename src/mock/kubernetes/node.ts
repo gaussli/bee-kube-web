@@ -11,7 +11,7 @@ import type {
   NodeLabelsReq,
   NodeAnnotationsReq,
   NodeTaintsReq,
-  NodeResourceResp,
+  NodeResourceVo,
 } from '@/types/kubernetes/node'
 
 import { generateId } from '@/mock/utils'
@@ -51,7 +51,7 @@ export default [
   {
     method: 'get',
     url: '/kubernetes/clusters/:clusterId/nodes/:name/resource',
-    handler: (pathParams: Record<string, string>): NodeResourceResp =>
+    handler: (pathParams: Record<string, string>): NodeResourceVo =>
       getNodeResource(pathParams.clusterId, pathParams.name),
   },
   {
@@ -156,7 +156,7 @@ function getNodeDetail(clusterId: string, name: string): NodeListResp {
  * @param _name - 节点名称
  * @returns 节点资源用量数据
  */
-function getNodeResource(_clusterId: string, _name: string): NodeResourceResp {
+function getNodeResource(_clusterId: string, _name: string): NodeResourceVo {
   return generateNodeResources()
 }
 

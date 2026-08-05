@@ -1,7 +1,7 @@
 <template>
   <div class="job-detail">
     <div class="page-header">
-      <BeePageTitle :icon="Timer" :title="`任务详情: ${jobName}`" description="查看 Job 详细信息。" />
+      <BeePageHeader :icon="Timer" :title="`任务详情: ${jobName}`" description="查看 Job 详细信息。" />
     </div>
     <div class="page-body">
       <el-tabs v-model="activeTab" type="border-card">
@@ -18,7 +18,7 @@
             <div class="detail-row">
               <div class="detail-item">
                 <span class="detail-label">集群:</span
-                ><span class="detail-value">{{ jobData?.clusterName || jobData?.clusterId }}</span>
+                ><span class="detail-value">{{ jobData?.clusterName || jobData?.clusterUid }}</span>
               </div>
               <div class="detail-item">
                 <span class="detail-label">并行度:</span><span class="detail-value">{{ jobData?.parallelism }}</span>
@@ -82,7 +82,7 @@ import type { JobResp } from '@/types/kubernetes/workload/job'
 import { getJobDetail } from '@/api/kubernetes/workload/job'
 
 import BeeButton from '@/components/BeeButton/index.vue'
-import BeePageTitle from '@/components/BeePageTitle/index.vue'
+import BeePageHeader from '@/components/BeePageHeader/index.vue'
 
 import { usePermission } from '@/composables/usePermission'
 
@@ -90,17 +90,17 @@ defineOptions({ name: 'JobDetail' })
 const { hasPermission } = usePermission()
 const route = useRoute()
 const router = useRouter()
-const clusterId = ref(route.params.clusterId as string)
+const clusterUid = ref(route.params.clusterUid as string)
 const namespace = ref(route.query.namespace as string)
 const jobName = ref(route.query.name as string)
 const loading = ref(false)
 const jobData = ref<JobResp>()
 const activeTab = ref('basic')
 async function loadData() {
-  if (!clusterId.value || !namespace.value || !jobName.value) return
+  if (!clusterUid.value || !namespace.value || !jobName.value) return
   loading.value = true
   try {
-    jobData.value = await getJobDetail(clusterId.value, namespace.value, jobName.value)
+    jobData.value = await getJobDetail(clusterUid.value, namespace.value, jobName.value)
   } finally {
     loading.value = false
   }
@@ -112,7 +112,7 @@ function handleEdit() {
   router
     .push({
       name: 'kubernetes:workload:job:edit',
-      params: { clusterId: clusterId.value },
+      params: { clusterUid: clusterUid.value },
       query: { namespace: namespace.value, name: jobName.value },
     })
     .catch(() => {})

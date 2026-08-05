@@ -60,6 +60,8 @@ function extractParams(url: string, regex: RegExp, paramNames: string[]): Record
 export async function mockRequest(config: AxiosRequestConfig): Promise<AxiosResponse> {
   const { method, url, data, params } = config
 
+  console.log('mock:::', params)
+
   // 模拟延迟
   await new Promise(r => setTimeout(r, mockDelay))
 

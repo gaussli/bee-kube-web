@@ -2,7 +2,7 @@ import type { RouteRecordRaw } from 'vue-router'
 
 const deploymentRoutes: RouteRecordRaw[] = [
   {
-    path: '/kubernetes/clusters/:clusterId/deployments',
+    path: '/kubernetes/clusters/:clusterUid/deployments',
     name: 'kubernetes:workload:deployment',
     component: () => import('@/views/kubernetes/workload/deployment/index.vue'),
     meta: {
@@ -13,7 +13,7 @@ const deploymentRoutes: RouteRecordRaw[] = [
     },
   },
   {
-    path: '/kubernetes/clusters/:clusterId/namespaces/:namespace/deployments/:name',
+    path: '/kubernetes/clusters/:clusterUid/namespaces/:namespace/deployments/:name',
     name: 'kubernetes:workload:deployment:detail',
     component: () => import('@/views/kubernetes/workload/deployment/detail/index.vue'),
     meta: {
@@ -24,7 +24,7 @@ const deploymentRoutes: RouteRecordRaw[] = [
     },
   },
   {
-    path: '/kubernetes/clusters/:clusterId/deployments/create',
+    path: '/kubernetes/clusters/:clusterUid/deployments/create',
     name: 'kubernetes:workload:deployment:create',
     component: () => import('@/views/kubernetes/workload/deployment/create/index.vue'),
     meta: {
@@ -35,7 +35,7 @@ const deploymentRoutes: RouteRecordRaw[] = [
     },
   },
   {
-    path: '/kubernetes/clusters/:clusterId/deployments/create/yaml',
+    path: '/kubernetes/clusters/:clusterUid/deployments/create/yaml',
     name: 'kubernetes:workload:deployment:create:yaml',
     component: () => import('@/views/kubernetes/workload/deployment/create/yaml.vue'),
     meta: {
@@ -46,7 +46,7 @@ const deploymentRoutes: RouteRecordRaw[] = [
     },
   },
   {
-    path: '/kubernetes/clusters/:clusterId/namespaces/:namespace/deployments/:name/edit',
+    path: '/kubernetes/clusters/:clusterUid/namespaces/:namespace/deployments/:name/edit',
     name: 'kubernetes:workload:deployment:edit',
     component: () => import('@/views/kubernetes/workload/deployment/edit/index.vue'),
     meta: {
@@ -57,7 +57,7 @@ const deploymentRoutes: RouteRecordRaw[] = [
     },
   },
   {
-    path: '/kubernetes/clusters/:clusterId/namespaces/:namespace/deployments/:name/edit/yaml',
+    path: '/kubernetes/clusters/:clusterUid/namespaces/:namespace/deployments/:name/edit/yaml',
     name: 'kubernetes:workload:deployment:edit:yaml',
     component: () => import('@/views/kubernetes/workload/deployment/edit/yaml.vue'),
     meta: {
@@ -71,7 +71,7 @@ const deploymentRoutes: RouteRecordRaw[] = [
 
 const statefulsetRoutes: RouteRecordRaw[] = [
   {
-    path: '/kubernetes/clusters/:clusterId/statefulsets',
+    path: '/kubernetes/clusters/:clusterUid/statefulsets',
     name: 'kubernetes:workload:statefulset',
     component: () => import('@/views/kubernetes/workload/statefulset/index.vue'),
     meta: {
@@ -82,7 +82,7 @@ const statefulsetRoutes: RouteRecordRaw[] = [
     },
   },
   {
-    path: '/kubernetes/clusters/:clusterId/namespaces/:namespace/statefulsets/:name',
+    path: '/kubernetes/clusters/:clusterUid/namespaces/:namespace/statefulsets/:name',
     name: 'kubernetes:workload:statefulset:detail',
     component: () => import('@/views/kubernetes/workload/statefulset/detail/index.vue'),
     meta: {
@@ -93,7 +93,7 @@ const statefulsetRoutes: RouteRecordRaw[] = [
     },
   },
   {
-    path: '/kubernetes/clusters/:clusterId/statefulsets/create',
+    path: '/kubernetes/clusters/:clusterUid/statefulsets/create',
     name: 'kubernetes:workload:statefulset:create',
     component: () => import('@/views/kubernetes/workload/statefulset/create/index.vue'),
     meta: {
@@ -104,7 +104,7 @@ const statefulsetRoutes: RouteRecordRaw[] = [
     },
   },
   {
-    path: '/kubernetes/clusters/:clusterId/statefulsets/create/yaml',
+    path: '/kubernetes/clusters/:clusterUid/statefulsets/create/yaml',
     name: 'kubernetes:workload:statefulset:create:yaml',
     component: () => import('@/views/kubernetes/workload/statefulset/create/yaml.vue'),
     meta: {
@@ -115,7 +115,7 @@ const statefulsetRoutes: RouteRecordRaw[] = [
     },
   },
   {
-    path: '/kubernetes/clusters/:clusterId/namespaces/:namespace/statefulsets/:name/edit',
+    path: '/kubernetes/clusters/:clusterUid/namespaces/:namespace/statefulsets/:name/edit',
     name: 'kubernetes:workload:statefulset:edit',
     component: () => import('@/views/kubernetes/workload/statefulset/edit/index.vue'),
     meta: {
@@ -126,7 +126,7 @@ const statefulsetRoutes: RouteRecordRaw[] = [
     },
   },
   {
-    path: '/kubernetes/clusters/:clusterId/namespaces/:namespace/statefulsets/:name/edit/yaml',
+    path: '/kubernetes/clusters/:clusterUid/namespaces/:namespace/statefulsets/:name/edit/yaml',
     name: 'kubernetes:workload:statefulset:edit:yaml',
     component: () => import('@/views/kubernetes/workload/statefulset/edit/yaml.vue'),
     meta: {
@@ -140,7 +140,7 @@ const statefulsetRoutes: RouteRecordRaw[] = [
 
 const daemonsetRoutes: RouteRecordRaw[] = [
   {
-    path: '/kubernetes/clusters/:clusterId/daemonsets',
+    path: '/kubernetes/clusters/:clusterUid/daemonsets',
     name: 'kubernetes:workload:daemonset',
     component: () => import('@/views/kubernetes/workload/daemonset/index.vue'),
     meta: {
@@ -151,7 +151,7 @@ const daemonsetRoutes: RouteRecordRaw[] = [
     },
   },
   {
-    path: '/kubernetes/clusters/:clusterId/namespaces/:namespace/daemonsets/:name',
+    path: '/kubernetes/clusters/:clusterUid/namespaces/:namespace/daemonsets/:name',
     name: 'kubernetes:workload:daemonset:detail',
     component: () => import('@/views/kubernetes/workload/daemonset/detail/index.vue'),
     meta: {
@@ -162,7 +162,7 @@ const daemonsetRoutes: RouteRecordRaw[] = [
     },
   },
   {
-    path: '/kubernetes/clusters/:clusterId/daemonsets/create',
+    path: '/kubernetes/clusters/:clusterUid/daemonsets/create',
     name: 'kubernetes:workload:daemonset:create',
     component: () => import('@/views/kubernetes/workload/daemonset/create/index.vue'),
     meta: {
@@ -173,7 +173,7 @@ const daemonsetRoutes: RouteRecordRaw[] = [
     },
   },
   {
-    path: '/kubernetes/clusters/:clusterId/daemonsets/create/yaml',
+    path: '/kubernetes/clusters/:clusterUid/daemonsets/create/yaml',
     name: 'kubernetes:workload:daemonset:create:yaml',
     component: () => import('@/views/kubernetes/workload/daemonset/create/yaml.vue'),
     meta: {
@@ -184,7 +184,7 @@ const daemonsetRoutes: RouteRecordRaw[] = [
     },
   },
   {
-    path: '/kubernetes/clusters/:clusterId/namespaces/:namespace/daemonsets/:name/edit',
+    path: '/kubernetes/clusters/:clusterUid/namespaces/:namespace/daemonsets/:name/edit',
     name: 'kubernetes:workload:daemonset:edit',
     component: () => import('@/views/kubernetes/workload/daemonset/edit/index.vue'),
     meta: {
@@ -195,7 +195,7 @@ const daemonsetRoutes: RouteRecordRaw[] = [
     },
   },
   {
-    path: '/kubernetes/clusters/:clusterId/namespaces/:namespace/daemonsets/:name/edit/yaml',
+    path: '/kubernetes/clusters/:clusterUid/namespaces/:namespace/daemonsets/:name/edit/yaml',
     name: 'kubernetes:workload:daemonset:edit:yaml',
     component: () => import('@/views/kubernetes/workload/daemonset/edit/yaml.vue'),
     meta: {
@@ -209,7 +209,7 @@ const daemonsetRoutes: RouteRecordRaw[] = [
 
 const jobRoutes: RouteRecordRaw[] = [
   {
-    path: '/kubernetes/clusters/:clusterId/jobs',
+    path: '/kubernetes/clusters/:clusterUid/jobs',
     name: 'kubernetes:workload:job',
     component: () => import('@/views/kubernetes/workload/job/index.vue'),
     meta: {
@@ -220,7 +220,7 @@ const jobRoutes: RouteRecordRaw[] = [
     },
   },
   {
-    path: '/kubernetes/clusters/:clusterId/namespaces/:namespace/jobs/:name',
+    path: '/kubernetes/clusters/:clusterUid/namespaces/:namespace/jobs/:name',
     name: 'kubernetes:workload:job:detail',
     component: () => import('@/views/kubernetes/workload/job/detail/index.vue'),
     meta: {
@@ -231,7 +231,7 @@ const jobRoutes: RouteRecordRaw[] = [
     },
   },
   {
-    path: '/kubernetes/clusters/:clusterId/jobs/create',
+    path: '/kubernetes/clusters/:clusterUid/jobs/create',
     name: 'kubernetes:workload:job:create',
     component: () => import('@/views/kubernetes/workload/job/create/index.vue'),
     meta: {
@@ -242,7 +242,7 @@ const jobRoutes: RouteRecordRaw[] = [
     },
   },
   {
-    path: '/kubernetes/clusters/:clusterId/jobs/create/yaml',
+    path: '/kubernetes/clusters/:clusterUid/jobs/create/yaml',
     name: 'kubernetes:workload:job:create:yaml',
     component: () => import('@/views/kubernetes/workload/job/create/yaml.vue'),
     meta: {
@@ -253,7 +253,7 @@ const jobRoutes: RouteRecordRaw[] = [
     },
   },
   {
-    path: '/kubernetes/clusters/:clusterId/namespaces/:namespace/jobs/:name/edit',
+    path: '/kubernetes/clusters/:clusterUid/namespaces/:namespace/jobs/:name/edit',
     name: 'kubernetes:workload:job:edit',
     component: () => import('@/views/kubernetes/workload/job/edit/index.vue'),
     meta: {
@@ -264,7 +264,7 @@ const jobRoutes: RouteRecordRaw[] = [
     },
   },
   {
-    path: '/kubernetes/clusters/:clusterId/namespaces/:namespace/jobs/:name/edit/yaml',
+    path: '/kubernetes/clusters/:clusterUid/namespaces/:namespace/jobs/:name/edit/yaml',
     name: 'kubernetes:workload:job:edit:yaml',
     component: () => import('@/views/kubernetes/workload/job/edit/yaml.vue'),
     meta: {
@@ -278,7 +278,7 @@ const jobRoutes: RouteRecordRaw[] = [
 
 const cronjobRoutes: RouteRecordRaw[] = [
   {
-    path: '/kubernetes/clusters/:clusterId/cronjobs',
+    path: '/kubernetes/clusters/:clusterUid/cronjobs',
     name: 'kubernetes:workload:cronjob',
     component: () => import('@/views/kubernetes/workload/cronjob/index.vue'),
     meta: {
@@ -289,7 +289,7 @@ const cronjobRoutes: RouteRecordRaw[] = [
     },
   },
   {
-    path: '/kubernetes/clusters/:clusterId/namespaces/:namespace/cronjobs/:name',
+    path: '/kubernetes/clusters/:clusterUid/namespaces/:namespace/cronjobs/:name',
     name: 'kubernetes:workload:cronjob:detail',
     component: () => import('@/views/kubernetes/workload/cronjob/detail/index.vue'),
     meta: {
@@ -300,7 +300,7 @@ const cronjobRoutes: RouteRecordRaw[] = [
     },
   },
   {
-    path: '/kubernetes/clusters/:clusterId/cronjobs/create',
+    path: '/kubernetes/clusters/:clusterUid/cronjobs/create',
     name: 'kubernetes:workload:cronjob:create',
     component: () => import('@/views/kubernetes/workload/cronjob/create/index.vue'),
     meta: {
@@ -311,7 +311,7 @@ const cronjobRoutes: RouteRecordRaw[] = [
     },
   },
   {
-    path: '/kubernetes/clusters/:clusterId/cronjobs/create/yaml',
+    path: '/kubernetes/clusters/:clusterUid/cronjobs/create/yaml',
     name: 'kubernetes:workload:cronjob:create:yaml',
     component: () => import('@/views/kubernetes/workload/cronjob/create/yaml.vue'),
     meta: {
@@ -322,7 +322,7 @@ const cronjobRoutes: RouteRecordRaw[] = [
     },
   },
   {
-    path: '/kubernetes/clusters/:clusterId/namespaces/:namespace/cronjobs/:name/edit',
+    path: '/kubernetes/clusters/:clusterUid/namespaces/:namespace/cronjobs/:name/edit',
     name: 'kubernetes:workload:cronjob:edit',
     component: () => import('@/views/kubernetes/workload/cronjob/edit/index.vue'),
     meta: {
@@ -333,7 +333,7 @@ const cronjobRoutes: RouteRecordRaw[] = [
     },
   },
   {
-    path: '/kubernetes/clusters/:clusterId/namespaces/:namespace/cronjobs/:name/edit/yaml',
+    path: '/kubernetes/clusters/:clusterUid/namespaces/:namespace/cronjobs/:name/edit/yaml',
     name: 'kubernetes:workload:cronjob:edit:yaml',
     component: () => import('@/views/kubernetes/workload/cronjob/edit/yaml.vue'),
     meta: {
@@ -346,14 +346,9 @@ const cronjobRoutes: RouteRecordRaw[] = [
 ]
 
 export const workloadRoutes: RouteRecordRaw[] = [
-  {
-    path: '/kubernetes/clusters/:clusterId/workload',
-    name: 'kubernetes:workload',
-    redirect: '/kubernetes/clusters/:clusterId/workload/deployment',
-    meta: {
-      title: '工作负载',
-      icon: 'Cpu',
-    },
-    children: [...deploymentRoutes, ...statefulsetRoutes, ...daemonsetRoutes, ...jobRoutes, ...cronjobRoutes],
-  },
+  ...deploymentRoutes,
+  ...statefulsetRoutes,
+  ...daemonsetRoutes,
+  ...jobRoutes,
+  ...cronjobRoutes,
 ]

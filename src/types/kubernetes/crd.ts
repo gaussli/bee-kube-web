@@ -47,7 +47,7 @@ export interface CrdResp extends BaseEntity {
   /** CRD 名称 */
   name: string
   /** 所属集群 ID */
-  clusterId: string
+  clusterUid: string
   /** 所属集群名称 */
   clusterName?: string
   /** 组名称 */

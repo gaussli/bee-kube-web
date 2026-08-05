@@ -2,7 +2,7 @@
   <BeePage class="statefulset-page">
     <!-- 页面标题 -->
     <BeeCard class="statefulset-page__header">
-      <BeePageTitle
+      <BeePageHeader
         icon="kubernetes-namespace"
         title="有状态应用"
         description="有状态应用（StatefulSet）是 Kubernetes 中用于管理有状态工作负载的控制器，为每个 Pod 提供稳定的网络标识和持久存储。"
@@ -165,12 +165,10 @@ import type {
   PodManagementPolicyType,
 } from '@/types/kubernetes/workload/statefulset'
 
-import type { ActionItem } from '@/components/BeeActionCell/index.vue'
-
 import { getNamespacePage } from '@/api/kubernetes/namespace'
 import { getStatefulSetList, deleteStatefulSet, deleteStatefulSets } from '@/api/kubernetes/workload/statefulset'
 
-import BeeActionCell from '@/components/BeeActionCell/index.vue'
+import BeeActionCell, { type ActionItem } from '@/components/BeeActionCell/index.vue'
 import BeeAuditCell from '@/components/BeeAuditCell/index.vue'
 import BeeButton from '@/components/BeeButton/index.vue'
 import BeeCard from '@/components/BeeCard/index.vue'
@@ -178,7 +176,7 @@ import BeeDialog from '@/components/BeeDialog/index.vue'
 import BeeInputSearch from '@/components/BeeInputSearch/index.vue'
 import { BeeMessage } from '@/components/BeeMessage'
 import BeePage from '@/components/BeePage/index.vue'
-import BeePageTitle from '@/components/BeePageTitle/index.vue'
+import BeePageHeader from '@/components/BeePageHeader/index.vue'
 import BeePagination from '@/components/BeePagination/index.vue'
 import BeeSelect from '@/components/BeeSelect/index.vue'
 import BeeStatusCell from '@/components/BeeStatusCell/index.vue'
@@ -201,7 +199,7 @@ const router = useRouter()
 
 // ==================== Reactive State ====================
 
-const clusterId = ref(route.params.clusterId as string)
+const clusterUid = ref(route.params.clusterUid as string)
 const searchKey = ref('')
 const loading = ref(false)
 const tableData = ref<StatefulSetListVo[]>([])
@@ -258,9 +256,9 @@ function podManagementPolicyLabel(type: PodManagementPolicyType): string {
  * @remarks 通过 getNamespacePage mode=simple 获取简化列表，转换后填充下拉选项
  */
 async function loadNamespaceOptions() {
-  if (!clusterId.value) return
+  if (!clusterUid.value) return
   try {
-    const namespaces = (await getNamespacePage(clusterId.value, { mode: 'simple' })) as NamespaceSimpleListResp[]
+    const namespaces = (await getNamespacePage(clusterUid.value, { mode: 'simple' })) as NamespaceSimpleListResp[]
     namespaceOptions.value = [
       { label: '全部命名空间', value: undefined },
       ...namespaces.map(ns => ({ label: ns.name, value: ns.name })),
@@ -275,13 +273,13 @@ async function loadNamespaceOptions() {
  * @remarks 根据当前查询条件与分页参数获取 StatefulSet 分页数据
  */
 async function loadData() {
-  if (!clusterId.value) {
+  if (!clusterUid.value) {
     tableData.value = []
     return
   }
   loading.value = true
   try {
-    const resp = await getStatefulSetList(clusterId.value, {
+    const resp = await getStatefulSetList(clusterUid.value, {
       ...queryForm,
       page: pagination.page,
       pageSize: pagination.pageSize,
@@ -341,14 +339,14 @@ function handleClearSelection() {
 /** 跳转创建页面 */
 function handleCreate() {
   router
-    .push({ name: 'kubernetes:workload:statefulset:create', params: { clusterId: clusterId.value } })
+    .push({ name: 'kubernetes:workload:statefulset:create', params: { clusterUid: clusterUid.value } })
     .catch(() => {})
 }
 
 /** YAML 方式创建 */
 function handleCreateYaml() {
   router
-    .push({ name: 'kubernetes:workload:statefulset:create:yaml', params: { clusterId: clusterId.value } })
+    .push({ name: 'kubernetes:workload:statefulset:create:yaml', params: { clusterUid: clusterUid.value } })
     .catch(() => {})
 }
 
@@ -370,7 +368,7 @@ function handleEdit(row: StatefulSetListVo) {
   router
     .push({
       name: 'kubernetes:workload:statefulset:edit',
-      params: { clusterId: row.clusterId, namespace: row.namespace, name: row.name },
+      params: { clusterUid: row.clusterUid, namespace: row.namespace, name: row.name },
     })
     .catch(() => {})
 }
@@ -383,7 +381,7 @@ function handleEditYaml(row: StatefulSetListVo) {
   router
     .push({
       name: 'kubernetes:workload:statefulset:edit:yaml',
-      params: { clusterId: row.clusterId, namespace: row.namespace, name: row.name },
+      params: { clusterUid: row.clusterUid, namespace: row.namespace, name: row.name },
     })
     .catch(() => {})
 }
@@ -396,7 +394,7 @@ function handleViewDetail(row: StatefulSetListVo) {
   router
     .push({
       name: 'kubernetes:workload:statefulset:detail',
-      params: { clusterId: row.clusterId, namespace: row.namespace, name: row.name },
+      params: { clusterUid: row.clusterUid, namespace: row.namespace, name: row.name },
     })
     .catch(() => {})
 }
@@ -433,7 +431,7 @@ async function handleConfirmDelete() {
   if (!currentTargetRow.value) return
   try {
     await deleteStatefulSet(
-      currentTargetRow.value.clusterId,
+      currentTargetRow.value.clusterUid,
       currentTargetRow.value.namespace,
       currentTargetRow.value.name,
     )
@@ -454,7 +452,7 @@ function handleBatchDelete() {
 /** 确认批量删除 */
 async function handleConfirmBatchDelete() {
   if (selectedRows.value.length === 0) return
-  const targetClusterId = selectedRows.value[0].clusterId
+  const targetClusterId = selectedRows.value[0].clusterUid
   const targetNamespace = selectedRows.value[0].namespace
   const names = selectedRows.value.map(row => row.name)
   try {

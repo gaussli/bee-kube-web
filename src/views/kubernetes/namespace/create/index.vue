@@ -2,14 +2,14 @@
   <div class="namespace-create">
     <!-- 页面标题 -->
     <div class="page-header">
-      <BeePageTitle :icon="FolderOpened" title="创建命名空间" description="创建一个新的 Kubernetes 命名空间。" />
+      <BeePageHeader :icon="FolderOpened" title="创建命名空间" description="创建一个新的 Kubernetes 命名空间。" />
     </div>
 
     <!-- 表单内容 -->
     <div class="page-body">
       <el-form ref="formRef" :model="formData" :rules="formRules" label-width="120px" class="create-form">
-        <el-form-item label="所属集群" prop="clusterId">
-          <el-select v-model="formData.clusterId" placeholder="选择集群" style="width: 300px">
+        <el-form-item label="所属集群" prop="clusterUid">
+          <el-select v-model="formData.clusterUid" placeholder="选择集群" style="width: 300px">
             <el-option label="默认集群" value="default" />
           </el-select>
         </el-form-item>
@@ -79,7 +79,7 @@ import { createNamespace } from '@/api/kubernetes/namespace'
 
 import BeeButton from '@/components/BeeButton/index.vue'
 import { BeeMessage } from '@/components/BeeMessage'
-import BeePageTitle from '@/components/BeePageTitle/index.vue'
+import BeePageHeader from '@/components/BeePageHeader/index.vue'
 
 defineOptions({ name: 'NamespaceCreate' })
 
@@ -89,13 +89,13 @@ const submitting = ref(false)
 
 const formData = ref<NamespaceReq>({
   name: '',
-  clusterId: 'default',
+  clusterUid: 'default',
   labels: {},
   annotations: {},
 })
 
 const formRules = {
-  clusterId: [{ required: true, message: '请选择集群', trigger: 'change' }],
+  clusterUid: [{ required: true, message: '请选择集群', trigger: 'change' }],
   name: [
     { required: true, message: '请输入命名空间名称', trigger: 'blur' },
     { pattern: /^[a-z0-9]([-a-z0-9]*[a-z0-9])?$/, message: '名称只能包含小写字母、数字和连字符', trigger: 'blur' },

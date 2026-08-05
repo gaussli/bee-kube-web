@@ -2,7 +2,7 @@
   <BeePage class="secret-page">
     <!-- 页面标题 -->
     <BeeCard class="secret-page__header">
-      <BeePageTitle
+      <BeePageHeader
         icon="kubernetes-namespace"
         title="密钥"
         description="密钥（Secret）用于存储敏感配置数据，如密码、Token、TLS 证书、Docker 仓库凭证等，实现敏感信息与工作负载的解耦。"
@@ -145,12 +145,10 @@ import { useRoute, useRouter } from 'vue-router'
 import type { SecretQueryReq, SecretListResp } from '@/types/kubernetes/config/secret'
 import type { NamespaceSimpleListResp } from '@/types/kubernetes/namespace'
 
-import type { ActionItem } from '@/components/BeeActionCell/index.vue'
-
 import { getSecretList, deleteSecret, deleteSecrets } from '@/api/kubernetes/config/secret'
 import { getNamespacePage } from '@/api/kubernetes/namespace'
 
-import BeeActionCell from '@/components/BeeActionCell/index.vue'
+import BeeActionCell, { type ActionItem } from '@/components/BeeActionCell/index.vue'
 import BeeAuditCell from '@/components/BeeAuditCell/index.vue'
 import BeeButton from '@/components/BeeButton/index.vue'
 import BeeCard from '@/components/BeeCard/index.vue'
@@ -158,7 +156,7 @@ import BeeDialog from '@/components/BeeDialog/index.vue'
 import BeeInputSearch from '@/components/BeeInputSearch/index.vue'
 import { BeeMessage } from '@/components/BeeMessage'
 import BeePage from '@/components/BeePage/index.vue'
-import BeePageTitle from '@/components/BeePageTitle/index.vue'
+import BeePageHeader from '@/components/BeePageHeader/index.vue'
 import BeePagination from '@/components/BeePagination/index.vue'
 import BeeSecretInfoCell from '@/components/BeeSecretInfoCell/index.vue'
 import BeeSelect from '@/components/BeeSelect/index.vue'
@@ -179,7 +177,7 @@ const router = useRouter()
 
 // ==================== Reactive State ====================
 
-const clusterId = ref(route.params.clusterId as string)
+const clusterUid = ref(route.params.clusterUid as string)
 const searchKey = ref('')
 const loading = ref(false)
 const tableData = ref<SecretListResp[]>([])
@@ -218,9 +216,9 @@ const typeOptions = ref([
  * @remarks 通过 getNamespacePage mode=simple 获取简化列表，转换后填充下拉选项
  */
 async function loadNamespaceOptions() {
-  if (!clusterId.value) return
+  if (!clusterUid.value) return
   try {
-    const namespaces = (await getNamespacePage(clusterId.value, { mode: 'simple' })) as NamespaceSimpleListResp[]
+    const namespaces = (await getNamespacePage(clusterUid.value, { mode: 'simple' })) as NamespaceSimpleListResp[]
     namespaceOptions.value = [
       { label: '全部命名空间', value: undefined },
       ...namespaces.map(ns => ({ label: ns.name, value: ns.name })),
@@ -235,13 +233,13 @@ async function loadNamespaceOptions() {
  * @remarks 根据当前查询条件与分页参数获取 Secret 分页数据
  */
 async function loadData() {
-  if (!clusterId.value) {
+  if (!clusterUid.value) {
     tableData.value = []
     return
   }
   loading.value = true
   try {
-    const resp = await getSecretList(clusterId.value, {
+    const resp = await getSecretList(clusterUid.value, {
       name: queryForm.name,
       namespace: queryForm.namespace || undefined,
       type: queryForm.type || undefined,
@@ -298,7 +296,7 @@ function handleSelectionChange(rows: Record<string, unknown>[]) {
 
 /** 跳转创建页面 */
 function handleCreate() {
-  router.push({ name: 'kubernetes:config:secret:create', params: { clusterId: clusterId.value } }).catch(() => {})
+  router.push({ name: 'kubernetes:config:secret:create', params: { clusterUid: clusterUid.value } }).catch(() => {})
 }
 
 /**
@@ -309,7 +307,7 @@ function handleEdit(row: SecretListResp) {
   router
     .push({
       name: 'kubernetes:config:secret:edit',
-      params: { clusterId: row.clusterId },
+      params: { clusterUid: row.clusterUid },
       query: { namespace: row.namespace, name: row.name },
     })
     .catch(() => {})
@@ -323,7 +321,7 @@ function handleViewDetail(row: SecretListResp) {
   router
     .push({
       name: 'kubernetes:config:secret:detail',
-      params: { clusterId: row.clusterId },
+      params: { clusterUid: row.clusterUid },
       query: { namespace: row.namespace, name: row.name },
     })
     .catch(() => {})
@@ -352,7 +350,7 @@ function handleDelete(row: SecretListResp) {
 async function handleConfirmDelete() {
   if (!currentTargetRow.value) return
   try {
-    await deleteSecret(currentTargetRow.value.clusterId, currentTargetRow.value.namespace, currentTargetRow.value.name)
+    await deleteSecret(currentTargetRow.value.clusterUid, currentTargetRow.value.namespace, currentTargetRow.value.name)
     BeeMessage.success('删除成功')
     deleteDialogVisible.value = false
     currentTargetRow.value = null
@@ -370,7 +368,7 @@ function handleBatchDelete() {
 /** 确认批量删除 */
 async function handleConfirmBatchDelete() {
   if (selectedRows.value.length === 0) return
-  const targetClusterId = selectedRows.value[0].clusterId
+  const targetClusterId = selectedRows.value[0].clusterUid
   const targetNamespace = selectedRows.value[0].namespace
   const names = selectedRows.value.map(row => row.name)
   try {

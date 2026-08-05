@@ -2,7 +2,7 @@
   <BeePage class="cronjob-page">
     <!-- 页面标题 -->
     <BeeCard class="cronjob-page__header">
-      <BeePageTitle
+      <BeePageHeader
         icon="kubernetes-namespace"
         title="定时任务"
         description="定时任务（CronJob）用于定时运行任务，按照 Cron 表达式调度 Job 执行。"
@@ -148,12 +148,10 @@ import { useRoute, useRouter } from 'vue-router'
 import type { NamespaceSimpleListResp } from '@/types/kubernetes/namespace'
 import type { CronJobQueryReq, CronJobListResp } from '@/types/kubernetes/workload/cronjob'
 
-import type { ActionItem } from '@/components/BeeActionCell/index.vue'
-
 import { getNamespacePage } from '@/api/kubernetes/namespace'
 import { getCronJobList, deleteCronJob, deleteCronJobs } from '@/api/kubernetes/workload/cronjob'
 
-import BeeActionCell from '@/components/BeeActionCell/index.vue'
+import BeeActionCell, { type ActionItem } from '@/components/BeeActionCell/index.vue'
 import BeeAuditCell from '@/components/BeeAuditCell/index.vue'
 import BeeButton from '@/components/BeeButton/index.vue'
 import BeeCard from '@/components/BeeCard/index.vue'
@@ -161,7 +159,7 @@ import BeeDialog from '@/components/BeeDialog/index.vue'
 import BeeInputSearch from '@/components/BeeInputSearch/index.vue'
 import { BeeMessage } from '@/components/BeeMessage'
 import BeePage from '@/components/BeePage/index.vue'
-import BeePageTitle from '@/components/BeePageTitle/index.vue'
+import BeePageHeader from '@/components/BeePageHeader/index.vue'
 import BeePagination from '@/components/BeePagination/index.vue'
 import BeeSelect from '@/components/BeeSelect/index.vue'
 import BeeStatusCell from '@/components/BeeStatusCell/index.vue'
@@ -184,7 +182,7 @@ const router = useRouter()
 
 // ==================== Reactive State ====================
 
-const clusterId = ref(route.params.clusterId as string)
+const clusterUid = ref(route.params.clusterUid as string)
 const searchKey = ref('')
 const loading = ref(false)
 const tableData = ref<CronJobListResp[]>([])
@@ -211,9 +209,9 @@ const namespaceOptions = ref<{ label: string; value: string | undefined }[]>([
  * @remarks 通过 getNamespacePage mode=simple 获取简化列表，转换后填充下拉选项
  */
 async function loadNamespaceOptions() {
-  if (!clusterId.value) return
+  if (!clusterUid.value) return
   try {
-    const namespaces = (await getNamespacePage(clusterId.value, { mode: 'simple' })) as NamespaceSimpleListResp[]
+    const namespaces = (await getNamespacePage(clusterUid.value, { mode: 'simple' })) as NamespaceSimpleListResp[]
     namespaceOptions.value = [
       { label: '全部命名空间', value: undefined },
       ...namespaces.map(ns => ({ label: ns.name, value: ns.name })),
@@ -238,13 +236,13 @@ function formatTime(time?: string): string {
  * @remarks 根据当前查询条件与分页参数获取 CronJob 分页数据
  */
 async function loadData() {
-  if (!clusterId.value) {
+  if (!clusterUid.value) {
     tableData.value = []
     return
   }
   loading.value = true
   try {
-    const resp = await getCronJobList(clusterId.value, {
+    const resp = await getCronJobList(clusterUid.value, {
       name: queryForm.name,
       namespace: queryForm.namespace || undefined,
       status: queryForm.status,
@@ -303,13 +301,13 @@ function handleClearSelection() {
 
 /** 跳转创建页面 */
 function handleCreate() {
-  router.push({ name: 'kubernetes:workload:cronjob:create', params: { clusterId: clusterId.value } }).catch(() => {})
+  router.push({ name: 'kubernetes:workload:cronjob:create', params: { clusterUid: clusterUid.value } }).catch(() => {})
 }
 
 /** YAML 方式创建 */
 function handleCreateYaml() {
   router
-    .push({ name: 'kubernetes:workload:cronjob:create:yaml', params: { clusterId: clusterId.value } })
+    .push({ name: 'kubernetes:workload:cronjob:create:yaml', params: { clusterUid: clusterUid.value } })
     .catch(() => {})
 }
 
@@ -331,7 +329,7 @@ function handleEdit(row: CronJobListResp) {
   router
     .push({
       name: 'kubernetes:workload:cronjob:edit',
-      params: { clusterId: row.clusterId, namespace: row.namespace, name: row.name },
+      params: { clusterUid: row.clusterUid, namespace: row.namespace, name: row.name },
     })
     .catch(() => {})
 }
@@ -344,7 +342,7 @@ function handleEditYaml(row: CronJobListResp) {
   router
     .push({
       name: 'kubernetes:workload:cronjob:edit:yaml',
-      params: { clusterId: row.clusterId, namespace: row.namespace, name: row.name },
+      params: { clusterUid: row.clusterUid, namespace: row.namespace, name: row.name },
     })
     .catch(() => {})
 }
@@ -357,7 +355,7 @@ function handleViewDetail(row: CronJobListResp) {
   router
     .push({
       name: 'kubernetes:workload:cronjob:detail',
-      params: { clusterId: row.clusterId, namespace: row.namespace, name: row.name },
+      params: { clusterUid: row.clusterUid, namespace: row.namespace, name: row.name },
     })
     .catch(() => {})
 }
@@ -377,7 +375,11 @@ function handleDelete(row: CronJobListResp) {
 async function handleConfirmDelete() {
   if (!currentTargetRow.value) return
   try {
-    await deleteCronJob(currentTargetRow.value.clusterId, currentTargetRow.value.namespace, currentTargetRow.value.name)
+    await deleteCronJob(
+      currentTargetRow.value.clusterUid,
+      currentTargetRow.value.namespace,
+      currentTargetRow.value.name,
+    )
     BeeMessage.success('删除成功')
     deleteDialogVisible.value = false
     currentTargetRow.value = null
@@ -395,7 +397,7 @@ function handleBatchDelete() {
 /** 确认批量删除 */
 async function handleConfirmBatchDelete() {
   if (selectedRows.value.length === 0) return
-  const targetClusterId = selectedRows.value[0].clusterId
+  const targetClusterId = selectedRows.value[0].clusterUid
   const targetNamespace = selectedRows.value[0].namespace
   const names = selectedRows.value.map(row => row.name)
   try {

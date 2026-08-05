@@ -4,63 +4,38 @@
  */
 import type { PageVo } from '@/types/common'
 import type {
-  ClusterDetailResp,
-  ClusterEventQueryReq,
-  ClusterEventResp,
-  ClusterListResp,
-  ClusterQueryReq,
-  ClusterRegistrationReq,
-  ClusterReq,
-  ClusterResourceResp,
+  ClusterDetailVo,
+  ClusterListVo,
+  ClusterQueryForm,
+  ClusterRegisterForm,
+  ClusterCreateForm,
 } from '@/types/kubernetes/cluster'
 
 import { request } from '@/utils'
 
 /**
- * 获取集群分页列表
+ * 获取集群列表
  * @param params - 查询参数
  * @returns 分页后的集群列表
  */
-export function getClusterPage(params: Partial<ClusterQueryReq>): Promise<PageVo<ClusterListResp>> {
-  return request.get<PageVo<ClusterListResp>>('/kubernetes/clusters', params)
+export function getClusterList(params: Partial<ClusterQueryForm>): Promise<PageVo<ClusterListVo>> {
+  return request.get<PageVo<ClusterListVo>>('/kubernetes/clusters', params)
 }
 
 /**
  * 获取集群详情
- * @param id - 集群 ID
+ * @param uid - 集群 UID
  * @returns 集群详情信息
  */
-export function getClusterDetail(id: string): Promise<ClusterDetailResp> {
-  return request.get<ClusterDetailResp>(`/kubernetes/clusters/${id}`)
-}
-
-/**
- * 获取集群资源用量
- * @param id - 集群 ID
- * @returns 集群资源用量数据
- */
-export function getClusterResource(id: string): Promise<ClusterResourceResp> {
-  return request.get<ClusterResourceResp>(`/kubernetes/clusters/${id}/resource`)
-}
-
-/**
- * 获取集群事件分页列表
- * @param clusterId - 集群 ID
- * @param params - 查询参数
- * @returns 分页后的集群事件列表
- */
-export function getClusterEventPage(
-  clusterId: string,
-  params: Partial<ClusterEventQueryReq>,
-): Promise<PageVo<ClusterEventResp>> {
-  return request.get<PageVo<ClusterEventResp>>(`/kubernetes/clusters/${clusterId}/events`, params)
+export function getClusterDetail(uid: string): Promise<ClusterDetailVo> {
+  return request.get<ClusterDetailVo>(`/kubernetes/clusters/${uid}`)
 }
 
 /**
  * 创建集群
  * @param data - 集群配置信息
  */
-export function createCluster(data: Partial<ClusterReq>): Promise<void> {
+export function createCluster(data: Partial<ClusterCreateForm>): Promise<void> {
   return request.post('/kubernetes/clusters', data)
 }
 
@@ -68,31 +43,31 @@ export function createCluster(data: Partial<ClusterReq>): Promise<void> {
  * 注册集群
  * @param data - 集群注册信息
  */
-export function registerCluster(data: Partial<ClusterRegistrationReq>): Promise<void> {
+export function registerCluster(data: Partial<ClusterRegisterForm>): Promise<void> {
   return request.post('/kubernetes/clusters/register', data)
 }
 
 /**
  * 更新集群
- * @param id - 集群 ID
+ * @param uid - 集群 UID
  * @param data - 集群配置信息
  */
-export function updateCluster(id: string, data: Partial<ClusterReq>): Promise<void> {
-  return request.put(`/kubernetes/clusters/${id}`, data)
+export function updateCluster(uid: string, data: Partial<ClusterCreateForm>): Promise<void> {
+  return request.put(`/kubernetes/clusters/${uid}`, data)
 }
 
 /**
  * 删除集群
- * @param id - 集群 ID
+ * @param uid - 集群 UID
  */
-export function deleteCluster(id: string): Promise<void> {
-  return request.delete(`/kubernetes/clusters/${id}`)
+export function deleteCluster(uid: string): Promise<void> {
+  return request.delete(`/kubernetes/clusters/${uid}`)
 }
 
 /**
  * 批量删除集群
- * @param ids - 集群 ID 数组
+ * @param uids - 集群 UID 数组
  */
-export function deleteClusters(ids: string[]): Promise<void> {
-  return request.delete('/kubernetes/clusters/batch', { data: ids })
+export function deleteClusters(uids: string[]): Promise<void> {
+  return request.delete('/kubernetes/clusters/batch', { data: uids })
 }

@@ -17,7 +17,7 @@ export type PodStatus = 'Running' | 'Pending' | 'Succeeded' | 'Failed' | 'Unknow
 
 /**
  * Pod 列表响应数据
- * @extends Namespaced 继承命名空间类型（含 clusterId, clusterName, namespace 等）
+ * @extends Namespaced 继承命名空间类型（含 clusterUid, clusterName, namespace 等）
  */
 export interface PodListVo extends Namespaced {
   /** 资源 UID */

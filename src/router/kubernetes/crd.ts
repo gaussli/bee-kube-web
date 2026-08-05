@@ -2,7 +2,7 @@ import type { RouteRecordRaw } from 'vue-router'
 
 export const crdRoutes: RouteRecordRaw[] = [
   {
-    path: '/kubernetes/clusters/:clusterId/crd',
+    path: '/kubernetes/clusters/:clusterUid/crd',
     name: 'kubernetes:crd',
     component: () => import('@/views/kubernetes/crd/index.vue'),
     meta: {
@@ -13,7 +13,7 @@ export const crdRoutes: RouteRecordRaw[] = [
     },
   },
   {
-    path: '/kubernetes/clusters/:clusterId/crd/create',
+    path: '/kubernetes/clusters/:clusterUid/crd/create',
     name: 'kubernetes:crd:create',
     component: () => import('@/views/kubernetes/crd/create/index.vue'),
     meta: {
@@ -24,7 +24,7 @@ export const crdRoutes: RouteRecordRaw[] = [
     },
   },
   {
-    path: '/kubernetes/clusters/:clusterId/crd/edit',
+    path: '/kubernetes/clusters/:clusterUid/crd/edit',
     name: 'kubernetes:crd:edit',
     component: () => import('@/views/kubernetes/crd/edit/index.vue'),
     meta: {
@@ -35,7 +35,7 @@ export const crdRoutes: RouteRecordRaw[] = [
     },
   },
   {
-    path: '/kubernetes/clusters/:clusterId/crd/detail',
+    path: '/kubernetes/clusters/:clusterUid/crd/detail',
     name: 'kubernetes:crd:detail',
     component: () => import('@/views/kubernetes/crd/detail/index.vue'),
     meta: {

@@ -2,55 +2,16 @@
  * Deployment 资源相关类型定义
  * @module types/kubernetes/workload/deployment
  */
-import type { PageForm } from '@/types/common'
+import type { BaseEntity, DeletableEntity, PageForm, UidEntity } from '@/types/common'
 import type { IngressListVo } from '@/types/kubernetes/network/ingress'
 import type { ServiceListVo } from '@/types/kubernetes/network/service'
 import type { PodListVo } from '@/types/kubernetes/pod'
 
-import type { Condition, ContainerResource, Event, Metadata, Namespaced } from '../types'
+import type { DeploymentConditionType, DeploymentStatus, DeploymentStrategyType } from '@/config/kubernetes'
+
+import type { Clustered, Condition, ContainerResource, Metadata, Namespaced } from '../types'
 
 import type { HistoryRevision, NodeAffinity, PodAffinity, PodAntiAffinity, RestartPolicy, Toleration } from './types'
-
-/**
- * Deployment 状态枚举
- * @remarks
- * - Running: 运行中（所有 Pod 正常运行）
- * - Available: 部分就绪（至少一个副本可用，但未全部就绪）
- * - Stopped: 已停止（副本数缩容为 0）
- * - Creating: 创建中（正在创建 Pod）
- * - Updating: 更新中（正在执行滚动更新）
- * - Terminating: 终止中（正在删除）
- * - CreateTimeout: 创建超时（Pod 创建超时）
- * - UpdateTimeout: 更新超时（更新过程超时）
- * - Failed: 失败异常（创建或更新过程出现错误）
- * - Unknown: 未知状态
- */
-export type DeploymentStatus =
-  | 'Running'
-  | 'Available'
-  | 'Stopped'
-  | 'Creating'
-  | 'Updating'
-  | 'Terminating'
-  | 'CreateTimeout'
-  | 'UpdateTimeout'
-  | 'Failed'
-  | 'Unknown'
-
-/**
- * Deployment 条件类型枚举
- * - Available: Deployment 至少有一个可用副本
- * - Progressing: Deployment 正在处理中
- * - ReplicaFailure: Deployment 副本创建失败
- */
-export type DeploymentConditionType = 'Available' | 'Progressing' | 'ReplicaFailure'
-
-/**
- * Deployment 策略枚举
- * - RollingUpdate: 滚动更新策略（逐步替换旧版本 Pod）
- * - Recreate: 重建策略（先删除旧 Pod，再创建新 Pod）
- */
-export type DeploymentStrategyType = 'RollingUpdate' | 'Recreate'
 
 // ==================== 1. 查询表单 ====================
 
@@ -69,13 +30,24 @@ export interface DeploymentQueryForm extends PageForm {
   status: string
 }
 
+/**
+ * Deployment Pod 查询请求参数
+ * @extends PageForm 继承分页请求（含 page, pageSize）
+ */
+export interface DeploymentPodQueryForm extends PageForm {
+  /** Pod 名称（模糊匹配） */
+  name: string
+  /** Pod 状态 */
+  status: string
+}
+
 // ==================== 2. 列表对象 ====================
 
 /**
  * Deployment 列表对象响应数据
- * @extends Namespaced 继承命名空间类型（含 clusterId, clusterName, namespace 等）
+ * @extends Namespaced 继承命名空间类型（含 clusterUid, clusterName, namespace 等）
  */
-export interface DeploymentListVo extends Namespaced {
+export interface DeploymentListVo extends Clustered, Namespaced, BaseEntity, UidEntity, DeletableEntity {
   /** 资源 UID */
   uid: string
   /** Deployment 名称 */
@@ -92,8 +64,6 @@ export interface DeploymentListVo extends Namespaced {
   readyReplicas: number
   /** 更新策略 */
   strategyType: DeploymentStrategyType
-  /** 是否可删除 */
-  deletable: boolean
 }
 
 // ==================== 3. 详情对象 ====================
@@ -152,7 +122,7 @@ export interface DeploymentAdvancedVo {
 /**
  * Deployment 基础信息响应
  * 用于下拉选择、关联引用等场景，仅返回核心标识字段
- * @extends Namespaced 继承命名空间类型（含 clusterId, clusterName, namespace 等）
+ * @extends Namespaced 继承命名空间类型（含 clusterUid, clusterName, namespace 等）
  */
 export interface DeploymentBasicVo extends Namespaced {
   /** 资源 UID */
@@ -289,12 +259,6 @@ export interface DeploymentStorageListVo {
   /** 容器挂载列表 */
   containerMounts: DeploymentContainerMount[]
 }
-
-/**
- * Deployment 事件列表响应
- * @extends Event 继承事件类型
- */
-export interface DeploymentEventListVo extends Event {}
 
 /**
  * Deployment 监控响应数据

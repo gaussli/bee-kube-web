@@ -38,7 +38,7 @@ export interface SecretListResp extends BaseEntity {
   /** 所属命名空间 */
   namespace: string
   /** 所属集群 ID */
-  clusterId: string
+  clusterUid: string
   /** 描述信息 */
   description?: string
   /** Secret 类型 */
@@ -63,7 +63,7 @@ export interface SecretDetailResp extends BaseEntity {
   /** 所属命名空间 */
   namespace: string
   /** 所属集群 ID */
-  clusterId: string
+  clusterUid: string
   /** 所属集群名称 */
   clusterName?: string
   /** 描述信息 */

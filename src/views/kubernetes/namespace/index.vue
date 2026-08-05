@@ -2,7 +2,7 @@
   <BeePage class="namespace-page">
     <!-- 页面标题 -->
     <BeeCard class="namespace-page__header">
-      <BeePageTitle
+      <BeePageHeader
         icon="kubernetes-namespace"
         title="命名空间管理"
         description="命名空间（Namespace）是 Kubernetes 集群中用于资源隔离的虚拟集群，可以将集群划分为多个独立的工作空间，实现项目、团队或环境之间的资源隔离和管理。"
@@ -153,7 +153,7 @@ import BeeInputSearch from '@/components/BeeInputSearch/index.vue'
 import { BeeMessage } from '@/components/BeeMessage'
 import BeeNamespaceInfoCell from '@/components/BeeNamespaceInfoCell/index.vue'
 import BeePage from '@/components/BeePage/index.vue'
-import BeePageTitle from '@/components/BeePageTitle/index.vue'
+import BeePageHeader from '@/components/BeePageHeader/index.vue'
 import BeePagination from '@/components/BeePagination/index.vue'
 import BeeSelect from '@/components/BeeSelect/index.vue'
 import BeeStatusCell from '@/components/BeeStatusCell/index.vue'
@@ -170,7 +170,7 @@ const { hasPermission } = usePermission()
 const route = useRoute()
 const router = useRouter()
 const searchKey = ref('')
-const clusterId = ref(route.params.clusterId as string)
+const clusterUid = ref(route.params.clusterUid as string)
 
 const loading = ref(false)
 const tableData = ref<NamespaceListResp[]>([])
@@ -191,13 +191,13 @@ const pagination = reactive({
 })
 
 async function loadData() {
-  if (!clusterId.value) {
+  if (!clusterUid.value) {
     tableData.value = []
     return
   }
   loading.value = true
   try {
-    const resp = await getNamespacePage(clusterId.value, {
+    const resp = await getNamespacePage(clusterUid.value, {
       ...queryForm,
       page: pagination.page,
       pageSize: pagination.pageSize,
@@ -242,24 +242,24 @@ function handleSelectionChange(rows: Record<string, unknown>[]) {
 }
 
 function handleCreate() {
-  router.push({ name: 'kubernetes:namespace:create', params: { clusterId: clusterId.value } }).catch(() => {})
+  router.push({ name: 'kubernetes:namespace:create', params: { clusterUid: clusterUid.value } }).catch(() => {})
 }
 
 function handleEdit(row: NamespaceListResp) {
   router
-    .push({ name: 'kubernetes:namespace:edit', params: { clusterId: row.clusterId }, query: { name: row.name } })
+    .push({ name: 'kubernetes:namespace:edit', params: { clusterUid: row.clusterUid }, query: { name: row.name } })
     .catch(() => {})
 }
 
 function handleViewDetail(row: NamespaceListResp) {
   router
-    .push({ name: 'kubernetes:namespace:detail', params: { clusterId: row.clusterId }, query: { name: row.name } })
+    .push({ name: 'kubernetes:namespace:detail', params: { clusterUid: row.clusterUid }, query: { name: row.name } })
     .catch(() => {})
 }
 
 function handleResourceQuota(row: NamespaceListResp) {
   router
-    .push({ name: 'kubernetes:resourcequota:list', query: { clusterId: row.clusterId, namespace: row.name } })
+    .push({ name: 'kubernetes:resourcequota:list', query: { clusterUid: row.clusterUid, namespace: row.name } })
     .catch(() => {})
 }
 
@@ -271,7 +271,7 @@ function handleDelete(row: NamespaceListResp) {
 async function handleConfirmDelete() {
   if (!currentTargetRow.value) return
   try {
-    await deleteNamespace(currentTargetRow.value.clusterId, currentTargetRow.value.name)
+    await deleteNamespace(currentTargetRow.value.clusterUid, currentTargetRow.value.name)
     BeeMessage.success('删除成功')
     deleteDialogVisible.value = false
     currentTargetRow.value = null
@@ -287,7 +287,7 @@ function handleBatchDelete() {
 
 async function handleConfirmBatchDelete() {
   if (selectedRows.value.length === 0) return
-  const targetClusterId = selectedRows.value[0].clusterId
+  const targetClusterId = selectedRows.value[0].clusterUid
   const names = selectedRows.value.map(row => row.name)
   try {
     await deleteNamespaces(targetClusterId, names)

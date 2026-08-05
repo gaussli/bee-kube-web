@@ -22,7 +22,7 @@ export interface PersistentVolumeResp extends BaseEntity {
   /** PersistentVolume 名称 */
   name: string
   /** 所属集群 ID */
-  clusterId: string
+  clusterUid: string
   /** 所属集群名称 */
   clusterName?: string
   /** 状态 */

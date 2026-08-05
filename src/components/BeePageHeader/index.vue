@@ -1,24 +1,25 @@
 <template>
-  <div class="bee-page-title">
-    <div class="bee-page-title__icon">
+  <BeeCard class="bee-page-header">
+    <div class="bee-page-header__icon">
       <BeeIcon :name="icon" :size="40" />
     </div>
-    <div class="bee-page-title__content">
-      <span class="bee-page-title__text">{{ title }}</span>
-      <span class="bee-page-title__desc">{{ description }}</span>
+    <div class="bee-page-header__content">
+      <span class="bee-page-header__title">{{ title }}</span>
+      <span class="bee-page-header__desc">{{ description }}</span>
     </div>
-  </div>
+  </BeeCard>
 </template>
 
 <script setup lang="ts">
 /**
  * 页面标题组件
  * 左侧图标 + 右侧标题和描述的横向布局
- * @module components/BeePageTitle
+ * @module components/BeePageHeader
  */
+import BeeCard from '@/components/BeeCard/index.vue'
 import BeeIcon from '@/components/BeeIcon/index.vue'
 
-defineOptions({ name: 'BeePageTitle' })
+defineOptions({ name: 'BeePageHeader' })
 
 defineProps<{
   /** 图标名称 */
@@ -31,8 +32,8 @@ defineProps<{
 </script>
 
 <style lang="scss" scoped>
-.bee-page-title {
-  --bee-page-title-icon-size: 64px;
+.bee-page-header {
+  --bee-page-header-icon-size: 64px;
 
   display: flex;
   gap: $spacing-16;
@@ -40,14 +41,14 @@ defineProps<{
   justify-content: center;
   box-sizing: border-box;
   width: 100%;
-  padding: 24px 0;
+  padding: 24px $spacing-16;
 
   &__icon {
     display: flex;
     justify-content: center;
     align-items: center;
-    width: var(--bee-page-title-icon-size);
-    height: var(--bee-page-title-icon-size);
+    width: var(--bee-page-header-icon-size);
+    height: var(--bee-page-header-icon-size);
     border-radius: 50% 0 50% 50%;
     color: $color-primary;
     background: $color-bg-elevated;
@@ -62,7 +63,7 @@ defineProps<{
     min-width: 0;
   }
 
-  &__text {
+  &__title {
     font-size: 24px;
     font-weight: 600;
     line-height: 32px;
@@ -71,7 +72,7 @@ defineProps<{
 
   &__desc {
     font-size: $font-size-14;
-    line-height: 22px;
+    line-height: 24px;
     color: $color-text-secondary;
   }
 }

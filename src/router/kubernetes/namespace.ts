@@ -2,7 +2,7 @@ import type { RouteRecordRaw } from 'vue-router'
 
 export const namespaceRoutes: RouteRecordRaw[] = [
   {
-    path: '/kubernetes/clusters/:clusterId/namespace',
+    path: '/kubernetes/clusters/:clusterUid/namespace',
     name: 'kubernetes:namespace',
     component: () => import('@/views/kubernetes/namespace/index.vue'),
     meta: {
@@ -13,7 +13,7 @@ export const namespaceRoutes: RouteRecordRaw[] = [
     },
   },
   {
-    path: '/kubernetes/clusters/:clusterId/namespace/detail',
+    path: '/kubernetes/clusters/:clusterUid/namespace/detail',
     name: 'kubernetes:namespace:detail',
     component: () => import('@/views/kubernetes/namespace/detail/index.vue'),
     meta: {
@@ -24,7 +24,7 @@ export const namespaceRoutes: RouteRecordRaw[] = [
     },
   },
   {
-    path: '/kubernetes/clusters/:clusterId/namespace/create',
+    path: '/kubernetes/clusters/:clusterUid/namespace/create',
     name: 'kubernetes:namespace:create',
     component: () => import('@/views/kubernetes/namespace/create/index.vue'),
     meta: {
@@ -35,7 +35,7 @@ export const namespaceRoutes: RouteRecordRaw[] = [
     },
   },
   {
-    path: '/kubernetes/clusters/:clusterId/namespace/edit',
+    path: '/kubernetes/clusters/:clusterUid/namespace/edit',
     name: 'kubernetes:namespace:edit',
     component: () => import('@/views/kubernetes/namespace/edit/index.vue'),
     meta: {

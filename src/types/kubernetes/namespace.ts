@@ -4,7 +4,7 @@
  */
 import type { BaseEntity, PageForm } from '@/types/common'
 
-import type { MetadataAnnotationReq, MetadataLabelReq } from './comomn'
+import type { MetadataAnnotationForm, MetadataLabelForm } from './comomn'
 import type { Condition, Metadata } from './types'
 
 /**
@@ -42,7 +42,7 @@ export interface NamespaceListResp extends BaseEntity {
   /** 资源 UID */
   uid: string
   /** 所属集群 ID */
-  clusterId: string
+  clusterUid: string
   /** 所属集群名称 */
   clusterName: string
   /** 命名空间名称 */
@@ -65,7 +65,7 @@ export interface NamespaceDetailResp extends BaseEntity {
   /** 资源 UID */
   uid: string
   /** 所属集群 ID */
-  clusterId: string
+  clusterUid: string
   /** 所属集群名称 */
   clusterName: string
   /** 命名空间名称 */
@@ -96,7 +96,7 @@ export interface NamespaceOverviewResp extends BaseEntity {
   /** 资源 UID */
   uid: string
   /** 所属集群 ID */
-  clusterId: string
+  clusterUid: string
   /** 所属集群名称 */
   clusterName: string
   /** 命名空间名称 */
@@ -203,12 +203,12 @@ export interface NamespaceReq {
 /**
  * 命名空间标签更新请求
  */
-export interface NamespaceLabelsReq extends MetadataLabelReq {}
+export interface NamespaceLabelsReq extends MetadataLabelForm {}
 
 /**
  * 命名空间注解更新请求
  */
-export interface NamespaceAnnotationsReq extends MetadataAnnotationReq {}
+export interface NamespaceAnnotationsReq extends MetadataAnnotationForm {}
 
 /**
  * 命名空间配额请求

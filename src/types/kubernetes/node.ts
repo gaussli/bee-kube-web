@@ -4,7 +4,7 @@
  */
 import type { BaseEntity, PageForm } from '@/types/common'
 
-import type { MetadataAnnotationReq, MetadataLabelReq, ResourceResp } from './comomn'
+import type { MetadataAnnotationForm, MetadataLabelForm, ResourceVo } from './comomn'
 import type { Condition, Event, Metadata, Taint } from './types'
 
 /**
@@ -33,7 +33,7 @@ export interface NodeListResp extends BaseEntity {
   /** 资源 UID */
   uid: string
   /** 所属集群 ID */
-  clusterId: string
+  clusterUid: string
   /** 所属集群名称 */
   clusterName: string
   /** 节点名称 */
@@ -49,7 +49,7 @@ export interface NodeListResp extends BaseEntity {
   /** 是否不可调度 */
   unschedulable: boolean
   /** 节点资源（容量/可分配/已用） */
-  resource: NodeResourceResp
+  resource: NodeResourceVo
 }
 
 /**
@@ -60,7 +60,7 @@ export interface NodeOverviewResp extends BaseEntity {
   /** 资源 UID */
   uid: string
   /** 所属集群 ID */
-  clusterId: string
+  clusterUid: string
   /** 所属集群名称 */
   clusterName: string
   /** 节点名称 */
@@ -102,7 +102,7 @@ export interface NodeOverviewResp extends BaseEntity {
 /**
  * 节点资源用量响应数据
  */
-export interface NodeResourceResp extends ResourceResp {}
+export interface NodeResourceVo extends ResourceVo {}
 
 /**
  * 节点元数据响应数据
@@ -178,12 +178,12 @@ export interface NodeCordonReq {
 /**
  * 节点标签配置请求
  */
-export interface NodeLabelsReq extends MetadataLabelReq {}
+export interface NodeLabelsReq extends MetadataLabelForm {}
 
 /**
  * 节点注解配置请求
  */
-export interface NodeAnnotationsReq extends MetadataAnnotationReq {}
+export interface NodeAnnotationsReq extends MetadataAnnotationForm {}
 
 /**
  * 节点拓扑配置请求

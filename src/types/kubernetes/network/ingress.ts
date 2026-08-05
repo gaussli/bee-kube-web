@@ -27,7 +27,7 @@ export interface IngressQueryReq extends PageForm {
 
 /**
  * Ingress 列表对象响应数据
- * @extends Namespaced 继承命名空间级别基础实体（含 id, clusterId, clusterUid, clusterName, namespaceId, namespaceUid, namespace, createAt 等）
+ * @extends Namespaced 继承命名空间级别基础实体（含 id, clusterUid, clusterUid, clusterName, namespaceId, namespaceUid, namespace, createAt 等）
  */
 export interface IngressListVo extends Namespaced {
   /** 资源 UID */

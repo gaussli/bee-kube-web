@@ -80,7 +80,7 @@ export interface StatefulSetQueryForm extends PageForm {
 
 /**
  * StatefulSet 列表对象响应数据
- * @extends Namespaced 继承命名空间类型（含 clusterId, clusterName, namespace 等）
+ * @extends Namespaced 继承命名空间类型（含 clusterUid, clusterName, namespace 等）
  */
 export interface StatefulSetListVo extends Namespaced {
   /** 资源 UID */
@@ -133,7 +133,7 @@ export interface StatefulSetDetailVo {
 /**
  * StatefulSet 基础信息响应
  * 用于下拉选择、关联引用等场景，仅返回核心标识字段
- * @extends Namespaced 继承命名空间类型（含 clusterId, clusterName, namespace 等）
+ * @extends Namespaced 继承命名空间类型（含 clusterUid, clusterName, namespace 等）
  */
 export interface StatefulSetBasicVo extends Namespaced {
   /** 资源 UID */

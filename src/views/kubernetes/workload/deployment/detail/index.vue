@@ -52,7 +52,7 @@ defineOptions({ name: 'DeploymentDetail' })
 
 const route = useRoute()
 
-const clusterId = ref(route.params.clusterId as string)
+const clusterUid = ref(route.params.clusterUid as string)
 const namespace = ref(route.params.namespace as string)
 const deploymentName = ref(route.params.name as string)
 const loading = ref(false)
@@ -87,10 +87,10 @@ const resourceData = computed<ResourceOverviewInfoData>(() => ({
 
 /** 加载 Deployment 详情 */
 async function loadData() {
-  if (!clusterId.value || !namespace.value || !deploymentName.value) return
+  if (!clusterUid.value || !namespace.value || !deploymentName.value) return
   loading.value = true
   try {
-    detailData.value = await getDeploymentDetail(clusterId.value, namespace.value, deploymentName.value)
+    detailData.value = await getDeploymentDetail(clusterUid.value, namespace.value, deploymentName.value)
   } finally {
     loading.value = false
   }

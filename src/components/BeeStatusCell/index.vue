@@ -2,10 +2,10 @@
   <div class="bee-status-cell">
     <div class="bee-status-cell__top">
       <span class="bee-status-cell__dot"></span>
-      <span class="bee-status-cell__label">{{ currentConfig.label }}</span>
+      <span class="bee-status-cell__label">{{ currentStatus.label }}</span>
     </div>
     <div class="bee-status-cell__bottom">
-      <span class="bee-status-cell__label-en">{{ currentConfig.labelEn || '-' }}</span>
+      <span class="bee-status-cell__label-en">{{ currentStatus.labelEn || '-' }}</span>
       <BeeTooltip v-if="statusMsg" :label="statusMsg" placement="top">
         <BeeIcon name="basic-help" :size="12" class="bee-status-cell__help-icon" />
       </BeeTooltip>
@@ -26,6 +26,8 @@ import type { StatusOption } from '@/config/kubernetes'
 import BeeIcon from '@/components/BeeIcon/index.vue'
 import BeeTooltip from '@/components/BeeTooltip/index.vue'
 
+import { COLOR_GRAY_90 } from '@/config/color'
+
 defineOptions({ name: 'BeeStatusCell' })
 
 const props = defineProps<{
@@ -37,15 +39,13 @@ const props = defineProps<{
   options: StatusOption[]
 }>()
 
-/** 当前匹配的状态配置，未匹配时返回默认"未知"配置 */
-const currentConfig = computed(() => {
-  const found = props.options.find(item => item.value === props.status)
-  if (found) return found
-  return { label: '未知', color: '#da8030', labelEn: 'unknown' }
-})
+/** 匹配当前 status 的状态选项，无匹配返回 '-' 占位 */
+const currentStatus = computed(
+  () => props.options.find(item => item.value === props.status) || { label: '-', color: COLOR_GRAY_90, labelEn: '-' },
+)
 
-/** 当前状态指示色，用于 dot 背景和 label 文字颜色 */
-const currentColor = computed(() => currentConfig.value.color)
+/** 状态指示色，用于 dot 背景和 label 文字 */
+const currentStatusColor = computed(() => currentStatus.value.color)
 </script>
 
 <style lang="scss" scoped>
@@ -68,14 +68,14 @@ const currentColor = computed(() => currentConfig.value.color)
     width: 10px;
     height: 10px;
     border-radius: 50%;
-    background: v-bind(currentColor);
+    background: v-bind(currentStatusColor);
   }
 
   &__label {
     font-size: 14px;
     font-weight: 600;
     line-height: 1;
-    color: v-bind(currentColor);
+    color: v-bind(currentStatusColor);
   }
 
   &__bottom {

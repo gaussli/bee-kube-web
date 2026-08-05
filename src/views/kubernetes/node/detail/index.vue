@@ -2,7 +2,7 @@
   <div class="node-detail">
     <!-- 页面标题 -->
     <div class="page-header">
-      <BeePageTitle
+      <BeePageHeader
         :icon="Box"
         :title="`节点详情: ${nodeName}`"
         description="查看节点详细信息、资源使用情况、标签和污点等。"
@@ -28,7 +28,7 @@
             <div class="detail-row">
               <div class="detail-item">
                 <span class="detail-label">集群:</span>
-                <span class="detail-value">{{ nodeData?.clusterName || nodeData?.clusterId }}</span>
+                <span class="detail-value">{{ nodeData?.clusterName || nodeData?.clusterUid }}</span>
               </div>
               <div class="detail-item">
                 <span class="detail-label">角色:</span>
@@ -139,7 +139,7 @@ import type { NodeListResp } from '@/types/kubernetes/node'
 import { getNodeDetail } from '@/api/kubernetes/node'
 
 import BeeButton from '@/components/BeeButton/index.vue'
-import BeePageTitle from '@/components/BeePageTitle/index.vue'
+import BeePageHeader from '@/components/BeePageHeader/index.vue'
 import BeeTag from '@/components/BeeTag/index.vue'
 
 import { usePermission } from '@/composables/usePermission'
@@ -150,7 +150,7 @@ const { hasPermission } = usePermission()
 const route = useRoute()
 const router = useRouter()
 
-const clusterId = ref(route.params.clusterId as string)
+const clusterUid = ref(route.params.clusterUid as string)
 const nodeName = ref(route.query.name as string)
 const loading = ref(false)
 const nodeData = ref<NodeListResp>()
@@ -168,10 +168,10 @@ function getStatusType(status?: string) {
 }
 
 async function loadData() {
-  if (!clusterId.value || !nodeName.value) return
+  if (!clusterUid.value || !nodeName.value) return
   loading.value = true
   try {
-    nodeData.value = await getNodeDetail(clusterId.value, nodeName.value)
+    nodeData.value = await getNodeDetail(clusterUid.value, nodeName.value)
   } finally {
     loading.value = false
   }
@@ -183,7 +183,7 @@ function handleBack() {
 
 function handleEdit() {
   router
-    .push({ name: 'kubernetes:node:edit', params: { clusterId: clusterId.value }, query: { name: nodeName.value } })
+    .push({ name: 'kubernetes:node:edit', params: { clusterUid: clusterUid.value }, query: { name: nodeName.value } })
     .catch(() => {})
 }
 

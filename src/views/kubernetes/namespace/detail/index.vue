@@ -2,7 +2,7 @@
   <div class="namespace-detail">
     <!-- 页面标题 -->
     <div class="page-header">
-      <BeePageTitle
+      <BeePageHeader
         :icon="FolderOpened"
         :title="`命名空间详情: ${namespaceName}`"
         description="查看命名空间详细信息、标签和注解等。"
@@ -32,7 +32,7 @@
               </div>
               <div class="detail-item">
                 <span class="detail-label">集群:</span>
-                <span class="detail-value">{{ namespaceData?.clusterName || namespaceData?.clusterId }}</span>
+                <span class="detail-value">{{ namespaceData?.clusterName || namespaceData?.clusterUid }}</span>
               </div>
             </div>
             <div class="detail-row">
@@ -97,7 +97,7 @@ import type { NamespaceListResp } from '@/types/kubernetes/namespace'
 import { getNamespaceDetail } from '@/api/kubernetes/namespace'
 
 import BeeButton from '@/components/BeeButton/index.vue'
-import BeePageTitle from '@/components/BeePageTitle/index.vue'
+import BeePageHeader from '@/components/BeePageHeader/index.vue'
 import BeeTag from '@/components/BeeTag/index.vue'
 
 import { usePermission } from '@/composables/usePermission'
@@ -108,7 +108,7 @@ const { hasPermission } = usePermission()
 const route = useRoute()
 const router = useRouter()
 
-const clusterId = ref(route.params.clusterId as string)
+const clusterUid = ref(route.params.clusterUid as string)
 const namespaceName = ref(route.query.name as string)
 const loading = ref(false)
 const namespaceData = ref<NamespaceListResp>()
@@ -126,10 +126,10 @@ function getStatusType(status?: string) {
 }
 
 async function loadData() {
-  if (!clusterId.value || !namespaceName.value) return
+  if (!clusterUid.value || !namespaceName.value) return
   loading.value = true
   try {
-    namespaceData.value = await getNamespaceDetail(clusterId.value, namespaceName.value)
+    namespaceData.value = await getNamespaceDetail(clusterUid.value, namespaceName.value)
   } finally {
     loading.value = false
   }
@@ -143,7 +143,7 @@ function handleEdit() {
   router
     .push({
       name: 'kubernetes:namespace:edit',
-      params: { clusterId: clusterId.value },
+      params: { clusterUid: clusterUid.value },
       query: { name: namespaceName.value },
     })
     .catch(() => {})

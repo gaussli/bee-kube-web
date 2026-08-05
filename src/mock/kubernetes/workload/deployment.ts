@@ -10,11 +10,11 @@ import type {
   DeploymentConditionVo,
   DeploymentCreateForm,
   DeploymentDetailVo,
-  DeploymentEventListVo,
   DeploymentHistoryRevisionListVo,
   DeploymentMonitorVo,
   DeploymentNetworkVo,
   DeploymentPodListVo,
+  DeploymentPodQueryForm,
   DeploymentStorageListVo,
   DeploymentUpdateForm,
   DeploymentLabelForm,
@@ -42,7 +42,6 @@ import { generateId } from '@/mock/utils'
  * - GET /kubernetes/clusters/:clusterId/namespaces/:namespace/deployments/:name/network - 获取网络资源
  * - GET /kubernetes/clusters/:clusterId/namespaces/:namespace/deployments/:name/storages - 获取存储列表
  * - GET /kubernetes/clusters/:clusterId/namespaces/:namespace/deployments/:name/monitor - 获取监控数据
- * - GET /kubernetes/clusters/:clusterId/namespaces/:namespace/deployments/:name/events - 获取事件列表
  * - GET /kubernetes/clusters/:clusterId/namespaces/:namespace/deployments/:name/yaml - 查看 YAML
  * - POST /kubernetes/clusters/:clusterId/namespaces/:namespace/deployments - 创建 Deployment
  * - PUT /kubernetes/clusters/:clusterId/namespaces/:namespace/deployments/:name - 更新 Deployment
@@ -72,8 +71,11 @@ export default [
   {
     method: 'get',
     url: '/kubernetes/clusters/:clusterId/namespaces/:namespace/deployments/:name/pods',
-    handler: (pathParams: Record<string, string>): DeploymentPodListVo[] =>
-      getDeploymentPodList(pathParams.clusterId, pathParams.namespace, pathParams.name),
+    handler: (
+      pathParams: Record<string, string>,
+      params: Partial<DeploymentPodQueryForm>,
+    ): PageVo<DeploymentPodListVo> =>
+      getDeploymentPodList(pathParams.clusterId, pathParams.namespace, pathParams.name, params),
   },
   {
     method: 'get',
@@ -104,12 +106,6 @@ export default [
     url: '/kubernetes/clusters/:clusterId/namespaces/:namespace/deployments/:name/monitor',
     handler: (pathParams: Record<string, string>): DeploymentMonitorVo =>
       getDeploymentMonitor(pathParams.clusterId, pathParams.namespace, pathParams.name),
-  },
-  {
-    method: 'get',
-    url: '/kubernetes/clusters/:clusterId/namespaces/:namespace/deployments/:name/events',
-    handler: (pathParams: Record<string, string>): DeploymentEventListVo[] =>
-      getDeploymentEventList(pathParams.clusterId, pathParams.namespace, pathParams.name),
   },
   {
     method: 'get',
@@ -212,7 +208,6 @@ function getDeploymentList(_clusterId: string, params: Partial<DeploymentQueryFo
     if (name) {
       searchFiltered = [...searchFiltered, ...filtered.filter(n => n.name.toLowerCase().includes(name.toLowerCase()))]
     }
-    console.log(searchFiltered)
     // searchFiltered 基于 id 去重
     const seenIds = new Set<string>()
     filtered = searchFiltered.filter(n => {
@@ -256,7 +251,50 @@ function getDeploymentDetail(_clusterId: string, _namespace: string, _name: stri
  * @param _name - Deployment 名称
  * @returns Pod 列表
  */
-function getDeploymentPodList(_clusterId: string, _namespace: string, _name: string): DeploymentPodListVo[] {
+/**
+ * 获取 Deployment Pod 分页列表
+ * @param _clusterId - 集群ID
+ * @param _namespace - 命名空间
+ * @param _name - Deployment 名称
+ * @param params - 查询参数（含分页、名称筛选、状态筛选）
+ * @returns 分页后的 Pod 列表
+ */
+function getDeploymentPodList(
+  _clusterId: string,
+  _namespace: string,
+  _name: string,
+  params: Partial<DeploymentPodQueryForm>,
+): PageVo<DeploymentPodListVo> {
+  const { name, status, page = 1, pageSize = 10 } = params || {}
+  const allPods = generateMockPods()
+
+  let filtered = [...allPods]
+  if (name) {
+    const keyword = name.toLowerCase()
+    filtered = filtered.filter(
+      p =>
+        p.name.toLowerCase().includes(keyword) ||
+        p.uid.toLowerCase().includes(keyword) ||
+        p.ip.toLowerCase().includes(keyword),
+    )
+  }
+  if (status) {
+    filtered = filtered.filter(p => p.status === status)
+  }
+
+  const total = filtered.length
+  const start = (page - 1) * pageSize
+  const end = start + pageSize
+  const list = filtered.slice(start, end)
+
+  return { list, total, page, pageSize }
+}
+
+/**
+ * 生成模拟 Pod 数据
+ * @returns Pod 列表
+ */
+function generateMockPods(): DeploymentPodListVo[] {
   const deploy = mockDeployments[0]
   const nodeName = `${deploy.clusterName || 'cluster'}-node`
   const nodeIp = '10.0.1.'
@@ -703,70 +741,6 @@ function getDeploymentStorageList(_clusterId: string, _namespace: string, _name:
  */
 function getDeploymentMonitor(_clusterId: string, _namespace: string, _name: string): DeploymentMonitorVo {
   return {}
-}
-
-/**
- * 获取 Deployment 事件列表
- * @param _clusterId - 集群ID
- * @param _namespace - 命名空间
- * @param _name - Deployment 名称
- * @returns 事件列表
- */
-function getDeploymentEventList(_clusterId: string, _namespace: string, _name: string): DeploymentEventListVo[] {
-  const deploy = mockDeployments[0]
-  return [
-    {
-      type: 'Normal',
-      reason: 'ScalingReplicaSet',
-      message: `Scaled up replica set ${deploy.name}-6d4f8c9b7 to 3`,
-      involvedObject: { kind: 'Deployment', name: deploy.name, namespace: deploy.namespace, uid: deploy.uid },
-      source: { component: 'deployment-controller' },
-      count: 1,
-      firstTimestamp: deploy.updateAt,
-      lastTimestamp: deploy.updateAt,
-    },
-    {
-      type: 'Normal',
-      reason: 'SuccessfulCreate',
-      message: `Created pod: ${deploy.name}-6d4f8c9b7-xk2lm`,
-      involvedObject: { kind: 'ReplicaSet', name: deploy.name + '-6d4f8c9b7', namespace: deploy.namespace },
-      source: { component: 'replicaset-controller' },
-      count: 3,
-      firstTimestamp: deploy.createAt,
-      lastTimestamp: deploy.updateAt,
-    },
-    {
-      type: 'Warning',
-      reason: 'Unhealthy',
-      message:
-        'Readiness probe failed: Get "http://10.244.1.xx:8080/healthz": dial tcp 10.244.1.xx:8080: connect: connection refused',
-      involvedObject: { kind: 'Pod', name: deploy.name + '-6d4f8c9b7-zt7wv', namespace: deploy.namespace },
-      source: { component: 'kubelet', host: 'node-001' },
-      count: 2,
-      firstTimestamp: deploy.createAt,
-      lastTimestamp: deploy.updateAt,
-    },
-    {
-      type: 'Normal',
-      reason: 'Pulling',
-      message: `Pulling image "${deploy.name}:latest"`,
-      involvedObject: { kind: 'Pod', name: deploy.name + '-6d4f8c9b7-zt7wv', namespace: deploy.namespace },
-      source: { component: 'kubelet', host: 'node-001' },
-      count: 1,
-      firstTimestamp: deploy.createAt,
-      lastTimestamp: deploy.createAt,
-    },
-    {
-      type: 'Warning',
-      reason: 'FailedScheduling',
-      message: `0/3 nodes are available: 1 Insufficient cpu, 2 node(s) had taint {node-role.kubernetes.io/master: }, that the pod didn't tolerate.`,
-      involvedObject: { kind: 'Pod', name: deploy.name + '-6d4f8c9b7-ab4cd', namespace: deploy.namespace },
-      source: { component: 'default-scheduler' },
-      count: 5,
-      firstTimestamp: deploy.createAt,
-      lastTimestamp: deploy.updateAt,
-    },
-  ]
 }
 
 /**

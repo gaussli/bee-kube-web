@@ -1,7 +1,11 @@
 <template>
   <div class="daemonset-detail">
     <div class="page-header">
-      <BeePageTitle :icon="Monitor" :title="`守护进程详情: ${daemonsetName}`" description="查看 DaemonSet 详细信息。" />
+      <BeePageHeader
+        :icon="Monitor"
+        :title="`守护进程详情: ${daemonsetName}`"
+        description="查看 DaemonSet 详细信息。"
+      />
     </div>
     <div class="page-body">
       <el-tabs v-model="activeTab" type="border-card">
@@ -19,7 +23,7 @@
             <div class="detail-row">
               <div class="detail-item">
                 <span class="detail-label">集群:</span
-                ><span class="detail-value">{{ daemonsetData?.clusterName || daemonsetData?.clusterId }}</span>
+                ><span class="detail-value">{{ daemonsetData?.clusterName || daemonsetData?.clusterUid }}</span>
               </div>
               <div class="detail-item">
                 <span class="detail-label">期望调度:</span
@@ -77,7 +81,7 @@ import type { DaemonSetResp } from '@/types/kubernetes/workload/daemonset'
 import { getDaemonSetDetail } from '@/api/kubernetes/workload/daemonset'
 
 import BeeButton from '@/components/BeeButton/index.vue'
-import BeePageTitle from '@/components/BeePageTitle/index.vue'
+import BeePageHeader from '@/components/BeePageHeader/index.vue'
 
 import { usePermission } from '@/composables/usePermission'
 
@@ -85,17 +89,17 @@ defineOptions({ name: 'DaemonSetDetail' })
 const { hasPermission } = usePermission()
 const route = useRoute()
 const router = useRouter()
-const clusterId = ref(route.params.clusterId as string)
+const clusterUid = ref(route.params.clusterUid as string)
 const namespace = ref(route.query.namespace as string)
 const daemonsetName = ref(route.query.name as string)
 const loading = ref(false)
 const daemonsetData = ref<DaemonSetResp>()
 const activeTab = ref('basic')
 async function loadData() {
-  if (!clusterId.value || !namespace.value || !daemonsetName.value) return
+  if (!clusterUid.value || !namespace.value || !daemonsetName.value) return
   loading.value = true
   try {
-    daemonsetData.value = await getDaemonSetDetail(clusterId.value, namespace.value, daemonsetName.value)
+    daemonsetData.value = await getDaemonSetDetail(clusterUid.value, namespace.value, daemonsetName.value)
   } finally {
     loading.value = false
   }
@@ -107,7 +111,7 @@ function handleEdit() {
   router
     .push({
       name: 'kubernetes:workload:daemonset:edit',
-      params: { clusterId: clusterId.value },
+      params: { clusterUid: clusterUid.value },
       query: { namespace: namespace.value, name: daemonsetName.value },
     })
     .catch(() => {})

@@ -1,7 +1,7 @@
 <template>
   <div class="statefulset-edit">
     <div class="page-header">
-      <BeePageTitle
+      <BeePageHeader
         :icon="Collection"
         :title="`编辑有状态应用: ${statefulsetName}`"
         description="编辑 StatefulSet 配置。"
@@ -40,13 +40,13 @@ import { getStatefulSetDetail, updateStatefulSet } from '@/api/kubernetes/worklo
 
 import BeeButton from '@/components/BeeButton/index.vue'
 import { BeeMessage } from '@/components/BeeMessage'
-import BeePageTitle from '@/components/BeePageTitle/index.vue'
+import BeePageHeader from '@/components/BeePageHeader/index.vue'
 
 defineOptions({ name: 'StatefulSetEdit' })
 const route = useRoute()
 const router = useRouter()
 const formRef = ref<FormInstance>()
-const clusterId = ref(route.params.clusterId as string)
+const clusterUid = ref(route.params.clusterUid as string)
 const namespace = ref(route.query.namespace as string)
 const statefulsetName = ref(route.query.name as string)
 const loading = ref(false)
@@ -54,10 +54,10 @@ const submitting = ref(false)
 const formData = ref<Partial<StatefulSetUpdateForm>>({ replicas: 1 })
 const formRules = { replicas: [{ required: true, message: '请输入副本数量', trigger: 'blur' }] }
 async function loadData() {
-  if (!clusterId.value || !namespace.value || !statefulsetName.value) return
+  if (!clusterUid.value || !namespace.value || !statefulsetName.value) return
   loading.value = true
   try {
-    const data = await getStatefulSetDetail(clusterId.value, namespace.value, statefulsetName.value)
+    const data = await getStatefulSetDetail(clusterUid.value, namespace.value, statefulsetName.value)
     formData.value.replicas = data.replicas
   } finally {
     loading.value = false
@@ -71,7 +71,7 @@ async function handleSubmit() {
   if (!valid) return
   submitting.value = true
   try {
-    await updateStatefulSet(clusterId.value, namespace.value, statefulsetName.value, formData.value)
+    await updateStatefulSet(clusterUid.value, namespace.value, statefulsetName.value, formData.value)
     BeeMessage.success('保存成功')
     router.back()
   } catch {

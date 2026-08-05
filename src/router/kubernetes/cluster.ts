@@ -24,6 +24,17 @@ export const clusterRoutes: RouteRecordRaw[] = [
     },
   },
   {
+    path: '/kubernetes/clusters/register',
+    name: 'kubernetes:cluster:register',
+    component: () => import('@/views/kubernetes/cluster/register/index.vue'),
+    meta: {
+      title: '纳管集群',
+      icon: 'Grid',
+      permission: 'kubernetes:cluster:create',
+      activeCode: 'kubernetes:cluster',
+    },
+  },
+  {
     path: '/kubernetes/clusters/edit',
     name: 'kubernetes:cluster:edit',
     component: () => import('@/views/kubernetes/cluster/edit/index.vue'),

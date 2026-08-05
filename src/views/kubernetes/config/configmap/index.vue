@@ -2,7 +2,7 @@
   <BeePage class="configmap-page">
     <!-- 页面标题 -->
     <BeeCard class="configmap-page__header">
-      <BeePageTitle
+      <BeePageHeader
         icon="kubernetes-namespace"
         title="配置映射"
         description="配置映射（ConfigMap）用于存储非敏感配置数据，如配置文件、环境变量、命令行参数等，实现配置与工作负载的解耦。"
@@ -139,12 +139,10 @@ import { useRoute, useRouter } from 'vue-router'
 import type { ConfigMapQueryReq, ConfigMapListResp } from '@/types/kubernetes/config/configmap'
 import type { NamespaceSimpleListResp } from '@/types/kubernetes/namespace'
 
-import type { ActionItem } from '@/components/BeeActionCell/index.vue'
-
 import { getConfigMapList, deleteConfigMap, deleteConfigMaps } from '@/api/kubernetes/config/configmap'
 import { getNamespacePage } from '@/api/kubernetes/namespace'
 
-import BeeActionCell from '@/components/BeeActionCell/index.vue'
+import BeeActionCell, { type ActionItem } from '@/components/BeeActionCell/index.vue'
 import BeeAuditCell from '@/components/BeeAuditCell/index.vue'
 import BeeButton from '@/components/BeeButton/index.vue'
 import BeeCard from '@/components/BeeCard/index.vue'
@@ -153,7 +151,7 @@ import BeeDialog from '@/components/BeeDialog/index.vue'
 import BeeInputSearch from '@/components/BeeInputSearch/index.vue'
 import { BeeMessage } from '@/components/BeeMessage'
 import BeePage from '@/components/BeePage/index.vue'
-import BeePageTitle from '@/components/BeePageTitle/index.vue'
+import BeePageHeader from '@/components/BeePageHeader/index.vue'
 import BeePagination from '@/components/BeePagination/index.vue'
 import BeeSelect from '@/components/BeeSelect/index.vue'
 import BeeTableColumn from '@/components/BeeTable/BeeTableColumn.vue'
@@ -173,7 +171,7 @@ const router = useRouter()
 
 // ==================== Reactive State ====================
 
-const clusterId = ref(route.params.clusterId as string)
+const clusterUid = ref(route.params.clusterUid as string)
 const searchKey = ref('')
 const loading = ref(false)
 const tableData = ref<ConfigMapListResp[]>([])
@@ -199,9 +197,9 @@ const namespaceOptions = ref<{ label: string; value: string | undefined }[]>([
  * @remarks 通过 getNamespacePage mode=simple 获取简化列表，转换后填充下拉选项
  */
 async function loadNamespaceOptions() {
-  if (!clusterId.value) return
+  if (!clusterUid.value) return
   try {
-    const namespaces = (await getNamespacePage(clusterId.value, { mode: 'simple' })) as NamespaceSimpleListResp[]
+    const namespaces = (await getNamespacePage(clusterUid.value, { mode: 'simple' })) as NamespaceSimpleListResp[]
     namespaceOptions.value = [
       { label: '全部命名空间', value: undefined },
       ...namespaces.map(ns => ({ label: ns.name, value: ns.name })),
@@ -216,13 +214,13 @@ async function loadNamespaceOptions() {
  * @remarks 根据当前查询条件与分页参数获取 ConfigMap 分页数据
  */
 async function loadData() {
-  if (!clusterId.value) {
+  if (!clusterUid.value) {
     tableData.value = []
     return
   }
   loading.value = true
   try {
-    const resp = await getConfigMapList(clusterId.value, {
+    const resp = await getConfigMapList(clusterUid.value, {
       name: queryForm.name,
       namespace: queryForm.namespace || undefined,
       page: pagination.page,
@@ -277,7 +275,7 @@ function handleSelectionChange(rows: Record<string, unknown>[]) {
 
 /** 跳转创建页面 */
 function handleCreate() {
-  router.push({ name: 'kubernetes:config:configmap:create', params: { clusterId: clusterId.value } }).catch(() => {})
+  router.push({ name: 'kubernetes:config:configmap:create', params: { clusterUid: clusterUid.value } }).catch(() => {})
 }
 
 /**
@@ -288,7 +286,7 @@ function handleEdit(row: ConfigMapListResp) {
   router
     .push({
       name: 'kubernetes:config:configmap:edit',
-      params: { clusterId: row.clusterId },
+      params: { clusterUid: row.clusterUid },
       query: { namespace: row.namespace, name: row.name },
     })
     .catch(() => {})
@@ -302,7 +300,7 @@ function handleViewDetail(row: ConfigMapListResp) {
   router
     .push({
       name: 'kubernetes:config:configmap:detail',
-      params: { clusterId: row.clusterId },
+      params: { clusterUid: row.clusterUid },
       query: { namespace: row.namespace, name: row.name },
     })
     .catch(() => {})
@@ -332,7 +330,7 @@ async function handleConfirmDelete() {
   if (!currentTargetRow.value) return
   try {
     await deleteConfigMap(
-      currentTargetRow.value.clusterId,
+      currentTargetRow.value.clusterUid,
       currentTargetRow.value.namespace,
       currentTargetRow.value.name,
     )
@@ -353,7 +351,7 @@ function handleBatchDelete() {
 /** 确认批量删除 */
 async function handleConfirmBatchDelete() {
   if (selectedRows.value.length === 0) return
-  const targetClusterId = selectedRows.value[0].clusterId
+  const targetClusterId = selectedRows.value[0].clusterUid
   const targetNamespace = selectedRows.value[0].namespace
   const names = selectedRows.value.map(row => row.name)
   try {

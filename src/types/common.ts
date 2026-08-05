@@ -55,3 +55,13 @@ export interface BaseEntity {
   /** 更新人 */
   updateBy?: string
 }
+
+export interface UidEntity {
+  /** UID  */
+  uid: string
+}
+
+export interface DeletableEntity {
+  /** 是否可删除 */
+  deletable: boolean
+}

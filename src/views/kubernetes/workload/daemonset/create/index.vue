@@ -1,12 +1,12 @@
 <template>
   <div class="daemonset-create">
     <div class="page-header">
-      <BeePageTitle :icon="Monitor" title="创建守护进程" description="创建一个新的 Kubernetes DaemonSet。" />
+      <BeePageHeader :icon="Monitor" title="创建守护进程" description="创建一个新的 Kubernetes DaemonSet。" />
     </div>
     <div class="page-body">
       <el-form ref="formRef" :model="formData" :rules="formRules" label-width="140px" class="create-form">
-        <el-form-item label="所属集群" prop="clusterId">
-          <el-select v-model="formData.clusterId" placeholder="选择集群" style="width: 300px"
+        <el-form-item label="所属集群" prop="clusterUid">
+          <el-select v-model="formData.clusterUid" placeholder="选择集群" style="width: 300px"
             ><el-option label="默认集群" value="default"
           /></el-select>
         </el-form-item>
@@ -46,15 +46,15 @@ import { createDaemonSet } from '@/api/kubernetes/workload/daemonset'
 
 import BeeButton from '@/components/BeeButton/index.vue'
 import { BeeMessage } from '@/components/BeeMessage'
-import BeePageTitle from '@/components/BeePageTitle/index.vue'
+import BeePageHeader from '@/components/BeePageHeader/index.vue'
 
 defineOptions({ name: 'DaemonSetCreate' })
 const router = useRouter()
 const formRef = ref<FormInstance>()
 const submitting = ref(false)
-const formData = ref<Partial<DaemonSetResp>>({ name: '', namespace: 'default', clusterId: 'default' })
+const formData = ref<Partial<DaemonSetResp>>({ name: '', namespace: 'default', clusterUid: 'default' })
 const formRules = {
-  clusterId: [{ required: true, message: '请选择集群', trigger: 'change' }],
+  clusterUid: [{ required: true, message: '请选择集群', trigger: 'change' }],
   namespace: [{ required: true, message: '请选择命名空间', trigger: 'change' }],
   name: [{ required: true, message: '请输入应用名称', trigger: 'blur' }],
 }

@@ -2,7 +2,7 @@ import type { RouteRecordRaw } from 'vue-router'
 
 const persistentVolumeClaimRoutes: RouteRecordRaw[] = [
   {
-    path: '/kubernetes/clusters/:clusterId/storage/persistentvolumeclaim',
+    path: '/kubernetes/clusters/:clusterUid/storage/persistentvolumeclaim',
     name: 'kubernetes:storage:persistentvolumeclaim',
     component: () => import('@/views/kubernetes/storage/persistentvolumeclaim/index.vue'),
     meta: {
@@ -13,7 +13,7 @@ const persistentVolumeClaimRoutes: RouteRecordRaw[] = [
     },
   },
   {
-    path: '/kubernetes/clusters/:clusterId/storage/persistentvolumeclaim/create',
+    path: '/kubernetes/clusters/:clusterUid/storage/persistentvolumeclaim/create',
     name: 'kubernetes:storage:persistentvolumeclaim:create',
     component: () => import('@/views/kubernetes/storage/persistentvolumeclaim/create/index.vue'),
     meta: {
@@ -24,7 +24,7 @@ const persistentVolumeClaimRoutes: RouteRecordRaw[] = [
     },
   },
   {
-    path: '/kubernetes/clusters/:clusterId/storage/persistentvolumeclaim/edit',
+    path: '/kubernetes/clusters/:clusterUid/storage/persistentvolumeclaim/edit',
     name: 'kubernetes:storage:persistentvolumeclaim:edit',
     component: () => import('@/views/kubernetes/storage/persistentvolumeclaim/edit/index.vue'),
     meta: {
@@ -35,7 +35,7 @@ const persistentVolumeClaimRoutes: RouteRecordRaw[] = [
     },
   },
   {
-    path: '/kubernetes/clusters/:clusterId/storage/persistentvolumeclaim/detail',
+    path: '/kubernetes/clusters/:clusterUid/storage/persistentvolumeclaim/detail',
     name: 'kubernetes:storage:persistentvolumeclaim:detail',
     component: () => import('@/views/kubernetes/storage/persistentvolumeclaim/detail/index.vue'),
     meta: {
@@ -49,7 +49,7 @@ const persistentVolumeClaimRoutes: RouteRecordRaw[] = [
 
 const persistentVolumeRoutes: RouteRecordRaw[] = [
   {
-    path: '/kubernetes/clusters/:clusterId/storage/persistentvolume',
+    path: '/kubernetes/clusters/:clusterUid/storage/persistentvolume',
     name: 'kubernetes:storage:persistentvolume',
     component: () => import('@/views/kubernetes/storage/persistentvolume/index.vue'),
     meta: {
@@ -60,7 +60,7 @@ const persistentVolumeRoutes: RouteRecordRaw[] = [
     },
   },
   {
-    path: '/kubernetes/clusters/:clusterId/storage/persistentvolume/create',
+    path: '/kubernetes/clusters/:clusterUid/storage/persistentvolume/create',
     name: 'kubernetes:storage:persistentvolume:create',
     component: () => import('@/views/kubernetes/storage/persistentvolume/create/index.vue'),
     meta: {
@@ -71,7 +71,7 @@ const persistentVolumeRoutes: RouteRecordRaw[] = [
     },
   },
   {
-    path: '/kubernetes/clusters/:clusterId/storage/persistentvolume/edit',
+    path: '/kubernetes/clusters/:clusterUid/storage/persistentvolume/edit',
     name: 'kubernetes:storage:persistentvolume:edit',
     component: () => import('@/views/kubernetes/storage/persistentvolume/edit/index.vue'),
     meta: {
@@ -82,7 +82,7 @@ const persistentVolumeRoutes: RouteRecordRaw[] = [
     },
   },
   {
-    path: '/kubernetes/clusters/:clusterId/storage/persistentvolume/detail',
+    path: '/kubernetes/clusters/:clusterUid/storage/persistentvolume/detail',
     name: 'kubernetes:storage:persistentvolume:detail',
     component: () => import('@/views/kubernetes/storage/persistentvolume/detail/index.vue'),
     meta: {
@@ -96,7 +96,7 @@ const persistentVolumeRoutes: RouteRecordRaw[] = [
 
 const storageclassRoutes: RouteRecordRaw[] = [
   {
-    path: '/kubernetes/clusters/:clusterId/storage/storageclass',
+    path: '/kubernetes/clusters/:clusterUid/storage/storageclass',
     name: 'kubernetes:storage:storageclass',
     component: () => import('@/views/kubernetes/storage/storageclass/index.vue'),
     meta: {
@@ -107,7 +107,7 @@ const storageclassRoutes: RouteRecordRaw[] = [
     },
   },
   {
-    path: '/kubernetes/clusters/:clusterId/storage/storageclass/create',
+    path: '/kubernetes/clusters/:clusterUid/storage/storageclass/create',
     name: 'kubernetes:storage:storageclass:create',
     component: () => import('@/views/kubernetes/storage/storageclass/create/index.vue'),
     meta: {
@@ -118,7 +118,7 @@ const storageclassRoutes: RouteRecordRaw[] = [
     },
   },
   {
-    path: '/kubernetes/clusters/:clusterId/storage/storageclass/edit',
+    path: '/kubernetes/clusters/:clusterUid/storage/storageclass/edit',
     name: 'kubernetes:storage:storageclass:edit',
     component: () => import('@/views/kubernetes/storage/storageclass/edit/index.vue'),
     meta: {
@@ -129,7 +129,7 @@ const storageclassRoutes: RouteRecordRaw[] = [
     },
   },
   {
-    path: '/kubernetes/clusters/:clusterId/storage/storageclass/detail',
+    path: '/kubernetes/clusters/:clusterUid/storage/storageclass/detail',
     name: 'kubernetes:storage:storageclass:detail',
     component: () => import('@/views/kubernetes/storage/storageclass/detail/index.vue'),
     meta: {
@@ -143,9 +143,9 @@ const storageclassRoutes: RouteRecordRaw[] = [
 
 export const storageRoutes: RouteRecordRaw[] = [
   {
-    path: '/kubernetes/clusters/:clusterId/storage',
+    path: '/kubernetes/clusters/:clusterUid/storage',
     name: 'kubernetes:storage',
-    redirect: '/kubernetes/clusters/:clusterId/storage/persistentvolumeclaim',
+    redirect: '/kubernetes/clusters/:clusterUid/storage/persistentvolumeclaim',
     meta: {
       title: '存储',
       icon: 'Box',

@@ -65,11 +65,11 @@ router.beforeEach(async (to, from) => {
     return '/403'
   }
 
-  // 路由包含 :clusterId 参数时，同步到 kubernetesStore
-  const clusterId = to.params.clusterId as string | undefined
-  if (clusterId) {
+  // 路由包含 :clusterUid 参数时，同步到 kubernetesStore
+  const clusterUid = to.params.clusterUid as string | undefined
+  if (clusterUid) {
     const kubernetesStore = useKubernetesStore()
-    kubernetesStore.setActiveClusterId(clusterId)
+    kubernetesStore.setActiveClusterUid(clusterUid)
   }
 
   return true

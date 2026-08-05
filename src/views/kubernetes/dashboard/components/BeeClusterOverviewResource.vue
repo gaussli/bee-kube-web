@@ -50,8 +50,8 @@ import BeeRingChart from '@/components/BeeRingChart/index.vue'
 defineOptions({ name: 'BeeClusterOverviewResource' })
 
 const props = defineProps<{
-  /** 集群 ID */
-  clusterId: string
+  /** 集群 UID */
+  clusterUid: string
 }>()
 
 /** 雷达图数据 */
@@ -77,8 +77,8 @@ function calcPercentage(used: number, total: number): number {
  * 加载资源用量数据并构建雷达图数据
  */
 async function loadData() {
-  if (!props.clusterId) return
-  const res = await getClusterResource(props.clusterId)
+  if (!props.clusterUid) return
+  const res = await getClusterResource(props.clusterUid)
   radarData.value = [
     {
       label: 'CPU',

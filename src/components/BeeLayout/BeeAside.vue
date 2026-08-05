@@ -62,14 +62,14 @@ const currentMenuList = computed(() => {
 function handleSelect(index: string | number) {
   const routeName = String(index)
   // 未选择集群时，提示用户并跳转到集群管理页
-  if (!kubernetesStore.activeClusterId) {
+  if (!kubernetesStore.activeClusterUid) {
     BeeMessage.warning('请先选择一个集群')
     router.push({ name: CLUSTER_ROUTE }).catch(() => {})
     return
   }
-  // 仅 kubernetes 子资源路由需要携带 clusterId（排除 cluster 管理路由和平台路由）
+  // 仅 kubernetes 子资源路由需要携带 clusterUid（排除 cluster 管理路由和平台路由）
   const needsClusterId = routeName.startsWith('kubernetes:') && !routeName.startsWith('kubernetes:cluster')
-  const params = needsClusterId ? { clusterId: kubernetesStore.activeClusterId } : undefined
+  const params = needsClusterId ? { clusterUid: kubernetesStore.activeClusterUid } : undefined
   router.push({ name: routeName, params }).catch(() => {})
 }
 </script>

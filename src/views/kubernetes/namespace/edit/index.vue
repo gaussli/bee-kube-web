@@ -2,7 +2,7 @@
   <div class="namespace-edit">
     <!-- 页面标题 -->
     <div class="page-header">
-      <BeePageTitle
+      <BeePageHeader
         :icon="FolderOpened"
         :title="`编辑命名空间: ${namespaceName}`"
         description="编辑命名空间的标签和注解。"
@@ -73,7 +73,7 @@ import { getNamespaceDetail, updateNamespace } from '@/api/kubernetes/namespace'
 
 import BeeButton from '@/components/BeeButton/index.vue'
 import { BeeMessage } from '@/components/BeeMessage'
-import BeePageTitle from '@/components/BeePageTitle/index.vue'
+import BeePageHeader from '@/components/BeePageHeader/index.vue'
 
 defineOptions({ name: 'NamespaceEdit' })
 
@@ -81,7 +81,7 @@ const route = useRoute()
 const router = useRouter()
 const formRef = ref<FormInstance>()
 
-const clusterId = ref(route.params.clusterId as string)
+const clusterUid = ref(route.params.clusterUid as string)
 const namespaceName = ref(route.query.name as string)
 const loading = ref(false)
 const submitting = ref(false)
@@ -114,10 +114,10 @@ function removeAnnotation(index: number) {
 }
 
 async function loadData() {
-  if (!clusterId.value || !namespaceName.value) return
+  if (!clusterUid.value || !namespaceName.value) return
   loading.value = true
   try {
-    namespaceData.value = await getNamespaceDetail(clusterId.value, namespaceName.value)
+    namespaceData.value = await getNamespaceDetail(clusterUid.value, namespaceName.value)
     // 初始化标签列表
     if (namespaceData.value.labels) {
       labelList.value = Object.entries(namespaceData.value.labels).map(([key, value]) => ({ key, value }))
@@ -157,7 +157,7 @@ async function handleSubmit() {
 
   submitting.value = true
   try {
-    await updateNamespace(clusterId.value, namespaceName.value, data)
+    await updateNamespace(clusterUid.value, namespaceName.value, data)
     BeeMessage.success('保存成功')
     router.back()
   } catch {

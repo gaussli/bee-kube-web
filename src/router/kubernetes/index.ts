@@ -17,7 +17,7 @@ export const kubernetesRoutes: RouteRecordRaw[] = [
     redirect: '/kubernetes/clusters',
   },
   {
-    path: '/kubernetes/clusters/:clusterId/dashboard',
+    path: '/kubernetes/clusters/:clusterUid/dashboard',
     name: 'kubernetes:dashboard',
     component: () => import('@/views/kubernetes/dashboard/index.vue'),
     meta: {

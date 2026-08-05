@@ -1,12 +1,12 @@
 <template>
   <div class="statefulset-create">
     <div class="page-header">
-      <BeePageTitle :icon="Collection" title="创建有状态应用" description="创建一个新的 Kubernetes StatefulSet。" />
+      <BeePageHeader :icon="Collection" title="创建有状态应用" description="创建一个新的 Kubernetes StatefulSet。" />
     </div>
     <div class="page-body">
       <el-form ref="formRef" :model="formData" :rules="formRules" label-width="140px" class="create-form">
-        <el-form-item label="所属集群" prop="clusterId">
-          <el-select v-model="formData.clusterId" placeholder="选择集群" style="width: 300px">
+        <el-form-item label="所属集群" prop="clusterUid">
+          <el-select v-model="formData.clusterUid" placeholder="选择集群" style="width: 300px">
             <el-option label="默认集群" value="default" />
           </el-select>
         </el-form-item>
@@ -52,7 +52,7 @@ import { createStatefulSet } from '@/api/kubernetes/workload/statefulset'
 
 import BeeButton from '@/components/BeeButton/index.vue'
 import { BeeMessage } from '@/components/BeeMessage'
-import BeePageTitle from '@/components/BeePageTitle/index.vue'
+import BeePageHeader from '@/components/BeePageHeader/index.vue'
 
 defineOptions({ name: 'StatefulSetCreate' })
 const router = useRouter()
@@ -61,12 +61,12 @@ const submitting = ref(false)
 const formData = ref<Partial<StatefulSetCreateForm>>({
   name: '',
   namespace: 'default',
-  clusterId: 'default',
+  clusterUid: 'default',
   replicas: 1,
   serviceName: '',
 })
 const formRules = {
-  clusterId: [{ required: true, message: '请选择集群', trigger: 'change' }],
+  clusterUid: [{ required: true, message: '请选择集群', trigger: 'change' }],
   namespace: [{ required: true, message: '请选择命名空间', trigger: 'change' }],
   name: [{ required: true, message: '请输入应用名称', trigger: 'blur' }],
   replicas: [{ required: true, message: '请输入副本数量', trigger: 'blur' }],

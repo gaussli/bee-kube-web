@@ -1,5 +1,5 @@
 <template>
-  <div class="cluster-edit">
+  <div class="cluster-create">
     <!-- 表单头部 -->
     <div class="form-header">
       <BeeButton @click="handleBack">
@@ -7,18 +7,18 @@
         返回
       </BeeButton>
       <BeeDivider direction="vertical" :length="25" margin="12px" />
-      <span class="header-title">编辑集群</span>
+      <span class="header-title">纳管集群</span>
     </div>
 
     <!-- 表单主体 -->
     <transition name="fade-slide" mode="out-in">
-      <div v-if="loaded" class="form-body">
+      <div class="form-body">
         <el-form ref="formRef" :model="formData" :rules="rules" label-width="120px">
-          <el-form-item label="名称">
-            <el-input v-model="formData.name" disabled />
+          <el-form-item label="名称" prop="name">
+            <el-input v-model="formData.name" placeholder="请输入集群名称" />
           </el-form-item>
-          <el-form-item label="API Server">
-            <el-input v-model="formData.apiServer" disabled />
+          <el-form-item label="API Server" prop="apiServer">
+            <el-input v-model="formData.apiServer" placeholder="请输入 Kubernetes API Server 地址" />
           </el-form-item>
           <el-form-item label="描述" prop="description">
             <el-input v-model="formData.description" type="textarea" placeholder="请输入描述" />
@@ -33,16 +33,16 @@
         <template #icon><Close /></template>
         取消
       </BeeButton>
-      <BeeButton type="primary" @click="handleUpdate">
+      <BeeButton type="primary" @click="handleCreate">
         <template #icon><Check /></template>
-        保存
+        纳管
       </BeeButton>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { onMounted, ref } from 'vue'
+import { ref } from 'vue'
 
 import { useRouter } from 'vue-router'
 
@@ -51,49 +51,37 @@ import { ArrowLeft, Check, Close } from '@element-plus/icons-vue'
 import BeeButton from '@/components/BeeButton/index.vue'
 import BeeDivider from '@/components/BeeDivider/index.vue'
 
-defineOptions({ name: 'ClusterEdit' })
+defineOptions({ name: 'RegisterCluster' })
 
 const router = useRouter()
 const formRef = ref()
-const loaded = ref(false)
-
 const formData = ref({
   name: '',
   apiServer: '',
   description: '',
 })
-const rules = {}
-
-async function loadData() {
-  try {
-    // TODO: 调用获取集群详情 API
-    // const data = await getClusterDetail(clusterUid)
-  } finally {
-    loaded.value = true
-  }
+const rules = {
+  name: [{ required: true, message: '请输入集群名称', trigger: 'blur' }],
+  apiServer: [{ required: true, message: '请输入 API Server 地址', trigger: 'blur' }],
 }
 
 function handleBack() {
   router.back()
 }
 
-async function handleUpdate() {
+async function handleCreate() {
   try {
     await formRef.value?.validate()
-    // TODO: 调用更新集群 API
+    // TODO: 调用纳管集群 API
     router.push({ name: 'kubernetes:cluster' }).catch(() => {})
   } catch {
     // 验证失败
   }
 }
-
-onMounted(() => {
-  void loadData()
-})
 </script>
 
 <style lang="scss" scoped>
-.cluster-edit {
+.cluster-create {
   display: flex;
   flex-direction: column;
   height: 100%;

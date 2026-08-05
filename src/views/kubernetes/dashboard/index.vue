@@ -6,13 +6,13 @@
     <!-- 资源雷达图 + 节点列表 -->
     <div class="cluster-overview__metrics-row">
       <!-- 资源用量 -->
-      <BeeClusterOverviewResource :cluster-id="route.params.clusterId as string" />
+      <BeeClusterOverviewResource :cluster-id="route.params.clusterUid as string" />
       <!-- 节点列表 -->
-      <BeeClusterOverviewNode :cluster-id="route.params.clusterId as string" />
+      <BeeClusterOverviewNode :cluster-id="route.params.clusterUid as string" />
     </div>
 
     <!-- 最近事件 -->
-    <BeeClusterOverviewEvent :cluster-id="route.params.clusterId as string" />
+    <BeeClusterOverviewEvent :cluster-id="route.params.clusterUid as string" />
   </BeePage>
 </template>
 
@@ -21,14 +21,12 @@ import { onMounted, ref } from 'vue'
 
 import { useRoute } from 'vue-router'
 
-import type { ClusterOverviewInfoData } from './components/BeeClusterOverviewInfo.vue'
-
 import { getClusterDetail } from '@/api/kubernetes/cluster'
 
 import BeePage from '@/components/BeePage/index.vue'
 
 import BeeClusterOverviewEvent from './components/BeeClusterOverviewEvent.vue'
-import BeeClusterOverviewInfo from './components/BeeClusterOverviewInfo.vue'
+import BeeClusterOverviewInfo, { type ClusterOverviewInfoData } from './components/BeeClusterOverviewInfo.vue'
 import BeeClusterOverviewNode from './components/BeeClusterOverviewNode.vue'
 import BeeClusterOverviewResource from './components/BeeClusterOverviewResource.vue'
 
@@ -52,9 +50,9 @@ const clusterOverviewInfoData = ref<ClusterOverviewInfoData>({
  * @remarks 从 API 获取集群详情，转换为 ClusterOverviewInfoData 格式
  */
 async function loadClusterOverview() {
-  const clusterId = route.params.clusterId as string | undefined
-  if (!clusterId) return
-  const detail = await getClusterDetail(clusterId)
+  const clusterUid = route.params.clusterUid as string | undefined
+  if (!clusterUid) return
+  const detail = await getClusterDetail(clusterUid)
   clusterOverviewInfoData.value = {
     name: detail.name,
     description: detail.description,

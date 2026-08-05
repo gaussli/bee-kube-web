@@ -1,12 +1,12 @@
 <template>
   <div class="cronjob-create">
     <div class="page-header">
-      <BeePageTitle :icon="Clock" title="创建定时任务" description="创建一个新的 Kubernetes CronJob。" />
+      <BeePageHeader :icon="Clock" title="创建定时任务" description="创建一个新的 Kubernetes CronJob。" />
     </div>
     <div class="page-body">
       <el-form ref="formRef" :model="formData" :rules="formRules" label-width="140px" class="create-form">
-        <el-form-item label="所属集群" prop="clusterId">
-          <el-select v-model="formData.clusterId" placeholder="选择集群" style="width: 300px"
+        <el-form-item label="所属集群" prop="clusterUid">
+          <el-select v-model="formData.clusterUid" placeholder="选择集群" style="width: 300px"
             ><el-option label="默认集群" value="default"
           /></el-select>
         </el-form-item>
@@ -57,7 +57,7 @@ import { createCronJob } from '@/api/kubernetes/workload/cronjob'
 
 import BeeButton from '@/components/BeeButton/index.vue'
 import { BeeMessage } from '@/components/BeeMessage'
-import BeePageTitle from '@/components/BeePageTitle/index.vue'
+import BeePageHeader from '@/components/BeePageHeader/index.vue'
 
 defineOptions({ name: 'CronJobCreate' })
 const router = useRouter()
@@ -66,12 +66,12 @@ const submitting = ref(false)
 const formData = ref<Partial<CronJobDetailResp>>({
   name: '',
   namespace: 'default',
-  clusterId: 'default',
+  clusterUid: 'default',
   schedule: '*/5 * * * *',
   suspend: false,
 })
 const formRules = {
-  clusterId: [{ required: true, message: '请选择集群', trigger: 'change' }],
+  clusterUid: [{ required: true, message: '请选择集群', trigger: 'change' }],
   namespace: [{ required: true, message: '请选择命名空间', trigger: 'change' }],
   name: [{ required: true, message: '请输入任务名称', trigger: 'blur' }],
   schedule: [{ required: true, message: '请输入调度规则', trigger: 'blur' }],

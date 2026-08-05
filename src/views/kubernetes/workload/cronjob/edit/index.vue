@@ -1,7 +1,7 @@
 <template>
   <div class="cronjob-edit">
     <div class="page-header">
-      <BeePageTitle :icon="Clock" :title="`编辑定时任务: ${cronjobName}`" description="编辑 CronJob 配置。" />
+      <BeePageHeader :icon="Clock" :title="`编辑定时任务: ${cronjobName}`" description="编辑 CronJob 配置。" />
     </div>
     <div class="page-body">
       <el-form ref="formRef" :model="formData" :rules="formRules" label-width="140px" class="edit-form">
@@ -54,12 +54,12 @@ import { getCronJobDetail, updateCronJob } from '@/api/kubernetes/workload/cronj
 
 import BeeButton from '@/components/BeeButton/index.vue'
 import { BeeMessage } from '@/components/BeeMessage'
-import BeePageTitle from '@/components/BeePageTitle/index.vue'
+import BeePageHeader from '@/components/BeePageHeader/index.vue'
 
 defineOptions({ name: 'CronJobEdit' })
 const route = useRoute()
 const router = useRouter()
-const clusterId = ref(route.params.clusterId as string)
+const clusterUid = ref(route.params.clusterUid as string)
 const namespace = ref(route.query.namespace as string)
 const cronjobName = ref(route.query.name as string)
 const loading = ref(false)
@@ -70,10 +70,10 @@ const formData = ref<Partial<CronJobDetailResp>>({ schedule: '', suspend: false 
 const labelList = ref<Array<{ key: string; value: string }>>([])
 const formRules = { schedule: [{ required: true, message: '请输入调度规则', trigger: 'blur' }] }
 async function loadData() {
-  if (!clusterId.value || !namespace.value || !cronjobName.value) return
+  if (!clusterUid.value || !namespace.value || !cronjobName.value) return
   loading.value = true
   try {
-    cronjobData.value = await getCronJobDetail(clusterId.value, namespace.value, cronjobName.value)
+    cronjobData.value = await getCronJobDetail(clusterUid.value, namespace.value, cronjobName.value)
     formData.value.schedule = cronjobData.value.schedule
     formData.value.suspend = cronjobData.value.suspend
     if (cronjobData.value.labels)
@@ -100,7 +100,7 @@ async function handleSubmit() {
   })
   submitting.value = true
   try {
-    await updateCronJob(clusterId.value, namespace.value, cronjobName.value, { ...formData.value, labels })
+    await updateCronJob(clusterUid.value, namespace.value, cronjobName.value, { ...formData.value, labels })
     BeeMessage.success('保存成功')
     router.back()
   } catch {

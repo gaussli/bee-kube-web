@@ -3,17 +3,15 @@
  * @module types/kubernetes/types
  */
 
-import type { BaseEntity } from '../common'
-
-export interface Clustered extends BaseEntity {
-  clusterId?: string
+export interface Clustered {
   clusterUid: string
-  clusterName?: string
+  clusterUid: string
+  clusterName: string
 }
 
-export interface Namespaced extends Clustered {
-  namespaceId?: string
-  namespaceUid?: string
+export interface Namespaced {
+  namespaceId: string
+  namespaceUid: string
   namespace: string
 }
 
@@ -32,17 +30,17 @@ export interface Metadata {
  */
 export interface ObjectReference {
   /** 资源所属 API 组 */
-  apiVersion?: string
+  apiVersion: string
   /** 资源类型 */
-  kind?: string
+  kind: string
   /** 资源名称 */
-  name?: string
+  name: string
   /** 资源所属命名空间（集群级资源为空） */
   namespace?: string
   /** 资源唯一标识 */
-  uid?: string
+  uid: string
   /** 资源版本号（用于乐观锁） */
-  resourceVersion?: string
+  resourceVersion: string
 }
 
 /**
@@ -112,21 +110,21 @@ export type EventType = 'Normal' | 'Warning'
  */
 export interface Event {
   /** 事件类型（Normal: 正常事件；Warning: 警告事件） */
-  type?: EventType
+  type: EventType
   /** 事件原因 */
-  reason?: string
+  reason: string
   /** 事件消息 */
-  message?: string
+  message: string
   /** 关联的资源对象 */
-  involvedObject?: ObjectReference
+  involvedObject: ObjectReference
   /** 事件来源 */
-  source?: EventSource
+  source: EventSource
   /** 事件发生次数 */
-  count?: number
+  count: number
   /** 首次发生时间 */
-  firstTimestamp?: string
+  firstTimestamp: string
   /** 最后发生时间 */
-  lastTimestamp?: string
+  lastTimestamp: string
 }
 
 export type ContainerStatus = 'Waiting' | 'Running' | 'Terminated'

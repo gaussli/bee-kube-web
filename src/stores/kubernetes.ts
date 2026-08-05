@@ -4,14 +4,14 @@ import { defineStore } from 'pinia'
 
 export const useKubernetesStore = defineStore('kubernetes', () => {
   // 状态定义
-  const activeClusterId = ref<string>()
+  const activeClusterUid = ref<string>()
 
-  function setActiveClusterId(id: string) {
-    activeClusterId.value = id
+  function setActiveClusterUid(id: string) {
+    activeClusterUid.value = id
   }
 
   return {
-    activeClusterId,
-    setActiveClusterId,
+    activeClusterUid,
+    setActiveClusterUid,
   }
 })

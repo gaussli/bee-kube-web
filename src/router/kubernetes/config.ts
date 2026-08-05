@@ -2,7 +2,7 @@ import type { RouteRecordRaw } from 'vue-router'
 
 const configmapRoutes: RouteRecordRaw[] = [
   {
-    path: '/kubernetes/clusters/:clusterId/config/configmap',
+    path: '/kubernetes/clusters/:clusterUid/config/configmap',
     name: 'kubernetes:config:configmap',
     component: () => import('@/views/kubernetes/config/configmap/index.vue'),
     meta: {
@@ -13,7 +13,7 @@ const configmapRoutes: RouteRecordRaw[] = [
     },
   },
   {
-    path: '/kubernetes/clusters/:clusterId/config/configmap/create',
+    path: '/kubernetes/clusters/:clusterUid/config/configmap/create',
     name: 'kubernetes:config:configmap:create',
     component: () => import('@/views/kubernetes/config/configmap/create/index.vue'),
     meta: {
@@ -24,7 +24,7 @@ const configmapRoutes: RouteRecordRaw[] = [
     },
   },
   {
-    path: '/kubernetes/clusters/:clusterId/config/configmap/edit',
+    path: '/kubernetes/clusters/:clusterUid/config/configmap/edit',
     name: 'kubernetes:config:configmap:edit',
     component: () => import('@/views/kubernetes/config/configmap/edit/index.vue'),
     meta: {
@@ -35,7 +35,7 @@ const configmapRoutes: RouteRecordRaw[] = [
     },
   },
   {
-    path: '/kubernetes/clusters/:clusterId/config/configmap/detail',
+    path: '/kubernetes/clusters/:clusterUid/config/configmap/detail',
     name: 'kubernetes:config:configmap:detail',
     component: () => import('@/views/kubernetes/config/configmap/detail/index.vue'),
     meta: {
@@ -49,7 +49,7 @@ const configmapRoutes: RouteRecordRaw[] = [
 
 const secretRoutes: RouteRecordRaw[] = [
   {
-    path: '/kubernetes/clusters/:clusterId/config/secret',
+    path: '/kubernetes/clusters/:clusterUid/config/secret',
     name: 'kubernetes:config:secret',
     component: () => import('@/views/kubernetes/config/secret/index.vue'),
     meta: {
@@ -60,7 +60,7 @@ const secretRoutes: RouteRecordRaw[] = [
     },
   },
   {
-    path: '/kubernetes/clusters/:clusterId/config/secret/create',
+    path: '/kubernetes/clusters/:clusterUid/config/secret/create',
     name: 'kubernetes:config:secret:create',
     component: () => import('@/views/kubernetes/config/secret/create/index.vue'),
     meta: {
@@ -71,7 +71,7 @@ const secretRoutes: RouteRecordRaw[] = [
     },
   },
   {
-    path: '/kubernetes/clusters/:clusterId/config/secret/edit',
+    path: '/kubernetes/clusters/:clusterUid/config/secret/edit',
     name: 'kubernetes:config:secret:edit',
     component: () => import('@/views/kubernetes/config/secret/edit/index.vue'),
     meta: {
@@ -82,7 +82,7 @@ const secretRoutes: RouteRecordRaw[] = [
     },
   },
   {
-    path: '/kubernetes/clusters/:clusterId/config/secret/detail',
+    path: '/kubernetes/clusters/:clusterUid/config/secret/detail',
     name: 'kubernetes:config:secret:detail',
     component: () => import('@/views/kubernetes/config/secret/detail/index.vue'),
     meta: {
@@ -96,9 +96,9 @@ const secretRoutes: RouteRecordRaw[] = [
 
 export const configRoutes: RouteRecordRaw[] = [
   {
-    path: '/kubernetes/clusters/:clusterId/config',
+    path: '/kubernetes/clusters/:clusterUid/config',
     name: 'kubernetes:config',
-    redirect: '/kubernetes/clusters/:clusterId/config/configmap',
+    redirect: '/kubernetes/clusters/:clusterUid/config/configmap',
     meta: {
       title: '配置',
       icon: 'Setting',

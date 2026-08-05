@@ -46,9 +46,9 @@
 <script setup lang="ts">
 import { onMounted, ref } from 'vue'
 
-import type { ClusterEventResp } from '@/types/kubernetes/cluster'
+import type { EventListVo } from '@/types/kubernetes/event'
 
-import { getClusterEventPage } from '@/api/kubernetes/cluster'
+import { getEventList } from '@/api/kubernetes/event'
 
 import BeeCard from '@/components/BeeCard/index.vue'
 import BeeCircleButton from '@/components/BeeCircleButton/index.vue'
@@ -66,7 +66,7 @@ const props = defineProps<{
 }>()
 
 /** 最近事件数据 */
-const recentEvents = ref<ClusterEventResp[]>([])
+const recentEvents = ref<EventListVo[]>([])
 
 /**
  * 加载事件数据
@@ -74,7 +74,7 @@ const recentEvents = ref<ClusterEventResp[]>([])
  */
 async function loadEvents() {
   if (!props.clusterId) return
-  const { list } = await getClusterEventPage(props.clusterId, { page: 1, pageSize: 10 })
+  const { list } = await getEventList(props.clusterId, { page: 1, pageSize: 10 })
   recentEvents.value = list
 }
 

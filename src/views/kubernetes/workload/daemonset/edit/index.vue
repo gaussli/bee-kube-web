@@ -1,7 +1,7 @@
 <template>
   <div class="daemonset-edit">
     <div class="page-header">
-      <BeePageTitle :icon="Monitor" :title="`编辑守护进程: ${daemonsetName}`" description="编辑 DaemonSet 配置。" />
+      <BeePageHeader :icon="Monitor" :title="`编辑守护进程: ${daemonsetName}`" description="编辑 DaemonSet 配置。" />
     </div>
     <div class="page-body">
       <el-form ref="formRef" :model="formData" label-width="140px" class="edit-form">
@@ -43,12 +43,12 @@ import { getDaemonSetDetail, updateDaemonSet } from '@/api/kubernetes/workload/d
 
 import BeeButton from '@/components/BeeButton/index.vue'
 import { BeeMessage } from '@/components/BeeMessage'
-import BeePageTitle from '@/components/BeePageTitle/index.vue'
+import BeePageHeader from '@/components/BeePageHeader/index.vue'
 
 defineOptions({ name: 'DaemonSetEdit' })
 const route = useRoute()
 const router = useRouter()
-const clusterId = ref(route.params.clusterId as string)
+const clusterUid = ref(route.params.clusterUid as string)
 const namespace = ref(route.query.namespace as string)
 const daemonsetName = ref(route.query.name as string)
 const loading = ref(false)
@@ -56,10 +56,10 @@ const submitting = ref(false)
 const daemonsetData = ref<DaemonSetResp>()
 const labelList = ref<Array<{ key: string; value: string }>>([])
 async function loadData() {
-  if (!clusterId.value || !namespace.value || !daemonsetName.value) return
+  if (!clusterUid.value || !namespace.value || !daemonsetName.value) return
   loading.value = true
   try {
-    daemonsetData.value = await getDaemonSetDetail(clusterId.value, namespace.value, daemonsetName.value)
+    daemonsetData.value = await getDaemonSetDetail(clusterUid.value, namespace.value, daemonsetName.value)
     if (daemonsetData.value.labels)
       labelList.value = Object.entries(daemonsetData.value.labels).map(([key, value]) => ({ key, value }))
   } finally {
@@ -82,7 +82,7 @@ async function handleSubmit() {
   })
   submitting.value = true
   try {
-    await updateDaemonSet(clusterId.value, namespace.value, daemonsetName.value, { labels })
+    await updateDaemonSet(clusterUid.value, namespace.value, daemonsetName.value, { labels })
     BeeMessage.success('保存成功')
     router.back()
   } catch {

@@ -1,7 +1,7 @@
 <template>
   <div class="cronjob-detail">
     <div class="page-header">
-      <BeePageTitle :icon="Clock" :title="`定时任务详情: ${cronjobName}`" description="查看 CronJob 详细信息。" />
+      <BeePageHeader :icon="Clock" :title="`定时任务详情: ${cronjobName}`" description="查看 CronJob 详细信息。" />
     </div>
     <div class="page-body">
       <el-tabs v-model="activeTab" type="border-card">
@@ -19,7 +19,7 @@
             <div class="detail-row">
               <div class="detail-item">
                 <span class="detail-label">集群:</span
-                ><span class="detail-value">{{ cronjobData?.clusterName || cronjobData?.clusterId }}</span>
+                ><span class="detail-value">{{ cronjobData?.clusterName || cronjobData?.clusterUid }}</span>
               </div>
               <div class="detail-item">
                 <span class="detail-label">调度规则:</span
@@ -73,7 +73,7 @@ import type { CronJobDetailResp } from '@/types/kubernetes/workload/cronjob'
 import { getCronJobDetail } from '@/api/kubernetes/workload/cronjob'
 
 import BeeButton from '@/components/BeeButton/index.vue'
-import BeePageTitle from '@/components/BeePageTitle/index.vue'
+import BeePageHeader from '@/components/BeePageHeader/index.vue'
 import TimeCell from '@/components/TimeCell/index.vue'
 
 import { usePermission } from '@/composables/usePermission'
@@ -82,17 +82,17 @@ defineOptions({ name: 'CronJobDetail' })
 const { hasPermission } = usePermission()
 const route = useRoute()
 const router = useRouter()
-const clusterId = ref(route.params.clusterId as string)
+const clusterUid = ref(route.params.clusterUid as string)
 const namespace = ref(route.query.namespace as string)
 const cronjobName = ref(route.query.name as string)
 const loading = ref(false)
 const cronjobData = ref<CronJobDetailResp>()
 const activeTab = ref('basic')
 async function loadData() {
-  if (!clusterId.value || !namespace.value || !cronjobName.value) return
+  if (!clusterUid.value || !namespace.value || !cronjobName.value) return
   loading.value = true
   try {
-    cronjobData.value = await getCronJobDetail(clusterId.value, namespace.value, cronjobName.value)
+    cronjobData.value = await getCronJobDetail(clusterUid.value, namespace.value, cronjobName.value)
   } finally {
     loading.value = false
   }
@@ -104,7 +104,7 @@ function handleEdit() {
   router
     .push({
       name: 'kubernetes:workload:cronjob:edit',
-      params: { clusterId: clusterId.value },
+      params: { clusterUid: clusterUid.value },
       query: { namespace: namespace.value, name: cronjobName.value },
     })
     .catch(() => {})

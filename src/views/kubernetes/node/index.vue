@@ -2,7 +2,7 @@
   <BeePage class="node-page">
     <!-- 页面标题 -->
     <BeeCard class="node-page__header">
-      <BeePageTitle
+      <BeePageHeader
         icon="kubernetes-node"
         title="节点管理"
         description="节点（Node）是 Kubernetes 集群中的工作机器，负责运行容器化应用（Pod）。通过节点管理可以查看集群中所有节点的运行状态、资源使用情况，并支持节点调度控制等运维操作。"
@@ -156,7 +156,7 @@ import BeeInputSearch from '@/components/BeeInputSearch/index.vue'
 import { BeeMessage } from '@/components/BeeMessage'
 import BeeNodeInfoCell from '@/components/BeeNodeInfoCell/index.vue'
 import BeePage from '@/components/BeePage/index.vue'
-import BeePageTitle from '@/components/BeePageTitle/index.vue'
+import BeePageHeader from '@/components/BeePageHeader/index.vue'
 import BeePagination from '@/components/BeePagination/index.vue'
 import BeeResourceUsageCell from '@/components/BeeResourceUsageCell/index.vue'
 import BeeSelect from '@/components/BeeSelect/index.vue'
@@ -174,7 +174,7 @@ const { hasPermission } = usePermission()
 
 const route = useRoute()
 const router = useRouter()
-const clusterId = computed(() => route.params.clusterId as string)
+const clusterUid = computed(() => route.params.clusterUid as string)
 const searchKey = ref('')
 
 const loading = ref(false)
@@ -197,13 +197,13 @@ const pagination = reactive({
  * @remarks 根据当前查询条件与分页参数获取节点分页数据
  */
 async function loadData() {
-  if (!clusterId.value) {
+  if (!clusterUid.value) {
     tableData.value = []
     return
   }
   loading.value = true
   try {
-    const resp = await getNodePage(clusterId.value, {
+    const resp = await getNodePage(clusterUid.value, {
       ...queryForm,
       page: pagination.page,
       pageSize: pagination.pageSize,
@@ -257,7 +257,7 @@ function handleSelectionChange(rows: Record<string, unknown>[]) {
  */
 function handleViewDetail(row: NodeListResp) {
   router
-    .push({ name: 'kubernetes:node:detail', params: { clusterId: clusterId.value }, query: { name: row.name } })
+    .push({ name: 'kubernetes:node:detail', params: { clusterUid: clusterUid.value }, query: { name: row.name } })
     .catch(() => {})
 }
 
@@ -267,13 +267,13 @@ function handleViewDetail(row: NodeListResp) {
  */
 function handleEdit(row: NodeListResp) {
   router
-    .push({ name: 'kubernetes:node:edit', params: { clusterId: clusterId.value }, query: { name: row.name } })
+    .push({ name: 'kubernetes:node:edit', params: { clusterUid: clusterUid.value }, query: { name: row.name } })
     .catch(() => {})
 }
 
 async function handleCordon(row: NodeListResp, unschedulable: boolean) {
   try {
-    await cordonNode(row.clusterId, row.name, unschedulable)
+    await cordonNode(row.clusterUid, row.name, unschedulable)
     BeeMessage.success(unschedulable ? '已设置为不可调度' : '已设置为可调度')
     await loadData()
   } catch (err) {
@@ -283,7 +283,7 @@ async function handleCordon(row: NodeListResp, unschedulable: boolean) {
 
 async function handleDrain(row: NodeListResp) {
   try {
-    await drainNode(row.clusterId, row.name)
+    await drainNode(row.clusterUid, row.name)
     BeeMessage.success('已开始驱逐节点上的 Pod')
     await loadData()
   } catch (err) {

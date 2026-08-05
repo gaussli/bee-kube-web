@@ -58,7 +58,7 @@ export interface NetworkPolicyResp extends BaseEntity {
   /** 所属命名空间 */
   namespace: string
   /** 所属集群 ID */
-  clusterId: string
+  clusterUid: string
   /** 所属集群名称 */
   clusterName?: string
   /** Pod 选择器 */

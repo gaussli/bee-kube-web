@@ -1,7 +1,7 @@
 <template>
   <div class="job-edit">
     <div class="page-header">
-      <BeePageTitle :icon="Timer" :title="`编辑任务: ${jobName}`" description="编辑 Job 配置。" />
+      <BeePageHeader :icon="Timer" :title="`编辑任务: ${jobName}`" description="编辑 Job 配置。" />
     </div>
     <div class="page-body">
       <el-form ref="formRef" :model="formData" :rules="formRules" label-width="140px" class="edit-form">
@@ -46,12 +46,12 @@ import { getJobDetail, updateJob } from '@/api/kubernetes/workload/job'
 
 import BeeButton from '@/components/BeeButton/index.vue'
 import { BeeMessage } from '@/components/BeeMessage'
-import BeePageTitle from '@/components/BeePageTitle/index.vue'
+import BeePageHeader from '@/components/BeePageHeader/index.vue'
 
 defineOptions({ name: 'JobEdit' })
 const route = useRoute()
 const router = useRouter()
-const clusterId = ref(route.params.clusterId as string)
+const clusterUid = ref(route.params.clusterUid as string)
 const namespace = ref(route.query.namespace as string)
 const jobName = ref(route.query.name as string)
 const loading = ref(false)
@@ -62,10 +62,10 @@ const formData = ref<Partial<JobResp>>({ parallelism: 1 })
 const labelList = ref<Array<{ key: string; value: string }>>([])
 const formRules = { parallelism: [{ required: true, message: '请输入并行度', trigger: 'blur' }] }
 async function loadData() {
-  if (!clusterId.value || !namespace.value || !jobName.value) return
+  if (!clusterUid.value || !namespace.value || !jobName.value) return
   loading.value = true
   try {
-    jobData.value = await getJobDetail(clusterId.value, namespace.value, jobName.value)
+    jobData.value = await getJobDetail(clusterUid.value, namespace.value, jobName.value)
     formData.value.parallelism = jobData.value.parallelism
     if (jobData.value.labels)
       labelList.value = Object.entries(jobData.value.labels).map(([key, value]) => ({ key, value }))
@@ -91,7 +91,7 @@ async function handleSubmit() {
   })
   submitting.value = true
   try {
-    await updateJob(clusterId.value, namespace.value, jobName.value, { ...formData.value, labels })
+    await updateJob(clusterUid.value, namespace.value, jobName.value, { ...formData.value, labels })
     BeeMessage.success('保存成功')
     router.back()
   } catch {
