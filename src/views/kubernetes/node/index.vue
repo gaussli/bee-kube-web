@@ -24,13 +24,7 @@
         <BeeTable :data="tableData" :loading="loading" selectable @selection-change="handleSelectionChange">
           <BeeTableColumn :width="500">
             <template #default="{ row }">
-              <BeeNodeInfoCell
-                :id="row.id"
-                :name="row.name"
-                :ip="row.ip"
-                :description="row.description"
-                :icon-size="32"
-              />
+              <BeeNodeInfoCell :uid="row.uid" :name="row.name" :ip="row.ip" :description="row.description" />
             </template>
           </BeeTableColumn>
           <BeeTableColumn :width="160">

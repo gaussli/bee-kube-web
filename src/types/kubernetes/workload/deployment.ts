@@ -20,8 +20,8 @@ import type { HistoryRevision, NodeAffinity, PodAffinity, PodAntiAffinity, Resta
  * @extends PageForm 继承分页请求（含 page, pageSize）
  */
 export interface DeploymentQueryForm extends PageForm {
-  /** Deployment ID */
-  id: string
+  /** Deployment UID */
+  uid: string
   /** Deployment 名称（模糊匹配） */
   name: string
   /** 命名空间名称 */

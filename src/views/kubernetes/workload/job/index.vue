@@ -39,7 +39,6 @@
                 :uid="row.uid"
                 :name="row.name"
                 :description="row.description"
-                :icon-size="32"
                 icon="kubernetes-job"
               />
             </template>

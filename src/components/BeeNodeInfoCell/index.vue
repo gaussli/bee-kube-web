@@ -1,11 +1,11 @@
 <template>
   <div class="bee-node-info-cell">
-    <div class="bee-node-info-cell__node-icon" :style="{ height: iconSize + 'px' }">
-      <BeeIcon name="kubernetes-node" :size="iconSize ?? 48" />
+    <div class="bee-node-info-cell__node-icon">
+      <BeeIcon name="kubernetes-node" :size="32" />
     </div>
     <div class="bee-node-info-cell__content">
       <div class="bee-node-info-cell__top">
-        <BeeTooltip :label="id">
+        <BeeTooltip :label="uid">
           <BeeTag type="primary" size="tiny">UID</BeeTag>
         </BeeTooltip>
         <BeeTooltip :label="ip">
@@ -48,18 +48,21 @@ import { useClipboard } from '@/composables/useClipboard'
 
 defineOptions({ name: 'BeeNodeInfoCell' })
 
-const props = defineProps<{
-  /** 左侧图标大小 */
-  iconSize?: number
-  /** 节点名称 */
-  name: string
-  /** 节点 ID，hover UID 标签时显示 */
-  id: string
-  /** 节点 IP 地址，hover IP 标签时显示 */
-  ip: string
-  /** 节点描述 */
-  description?: string
-}>()
+const props = withDefaults(
+  defineProps<{
+    /** 节点 UID */
+    uid: string
+    /** 节点名称 */
+    name: string
+    /** 节点 IP 地址 */
+    ip: string
+    /** 节点描述 */
+    description?: string
+  }>(),
+  {
+    description: '-',
+  },
+)
 
 // ==================== 描述文本溢出检测 ====================
 
@@ -100,6 +103,7 @@ onUnmounted(() => {
   height: auto;
 
   &__node-icon {
+    flex-shrink: 0;
     color: var(--bee-row-selected-icon-color, $color-text-secondary);
   }
 
@@ -118,8 +122,10 @@ onUnmounted(() => {
   }
 
   &__name {
+    overflow: hidden;
     font-size: $font-size-14;
     color: $color-text-primary;
+    text-overflow: ellipsis;
     white-space: nowrap;
   }
 
@@ -167,7 +173,6 @@ onUnmounted(() => {
 </style>
 
 <style lang="scss">
-// BeeTooltip label slot 内容样式（Teleport 到 body，需全局样式）
 .bee-node-info-cell__desc-tooltip {
   display: inline-block;
   max-width: 400px;

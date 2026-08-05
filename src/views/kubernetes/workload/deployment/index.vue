@@ -43,7 +43,6 @@
                 :uid="row.uid"
                 :name="row.name"
                 :description="row.description"
-                :icon-size="32"
                 icon="kubernetes-deployment"
               />
             </template>
@@ -131,7 +130,7 @@
             不可删除，将从列表忽略：
           </p>
           <div class="delete-dialog-tags">
-            <BeeTag v-for="row in nonDeletableRows" :key="row.id" type="warning">
+            <BeeTag v-for="row in nonDeletableRows" :key="row.uid" type="warning">
               {{ row.name }}
             </BeeTag>
           </div>
@@ -141,7 +140,7 @@
         </p>
         <p v-else class="dialog-content__warning">所有选中的 Deployment 均不可删除。</p>
         <div v-if="deletableRows.length > 0" class="delete-dialog-tags">
-          <BeeTag v-for="row in deletableRows" :key="row.id">
+          <BeeTag v-for="row in deletableRows" :key="row.uid">
             {{ row.name }}
           </BeeTag>
         </div>
@@ -267,10 +266,10 @@ async function loadData() {
 // ==================== Search & Reset ====================
 /**
  * 搜索
- * @remarks 将 searchKey 同时映射到 id/name 字段进行搜索匹配，并重置页码
+ * @remarks 将 searchKey 同时映射到 uid/name 字段进行搜索匹配，并重置页码
  */
 function handleSearch() {
-  queryForm.id = searchKey.value
+  queryForm.uid = searchKey.value
   queryForm.name = searchKey.value
   pagination.page = 1
   void loadData()
@@ -281,7 +280,7 @@ function handleSearch() {
  * @remarks 清空所有筛选字段、搜索关键词、分页参数，重新加载数据
  */
 function handleReset() {
-  queryForm.id = undefined
+  queryForm.uid = undefined
   queryForm.name = undefined
   queryForm.namespace = undefined
   queryForm.status = undefined

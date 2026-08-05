@@ -30,7 +30,7 @@
       <!-- 表格主体 -->
       <div class="table-body">
         <BeeTable :data="tableData" :loading="loading" selectable @selection-change="handleSelectionChange">
-          <BeeTableColumn>
+          <BeeTableColumn :width="200">
             <template #default="{ row }">
               <BeeNamespaceInfoCell :id="row.id" :name="row.name" :description="row.description" :icon-size="32" />
             </template>

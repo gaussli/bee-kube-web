@@ -206,7 +206,7 @@ export default [
  * @returns 分页数据
  */
 function getDeploymentList(_clusterId: string, params: Partial<DeploymentQueryForm>): PageVo<DeploymentListVo> {
-  const { id, name, namespace, status, page = 1, pageSize = 10 } = params || {}
+  const { uid, name, namespace, status, page = 1, pageSize = 10 } = params || {}
 
   let filtered = [...mockDeployments]
 
@@ -217,20 +217,19 @@ function getDeploymentList(_clusterId: string, params: Partial<DeploymentQueryFo
     filtered = filtered.filter(d => d.namespace === namespace)
   }
 
-  if (id || name) {
+  if (uid || name) {
     let searchFiltered: DeploymentListVo[] = []
-    if (id) {
-      searchFiltered = [...searchFiltered, ...filtered.filter(n => n.id === id)]
-      console.log(searchFiltered)
+    if (uid) {
+      searchFiltered = [...searchFiltered, ...filtered.filter(n => n.uid === uid)]
     }
     if (name) {
       searchFiltered = [...searchFiltered, ...filtered.filter(n => n.name.toLowerCase().includes(name.toLowerCase()))]
     }
-    // searchFiltered 基于 id 去重
-    const seenIds = new Set<string>()
+    // searchFiltered 基于 uid 去重
+    const seenUids = new Set<string>()
     filtered = searchFiltered.filter(n => {
-      if (seenIds.has(n.id)) return false
-      seenIds.add(n.id)
+      if (seenUids.has(n.uid)) return false
+      seenUids.add(n.uid)
       return true
     })
   }
