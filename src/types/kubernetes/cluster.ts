@@ -4,11 +4,27 @@
  */
 import type { BaseEntity, DeletableEntity, PageForm, UidEntity } from '@/types/common'
 
+import type { ClusterStatus } from '@/config/kubernetes/cluster'
+
 import type { ResourceVo } from './comomn'
 
 /**
- * 集群列表对象
- * @extends BaseEntity
+ * 集群查询请求参数
+ * @extends UidEntity 继承 UID 类型
+ * @extends PageForm 继承分页请求
+ */
+export interface ClusterQueryForm extends UidEntity, PageForm {
+  /** 集群名称（模糊匹配） */
+  name: string
+  /** 集群状态 */
+  status: ClusterStatus
+}
+
+/**
+ * 集群列表对象响应数据
+ * @extends BaseEntity 继承基础实体类型
+ * @extends UidEntity 继承 UID 类型
+ * @extends DeletableEntity 继承可删除类型
  */
 export interface ClusterListVo extends BaseEntity, UidEntity, DeletableEntity {
   /** 集群名称 */
@@ -17,9 +33,9 @@ export interface ClusterListVo extends BaseEntity, UidEntity, DeletableEntity {
   description?: string
   /** API Server 地址 */
   apiServer: string
-  /** 集群状态（0: 未就绪；1: 就绪） */
-  status: number
-  /** 集群状态描述 */
+  /** 集群状态 */
+  status: ClusterStatus
+  /** 集群状态描述信息（如异常原因） */
   statusMsg?: string
   /** Kubernetes 版本 */
   k8sVersion: string
@@ -36,8 +52,8 @@ export interface ClusterDetailVo extends BaseEntity, UidEntity, DeletableEntity 
   apiServer: string
   /** 集群描述 */
   description?: string
-  /** 集群状态（0: 未就绪；1: 就绪） */
-  status: number
+  /** 集群状态 */
+  status: ClusterStatus
   /** 集群状态描述 */
   statusMsg?: string
   /** Kubernetes 版本 */
@@ -47,24 +63,10 @@ export interface ClusterDetailVo extends BaseEntity, UidEntity, DeletableEntity 
 }
 
 /**
- * 集群资源用量响应对象
+ * 集群资源用量对象
  * @extends ResourceVo
- * @remarks 描述集群级别的 CPU、内存、存储、Pod 四种资源的容量、可分配量及已用量
  */
 export interface ClusterResourceVo extends ResourceVo {}
-
-/**
- * 集群查询表单
- * @extends PageForm
- */
-export interface ClusterQueryForm extends PageForm {
-  /** 集群 UID */
-  uid: string
-  /** 集群名称 */
-  name: string
-  /** 集群状态（0: 未就绪；1: 就绪） */
-  status: number
-}
 
 /**
  * 集群创建表单

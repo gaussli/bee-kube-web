@@ -7,8 +7,13 @@ import type { IngressListVo } from '@/types/kubernetes/network/ingress'
 import type { ServiceListVo } from '@/types/kubernetes/network/service'
 import type { PodListVo } from '@/types/kubernetes/pod'
 
-import type { DeploymentConditionType, DeploymentStatus, DeploymentStrategyType } from '@/config/kubernetes/workload/deployment'
+import type {
+  DeploymentConditionType,
+  DeploymentStatus,
+  DeploymentStrategyType,
+} from '@/config/kubernetes/workload/deployment'
 
+import type { MetadataAnnotationForm, MetadataLabelForm } from '../comomn'
 import type { Clustered, Condition, ContainerResource, Metadata, Namespaced } from '../types'
 
 import type { HistoryRevision, NodeAffinity, PodAffinity, PodAntiAffinity, RestartPolicy, Toleration } from './types'
@@ -271,84 +276,38 @@ export interface DeploymentMonitorVo {}
 /**
  * Deployment 创建请求参数
  */
-export interface DeploymentCreateForm {
-  /** Deployment 名称 */
-  name: string
-  /** 命名空间名称 */
-  namespace: string
-  /** 副本数 */
-  replicas?: number
-  /** 更新策略 */
-  strategy?: DeploymentStrategyType
-  /** 标签选择器 */
-  selector?: Record<string, string>
-  /** 标签 */
-  labels?: Record<string, string>
-  /** 注解 */
-  annotations?: Record<string, string>
-}
+export interface DeploymentCreateForm {}
 
 // ==================== 6. 编辑表单 ====================
 
 /**
  * Deployment 编辑请求参数
  */
-export interface DeploymentUpdateForm {
-  /** Deployment 名称 */
-  name: string
-  /** 命名空间名称 */
-  namespace: string
-  /** 副本数 */
-  replicas?: number
-  /** 更新策略 */
-  strategy?: DeploymentStrategyType
-  /** 标签选择器 */
-  selector?: Record<string, string>
-  /** 标签 */
-  labels?: Record<string, string>
-  /** 注解 */
-  annotations?: Record<string, string>
-}
+export interface DeploymentUpdateForm {}
 
 // ==================== 7. 标签表单 ====================
 
 /**
  * Deployment 标签更新请求
  */
-export interface DeploymentLabelForm {
-  /** 标签键值对 */
-  labels: Record<string, string>
-  /** 操作（1: 新增；2: 移除：3: 全量替换） */
-  operation: number
-}
+export interface DeploymentLabelForm extends MetadataLabelForm {}
 
 // ==================== 8. 注解表单 ====================
 
 /**
  * Deployment 注解更新请求
  */
-export interface DeploymentAnnotationForm {
-  /** 注解键值对 */
-  annotations: Record<string, string>
-  /** 操作（1: 新增；2: 移除：3: 全量替换） */
-  operation: number
-}
+export interface DeploymentAnnotationForm extends MetadataAnnotationForm {}
 
 // ==================== 9. 其他表单对象（尾部） ====================
 
 /**
  * Deployment 扩缩容请求
  */
-export interface DeploymentScaleForm {
-  /** 期望副本数 */
-  replicas: number
-}
+export interface DeploymentScaleForm {}
 
 /**
  * Deployment YAML 导入请求
  * 通过 YAML 格式导入 Deployment 配置
  */
-export interface DeploymentYamlForm {
-  /** YAML 配置内容 */
-  yaml: string
-}
+export interface DeploymentYamlForm {}

@@ -1,9 +1,11 @@
 /**
- * @fileOverview 通用类型定义
+ * 通用类型定义
+ * @module types/common
  */
 
 /**
- * 通用响应结构
+ * 通用 API 响应结构
+ * @template T - 响应数据类型
  */
 export interface ApiResult<T = any> {
   /** 状态码 */
@@ -28,6 +30,7 @@ export interface PageForm {
 
 /**
  * 分页响应结构
+ * @template T - 列表数据类型
  */
 export interface PageVo<T = any> {
   /** 数据列表 */
@@ -42,6 +45,7 @@ export interface PageVo<T = any> {
 
 /**
  * 基础实体
+ * @remarks 所有列表/详情响应对象的基础类型，包含审计信息
  */
 export interface BaseEntity {
   /** 唯一标识 */
@@ -56,11 +60,19 @@ export interface BaseEntity {
   updateBy?: string
 }
 
+/**
+ * UID 实体
+ * @remarks Kubernetes 资源中包含 uid 字段的实体，继承该类型
+ */
 export interface UidEntity {
-  /** UID  */
+  /** 资源 UID */
   uid: string
 }
 
+/**
+ * 可删除实体
+ * @remarks 包含删除判断标识的实体，继承该类型
+ */
 export interface DeletableEntity {
   /** 是否可删除 */
   deletable: boolean
