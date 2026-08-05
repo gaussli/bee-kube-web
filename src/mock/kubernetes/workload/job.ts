@@ -34,67 +34,67 @@ export default [
   {
     method: 'get',
     url: '/kubernetes/clusters/:clusterId/jobs',
-    handler: (pathParams: Record<string, string>, params: Partial<JobQueryReq>): PageVo<JobListResp> =>
+    handler: ({ pathParams, params }: { pathParams: Record<string, string>; params: Partial<JobQueryReq> }): PageVo<JobListResp> =>
       getJobList(pathParams.clusterId, params),
   },
   {
     method: 'get',
     url: '/kubernetes/clusters/:clusterId/namespaces/:namespace/jobs/:name',
-    handler: (pathParams: Record<string, string>): JobDetailResp =>
+    handler: ({ pathParams }: { pathParams: Record<string, string> }): JobDetailResp =>
       getJobDetail(pathParams.clusterId, pathParams.namespace, pathParams.name),
   },
   {
     method: 'get',
     url: '/kubernetes/clusters/:clusterId/namespaces/:namespace/jobs/:name/yaml',
-    handler: (pathParams: Record<string, string>): string =>
+    handler: ({ pathParams }: { pathParams: Record<string, string> }): string =>
       getJobYaml(pathParams.clusterId, pathParams.namespace, pathParams.name),
   },
   {
     method: 'post',
     url: '/kubernetes/clusters/:clusterId/namespaces/:namespace/jobs',
-    handler: (pathParams: Record<string, string>, data: JobReq): void =>
+    handler: ({ pathParams, data }: { pathParams: Record<string, string>; data: JobReq }): void =>
       createJob(pathParams.clusterId, pathParams.namespace, data),
   },
   {
     method: 'put',
     url: '/kubernetes/clusters/:clusterId/namespaces/:namespace/jobs/:name',
-    handler: (pathParams: Record<string, string>, data: Partial<JobReq>): void =>
+    handler: ({ pathParams, data }: { pathParams: Record<string, string>; data: Partial<JobReq> }): void =>
       updateJob(pathParams.clusterId, pathParams.namespace, pathParams.name, data),
   },
   {
     method: 'put',
     url: '/kubernetes/clusters/:clusterId/namespaces/:namespace/jobs/:name/labels',
-    handler: (pathParams: Record<string, string>, data: JobLabelsReq): void =>
+    handler: ({ pathParams, data }: { pathParams: Record<string, string>; data: JobLabelsReq }): void =>
       manageJobLabels(pathParams.clusterId, pathParams.namespace, pathParams.name, data),
   },
   {
     method: 'put',
     url: '/kubernetes/clusters/:clusterId/namespaces/:namespace/jobs/:name/annotations',
-    handler: (pathParams: Record<string, string>, data: JobAnnotationsReq): void =>
+    handler: ({ pathParams, data }: { pathParams: Record<string, string>; data: JobAnnotationsReq }): void =>
       manageJobAnnotations(pathParams.clusterId, pathParams.namespace, pathParams.name, data),
   },
   {
     method: 'delete',
     url: '/kubernetes/clusters/:clusterId/namespaces/:namespace/jobs/:name',
-    handler: (pathParams: Record<string, string>): void =>
+    handler: ({ pathParams }: { pathParams: Record<string, string> }): void =>
       deleteJob(pathParams.clusterId, pathParams.namespace, pathParams.name),
   },
   {
     method: 'delete',
     url: '/kubernetes/clusters/:clusterId/namespaces/:namespace/jobs/batch',
-    handler: (pathParams: Record<string, string>, data: string[]): void =>
+    handler: ({ pathParams, data }: { pathParams: Record<string, string>; data: string[] }): void =>
       deleteJobs(pathParams.clusterId, pathParams.namespace, data),
   },
   {
     method: 'get',
     url: '/kubernetes/clusters/:clusterId/jobs/export',
-    handler: (pathParams: Record<string, string>, params: Partial<JobQueryReq>): void =>
+    handler: ({ pathParams, params }: { pathParams: Record<string, string>; params: Partial<JobQueryReq> }): void =>
       exportJob(pathParams.clusterId, params),
   },
   {
     method: 'post',
     url: '/kubernetes/clusters/:clusterId/jobs/import',
-    handler: (pathParams: Record<string, string>, data: JobYamlReq): void => importJob(pathParams.clusterId, data),
+    handler: ({ pathParams, data }: { pathParams: Record<string, string>; data: JobYamlReq }): void => importJob(pathParams.clusterId, data),
   },
 ]
 

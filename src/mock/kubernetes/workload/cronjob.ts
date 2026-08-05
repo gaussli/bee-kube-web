@@ -37,85 +37,85 @@ export default [
   {
     method: 'get',
     url: '/kubernetes/clusters/:clusterId/cronjobs',
-    handler: (pathParams: Record<string, string>, params: Partial<CronJobQueryReq>): PageVo<CronJobListResp> =>
+    handler: ({ pathParams, params }: { pathParams: Record<string, string>; params: Partial<CronJobQueryReq> }): PageVo<CronJobListResp> =>
       getCronJobList(pathParams.clusterId, params),
   },
   {
     method: 'get',
     url: '/kubernetes/clusters/:clusterId/namespaces/:namespace/cronjobs/:name',
-    handler: (pathParams: Record<string, string>): CronJobDetailResp =>
+    handler: ({ pathParams }: { pathParams: Record<string, string> }): CronJobDetailResp =>
       getCronJobDetail(pathParams.clusterId, pathParams.namespace, pathParams.name),
   },
   {
     method: 'get',
     url: '/kubernetes/clusters/:clusterId/namespaces/:namespace/cronjobs/:name/yaml',
-    handler: (pathParams: Record<string, string>): string =>
+    handler: ({ pathParams }: { pathParams: Record<string, string> }): string =>
       getCronJobYaml(pathParams.clusterId, pathParams.namespace, pathParams.name),
   },
   {
     method: 'post',
     url: '/kubernetes/clusters/:clusterId/namespaces/:namespace/cronjobs',
-    handler: (pathParams: Record<string, string>, data: CronJobReq): void =>
+    handler: ({ pathParams, data }: { pathParams: Record<string, string>; data: CronJobReq }): void =>
       createCronJob(pathParams.clusterId, pathParams.namespace, data),
   },
   {
     method: 'put',
     url: '/kubernetes/clusters/:clusterId/namespaces/:namespace/cronjobs/:name',
-    handler: (pathParams: Record<string, string>, data: Partial<CronJobReq>): void =>
+    handler: ({ pathParams, data }: { pathParams: Record<string, string>; data: Partial<CronJobReq> }): void =>
       updateCronJob(pathParams.clusterId, pathParams.namespace, pathParams.name, data),
   },
   {
     method: 'post',
     url: '/kubernetes/clusters/:clusterId/namespaces/:namespace/cronjobs/:name/suspend',
-    handler: (pathParams: Record<string, string>): void =>
+    handler: ({ pathParams }: { pathParams: Record<string, string> }): void =>
       suspendCronJob(pathParams.clusterId, pathParams.namespace, pathParams.name),
   },
   {
     method: 'post',
     url: '/kubernetes/clusters/:clusterId/namespaces/:namespace/cronjobs/:name/resume',
-    handler: (pathParams: Record<string, string>): void =>
+    handler: ({ pathParams }: { pathParams: Record<string, string> }): void =>
       resumeCronJob(pathParams.clusterId, pathParams.namespace, pathParams.name),
   },
   {
     method: 'post',
     url: '/kubernetes/clusters/:clusterId/namespaces/:namespace/cronjobs/:name/trigger',
-    handler: (pathParams: Record<string, string>): void =>
+    handler: ({ pathParams }: { pathParams: Record<string, string> }): void =>
       triggerCronJob(pathParams.clusterId, pathParams.namespace, pathParams.name),
   },
   {
     method: 'put',
     url: '/kubernetes/clusters/:clusterId/namespaces/:namespace/cronjobs/:name/labels',
-    handler: (pathParams: Record<string, string>, data: CronJobLabelsReq): void =>
+    handler: ({ pathParams, data }: { pathParams: Record<string, string>; data: CronJobLabelsReq }): void =>
       manageCronJobLabels(pathParams.clusterId, pathParams.namespace, pathParams.name, data),
   },
   {
     method: 'put',
     url: '/kubernetes/clusters/:clusterId/namespaces/:namespace/cronjobs/:name/annotations',
-    handler: (pathParams: Record<string, string>, data: CronJobAnnotationsReq): void =>
+    handler: ({ pathParams, data }: { pathParams: Record<string, string>; data: CronJobAnnotationsReq }): void =>
       manageCronJobAnnotations(pathParams.clusterId, pathParams.namespace, pathParams.name, data),
   },
   {
     method: 'delete',
     url: '/kubernetes/clusters/:clusterId/namespaces/:namespace/cronjobs/:name',
-    handler: (pathParams: Record<string, string>): void =>
+    handler: ({ pathParams }: { pathParams: Record<string, string> }): void =>
       deleteCronJob(pathParams.clusterId, pathParams.namespace, pathParams.name),
   },
   {
     method: 'delete',
     url: '/kubernetes/clusters/:clusterId/namespaces/:namespace/cronjobs/batch',
-    handler: (pathParams: Record<string, string>, data: string[]): void =>
+    handler: ({ pathParams, data }: { pathParams: Record<string, string>; data: string[] }): void =>
       deleteCronJobs(pathParams.clusterId, pathParams.namespace, data),
   },
   {
     method: 'get',
     url: '/kubernetes/clusters/:clusterId/cronjobs/export',
-    handler: (pathParams: Record<string, string>, params: Partial<CronJobQueryReq>): void =>
+    handler: ({ pathParams, params }: { pathParams: Record<string, string>; params: Partial<CronJobQueryReq> }): void =>
       exportCronJob(pathParams.clusterId, params),
   },
   {
     method: 'post',
     url: '/kubernetes/clusters/:clusterId/cronjobs/import',
-    handler: (pathParams: Record<string, string>, data: CronJobYamlReq): void =>
+    handler: ({ pathParams, data }: { pathParams: Record<string, string>; data: CronJobYamlReq }): void =>
       importCronJob(pathParams.clusterId, data),
   },
 ]

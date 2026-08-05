@@ -14,7 +14,7 @@ export default [
   {
     method: 'get',
     url: '/kubernetes/clusters/:clusterUid/events',
-    handler: (pathParams: Record<string, string>, params: Partial<EventQueryForm>): PageVo<EventListVo> =>
+    handler: ({ pathParams, params }: { pathParams: Record<string, string>; params: Partial<EventQueryForm> }): PageVo<EventListVo> =>
       getEventList(pathParams.clusterUid, params),
   },
 ]

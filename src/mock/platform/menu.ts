@@ -205,7 +205,7 @@ export default [
   {
     method: 'get',
     url: '/system/menus',
-    handler: (params: MenuQueryReq): PageVo<MenuResp> => {
+    handler: ({ params }: { params: MenuQueryReq }): PageVo<MenuResp> => {
       let filtered = [...mockMenus]
 
       // 按 ID 精确搜索
@@ -258,8 +258,8 @@ export default [
   {
     method: 'get',
     url: '/system/menus/:id',
-    handler: (params: { id: string }): MenuDetailResp | undefined => {
-      const menu = mockMenus.find(m => m.id === params.id)
+    handler: ({ pathParams }: { pathParams: Record<string, string> }): MenuDetailResp | undefined => {
+      const menu = mockMenus.find(m => m.id === pathParams.id)
       if (menu) {
         const detail: MenuDetailResp = {
           ...menu,
@@ -276,20 +276,20 @@ export default [
   {
     method: 'post',
     url: '/system/menus',
-    handler: (payload: any): string => {
+    handler: ({ data }: { data: any }): string => {
       const newMenu: MenuResp = {
         id: generateId(),
-        code: payload.code,
-        name: payload.name,
-        parentId: payload.parentId,
-        description: payload.description,
-        frontPath: payload.frontPath,
-        frontComponent: payload.frontComponent,
-        frontIcon: payload.frontIcon,
-        type: payload.type,
-        permission: payload.permission,
-        sort: payload.sort || 99,
-        status: payload.status,
+        code: data.code,
+        name: data.name,
+        parentId: data.parentId,
+        description: data.description,
+        frontPath: data.frontPath,
+        frontComponent: data.frontComponent,
+        frontIcon: data.frontIcon,
+        type: data.type,
+        permission: data.permission,
+        sort: data.sort || 99,
+        status: data.status,
         createAt: new Date().toISOString().replace('T', ' ').slice(0, 19),
         createBy: 'admin',
         updateAt: new Date().toISOString().replace('T', ' ').slice(0, 19),
@@ -304,12 +304,12 @@ export default [
   {
     method: 'put',
     url: '/system/menus/:id',
-    handler: (params: { id: string }, payload: any): string => {
-      const index = mockMenus.findIndex(m => m.id === params.id)
+    handler: ({ pathParams, data }: { pathParams: Record<string, string>; data: any }): string => {
+      const index = mockMenus.findIndex(m => m.id === pathParams.id)
       if (index !== -1) {
         mockMenus[index] = {
           ...mockMenus[index],
-          ...payload,
+          ...data,
           updateAt: new Date().toISOString().replace('T', ' ').slice(0, 19),
           updateBy: 'admin',
         }
@@ -323,10 +323,10 @@ export default [
   {
     method: 'post',
     url: '/system/menus/:id/status',
-    handler: (params: { id: string }, payload: { status: number }): void => {
-      const menu = mockMenus.find(m => m.id === params.id)
+    handler: ({ pathParams, data }: { pathParams: Record<string, string>; data: { status: number } }): void => {
+      const menu = mockMenus.find(m => m.id === pathParams.id)
       if (menu) {
-        menu.status = payload.status
+        menu.status = data.status
         menu.updateAt = new Date().toISOString().replace('T', ' ').slice(0, 19)
         menu.updateBy = 'admin'
       }
@@ -337,8 +337,8 @@ export default [
   {
     method: 'delete',
     url: '/system/menus/:id',
-    handler: (params: { id: string }): void => {
-      const index = mockMenus.findIndex(m => m.id === params.id)
+    handler: ({ pathParams }: { pathParams: Record<string, string> }): void => {
+      const index = mockMenus.findIndex(m => m.id === pathParams.id)
       if (index !== -1) {
         mockMenus.splice(index, 1)
       }
@@ -349,8 +349,8 @@ export default [
   {
     method: 'delete',
     url: '/system/menus',
-    handler: (params: { ids: string[] }): void => {
-      for (const id of params.ids) {
+    handler: ({ data }: { data: { ids: string[] } }): void => {
+      for (const id of data.ids) {
         const index = mockMenus.findIndex(m => m.id === id)
         if (index !== -1) {
           mockMenus.splice(index, 1)

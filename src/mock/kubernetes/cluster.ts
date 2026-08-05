@@ -28,38 +28,39 @@ export default [
   {
     method: 'get',
     url: '/kubernetes/clusters',
-    handler: (params: Partial<ClusterQueryForm>): PageVo<ClusterListVo> => getClusterList(params),
+    handler: ({ params }: { params: Partial<ClusterQueryForm> }): PageVo<ClusterListVo> => getClusterList(params),
   },
   {
     method: 'get',
     url: '/kubernetes/clusters/:uid',
-    handler: (pathParams: Record<string, string>): ClusterDetailVo => getClusterDetail(pathParams.uid),
+    handler: ({ pathParams }: { pathParams: Record<string, string> }): ClusterDetailVo =>
+      getClusterDetail(pathParams.uid),
   },
   {
     method: 'post',
     url: '/kubernetes/clusters',
-    handler: (data: Partial<ClusterCreateForm>): void => createCluster(data),
+    handler: ({ data }: { data: Partial<ClusterCreateForm> }): void => createCluster(data),
   },
   {
     method: 'post',
     url: '/kubernetes/clusters/register',
-    handler: (data: Partial<ClusterRegisterForm>): void => registerCluster(data),
+    handler: ({ data }: { data: Partial<ClusterRegisterForm> }): void => registerCluster(data),
   },
   {
     method: 'put',
     url: '/kubernetes/clusters/:uid',
-    handler: (pathParams: Record<string, string>, data: Partial<ClusterCreateForm>): void =>
+    handler: ({ pathParams, data }: { pathParams: Record<string, string>; data: Partial<ClusterCreateForm> }): void =>
       updateCluster(pathParams.uid, data),
   },
   {
     method: 'delete',
     url: '/kubernetes/clusters/:uid',
-    handler: (pathParams: Record<string, string>): void => deleteCluster(pathParams.uid),
+    handler: ({ pathParams }: { pathParams: Record<string, string> }): void => deleteCluster(pathParams.uid),
   },
   {
     method: 'delete',
     url: '/kubernetes/clusters/batch',
-    handler: (data: string[]): void => deleteClusters(data),
+    handler: ({ data }: { data: string[] }): void => deleteClusters(data),
   },
 ]
 
@@ -71,8 +72,6 @@ export default [
 function getClusterList(params: Partial<ClusterQueryForm>): PageVo<ClusterListVo> {
   const { uid, name, status, page = 1, pageSize = 10 } = params || {}
 
-  console.log('getClusterList', params)
-
   let filtered = [...mockClusters]
 
   if (status) {
@@ -83,7 +82,6 @@ function getClusterList(params: Partial<ClusterQueryForm>): PageVo<ClusterListVo
     let searchFiltered: ClusterListVo[] = []
     if (uid) {
       searchFiltered = [...searchFiltered, ...filtered.filter(n => n.uid === uid)]
-      console.log(searchFiltered)
     }
     if (name) {
       searchFiltered = [...searchFiltered, ...filtered.filter(n => n.name.toLowerCase().includes(name.toLowerCase()))]

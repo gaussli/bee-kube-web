@@ -201,7 +201,6 @@ const currentTargetRow = ref<ClusterListVo | null>(null)
 async function loadData() {
   loading.value = true
   try {
-    console.log('request::;:', queryForm)
     const resp = await getClusterList({
       ...queryForm,
       page: pagination.page,

@@ -60,127 +60,127 @@ export default [
   {
     method: 'get',
     url: '/kubernetes/clusters/:clusterId/statefulsets',
-    handler: (pathParams: Record<string, string>, params: Partial<StatefulSetQueryForm>): PageVo<StatefulSetListVo> =>
+    handler: ({ pathParams, params }: { pathParams: Record<string, string>; params: Partial<StatefulSetQueryForm> }): PageVo<StatefulSetListVo> =>
       getStatefulSetList(pathParams.clusterId, params),
   },
   {
     method: 'get',
     url: '/kubernetes/clusters/:clusterId/namespaces/:namespace/statefulsets/:name',
-    handler: (pathParams: Record<string, string>): StatefulSetDetailVo =>
+    handler: ({ pathParams }: { pathParams: Record<string, string> }): StatefulSetDetailVo =>
       getStatefulSetDetail(pathParams.clusterId, pathParams.namespace, pathParams.name),
   },
   {
     method: 'get',
     url: '/kubernetes/clusters/:clusterId/namespaces/:namespace/statefulsets/:name/pods',
-    handler: (pathParams: Record<string, string>): StatefulSetPodListVo[] =>
+    handler: ({ pathParams }: { pathParams: Record<string, string> }): StatefulSetPodListVo[] =>
       getStatefulSetPodList(pathParams.clusterId, pathParams.namespace, pathParams.name),
   },
   {
     method: 'get',
     url: '/kubernetes/clusters/:clusterId/namespaces/:namespace/statefulsets/:name/schedule',
-    handler: (pathParams: Record<string, string>): StatefulSetScheduleVo =>
+    handler: ({ pathParams }: { pathParams: Record<string, string> }): StatefulSetScheduleVo =>
       getStatefulSetSchedule(pathParams.clusterId, pathParams.namespace, pathParams.name),
   },
   {
     method: 'get',
     url: '/kubernetes/clusters/:clusterId/namespaces/:namespace/statefulsets/:name/history',
-    handler: (pathParams: Record<string, string>): StatefulSetHistoryRevisionListVo[] =>
+    handler: ({ pathParams }: { pathParams: Record<string, string> }): StatefulSetHistoryRevisionListVo[] =>
       getStatefulSetHistoryRevisionList(pathParams.clusterId, pathParams.namespace, pathParams.name),
   },
   {
     method: 'get',
     url: '/kubernetes/clusters/:clusterId/namespaces/:namespace/statefulsets/:name/network',
-    handler: (pathParams: Record<string, string>): StatefulSetNetworkVo =>
+    handler: ({ pathParams }: { pathParams: Record<string, string> }): StatefulSetNetworkVo =>
       getStatefulSetNetwork(pathParams.clusterId, pathParams.namespace, pathParams.name),
   },
   {
     method: 'get',
     url: '/kubernetes/clusters/:clusterId/namespaces/:namespace/statefulsets/:name/storages',
-    handler: (pathParams: Record<string, string>): StatefulSetStorageListVo[] =>
+    handler: ({ pathParams }: { pathParams: Record<string, string> }): StatefulSetStorageListVo[] =>
       getStatefulSetStorageList(pathParams.clusterId, pathParams.namespace, pathParams.name),
   },
   {
     method: 'get',
     url: '/kubernetes/clusters/:clusterId/namespaces/:namespace/statefulsets/:name/monitor',
-    handler: (pathParams: Record<string, string>): StatefulSetMonitorVo =>
+    handler: ({ pathParams }: { pathParams: Record<string, string> }): StatefulSetMonitorVo =>
       getStatefulSetMonitor(pathParams.clusterId, pathParams.namespace, pathParams.name),
   },
   {
     method: 'get',
     url: '/kubernetes/clusters/:clusterId/namespaces/:namespace/statefulsets/:name/events',
-    handler: (pathParams: Record<string, string>): StatefulSetEventListVo[] =>
+    handler: ({ pathParams }: { pathParams: Record<string, string> }): StatefulSetEventListVo[] =>
       getStatefulSetEventList(pathParams.clusterId, pathParams.namespace, pathParams.name),
   },
   {
     method: 'get',
     url: '/kubernetes/clusters/:clusterId/namespaces/:namespace/statefulsets/:name/yaml',
-    handler: (pathParams: Record<string, string>): string =>
+    handler: ({ pathParams }: { pathParams: Record<string, string> }): string =>
       getStatefulSetYaml(pathParams.clusterId, pathParams.namespace, pathParams.name),
   },
   {
     method: 'post',
     url: '/kubernetes/clusters/:clusterId/namespaces/:namespace/statefulsets',
-    handler: (pathParams: Record<string, string>, data: StatefulSetCreateForm): void =>
+    handler: ({ pathParams, data }: { pathParams: Record<string, string>; data: StatefulSetCreateForm }): void =>
       createStatefulSet(pathParams.clusterId, pathParams.namespace, data),
   },
   {
     method: 'put',
     url: '/kubernetes/clusters/:clusterId/namespaces/:namespace/statefulsets/:name',
-    handler: (pathParams: Record<string, string>, data: Partial<StatefulSetUpdateForm>): void =>
+    handler: ({ pathParams, data }: { pathParams: Record<string, string>; data: Partial<StatefulSetUpdateForm> }): void =>
       updateStatefulSet(pathParams.clusterId, pathParams.namespace, pathParams.name, data),
   },
   {
     method: 'post',
     url: '/kubernetes/clusters/:clusterId/namespaces/:namespace/statefulsets/:name/labels',
-    handler: (pathParams: Record<string, string>, data: StatefulSetLabelForm): void =>
+    handler: ({ pathParams, data }: { pathParams: Record<string, string>; data: StatefulSetLabelForm }): void =>
       manageStatefulSetLabels(pathParams.clusterId, pathParams.namespace, pathParams.name, data),
   },
   {
     method: 'post',
     url: '/kubernetes/clusters/:clusterId/namespaces/:namespace/statefulsets/:name/annotations',
-    handler: (pathParams: Record<string, string>, data: StatefulSetAnnotationForm): void =>
+    handler: ({ pathParams, data }: { pathParams: Record<string, string>; data: StatefulSetAnnotationForm }): void =>
       manageStatefulSetAnnotations(pathParams.clusterId, pathParams.namespace, pathParams.name, data),
   },
   {
     method: 'delete',
     url: '/kubernetes/clusters/:clusterId/namespaces/:namespace/statefulsets/:name',
-    handler: (pathParams: Record<string, string>): void =>
+    handler: ({ pathParams }: { pathParams: Record<string, string> }): void =>
       deleteStatefulSet(pathParams.clusterId, pathParams.namespace, pathParams.name),
   },
   {
     method: 'delete',
     url: '/kubernetes/clusters/:clusterId/namespaces/:namespace/statefulsets/batch',
-    handler: (pathParams: Record<string, string>, data: string[]): void =>
+    handler: ({ pathParams, data }: { pathParams: Record<string, string>; data: string[] }): void =>
       deleteStatefulSets(pathParams.clusterId, pathParams.namespace, data),
   },
   {
     method: 'get',
     url: '/kubernetes/clusters/:clusterId/statefulsets/export',
-    handler: (pathParams: Record<string, string>, params: Partial<StatefulSetQueryForm>): void =>
+    handler: ({ pathParams, params }: { pathParams: Record<string, string>; params: Partial<StatefulSetQueryForm> }): void =>
       exportStatefulSet(pathParams.clusterId, params),
   },
   {
     method: 'post',
     url: '/kubernetes/clusters/:clusterId/statefulsets/import',
-    handler: (pathParams: Record<string, string>, data: StatefulSetYamlForm): void =>
+    handler: ({ pathParams, data }: { pathParams: Record<string, string>; data: StatefulSetYamlForm }): void =>
       importStatefulSet(pathParams.clusterId, data),
   },
   {
     method: 'post',
     url: '/kubernetes/clusters/:clusterId/namespaces/:namespace/statefulsets/:name/scale',
-    handler: (pathParams: Record<string, string>, data: StatefulSetScaleForm): void =>
+    handler: ({ pathParams, data }: { pathParams: Record<string, string>; data: StatefulSetScaleForm }): void =>
       scaleStatefulSet(pathParams.clusterId, pathParams.namespace, pathParams.name, data),
   },
   {
     method: 'post',
     url: '/kubernetes/clusters/:clusterId/namespaces/:namespace/statefulsets/:name/restart',
-    handler: (pathParams: Record<string, string>): void =>
+    handler: ({ pathParams }: { pathParams: Record<string, string> }): void =>
       restartStatefulSet(pathParams.clusterId, pathParams.namespace, pathParams.name),
   },
   {
     method: 'post',
     url: '/kubernetes/clusters/:clusterId/namespaces/:namespace/statefulsets/:name/rollback',
-    handler: (pathParams: Record<string, string>): void =>
+    handler: ({ pathParams }: { pathParams: Record<string, string> }): void =>
       rollbackStatefulSet(pathParams.clusterId, pathParams.namespace, pathParams.name),
   },
 ]

@@ -21,35 +21,35 @@ export default [
   {
     method: 'GET',
     url: '/kubernetes/clusters/:clusterId/crds',
-    handler: (pathParams: Record<string, string>, params: Partial<CrdQueryReq>): PageVo<CrdResp> =>
+    handler: ({ pathParams, params }: { pathParams: Record<string, string>; params: Partial<CrdQueryReq> }): PageVo<CrdResp> =>
       getCrdPage(pathParams.clusterId, params),
   },
   {
     method: 'GET',
     url: '/kubernetes/clusters/:clusterId/crds/:name',
-    handler: (pathParams: Record<string, string>): CrdResp => getCrdDetail(pathParams.clusterId, pathParams.name),
+    handler: ({ pathParams }: { pathParams: Record<string, string> }): CrdResp => getCrdDetail(pathParams.clusterId, pathParams.name),
   },
   {
     method: 'POST',
     url: '/kubernetes/clusters/:clusterId/crds/:name/labels',
-    handler: (pathParams: Record<string, string>, data: Partial<CrdLabelsReq>): void =>
+    handler: ({ pathParams, data }: { pathParams: Record<string, string>; data: Partial<CrdLabelsReq> }): void =>
       manageCrdLabels(pathParams.clusterId, pathParams.name, data),
   },
   {
     method: 'POST',
     url: '/kubernetes/clusters/:clusterId/crds/:name/annotations',
-    handler: (pathParams: Record<string, string>, data: Partial<CrdAnnotationsReq>): void =>
+    handler: ({ pathParams, data }: { pathParams: Record<string, string>; data: Partial<CrdAnnotationsReq> }): void =>
       manageCrdAnnotations(pathParams.clusterId, pathParams.name, data),
   },
   {
     method: 'DELETE',
     url: '/kubernetes/clusters/:clusterId/crds/:name',
-    handler: (pathParams: Record<string, string>): void => deleteCrd(pathParams.clusterId, pathParams.name),
+    handler: ({ pathParams }: { pathParams: Record<string, string> }): void => deleteCrd(pathParams.clusterId, pathParams.name),
   },
   {
     method: 'DELETE',
     url: '/kubernetes/clusters/:clusterId/crds',
-    handler: (pathParams: Record<string, string>, data: { names: string[] }): void =>
+    handler: ({ pathParams, data }: { pathParams: Record<string, string>; data: { names: string[] } }): void =>
       deleteCrds(pathParams.clusterId, data),
   },
 ]

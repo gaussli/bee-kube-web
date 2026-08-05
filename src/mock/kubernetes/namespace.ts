@@ -39,84 +39,81 @@ export default [
   {
     method: 'get',
     url: '/kubernetes/clusters/:clusterId/namespaces',
-    handler: (
-      pathParams: Record<string, string>,
-      params: Partial<NamespaceQueryReq>,
-    ): PageVo<NamespaceListResp> | NamespaceSimpleListResp[] => getNamespacePage(pathParams.clusterId, params),
+    handler: ({ pathParams, params }: { pathParams: Record<string, string>; params: Partial<NamespaceQueryReq> }): PageVo<NamespaceListResp> | NamespaceSimpleListResp[] => getNamespacePage(pathParams.clusterId, params),
   },
   {
     method: 'get',
     url: '/kubernetes/clusters/:clusterId/namespaces/:name',
-    handler: (pathParams: Record<string, string>): NamespaceDetailResp =>
+    handler: ({ pathParams }: { pathParams: Record<string, string> }): NamespaceDetailResp =>
       getNamespaceDetail(pathParams.clusterId, pathParams.name),
   },
   {
     method: 'get',
     url: '/kubernetes/clusters/:clusterId/namespaces/:name/yaml',
-    handler: (pathParams: Record<string, string>): string => getNamespaceYaml(pathParams.clusterId, pathParams.name),
+    handler: ({ pathParams }: { pathParams: Record<string, string> }): string => getNamespaceYaml(pathParams.clusterId, pathParams.name),
   },
   {
     method: 'post',
     url: '/kubernetes/clusters/:clusterId/namespaces',
-    handler: (pathParams: Record<string, string>, data: Partial<NamespaceReq>): void =>
+    handler: ({ pathParams, data }: { pathParams: Record<string, string>; data: Partial<NamespaceReq> }): void =>
       createNamespace(pathParams.clusterId, data),
   },
   {
     method: 'put',
     url: '/kubernetes/clusters/:clusterId/namespaces/:name',
-    handler: (pathParams: Record<string, string>, data: Partial<NamespaceReq>): void =>
+    handler: ({ pathParams, data }: { pathParams: Record<string, string>; data: Partial<NamespaceReq> }): void =>
       updateNamespace(pathParams.clusterId, pathParams.name, data),
   },
   {
     method: 'post',
     url: '/kubernetes/clusters/:clusterId/namespaces/:name/labels',
-    handler: (pathParams: Record<string, string>, data: Partial<NamespaceLabelsReq>): void =>
+    handler: ({ pathParams, data }: { pathParams: Record<string, string>; data: Partial<NamespaceLabelsReq> }): void =>
       manageNamespaceLabels(pathParams.clusterId, pathParams.name, data),
   },
   {
     method: 'post',
     url: '/kubernetes/clusters/:clusterId/namespaces/:name/annotations',
-    handler: (pathParams: Record<string, string>, data: Partial<NamespaceAnnotationsReq>): void =>
+    handler: ({ pathParams, data }: { pathParams: Record<string, string>; data: Partial<NamespaceAnnotationsReq> }): void =>
       manageNamespaceAnnotations(pathParams.clusterId, pathParams.name, data),
   },
   {
     method: 'delete',
     url: '/kubernetes/clusters/:clusterId/namespaces/:name',
-    handler: (pathParams: Record<string, string>): void => deleteNamespace(pathParams.clusterId, pathParams.name),
+    handler: ({ pathParams }: { pathParams: Record<string, string> }): void => deleteNamespace(pathParams.clusterId, pathParams.name),
   },
   {
     method: 'delete',
     url: '/kubernetes/clusters/:clusterId/namespaces/batch',
-    handler: (pathParams: Record<string, string>, data: string[]): void => deleteNamespaces(pathParams.clusterId, data),
+    handler: ({ pathParams, data }: { pathParams: Record<string, string>; data: string[] }): void => deleteNamespaces(pathParams.clusterId, data),
   },
   {
     method: 'get',
     url: '/kubernetes/clusters/:clusterId/namespaces/export',
-    handler: (pathParams: Record<string, string>, params: Partial<NamespaceQueryReq>): void =>
+    handler: ({ pathParams, params }: { pathParams: Record<string, string>; params: Partial<NamespaceQueryReq> }): void =>
       exportNamespaces(pathParams.clusterId, params),
   },
   {
     method: 'post',
     url: '/kubernetes/clusters/:clusterId/namespaces/import',
-    handler: (pathParams: Record<string, string>, data: Partial<NamespaceImportReq>): void =>
+    handler: ({ pathParams, data }: { pathParams: Record<string, string>; data: Partial<NamespaceImportReq> }): void =>
       importNamespaces(pathParams.clusterId, data),
   },
   {
     method: 'post',
     url: '/kubernetes/clusters/:clusterId/namespaces/:name/quota',
-    handler: (pathParams: Record<string, string>, data: Partial<NamespaceQuotaReq>): void =>
+    handler: ({ pathParams, data }: { pathParams: Record<string, string>; data: Partial<NamespaceQuotaReq> }): void =>
       createNamespaceQuota(pathParams.clusterId, pathParams.name, data),
   },
   {
     method: 'put',
     url: '/kubernetes/clusters/:clusterId/namespaces/:name/quota',
-    handler: (pathParams: Record<string, string>, data: Partial<NamespaceQuotaReq>): void =>
+    handler: ({ pathParams, data }: { pathParams: Record<string, string>; data: Partial<NamespaceQuotaReq> }): void =>
       updateNamespaceQuota(pathParams.clusterId, pathParams.name, data),
   },
   {
     method: 'delete',
     url: '/kubernetes/clusters/:clusterId/namespaces/:name/quota',
-    handler: (pathParams: Record<string, string>): void => deleteNamespaceQuota(pathParams.clusterId, pathParams.name),
+    handler: ({ pathParams }: { pathParams: Record<string, string> }): void => deleteNamespaceQuota(pathParams.clusterId, pathParams.name),
   },
 ]
 

@@ -176,7 +176,7 @@ export default [
   {
     method: 'get',
     url: '/system/roles',
-    handler: (params: RoleQueryReq): PageVo<RoleResp> => {
+    handler: ({ params }: { params: RoleQueryReq }): PageVo<RoleResp> => {
       let filtered = [...mockRoles]
 
       // 按 ID 精确搜索
@@ -219,8 +219,8 @@ export default [
   {
     method: 'get',
     url: '/system/roles/:id',
-    handler: (params: { id: string }): RoleDetailResp | undefined => {
-      return getRoleDetail(params.id)
+    handler: ({ pathParams }: { pathParams: Record<string, string> }): RoleDetailResp | undefined => {
+      return getRoleDetail(pathParams.id)
     },
   },
 
@@ -228,14 +228,14 @@ export default [
   {
     method: 'post',
     url: '/system/roles',
-    handler: (payload: any): string => {
+    handler: ({ data }: { data: any }): string => {
       const newRole: RoleResp = {
         id: generateId(),
-        code: payload.code,
-        name: payload.name,
-        description: payload.description,
-        sort: payload.sort || 99,
-        status: payload.status,
+        code: data.code,
+        name: data.name,
+        description: data.description,
+        sort: data.sort || 99,
+        status: data.status,
         createAt: new Date().toISOString().replace('T', ' ').slice(0, 19),
         createBy: 'admin',
         updateAt: new Date().toISOString().replace('T', ' ').slice(0, 19),
@@ -250,12 +250,12 @@ export default [
   {
     method: 'put',
     url: '/system/roles/:id',
-    handler: (params: { id: string }, payload: any): string => {
-      const index = mockRoles.findIndex(r => r.id === params.id)
+    handler: ({ pathParams, data }: { pathParams: Record<string, string>; data: any }): string => {
+      const index = mockRoles.findIndex(r => r.id === pathParams.id)
       if (index !== -1) {
         mockRoles[index] = {
           ...mockRoles[index],
-          ...payload,
+          ...data,
           updateAt: new Date().toISOString().replace('T', ' ').slice(0, 19),
           updateBy: 'admin',
         }
@@ -269,10 +269,10 @@ export default [
   {
     method: 'post',
     url: '/system/roles/:id/status',
-    handler: (params: { id: string }, payload: { status: number }): void => {
-      const role = mockRoles.find(r => r.id === params.id)
+    handler: ({ pathParams, data }: { pathParams: Record<string, string>; data: { status: number } }): void => {
+      const role = mockRoles.find(r => r.id === pathParams.id)
       if (role) {
-        role.status = payload.status
+        role.status = data.status
         role.updateAt = new Date().toISOString().replace('T', ' ').slice(0, 19)
         role.updateBy = 'admin'
       }
@@ -283,8 +283,8 @@ export default [
   {
     method: 'delete',
     url: '/system/roles/:id',
-    handler: (params: { id: string }): void => {
-      const index = mockRoles.findIndex(r => r.id === params.id)
+    handler: ({ pathParams }: { pathParams: Record<string, string> }): void => {
+      const index = mockRoles.findIndex(r => r.id === pathParams.id)
       if (index !== -1) {
         mockRoles.splice(index, 1)
       }
@@ -295,8 +295,8 @@ export default [
   {
     method: 'delete',
     url: '/system/roles',
-    handler: (params: { ids: string[] }): void => {
-      mockRoles = mockRoles.filter(r => !params.ids.includes(r.id))
+    handler: ({ data }: { data: { ids: string[] } }): void => {
+      mockRoles = mockRoles.filter(r => !data.ids.includes(r.id))
     },
   },
 ]

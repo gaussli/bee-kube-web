@@ -244,35 +244,32 @@ export default [
   {
     method: 'get',
     url: '/kubernetes/clusters/:clusterId/namespaces/:namespaceName/rolebindings',
-    handler: (pathParams: Record<string, string>, params: Partial<RoleBindingQueryReq>) =>
+    handler: ({ pathParams, params }: { pathParams: Record<string, string>; params: Partial<RoleBindingQueryReq> }) =>
       getRoleBindingPage(pathParams.clusterId, pathParams.namespaceName, params),
   },
   {
     method: 'get',
     url: '/kubernetes/clusters/:clusterId/namespaces/:namespaceName/rolebindings/:name',
-    handler: (pathParams: Record<string, string>) =>
+    handler: ({ pathParams }: { pathParams: Record<string, string> }) =>
       getRoleBindingDetail(pathParams.clusterId, pathParams.namespaceName, pathParams.name),
   },
   {
     method: 'post',
     url: '/kubernetes/clusters/:clusterId/namespaces/:namespaceName/rolebindings',
-    handler: (pathParams: Record<string, string>, _params: unknown, data: Partial<RoleBindingReq>) =>
+    handler: ({ pathParams, data }: { pathParams: Record<string, string>; data: Partial<RoleBindingReq> }) =>
       createRoleBinding(pathParams.clusterId, data),
   },
   {
     method: 'put',
     url: '/kubernetes/clusters/:clusterId/namespaces/:namespaceName/rolebindings/:name',
-    handler: (pathParams: Record<string, string>, _params: unknown, data: Partial<RoleBindingReq>) =>
+    handler: ({ pathParams, data }: { pathParams: Record<string, string>; data: Partial<RoleBindingReq> }) =>
       updateRoleBinding(pathParams.clusterId, data),
   },
   {
     method: 'put',
     url: '/kubernetes/clusters/:clusterId/namespaces/:namespaceName/rolebindings/:name/labels',
-    handler: (
-      pathParams: Record<string, string>,
-      _params: unknown,
-      data: { labels: Record<string, string>; operation: number },
-    ) =>
+    handler: ({ pathParams, data }: { pathParams: Record<string, string>; data: { labels: Record<string, string>; operation: number },
+     }) =>
       manageRoleBindingLabels(
         pathParams.clusterId,
         pathParams.namespaceName,
@@ -284,11 +281,8 @@ export default [
   {
     method: 'put',
     url: '/kubernetes/clusters/:clusterId/namespaces/:namespaceName/rolebindings/:name/annotations',
-    handler: (
-      pathParams: Record<string, string>,
-      _params: unknown,
-      data: { annotations: Record<string, string>; operation: number },
-    ) =>
+    handler: ({ pathParams, data }: { pathParams: Record<string, string>; data: { annotations: Record<string, string>; operation: number },
+     }) =>
       manageRoleBindingAnnotations(
         pathParams.clusterId,
         pathParams.namespaceName,
@@ -300,11 +294,8 @@ export default [
   {
     method: 'put',
     url: '/kubernetes/clusters/:clusterId/namespaces/:namespaceName/rolebindings/:name/subjects',
-    handler: (
-      pathParams: Record<string, string>,
-      _params: unknown,
-      data: { subjects: RoleBindingReq['subjects']; operation: number },
-    ) =>
+    handler: ({ pathParams, data }: { pathParams: Record<string, string>; data: { subjects: RoleBindingReq['subjects']; operation: number },
+     }) =>
       manageRoleBindingSubjects(
         pathParams.clusterId,
         pathParams.namespaceName,
@@ -316,13 +307,13 @@ export default [
   {
     method: 'delete',
     url: '/kubernetes/clusters/:clusterId/namespaces/:namespaceName/rolebindings/:name',
-    handler: (pathParams: Record<string, string>) =>
+    handler: ({ pathParams }: { pathParams: Record<string, string> }) =>
       deleteRoleBinding(pathParams.clusterId, pathParams.namespaceName, pathParams.name),
   },
   {
     method: 'delete',
     url: '/kubernetes/clusters/:clusterId/namespaces/:namespaceName/rolebindings',
-    handler: (pathParams: Record<string, string>, _params: unknown, data: string[]) =>
+    handler: ({ pathParams, data }: { pathParams: Record<string, string>; data: string[] }) =>
       deleteRoleBindings(pathParams.clusterId, pathParams.namespaceName, data),
   },
 ]

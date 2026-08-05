@@ -203,59 +203,53 @@ export default [
   {
     method: 'get',
     url: '/kubernetes/clusters/:clusterId/clusterroles',
-    handler: (pathParams: Record<string, string>, params: Partial<ClusterRoleQueryReq>) =>
+    handler: ({ pathParams, params }: { pathParams: Record<string, string>; params: Partial<ClusterRoleQueryReq> }) =>
       getClusterRolePage(pathParams.clusterId, params),
   },
   {
     method: 'get',
     url: '/kubernetes/clusters/:clusterId/clusterroles/:name',
-    handler: (pathParams: Record<string, string>) => getClusterRoleDetail(pathParams.clusterId, pathParams.name),
+    handler: ({ pathParams }: { pathParams: Record<string, string> }) => getClusterRoleDetail(pathParams.clusterId, pathParams.name),
   },
   {
     method: 'post',
     url: '/kubernetes/clusters/:clusterId/clusterroles',
-    handler: (pathParams: Record<string, string>, _params: unknown, data: Partial<ClusterRoleReq>) =>
+    handler: ({ pathParams, data }: { pathParams: Record<string, string>; data: Partial<ClusterRoleReq> }) =>
       createClusterRole(pathParams.clusterId, data),
   },
   {
     method: 'put',
     url: '/kubernetes/clusters/:clusterId/clusterroles/:name',
-    handler: (pathParams: Record<string, string>, _params: unknown, data: Partial<ClusterRoleReq>) =>
+    handler: ({ pathParams, data }: { pathParams: Record<string, string>; data: Partial<ClusterRoleReq> }) =>
       updateClusterRole(pathParams.clusterId, data),
   },
   {
     method: 'put',
     url: '/kubernetes/clusters/:clusterId/clusterroles/:name/labels',
-    handler: (
-      pathParams: Record<string, string>,
-      _params: unknown,
-      data: { labels: Record<string, string>; operation: number },
-    ) => manageClusterRoleLabels(pathParams.clusterId, pathParams.name, data.labels, data.operation),
+    handler: ({ pathParams, data }: { pathParams: Record<string, string>; data: { labels: Record<string, string>; operation: number },
+     }) => manageClusterRoleLabels(pathParams.clusterId, pathParams.name, data.labels, data.operation),
   },
   {
     method: 'put',
     url: '/kubernetes/clusters/:clusterId/clusterroles/:name/annotations',
-    handler: (
-      pathParams: Record<string, string>,
-      _params: unknown,
-      data: { annotations: Record<string, string>; operation: number },
-    ) => manageClusterRoleAnnotations(pathParams.clusterId, pathParams.name, data.annotations, data.operation),
+    handler: ({ pathParams, data }: { pathParams: Record<string, string>; data: { annotations: Record<string, string>; operation: number },
+     }) => manageClusterRoleAnnotations(pathParams.clusterId, pathParams.name, data.annotations, data.operation),
   },
   {
     method: 'put',
     url: '/kubernetes/clusters/:clusterId/clusterroles/:name/rules',
-    handler: (pathParams: Record<string, string>, _params: unknown, data: { rules: ClusterRoleReq['rules'] }) =>
+    handler: ({ pathParams, data }: { pathParams: Record<string, string>; data: { rules: ClusterRoleReq['rules'] } }) =>
       updateClusterRoleRules(pathParams.clusterId, pathParams.name, data.rules),
   },
   {
     method: 'delete',
     url: '/kubernetes/clusters/:clusterId/clusterroles/:name',
-    handler: (pathParams: Record<string, string>) => deleteClusterRole(pathParams.clusterId, pathParams.name),
+    handler: ({ pathParams }: { pathParams: Record<string, string> }) => deleteClusterRole(pathParams.clusterId, pathParams.name),
   },
   {
     method: 'delete',
     url: '/kubernetes/clusters/:clusterId/clusterroles',
-    handler: (pathParams: Record<string, string>, _params: unknown, data: string[]) =>
+    handler: ({ pathParams, data }: { pathParams: Record<string, string>; data: string[] }) =>
       deleteClusterRoles(pathParams.clusterId, data),
   },
 ]

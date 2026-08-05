@@ -210,45 +210,39 @@ export default [
   {
     method: 'get',
     url: '/kubernetes/clusters/:clusterId/namespaces/:namespaceName/services',
-    handler: (pathParams: Record<string, string>, params: Partial<ServiceQueryReq>) =>
+    handler: ({ pathParams, params }: { pathParams: Record<string, string>; params: Partial<ServiceQueryReq> }) =>
       getServicePage(pathParams.clusterId, pathParams.namespaceName, params),
   },
   {
     method: 'get',
     url: '/kubernetes/clusters/:clusterId/namespaces/:namespaceName/services/:name',
-    handler: (pathParams: Record<string, string>) =>
+    handler: ({ pathParams }: { pathParams: Record<string, string> }) =>
       getServiceDetail(pathParams.clusterId, pathParams.namespaceName, pathParams.name),
   },
   {
     method: 'post',
     url: '/kubernetes/clusters/:clusterId/namespaces/:namespaceName/services',
-    handler: (pathParams: Record<string, string>, _params: unknown, data: Partial<ServiceReq>) =>
+    handler: ({ pathParams, data }: { pathParams: Record<string, string>; data: Partial<ServiceReq> }) =>
       createService(pathParams.clusterId, data),
   },
   {
     method: 'put',
     url: '/kubernetes/clusters/:clusterId/namespaces/:namespaceName/services/:name',
-    handler: (pathParams: Record<string, string>, _params: unknown, data: Partial<ServiceReq>) =>
+    handler: ({ pathParams, data }: { pathParams: Record<string, string>; data: Partial<ServiceReq> }) =>
       updateService(pathParams.clusterId, data),
   },
   {
     method: 'put',
     url: '/kubernetes/clusters/:clusterId/namespaces/:namespaceName/services/:name/labels',
-    handler: (
-      pathParams: Record<string, string>,
-      _params: unknown,
-      data: { labels: Record<string, string>; operation: number },
-    ) =>
+    handler: ({ pathParams, data }: { pathParams: Record<string, string>; data: { labels: Record<string, string>; operation: number },
+     }) =>
       manageServiceLabels(pathParams.clusterId, pathParams.namespaceName, pathParams.name, data.labels, data.operation),
   },
   {
     method: 'put',
     url: '/kubernetes/clusters/:clusterId/namespaces/:namespaceName/services/:name/annotations',
-    handler: (
-      pathParams: Record<string, string>,
-      _params: unknown,
-      data: { annotations: Record<string, string>; operation: number },
-    ) =>
+    handler: ({ pathParams, data }: { pathParams: Record<string, string>; data: { annotations: Record<string, string>; operation: number },
+     }) =>
       manageServiceAnnotations(
         pathParams.clusterId,
         pathParams.namespaceName,
@@ -260,13 +254,13 @@ export default [
   {
     method: 'delete',
     url: '/kubernetes/clusters/:clusterId/namespaces/:namespaceName/services/:name',
-    handler: (pathParams: Record<string, string>) =>
+    handler: ({ pathParams }: { pathParams: Record<string, string> }) =>
       deleteService(pathParams.clusterId, pathParams.namespaceName, pathParams.name),
   },
   {
     method: 'delete',
     url: '/kubernetes/clusters/:clusterId/namespaces/:namespaceName/services',
-    handler: (pathParams: Record<string, string>, _params: unknown, data: string[]) =>
+    handler: ({ pathParams, data }: { pathParams: Record<string, string>; data: string[] }) =>
       deleteServices(pathParams.clusterId, pathParams.namespaceName, data),
   },
 ]

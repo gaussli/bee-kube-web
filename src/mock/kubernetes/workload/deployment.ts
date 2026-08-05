@@ -59,124 +59,121 @@ export default [
   {
     method: 'get',
     url: '/kubernetes/clusters/:clusterId/deployments',
-    handler: (pathParams: Record<string, string>, params: Partial<DeploymentQueryForm>): PageVo<DeploymentListVo> =>
+    handler: ({ pathParams, params }: { pathParams: Record<string, string>; params: Partial<DeploymentQueryForm> }): PageVo<DeploymentListVo> =>
       getDeploymentList(pathParams.clusterId, params),
   },
   {
     method: 'get',
     url: '/kubernetes/clusters/:clusterId/namespaces/:namespace/deployments/:name',
-    handler: (pathParams: Record<string, string>): DeploymentDetailVo =>
+    handler: ({ pathParams }: { pathParams: Record<string, string> }): DeploymentDetailVo =>
       getDeploymentDetail(pathParams.clusterId, pathParams.namespace, pathParams.name),
   },
   {
     method: 'get',
     url: '/kubernetes/clusters/:clusterId/namespaces/:namespace/deployments/:name/pods',
-    handler: (
-      pathParams: Record<string, string>,
-      params: Partial<DeploymentPodQueryForm>,
-    ): PageVo<DeploymentPodListVo> =>
+    handler: ({ pathParams, params }: { pathParams: Record<string, string>; params: Partial<DeploymentPodQueryForm>, }): PageVo<DeploymentPodListVo> =>
       getDeploymentPodList(pathParams.clusterId, pathParams.namespace, pathParams.name, params),
   },
   {
     method: 'get',
     url: '/kubernetes/clusters/:clusterId/namespaces/:namespace/deployments/:name/schedule',
-    handler: (pathParams: Record<string, string>): DeploymentScheduleVo =>
+    handler: ({ pathParams }: { pathParams: Record<string, string> }): DeploymentScheduleVo =>
       getDeploymentSchedule(pathParams.clusterId, pathParams.namespace, pathParams.name),
   },
   {
     method: 'get',
     url: '/kubernetes/clusters/:clusterId/namespaces/:namespace/deployments/:name/history',
-    handler: (pathParams: Record<string, string>): DeploymentHistoryRevisionListVo[] =>
+    handler: ({ pathParams }: { pathParams: Record<string, string> }): DeploymentHistoryRevisionListVo[] =>
       getDeploymentHistoryRevisionList(pathParams.clusterId, pathParams.namespace, pathParams.name),
   },
   {
     method: 'get',
     url: '/kubernetes/clusters/:clusterId/namespaces/:namespace/deployments/:name/network',
-    handler: (pathParams: Record<string, string>): DeploymentNetworkVo =>
+    handler: ({ pathParams }: { pathParams: Record<string, string> }): DeploymentNetworkVo =>
       getDeploymentNetwork(pathParams.clusterId, pathParams.namespace, pathParams.name),
   },
   {
     method: 'get',
     url: '/kubernetes/clusters/:clusterId/namespaces/:namespace/deployments/:name/storages',
-    handler: (pathParams: Record<string, string>): DeploymentStorageListVo[] =>
+    handler: ({ pathParams }: { pathParams: Record<string, string> }): DeploymentStorageListVo[] =>
       getDeploymentStorageList(pathParams.clusterId, pathParams.namespace, pathParams.name),
   },
   {
     method: 'get',
     url: '/kubernetes/clusters/:clusterId/namespaces/:namespace/deployments/:name/monitor',
-    handler: (pathParams: Record<string, string>): DeploymentMonitorVo =>
+    handler: ({ pathParams }: { pathParams: Record<string, string> }): DeploymentMonitorVo =>
       getDeploymentMonitor(pathParams.clusterId, pathParams.namespace, pathParams.name),
   },
   {
     method: 'get',
     url: '/kubernetes/clusters/:clusterId/namespaces/:namespace/deployments/:name/yaml',
-    handler: (pathParams: Record<string, string>): string =>
+    handler: ({ pathParams }: { pathParams: Record<string, string> }): string =>
       getDeploymentYaml(pathParams.clusterId, pathParams.namespace, pathParams.name),
   },
   {
     method: 'post',
     url: '/kubernetes/clusters/:clusterId/namespaces/:namespace/deployments',
-    handler: (pathParams: Record<string, string>, data: DeploymentCreateForm): void =>
+    handler: ({ pathParams, data }: { pathParams: Record<string, string>; data: DeploymentCreateForm }): void =>
       createDeployment(pathParams.clusterId, pathParams.namespace, data),
   },
   {
     method: 'put',
     url: '/kubernetes/clusters/:clusterId/namespaces/:namespace/deployments/:name',
-    handler: (pathParams: Record<string, string>, data: Partial<DeploymentUpdateForm>): void =>
+    handler: ({ pathParams, data }: { pathParams: Record<string, string>; data: Partial<DeploymentUpdateForm> }): void =>
       updateDeployment(pathParams.clusterId, pathParams.namespace, pathParams.name, data),
   },
   {
     method: 'post',
     url: '/kubernetes/clusters/:clusterId/namespaces/:namespace/deployments/:name/labels',
-    handler: (pathParams: Record<string, string>, data: DeploymentLabelForm): void =>
+    handler: ({ pathParams, data }: { pathParams: Record<string, string>; data: DeploymentLabelForm }): void =>
       manageDeploymentLabels(pathParams.clusterId, pathParams.namespace, pathParams.name, data),
   },
   {
     method: 'post',
     url: '/kubernetes/clusters/:clusterId/namespaces/:namespace/deployments/:name/annotations',
-    handler: (pathParams: Record<string, string>, data: DeploymentAnnotationForm): void =>
+    handler: ({ pathParams, data }: { pathParams: Record<string, string>; data: DeploymentAnnotationForm }): void =>
       manageDeploymentAnnotations(pathParams.clusterId, pathParams.namespace, pathParams.name, data),
   },
   {
     method: 'delete',
     url: '/kubernetes/clusters/:clusterId/namespaces/:namespace/deployments/:name',
-    handler: (pathParams: Record<string, string>): void =>
+    handler: ({ pathParams }: { pathParams: Record<string, string> }): void =>
       deleteDeployment(pathParams.clusterId, pathParams.namespace, pathParams.name),
   },
   {
     method: 'delete',
     url: '/kubernetes/clusters/:clusterId/namespaces/:namespace/deployments/batch',
-    handler: (pathParams: Record<string, string>, data: string[]): void =>
+    handler: ({ pathParams, data }: { pathParams: Record<string, string>; data: string[] }): void =>
       deleteDeployments(pathParams.clusterId, pathParams.namespace, data),
   },
   {
     method: 'get',
     url: '/kubernetes/clusters/:clusterId/deployments/export',
-    handler: (pathParams: Record<string, string>, params: Partial<DeploymentQueryForm>): void =>
+    handler: ({ pathParams, params }: { pathParams: Record<string, string>; params: Partial<DeploymentQueryForm> }): void =>
       exportDeployment(pathParams.clusterId, params),
   },
   {
     method: 'post',
     url: '/kubernetes/clusters/:clusterId/deployments/import',
-    handler: (pathParams: Record<string, string>, data: DeploymentYamlForm): void =>
+    handler: ({ pathParams, data }: { pathParams: Record<string, string>; data: DeploymentYamlForm }): void =>
       importDeployment(pathParams.clusterId, data),
   },
   {
     method: 'post',
     url: '/kubernetes/clusters/:clusterId/namespaces/:namespace/deployments/:name/scale',
-    handler: (pathParams: Record<string, string>, data: DeploymentScaleForm): void =>
+    handler: ({ pathParams, data }: { pathParams: Record<string, string>; data: DeploymentScaleForm }): void =>
       scaleDeployment(pathParams.clusterId, pathParams.namespace, pathParams.name, data),
   },
   {
     method: 'post',
     url: '/kubernetes/clusters/:clusterId/namespaces/:namespace/deployments/:name/restart',
-    handler: (pathParams: Record<string, string>): void =>
+    handler: ({ pathParams }: { pathParams: Record<string, string> }): void =>
       restartDeployment(pathParams.clusterId, pathParams.namespace, pathParams.name),
   },
   {
     method: 'post',
     url: '/kubernetes/clusters/:clusterId/namespaces/:namespace/deployments/:name/rollback',
-    handler: (pathParams: Record<string, string>): void =>
+    handler: ({ pathParams }: { pathParams: Record<string, string> }): void =>
       rollbackDeployment(pathParams.clusterId, pathParams.namespace, pathParams.name),
   },
 ]

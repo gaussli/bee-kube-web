@@ -222,62 +222,53 @@ export default [
   {
     method: 'get',
     url: '/kubernetes/clusters/:clusterId/clusterrolebindings',
-    handler: (pathParams: Record<string, string>, params: Partial<ClusterRoleBindingQueryReq>) =>
+    handler: ({ pathParams, params }: { pathParams: Record<string, string>; params: Partial<ClusterRoleBindingQueryReq> }) =>
       getClusterRoleBindingPage(pathParams.clusterId, params),
   },
   {
     method: 'get',
     url: '/kubernetes/clusters/:clusterId/clusterrolebindings/:name',
-    handler: (pathParams: Record<string, string>) => getClusterRoleBindingDetail(pathParams.clusterId, pathParams.name),
+    handler: ({ pathParams }: { pathParams: Record<string, string> }) => getClusterRoleBindingDetail(pathParams.clusterId, pathParams.name),
   },
   {
     method: 'post',
     url: '/kubernetes/clusters/:clusterId/clusterrolebindings',
-    handler: (pathParams: Record<string, string>, _params: unknown, data: Partial<ClusterRoleBindingReq>) =>
+    handler: ({ pathParams, data }: { pathParams: Record<string, string>; data: Partial<ClusterRoleBindingReq> }) =>
       createClusterRoleBinding(pathParams.clusterId, data),
   },
   {
     method: 'put',
     url: '/kubernetes/clusters/:clusterId/clusterrolebindings/:name',
-    handler: (pathParams: Record<string, string>, _params: unknown, data: Partial<ClusterRoleBindingReq>) =>
+    handler: ({ pathParams, data }: { pathParams: Record<string, string>; data: Partial<ClusterRoleBindingReq> }) =>
       updateClusterRoleBinding(pathParams.clusterId, data),
   },
   {
     method: 'put',
     url: '/kubernetes/clusters/:clusterId/clusterrolebindings/:name/labels',
-    handler: (
-      pathParams: Record<string, string>,
-      _params: unknown,
-      data: { labels: Record<string, string>; operation: number },
-    ) => manageClusterRoleBindingLabels(pathParams.clusterId, pathParams.name, data.labels, data.operation),
+    handler: ({ pathParams, data }: { pathParams: Record<string, string>; data: { labels: Record<string, string>; operation: number },
+     }) => manageClusterRoleBindingLabels(pathParams.clusterId, pathParams.name, data.labels, data.operation),
   },
   {
     method: 'put',
     url: '/kubernetes/clusters/:clusterId/clusterrolebindings/:name/annotations',
-    handler: (
-      pathParams: Record<string, string>,
-      _params: unknown,
-      data: { annotations: Record<string, string>; operation: number },
-    ) => manageClusterRoleBindingAnnotations(pathParams.clusterId, pathParams.name, data.annotations, data.operation),
+    handler: ({ pathParams, data }: { pathParams: Record<string, string>; data: { annotations: Record<string, string>; operation: number },
+     }) => manageClusterRoleBindingAnnotations(pathParams.clusterId, pathParams.name, data.annotations, data.operation),
   },
   {
     method: 'put',
     url: '/kubernetes/clusters/:clusterId/clusterrolebindings/:name/subjects',
-    handler: (
-      pathParams: Record<string, string>,
-      _params: unknown,
-      data: { subjects: ClusterRoleBindingReq['subjects']; operation: number },
-    ) => manageClusterRoleBindingSubjects(pathParams.clusterId, pathParams.name, data.subjects, data.operation),
+    handler: ({ pathParams, data }: { pathParams: Record<string, string>; data: { subjects: ClusterRoleBindingReq['subjects']; operation: number },
+     }) => manageClusterRoleBindingSubjects(pathParams.clusterId, pathParams.name, data.subjects, data.operation),
   },
   {
     method: 'delete',
     url: '/kubernetes/clusters/:clusterId/clusterrolebindings/:name',
-    handler: (pathParams: Record<string, string>) => deleteClusterRoleBinding(pathParams.clusterId, pathParams.name),
+    handler: ({ pathParams }: { pathParams: Record<string, string> }) => deleteClusterRoleBinding(pathParams.clusterId, pathParams.name),
   },
   {
     method: 'delete',
     url: '/kubernetes/clusters/:clusterId/clusterrolebindings',
-    handler: (pathParams: Record<string, string>, _params: unknown, data: string[]) =>
+    handler: ({ pathParams, data }: { pathParams: Record<string, string>; data: string[] }) =>
       deleteClusterRoleBindings(pathParams.clusterId, data),
   },
 ]

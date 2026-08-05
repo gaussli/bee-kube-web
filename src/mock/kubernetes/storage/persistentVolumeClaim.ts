@@ -211,35 +211,32 @@ export default [
   {
     method: 'get',
     url: '/kubernetes/clusters/:clusterId/namespaces/:namespaceName/persistentvolumeclaims',
-    handler: (pathParams: Record<string, string>, params: Partial<PersistentVolumeClaimQueryReq>) =>
+    handler: ({ pathParams, params }: { pathParams: Record<string, string>; params: Partial<PersistentVolumeClaimQueryReq> }) =>
       getPersistentVolumeClaimPage(pathParams.clusterId, pathParams.namespaceName, params),
   },
   {
     method: 'get',
     url: '/kubernetes/clusters/:clusterId/namespaces/:namespaceName/persistentvolumeclaims/:name',
-    handler: (pathParams: Record<string, string>) =>
+    handler: ({ pathParams }: { pathParams: Record<string, string> }) =>
       getPersistentVolumeClaimDetail(pathParams.clusterId, pathParams.namespaceName, pathParams.name),
   },
   {
     method: 'post',
     url: '/kubernetes/clusters/:clusterId/namespaces/:namespaceName/persistentvolumeclaims',
-    handler: (pathParams: Record<string, string>, _params: unknown, data: Partial<PersistentVolumeClaimReq>) =>
+    handler: ({ pathParams, data }: { pathParams: Record<string, string>; data: Partial<PersistentVolumeClaimReq> }) =>
       createPersistentVolumeClaim(pathParams.clusterId, data),
   },
   {
     method: 'put',
     url: '/kubernetes/clusters/:clusterId/namespaces/:namespaceName/persistentvolumeclaims/:name',
-    handler: (pathParams: Record<string, string>, _params: unknown, data: Partial<PersistentVolumeClaimReq>) =>
+    handler: ({ pathParams, data }: { pathParams: Record<string, string>; data: Partial<PersistentVolumeClaimReq> }) =>
       updatePersistentVolumeClaim(pathParams.clusterId, data),
   },
   {
     method: 'put',
     url: '/kubernetes/clusters/:clusterId/namespaces/:namespaceName/persistentvolumeclaims/:name/labels',
-    handler: (
-      pathParams: Record<string, string>,
-      _params: unknown,
-      data: { labels: Record<string, string>; operation: number },
-    ) =>
+    handler: ({ pathParams, data }: { pathParams: Record<string, string>; data: { labels: Record<string, string>; operation: number },
+     }) =>
       managePersistentVolumeClaimLabels(
         pathParams.clusterId,
         pathParams.namespaceName,
@@ -251,11 +248,8 @@ export default [
   {
     method: 'put',
     url: '/kubernetes/clusters/:clusterId/namespaces/:namespaceName/persistentvolumeclaims/:name/annotations',
-    handler: (
-      pathParams: Record<string, string>,
-      _params: unknown,
-      data: { annotations: Record<string, string>; operation: number },
-    ) =>
+    handler: ({ pathParams, data }: { pathParams: Record<string, string>; data: { annotations: Record<string, string>; operation: number },
+     }) =>
       managePersistentVolumeClaimAnnotations(
         pathParams.clusterId,
         pathParams.namespaceName,
@@ -267,13 +261,13 @@ export default [
   {
     method: 'delete',
     url: '/kubernetes/clusters/:clusterId/namespaces/:namespaceName/persistentvolumeclaims/:name',
-    handler: (pathParams: Record<string, string>) =>
+    handler: ({ pathParams }: { pathParams: Record<string, string> }) =>
       deletePersistentVolumeClaim(pathParams.clusterId, pathParams.namespaceName, pathParams.name),
   },
   {
     method: 'delete',
     url: '/kubernetes/clusters/:clusterId/namespaces/:namespaceName/persistentvolumeclaims',
-    handler: (pathParams: Record<string, string>, _params: unknown, data: string[]) =>
+    handler: ({ pathParams, data }: { pathParams: Record<string, string>; data: string[] }) =>
       deletePersistentVolumeClaims(pathParams.clusterId, pathParams.namespaceName, data),
   },
 ]

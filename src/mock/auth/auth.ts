@@ -404,7 +404,7 @@ export default [
   {
     method: 'post',
     url: '/auth/login',
-    handler: (payload: any) => login(payload),
+    handler: ({ data }: { data: any }) => login(data),
   },
   {
     method: 'post',

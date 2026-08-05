@@ -208,45 +208,39 @@ export default [
   {
     method: 'get',
     url: '/kubernetes/clusters/:clusterId/namespaces/:namespaceName/ingresses',
-    handler: (pathParams: Record<string, string>, params: Partial<IngressQueryReq>) =>
+    handler: ({ pathParams, params }: { pathParams: Record<string, string>; params: Partial<IngressQueryReq> }) =>
       getIngressPage(pathParams.clusterId, pathParams.namespaceName, params),
   },
   {
     method: 'get',
     url: '/kubernetes/clusters/:clusterId/namespaces/:namespaceName/ingresses/:name',
-    handler: (pathParams: Record<string, string>) =>
+    handler: ({ pathParams }: { pathParams: Record<string, string> }) =>
       getIngressDetail(pathParams.clusterId, pathParams.namespaceName, pathParams.name),
   },
   {
     method: 'post',
     url: '/kubernetes/clusters/:clusterId/namespaces/:namespaceName/ingresses',
-    handler: (pathParams: Record<string, string>, _params: unknown, data: Partial<IngressReq>) =>
+    handler: ({ pathParams, data }: { pathParams: Record<string, string>; data: Partial<IngressReq> }) =>
       createIngress(pathParams.clusterId, data),
   },
   {
     method: 'put',
     url: '/kubernetes/clusters/:clusterId/namespaces/:namespaceName/ingresses/:name',
-    handler: (pathParams: Record<string, string>, _params: unknown, data: Partial<IngressReq>) =>
+    handler: ({ pathParams, data }: { pathParams: Record<string, string>; data: Partial<IngressReq> }) =>
       updateIngress(pathParams.clusterId, data),
   },
   {
     method: 'put',
     url: '/kubernetes/clusters/:clusterId/namespaces/:namespaceName/ingresses/:name/labels',
-    handler: (
-      pathParams: Record<string, string>,
-      _params: unknown,
-      data: { labels: Record<string, string>; operation: number },
-    ) =>
+    handler: ({ pathParams, data }: { pathParams: Record<string, string>; data: { labels: Record<string, string>; operation: number },
+     }) =>
       manageIngressLabels(pathParams.clusterId, pathParams.namespaceName, pathParams.name, data.labels, data.operation),
   },
   {
     method: 'put',
     url: '/kubernetes/clusters/:clusterId/namespaces/:namespaceName/ingresses/:name/annotations',
-    handler: (
-      pathParams: Record<string, string>,
-      _params: unknown,
-      data: { annotations: Record<string, string>; operation: number },
-    ) =>
+    handler: ({ pathParams, data }: { pathParams: Record<string, string>; data: { annotations: Record<string, string>; operation: number },
+     }) =>
       manageIngressAnnotations(
         pathParams.clusterId,
         pathParams.namespaceName,
@@ -258,13 +252,13 @@ export default [
   {
     method: 'delete',
     url: '/kubernetes/clusters/:clusterId/namespaces/:namespaceName/ingresses/:name',
-    handler: (pathParams: Record<string, string>) =>
+    handler: ({ pathParams }: { pathParams: Record<string, string> }) =>
       deleteIngress(pathParams.clusterId, pathParams.namespaceName, pathParams.name),
   },
   {
     method: 'delete',
     url: '/kubernetes/clusters/:clusterId/namespaces/:namespaceName/ingresses',
-    handler: (pathParams: Record<string, string>, _params: unknown, data: string[]) =>
+    handler: ({ pathParams, data }: { pathParams: Record<string, string>; data: string[] }) =>
       deleteIngresses(pathParams.clusterId, pathParams.namespaceName, data),
   },
 ]

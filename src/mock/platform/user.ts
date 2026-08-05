@@ -708,6 +708,6 @@ export default [
   {
     method: 'get',
     url: '/system/users',
-    handler: (params: any) => getUserPage(params),
+    handler: ({ params }: { params: any }) => getUserPage(params),
   },
 ]

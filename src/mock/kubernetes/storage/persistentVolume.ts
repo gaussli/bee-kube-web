@@ -143,41 +143,35 @@ export default [
   {
     method: 'get',
     url: '/kubernetes/clusters/:clusterId/persistentvolumes',
-    handler: (pathParams: Record<string, string>, params: Partial<PersistentVolumeQueryReq>) =>
+    handler: ({ pathParams, params }: { pathParams: Record<string, string>; params: Partial<PersistentVolumeQueryReq> }) =>
       getPersistentVolumePage(pathParams.clusterId, params),
   },
   {
     method: 'get',
     url: '/kubernetes/clusters/:clusterId/persistentvolumes/:name',
-    handler: (pathParams: Record<string, string>) => getPersistentVolumeDetail(pathParams.clusterId, pathParams.name),
+    handler: ({ pathParams }: { pathParams: Record<string, string> }) => getPersistentVolumeDetail(pathParams.clusterId, pathParams.name),
   },
   {
     method: 'put',
     url: '/kubernetes/clusters/:clusterId/persistentvolumes/:name/labels',
-    handler: (
-      pathParams: Record<string, string>,
-      _params: unknown,
-      data: { labels: Record<string, string>; operation: number },
-    ) => managePersistentVolumeLabels(pathParams.clusterId, pathParams.name, data.labels, data.operation),
+    handler: ({ pathParams, data }: { pathParams: Record<string, string>; data: { labels: Record<string, string>; operation: number },
+     }) => managePersistentVolumeLabels(pathParams.clusterId, pathParams.name, data.labels, data.operation),
   },
   {
     method: 'put',
     url: '/kubernetes/clusters/:clusterId/persistentvolumes/:name/annotations',
-    handler: (
-      pathParams: Record<string, string>,
-      _params: unknown,
-      data: { annotations: Record<string, string>; operation: number },
-    ) => managePersistentVolumeAnnotations(pathParams.clusterId, pathParams.name, data.annotations, data.operation),
+    handler: ({ pathParams, data }: { pathParams: Record<string, string>; data: { annotations: Record<string, string>; operation: number },
+     }) => managePersistentVolumeAnnotations(pathParams.clusterId, pathParams.name, data.annotations, data.operation),
   },
   {
     method: 'delete',
     url: '/kubernetes/clusters/:clusterId/persistentvolumes/:name',
-    handler: (pathParams: Record<string, string>) => deletePersistentVolume(pathParams.clusterId, pathParams.name),
+    handler: ({ pathParams }: { pathParams: Record<string, string> }) => deletePersistentVolume(pathParams.clusterId, pathParams.name),
   },
   {
     method: 'delete',
     url: '/kubernetes/clusters/:clusterId/persistentvolumes',
-    handler: (pathParams: Record<string, string>, _params: unknown, data: string[]) =>
+    handler: ({ pathParams, data }: { pathParams: Record<string, string>; data: string[] }) =>
       deletePersistentVolumes(pathParams.clusterId, data),
   },
 ]

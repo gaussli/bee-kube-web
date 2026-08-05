@@ -1,9 +1,19 @@
 import type { AxiosRequestConfig, AxiosResponse, InternalAxiosRequestConfig } from 'axios'
 
+/** Mock handler 上下文对象 */
+export interface MockContext {
+  /** 路径参数（如 :id、:clusterId） */
+  pathParams: Record<string, string>
+  /** URL 查询参数 */
+  params: any
+  /** 请求体数据 */
+  data: any
+}
+
 interface MockHandler {
   method: string
   url: string
-  handler: (pathParams: Record<string, string>, params: any, data: any) => any
+  handler: (ctx: MockContext) => any
 }
 
 const mockHandlers: MockHandler[] = []
@@ -60,8 +70,6 @@ function extractParams(url: string, regex: RegExp, paramNames: string[]): Record
 export async function mockRequest(config: AxiosRequestConfig): Promise<AxiosResponse> {
   const { method, url, data, params } = config
 
-  console.log('mock:::', params)
-
   // 模拟延迟
   await new Promise(r => setTimeout(r, mockDelay))
 
@@ -72,7 +80,7 @@ export async function mockRequest(config: AxiosRequestConfig): Promise<AxiosResp
     const { regex, paramNames } = pathToRegex(mock.url)
     if (mock.method === methodLower && regex.test(url as string)) {
       const pathParams = extractParams(url as string, regex, paramNames)
-      const mockData = mock.handler(pathParams, params, data)
+      const mockData = mock.handler({ pathParams, params, data })
       return {
         data: { code: 20000, message: 'success', data: mockData },
         status: 200,

@@ -250,35 +250,32 @@ export default [
   {
     method: 'get',
     url: '/kubernetes/clusters/:clusterId/namespaces/:namespaceName/serviceaccounts',
-    handler: (pathParams: Record<string, string>, params: Partial<ServiceAccountQueryReq>) =>
+    handler: ({ pathParams, params }: { pathParams: Record<string, string>; params: Partial<ServiceAccountQueryReq> }) =>
       getServiceAccountPage(pathParams.clusterId, pathParams.namespaceName, params),
   },
   {
     method: 'get',
     url: '/kubernetes/clusters/:clusterId/namespaces/:namespaceName/serviceaccounts/:name',
-    handler: (pathParams: Record<string, string>) =>
+    handler: ({ pathParams }: { pathParams: Record<string, string> }) =>
       getServiceAccountDetail(pathParams.clusterId, pathParams.namespaceName, pathParams.name),
   },
   {
     method: 'post',
     url: '/kubernetes/clusters/:clusterId/namespaces/:namespaceName/serviceaccounts',
-    handler: (pathParams: Record<string, string>, _params: unknown, data: Partial<ServiceAccountReq>) =>
+    handler: ({ pathParams, data }: { pathParams: Record<string, string>; data: Partial<ServiceAccountReq> }) =>
       createServiceAccount(pathParams.clusterId, data),
   },
   {
     method: 'put',
     url: '/kubernetes/clusters/:clusterId/namespaces/:namespaceName/serviceaccounts/:name',
-    handler: (pathParams: Record<string, string>, _params: unknown, data: Partial<ServiceAccountReq>) =>
+    handler: ({ pathParams, data }: { pathParams: Record<string, string>; data: Partial<ServiceAccountReq> }) =>
       updateServiceAccount(pathParams.clusterId, data),
   },
   {
     method: 'put',
     url: '/kubernetes/clusters/:clusterId/namespaces/:namespaceName/serviceaccounts/:name/labels',
-    handler: (
-      pathParams: Record<string, string>,
-      _params: unknown,
-      data: { labels: Record<string, string>; operation: number },
-    ) =>
+    handler: ({ pathParams, data }: { pathParams: Record<string, string>; data: { labels: Record<string, string>; operation: number },
+     }) =>
       manageServiceAccountLabels(
         pathParams.clusterId,
         pathParams.namespaceName,
@@ -290,11 +287,8 @@ export default [
   {
     method: 'put',
     url: '/kubernetes/clusters/:clusterId/namespaces/:namespaceName/serviceaccounts/:name/annotations',
-    handler: (
-      pathParams: Record<string, string>,
-      _params: unknown,
-      data: { annotations: Record<string, string>; operation: number },
-    ) =>
+    handler: ({ pathParams, data }: { pathParams: Record<string, string>; data: { annotations: Record<string, string>; operation: number },
+     }) =>
       manageServiceAccountAnnotations(
         pathParams.clusterId,
         pathParams.namespaceName,
@@ -306,11 +300,8 @@ export default [
   {
     method: 'put',
     url: '/kubernetes/clusters/:clusterId/namespaces/:namespaceName/serviceaccounts/:name/imagepullsecrets',
-    handler: (
-      pathParams: Record<string, string>,
-      _params: unknown,
-      data: { imagePullSecrets: string[]; operation: number },
-    ) =>
+    handler: ({ pathParams, data }: { pathParams: Record<string, string>; data: { imagePullSecrets: string[]; operation: number },
+     }) =>
       manageServiceAccountImagePullSecrets(
         pathParams.clusterId,
         pathParams.namespaceName,
@@ -322,13 +313,13 @@ export default [
   {
     method: 'delete',
     url: '/kubernetes/clusters/:clusterId/namespaces/:namespaceName/serviceaccounts/:name',
-    handler: (pathParams: Record<string, string>) =>
+    handler: ({ pathParams }: { pathParams: Record<string, string> }) =>
       deleteServiceAccount(pathParams.clusterId, pathParams.namespaceName, pathParams.name),
   },
   {
     method: 'delete',
     url: '/kubernetes/clusters/:clusterId/namespaces/:namespaceName/serviceaccounts',
-    handler: (pathParams: Record<string, string>, _params: unknown, data: string[]) =>
+    handler: ({ pathParams, data }: { pathParams: Record<string, string>; data: string[] }) =>
       deleteServiceAccounts(pathParams.clusterId, pathParams.namespaceName, data),
   },
 ]

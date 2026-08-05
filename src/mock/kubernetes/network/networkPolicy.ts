@@ -214,35 +214,32 @@ export default [
   {
     method: 'get',
     url: '/kubernetes/clusters/:clusterId/namespaces/:namespaceName/networkpolicies',
-    handler: (pathParams: Record<string, string>, params: Partial<NetworkPolicyQueryReq>) =>
+    handler: ({ pathParams, params }: { pathParams: Record<string, string>; params: Partial<NetworkPolicyQueryReq> }) =>
       getNetworkPolicyPage(pathParams.clusterId, pathParams.namespaceName, params),
   },
   {
     method: 'get',
     url: '/kubernetes/clusters/:clusterId/namespaces/:namespaceName/networkpolicies/:name',
-    handler: (pathParams: Record<string, string>) =>
+    handler: ({ pathParams }: { pathParams: Record<string, string> }) =>
       getNetworkPolicyDetail(pathParams.clusterId, pathParams.namespaceName, pathParams.name),
   },
   {
     method: 'post',
     url: '/kubernetes/clusters/:clusterId/namespaces/:namespaceName/networkpolicies',
-    handler: (pathParams: Record<string, string>, _params: unknown, data: Partial<NetworkPolicyReq>) =>
+    handler: ({ pathParams, data }: { pathParams: Record<string, string>; data: Partial<NetworkPolicyReq> }) =>
       createNetworkPolicy(pathParams.clusterId, data),
   },
   {
     method: 'put',
     url: '/kubernetes/clusters/:clusterId/namespaces/:namespaceName/networkpolicies/:name',
-    handler: (pathParams: Record<string, string>, _params: unknown, data: Partial<NetworkPolicyReq>) =>
+    handler: ({ pathParams, data }: { pathParams: Record<string, string>; data: Partial<NetworkPolicyReq> }) =>
       updateNetworkPolicy(pathParams.clusterId, data),
   },
   {
     method: 'put',
     url: '/kubernetes/clusters/:clusterId/namespaces/:namespaceName/networkpolicies/:name/labels',
-    handler: (
-      pathParams: Record<string, string>,
-      _params: unknown,
-      data: { labels: Record<string, string>; operation: number },
-    ) =>
+    handler: ({ pathParams, data }: { pathParams: Record<string, string>; data: { labels: Record<string, string>; operation: number },
+     }) =>
       manageNetworkPolicyLabels(
         pathParams.clusterId,
         pathParams.namespaceName,
@@ -254,11 +251,8 @@ export default [
   {
     method: 'put',
     url: '/kubernetes/clusters/:clusterId/namespaces/:namespaceName/networkpolicies/:name/annotations',
-    handler: (
-      pathParams: Record<string, string>,
-      _params: unknown,
-      data: { annotations: Record<string, string>; operation: number },
-    ) =>
+    handler: ({ pathParams, data }: { pathParams: Record<string, string>; data: { annotations: Record<string, string>; operation: number },
+     }) =>
       manageNetworkPolicyAnnotations(
         pathParams.clusterId,
         pathParams.namespaceName,
@@ -270,13 +264,13 @@ export default [
   {
     method: 'delete',
     url: '/kubernetes/clusters/:clusterId/namespaces/:namespaceName/networkpolicies/:name',
-    handler: (pathParams: Record<string, string>) =>
+    handler: ({ pathParams }: { pathParams: Record<string, string> }) =>
       deleteNetworkPolicy(pathParams.clusterId, pathParams.namespaceName, pathParams.name),
   },
   {
     method: 'delete',
     url: '/kubernetes/clusters/:clusterId/namespaces/:namespaceName/networkpolicies',
-    handler: (pathParams: Record<string, string>, _params: unknown, data: string[]) =>
+    handler: ({ pathParams, data }: { pathParams: Record<string, string>; data: string[] }) =>
       deleteNetworkPolicys(pathParams.clusterId, pathParams.namespaceName, data),
   },
 ]

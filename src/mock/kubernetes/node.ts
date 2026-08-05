@@ -34,59 +34,59 @@ export default [
   {
     method: 'get',
     url: '/kubernetes/clusters/:clusterId/nodes',
-    handler: (pathParams: Record<string, string>, params: Partial<NodeQueryReq>): PageVo<NodeListResp> =>
+    handler: ({ pathParams, params }: { pathParams: Record<string, string>; params: Partial<NodeQueryReq> }): PageVo<NodeListResp> =>
       getNodePage(pathParams.clusterId, params),
   },
   {
     method: 'get',
     url: '/kubernetes/clusters/:clusterId/nodes/topn',
-    handler: (pathParams: Record<string, string>, params: Partial<{ metric: string; count: number }>): NodeListResp[] =>
+    handler: ({ pathParams, params }: { pathParams: Record<string, string>; params: Partial<{ metric: string; count: number }> }): NodeListResp[] =>
       getNodeTopN(pathParams.clusterId, params),
   },
   {
     method: 'get',
     url: '/kubernetes/clusters/:clusterId/nodes/:name',
-    handler: (pathParams: Record<string, string>): NodeListResp => getNodeDetail(pathParams.clusterId, pathParams.name),
+    handler: ({ pathParams }: { pathParams: Record<string, string> }): NodeListResp => getNodeDetail(pathParams.clusterId, pathParams.name),
   },
   {
     method: 'get',
     url: '/kubernetes/clusters/:clusterId/nodes/:name/resource',
-    handler: (pathParams: Record<string, string>): NodeResourceVo =>
+    handler: ({ pathParams }: { pathParams: Record<string, string> }): NodeResourceVo =>
       getNodeResource(pathParams.clusterId, pathParams.name),
   },
   {
     method: 'put',
     url: '/kubernetes/clusters/:clusterId/nodes/:name',
-    handler: (pathParams: Record<string, string>, data: Partial<NodeReq>): void =>
+    handler: ({ pathParams, data }: { pathParams: Record<string, string>; data: Partial<NodeReq> }): void =>
       updateNode(pathParams.clusterId, pathParams.name, data),
   },
   {
     method: 'post',
     url: '/kubernetes/clusters/:clusterId/nodes/:name/drain',
-    handler: (pathParams: Record<string, string>): void => drainNode(pathParams.clusterId, pathParams.name),
+    handler: ({ pathParams }: { pathParams: Record<string, string> }): void => drainNode(pathParams.clusterId, pathParams.name),
   },
   {
     method: 'post',
     url: '/kubernetes/clusters/:clusterId/nodes/:name/cordon',
-    handler: (pathParams: Record<string, string>, data: NodeCordonReq): void =>
+    handler: ({ pathParams, data }: { pathParams: Record<string, string>; data: NodeCordonReq }): void =>
       cordonNode(pathParams.clusterId, pathParams.name, data),
   },
   {
     method: 'post',
     url: '/kubernetes/clusters/:clusterId/nodes/:name/labels',
-    handler: (pathParams: Record<string, string>, data: Partial<NodeLabelsReq>): void =>
+    handler: ({ pathParams, data }: { pathParams: Record<string, string>; data: Partial<NodeLabelsReq> }): void =>
       manageNodeLabels(pathParams.clusterId, pathParams.name, data),
   },
   {
     method: 'post',
     url: '/kubernetes/clusters/:clusterId/nodes/:name/annotations',
-    handler: (pathParams: Record<string, string>, data: Partial<NodeAnnotationsReq>): void =>
+    handler: ({ pathParams, data }: { pathParams: Record<string, string>; data: Partial<NodeAnnotationsReq> }): void =>
       manageNodeAnnotations(pathParams.clusterId, pathParams.name, data),
   },
   {
     method: 'post',
     url: '/kubernetes/clusters/:clusterId/nodes/:name/taints',
-    handler: (pathParams: Record<string, string>, data: Partial<NodeTaintsReq>): void =>
+    handler: ({ pathParams, data }: { pathParams: Record<string, string>; data: Partial<NodeTaintsReq> }): void =>
       manageNodeTaints(pathParams.clusterId, pathParams.name, data),
   },
 ]
