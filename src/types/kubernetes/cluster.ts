@@ -4,6 +4,8 @@
  */
 import type { BaseEntity, DeletableEntity, PageForm, UidEntity } from '@/types/common'
 
+import type { ResourceVo } from './comomn'
+
 /**
  * 集群列表对象
  * @extends BaseEntity
@@ -43,6 +45,13 @@ export interface ClusterDetailVo extends BaseEntity, UidEntity, DeletableEntity 
   /** 证书过期时间 */
   certExpireAt: string
 }
+
+/**
+ * 集群资源用量响应对象
+ * @extends ResourceVo
+ * @remarks 描述集群级别的 CPU、内存、存储、Pod 四种资源的容量、可分配量及已用量
+ */
+export interface ClusterResourceVo extends ResourceVo {}
 
 /**
  * 集群查询表单

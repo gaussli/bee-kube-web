@@ -72,7 +72,7 @@ export function remove(id: string) {
  * @param ids
  */
 export function batchRemove(ids: string[]) {
-  return request.delete('/system/users', { ids })
+  return request.delete('/system/users', { data: { ids } })
 }
 
 // 分页查询用户关联的角色列表
@@ -92,7 +92,7 @@ export function getUserRoles(id: string, data: RoleQueryReq) {
  * @param roleIds
  */
 export function bindUserRoles(id: string, roleIds: string[]) {
-  return request.post<void>(`/system/users/${id}/roles`, { roleIds })
+  return request.post<void>(`/system/users/${id}/roles`, { data: { roleIds } })
 }
 
 // 批量解绑用户关联的角色
@@ -102,5 +102,5 @@ export function bindUserRoles(id: string, roleIds: string[]) {
  * @param roleIds
  */
 export function unbindUserRoles(id: string, roleIds: string[]) {
-  return request.delete<void>(`/system/users/${id}/roles`, { roleIds })
+  return request.delete<void>(`/system/users/${id}/roles`, { data: { roleIds } })
 }

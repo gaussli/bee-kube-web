@@ -96,7 +96,8 @@ function handleRefreshToken(headers: any) {
 
 // 封装请求方法
 export const request = {
-  get<T = any>(url: string, params?: object, data?: object, config?: AxiosRequestConfig): Promise<T> {
+  get<T = any>(url: string, options?: { params?: object; data?: object; config?: AxiosRequestConfig }): Promise<T> {
+    const { params, data, ...config } = options || {}
     return service.get(url, { params, data, ...config })
   },
 
@@ -108,12 +109,13 @@ export const request = {
     return service.put(url, data, config)
   },
 
-  delete<T = any>(url: string, params?: object, data?: object, config?: AxiosRequestConfig): Promise<T> {
-    return service.delete(url, { params, data, ...config })
-  },
-
   patch<T = any>(url: string, data?: object, config?: AxiosRequestConfig): Promise<T> {
     return service.patch(url, data, config)
+  },
+
+  delete<T = any>(url: string, options?: { params?: object; data?: object; config?: AxiosRequestConfig }): Promise<T> {
+    const { params, data, ...config } = options || {}
+    return service.delete(url, { params, data, ...config })
   },
 }
 

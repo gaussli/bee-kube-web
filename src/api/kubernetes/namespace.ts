@@ -29,7 +29,7 @@ export function getNamespacePage(
 ): Promise<PageVo<NamespaceListResp> | NamespaceSimpleListResp[]> {
   return request.get<PageVo<NamespaceListResp> | NamespaceSimpleListResp[]>(
     `/kubernetes/clusters/${clusterUid}/namespaces`,
-    params,
+    { params },
   )
 }
 
@@ -105,7 +105,7 @@ export function deleteNamespace(clusterUid: string, name: string): Promise<void>
  * @param names - 命名空间名称数组
  */
 export function deleteNamespaces(clusterUid: string, names: string[]): Promise<void> {
-  return request.delete(`/kubernetes/clusters/${clusterUid}/namespaces/batch`, names)
+  return request.delete(`/kubernetes/clusters/${clusterUid}/namespaces/batch`, { data: names })
 }
 
 /**
@@ -114,7 +114,10 @@ export function deleteNamespaces(clusterUid: string, names: string[]): Promise<v
  * @param params - 查询参数
  */
 export function exportNamespaces(clusterUid: string, params: Partial<NamespaceQueryReq>): Promise<void> {
-  return request.get(`/kubernetes/clusters/${clusterUid}/namespaces/export`, params, { responseType: 'blob' })
+  return request.get(`/kubernetes/clusters/${clusterUid}/namespaces/export`, {
+    params,
+    config: { responseType: 'blob' },
+  })
 }
 
 /**

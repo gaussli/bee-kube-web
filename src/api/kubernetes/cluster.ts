@@ -9,6 +9,7 @@ import type {
   ClusterQueryForm,
   ClusterRegisterForm,
   ClusterCreateForm,
+  ClusterResourceVo,
 } from '@/types/kubernetes/cluster'
 
 import { request } from '@/utils'
@@ -19,7 +20,7 @@ import { request } from '@/utils'
  * @returns 分页后的集群列表
  */
 export function getClusterList(params: Partial<ClusterQueryForm>): Promise<PageVo<ClusterListVo>> {
-  return request.get<PageVo<ClusterListVo>>('/kubernetes/clusters', params)
+  return request.get<PageVo<ClusterListVo>>('/kubernetes/clusters', { params })
 }
 
 /**
@@ -29,6 +30,15 @@ export function getClusterList(params: Partial<ClusterQueryForm>): Promise<PageV
  */
 export function getClusterDetail(uid: string): Promise<ClusterDetailVo> {
   return request.get<ClusterDetailVo>(`/kubernetes/clusters/${uid}`)
+}
+
+/**
+ * 获取集群资源用量
+ * @param uid - 集群 UID
+ * @returns 集群资源用量信息
+ */
+export function getClusterResource(uid: string): Promise<ClusterResourceVo> {
+  return request.get<ClusterResourceVo>(`/kubernetes/clusters/${uid}/resource`)
 }
 
 /**

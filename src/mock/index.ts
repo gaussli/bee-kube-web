@@ -2,7 +2,7 @@ import type { AxiosRequestConfig, AxiosResponse, InternalAxiosRequestConfig } fr
 
 /** Mock handler 上下文对象 */
 export interface MockContext {
-  /** 路径参数（如 :id、:clusterId） */
+  /** 路径参数（如 :id、:clusterUid） */
   pathParams: Record<string, string>
   /** URL 查询参数 */
   params: any

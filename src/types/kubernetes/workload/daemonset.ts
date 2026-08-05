@@ -44,8 +44,8 @@ export type DaemonSetUpdateStrategyType = 'RollingUpdate' | 'OnDelete'
 export interface DaemonSetListResp extends BaseEntity {
   /** 资源 UID */
   uid: string
-  /** 所属集群 ID */
-  clusterId: string
+  /** 所属集群 UID */
+  clusterUid: string
   /** 所属命名空间 */
   namespace: string
   /** DaemonSet 名称 */
@@ -73,8 +73,8 @@ export interface DaemonSetListResp extends BaseEntity {
 export interface DaemonSetDetailResp extends BaseEntity {
   /** 资源 UID */
   uid: string
-  /** 所属集群 ID */
-  clusterId: string
+  /** 所属集群 UID */
+  clusterUid: string
   /** 所属命名空间 */
   namespace: string
   /** DaemonSet 名称 */
@@ -112,8 +112,8 @@ export interface DaemonSetQueryReq extends PageForm {
   name: string
   /** 命名空间名称 */
   namespace: string
-  /** 集群 ID */
-  clusterId: string
+  /** 集群 UID */
+  clusterUid: string
   /** 状态 */
   status: string
 }

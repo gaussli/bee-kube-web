@@ -76,7 +76,7 @@ export function removeRole(id: string) {
  * @param ids
  */
 export function batchRemoveRoles(ids: string[]) {
-  return request.delete('/system/roles', { ids })
+  return request.delete('/system/roles', { data: { ids } })
 }
 
 // 获取角色关联的菜单列表
@@ -96,7 +96,7 @@ export function getRoleMenus(id: string, data: MenuQueryReq) {
  * @param menuIds
  */
 export function bindRoleMenus(id: string, menuIds: string[]) {
-  return request.post<void>(`/system/roles/${id}/menus`, { menuIds })
+  return request.post<void>(`/system/roles/${id}/menus`, { data: { menuIds } })
 }
 
 // 解绑角色关联的菜单
@@ -106,7 +106,7 @@ export function bindRoleMenus(id: string, menuIds: string[]) {
  * @param menuIds
  */
 export function unbindRoleMenus(id: string, menuIds: string[]) {
-  return request.delete<void>(`/system/roles/${id}/menus`, { menuIds })
+  return request.delete<void>(`/system/roles/${id}/menus`, { data: { menuIds } })
 }
 
 // 分页查询角色关联的用户列表
@@ -126,7 +126,7 @@ export function getRoleUsers(id: string, data: UserQueryReq) {
  * @param userIds
  */
 export function bindRoleUsers(id: string, userIds: string[]) {
-  return request.post<void>(`/system/roles/${id}/users`, { userIds })
+  return request.post<void>(`/system/roles/${id}/users`, { data: { userIds } })
 }
 
 // 解绑角色关联的用户
@@ -136,5 +136,5 @@ export function bindRoleUsers(id: string, userIds: string[]) {
  * @param userIds
  */
 export function unbindRoleUsers(id: string, userIds: string[]) {
-  return request.delete<void>(`/system/roles/${id}/users`, { userIds })
+  return request.delete<void>(`/system/roles/${id}/users`, { data: { userIds } })
 }

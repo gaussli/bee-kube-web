@@ -16,103 +16,103 @@ import { request } from '@/utils'
 
 /**
  * 获取 ClusterRoleBinding 分页列表
- * @param clusterId - 集群 ID
+ * @param clusterUid - 集群 UID
  * @param params - 查询参数
  * @returns 分页后的 ClusterRoleBinding 列表
  */
 export function getClusterRoleBindingPage(
-  clusterId: string,
+  clusterUid: string,
   params: Partial<ClusterRoleBindingQueryReq>,
 ): Promise<PageVo<ClusterRoleBindingResp>> {
-  return request.get(`/kubernetes/clusters/${clusterId}/clusterrolebindings`, { params })
+  return request.get(`/kubernetes/clusters/${clusterUid}/clusterrolebindings`, { params })
 }
 
 /**
  * 获取 ClusterRoleBinding 详情
- * @param clusterId - 集群 ID
+ * @param clusterUid - 集群 UID
  * @param name - ClusterRoleBinding 名称
  * @returns ClusterRoleBinding 详情
  */
-export function getClusterRoleBindingDetail(clusterId: string, name: string): Promise<ClusterRoleBindingResp> {
-  return request.get(`/kubernetes/clusters/${clusterId}/clusterrolebindings/${name}`)
+export function getClusterRoleBindingDetail(clusterUid: string, name: string): Promise<ClusterRoleBindingResp> {
+  return request.get(`/kubernetes/clusters/${clusterUid}/clusterrolebindings/${name}`)
 }
 
 /**
  * 创建 ClusterRoleBinding
- * @param clusterId - 集群 ID
+ * @param clusterUid - 集群 UID
  * @param data - 创建参数
  * @returns 创建的 ClusterRoleBinding ID
  */
-export function createClusterRoleBinding(clusterId: string, data: Partial<ClusterRoleBindingReq>): Promise<void> {
-  return request.post(`/kubernetes/clusters/${clusterId}/clusterrolebindings`, { data })
+export function createClusterRoleBinding(clusterUid: string, data: Partial<ClusterRoleBindingReq>): Promise<void> {
+  return request.post(`/kubernetes/clusters/${clusterUid}/clusterrolebindings`, { data })
 }
 
 /**
  * 更新 ClusterRoleBinding
- * @param clusterId - 集群 ID
+ * @param clusterUid - 集群 UID
  * @param data - 更新参数
  * @returns 更新的 ClusterRoleBinding ID
  */
-export function updateClusterRoleBinding(clusterId: string, data: Partial<ClusterRoleBindingReq>): Promise<void> {
-  return request.put(`/kubernetes/clusters/${clusterId}/clusterrolebindings/${data.name}`, { data })
+export function updateClusterRoleBinding(clusterUid: string, data: Partial<ClusterRoleBindingReq>): Promise<void> {
+  return request.put(`/kubernetes/clusters/${clusterUid}/clusterrolebindings/${data.name}`, { data })
 }
 
 /**
  * 更新 ClusterRoleBinding 标签
- * @param clusterId - 集群 ID
+ * @param clusterUid - 集群 UID
  * @param name - ClusterRoleBinding 名称
  * @param data - 标签更新参数
  */
 export function manageClusterRoleBindingLabels(
-  clusterId: string,
+  clusterUid: string,
   name: string,
   data: Partial<ClusterRoleBindingLabelsReq>,
 ): Promise<void> {
-  return request.put(`/kubernetes/clusters/${clusterId}/clusterrolebindings/${name}/labels`, { data })
+  return request.put(`/kubernetes/clusters/${clusterUid}/clusterrolebindings/${name}/labels`, { data })
 }
 
 /**
  * 更新 ClusterRoleBinding 注解
- * @param clusterId - 集群 ID
+ * @param clusterUid - 集群 UID
  * @param name - ClusterRoleBinding 名称
  * @param data - 注解更新参数
  */
 export function manageClusterRoleBindingAnnotations(
-  clusterId: string,
+  clusterUid: string,
   name: string,
   data: Partial<ClusterRoleBindingAnnotationsReq>,
 ): Promise<void> {
-  return request.put(`/kubernetes/clusters/${clusterId}/clusterrolebindings/${name}/annotations`, { data })
+  return request.put(`/kubernetes/clusters/${clusterUid}/clusterrolebindings/${name}/annotations`, { data })
 }
 
 /**
  * 更新 ClusterRoleBinding 主体
- * @param clusterId - 集群 ID
+ * @param clusterUid - 集群 UID
  * @param name - ClusterRoleBinding 名称
  * @param data - 主体更新参数
  */
 export function manageClusterRoleBindingSubjects(
-  clusterId: string,
+  clusterUid: string,
   name: string,
   data: Partial<ClusterRoleBindingSubjectsReq>,
 ): Promise<void> {
-  return request.put(`/kubernetes/clusters/${clusterId}/clusterrolebindings/${name}/subjects`, { data })
+  return request.put(`/kubernetes/clusters/${clusterUid}/clusterrolebindings/${name}/subjects`, { data })
 }
 
 /**
  * 删除 ClusterRoleBinding
- * @param clusterId - 集群 ID
+ * @param clusterUid - 集群 UID
  * @param name - ClusterRoleBinding 名称
  */
-export function deleteClusterRoleBinding(clusterId: string, name: string): Promise<void> {
-  return request.delete(`/kubernetes/clusters/${clusterId}/clusterrolebindings/${name}`)
+export function deleteClusterRoleBinding(clusterUid: string, name: string): Promise<void> {
+  return request.delete(`/kubernetes/clusters/${clusterUid}/clusterrolebindings/${name}`)
 }
 
 /**
  * 批量删除 ClusterRoleBinding
- * @param clusterId - 集群 ID
+ * @param clusterUid - 集群 UID
  * @param names - 待删除的 ClusterRoleBinding 名称列表
  */
-export function deleteClusterRoleBindings(clusterId: string, names: string[]): Promise<void> {
-  return request.delete(`/kubernetes/clusters/${clusterId}/clusterrolebindings`, { data: names })
+export function deleteClusterRoleBindings(clusterUid: string, names: string[]): Promise<void> {
+  return request.delete(`/kubernetes/clusters/${clusterUid}/clusterrolebindings`, { data: names })
 }

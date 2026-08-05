@@ -23,7 +23,7 @@ import { request } from '@/utils'
  * @returns 分页后的节点列表
  */
 export function getNodePage(clusterUid: string, params: Partial<NodeQueryReq>): Promise<PageVo<NodeListResp>> {
-  return request.get<PageVo<NodeListResp>>(`/kubernetes/clusters/${clusterUid}/nodes`, params)
+  return request.get<PageVo<NodeListResp>>(`/kubernetes/clusters/${clusterUid}/nodes`, { params })
 }
 
 /**

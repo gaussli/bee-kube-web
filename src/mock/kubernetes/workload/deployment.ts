@@ -34,153 +34,174 @@ import { generateId } from '@/mock/utils'
 /**
  * Deployment 路由配置
  * @remarks
- * - GET /kubernetes/clusters/:clusterId/deployments - 获取 Deployment 分页列表
- * - GET /kubernetes/clusters/:clusterId/namespaces/:namespace/deployments/:name - 获取 Deployment 详情
- * - GET /kubernetes/clusters/:clusterId/namespaces/:namespace/deployments/:name/pods - 获取 Pod 列表
- * - GET /kubernetes/clusters/:clusterId/namespaces/:namespace/deployments/:name/schedule - 获取调度策略
- * - GET /kubernetes/clusters/:clusterId/namespaces/:namespace/deployments/:name/history - 获取历史版本列表
- * - GET /kubernetes/clusters/:clusterId/namespaces/:namespace/deployments/:name/network - 获取网络资源
- * - GET /kubernetes/clusters/:clusterId/namespaces/:namespace/deployments/:name/storages - 获取存储列表
- * - GET /kubernetes/clusters/:clusterId/namespaces/:namespace/deployments/:name/monitor - 获取监控数据
- * - GET /kubernetes/clusters/:clusterId/namespaces/:namespace/deployments/:name/yaml - 查看 YAML
- * - POST /kubernetes/clusters/:clusterId/namespaces/:namespace/deployments - 创建 Deployment
- * - PUT /kubernetes/clusters/:clusterId/namespaces/:namespace/deployments/:name - 更新 Deployment
- * - POST /kubernetes/clusters/:clusterId/namespaces/:namespace/deployments/:name/labels - 更新标签
- * - POST /kubernetes/clusters/:clusterId/namespaces/:namespace/deployments/:name/annotations - 更新注解
- * - DELETE /kubernetes/clusters/:clusterId/namespaces/:namespace/deployments/:name - 删除 Deployment
- * - DELETE /kubernetes/clusters/:clusterId/namespaces/:namespace/deployments/batch - 批量删除
- * - GET /kubernetes/clusters/:clusterId/deployments/export - 导出 CSV
- * - POST /kubernetes/clusters/:clusterId/deployments/import - 导入 Deployment
- * - POST /kubernetes/clusters/:clusterId/namespaces/:namespace/deployments/:name/scale - 扩缩容
- * - POST /kubernetes/clusters/:clusterId/namespaces/:namespace/deployments/:name/restart - 重启
- * - POST /kubernetes/clusters/:clusterId/namespaces/:namespace/deployments/:name/rollback - 回滚
+ * - GET /kubernetes/clusters/:clusterUid/deployments - 获取 Deployment 分页列表
+ * - GET /kubernetes/clusters/:clusterUid/namespaces/:namespace/deployments/:name - 获取 Deployment 详情
+ * - GET /kubernetes/clusters/:clusterUid/namespaces/:namespace/deployments/:name/pods - 获取 Pod 列表
+ * - GET /kubernetes/clusters/:clusterUid/namespaces/:namespace/deployments/:name/schedule - 获取调度策略
+ * - GET /kubernetes/clusters/:clusterUid/namespaces/:namespace/deployments/:name/history - 获取历史版本列表
+ * - GET /kubernetes/clusters/:clusterUid/namespaces/:namespace/deployments/:name/network - 获取网络资源
+ * - GET /kubernetes/clusters/:clusterUid/namespaces/:namespace/deployments/:name/storages - 获取存储列表
+ * - GET /kubernetes/clusters/:clusterUid/namespaces/:namespace/deployments/:name/monitor - 获取监控数据
+ * - GET /kubernetes/clusters/:clusterUid/namespaces/:namespace/deployments/:name/yaml - 查看 YAML
+ * - POST /kubernetes/clusters/:clusterUid/namespaces/:namespace/deployments - 创建 Deployment
+ * - PUT /kubernetes/clusters/:clusterUid/namespaces/:namespace/deployments/:name - 更新 Deployment
+ * - POST /kubernetes/clusters/:clusterUid/namespaces/:namespace/deployments/:name/labels - 更新标签
+ * - POST /kubernetes/clusters/:clusterUid/namespaces/:namespace/deployments/:name/annotations - 更新注解
+ * - DELETE /kubernetes/clusters/:clusterUid/namespaces/:namespace/deployments/:name - 删除 Deployment
+ * - DELETE /kubernetes/clusters/:clusterUid/namespaces/:namespace/deployments/batch - 批量删除
+ * - GET /kubernetes/clusters/:clusterUid/deployments/export - 导出 CSV
+ * - POST /kubernetes/clusters/:clusterUid/deployments/import - 导入 Deployment
+ * - POST /kubernetes/clusters/:clusterUid/namespaces/:namespace/deployments/:name/scale - 扩缩容
+ * - POST /kubernetes/clusters/:clusterUid/namespaces/:namespace/deployments/:name/restart - 重启
+ * - POST /kubernetes/clusters/:clusterUid/namespaces/:namespace/deployments/:name/rollback - 回滚
  */
 export default [
   {
     method: 'get',
-    url: '/kubernetes/clusters/:clusterId/deployments',
-    handler: ({ pathParams, params }: { pathParams: Record<string, string>; params: Partial<DeploymentQueryForm> }): PageVo<DeploymentListVo> =>
-      getDeploymentList(pathParams.clusterId, params),
+    url: '/kubernetes/clusters/:clusterUid/deployments',
+    handler: ({
+      pathParams,
+      params,
+    }: {
+      pathParams: Record<string, string>
+      params: Partial<DeploymentQueryForm>
+    }): PageVo<DeploymentListVo> => getDeploymentList(pathParams.clusterUid, params),
   },
   {
     method: 'get',
-    url: '/kubernetes/clusters/:clusterId/namespaces/:namespace/deployments/:name',
+    url: '/kubernetes/clusters/:clusterUid/namespaces/:namespace/deployments/:name',
     handler: ({ pathParams }: { pathParams: Record<string, string> }): DeploymentDetailVo =>
-      getDeploymentDetail(pathParams.clusterId, pathParams.namespace, pathParams.name),
+      getDeploymentDetail(pathParams.clusterUid, pathParams.namespace, pathParams.name),
   },
   {
     method: 'get',
-    url: '/kubernetes/clusters/:clusterId/namespaces/:namespace/deployments/:name/pods',
-    handler: ({ pathParams, params }: { pathParams: Record<string, string>; params: Partial<DeploymentPodQueryForm>, }): PageVo<DeploymentPodListVo> =>
-      getDeploymentPodList(pathParams.clusterId, pathParams.namespace, pathParams.name, params),
+    url: '/kubernetes/clusters/:clusterUid/namespaces/:namespace/deployments/:name/pods',
+    handler: ({
+      pathParams,
+      params,
+    }: {
+      pathParams: Record<string, string>
+      params: Partial<DeploymentPodQueryForm>
+    }): PageVo<DeploymentPodListVo> =>
+      getDeploymentPodList(pathParams.clusterUid, pathParams.namespace, pathParams.name, params),
   },
   {
     method: 'get',
-    url: '/kubernetes/clusters/:clusterId/namespaces/:namespace/deployments/:name/schedule',
+    url: '/kubernetes/clusters/:clusterUid/namespaces/:namespace/deployments/:name/schedule',
     handler: ({ pathParams }: { pathParams: Record<string, string> }): DeploymentScheduleVo =>
-      getDeploymentSchedule(pathParams.clusterId, pathParams.namespace, pathParams.name),
+      getDeploymentSchedule(pathParams.clusterUid, pathParams.namespace, pathParams.name),
   },
   {
     method: 'get',
-    url: '/kubernetes/clusters/:clusterId/namespaces/:namespace/deployments/:name/history',
+    url: '/kubernetes/clusters/:clusterUid/namespaces/:namespace/deployments/:name/history',
     handler: ({ pathParams }: { pathParams: Record<string, string> }): DeploymentHistoryRevisionListVo[] =>
-      getDeploymentHistoryRevisionList(pathParams.clusterId, pathParams.namespace, pathParams.name),
+      getDeploymentHistoryRevisionList(pathParams.clusterUid, pathParams.namespace, pathParams.name),
   },
   {
     method: 'get',
-    url: '/kubernetes/clusters/:clusterId/namespaces/:namespace/deployments/:name/network',
+    url: '/kubernetes/clusters/:clusterUid/namespaces/:namespace/deployments/:name/network',
     handler: ({ pathParams }: { pathParams: Record<string, string> }): DeploymentNetworkVo =>
-      getDeploymentNetwork(pathParams.clusterId, pathParams.namespace, pathParams.name),
+      getDeploymentNetwork(pathParams.clusterUid, pathParams.namespace, pathParams.name),
   },
   {
     method: 'get',
-    url: '/kubernetes/clusters/:clusterId/namespaces/:namespace/deployments/:name/storages',
+    url: '/kubernetes/clusters/:clusterUid/namespaces/:namespace/deployments/:name/storages',
     handler: ({ pathParams }: { pathParams: Record<string, string> }): DeploymentStorageListVo[] =>
-      getDeploymentStorageList(pathParams.clusterId, pathParams.namespace, pathParams.name),
+      getDeploymentStorageList(pathParams.clusterUid, pathParams.namespace, pathParams.name),
   },
   {
     method: 'get',
-    url: '/kubernetes/clusters/:clusterId/namespaces/:namespace/deployments/:name/monitor',
+    url: '/kubernetes/clusters/:clusterUid/namespaces/:namespace/deployments/:name/monitor',
     handler: ({ pathParams }: { pathParams: Record<string, string> }): DeploymentMonitorVo =>
-      getDeploymentMonitor(pathParams.clusterId, pathParams.namespace, pathParams.name),
+      getDeploymentMonitor(pathParams.clusterUid, pathParams.namespace, pathParams.name),
   },
   {
     method: 'get',
-    url: '/kubernetes/clusters/:clusterId/namespaces/:namespace/deployments/:name/yaml',
+    url: '/kubernetes/clusters/:clusterUid/namespaces/:namespace/deployments/:name/yaml',
     handler: ({ pathParams }: { pathParams: Record<string, string> }): string =>
-      getDeploymentYaml(pathParams.clusterId, pathParams.namespace, pathParams.name),
+      getDeploymentYaml(pathParams.clusterUid, pathParams.namespace, pathParams.name),
   },
   {
     method: 'post',
-    url: '/kubernetes/clusters/:clusterId/namespaces/:namespace/deployments',
+    url: '/kubernetes/clusters/:clusterUid/namespaces/:namespace/deployments',
     handler: ({ pathParams, data }: { pathParams: Record<string, string>; data: DeploymentCreateForm }): void =>
-      createDeployment(pathParams.clusterId, pathParams.namespace, data),
+      createDeployment(pathParams.clusterUid, pathParams.namespace, data),
   },
   {
     method: 'put',
-    url: '/kubernetes/clusters/:clusterId/namespaces/:namespace/deployments/:name',
-    handler: ({ pathParams, data }: { pathParams: Record<string, string>; data: Partial<DeploymentUpdateForm> }): void =>
-      updateDeployment(pathParams.clusterId, pathParams.namespace, pathParams.name, data),
+    url: '/kubernetes/clusters/:clusterUid/namespaces/:namespace/deployments/:name',
+    handler: ({
+      pathParams,
+      data,
+    }: {
+      pathParams: Record<string, string>
+      data: Partial<DeploymentUpdateForm>
+    }): void => updateDeployment(pathParams.clusterUid, pathParams.namespace, pathParams.name, data),
   },
   {
     method: 'post',
-    url: '/kubernetes/clusters/:clusterId/namespaces/:namespace/deployments/:name/labels',
+    url: '/kubernetes/clusters/:clusterUid/namespaces/:namespace/deployments/:name/labels',
     handler: ({ pathParams, data }: { pathParams: Record<string, string>; data: DeploymentLabelForm }): void =>
-      manageDeploymentLabels(pathParams.clusterId, pathParams.namespace, pathParams.name, data),
+      manageDeploymentLabels(pathParams.clusterUid, pathParams.namespace, pathParams.name, data),
   },
   {
     method: 'post',
-    url: '/kubernetes/clusters/:clusterId/namespaces/:namespace/deployments/:name/annotations',
+    url: '/kubernetes/clusters/:clusterUid/namespaces/:namespace/deployments/:name/annotations',
     handler: ({ pathParams, data }: { pathParams: Record<string, string>; data: DeploymentAnnotationForm }): void =>
-      manageDeploymentAnnotations(pathParams.clusterId, pathParams.namespace, pathParams.name, data),
+      manageDeploymentAnnotations(pathParams.clusterUid, pathParams.namespace, pathParams.name, data),
   },
   {
     method: 'delete',
-    url: '/kubernetes/clusters/:clusterId/namespaces/:namespace/deployments/:name',
+    url: '/kubernetes/clusters/:clusterUid/namespaces/:namespace/deployments/:name',
     handler: ({ pathParams }: { pathParams: Record<string, string> }): void =>
-      deleteDeployment(pathParams.clusterId, pathParams.namespace, pathParams.name),
+      deleteDeployment(pathParams.clusterUid, pathParams.namespace, pathParams.name),
   },
   {
     method: 'delete',
-    url: '/kubernetes/clusters/:clusterId/namespaces/:namespace/deployments/batch',
+    url: '/kubernetes/clusters/:clusterUid/namespaces/:namespace/deployments/batch',
     handler: ({ pathParams, data }: { pathParams: Record<string, string>; data: string[] }): void =>
-      deleteDeployments(pathParams.clusterId, pathParams.namespace, data),
+      deleteDeployments(pathParams.clusterUid, pathParams.namespace, data),
   },
   {
     method: 'get',
-    url: '/kubernetes/clusters/:clusterId/deployments/export',
-    handler: ({ pathParams, params }: { pathParams: Record<string, string>; params: Partial<DeploymentQueryForm> }): void =>
-      exportDeployment(pathParams.clusterId, params),
+    url: '/kubernetes/clusters/:clusterUid/deployments/export',
+    handler: ({
+      pathParams,
+      params,
+    }: {
+      pathParams: Record<string, string>
+      params: Partial<DeploymentQueryForm>
+    }): void => exportDeployment(pathParams.clusterUid, params),
   },
   {
     method: 'post',
-    url: '/kubernetes/clusters/:clusterId/deployments/import',
+    url: '/kubernetes/clusters/:clusterUid/deployments/import',
     handler: ({ pathParams, data }: { pathParams: Record<string, string>; data: DeploymentYamlForm }): void =>
-      importDeployment(pathParams.clusterId, data),
+      importDeployment(pathParams.clusterUid, data),
   },
   {
     method: 'post',
-    url: '/kubernetes/clusters/:clusterId/namespaces/:namespace/deployments/:name/scale',
+    url: '/kubernetes/clusters/:clusterUid/namespaces/:namespace/deployments/:name/scale',
     handler: ({ pathParams, data }: { pathParams: Record<string, string>; data: DeploymentScaleForm }): void =>
-      scaleDeployment(pathParams.clusterId, pathParams.namespace, pathParams.name, data),
+      scaleDeployment(pathParams.clusterUid, pathParams.namespace, pathParams.name, data),
   },
   {
     method: 'post',
-    url: '/kubernetes/clusters/:clusterId/namespaces/:namespace/deployments/:name/restart',
+    url: '/kubernetes/clusters/:clusterUid/namespaces/:namespace/deployments/:name/restart',
     handler: ({ pathParams }: { pathParams: Record<string, string> }): void =>
-      restartDeployment(pathParams.clusterId, pathParams.namespace, pathParams.name),
+      restartDeployment(pathParams.clusterUid, pathParams.namespace, pathParams.name),
   },
   {
     method: 'post',
-    url: '/kubernetes/clusters/:clusterId/namespaces/:namespace/deployments/:name/rollback',
+    url: '/kubernetes/clusters/:clusterUid/namespaces/:namespace/deployments/:name/rollback',
     handler: ({ pathParams }: { pathParams: Record<string, string> }): void =>
-      rollbackDeployment(pathParams.clusterId, pathParams.namespace, pathParams.name),
+      rollbackDeployment(pathParams.clusterUid, pathParams.namespace, pathParams.name),
   },
 ]
 
 /**
  * 获取 Deployment 分页列表
- * @param _clusterId - 集群ID
+ * @param _clusterId - 集群 UID
  * @param params - 查询参数
  * @returns 分页数据
  */
@@ -224,7 +245,7 @@ function getDeploymentList(_clusterId: string, params: Partial<DeploymentQueryFo
 
 /**
  * 获取 Deployment 详情
- * @param _clusterId - 集群ID
+ * @param _clusterId - 集群 UID
  * @param _namespace - 命名空间
  * @param _name - Deployment 名称
  * @returns Deployment 详情
@@ -243,14 +264,14 @@ function getDeploymentDetail(_clusterId: string, _namespace: string, _name: stri
 
 /**
  * 获取 Deployment Pod 列表
- * @param _clusterId - 集群ID
+ * @param _clusterId - 集群 UID
  * @param _namespace - 命名空间
  * @param _name - Deployment 名称
  * @returns Pod 列表
  */
 /**
  * 获取 Deployment Pod 分页列表
- * @param _clusterId - 集群ID
+ * @param _clusterId - 集群 UID
  * @param _namespace - 命名空间
  * @param _name - Deployment 名称
  * @param params - 查询参数（含分页、名称筛选、状态筛选）
@@ -310,7 +331,7 @@ function generateMockPods(): DeploymentPodListVo[] {
       containerCount: 2,
       cpuUsage: '15%',
       memoryUsage: '32%',
-      clusterId: deploy.clusterId,
+      clusterUid: deploy.clusterUid,
       clusterUid: deploy.clusterUid,
       clusterName: deploy.clusterName,
       namespace: deploy.namespace,
@@ -335,7 +356,7 @@ function generateMockPods(): DeploymentPodListVo[] {
       containerCount: 2,
       cpuUsage: '22%',
       memoryUsage: '45%',
-      clusterId: deploy.clusterId,
+      clusterUid: deploy.clusterUid,
       clusterUid: deploy.clusterUid,
       clusterName: deploy.clusterName,
       namespace: deploy.namespace,
@@ -360,7 +381,7 @@ function generateMockPods(): DeploymentPodListVo[] {
       containerCount: 2,
       cpuUsage: '0%',
       memoryUsage: '0%',
-      clusterId: deploy.clusterId,
+      clusterUid: deploy.clusterUid,
       clusterUid: deploy.clusterUid,
       clusterName: deploy.clusterName,
       namespace: deploy.namespace,
@@ -385,7 +406,7 @@ function generateMockPods(): DeploymentPodListVo[] {
       containerCount: 2,
       cpuUsage: '78%',
       memoryUsage: '91%',
-      clusterId: deploy.clusterId,
+      clusterUid: deploy.clusterUid,
       clusterUid: deploy.clusterUid,
       clusterName: deploy.clusterName,
       namespace: deploy.namespace,
@@ -410,7 +431,7 @@ function generateMockPods(): DeploymentPodListVo[] {
       containerCount: 2,
       cpuUsage: '5%',
       memoryUsage: '8%',
-      clusterId: deploy.clusterId,
+      clusterUid: deploy.clusterUid,
       clusterUid: deploy.clusterUid,
       clusterName: deploy.clusterName,
       namespace: deploy.namespace,
@@ -426,17 +447,17 @@ function generateMockPods(): DeploymentPodListVo[] {
 
 /**
  * 获取 Deployment 调度策略
- * @param clusterId - 集群ID
+ * @param clusterUid - 集群 UID
  * @param namespace - 命名空间
  * @param name - Deployment 名称
  * @returns Deployment 调度策略
  */
-function getDeploymentSchedule(clusterId: string, namespace: string, name: string): DeploymentScheduleVo {
+function getDeploymentSchedule(clusterUid: string, namespace: string, name: string): DeploymentScheduleVo {
   const deployment = mockDeployments.find(
-    d => d.clusterId === clusterId && d.namespace === namespace && d.name === name,
+    d => d.clusterUid === clusterUid && d.namespace === namespace && d.name === name,
   )
   if (!deployment) {
-    console.error('[Get Deployment Schedule] can not find deployment:', clusterId, namespace, name)
+    console.error('[Get Deployment Schedule] can not find deployment:', clusterUid, namespace, name)
   }
   return {
     nodeSelector: { 'kubernetes.io/os': 'linux' },
@@ -503,7 +524,7 @@ function getDeploymentSchedule(clusterId: string, namespace: string, name: strin
 
 /**
  * 获取 Deployment 历史版本列表
- * @param _clusterId - 集群ID
+ * @param _clusterId - 集群 UID
  * @param _namespace - 命名空间
  * @param _name - Deployment 名称
  * @returns 历史版本列表
@@ -544,7 +565,7 @@ function getDeploymentHistoryRevisionList(
 
 /**
  * 获取 Deployment 网络资源
- * @param _clusterId - 集群ID
+ * @param _clusterId - 集群 UID
  * @param _namespace - 命名空间
  * @param _name - Deployment 名称
  * @returns 网络资源
@@ -564,7 +585,7 @@ function getDeploymentNetwork(_clusterId: string, _namespace: string, _name: str
         selector: { app: deploy.name },
         externalName: '',
         headless: false,
-        clusterId: deploy.clusterId,
+        clusterUid: deploy.clusterUid,
         clusterUid: deploy.clusterUid,
         clusterName: deploy.clusterName,
         namespace: deploy.namespace,
@@ -586,7 +607,7 @@ function getDeploymentNetwork(_clusterId: string, _namespace: string, _name: str
         selector: { app: deploy.name },
         externalName: '',
         headless: false,
-        clusterId: deploy.clusterId,
+        clusterUid: deploy.clusterUid,
         clusterUid: deploy.clusterUid,
         clusterName: deploy.clusterName,
         namespace: deploy.namespace,
@@ -608,7 +629,7 @@ function getDeploymentNetwork(_clusterId: string, _namespace: string, _name: str
         selector: { app: deploy.name },
         externalName: '',
         headless: false,
-        clusterId: deploy.clusterId,
+        clusterUid: deploy.clusterUid,
         clusterUid: deploy.clusterUid,
         clusterName: deploy.clusterName,
         namespace: deploy.namespace,
@@ -633,7 +654,7 @@ function getDeploymentNetwork(_clusterId: string, _namespace: string, _name: str
             paths: [{ path: '/', pathType: 'Prefix', serviceName: deploy.name + '-svc', servicePort: 80 }],
           },
         ],
-        clusterId: deploy.clusterId,
+        clusterUid: deploy.clusterUid,
         clusterUid: deploy.clusterUid,
         clusterName: deploy.clusterName,
         namespace: deploy.namespace,
@@ -657,7 +678,7 @@ function getDeploymentNetwork(_clusterId: string, _namespace: string, _name: str
           },
         ],
         tls: [{ hosts: ['api.example.com'], secretName: 'api-tls-cert' }],
-        clusterId: deploy.clusterId,
+        clusterUid: deploy.clusterUid,
         clusterUid: deploy.clusterUid,
         clusterName: deploy.clusterName,
         namespace: deploy.namespace,
@@ -674,7 +695,7 @@ function getDeploymentNetwork(_clusterId: string, _namespace: string, _name: str
 
 /**
  * 获取 Deployment 存储列表
- * @param _clusterId - 集群ID
+ * @param _clusterId - 集群 UID
  * @param _namespace - 命名空间
  * @param _name - Deployment 名称
  * @returns 存储列表
@@ -731,7 +752,7 @@ function getDeploymentStorageList(_clusterId: string, _namespace: string, _name:
 
 /**
  * 获取 Deployment 监控数据
- * @param _clusterId - 集群ID
+ * @param _clusterId - 集群 UID
  * @param _namespace - 命名空间
  * @param _name - Deployment 名称
  * @returns 监控数据
@@ -742,17 +763,17 @@ function getDeploymentMonitor(_clusterId: string, _namespace: string, _name: str
 
 /**
  * 查看 Deployment YAML
- * @param clusterId - 集群ID
+ * @param clusterUid - 集群 UID
  * @param namespace - 命名空间
  * @param name - Deployment 名称
  * @returns Deployment YAML 配置
  */
-function getDeploymentYaml(clusterId: string, namespace: string, name: string): string {
+function getDeploymentYaml(clusterUid: string, namespace: string, name: string): string {
   const deployment = mockDeployments.find(
-    d => d.clusterId === clusterId && d.namespace === namespace && d.name === name,
+    d => d.clusterUid === clusterUid && d.namespace === namespace && d.name === name,
   )
   if (!deployment) {
-    console.error('[Get Deployment Yaml] can not find deployment:', clusterId, namespace, name)
+    console.error('[Get Deployment Yaml] can not find deployment:', clusterUid, namespace, name)
     return ''
   }
 
@@ -882,124 +903,124 @@ status:
 
 /**
  * 创建 Deployment
- * @param clusterId - 集群ID
+ * @param clusterUid - 集群 UID
  * @param namespace - 命名空间
  * @param data - 创建参数
  */
-function createDeployment(clusterId: string, namespace: string, data: DeploymentCreateForm): void {
-  console.log('[Mock] createDeployment', { clusterId, namespace, data })
+function createDeployment(clusterUid: string, namespace: string, data: DeploymentCreateForm): void {
+  console.log('[Mock] createDeployment', { clusterUid, namespace, data })
 }
 
 /**
  * 更新 Deployment
- * @param clusterId - 集群ID
+ * @param clusterUid - 集群 UID
  * @param namespace - 命名空间
  * @param name - Deployment 名称
  * @param data - 更新参数
  */
 function updateDeployment(
-  clusterId: string,
+  clusterUid: string,
   namespace: string,
   name: string,
   data: Partial<DeploymentUpdateForm>,
 ): void {
-  console.log('[Mock] updateDeployment', { clusterId, namespace, name, data })
+  console.log('[Mock] updateDeployment', { clusterUid, namespace, name, data })
 }
 
 /**
  * 更新 Deployment 标签
- * @param clusterId - 集群ID
+ * @param clusterUid - 集群 UID
  * @param namespace - 命名空间
  * @param name - Deployment 名称
  * @param data - 标签数据
  */
-function manageDeploymentLabels(clusterId: string, namespace: string, name: string, data: DeploymentLabelForm): void {
-  console.log('[Mock] manageDeploymentLabels', { clusterId, namespace, name, data })
+function manageDeploymentLabels(clusterUid: string, namespace: string, name: string, data: DeploymentLabelForm): void {
+  console.log('[Mock] manageDeploymentLabels', { clusterUid, namespace, name, data })
 }
 
 /**
  * 更新 Deployment 注解
- * @param clusterId - 集群ID
+ * @param clusterUid - 集群 UID
  * @param namespace - 命名空间
  * @param name - Deployment 名称
  * @param data - 注解数据
  */
 function manageDeploymentAnnotations(
-  clusterId: string,
+  clusterUid: string,
   namespace: string,
   name: string,
   data: DeploymentAnnotationForm,
 ): void {
-  console.log('[Mock] manageDeploymentAnnotations', { clusterId, namespace, name, data })
+  console.log('[Mock] manageDeploymentAnnotations', { clusterUid, namespace, name, data })
 }
 
 /**
  * 删除 Deployment
- * @param clusterId - 集群ID
+ * @param clusterUid - 集群 UID
  * @param namespace - 命名空间
  * @param name - Deployment 名称
  */
-function deleteDeployment(clusterId: string, namespace: string, name: string): void {
-  console.log('[Mock] deleteDeployment', { clusterId, namespace, name })
+function deleteDeployment(clusterUid: string, namespace: string, name: string): void {
+  console.log('[Mock] deleteDeployment', { clusterUid, namespace, name })
 }
 
 /**
  * 批量删除 Deployment
- * @param clusterId - 集群ID
+ * @param clusterUid - 集群 UID
  * @param namespace - 命名空间
  * @param names - Deployment 名称数组
  */
-function deleteDeployments(clusterId: string, namespace: string, names: string[]): void {
-  console.log('[Mock] deleteDeployments', { clusterId, namespace, names })
+function deleteDeployments(clusterUid: string, namespace: string, names: string[]): void {
+  console.log('[Mock] deleteDeployments', { clusterUid, namespace, names })
 }
 
 /**
  * 导出 Deployment CSV
- * @param clusterId - 集群ID
+ * @param clusterUid - 集群 UID
  * @param params - 查询参数
  */
-function exportDeployment(clusterId: string, params: Partial<DeploymentQueryForm>): void {
-  console.log('[Mock] exportDeployment', { clusterId, params })
+function exportDeployment(clusterUid: string, params: Partial<DeploymentQueryForm>): void {
+  console.log('[Mock] exportDeployment', { clusterUid, params })
 }
 
 /**
  * 导入 Deployment
- * @param clusterId - 集群ID
+ * @param clusterUid - 集群 UID
  * @param data - YAML 配置
  */
-function importDeployment(clusterId: string, data: DeploymentYamlForm): void {
-  console.log('[Mock] importDeployment', { clusterId, data })
+function importDeployment(clusterUid: string, data: DeploymentYamlForm): void {
+  console.log('[Mock] importDeployment', { clusterUid, data })
 }
 
 /**
  * 扩缩容 Deployment
- * @param clusterId - 集群ID
+ * @param clusterUid - 集群 UID
  * @param namespace - 命名空间
  * @param name - Deployment 名称
  * @param data - 扩缩容参数
  */
-function scaleDeployment(clusterId: string, namespace: string, name: string, data: DeploymentScaleForm): void {
-  console.log('[Mock] scaleDeployment', { clusterId, namespace, name, data })
+function scaleDeployment(clusterUid: string, namespace: string, name: string, data: DeploymentScaleForm): void {
+  console.log('[Mock] scaleDeployment', { clusterUid, namespace, name, data })
 }
 
 /**
  * 重启 Deployment
- * @param clusterId - 集群ID
+ * @param clusterUid - 集群 UID
  * @param namespace - 命名空间
  * @param name - Deployment 名称
  */
-function restartDeployment(clusterId: string, namespace: string, name: string): void {
-  console.log('[Mock] restartDeployment', { clusterId, namespace, name })
+function restartDeployment(clusterUid: string, namespace: string, name: string): void {
+  console.log('[Mock] restartDeployment', { clusterUid, namespace, name })
 }
 
 /**
  * 回滚 Deployment
- * @param clusterId - 集群ID
+ * @param clusterUid - 集群 UID
  * @param namespace - 命名空间
  * @param name - Deployment 名称
  */
-function rollbackDeployment(clusterId: string, namespace: string, name: string): void {
-  console.log('[Mock] rollbackDeployment', { clusterId, namespace, name })
+function rollbackDeployment(clusterUid: string, namespace: string, name: string): void {
+  console.log('[Mock] rollbackDeployment', { clusterUid, namespace, name })
 }
 
 /**
@@ -1015,7 +1036,7 @@ const mockDeployments: DeploymentListVo[] = [
     namespace: 'kube-system',
     namespaceId: generateId(),
     namespaceUid: generateId(),
-    clusterId: generateId(),
+    clusterUid: generateId(),
     clusterUid: generateId(),
     clusterName: 'system-cluster',
     description:
@@ -1037,7 +1058,7 @@ const mockDeployments: DeploymentListVo[] = [
     namespace: 'kube-system',
     namespaceId: generateId(),
     namespaceUid: generateId(),
-    clusterId: generateId(),
+    clusterUid: generateId(),
     clusterUid: generateId(),
     clusterName: 'system-cluster',
     description: 'Kubernetes 集群 DNS 服务，负责集群内部域名解析',
@@ -1058,7 +1079,7 @@ const mockDeployments: DeploymentListVo[] = [
     namespace: 'kube-system',
     namespaceId: generateId(),
     namespaceUid: generateId(),
-    clusterId: generateId(),
+    clusterUid: generateId(),
     clusterUid: generateId(),
     clusterName: 'system-cluster',
     description: 'Kubernetes 资源指标采集服务，为 HPA 和 kubectl top 提供 CPU/内存数据',
@@ -1080,7 +1101,7 @@ const mockDeployments: DeploymentListVo[] = [
     namespace: 'app-frontend',
     namespaceId: generateId(),
     namespaceUid: generateId(),
-    clusterId: generateId(),
+    clusterUid: generateId(),
     clusterUid: generateId(),
     clusterName: 'prod-cluster',
     description: '前端应用服务，承载 Web 前端页面和 H5 渲染',
@@ -1101,7 +1122,7 @@ const mockDeployments: DeploymentListVo[] = [
     namespace: 'app-backend',
     namespaceId: generateId(),
     namespaceUid: generateId(),
-    clusterId: generateId(),
+    clusterUid: generateId(),
     clusterUid: generateId(),
     clusterName: 'prod-cluster',
     description: '后端 API 服务，提供核心业务逻辑和数据接口',
@@ -1122,7 +1143,7 @@ const mockDeployments: DeploymentListVo[] = [
     namespace: 'app-backend',
     namespaceId: generateId(),
     namespaceUid: generateId(),
-    clusterId: generateId(),
+    clusterUid: generateId(),
     clusterUid: generateId(),
     clusterName: 'prod-cluster',
     description: '订单服务，管理订单的创建、流转和履约',
@@ -1144,7 +1165,7 @@ const mockDeployments: DeploymentListVo[] = [
     namespace: 'staging-app',
     namespaceId: generateId(),
     namespaceUid: generateId(),
-    clusterId: generateId(),
+    clusterUid: generateId(),
     clusterUid: generateId(),
     clusterName: 'staging-cluster',
     description: '预发布前端应用，用于生产上线前的集成验证',
@@ -1166,7 +1187,7 @@ const mockDeployments: DeploymentListVo[] = [
     namespace: 'dev-test',
     namespaceId: generateId(),
     namespaceUid: generateId(),
-    clusterId: generateId(),
+    clusterUid: generateId(),
     clusterUid: generateId(),
     clusterName: 'dev-cluster',
     description: '开发环境应用，用于日常开发和单元测试',
@@ -1189,7 +1210,7 @@ const mockDeployments: DeploymentListVo[] = [
     namespace: 'app-backend',
     namespaceId: generateId(),
     namespaceUid: generateId(),
-    clusterId: generateId(),
+    clusterUid: generateId(),
     clusterUid: generateId(),
     clusterName: 'prod-cluster',
     description: 'API 网关服务，统一管理和路由所有后端接口请求',
@@ -1211,7 +1232,7 @@ const mockDeployments: DeploymentListVo[] = [
     namespace: 'app-backend',
     namespaceId: generateId(),
     namespaceUid: generateId(),
-    clusterId: generateId(),
+    clusterUid: generateId(),
     clusterUid: generateId(),
     clusterName: 'prod-cluster',
     description: '全文检索服务，基于 Elasticsearch 提供高性能搜索能力',
@@ -1234,7 +1255,7 @@ const mockDeployments: DeploymentListVo[] = [
     namespace: 'app-backend',
     namespaceId: generateId(),
     namespaceUid: generateId(),
-    clusterId: generateId(),
+    clusterUid: generateId(),
     clusterUid: generateId(),
     clusterName: 'prod-cluster',
     description: '用户服务，管理用户资料、会员和账户信息',
@@ -1256,7 +1277,7 @@ const mockDeployments: DeploymentListVo[] = [
     namespace: 'app-backend',
     namespaceId: generateId(),
     namespaceUid: generateId(),
-    clusterId: generateId(),
+    clusterUid: generateId(),
     clusterUid: generateId(),
     clusterName: 'prod-cluster',
     description: '消息推送服务，处理短信、邮件和站内信的批量发送',
@@ -1279,7 +1300,7 @@ const mockDeployments: DeploymentListVo[] = [
     namespace: 'monitoring',
     namespaceId: generateId(),
     namespaceUid: generateId(),
-    clusterId: generateId(),
+    clusterUid: generateId(),
     clusterUid: generateId(),
     clusterName: 'monitoring-cluster',
     description: 'Prometheus 监控系统，采集和存储集群与应用指标数据',
@@ -1301,7 +1322,7 @@ const mockDeployments: DeploymentListVo[] = [
     namespace: 'monitoring',
     namespaceId: generateId(),
     namespaceUid: generateId(),
-    clusterId: generateId(),
+    clusterUid: generateId(),
     clusterUid: generateId(),
     clusterName: 'monitoring-cluster',
     description: 'Grafana 可视化平台，提供监控面板和告警图表展示',
@@ -1324,7 +1345,7 @@ const mockDeployments: DeploymentListVo[] = [
     namespace: 'staging-app',
     namespaceId: generateId(),
     namespaceUid: generateId(),
-    clusterId: generateId(),
+    clusterUid: generateId(),
     clusterUid: generateId(),
     clusterName: 'staging-cluster',
     description: '配置中心服务，统一管理各应用的运行时配置',
@@ -1346,7 +1367,7 @@ const mockDeployments: DeploymentListVo[] = [
     namespace: 'staging-app',
     namespaceId: generateId(),
     namespaceUid: generateId(),
-    clusterId: generateId(),
+    clusterUid: generateId(),
     clusterUid: generateId(),
     clusterName: 'staging-cluster',
     description: '数据同步服务，负责跨环境数据定时同步和校验',
@@ -1369,7 +1390,7 @@ const mockDeployments: DeploymentListVo[] = [
     namespace: 'app-backend',
     namespaceId: generateId(),
     namespaceUid: generateId(),
-    clusterId: generateId(),
+    clusterUid: generateId(),
     clusterUid: generateId(),
     clusterName: 'prod-cluster',
     description: '支付服务，处理交易、退款和对账流程',
@@ -1391,7 +1412,7 @@ const mockDeployments: DeploymentListVo[] = [
     namespace: 'app-backend',
     namespaceId: generateId(),
     namespaceUid: generateId(),
-    clusterId: generateId(),
+    clusterUid: generateId(),
     clusterUid: generateId(),
     clusterName: 'prod-cluster',
     description: 'Redis 缓存服务，提供高性能内存数据缓存',
@@ -1414,7 +1435,7 @@ const mockDeployments: DeploymentListVo[] = [
     namespace: 'monitoring',
     namespaceId: generateId(),
     namespaceUid: generateId(),
-    clusterId: generateId(),
+    clusterUid: generateId(),
     clusterUid: generateId(),
     clusterName: 'monitoring-cluster',
     description: '日志采集服务，统一收集和转发各应用日志到日志平台',
@@ -1436,7 +1457,7 @@ const mockDeployments: DeploymentListVo[] = [
     namespace: 'staging-app',
     namespaceId: generateId(),
     namespaceUid: generateId(),
-    clusterId: generateId(),
+    clusterUid: generateId(),
     clusterUid: generateId(),
     clusterName: 'staging-cluster',
     description: '预发布后端应用，用于接口联调和回归测试',
@@ -1459,7 +1480,7 @@ const mockDeployments: DeploymentListVo[] = [
     namespace: 'app-backend',
     namespaceId: generateId(),
     namespaceUid: generateId(),
-    clusterId: generateId(),
+    clusterUid: generateId(),
     clusterUid: generateId(),
     clusterName: 'prod-cluster',
     description: '报表服务，定时生成和导出业务数据报表',
@@ -1481,7 +1502,7 @@ const mockDeployments: DeploymentListVo[] = [
     namespace: 'monitoring',
     namespaceId: generateId(),
     namespaceUid: generateId(),
-    clusterId: generateId(),
+    clusterUid: generateId(),
     clusterUid: generateId(),
     clusterName: 'monitoring-cluster',
     description: 'Sentinel 流量控制面板，提供限流、熔断规则管理',
@@ -1518,7 +1539,7 @@ const mockDeploymentBasic: DeploymentBasicVo = {
     'app.kubernetes.io/component': 'kube-system',
     'app.kubernetes.io/managed-by': 'bee-kube',
   },
-  clusterId: generateId(),
+  clusterUid: generateId(),
   clusterUid: generateId(),
   clusterName: 'system-cluster',
   namespace: 'kube-system',

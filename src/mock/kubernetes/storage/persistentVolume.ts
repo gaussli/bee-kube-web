@@ -9,16 +9,16 @@ import { generateId } from '@/mock/utils'
 
 /**
  * 获取 PersistentVolume 分页列表
- * @param clusterId - 集群 ID
+ * @param clusterUid - 集群 UID
  * @param params - 查询参数
  * @returns 分页数据
  */
 function getPersistentVolumePage(
-  clusterId: string,
+  clusterUid: string,
   params: Partial<PersistentVolumeQueryReq>,
 ): PageVo<PersistentVolumeResp> {
   const { name, status, storageClassName, page = 1, pageSize = 10 } = params || {}
-  let filtered = mockPVs.filter(p => p.clusterId === clusterId)
+  let filtered = mockPVs.filter(p => p.clusterUid === clusterUid)
   if (name) filtered = filtered.filter(p => p.name.toLowerCase().includes(name.toLowerCase()))
   if (status) filtered = filtered.filter(p => p.status === status)
   if (storageClassName) filtered = filtered.filter(p => p.storageClassName === storageClassName)
@@ -31,28 +31,28 @@ function getPersistentVolumePage(
 
 /**
  * 获取 PersistentVolume 详情
- * @param clusterId - 集群 ID
+ * @param clusterUid - 集群 UID
  * @param name - PersistentVolume 名称
  * @returns PersistentVolume 详情
  */
-function getPersistentVolumeDetail(clusterId: string, name: string): PersistentVolumeResp | null {
-  return mockPVs.find(p => p.clusterId === clusterId && p.name === name) || null
+function getPersistentVolumeDetail(clusterUid: string, name: string): PersistentVolumeResp | null {
+  return mockPVs.find(p => p.clusterUid === clusterUid && p.name === name) || null
 }
 
 /**
  * 更新 PersistentVolume 标签
- * @param clusterId - 集群 ID
+ * @param clusterUid - 集群 UID
  * @param name - PersistentVolume 名称
  * @param labels - 标签键值对
  * @param operation - 操作类型
  */
 function managePersistentVolumeLabels(
-  clusterId: string,
+  clusterUid: string,
   name: string,
   labels: Record<string, string>,
   operation: number,
 ): void {
-  const index = mockPVs.findIndex(p => p.clusterId === clusterId && p.name === name)
+  const index = mockPVs.findIndex(p => p.clusterUid === clusterUid && p.name === name)
   if (index === -1) {
     console.error('[Update PersistentVolume Labels] can not find pv:', name)
     return
@@ -71,18 +71,18 @@ function managePersistentVolumeLabels(
 
 /**
  * 更新 PersistentVolume 注解
- * @param clusterId - 集群 ID
+ * @param clusterUid - 集群 UID
  * @param name - PersistentVolume 名称
  * @param annotations - 注解键值对
  * @param operation - 操作类型
  */
 function managePersistentVolumeAnnotations(
-  clusterId: string,
+  clusterUid: string,
   name: string,
   annotations: Record<string, string>,
   operation: number,
 ): void {
-  const index = mockPVs.findIndex(p => p.clusterId === clusterId && p.name === name)
+  const index = mockPVs.findIndex(p => p.clusterUid === clusterUid && p.name === name)
   if (index === -1) {
     console.error('[Update PersistentVolume Annotations] can not find pv:', name)
     return
@@ -101,11 +101,11 @@ function managePersistentVolumeAnnotations(
 
 /**
  * 删除 PersistentVolume
- * @param clusterId - 集群 ID
+ * @param clusterUid - 集群 UID
  * @param name - PersistentVolume 名称
  */
-function deletePersistentVolume(clusterId: string, name: string): void {
-  const index = mockPVs.findIndex(p => p.clusterId === clusterId && p.name === name)
+function deletePersistentVolume(clusterUid: string, name: string): void {
+  const index = mockPVs.findIndex(p => p.clusterUid === clusterUid && p.name === name)
   if (index === -1) {
     console.error('[Delete PersistentVolume] can not find pv:', name)
     return
@@ -115,12 +115,12 @@ function deletePersistentVolume(clusterId: string, name: string): void {
 
 /**
  * 批量删除 PersistentVolume
- * @param clusterId - 集群 ID
+ * @param clusterUid - 集群 UID
  * @param names - 待删除的 PersistentVolume 名称列表
  */
-function deletePersistentVolumes(clusterId: string, names: string[]): void {
+function deletePersistentVolumes(clusterUid: string, names: string[]): void {
   names.forEach(name => {
-    const index = mockPVs.findIndex(p => p.clusterId === clusterId && p.name === name)
+    const index = mockPVs.findIndex(p => p.clusterUid === clusterUid && p.name === name)
     if (index === -1) {
       console.error('[Delete PersistentVolumes] can not find pv:', name)
     } else {
@@ -132,47 +132,64 @@ function deletePersistentVolumes(clusterId: string, names: string[]): void {
 /**
  * PersistentVolume 路由配置
  * @remarks
- * - GET /kubernetes/clusters/:clusterId/persistentvolumes - 获取 PersistentVolume 分页列表
- * - GET /kubernetes/clusters/:clusterId/persistentvolumes/:name - 获取 PersistentVolume 详情
- * - PUT /kubernetes/clusters/:clusterId/persistentvolumes/:name/labels - 更新标签
- * - PUT /kubernetes/clusters/:clusterId/persistentvolumes/:name/annotations - 更新注解
- * - DELETE /kubernetes/clusters/:clusterId/persistentvolumes/:name - 删除 PersistentVolume
- * - DELETE /kubernetes/clusters/:clusterId/persistentvolumes - 批量删除 PersistentVolume
+ * - GET /kubernetes/clusters/:clusterUid/persistentvolumes - 获取 PersistentVolume 分页列表
+ * - GET /kubernetes/clusters/:clusterUid/persistentvolumes/:name - 获取 PersistentVolume 详情
+ * - PUT /kubernetes/clusters/:clusterUid/persistentvolumes/:name/labels - 更新标签
+ * - PUT /kubernetes/clusters/:clusterUid/persistentvolumes/:name/annotations - 更新注解
+ * - DELETE /kubernetes/clusters/:clusterUid/persistentvolumes/:name - 删除 PersistentVolume
+ * - DELETE /kubernetes/clusters/:clusterUid/persistentvolumes - 批量删除 PersistentVolume
  */
 export default [
   {
     method: 'get',
-    url: '/kubernetes/clusters/:clusterId/persistentvolumes',
-    handler: ({ pathParams, params }: { pathParams: Record<string, string>; params: Partial<PersistentVolumeQueryReq> }) =>
-      getPersistentVolumePage(pathParams.clusterId, params),
+    url: '/kubernetes/clusters/:clusterUid/persistentvolumes',
+    handler: ({
+      pathParams,
+      params,
+    }: {
+      pathParams: Record<string, string>
+      params: Partial<PersistentVolumeQueryReq>
+    }) => getPersistentVolumePage(pathParams.clusterUid, params),
   },
   {
     method: 'get',
-    url: '/kubernetes/clusters/:clusterId/persistentvolumes/:name',
-    handler: ({ pathParams }: { pathParams: Record<string, string> }) => getPersistentVolumeDetail(pathParams.clusterId, pathParams.name),
+    url: '/kubernetes/clusters/:clusterUid/persistentvolumes/:name',
+    handler: ({ pathParams }: { pathParams: Record<string, string> }) =>
+      getPersistentVolumeDetail(pathParams.clusterUid, pathParams.name),
   },
   {
     method: 'put',
-    url: '/kubernetes/clusters/:clusterId/persistentvolumes/:name/labels',
-    handler: ({ pathParams, data }: { pathParams: Record<string, string>; data: { labels: Record<string, string>; operation: number },
-     }) => managePersistentVolumeLabels(pathParams.clusterId, pathParams.name, data.labels, data.operation),
+    url: '/kubernetes/clusters/:clusterUid/persistentvolumes/:name/labels',
+    handler: ({
+      pathParams,
+      data,
+    }: {
+      pathParams: Record<string, string>
+      data: { labels: Record<string, string>; operation: number }
+    }) => managePersistentVolumeLabels(pathParams.clusterUid, pathParams.name, data.labels, data.operation),
   },
   {
     method: 'put',
-    url: '/kubernetes/clusters/:clusterId/persistentvolumes/:name/annotations',
-    handler: ({ pathParams, data }: { pathParams: Record<string, string>; data: { annotations: Record<string, string>; operation: number },
-     }) => managePersistentVolumeAnnotations(pathParams.clusterId, pathParams.name, data.annotations, data.operation),
+    url: '/kubernetes/clusters/:clusterUid/persistentvolumes/:name/annotations',
+    handler: ({
+      pathParams,
+      data,
+    }: {
+      pathParams: Record<string, string>
+      data: { annotations: Record<string, string>; operation: number }
+    }) => managePersistentVolumeAnnotations(pathParams.clusterUid, pathParams.name, data.annotations, data.operation),
   },
   {
     method: 'delete',
-    url: '/kubernetes/clusters/:clusterId/persistentvolumes/:name',
-    handler: ({ pathParams }: { pathParams: Record<string, string> }) => deletePersistentVolume(pathParams.clusterId, pathParams.name),
+    url: '/kubernetes/clusters/:clusterUid/persistentvolumes/:name',
+    handler: ({ pathParams }: { pathParams: Record<string, string> }) =>
+      deletePersistentVolume(pathParams.clusterUid, pathParams.name),
   },
   {
     method: 'delete',
-    url: '/kubernetes/clusters/:clusterId/persistentvolumes',
+    url: '/kubernetes/clusters/:clusterUid/persistentvolumes',
     handler: ({ pathParams, data }: { pathParams: Record<string, string>; data: string[] }) =>
-      deletePersistentVolumes(pathParams.clusterId, data),
+      deletePersistentVolumes(pathParams.clusterUid, data),
   },
 ]
 
@@ -183,7 +200,7 @@ const mockPVs: PersistentVolumeResp[] = [
   {
     id: generateId(),
     name: 'pv-mysql-data-001',
-    clusterId: 'cluster-1',
+    clusterUid: 'cluster-1',
     clusterName: 'prod-cluster',
     status: 'Bound',
     capacity: { storage: '100Gi' },
@@ -203,7 +220,7 @@ const mockPVs: PersistentVolumeResp[] = [
   {
     id: generateId(),
     name: 'pv-mongodb-data-001',
-    clusterId: 'cluster-1',
+    clusterUid: 'cluster-1',
     clusterName: 'prod-cluster',
     status: 'Bound',
     capacity: { storage: '50Gi' },
@@ -223,7 +240,7 @@ const mockPVs: PersistentVolumeResp[] = [
   {
     id: generateId(),
     name: 'pv-nfs-shared-001',
-    clusterId: 'cluster-1',
+    clusterUid: 'cluster-1',
     clusterName: 'prod-cluster',
     status: 'Available',
     capacity: { storage: '1Ti' },
@@ -242,7 +259,7 @@ const mockPVs: PersistentVolumeResp[] = [
   {
     id: generateId(),
     name: 'pv-local-001',
-    clusterId: 'cluster-1',
+    clusterUid: 'cluster-1',
     clusterName: 'prod-cluster',
     status: 'Released',
     capacity: { storage: '200Gi' },

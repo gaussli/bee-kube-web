@@ -41,7 +41,7 @@ export type NamespaceConditionType =
 export interface NamespaceListResp extends BaseEntity {
   /** 资源 UID */
   uid: string
-  /** 所属集群 ID */
+  /** 所属集群 UID */
   clusterUid: string
   /** 所属集群名称 */
   clusterName: string
@@ -64,7 +64,7 @@ export interface NamespaceListResp extends BaseEntity {
 export interface NamespaceDetailResp extends BaseEntity {
   /** 资源 UID */
   uid: string
-  /** 所属集群 ID */
+  /** 所属集群 UID */
   clusterUid: string
   /** 所属集群名称 */
   clusterName: string
@@ -95,7 +95,7 @@ export interface NamespaceDetailResp extends BaseEntity {
 export interface NamespaceOverviewResp extends BaseEntity {
   /** 资源 UID */
   uid: string
-  /** 所属集群 ID */
+  /** 所属集群 UID */
   clusterUid: string
   /** 所属集群名称 */
   clusterName: string

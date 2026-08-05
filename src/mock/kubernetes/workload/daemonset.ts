@@ -18,97 +18,107 @@ import { generateId } from '@/mock/utils'
 /**
  * DaemonSet 路由配置
  * @remarks
- * - GET /kubernetes/clusters/:clusterId/daemonsets - 获取 DaemonSet 分页列表
- * - GET /kubernetes/clusters/:clusterId/namespaces/:namespace/daemonsets/:name - 获取 DaemonSet 详情
- * - GET /kubernetes/clusters/:clusterId/namespaces/:namespace/daemonsets/:name/yaml - 查看 YAML
- * - POST /kubernetes/clusters/:clusterId/namespaces/:namespace/daemonsets - 创建 DaemonSet
- * - PUT /kubernetes/clusters/:clusterId/namespaces/:namespace/daemonsets/:name - 更新 DaemonSet
- * - POST /kubernetes/clusters/:clusterId/namespaces/:namespace/daemonsets/:name/restart - 重启
- * - POST /kubernetes/clusters/:clusterId/namespaces/:namespace/daemonsets/:name/labels - 更新标签
- * - POST /kubernetes/clusters/:clusterId/namespaces/:namespace/daemonsets/:name/annotations - 更新注解
- * - DELETE /kubernetes/clusters/:clusterId/namespaces/:namespace/daemonsets/:name - 删除 DaemonSet
- * - DELETE /kubernetes/clusters/:clusterId/namespaces/:namespace/daemonsets/batch - 批量删除
- * - GET /kubernetes/clusters/:clusterId/daemonsets/export - 导出 CSV
- * - POST /kubernetes/clusters/:clusterId/daemonsets/import - 导入 DaemonSet
+ * - GET /kubernetes/clusters/:clusterUid/daemonsets - 获取 DaemonSet 分页列表
+ * - GET /kubernetes/clusters/:clusterUid/namespaces/:namespace/daemonsets/:name - 获取 DaemonSet 详情
+ * - GET /kubernetes/clusters/:clusterUid/namespaces/:namespace/daemonsets/:name/yaml - 查看 YAML
+ * - POST /kubernetes/clusters/:clusterUid/namespaces/:namespace/daemonsets - 创建 DaemonSet
+ * - PUT /kubernetes/clusters/:clusterUid/namespaces/:namespace/daemonsets/:name - 更新 DaemonSet
+ * - POST /kubernetes/clusters/:clusterUid/namespaces/:namespace/daemonsets/:name/restart - 重启
+ * - POST /kubernetes/clusters/:clusterUid/namespaces/:namespace/daemonsets/:name/labels - 更新标签
+ * - POST /kubernetes/clusters/:clusterUid/namespaces/:namespace/daemonsets/:name/annotations - 更新注解
+ * - DELETE /kubernetes/clusters/:clusterUid/namespaces/:namespace/daemonsets/:name - 删除 DaemonSet
+ * - DELETE /kubernetes/clusters/:clusterUid/namespaces/:namespace/daemonsets/batch - 批量删除
+ * - GET /kubernetes/clusters/:clusterUid/daemonsets/export - 导出 CSV
+ * - POST /kubernetes/clusters/:clusterUid/daemonsets/import - 导入 DaemonSet
  */
 export default [
   {
     method: 'get',
-    url: '/kubernetes/clusters/:clusterId/daemonsets',
-    handler: ({ pathParams, params }: { pathParams: Record<string, string>; params: Partial<DaemonSetQueryReq> }): PageVo<DaemonSetListResp> =>
-      getDaemonSetList(pathParams.clusterId, params),
+    url: '/kubernetes/clusters/:clusterUid/daemonsets',
+    handler: ({
+      pathParams,
+      params,
+    }: {
+      pathParams: Record<string, string>
+      params: Partial<DaemonSetQueryReq>
+    }): PageVo<DaemonSetListResp> => getDaemonSetList(pathParams.clusterUid, params),
   },
   {
     method: 'get',
-    url: '/kubernetes/clusters/:clusterId/namespaces/:namespace/daemonsets/:name',
+    url: '/kubernetes/clusters/:clusterUid/namespaces/:namespace/daemonsets/:name',
     handler: ({ pathParams }: { pathParams: Record<string, string> }): DaemonSetDetailResp =>
-      getDaemonSetDetail(pathParams.clusterId, pathParams.namespace, pathParams.name),
+      getDaemonSetDetail(pathParams.clusterUid, pathParams.namespace, pathParams.name),
   },
   {
     method: 'get',
-    url: '/kubernetes/clusters/:clusterId/namespaces/:namespace/daemonsets/:name/yaml',
+    url: '/kubernetes/clusters/:clusterUid/namespaces/:namespace/daemonsets/:name/yaml',
     handler: ({ pathParams }: { pathParams: Record<string, string> }): string =>
-      getDaemonSetYaml(pathParams.clusterId, pathParams.namespace, pathParams.name),
+      getDaemonSetYaml(pathParams.clusterUid, pathParams.namespace, pathParams.name),
   },
   {
     method: 'post',
-    url: '/kubernetes/clusters/:clusterId/namespaces/:namespace/daemonsets',
+    url: '/kubernetes/clusters/:clusterUid/namespaces/:namespace/daemonsets',
     handler: ({ pathParams, data }: { pathParams: Record<string, string>; data: DaemonSetReq }): void =>
-      createDaemonSet(pathParams.clusterId, pathParams.namespace, data),
+      createDaemonSet(pathParams.clusterUid, pathParams.namespace, data),
   },
   {
     method: 'put',
-    url: '/kubernetes/clusters/:clusterId/namespaces/:namespace/daemonsets/:name',
+    url: '/kubernetes/clusters/:clusterUid/namespaces/:namespace/daemonsets/:name',
     handler: ({ pathParams, data }: { pathParams: Record<string, string>; data: Partial<DaemonSetReq> }): void =>
-      updateDaemonSet(pathParams.clusterId, pathParams.namespace, pathParams.name, data),
+      updateDaemonSet(pathParams.clusterUid, pathParams.namespace, pathParams.name, data),
   },
   {
     method: 'post',
-    url: '/kubernetes/clusters/:clusterId/namespaces/:namespace/daemonsets/:name/restart',
+    url: '/kubernetes/clusters/:clusterUid/namespaces/:namespace/daemonsets/:name/restart',
     handler: ({ pathParams }: { pathParams: Record<string, string> }): void =>
-      restartDaemonSet(pathParams.clusterId, pathParams.namespace, pathParams.name),
+      restartDaemonSet(pathParams.clusterUid, pathParams.namespace, pathParams.name),
   },
   {
     method: 'post',
-    url: '/kubernetes/clusters/:clusterId/namespaces/:namespace/daemonsets/:name/labels',
+    url: '/kubernetes/clusters/:clusterUid/namespaces/:namespace/daemonsets/:name/labels',
     handler: ({ pathParams, data }: { pathParams: Record<string, string>; data: DaemonSetLabelsReq }): void =>
-      manageDaemonSetLabels(pathParams.clusterId, pathParams.namespace, pathParams.name, data),
+      manageDaemonSetLabels(pathParams.clusterUid, pathParams.namespace, pathParams.name, data),
   },
   {
     method: 'post',
-    url: '/kubernetes/clusters/:clusterId/namespaces/:namespace/daemonsets/:name/annotations',
+    url: '/kubernetes/clusters/:clusterUid/namespaces/:namespace/daemonsets/:name/annotations',
     handler: ({ pathParams, data }: { pathParams: Record<string, string>; data: DaemonSetAnnotationsReq }): void =>
-      manageDaemonSetAnnotations(pathParams.clusterId, pathParams.namespace, pathParams.name, data),
+      manageDaemonSetAnnotations(pathParams.clusterUid, pathParams.namespace, pathParams.name, data),
   },
   {
     method: 'delete',
-    url: '/kubernetes/clusters/:clusterId/namespaces/:namespace/daemonsets/:name',
+    url: '/kubernetes/clusters/:clusterUid/namespaces/:namespace/daemonsets/:name',
     handler: ({ pathParams }: { pathParams: Record<string, string> }): void =>
-      deleteDaemonSet(pathParams.clusterId, pathParams.namespace, pathParams.name),
+      deleteDaemonSet(pathParams.clusterUid, pathParams.namespace, pathParams.name),
   },
   {
     method: 'delete',
-    url: '/kubernetes/clusters/:clusterId/namespaces/:namespace/daemonsets/batch',
+    url: '/kubernetes/clusters/:clusterUid/namespaces/:namespace/daemonsets/batch',
     handler: ({ pathParams, data }: { pathParams: Record<string, string>; data: string[] }): void =>
-      deleteDaemonSets(pathParams.clusterId, pathParams.namespace, data),
+      deleteDaemonSets(pathParams.clusterUid, pathParams.namespace, data),
   },
   {
     method: 'get',
-    url: '/kubernetes/clusters/:clusterId/daemonsets/export',
-    handler: ({ pathParams, params }: { pathParams: Record<string, string>; params: Partial<DaemonSetQueryReq> }): void =>
-      exportDaemonSet(pathParams.clusterId, params),
+    url: '/kubernetes/clusters/:clusterUid/daemonsets/export',
+    handler: ({
+      pathParams,
+      params,
+    }: {
+      pathParams: Record<string, string>
+      params: Partial<DaemonSetQueryReq>
+    }): void => exportDaemonSet(pathParams.clusterUid, params),
   },
   {
     method: 'post',
-    url: '/kubernetes/clusters/:clusterId/daemonsets/import',
+    url: '/kubernetes/clusters/:clusterUid/daemonsets/import',
     handler: ({ pathParams, data }: { pathParams: Record<string, string>; data: DaemonSetYamlReq }): void =>
-      importDaemonSet(pathParams.clusterId, data),
+      importDaemonSet(pathParams.clusterUid, data),
   },
 ]
 
 /**
  * 获取 DaemonSet 分页列表
- * @param _clusterId - 集群ID
+ * @param _clusterId - 集群 UID
  * @param params - 查询参数
  * @returns 分页数据
  */
@@ -150,15 +160,15 @@ function getDaemonSetList(_clusterId: string, params: Partial<DaemonSetQueryReq>
 
 /**
  * 获取 DaemonSet 详情
- * @param clusterId - 集群ID
+ * @param clusterUid - 集群 UID
  * @param namespace - 命名空间
  * @param name - DaemonSet 名称
  * @returns DaemonSet 详情
  */
-function getDaemonSetDetail(clusterId: string, namespace: string, name: string): DaemonSetDetailResp {
-  const ds = mockDaemonSets.find(d => d.clusterId === clusterId && d.namespace === namespace && d.name === name)
+function getDaemonSetDetail(clusterUid: string, namespace: string, name: string): DaemonSetDetailResp {
+  const ds = mockDaemonSets.find(d => d.clusterUid === clusterUid && d.namespace === namespace && d.name === name)
   if (!ds) {
-    console.error('[Get DaemonSet Detail] can not find daemonset:', clusterId, namespace, name)
+    console.error('[Get DaemonSet Detail] can not find daemonset:', clusterUid, namespace, name)
   }
   return {
     ...ds!,
@@ -176,15 +186,15 @@ function getDaemonSetDetail(clusterId: string, namespace: string, name: string):
 
 /**
  * 查看 DaemonSet YAML
- * @param clusterId - 集群ID
+ * @param clusterUid - 集群 UID
  * @param namespace - 命名空间
  * @param name - DaemonSet 名称
  * @returns DaemonSet YAML 配置
  */
-function getDaemonSetYaml(clusterId: string, namespace: string, name: string): string {
-  const ds = mockDaemonSets.find(d => d.clusterId === clusterId && d.namespace === namespace && d.name === name)
+function getDaemonSetYaml(clusterUid: string, namespace: string, name: string): string {
+  const ds = mockDaemonSets.find(d => d.clusterUid === clusterUid && d.namespace === namespace && d.name === name)
   if (!ds) {
-    console.error('[Get DaemonSet Yaml] can not find daemonset:', clusterId, namespace, name)
+    console.error('[Get DaemonSet Yaml] can not find daemonset:', clusterUid, namespace, name)
     return ''
   }
 
@@ -217,98 +227,98 @@ status:
 
 /**
  * 创建 DaemonSet
- * @param clusterId - 集群ID
+ * @param clusterUid - 集群 UID
  * @param namespace - 命名空间
  * @param data - 创建参数
  */
-function createDaemonSet(clusterId: string, namespace: string, data: DaemonSetReq): void {
-  console.log('[Mock] createDaemonSet', { clusterId, namespace, data })
+function createDaemonSet(clusterUid: string, namespace: string, data: DaemonSetReq): void {
+  console.log('[Mock] createDaemonSet', { clusterUid, namespace, data })
 }
 
 /**
  * 更新 DaemonSet
- * @param clusterId - 集群ID
+ * @param clusterUid - 集群 UID
  * @param namespace - 命名空间
  * @param name - DaemonSet 名称
  * @param data - 更新参数
  */
-function updateDaemonSet(clusterId: string, namespace: string, name: string, data: Partial<DaemonSetReq>): void {
-  console.log('[Mock] updateDaemonSet', { clusterId, namespace, name, data })
+function updateDaemonSet(clusterUid: string, namespace: string, name: string, data: Partial<DaemonSetReq>): void {
+  console.log('[Mock] updateDaemonSet', { clusterUid, namespace, name, data })
 }
 
 /**
  * 重启 DaemonSet
- * @param clusterId - 集群ID
+ * @param clusterUid - 集群 UID
  * @param namespace - 命名空间
  * @param name - DaemonSet 名称
  */
-function restartDaemonSet(clusterId: string, namespace: string, name: string): void {
-  console.log('[Mock] restartDaemonSet', { clusterId, namespace, name })
+function restartDaemonSet(clusterUid: string, namespace: string, name: string): void {
+  console.log('[Mock] restartDaemonSet', { clusterUid, namespace, name })
 }
 
 /**
  * 更新 DaemonSet 标签
- * @param clusterId - 集群ID
+ * @param clusterUid - 集群 UID
  * @param namespace - 命名空间
  * @param name - DaemonSet 名称
  * @param data - 标签数据
  */
-function manageDaemonSetLabels(clusterId: string, namespace: string, name: string, data: DaemonSetLabelsReq): void {
-  console.log('[Mock] manageDaemonSetLabels', { clusterId, namespace, name, data })
+function manageDaemonSetLabels(clusterUid: string, namespace: string, name: string, data: DaemonSetLabelsReq): void {
+  console.log('[Mock] manageDaemonSetLabels', { clusterUid, namespace, name, data })
 }
 
 /**
  * 更新 DaemonSet 注解
- * @param clusterId - 集群ID
+ * @param clusterUid - 集群 UID
  * @param namespace - 命名空间
  * @param name - DaemonSet 名称
  * @param data - 注解数据
  */
 function manageDaemonSetAnnotations(
-  clusterId: string,
+  clusterUid: string,
   namespace: string,
   name: string,
   data: DaemonSetAnnotationsReq,
 ): void {
-  console.log('[Mock] manageDaemonSetAnnotations', { clusterId, namespace, name, data })
+  console.log('[Mock] manageDaemonSetAnnotations', { clusterUid, namespace, name, data })
 }
 
 /**
  * 删除 DaemonSet
- * @param clusterId - 集群ID
+ * @param clusterUid - 集群 UID
  * @param namespace - 命名空间
  * @param name - DaemonSet 名称
  */
-function deleteDaemonSet(clusterId: string, namespace: string, name: string): void {
-  console.log('[Mock] deleteDaemonSet', { clusterId, namespace, name })
+function deleteDaemonSet(clusterUid: string, namespace: string, name: string): void {
+  console.log('[Mock] deleteDaemonSet', { clusterUid, namespace, name })
 }
 
 /**
  * 批量删除 DaemonSet
- * @param clusterId - 集群ID
+ * @param clusterUid - 集群 UID
  * @param namespace - 命名空间
  * @param names - DaemonSet 名称数组
  */
-function deleteDaemonSets(clusterId: string, namespace: string, names: string[]): void {
-  console.log('[Mock] deleteDaemonSets', { clusterId, namespace, names })
+function deleteDaemonSets(clusterUid: string, namespace: string, names: string[]): void {
+  console.log('[Mock] deleteDaemonSets', { clusterUid, namespace, names })
 }
 
 /**
  * 导出 DaemonSet CSV
- * @param clusterId - 集群ID
+ * @param clusterUid - 集群 UID
  * @param params - 查询参数
  */
-function exportDaemonSet(clusterId: string, params: Partial<DaemonSetQueryReq>): void {
-  console.log('[Mock] exportDaemonSet', { clusterId, params })
+function exportDaemonSet(clusterUid: string, params: Partial<DaemonSetQueryReq>): void {
+  console.log('[Mock] exportDaemonSet', { clusterUid, params })
 }
 
 /**
  * 导入 DaemonSet
- * @param clusterId - 集群ID
+ * @param clusterUid - 集群 UID
  * @param data - YAML 配置
  */
-function importDaemonSet(clusterId: string, data: DaemonSetYamlReq): void {
-  console.log('[Mock] importDaemonSet', { clusterId, data })
+function importDaemonSet(clusterUid: string, data: DaemonSetYamlReq): void {
+  console.log('[Mock] importDaemonSet', { clusterUid, data })
 }
 
 /**
@@ -322,7 +332,7 @@ const mockDaemonSets: DaemonSetListResp[] = [
     uid: generateId(),
     name: 'fluentd-logging',
     namespace: 'kube-system',
-    clusterId: generateId(),
+    clusterUid: generateId(),
     description: 'Fluentd 日志采集 DaemonSet，在每个节点运行并采集容器日志发送到日志平台',
     status: 'Running',
     desiredNumberScheduled: 8,
@@ -339,7 +349,7 @@ const mockDaemonSets: DaemonSetListResp[] = [
     uid: generateId(),
     name: 'node-exporter',
     namespace: 'monitoring',
-    clusterId: generateId(),
+    clusterUid: generateId(),
     description: 'Prometheus Node Exporter，采集节点级别的 CPU、内存、磁盘等硬件指标',
     status: 'Running',
     desiredNumberScheduled: 8,
@@ -356,7 +366,7 @@ const mockDaemonSets: DaemonSetListResp[] = [
     uid: generateId(),
     name: 'kube-proxy',
     namespace: 'kube-system',
-    clusterId: generateId(),
+    clusterUid: generateId(),
     description: 'Kubernetes 网络代理组件，维护节点上的网络规则和 Service 流量转发',
     status: 'Running',
     desiredNumberScheduled: 8,
@@ -374,7 +384,7 @@ const mockDaemonSets: DaemonSetListResp[] = [
     uid: generateId(),
     name: 'filebeat',
     namespace: 'logging',
-    clusterId: generateId(),
+    clusterUid: generateId(),
     description: 'Filebeat 日志采集器，将应用日志文件实时发送到 ElasticSearch',
     status: 'Available',
     statusMessage: '1 个节点上的 Pod 未就绪，正在等待节点资源',
@@ -392,7 +402,7 @@ const mockDaemonSets: DaemonSetListResp[] = [
     uid: generateId(),
     name: 'csi-driver',
     namespace: 'storage',
-    clusterId: generateId(),
+    clusterUid: generateId(),
     description: 'CSI 存储驱动插件，为每个节点提供持久化存储卷的挂载和管理能力',
     status: 'Available',
     statusMessage: '新增节点上 Pod 初始化中，存储卷尚未挂载完成',
@@ -411,7 +421,7 @@ const mockDaemonSets: DaemonSetListResp[] = [
     uid: generateId(),
     name: 'datadog-agent',
     namespace: 'monitoring',
-    clusterId: generateId(),
+    clusterUid: generateId(),
     description: 'Datadog Agent，提供应用性能监控(APM)和基础设施监控能力',
     status: 'Updating',
     statusMessage: '滚动更新中，按节点逐个替换旧版本 Pod',
@@ -429,7 +439,7 @@ const mockDaemonSets: DaemonSetListResp[] = [
     uid: generateId(),
     name: 'calico-node',
     namespace: 'kube-system',
-    clusterId: generateId(),
+    clusterUid: generateId(),
     description: 'Calico 网络插件节点组件，管理 Pod 网络策略和路由',
     status: 'Updating',
     statusMessage: '版本升级进行中，网络策略迁移中',
@@ -448,7 +458,7 @@ const mockDaemonSets: DaemonSetListResp[] = [
     uid: generateId(),
     name: 'gpu-device-plugin',
     namespace: 'kube-system',
-    clusterId: generateId(),
+    clusterUid: generateId(),
     description: 'NVIDIA GPU 设备插件，使 Kubernetes 能够发现和调度 GPU 资源',
     status: 'Creating',
     statusMessage: 'Pod 正在节点上创建，等待镜像拉取完成',
@@ -467,7 +477,7 @@ const mockDaemonSets: DaemonSetListResp[] = [
     uid: generateId(),
     name: 'network-monitor',
     namespace: 'monitoring',
-    clusterId: generateId(),
+    clusterUid: generateId(),
     description: '网络监控探针，检测节点间网络延迟和连通性',
     status: 'Failed',
     statusMessage: '部分节点 Pod 启动失败，CrashLoopBackOff',
@@ -486,7 +496,7 @@ const mockDaemonSets: DaemonSetListResp[] = [
     uid: generateId(),
     name: 'auditbeat',
     namespace: 'logging',
-    clusterId: generateId(),
+    clusterUid: generateId(),
     description: 'Auditbeat 审计日志采集器，记录系统级别审计事件',
     status: 'Unknown',
     statusMessage: 'API Server 连接异常，无法获取 DaemonSet 状态',

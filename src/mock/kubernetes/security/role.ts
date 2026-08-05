@@ -9,14 +9,14 @@ import { generateId } from '@/mock/utils'
 
 /**
  * 获取 Role 分页列表
- * @param clusterId - 集群 ID
+ * @param clusterUid - 集群 UID
  * @param namespaceName - 命名空间名称
  * @param params - 查询参数
  * @returns 分页数据
  */
-function getRolePage(clusterId: string, namespaceName: string, params: Partial<RoleQueryReq>): PageVo<RoleResp> {
+function getRolePage(clusterUid: string, namespaceName: string, params: Partial<RoleQueryReq>): PageVo<RoleResp> {
   const { name, showSystem, page = 1, pageSize = 10 } = params || {}
-  let filtered = mockRoles.filter(r => r.clusterId === clusterId && r.namespace === namespaceName)
+  let filtered = mockRoles.filter(r => r.clusterUid === clusterUid && r.namespace === namespaceName)
   if (!showSystem) filtered = filtered.filter(r => !r.isSystem)
   if (name) filtered = filtered.filter(r => r.name.toLowerCase().includes(name.toLowerCase()))
   const total = filtered.length
@@ -28,26 +28,26 @@ function getRolePage(clusterId: string, namespaceName: string, params: Partial<R
 
 /**
  * 获取 Role 详情
- * @param clusterId - 集群 ID
+ * @param clusterUid - 集群 UID
  * @param namespaceName - 命名空间名称
  * @param name - Role 名称
  * @returns Role 详情
  */
-function getRoleDetail(clusterId: string, namespaceName: string, name: string): RoleResp | null {
-  return mockRoles.find(r => r.clusterId === clusterId && r.namespace === namespaceName && r.name === name) || null
+function getRoleDetail(clusterUid: string, namespaceName: string, name: string): RoleResp | null {
+  return mockRoles.find(r => r.clusterUid === clusterUid && r.namespace === namespaceName && r.name === name) || null
 }
 
 /**
  * 创建 Role
- * @param clusterId - 集群 ID
+ * @param clusterUid - 集群 UID
  * @param data - 创建参数
  */
-function createRole(clusterId: string, data: Partial<RoleReq>): void {
+function createRole(clusterUid: string, data: Partial<RoleReq>): void {
   const created: RoleResp = {
     id: generateId(),
     name: data.name || '',
     namespace: data.namespace || '',
-    clusterId,
+    clusterUid,
     clusterName: 'prod-cluster',
     isSystem: false,
     rules: data.rules || [],
@@ -63,12 +63,12 @@ function createRole(clusterId: string, data: Partial<RoleReq>): void {
 
 /**
  * 更新 Role
- * @param clusterId - 集群 ID
+ * @param clusterUid - 集群 UID
  * @param data - 更新参数
  */
-function updateRole(clusterId: string, data: Partial<RoleReq>): void {
+function updateRole(clusterUid: string, data: Partial<RoleReq>): void {
   const index = mockRoles.findIndex(
-    r => r.clusterId === clusterId && r.namespace === data.namespace && r.name === data.name,
+    r => r.clusterUid === clusterUid && r.namespace === data.namespace && r.name === data.name,
   )
   if (index === -1) {
     console.error('[Update Role] can not find role:', data.name)
@@ -85,20 +85,22 @@ function updateRole(clusterId: string, data: Partial<RoleReq>): void {
 
 /**
  * 更新 Role 标签
- * @param clusterId - 集群 ID
+ * @param clusterUid - 集群 UID
  * @param namespaceName - 命名空间名称
  * @param name - Role 名称
  * @param labels - 标签键值对
  * @param operation - 操作类型
  */
 function manageRoleLabels(
-  clusterId: string,
+  clusterUid: string,
   namespaceName: string,
   name: string,
   labels: Record<string, string>,
   operation: number,
 ): void {
-  const index = mockRoles.findIndex(r => r.clusterId === clusterId && r.namespace === namespaceName && r.name === name)
+  const index = mockRoles.findIndex(
+    r => r.clusterUid === clusterUid && r.namespace === namespaceName && r.name === name,
+  )
   if (index === -1) {
     console.error('[Update Role Labels] can not find role:', name)
     return
@@ -117,20 +119,22 @@ function manageRoleLabels(
 
 /**
  * 更新 Role 注解
- * @param clusterId - 集群 ID
+ * @param clusterUid - 集群 UID
  * @param namespaceName - 命名空间名称
  * @param name - Role 名称
  * @param annotations - 注解键值对
  * @param operation - 操作类型
  */
 function manageRoleAnnotations(
-  clusterId: string,
+  clusterUid: string,
   namespaceName: string,
   name: string,
   annotations: Record<string, string>,
   operation: number,
 ): void {
-  const index = mockRoles.findIndex(r => r.clusterId === clusterId && r.namespace === namespaceName && r.name === name)
+  const index = mockRoles.findIndex(
+    r => r.clusterUid === clusterUid && r.namespace === namespaceName && r.name === name,
+  )
   if (index === -1) {
     console.error('[Update Role Annotations] can not find role:', name)
     return
@@ -149,13 +153,15 @@ function manageRoleAnnotations(
 
 /**
  * 更新 Role 规则
- * @param clusterId - 集群 ID
+ * @param clusterUid - 集群 UID
  * @param namespaceName - 命名空间名称
  * @param name - Role 名称
  * @param rules - 策略规则列表
  */
-function updateRoleRules(clusterId: string, namespaceName: string, name: string, rules: RoleReq['rules']): void {
-  const index = mockRoles.findIndex(r => r.clusterId === clusterId && r.namespace === namespaceName && r.name === name)
+function updateRoleRules(clusterUid: string, namespaceName: string, name: string, rules: RoleReq['rules']): void {
+  const index = mockRoles.findIndex(
+    r => r.clusterUid === clusterUid && r.namespace === namespaceName && r.name === name,
+  )
   if (index === -1) {
     console.error('[Update Role Rules] can not find role:', name)
     return
@@ -167,12 +173,14 @@ function updateRoleRules(clusterId: string, namespaceName: string, name: string,
 
 /**
  * 删除 Role
- * @param clusterId - 集群 ID
+ * @param clusterUid - 集群 UID
  * @param namespaceName - 命名空间名称
  * @param name - Role 名称
  */
-function deleteRole(clusterId: string, namespaceName: string, name: string): void {
-  const index = mockRoles.findIndex(r => r.clusterId === clusterId && r.namespace === namespaceName && r.name === name)
+function deleteRole(clusterUid: string, namespaceName: string, name: string): void {
+  const index = mockRoles.findIndex(
+    r => r.clusterUid === clusterUid && r.namespace === namespaceName && r.name === name,
+  )
   if (index === -1) {
     console.error('[Delete Role] can not find role:', name)
     return
@@ -182,14 +190,14 @@ function deleteRole(clusterId: string, namespaceName: string, name: string): voi
 
 /**
  * 批量删除 Role
- * @param clusterId - 集群 ID
+ * @param clusterUid - 集群 UID
  * @param namespaceName - 命名空间名称
  * @param names - 待删除的 Role 名称列表
  */
-function deleteRoles(clusterId: string, namespaceName: string, names: string[]): void {
+function deleteRoles(clusterUid: string, namespaceName: string, names: string[]): void {
   names.forEach(name => {
     const index = mockRoles.findIndex(
-      r => r.clusterId === clusterId && r.namespace === namespaceName && r.name === name,
+      r => r.clusterUid === clusterUid && r.namespace === namespaceName && r.name === name,
     )
     if (index === -1) {
       console.error('[Delete Roles] can not find role:', name)
@@ -202,54 +210,65 @@ function deleteRoles(clusterId: string, namespaceName: string, names: string[]):
 /**
  * Role 路由配置
  * @remarks
- * - GET /kubernetes/clusters/:clusterId/namespaces/:namespaceName/roles - 获取 Role 分页列表
- * - GET /kubernetes/clusters/:clusterId/namespaces/:namespaceName/roles/:name - 获取 Role 详情
- * - POST /kubernetes/clusters/:clusterId/namespaces/:namespaceName/roles - 创建 Role
- * - PUT /kubernetes/clusters/:clusterId/namespaces/:namespaceName/roles/:name - 更新 Role
- * - PUT /kubernetes/clusters/:clusterId/namespaces/:namespaceName/roles/:name/labels - 更新标签
- * - PUT /kubernetes/clusters/:clusterId/namespaces/:namespaceName/roles/:name/annotations - 更新注解
- * - PUT /kubernetes/clusters/:clusterId/namespaces/:namespaceName/roles/:name/rules - 更新规则
- * - DELETE /kubernetes/clusters/:clusterId/namespaces/:namespaceName/roles/:name - 删除 Role
- * - DELETE /kubernetes/clusters/:clusterId/namespaces/:namespaceName/roles - 批量删除 Role
+ * - GET /kubernetes/clusters/:clusterUid/namespaces/:namespaceName/roles - 获取 Role 分页列表
+ * - GET /kubernetes/clusters/:clusterUid/namespaces/:namespaceName/roles/:name - 获取 Role 详情
+ * - POST /kubernetes/clusters/:clusterUid/namespaces/:namespaceName/roles - 创建 Role
+ * - PUT /kubernetes/clusters/:clusterUid/namespaces/:namespaceName/roles/:name - 更新 Role
+ * - PUT /kubernetes/clusters/:clusterUid/namespaces/:namespaceName/roles/:name/labels - 更新标签
+ * - PUT /kubernetes/clusters/:clusterUid/namespaces/:namespaceName/roles/:name/annotations - 更新注解
+ * - PUT /kubernetes/clusters/:clusterUid/namespaces/:namespaceName/roles/:name/rules - 更新规则
+ * - DELETE /kubernetes/clusters/:clusterUid/namespaces/:namespaceName/roles/:name - 删除 Role
+ * - DELETE /kubernetes/clusters/:clusterUid/namespaces/:namespaceName/roles - 批量删除 Role
  */
 export default [
   {
     method: 'get',
-    url: '/kubernetes/clusters/:clusterId/namespaces/:namespaceName/roles',
+    url: '/kubernetes/clusters/:clusterUid/namespaces/:namespaceName/roles',
     handler: ({ pathParams, params }: { pathParams: Record<string, string>; params: Partial<RoleQueryReq> }) =>
-      getRolePage(pathParams.clusterId, pathParams.namespaceName, params),
+      getRolePage(pathParams.clusterUid, pathParams.namespaceName, params),
   },
   {
     method: 'get',
-    url: '/kubernetes/clusters/:clusterId/namespaces/:namespaceName/roles/:name',
+    url: '/kubernetes/clusters/:clusterUid/namespaces/:namespaceName/roles/:name',
     handler: ({ pathParams }: { pathParams: Record<string, string> }) =>
-      getRoleDetail(pathParams.clusterId, pathParams.namespaceName, pathParams.name),
+      getRoleDetail(pathParams.clusterUid, pathParams.namespaceName, pathParams.name),
   },
   {
     method: 'post',
-    url: '/kubernetes/clusters/:clusterId/namespaces/:namespaceName/roles',
+    url: '/kubernetes/clusters/:clusterUid/namespaces/:namespaceName/roles',
     handler: ({ pathParams, data }: { pathParams: Record<string, string>; data: Partial<RoleReq> }) =>
-      createRole(pathParams.clusterId, data),
+      createRole(pathParams.clusterUid, data),
   },
   {
     method: 'put',
-    url: '/kubernetes/clusters/:clusterId/namespaces/:namespaceName/roles/:name',
+    url: '/kubernetes/clusters/:clusterUid/namespaces/:namespaceName/roles/:name',
     handler: ({ pathParams, data }: { pathParams: Record<string, string>; data: Partial<RoleReq> }) =>
-      updateRole(pathParams.clusterId, data),
+      updateRole(pathParams.clusterUid, data),
   },
   {
     method: 'put',
-    url: '/kubernetes/clusters/:clusterId/namespaces/:namespaceName/roles/:name/labels',
-    handler: ({ pathParams, data }: { pathParams: Record<string, string>; data: { labels: Record<string, string>; operation: number },
-     }) => manageRoleLabels(pathParams.clusterId, pathParams.namespaceName, pathParams.name, data.labels, data.operation),
+    url: '/kubernetes/clusters/:clusterUid/namespaces/:namespaceName/roles/:name/labels',
+    handler: ({
+      pathParams,
+      data,
+    }: {
+      pathParams: Record<string, string>
+      data: { labels: Record<string, string>; operation: number }
+    }) =>
+      manageRoleLabels(pathParams.clusterUid, pathParams.namespaceName, pathParams.name, data.labels, data.operation),
   },
   {
     method: 'put',
-    url: '/kubernetes/clusters/:clusterId/namespaces/:namespaceName/roles/:name/annotations',
-    handler: ({ pathParams, data }: { pathParams: Record<string, string>; data: { annotations: Record<string, string>; operation: number },
-     }) =>
+    url: '/kubernetes/clusters/:clusterUid/namespaces/:namespaceName/roles/:name/annotations',
+    handler: ({
+      pathParams,
+      data,
+    }: {
+      pathParams: Record<string, string>
+      data: { annotations: Record<string, string>; operation: number }
+    }) =>
       manageRoleAnnotations(
-        pathParams.clusterId,
+        pathParams.clusterUid,
         pathParams.namespaceName,
         pathParams.name,
         data.annotations,
@@ -258,21 +277,21 @@ export default [
   },
   {
     method: 'put',
-    url: '/kubernetes/clusters/:clusterId/namespaces/:namespaceName/roles/:name/rules',
+    url: '/kubernetes/clusters/:clusterUid/namespaces/:namespaceName/roles/:name/rules',
     handler: ({ pathParams, data }: { pathParams: Record<string, string>; data: { rules: RoleReq['rules'] } }) =>
-      updateRoleRules(pathParams.clusterId, pathParams.namespaceName, pathParams.name, data.rules),
+      updateRoleRules(pathParams.clusterUid, pathParams.namespaceName, pathParams.name, data.rules),
   },
   {
     method: 'delete',
-    url: '/kubernetes/clusters/:clusterId/namespaces/:namespaceName/roles/:name',
+    url: '/kubernetes/clusters/:clusterUid/namespaces/:namespaceName/roles/:name',
     handler: ({ pathParams }: { pathParams: Record<string, string> }) =>
-      deleteRole(pathParams.clusterId, pathParams.namespaceName, pathParams.name),
+      deleteRole(pathParams.clusterUid, pathParams.namespaceName, pathParams.name),
   },
   {
     method: 'delete',
-    url: '/kubernetes/clusters/:clusterId/namespaces/:namespaceName/roles',
+    url: '/kubernetes/clusters/:clusterUid/namespaces/:namespaceName/roles',
     handler: ({ pathParams, data }: { pathParams: Record<string, string>; data: string[] }) =>
-      deleteRoles(pathParams.clusterId, pathParams.namespaceName, data),
+      deleteRoles(pathParams.clusterUid, pathParams.namespaceName, data),
   },
 ]
 
@@ -284,7 +303,7 @@ const mockRoles: RoleResp[] = [
     id: generateId(),
     name: 'system:controller:endpoint-controller',
     namespace: 'kube-system',
-    clusterId: 'cluster-1',
+    clusterUid: 'cluster-1',
     clusterName: 'prod-cluster',
     isSystem: true,
     rules: [
@@ -302,7 +321,7 @@ const mockRoles: RoleResp[] = [
     id: generateId(),
     name: 'developer-role',
     namespace: 'default',
-    clusterId: 'cluster-1',
+    clusterUid: 'cluster-1',
     clusterName: 'prod-cluster',
     isSystem: false,
     rules: [
@@ -328,7 +347,7 @@ const mockRoles: RoleResp[] = [
     id: generateId(),
     name: 'readonly-role',
     namespace: 'default',
-    clusterId: 'cluster-1',
+    clusterUid: 'cluster-1',
     clusterName: 'prod-cluster',
     isSystem: false,
     rules: [

@@ -9,18 +9,18 @@ import { generateId } from '@/mock/utils'
 
 /**
  * 获取 RoleBinding 分页列表
- * @param clusterId - 集群 ID
+ * @param clusterUid - 集群 UID
  * @param namespaceName - 命名空间名称
  * @param params - 查询参数
  * @returns 分页数据
  */
 function getRoleBindingPage(
-  clusterId: string,
+  clusterUid: string,
   namespaceName: string,
   params: Partial<RoleBindingQueryReq>,
 ): PageVo<RoleBindingResp> {
   const { name, showSystem, page = 1, pageSize = 10 } = params || {}
-  let filtered = mockRoleBindings.filter(b => b.clusterId === clusterId && b.namespace === namespaceName)
+  let filtered = mockRoleBindings.filter(b => b.clusterUid === clusterUid && b.namespace === namespaceName)
   if (!showSystem) filtered = filtered.filter(b => !b.isSystem)
   if (name) filtered = filtered.filter(b => b.name.toLowerCase().includes(name.toLowerCase()))
   const total = filtered.length
@@ -32,28 +32,28 @@ function getRoleBindingPage(
 
 /**
  * 获取 RoleBinding 详情
- * @param clusterId - 集群 ID
+ * @param clusterUid - 集群 UID
  * @param namespaceName - 命名空间名称
  * @param name - RoleBinding 名称
  * @returns RoleBinding 详情
  */
-function getRoleBindingDetail(clusterId: string, namespaceName: string, name: string): RoleBindingResp | null {
+function getRoleBindingDetail(clusterUid: string, namespaceName: string, name: string): RoleBindingResp | null {
   return (
-    mockRoleBindings.find(b => b.clusterId === clusterId && b.namespace === namespaceName && b.name === name) || null
+    mockRoleBindings.find(b => b.clusterUid === clusterUid && b.namespace === namespaceName && b.name === name) || null
   )
 }
 
 /**
  * 创建 RoleBinding
- * @param clusterId - 集群 ID
+ * @param clusterUid - 集群 UID
  * @param data - 创建参数
  */
-function createRoleBinding(clusterId: string, data: Partial<RoleBindingReq>): void {
+function createRoleBinding(clusterUid: string, data: Partial<RoleBindingReq>): void {
   const created: RoleBindingResp = {
     id: generateId(),
     name: data.name || '',
     namespace: data.namespace || '',
-    clusterId,
+    clusterUid,
     clusterName: 'prod-cluster',
     isSystem: false,
     roleRef: { kind: data.roleKind || 'Role', name: data.roleName || '' },
@@ -70,12 +70,12 @@ function createRoleBinding(clusterId: string, data: Partial<RoleBindingReq>): vo
 
 /**
  * 更新 RoleBinding
- * @param clusterId - 集群 ID
+ * @param clusterUid - 集群 UID
  * @param data - 更新参数
  */
-function updateRoleBinding(clusterId: string, data: Partial<RoleBindingReq>): void {
+function updateRoleBinding(clusterUid: string, data: Partial<RoleBindingReq>): void {
   const index = mockRoleBindings.findIndex(
-    b => b.clusterId === clusterId && b.namespace === data.namespace && b.name === data.name,
+    b => b.clusterUid === clusterUid && b.namespace === data.namespace && b.name === data.name,
   )
   if (index === -1) {
     console.error('[Update RoleBinding] can not find rolebinding:', data.name)
@@ -92,21 +92,21 @@ function updateRoleBinding(clusterId: string, data: Partial<RoleBindingReq>): vo
 
 /**
  * 更新 RoleBinding 标签
- * @param clusterId - 集群 ID
+ * @param clusterUid - 集群 UID
  * @param namespaceName - 命名空间名称
  * @param name - RoleBinding 名称
  * @param labels - 标签键值对
  * @param operation - 操作类型
  */
 function manageRoleBindingLabels(
-  clusterId: string,
+  clusterUid: string,
   namespaceName: string,
   name: string,
   labels: Record<string, string>,
   operation: number,
 ): void {
   const index = mockRoleBindings.findIndex(
-    b => b.clusterId === clusterId && b.namespace === namespaceName && b.name === name,
+    b => b.clusterUid === clusterUid && b.namespace === namespaceName && b.name === name,
   )
   if (index === -1) {
     console.error('[Update RoleBinding Labels] can not find rolebinding:', name)
@@ -126,21 +126,21 @@ function manageRoleBindingLabels(
 
 /**
  * 更新 RoleBinding 注解
- * @param clusterId - 集群 ID
+ * @param clusterUid - 集群 UID
  * @param namespaceName - 命名空间名称
  * @param name - RoleBinding 名称
  * @param annotations - 注解键值对
  * @param operation - 操作类型
  */
 function manageRoleBindingAnnotations(
-  clusterId: string,
+  clusterUid: string,
   namespaceName: string,
   name: string,
   annotations: Record<string, string>,
   operation: number,
 ): void {
   const index = mockRoleBindings.findIndex(
-    b => b.clusterId === clusterId && b.namespace === namespaceName && b.name === name,
+    b => b.clusterUid === clusterUid && b.namespace === namespaceName && b.name === name,
   )
   if (index === -1) {
     console.error('[Update RoleBinding Annotations] can not find rolebinding:', name)
@@ -160,21 +160,21 @@ function manageRoleBindingAnnotations(
 
 /**
  * 更新 RoleBinding 主体
- * @param clusterId - 集群 ID
+ * @param clusterUid - 集群 UID
  * @param namespaceName - 命名空间名称
  * @param name - RoleBinding 名称
  * @param subjects - 主体列表
  * @param operation - 操作类型
  */
 function manageRoleBindingSubjects(
-  clusterId: string,
+  clusterUid: string,
   namespaceName: string,
   name: string,
   subjects: RoleBindingReq['subjects'],
   operation: number,
 ): void {
   const index = mockRoleBindings.findIndex(
-    b => b.clusterId === clusterId && b.namespace === namespaceName && b.name === name,
+    b => b.clusterUid === clusterUid && b.namespace === namespaceName && b.name === name,
   )
   if (index === -1) {
     console.error('[Update RoleBinding Subjects] can not find rolebinding:', name)
@@ -193,13 +193,13 @@ function manageRoleBindingSubjects(
 
 /**
  * 删除 RoleBinding
- * @param clusterId - 集群 ID
+ * @param clusterUid - 集群 UID
  * @param namespaceName - 命名空间名称
  * @param name - RoleBinding 名称
  */
-function deleteRoleBinding(clusterId: string, namespaceName: string, name: string): void {
+function deleteRoleBinding(clusterUid: string, namespaceName: string, name: string): void {
   const index = mockRoleBindings.findIndex(
-    b => b.clusterId === clusterId && b.namespace === namespaceName && b.name === name,
+    b => b.clusterUid === clusterUid && b.namespace === namespaceName && b.name === name,
   )
   if (index === -1) {
     console.error('[Delete RoleBinding] can not find rolebinding:', name)
@@ -210,14 +210,14 @@ function deleteRoleBinding(clusterId: string, namespaceName: string, name: strin
 
 /**
  * 批量删除 RoleBinding
- * @param clusterId - 集群 ID
+ * @param clusterUid - 集群 UID
  * @param namespaceName - 命名空间名称
  * @param names - 待删除的 RoleBinding 名称列表
  */
-function deleteRoleBindings(clusterId: string, namespaceName: string, names: string[]): void {
+function deleteRoleBindings(clusterUid: string, namespaceName: string, names: string[]): void {
   names.forEach(name => {
     const index = mockRoleBindings.findIndex(
-      b => b.clusterId === clusterId && b.namespace === namespaceName && b.name === name,
+      b => b.clusterUid === clusterUid && b.namespace === namespaceName && b.name === name,
     )
     if (index === -1) {
       console.error('[Delete RoleBindings] can not find rolebinding:', name)
@@ -230,48 +230,53 @@ function deleteRoleBindings(clusterId: string, namespaceName: string, names: str
 /**
  * RoleBinding 路由配置
  * @remarks
- * - GET /kubernetes/clusters/:clusterId/namespaces/:namespaceName/rolebindings - 获取 RoleBinding 分页列表
- * - GET /kubernetes/clusters/:clusterId/namespaces/:namespaceName/rolebindings/:name - 获取 RoleBinding 详情
- * - POST /kubernetes/clusters/:clusterId/namespaces/:namespaceName/rolebindings - 创建 RoleBinding
- * - PUT /kubernetes/clusters/:clusterId/namespaces/:namespaceName/rolebindings/:name - 更新 RoleBinding
- * - PUT /kubernetes/clusters/:clusterId/namespaces/:namespaceName/rolebindings/:name/labels - 更新标签
- * - PUT /kubernetes/clusters/:clusterId/namespaces/:namespaceName/rolebindings/:name/annotations - 更新注解
- * - PUT /kubernetes/clusters/:clusterId/namespaces/:namespaceName/rolebindings/:name/subjects - 更新主体
- * - DELETE /kubernetes/clusters/:clusterId/namespaces/:namespaceName/rolebindings/:name - 删除 RoleBinding
- * - DELETE /kubernetes/clusters/:clusterId/namespaces/:namespaceName/rolebindings - 批量删除 RoleBinding
+ * - GET /kubernetes/clusters/:clusterUid/namespaces/:namespaceName/rolebindings - 获取 RoleBinding 分页列表
+ * - GET /kubernetes/clusters/:clusterUid/namespaces/:namespaceName/rolebindings/:name - 获取 RoleBinding 详情
+ * - POST /kubernetes/clusters/:clusterUid/namespaces/:namespaceName/rolebindings - 创建 RoleBinding
+ * - PUT /kubernetes/clusters/:clusterUid/namespaces/:namespaceName/rolebindings/:name - 更新 RoleBinding
+ * - PUT /kubernetes/clusters/:clusterUid/namespaces/:namespaceName/rolebindings/:name/labels - 更新标签
+ * - PUT /kubernetes/clusters/:clusterUid/namespaces/:namespaceName/rolebindings/:name/annotations - 更新注解
+ * - PUT /kubernetes/clusters/:clusterUid/namespaces/:namespaceName/rolebindings/:name/subjects - 更新主体
+ * - DELETE /kubernetes/clusters/:clusterUid/namespaces/:namespaceName/rolebindings/:name - 删除 RoleBinding
+ * - DELETE /kubernetes/clusters/:clusterUid/namespaces/:namespaceName/rolebindings - 批量删除 RoleBinding
  */
 export default [
   {
     method: 'get',
-    url: '/kubernetes/clusters/:clusterId/namespaces/:namespaceName/rolebindings',
+    url: '/kubernetes/clusters/:clusterUid/namespaces/:namespaceName/rolebindings',
     handler: ({ pathParams, params }: { pathParams: Record<string, string>; params: Partial<RoleBindingQueryReq> }) =>
-      getRoleBindingPage(pathParams.clusterId, pathParams.namespaceName, params),
+      getRoleBindingPage(pathParams.clusterUid, pathParams.namespaceName, params),
   },
   {
     method: 'get',
-    url: '/kubernetes/clusters/:clusterId/namespaces/:namespaceName/rolebindings/:name',
+    url: '/kubernetes/clusters/:clusterUid/namespaces/:namespaceName/rolebindings/:name',
     handler: ({ pathParams }: { pathParams: Record<string, string> }) =>
-      getRoleBindingDetail(pathParams.clusterId, pathParams.namespaceName, pathParams.name),
+      getRoleBindingDetail(pathParams.clusterUid, pathParams.namespaceName, pathParams.name),
   },
   {
     method: 'post',
-    url: '/kubernetes/clusters/:clusterId/namespaces/:namespaceName/rolebindings',
+    url: '/kubernetes/clusters/:clusterUid/namespaces/:namespaceName/rolebindings',
     handler: ({ pathParams, data }: { pathParams: Record<string, string>; data: Partial<RoleBindingReq> }) =>
-      createRoleBinding(pathParams.clusterId, data),
+      createRoleBinding(pathParams.clusterUid, data),
   },
   {
     method: 'put',
-    url: '/kubernetes/clusters/:clusterId/namespaces/:namespaceName/rolebindings/:name',
+    url: '/kubernetes/clusters/:clusterUid/namespaces/:namespaceName/rolebindings/:name',
     handler: ({ pathParams, data }: { pathParams: Record<string, string>; data: Partial<RoleBindingReq> }) =>
-      updateRoleBinding(pathParams.clusterId, data),
+      updateRoleBinding(pathParams.clusterUid, data),
   },
   {
     method: 'put',
-    url: '/kubernetes/clusters/:clusterId/namespaces/:namespaceName/rolebindings/:name/labels',
-    handler: ({ pathParams, data }: { pathParams: Record<string, string>; data: { labels: Record<string, string>; operation: number },
-     }) =>
+    url: '/kubernetes/clusters/:clusterUid/namespaces/:namespaceName/rolebindings/:name/labels',
+    handler: ({
+      pathParams,
+      data,
+    }: {
+      pathParams: Record<string, string>
+      data: { labels: Record<string, string>; operation: number }
+    }) =>
       manageRoleBindingLabels(
-        pathParams.clusterId,
+        pathParams.clusterUid,
         pathParams.namespaceName,
         pathParams.name,
         data.labels,
@@ -280,11 +285,16 @@ export default [
   },
   {
     method: 'put',
-    url: '/kubernetes/clusters/:clusterId/namespaces/:namespaceName/rolebindings/:name/annotations',
-    handler: ({ pathParams, data }: { pathParams: Record<string, string>; data: { annotations: Record<string, string>; operation: number },
-     }) =>
+    url: '/kubernetes/clusters/:clusterUid/namespaces/:namespaceName/rolebindings/:name/annotations',
+    handler: ({
+      pathParams,
+      data,
+    }: {
+      pathParams: Record<string, string>
+      data: { annotations: Record<string, string>; operation: number }
+    }) =>
       manageRoleBindingAnnotations(
-        pathParams.clusterId,
+        pathParams.clusterUid,
         pathParams.namespaceName,
         pathParams.name,
         data.annotations,
@@ -293,11 +303,16 @@ export default [
   },
   {
     method: 'put',
-    url: '/kubernetes/clusters/:clusterId/namespaces/:namespaceName/rolebindings/:name/subjects',
-    handler: ({ pathParams, data }: { pathParams: Record<string, string>; data: { subjects: RoleBindingReq['subjects']; operation: number },
-     }) =>
+    url: '/kubernetes/clusters/:clusterUid/namespaces/:namespaceName/rolebindings/:name/subjects',
+    handler: ({
+      pathParams,
+      data,
+    }: {
+      pathParams: Record<string, string>
+      data: { subjects: RoleBindingReq['subjects']; operation: number }
+    }) =>
       manageRoleBindingSubjects(
-        pathParams.clusterId,
+        pathParams.clusterUid,
         pathParams.namespaceName,
         pathParams.name,
         data.subjects,
@@ -306,15 +321,15 @@ export default [
   },
   {
     method: 'delete',
-    url: '/kubernetes/clusters/:clusterId/namespaces/:namespaceName/rolebindings/:name',
+    url: '/kubernetes/clusters/:clusterUid/namespaces/:namespaceName/rolebindings/:name',
     handler: ({ pathParams }: { pathParams: Record<string, string> }) =>
-      deleteRoleBinding(pathParams.clusterId, pathParams.namespaceName, pathParams.name),
+      deleteRoleBinding(pathParams.clusterUid, pathParams.namespaceName, pathParams.name),
   },
   {
     method: 'delete',
-    url: '/kubernetes/clusters/:clusterId/namespaces/:namespaceName/rolebindings',
+    url: '/kubernetes/clusters/:clusterUid/namespaces/:namespaceName/rolebindings',
     handler: ({ pathParams, data }: { pathParams: Record<string, string>; data: string[] }) =>
-      deleteRoleBindings(pathParams.clusterId, pathParams.namespaceName, data),
+      deleteRoleBindings(pathParams.clusterUid, pathParams.namespaceName, data),
   },
 ]
 
@@ -326,7 +341,7 @@ const mockRoleBindings: RoleBindingResp[] = [
     id: generateId(),
     name: 'admin',
     namespace: 'default',
-    clusterId: 'cluster-1',
+    clusterUid: 'cluster-1',
     clusterName: 'prod-cluster',
     isSystem: true,
     roleRef: { kind: 'ClusterRole', name: 'admin' },
@@ -344,7 +359,7 @@ const mockRoleBindings: RoleBindingResp[] = [
     id: generateId(),
     name: 'edit',
     namespace: 'default',
-    clusterId: 'cluster-1',
+    clusterUid: 'cluster-1',
     clusterName: 'prod-cluster',
     isSystem: true,
     roleRef: { kind: 'ClusterRole', name: 'edit' },
@@ -362,7 +377,7 @@ const mockRoleBindings: RoleBindingResp[] = [
     id: generateId(),
     name: 'developer-binding',
     namespace: 'default',
-    clusterId: 'cluster-1',
+    clusterUid: 'cluster-1',
     clusterName: 'prod-cluster',
     isSystem: false,
     roleRef: { kind: 'Role', name: 'namespace-developer' },

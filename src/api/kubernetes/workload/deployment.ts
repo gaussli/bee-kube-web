@@ -260,7 +260,7 @@ export function deleteDeployments(clusterUid: string, namespace: string, names: 
  * @param params - 查询参数
  */
 export function exportDeployment(clusterUid: string, params: Partial<DeploymentQueryForm>): Promise<void> {
-  return request.get(`/kubernetes/clusters/${clusterUid}/deployments/export`, { params: params, responseType: 'blob' })
+  return request.get(`/kubernetes/clusters/${clusterUid}/deployments/export`, { params, config: { responseType: 'blob' } })
 }
 
 /**

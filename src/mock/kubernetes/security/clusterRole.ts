@@ -9,13 +9,13 @@ import { generateId } from '@/mock/utils'
 
 /**
  * 获取 ClusterRole 分页列表
- * @param clusterId - 集群 ID
+ * @param clusterUid - 集群 UID
  * @param params - 查询参数
  * @returns 分页数据
  */
-function getClusterRolePage(clusterId: string, params: Partial<ClusterRoleQueryReq>): PageVo<ClusterRoleResp> {
+function getClusterRolePage(clusterUid: string, params: Partial<ClusterRoleQueryReq>): PageVo<ClusterRoleResp> {
   const { name, showSystem, page = 1, pageSize = 10 } = params || {}
-  let filtered = mockClusterRoles.filter(c => c.clusterId === clusterId)
+  let filtered = mockClusterRoles.filter(c => c.clusterUid === clusterUid)
   if (!showSystem) filtered = filtered.filter(c => !c.isSystem)
   if (name) filtered = filtered.filter(c => c.name.toLowerCase().includes(name.toLowerCase()))
   const total = filtered.length
@@ -27,24 +27,24 @@ function getClusterRolePage(clusterId: string, params: Partial<ClusterRoleQueryR
 
 /**
  * 获取 ClusterRole 详情
- * @param clusterId - 集群 ID
+ * @param clusterUid - 集群 UID
  * @param name - ClusterRole 名称
  * @returns ClusterRole 详情
  */
-function getClusterRoleDetail(clusterId: string, name: string): ClusterRoleResp | null {
-  return mockClusterRoles.find(c => c.clusterId === clusterId && c.name === name) || null
+function getClusterRoleDetail(clusterUid: string, name: string): ClusterRoleResp | null {
+  return mockClusterRoles.find(c => c.clusterUid === clusterUid && c.name === name) || null
 }
 
 /**
  * 创建 ClusterRole
- * @param clusterId - 集群 ID
+ * @param clusterUid - 集群 UID
  * @param data - 创建参数
  */
-function createClusterRole(clusterId: string, data: Partial<ClusterRoleReq>): void {
+function createClusterRole(clusterUid: string, data: Partial<ClusterRoleReq>): void {
   const created: ClusterRoleResp = {
     id: generateId(),
     name: data.name || '',
-    clusterId,
+    clusterUid,
     clusterName: 'prod-cluster',
     isSystem: false,
     aggregationRule: data.aggregationRule,
@@ -61,11 +61,11 @@ function createClusterRole(clusterId: string, data: Partial<ClusterRoleReq>): vo
 
 /**
  * 更新 ClusterRole
- * @param clusterId - 集群 ID
+ * @param clusterUid - 集群 UID
  * @param data - 更新参数
  */
-function updateClusterRole(clusterId: string, data: Partial<ClusterRoleReq>): void {
-  const index = mockClusterRoles.findIndex(c => c.clusterId === clusterId && c.name === data.name)
+function updateClusterRole(clusterUid: string, data: Partial<ClusterRoleReq>): void {
+  const index = mockClusterRoles.findIndex(c => c.clusterUid === clusterUid && c.name === data.name)
   if (index === -1) {
     console.error('[Update ClusterRole] can not find clusterrole:', data.name)
     return
@@ -81,18 +81,18 @@ function updateClusterRole(clusterId: string, data: Partial<ClusterRoleReq>): vo
 
 /**
  * 更新 ClusterRole 标签
- * @param clusterId - 集群 ID
+ * @param clusterUid - 集群 UID
  * @param name - ClusterRole 名称
  * @param labels - 标签键值对
  * @param operation - 操作类型
  */
 function manageClusterRoleLabels(
-  clusterId: string,
+  clusterUid: string,
   name: string,
   labels: Record<string, string>,
   operation: number,
 ): void {
-  const index = mockClusterRoles.findIndex(c => c.clusterId === clusterId && c.name === name)
+  const index = mockClusterRoles.findIndex(c => c.clusterUid === clusterUid && c.name === name)
   if (index === -1) {
     console.error('[Update ClusterRole Labels] can not find clusterrole:', name)
     return
@@ -111,18 +111,18 @@ function manageClusterRoleLabels(
 
 /**
  * 更新 ClusterRole 注解
- * @param clusterId - 集群 ID
+ * @param clusterUid - 集群 UID
  * @param name - ClusterRole 名称
  * @param annotations - 注解键值对
  * @param operation - 操作类型
  */
 function manageClusterRoleAnnotations(
-  clusterId: string,
+  clusterUid: string,
   name: string,
   annotations: Record<string, string>,
   operation: number,
 ): void {
-  const index = mockClusterRoles.findIndex(c => c.clusterId === clusterId && c.name === name)
+  const index = mockClusterRoles.findIndex(c => c.clusterUid === clusterUid && c.name === name)
   if (index === -1) {
     console.error('[Update ClusterRole Annotations] can not find clusterrole:', name)
     return
@@ -141,12 +141,12 @@ function manageClusterRoleAnnotations(
 
 /**
  * 更新 ClusterRole 规则
- * @param clusterId - 集群 ID
+ * @param clusterUid - 集群 UID
  * @param name - ClusterRole 名称
  * @param rules - 策略规则列表
  */
-function updateClusterRoleRules(clusterId: string, name: string, rules: ClusterRoleReq['rules']): void {
-  const index = mockClusterRoles.findIndex(c => c.clusterId === clusterId && c.name === name)
+function updateClusterRoleRules(clusterUid: string, name: string, rules: ClusterRoleReq['rules']): void {
+  const index = mockClusterRoles.findIndex(c => c.clusterUid === clusterUid && c.name === name)
   if (index === -1) {
     console.error('[Update ClusterRole Rules] can not find clusterrole:', name)
     return
@@ -158,11 +158,11 @@ function updateClusterRoleRules(clusterId: string, name: string, rules: ClusterR
 
 /**
  * 删除 ClusterRole
- * @param clusterId - 集群 ID
+ * @param clusterUid - 集群 UID
  * @param name - ClusterRole 名称
  */
-function deleteClusterRole(clusterId: string, name: string): void {
-  const index = mockClusterRoles.findIndex(c => c.clusterId === clusterId && c.name === name)
+function deleteClusterRole(clusterUid: string, name: string): void {
+  const index = mockClusterRoles.findIndex(c => c.clusterUid === clusterUid && c.name === name)
   if (index === -1) {
     console.error('[Delete ClusterRole] can not find clusterrole:', name)
     return
@@ -172,12 +172,12 @@ function deleteClusterRole(clusterId: string, name: string): void {
 
 /**
  * 批量删除 ClusterRole
- * @param clusterId - 集群 ID
+ * @param clusterUid - 集群 UID
  * @param names - 待删除的 ClusterRole 名称列表
  */
-function deleteClusterRoles(clusterId: string, names: string[]): void {
+function deleteClusterRoles(clusterUid: string, names: string[]): void {
   names.forEach(name => {
-    const index = mockClusterRoles.findIndex(c => c.clusterId === clusterId && c.name === name)
+    const index = mockClusterRoles.findIndex(c => c.clusterUid === clusterUid && c.name === name)
     if (index === -1) {
       console.error('[Delete ClusterRoles] can not find clusterrole:', name)
     } else {
@@ -189,68 +189,80 @@ function deleteClusterRoles(clusterId: string, names: string[]): void {
 /**
  * ClusterRole 路由配置
  * @remarks
- * - GET /kubernetes/clusters/:clusterId/clusterroles - 获取 ClusterRole 分页列表
- * - GET /kubernetes/clusters/:clusterId/clusterroles/:name - 获取 ClusterRole 详情
- * - POST /kubernetes/clusters/:clusterId/clusterroles - 创建 ClusterRole
- * - PUT /kubernetes/clusters/:clusterId/clusterroles/:name - 更新 ClusterRole
- * - PUT /kubernetes/clusters/:clusterId/clusterroles/:name/labels - 更新标签
- * - PUT /kubernetes/clusters/:clusterId/clusterroles/:name/annotations - 更新注解
- * - PUT /kubernetes/clusters/:clusterId/clusterroles/:name/rules - 更新规则
- * - DELETE /kubernetes/clusters/:clusterId/clusterroles/:name - 删除 ClusterRole
- * - DELETE /kubernetes/clusters/:clusterId/clusterroles - 批量删除 ClusterRole
+ * - GET /kubernetes/clusters/:clusterUid/clusterroles - 获取 ClusterRole 分页列表
+ * - GET /kubernetes/clusters/:clusterUid/clusterroles/:name - 获取 ClusterRole 详情
+ * - POST /kubernetes/clusters/:clusterUid/clusterroles - 创建 ClusterRole
+ * - PUT /kubernetes/clusters/:clusterUid/clusterroles/:name - 更新 ClusterRole
+ * - PUT /kubernetes/clusters/:clusterUid/clusterroles/:name/labels - 更新标签
+ * - PUT /kubernetes/clusters/:clusterUid/clusterroles/:name/annotations - 更新注解
+ * - PUT /kubernetes/clusters/:clusterUid/clusterroles/:name/rules - 更新规则
+ * - DELETE /kubernetes/clusters/:clusterUid/clusterroles/:name - 删除 ClusterRole
+ * - DELETE /kubernetes/clusters/:clusterUid/clusterroles - 批量删除 ClusterRole
  */
 export default [
   {
     method: 'get',
-    url: '/kubernetes/clusters/:clusterId/clusterroles',
+    url: '/kubernetes/clusters/:clusterUid/clusterroles',
     handler: ({ pathParams, params }: { pathParams: Record<string, string>; params: Partial<ClusterRoleQueryReq> }) =>
-      getClusterRolePage(pathParams.clusterId, params),
+      getClusterRolePage(pathParams.clusterUid, params),
   },
   {
     method: 'get',
-    url: '/kubernetes/clusters/:clusterId/clusterroles/:name',
-    handler: ({ pathParams }: { pathParams: Record<string, string> }) => getClusterRoleDetail(pathParams.clusterId, pathParams.name),
+    url: '/kubernetes/clusters/:clusterUid/clusterroles/:name',
+    handler: ({ pathParams }: { pathParams: Record<string, string> }) =>
+      getClusterRoleDetail(pathParams.clusterUid, pathParams.name),
   },
   {
     method: 'post',
-    url: '/kubernetes/clusters/:clusterId/clusterroles',
+    url: '/kubernetes/clusters/:clusterUid/clusterroles',
     handler: ({ pathParams, data }: { pathParams: Record<string, string>; data: Partial<ClusterRoleReq> }) =>
-      createClusterRole(pathParams.clusterId, data),
+      createClusterRole(pathParams.clusterUid, data),
   },
   {
     method: 'put',
-    url: '/kubernetes/clusters/:clusterId/clusterroles/:name',
+    url: '/kubernetes/clusters/:clusterUid/clusterroles/:name',
     handler: ({ pathParams, data }: { pathParams: Record<string, string>; data: Partial<ClusterRoleReq> }) =>
-      updateClusterRole(pathParams.clusterId, data),
+      updateClusterRole(pathParams.clusterUid, data),
   },
   {
     method: 'put',
-    url: '/kubernetes/clusters/:clusterId/clusterroles/:name/labels',
-    handler: ({ pathParams, data }: { pathParams: Record<string, string>; data: { labels: Record<string, string>; operation: number },
-     }) => manageClusterRoleLabels(pathParams.clusterId, pathParams.name, data.labels, data.operation),
+    url: '/kubernetes/clusters/:clusterUid/clusterroles/:name/labels',
+    handler: ({
+      pathParams,
+      data,
+    }: {
+      pathParams: Record<string, string>
+      data: { labels: Record<string, string>; operation: number }
+    }) => manageClusterRoleLabels(pathParams.clusterUid, pathParams.name, data.labels, data.operation),
   },
   {
     method: 'put',
-    url: '/kubernetes/clusters/:clusterId/clusterroles/:name/annotations',
-    handler: ({ pathParams, data }: { pathParams: Record<string, string>; data: { annotations: Record<string, string>; operation: number },
-     }) => manageClusterRoleAnnotations(pathParams.clusterId, pathParams.name, data.annotations, data.operation),
+    url: '/kubernetes/clusters/:clusterUid/clusterroles/:name/annotations',
+    handler: ({
+      pathParams,
+      data,
+    }: {
+      pathParams: Record<string, string>
+      data: { annotations: Record<string, string>; operation: number }
+    }) => manageClusterRoleAnnotations(pathParams.clusterUid, pathParams.name, data.annotations, data.operation),
   },
   {
     method: 'put',
-    url: '/kubernetes/clusters/:clusterId/clusterroles/:name/rules',
+    url: '/kubernetes/clusters/:clusterUid/clusterroles/:name/rules',
     handler: ({ pathParams, data }: { pathParams: Record<string, string>; data: { rules: ClusterRoleReq['rules'] } }) =>
-      updateClusterRoleRules(pathParams.clusterId, pathParams.name, data.rules),
+      updateClusterRoleRules(pathParams.clusterUid, pathParams.name, data.rules),
   },
   {
     method: 'delete',
-    url: '/kubernetes/clusters/:clusterId/clusterroles/:name',
-    handler: ({ pathParams }: { pathParams: Record<string, string> }) => deleteClusterRole(pathParams.clusterId, pathParams.name),
+    url: '/kubernetes/clusters/:clusterUid/clusterroles/:name',
+    handler: ({ pathParams }: { pathParams: Record<string, string> }) =>
+      deleteClusterRole(pathParams.clusterUid, pathParams.name),
   },
   {
     method: 'delete',
-    url: '/kubernetes/clusters/:clusterId/clusterroles',
+    url: '/kubernetes/clusters/:clusterUid/clusterroles',
     handler: ({ pathParams, data }: { pathParams: Record<string, string>; data: string[] }) =>
-      deleteClusterRoles(pathParams.clusterId, data),
+      deleteClusterRoles(pathParams.clusterUid, data),
   },
 ]
 
@@ -261,7 +273,7 @@ const mockClusterRoles: ClusterRoleResp[] = [
   {
     id: generateId(),
     name: 'admin',
-    clusterId: 'cluster-1',
+    clusterUid: 'cluster-1',
     clusterName: 'prod-cluster',
     isSystem: true,
     rules: [{ apiGroups: ['*'], resources: ['*'], verbs: ['*'] }],
@@ -279,7 +291,7 @@ const mockClusterRoles: ClusterRoleResp[] = [
   {
     id: generateId(),
     name: 'view',
-    clusterId: 'cluster-1',
+    clusterUid: 'cluster-1',
     clusterName: 'prod-cluster',
     isSystem: true,
     rules: [
@@ -299,7 +311,7 @@ const mockClusterRoles: ClusterRoleResp[] = [
   {
     id: generateId(),
     name: 'cluster-admin',
-    clusterId: 'cluster-1',
+    clusterUid: 'cluster-1',
     clusterName: 'prod-cluster',
     isSystem: true,
     rules: [
@@ -320,7 +332,7 @@ const mockClusterRoles: ClusterRoleResp[] = [
   {
     id: generateId(),
     name: 'developer',
-    clusterId: 'cluster-1',
+    clusterUid: 'cluster-1',
     clusterName: 'prod-cluster',
     isSystem: false,
     rules: [

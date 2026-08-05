@@ -61,8 +61,8 @@ import BeeTag from '@/components/BeeTag/index.vue'
 defineOptions({ name: 'BeeClusterOverviewEvent' })
 
 const props = defineProps<{
-  /** 集群 ID */
-  clusterId: string
+  /** 集群 UID */
+  clusterUid: string
 }>()
 
 /** 最近事件数据 */
@@ -73,8 +73,8 @@ const recentEvents = ref<EventListVo[]>([])
  * @remarks 获取第一页事件，每页 10 条
  */
 async function loadEvents() {
-  if (!props.clusterId) return
-  const { list } = await getEventList(props.clusterId, { page: 1, pageSize: 10 })
+  if (!props.clusterUid) return
+  const { list } = await getEventList(props.clusterUid, { page: 1, pageSize: 10 })
   recentEvents.value = list
 }
 

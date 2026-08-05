@@ -72,5 +72,5 @@ export function removePermission(id: string) {
  * @param ids
  */
 export function batchRemovePermissions(ids: string[]) {
-  return request.delete('/system/permissions', { ids })
+  return request.delete('/system/permissions', { data: { ids } })
 }

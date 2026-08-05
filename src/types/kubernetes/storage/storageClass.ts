@@ -11,7 +11,7 @@ import type { BaseEntity, PageForm } from '@/types/common'
 export interface StorageClassResp extends BaseEntity {
   /** StorageClass 名称 */
   name: string
-  /** 所属集群 ID */
+  /** 所属集群 UID */
   clusterUid: string
   /** 所属集群名称 */
   clusterName?: string

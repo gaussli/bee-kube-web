@@ -9,18 +9,18 @@ import { generateId } from '@/mock/utils'
 
 /**
  * 获取 Ingress 分页列表
- * @param clusterId - 集群 ID
+ * @param clusterUid - 集群 UID
  * @param namespaceName - 命名空间名称
  * @param params - 查询参数
  * @returns 分页数据
  */
 function getIngressPage(
-  clusterId: string,
+  clusterUid: string,
   namespaceName: string,
   params: Partial<IngressQueryReq>,
 ): PageVo<IngressListVo> {
   const { name, ingressClassName, page = 1, pageSize = 10 } = params || {}
-  let filtered = mockIngresses.filter(i => i.clusterId === clusterId && i.namespace === namespaceName)
+  let filtered = mockIngresses.filter(i => i.clusterUid === clusterUid && i.namespace === namespaceName)
   if (name) filtered = filtered.filter(i => i.name.toLowerCase().includes(name.toLowerCase()))
   if (ingressClassName) filtered = filtered.filter(i => i.ingressClassName === ingressClassName)
   const total = filtered.length
@@ -32,26 +32,28 @@ function getIngressPage(
 
 /**
  * 获取 Ingress 详情
- * @param clusterId - 集群 ID
+ * @param clusterUid - 集群 UID
  * @param namespaceName - 命名空间名称
  * @param name - Ingress 名称
  * @returns Ingress 详情
  */
-function getIngressDetail(clusterId: string, namespaceName: string, name: string): IngressListVo | null {
-  return mockIngresses.find(i => i.clusterId === clusterId && i.namespace === namespaceName && i.name === name) || null
+function getIngressDetail(clusterUid: string, namespaceName: string, name: string): IngressListVo | null {
+  return (
+    mockIngresses.find(i => i.clusterUid === clusterUid && i.namespace === namespaceName && i.name === name) || null
+  )
 }
 
 /**
  * 创建 Ingress
- * @param clusterId - 集群 ID
+ * @param clusterUid - 集群 UID
  * @param data - 创建参数
  */
-function createIngress(clusterId: string, data: Partial<IngressReq>): void {
+function createIngress(clusterUid: string, data: Partial<IngressReq>): void {
   const created: IngressListVo = {
     id: generateId(),
     name: data.name || '',
     namespace: data.namespace || '',
-    clusterId,
+    clusterUid,
     clusterName: 'prod-cluster',
     ingressClassName: data.ingressClassName,
     rules: data.rules || [],
@@ -68,12 +70,12 @@ function createIngress(clusterId: string, data: Partial<IngressReq>): void {
 
 /**
  * 更新 Ingress
- * @param clusterId - 集群 ID
+ * @param clusterUid - 集群 UID
  * @param data - 更新参数
  */
-function updateIngress(clusterId: string, data: Partial<IngressReq>): void {
+function updateIngress(clusterUid: string, data: Partial<IngressReq>): void {
   const index = mockIngresses.findIndex(
-    i => i.clusterId === clusterId && i.namespace === data.namespace && i.name === data.name,
+    i => i.clusterUid === clusterUid && i.namespace === data.namespace && i.name === data.name,
   )
   if (index === -1) {
     console.error('[Update Ingress] can not find ingress:', data.name)
@@ -90,21 +92,21 @@ function updateIngress(clusterId: string, data: Partial<IngressReq>): void {
 
 /**
  * 更新 Ingress 标签
- * @param clusterId - 集群 ID
+ * @param clusterUid - 集群 UID
  * @param namespaceName - 命名空间名称
  * @param name - Ingress 名称
  * @param labels - 标签键值对
  * @param operation - 操作类型
  */
 function manageIngressLabels(
-  clusterId: string,
+  clusterUid: string,
   namespaceName: string,
   name: string,
   labels: Record<string, string>,
   operation: number,
 ): void {
   const index = mockIngresses.findIndex(
-    i => i.clusterId === clusterId && i.namespace === namespaceName && i.name === name,
+    i => i.clusterUid === clusterUid && i.namespace === namespaceName && i.name === name,
   )
   if (index === -1) {
     console.error('[Update Ingress Labels] can not find ingress:', name)
@@ -124,21 +126,21 @@ function manageIngressLabels(
 
 /**
  * 更新 Ingress 注解
- * @param clusterId - 集群 ID
+ * @param clusterUid - 集群 UID
  * @param namespaceName - 命名空间名称
  * @param name - Ingress 名称
  * @param annotations - 注解键值对
  * @param operation - 操作类型
  */
 function manageIngressAnnotations(
-  clusterId: string,
+  clusterUid: string,
   namespaceName: string,
   name: string,
   annotations: Record<string, string>,
   operation: number,
 ): void {
   const index = mockIngresses.findIndex(
-    i => i.clusterId === clusterId && i.namespace === namespaceName && i.name === name,
+    i => i.clusterUid === clusterUid && i.namespace === namespaceName && i.name === name,
   )
   if (index === -1) {
     console.error('[Update Ingress Annotations] can not find ingress:', name)
@@ -158,13 +160,13 @@ function manageIngressAnnotations(
 
 /**
  * 删除 Ingress
- * @param clusterId - 集群 ID
+ * @param clusterUid - 集群 UID
  * @param namespaceName - 命名空间名称
  * @param name - Ingress 名称
  */
-function deleteIngress(clusterId: string, namespaceName: string, name: string): void {
+function deleteIngress(clusterUid: string, namespaceName: string, name: string): void {
   const index = mockIngresses.findIndex(
-    i => i.clusterId === clusterId && i.namespace === namespaceName && i.name === name,
+    i => i.clusterUid === clusterUid && i.namespace === namespaceName && i.name === name,
   )
   if (index === -1) {
     console.error('[Delete Ingress] can not find ingress:', name)
@@ -175,14 +177,14 @@ function deleteIngress(clusterId: string, namespaceName: string, name: string): 
 
 /**
  * 批量删除 Ingress
- * @param clusterId - 集群 ID
+ * @param clusterUid - 集群 UID
  * @param namespaceName - 命名空间名称
  * @param names - 待删除的 Ingress 名称列表
  */
-function deleteIngresses(clusterId: string, namespaceName: string, names: string[]): void {
+function deleteIngresses(clusterUid: string, namespaceName: string, names: string[]): void {
   names.forEach(name => {
     const index = mockIngresses.findIndex(
-      i => i.clusterId === clusterId && i.namespace === namespaceName && i.name === name,
+      i => i.clusterUid === clusterUid && i.namespace === namespaceName && i.name === name,
     )
     if (index === -1) {
       console.error('[Delete Ingresses] can not find ingress:', name)
@@ -195,54 +197,70 @@ function deleteIngresses(clusterId: string, namespaceName: string, names: string
 /**
  * Ingress 路由配置
  * @remarks
- * - GET /kubernetes/clusters/:clusterId/namespaces/:namespaceName/ingresses - 获取 Ingress 分页列表
- * - GET /kubernetes/clusters/:clusterId/namespaces/:namespaceName/ingresses/:name - 获取 Ingress 详情
- * - POST /kubernetes/clusters/:clusterId/namespaces/:namespaceName/ingresses - 创建 Ingress
- * - PUT /kubernetes/clusters/:clusterId/namespaces/:namespaceName/ingresses/:name - 更新 Ingress
- * - PUT /kubernetes/clusters/:clusterId/namespaces/:namespaceName/ingresses/:name/labels - 更新标签
- * - PUT /kubernetes/clusters/:clusterId/namespaces/:namespaceName/ingresses/:name/annotations - 更新注解
- * - DELETE /kubernetes/clusters/:clusterId/namespaces/:namespaceName/ingresses/:name - 删除 Ingress
- * - DELETE /kubernetes/clusters/:clusterId/namespaces/:namespaceName/ingresses - 批量删除 Ingress
+ * - GET /kubernetes/clusters/:clusterUid/namespaces/:namespaceName/ingresses - 获取 Ingress 分页列表
+ * - GET /kubernetes/clusters/:clusterUid/namespaces/:namespaceName/ingresses/:name - 获取 Ingress 详情
+ * - POST /kubernetes/clusters/:clusterUid/namespaces/:namespaceName/ingresses - 创建 Ingress
+ * - PUT /kubernetes/clusters/:clusterUid/namespaces/:namespaceName/ingresses/:name - 更新 Ingress
+ * - PUT /kubernetes/clusters/:clusterUid/namespaces/:namespaceName/ingresses/:name/labels - 更新标签
+ * - PUT /kubernetes/clusters/:clusterUid/namespaces/:namespaceName/ingresses/:name/annotations - 更新注解
+ * - DELETE /kubernetes/clusters/:clusterUid/namespaces/:namespaceName/ingresses/:name - 删除 Ingress
+ * - DELETE /kubernetes/clusters/:clusterUid/namespaces/:namespaceName/ingresses - 批量删除 Ingress
  */
 export default [
   {
     method: 'get',
-    url: '/kubernetes/clusters/:clusterId/namespaces/:namespaceName/ingresses',
+    url: '/kubernetes/clusters/:clusterUid/namespaces/:namespaceName/ingresses',
     handler: ({ pathParams, params }: { pathParams: Record<string, string>; params: Partial<IngressQueryReq> }) =>
-      getIngressPage(pathParams.clusterId, pathParams.namespaceName, params),
+      getIngressPage(pathParams.clusterUid, pathParams.namespaceName, params),
   },
   {
     method: 'get',
-    url: '/kubernetes/clusters/:clusterId/namespaces/:namespaceName/ingresses/:name',
+    url: '/kubernetes/clusters/:clusterUid/namespaces/:namespaceName/ingresses/:name',
     handler: ({ pathParams }: { pathParams: Record<string, string> }) =>
-      getIngressDetail(pathParams.clusterId, pathParams.namespaceName, pathParams.name),
+      getIngressDetail(pathParams.clusterUid, pathParams.namespaceName, pathParams.name),
   },
   {
     method: 'post',
-    url: '/kubernetes/clusters/:clusterId/namespaces/:namespaceName/ingresses',
+    url: '/kubernetes/clusters/:clusterUid/namespaces/:namespaceName/ingresses',
     handler: ({ pathParams, data }: { pathParams: Record<string, string>; data: Partial<IngressReq> }) =>
-      createIngress(pathParams.clusterId, data),
+      createIngress(pathParams.clusterUid, data),
   },
   {
     method: 'put',
-    url: '/kubernetes/clusters/:clusterId/namespaces/:namespaceName/ingresses/:name',
+    url: '/kubernetes/clusters/:clusterUid/namespaces/:namespaceName/ingresses/:name',
     handler: ({ pathParams, data }: { pathParams: Record<string, string>; data: Partial<IngressReq> }) =>
-      updateIngress(pathParams.clusterId, data),
+      updateIngress(pathParams.clusterUid, data),
   },
   {
     method: 'put',
-    url: '/kubernetes/clusters/:clusterId/namespaces/:namespaceName/ingresses/:name/labels',
-    handler: ({ pathParams, data }: { pathParams: Record<string, string>; data: { labels: Record<string, string>; operation: number },
-     }) =>
-      manageIngressLabels(pathParams.clusterId, pathParams.namespaceName, pathParams.name, data.labels, data.operation),
+    url: '/kubernetes/clusters/:clusterUid/namespaces/:namespaceName/ingresses/:name/labels',
+    handler: ({
+      pathParams,
+      data,
+    }: {
+      pathParams: Record<string, string>
+      data: { labels: Record<string, string>; operation: number }
+    }) =>
+      manageIngressLabels(
+        pathParams.clusterUid,
+        pathParams.namespaceName,
+        pathParams.name,
+        data.labels,
+        data.operation,
+      ),
   },
   {
     method: 'put',
-    url: '/kubernetes/clusters/:clusterId/namespaces/:namespaceName/ingresses/:name/annotations',
-    handler: ({ pathParams, data }: { pathParams: Record<string, string>; data: { annotations: Record<string, string>; operation: number },
-     }) =>
+    url: '/kubernetes/clusters/:clusterUid/namespaces/:namespaceName/ingresses/:name/annotations',
+    handler: ({
+      pathParams,
+      data,
+    }: {
+      pathParams: Record<string, string>
+      data: { annotations: Record<string, string>; operation: number }
+    }) =>
       manageIngressAnnotations(
-        pathParams.clusterId,
+        pathParams.clusterUid,
         pathParams.namespaceName,
         pathParams.name,
         data.annotations,
@@ -251,15 +269,15 @@ export default [
   },
   {
     method: 'delete',
-    url: '/kubernetes/clusters/:clusterId/namespaces/:namespaceName/ingresses/:name',
+    url: '/kubernetes/clusters/:clusterUid/namespaces/:namespaceName/ingresses/:name',
     handler: ({ pathParams }: { pathParams: Record<string, string> }) =>
-      deleteIngress(pathParams.clusterId, pathParams.namespaceName, pathParams.name),
+      deleteIngress(pathParams.clusterUid, pathParams.namespaceName, pathParams.name),
   },
   {
     method: 'delete',
-    url: '/kubernetes/clusters/:clusterId/namespaces/:namespaceName/ingresses',
+    url: '/kubernetes/clusters/:clusterUid/namespaces/:namespaceName/ingresses',
     handler: ({ pathParams, data }: { pathParams: Record<string, string>; data: string[] }) =>
-      deleteIngresses(pathParams.clusterId, pathParams.namespaceName, data),
+      deleteIngresses(pathParams.clusterUid, pathParams.namespaceName, data),
   },
 ]
 
@@ -271,7 +289,7 @@ const mockIngresses: IngressListVo[] = [
     id: generateId(),
     name: 'api-ingress',
     namespace: 'default',
-    clusterId: 'cluster-1',
+    clusterUid: 'cluster-1',
     clusterName: 'prod-cluster',
     ingressClassName: 'nginx',
     rules: [
@@ -306,7 +324,7 @@ const mockIngresses: IngressListVo[] = [
     id: generateId(),
     name: 'web-ingress',
     namespace: 'default',
-    clusterId: 'cluster-1',
+    clusterUid: 'cluster-1',
     clusterName: 'prod-cluster',
     ingressClassName: 'nginx',
     rules: [
@@ -344,7 +362,7 @@ const mockIngresses: IngressListVo[] = [
     id: generateId(),
     name: 'prometheus-ingress',
     namespace: 'monitoring',
-    clusterId: 'cluster-1',
+    clusterUid: 'cluster-1',
     clusterName: 'prod-cluster',
     ingressClassName: 'nginx',
     rules: [

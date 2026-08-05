@@ -19,81 +19,93 @@ import { generateId } from '@/mock/utils'
 /**
  * 节点路由配置
  * @remarks
- * - GET /kubernetes/clusters/:clusterId/nodes - 获取节点分页列表（getNodePage）
- * - GET /kubernetes/clusters/:clusterId/nodes/topn - 获取节点 TopN 排行（getNodeTopN）
- * - GET /kubernetes/clusters/:clusterId/nodes/:name - 获取节点详情（getNodeDetail）
- * - GET /kubernetes/clusters/:clusterId/nodes/:name/resource - 获取节点资源用量（getNodeResource）
- * - PUT /kubernetes/clusters/:clusterId/nodes/:name - 更新节点（updateNode）
- * - POST /kubernetes/clusters/:clusterId/nodes/:name/drain - 驱逐节点（drainNode）
- * - POST /kubernetes/clusters/:clusterId/nodes/:name/cordon - 设置可调度状态（cordonNode）
- * - POST /kubernetes/clusters/:clusterId/nodes/:name/labels - 更新节点标签（manageNodeLabels）
- * - POST /kubernetes/clusters/:clusterId/nodes/:name/annotations - 更新节点注解（manageNodeAnnotations）
- * - POST /kubernetes/clusters/:clusterId/nodes/:name/taints - 更新节点污点（manageNodeTaints）
+ * - GET /kubernetes/clusters/:clusterUid/nodes - 获取节点分页列表（getNodePage）
+ * - GET /kubernetes/clusters/:clusterUid/nodes/topn - 获取节点 TopN 排行（getNodeTopN）
+ * - GET /kubernetes/clusters/:clusterUid/nodes/:name - 获取节点详情（getNodeDetail）
+ * - GET /kubernetes/clusters/:clusterUid/nodes/:name/resource - 获取节点资源用量（getNodeResource）
+ * - PUT /kubernetes/clusters/:clusterUid/nodes/:name - 更新节点（updateNode）
+ * - POST /kubernetes/clusters/:clusterUid/nodes/:name/drain - 驱逐节点（drainNode）
+ * - POST /kubernetes/clusters/:clusterUid/nodes/:name/cordon - 设置可调度状态（cordonNode）
+ * - POST /kubernetes/clusters/:clusterUid/nodes/:name/labels - 更新节点标签（manageNodeLabels）
+ * - POST /kubernetes/clusters/:clusterUid/nodes/:name/annotations - 更新节点注解（manageNodeAnnotations）
+ * - POST /kubernetes/clusters/:clusterUid/nodes/:name/taints - 更新节点污点（manageNodeTaints）
  */
 export default [
   {
     method: 'get',
-    url: '/kubernetes/clusters/:clusterId/nodes',
-    handler: ({ pathParams, params }: { pathParams: Record<string, string>; params: Partial<NodeQueryReq> }): PageVo<NodeListResp> =>
-      getNodePage(pathParams.clusterId, params),
+    url: '/kubernetes/clusters/:clusterUid/nodes',
+    handler: ({
+      pathParams,
+      params,
+    }: {
+      pathParams: Record<string, string>
+      params: Partial<NodeQueryReq>
+    }): PageVo<NodeListResp> => getNodePage(pathParams.clusterUid, params),
   },
   {
     method: 'get',
-    url: '/kubernetes/clusters/:clusterId/nodes/topn',
-    handler: ({ pathParams, params }: { pathParams: Record<string, string>; params: Partial<{ metric: string; count: number }> }): NodeListResp[] =>
-      getNodeTopN(pathParams.clusterId, params),
+    url: '/kubernetes/clusters/:clusterUid/nodes/topn',
+    handler: ({
+      pathParams,
+      params,
+    }: {
+      pathParams: Record<string, string>
+      params: Partial<{ metric: string; count: number }>
+    }): NodeListResp[] => getNodeTopN(pathParams.clusterUid, params),
   },
   {
     method: 'get',
-    url: '/kubernetes/clusters/:clusterId/nodes/:name',
-    handler: ({ pathParams }: { pathParams: Record<string, string> }): NodeListResp => getNodeDetail(pathParams.clusterId, pathParams.name),
+    url: '/kubernetes/clusters/:clusterUid/nodes/:name',
+    handler: ({ pathParams }: { pathParams: Record<string, string> }): NodeListResp =>
+      getNodeDetail(pathParams.clusterUid, pathParams.name),
   },
   {
     method: 'get',
-    url: '/kubernetes/clusters/:clusterId/nodes/:name/resource',
+    url: '/kubernetes/clusters/:clusterUid/nodes/:name/resource',
     handler: ({ pathParams }: { pathParams: Record<string, string> }): NodeResourceVo =>
-      getNodeResource(pathParams.clusterId, pathParams.name),
+      getNodeResource(pathParams.clusterUid, pathParams.name),
   },
   {
     method: 'put',
-    url: '/kubernetes/clusters/:clusterId/nodes/:name',
+    url: '/kubernetes/clusters/:clusterUid/nodes/:name',
     handler: ({ pathParams, data }: { pathParams: Record<string, string>; data: Partial<NodeReq> }): void =>
-      updateNode(pathParams.clusterId, pathParams.name, data),
+      updateNode(pathParams.clusterUid, pathParams.name, data),
   },
   {
     method: 'post',
-    url: '/kubernetes/clusters/:clusterId/nodes/:name/drain',
-    handler: ({ pathParams }: { pathParams: Record<string, string> }): void => drainNode(pathParams.clusterId, pathParams.name),
+    url: '/kubernetes/clusters/:clusterUid/nodes/:name/drain',
+    handler: ({ pathParams }: { pathParams: Record<string, string> }): void =>
+      drainNode(pathParams.clusterUid, pathParams.name),
   },
   {
     method: 'post',
-    url: '/kubernetes/clusters/:clusterId/nodes/:name/cordon',
+    url: '/kubernetes/clusters/:clusterUid/nodes/:name/cordon',
     handler: ({ pathParams, data }: { pathParams: Record<string, string>; data: NodeCordonReq }): void =>
-      cordonNode(pathParams.clusterId, pathParams.name, data),
+      cordonNode(pathParams.clusterUid, pathParams.name, data),
   },
   {
     method: 'post',
-    url: '/kubernetes/clusters/:clusterId/nodes/:name/labels',
+    url: '/kubernetes/clusters/:clusterUid/nodes/:name/labels',
     handler: ({ pathParams, data }: { pathParams: Record<string, string>; data: Partial<NodeLabelsReq> }): void =>
-      manageNodeLabels(pathParams.clusterId, pathParams.name, data),
+      manageNodeLabels(pathParams.clusterUid, pathParams.name, data),
   },
   {
     method: 'post',
-    url: '/kubernetes/clusters/:clusterId/nodes/:name/annotations',
+    url: '/kubernetes/clusters/:clusterUid/nodes/:name/annotations',
     handler: ({ pathParams, data }: { pathParams: Record<string, string>; data: Partial<NodeAnnotationsReq> }): void =>
-      manageNodeAnnotations(pathParams.clusterId, pathParams.name, data),
+      manageNodeAnnotations(pathParams.clusterUid, pathParams.name, data),
   },
   {
     method: 'post',
-    url: '/kubernetes/clusters/:clusterId/nodes/:name/taints',
+    url: '/kubernetes/clusters/:clusterUid/nodes/:name/taints',
     handler: ({ pathParams, data }: { pathParams: Record<string, string>; data: Partial<NodeTaintsReq> }): void =>
-      manageNodeTaints(pathParams.clusterId, pathParams.name, data),
+      manageNodeTaints(pathParams.clusterUid, pathParams.name, data),
   },
 ]
 
 /**
  * 获取节点分页列表
- * @param _clusterId - 集群ID
+ * @param _clusterId - 集群 UID
  * @param params - 查询参数
  * @returns 分页数据
  */
@@ -137,14 +149,14 @@ function getNodePage(_clusterId: string, params: Partial<NodeQueryReq>): PageVo<
 
 /**
  * 获取节点详情
- * @param clusterId - 集群ID
+ * @param clusterUid - 集群 UID
  * @param name - 节点名称
  * @returns 节点详情
  */
-function getNodeDetail(clusterId: string, name: string): NodeListResp {
-  const node = mockNodes.find(n => n.clusterId === clusterId && n.name === name)
+function getNodeDetail(clusterUid: string, name: string): NodeListResp {
+  const node = mockNodes.find(n => n.clusterUid === clusterUid && n.name === name)
   if (!node) {
-    console.error('[getNodeDetail] can not find node:', clusterId, name)
+    console.error('[getNodeDetail] can not find node:', clusterUid, name)
     return mockNodes[0]
   }
   return node
@@ -152,7 +164,7 @@ function getNodeDetail(clusterId: string, name: string): NodeListResp {
 
 /**
  * 获取节点资源用量
- * @param _clusterId - 集群ID
+ * @param _clusterId - 集群 UID
  * @param _name - 节点名称
  * @returns 节点资源用量数据
  */
@@ -162,7 +174,7 @@ function getNodeResource(_clusterId: string, _name: string): NodeResourceVo {
 
 /**
  * 获取节点 TopN 排行
- * @param _clusterId - 集群ID（mock 中未使用）
+ * @param _clusterId - 集群 UID（mock 中未使用）
  * @param params - 查询参数
  * @returns 随机选取的 TopN 节点列表
  */
@@ -173,61 +185,61 @@ function getNodeTopN(_clusterId: string, params: Partial<{ metric: string; count
 
 /**
  * 更新节点
- * @param clusterId - 集群ID
+ * @param clusterUid - 集群 UID
  * @param name - 节点名称
  * @param data - 更新数据
  */
-function updateNode(clusterId: string, name: string, data: Partial<NodeReq>): void {
-  console.debug('[updateNode] clusterId:', clusterId, 'name:', name, 'data:', data)
+function updateNode(clusterUid: string, name: string, data: Partial<NodeReq>): void {
+  console.debug('[updateNode] clusterUid:', clusterUid, 'name:', name, 'data:', data)
 }
 
 /**
  * 驱逐节点上的 Pod
- * @param clusterId - 集群ID
+ * @param clusterUid - 集群 UID
  * @param name - 节点名称
  */
-function drainNode(clusterId: string, name: string): void {
-  console.debug('[drainNode] clusterId:', clusterId, 'name:', name)
+function drainNode(clusterUid: string, name: string): void {
+  console.debug('[drainNode] clusterUid:', clusterUid, 'name:', name)
 }
 
 /**
  * 设置节点可调度/不可调度
- * @param clusterId - 集群ID
+ * @param clusterUid - 集群 UID
  * @param name - 节点名称
  * @param data - 调度配置
  */
-function cordonNode(clusterId: string, name: string, data: NodeCordonReq): void {
-  console.debug('[cordonNode] clusterId:', clusterId, 'name:', name, 'data:', data)
+function cordonNode(clusterUid: string, name: string, data: NodeCordonReq): void {
+  console.debug('[cordonNode] clusterUid:', clusterUid, 'name:', name, 'data:', data)
 }
 
 /**
  * 更新节点标签配置
- * @param clusterId - 集群ID
+ * @param clusterUid - 集群 UID
  * @param name - 节点名称
  * @param data - 标签配置
  */
-function manageNodeLabels(clusterId: string, name: string, data: Partial<NodeLabelsReq>): void {
-  console.debug('[manageNodeLabels] clusterId:', clusterId, 'name:', name, 'data:', data)
+function manageNodeLabels(clusterUid: string, name: string, data: Partial<NodeLabelsReq>): void {
+  console.debug('[manageNodeLabels] clusterUid:', clusterUid, 'name:', name, 'data:', data)
 }
 
 /**
  * 更新节点注解配置
- * @param clusterId - 集群ID
+ * @param clusterUid - 集群 UID
  * @param name - 节点名称
  * @param data - 注解配置
  */
-function manageNodeAnnotations(clusterId: string, name: string, data: Partial<NodeAnnotationsReq>): void {
-  console.debug('[manageNodeAnnotations] clusterId:', clusterId, 'name:', name, 'data:', data)
+function manageNodeAnnotations(clusterUid: string, name: string, data: Partial<NodeAnnotationsReq>): void {
+  console.debug('[manageNodeAnnotations] clusterUid:', clusterUid, 'name:', name, 'data:', data)
 }
 
 /**
  * 更新节点污点配置
- * @param clusterId - 集群ID
+ * @param clusterUid - 集群 UID
  * @param name - 节点名称
  * @param data - 污点配置
  */
-function manageNodeTaints(clusterId: string, name: string, data: Partial<NodeTaintsReq>): void {
-  console.debug('[manageNodeTaints] clusterId:', clusterId, 'name:', name, 'data:', data)
+function manageNodeTaints(clusterUid: string, name: string, data: Partial<NodeTaintsReq>): void {
+  console.debug('[manageNodeTaints] clusterUid:', clusterUid, 'name:', name, 'data:', data)
 }
 
 function generateNodeResources() {
@@ -272,7 +284,7 @@ const mockNodes: NodeListResp[] = [
     name: 'master-01',
     description:
       '生产集群主控制节点，负责集群调度和管理。生产集群主控制节点，负责集群调度和管理。生产集群主控制节点，负责集群调度和管理。',
-    clusterId: generateId(),
+    clusterUid: generateId(),
     clusterName: 'prod-cluster',
     status: 'Ready',
     ip: '192.168.1.10',
@@ -288,7 +300,7 @@ const mockNodes: NodeListResp[] = [
     uid: generateId(),
     name: 'worker-01',
     description: '生产集群工作节点，运行业务应用 Pod',
-    clusterId: generateId(),
+    clusterUid: generateId(),
     clusterName: 'prod-cluster',
     status: 'Ready',
     ip: '192.168.1.11',
@@ -304,7 +316,7 @@ const mockNodes: NodeListResp[] = [
     uid: generateId(),
     name: 'worker-02',
     description: '生产集群工作节点，承担高并发业务流量',
-    clusterId: generateId(),
+    clusterUid: generateId(),
     clusterName: 'prod-cluster',
     status: 'Ready',
     ip: '192.168.1.12',
@@ -320,7 +332,7 @@ const mockNodes: NodeListResp[] = [
     uid: generateId(),
     name: 'worker-03',
     description: '生产集群工作节点，用于数据持久化服务',
-    clusterId: generateId(),
+    clusterUid: generateId(),
     clusterName: 'prod-cluster',
     status: 'Ready',
     ip: '192.168.1.13',
@@ -336,7 +348,7 @@ const mockNodes: NodeListResp[] = [
     uid: generateId(),
     name: 'worker-04',
     description: '生产集群工作节点，GPU 计算节点',
-    clusterId: generateId(),
+    clusterUid: generateId(),
     clusterName: 'prod-cluster',
     status: 'Ready',
     ip: '192.168.1.14',
@@ -352,7 +364,7 @@ const mockNodes: NodeListResp[] = [
     uid: generateId(),
     name: 'worker-05',
     description: '生产集群工作节点，日志和监控服务节点',
-    clusterId: generateId(),
+    clusterUid: generateId(),
     clusterName: 'prod-cluster',
     status: 'NotReady',
     statusMsg: 'kubelet 服务异常，日志采集管道中断',
@@ -369,7 +381,7 @@ const mockNodes: NodeListResp[] = [
     uid: generateId(),
     name: 'staging-master-01',
     description: '预发布集群主控制节点',
-    clusterId: generateId(),
+    clusterUid: generateId(),
     clusterName: 'staging-cluster',
     status: 'Unknown',
     statusMsg: 'API Server 连接超时，无法获取节点状态',
@@ -386,7 +398,7 @@ const mockNodes: NodeListResp[] = [
     uid: generateId(),
     name: 'staging-worker-01',
     description: '预发布集群工作节点，用于上线前验证',
-    clusterId: generateId(),
+    clusterUid: generateId(),
     clusterName: 'staging-cluster',
     status: 'Ready',
     ip: '192.168.2.11',
@@ -402,7 +414,7 @@ const mockNodes: NodeListResp[] = [
     uid: generateId(),
     name: 'staging-worker-02',
     description: '预发布集群工作节点，压力测试专用',
-    clusterId: generateId(),
+    clusterUid: generateId(),
     clusterName: 'staging-cluster',
     status: 'Ready',
     ip: '192.168.2.12',
@@ -418,7 +430,7 @@ const mockNodes: NodeListResp[] = [
     uid: generateId(),
     name: 'staging-worker-03',
     description: '预发布集群工作节点',
-    clusterId: generateId(),
+    clusterUid: generateId(),
     clusterName: 'staging-cluster',
     status: 'Ready',
     ip: '192.168.2.13',
@@ -434,7 +446,7 @@ const mockNodes: NodeListResp[] = [
     uid: generateId(),
     name: 'dev-master-01',
     description: '开发集群控制节点，用于日常开发调试',
-    clusterId: generateId(),
+    clusterUid: generateId(),
     clusterName: 'dev-cluster',
     status: 'Ready',
     ip: '192.168.3.10',
@@ -450,7 +462,7 @@ const mockNodes: NodeListResp[] = [
     uid: generateId(),
     name: 'dev-worker-01',
     description: '开发集群工作节点，承载开发环境服务',
-    clusterId: generateId(),
+    clusterUid: generateId(),
     clusterName: 'dev-cluster',
     status: 'Ready',
     ip: '192.168.3.11',
@@ -466,7 +478,7 @@ const mockNodes: NodeListResp[] = [
     uid: generateId(),
     name: 'dev-worker-02',
     description: '开发集群工作节点，CI/CD 构建节点',
-    clusterId: generateId(),
+    clusterUid: generateId(),
     clusterName: 'dev-cluster',
     status: 'Ready',
     ip: '192.168.3.12',
@@ -482,7 +494,7 @@ const mockNodes: NodeListResp[] = [
     uid: generateId(),
     name: 'dev-worker-03',
     description: '开发集群工作节点',
-    clusterId: generateId(),
+    clusterUid: generateId(),
     clusterName: 'dev-cluster',
     status: 'NotReady',
     statusMsg: '磁盘空间不足，节点标记为不可用',
@@ -499,7 +511,7 @@ const mockNodes: NodeListResp[] = [
     uid: generateId(),
     name: 'test-master-01',
     description: '测试集群主节点，集成测试环境',
-    clusterId: generateId(),
+    clusterUid: generateId(),
     clusterName: 'test-cluster',
     status: 'Ready',
     ip: '192.168.4.10',
@@ -515,7 +527,7 @@ const mockNodes: NodeListResp[] = [
     uid: generateId(),
     name: 'test-worker-01',
     description: '测试集群工作节点',
-    clusterId: generateId(),
+    clusterUid: generateId(),
     clusterName: 'test-cluster',
     status: 'Ready',
     ip: '192.168.4.11',
@@ -531,7 +543,7 @@ const mockNodes: NodeListResp[] = [
     uid: generateId(),
     name: 'test-worker-02',
     description: '测试集群工作节点，自动化测试运行节点',
-    clusterId: generateId(),
+    clusterUid: generateId(),
     clusterName: 'test-cluster',
     status: 'Ready',
     ip: '192.168.4.12',
@@ -547,7 +559,7 @@ const mockNodes: NodeListResp[] = [
     uid: generateId(),
     name: 'prod-edge-01',
     description: '生产集群边缘节点，用于就近接入和低延迟服务',
-    clusterId: generateId(),
+    clusterUid: generateId(),
     clusterName: 'prod-cluster',
     status: 'Ready',
     ip: '10.0.1.10',
@@ -563,7 +575,7 @@ const mockNodes: NodeListResp[] = [
     uid: generateId(),
     name: 'prod-edge-02',
     description: '生产集群边缘节点，异地灾备节点',
-    clusterId: generateId(),
+    clusterUid: generateId(),
     clusterName: 'prod-cluster',
     status: 'Ready',
     ip: '10.0.2.10',
@@ -579,7 +591,7 @@ const mockNodes: NodeListResp[] = [
     uid: generateId(),
     name: 'staging-worker-05',
     description: '预发布集群工作节点，性能基准测试节点',
-    clusterId: generateId(),
+    clusterUid: generateId(),
     clusterName: 'staging-cluster',
     status: 'Ready',
     ip: '192.168.2.14',

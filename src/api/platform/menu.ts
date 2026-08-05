@@ -74,7 +74,7 @@ export function removeMenu(id: string) {
  * @param ids
  */
 export function batchRemoveMenus(ids: string[]) {
-  return request.delete('/system/menus', { ids })
+  return request.delete('/system/menus', { data: { ids } })
 }
 
 // 获取菜单关联的角色
@@ -94,7 +94,7 @@ export function getMenuRoles(id: string, data: RoleQueryReq) {
  * @param roleIds
  */
 export function bindMenuRoles(id: string, roleIds: string[]) {
-  return request.post<void>(`/system/menus/${id}/roles`, { roleIds })
+  return request.post<void>(`/system/menus/${id}/roles`, { data: { roleIds } })
 }
 
 // 批量解绑菜单关联的角色
@@ -104,5 +104,5 @@ export function bindMenuRoles(id: string, roleIds: string[]) {
  * @param roleIds
  */
 export function unbindMenuRoles(id: string, roleIds: string[]) {
-  return request.delete<void>(`/system/menus/${id}/roles`, { roleIds })
+  return request.delete<void>(`/system/menus/${id}/roles`, { data: { roleIds } })
 }

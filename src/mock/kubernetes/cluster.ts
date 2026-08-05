@@ -9,6 +9,7 @@ import type {
   ClusterQueryForm,
   ClusterRegisterForm,
   ClusterCreateForm,
+  ClusterResourceVo,
 } from '@/types/kubernetes/cluster'
 
 import { generateId } from '@/mock/utils'
@@ -18,6 +19,7 @@ import { generateId } from '@/mock/utils'
  * @remarks
  * - GET /kubernetes/clusters - 获取集群列表
  * - GET /kubernetes/clusters/:uid - 获取集群详情
+ * - GET /kubernetes/clusters/:uid/resource - 获取集群资源用量
  * - POST /kubernetes/clusters - 创建集群
  * - POST /kubernetes/clusters/register - 注册集群
  * - PUT /kubernetes/clusters/:uid - 更新集群
@@ -35,6 +37,12 @@ export default [
     url: '/kubernetes/clusters/:uid',
     handler: ({ pathParams }: { pathParams: Record<string, string> }): ClusterDetailVo =>
       getClusterDetail(pathParams.uid),
+  },
+  {
+    method: 'get',
+    url: '/kubernetes/clusters/:uid/resource',
+    handler: ({ pathParams }: { pathParams: Record<string, string> }): ClusterResourceVo =>
+      getClusterResource(pathParams.uid),
   },
   {
     method: 'post',
@@ -123,7 +131,47 @@ function getClusterDetail(uid: string): ClusterDetailVo {
 }
 
 /**
- * 创建集群
+ * 生成随机字节数，覆盖 KB ~ 指定范围
+ * @param minExp - 最小指数（1=KB, 2=MB, 3=GB, 4=TB）
+ * @param maxExp - 最大指数
+ * @returns 随机字节数
+ */
+function randomBytes(minExp: number, maxExp: number): number {
+  const exp = minExp + Math.floor(Math.random() * (maxExp - minExp + 1))
+  const value = 1 + Math.floor(Math.random() * 1023)
+  return value * Math.pow(1024, exp)
+}
+
+/**
+ * 获取集群资源用量
+ * @param _uid - 集群 UID（mock 场景忽略，每次随机生成）
+ * @returns 集群资源用量对象
+ */
+function getClusterResource(_uid: string): ClusterResourceVo {
+  const capacityCpu = Math.floor(Math.random() * 96) + 1
+  const capacityMemory = randomBytes(1, 3) // KB ~ GB
+  const capacityStorage = randomBytes(1, 4) // KB ~ TB
+  const capacityPod = Math.floor(Math.random() * 2000) + 100
+
+  const allocationCpu = Math.max(1, capacityCpu - Math.floor(Math.random() * 8))
+  const allocationMemory = Math.max(1024, capacityMemory - randomBytes(1, 2))
+  const allocationStorage = Math.max(1024, capacityStorage - randomBytes(1, 2))
+  const allocationPod = Math.max(10, capacityPod - Math.floor(Math.random() * 200))
+
+  const usageRatio = 0.1 + Math.random() * 0.7
+  const usageCpu = Math.max(0.5, Math.round(allocationCpu * usageRatio * 10) / 10)
+  const usageMemory = Math.max(1024, Math.floor(allocationMemory * usageRatio))
+  const usageStorage = Math.max(1024, Math.floor(allocationStorage * usageRatio))
+  const usagePod = Math.max(1, Math.floor(allocationPod * usageRatio))
+
+  return {
+    capacity: { cpu: capacityCpu, memory: capacityMemory, storage: capacityStorage, pod: capacityPod },
+    allocation: { cpu: allocationCpu, memory: allocationMemory, storage: allocationStorage, pod: allocationPod },
+    usage: { cpu: usageCpu, memory: usageMemory, storage: usageStorage, pod: usagePod },
+  }
+}
+
+/**
  * @param data - 集群创建数据
  */
 function createCluster(data: Partial<ClusterCreateForm>): void {

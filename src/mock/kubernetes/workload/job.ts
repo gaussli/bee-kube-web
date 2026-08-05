@@ -18,89 +18,95 @@ import { generateId } from '@/mock/utils'
 /**
  * Job 路由配置
  * @remarks
- * - GET /kubernetes/clusters/:clusterId/jobs - 获取 Job 分页列表（namespace 通过 query 参数传递，可选）
- * - GET /kubernetes/clusters/:clusterId/namespaces/:namespace/jobs/:name - 获取 Job 详情
- * - GET /kubernetes/clusters/:clusterId/namespaces/:namespace/jobs/:name/yaml - 查看 YAML
- * - POST /kubernetes/clusters/:clusterId/namespaces/:namespace/jobs - 创建 Job
- * - PUT /kubernetes/clusters/:clusterId/namespaces/:namespace/jobs/:name - 更新 Job
- * - PUT /kubernetes/clusters/:clusterId/namespaces/:namespace/jobs/:name/labels - 更新标签
- * - PUT /kubernetes/clusters/:clusterId/namespaces/:namespace/jobs/:name/annotations - 更新注解
- * - DELETE /kubernetes/clusters/:clusterId/namespaces/:namespace/jobs/:name - 删除 Job
- * - DELETE /kubernetes/clusters/:clusterId/namespaces/:namespace/jobs/batch - 批量删除
- * - GET /kubernetes/clusters/:clusterId/jobs/export - 导出 CSV
- * - POST /kubernetes/clusters/:clusterId/jobs/import - 导入 Job
+ * - GET /kubernetes/clusters/:clusterUid/jobs - 获取 Job 分页列表（namespace 通过 query 参数传递，可选）
+ * - GET /kubernetes/clusters/:clusterUid/namespaces/:namespace/jobs/:name - 获取 Job 详情
+ * - GET /kubernetes/clusters/:clusterUid/namespaces/:namespace/jobs/:name/yaml - 查看 YAML
+ * - POST /kubernetes/clusters/:clusterUid/namespaces/:namespace/jobs - 创建 Job
+ * - PUT /kubernetes/clusters/:clusterUid/namespaces/:namespace/jobs/:name - 更新 Job
+ * - PUT /kubernetes/clusters/:clusterUid/namespaces/:namespace/jobs/:name/labels - 更新标签
+ * - PUT /kubernetes/clusters/:clusterUid/namespaces/:namespace/jobs/:name/annotations - 更新注解
+ * - DELETE /kubernetes/clusters/:clusterUid/namespaces/:namespace/jobs/:name - 删除 Job
+ * - DELETE /kubernetes/clusters/:clusterUid/namespaces/:namespace/jobs/batch - 批量删除
+ * - GET /kubernetes/clusters/:clusterUid/jobs/export - 导出 CSV
+ * - POST /kubernetes/clusters/:clusterUid/jobs/import - 导入 Job
  */
 export default [
   {
     method: 'get',
-    url: '/kubernetes/clusters/:clusterId/jobs',
-    handler: ({ pathParams, params }: { pathParams: Record<string, string>; params: Partial<JobQueryReq> }): PageVo<JobListResp> =>
-      getJobList(pathParams.clusterId, params),
+    url: '/kubernetes/clusters/:clusterUid/jobs',
+    handler: ({
+      pathParams,
+      params,
+    }: {
+      pathParams: Record<string, string>
+      params: Partial<JobQueryReq>
+    }): PageVo<JobListResp> => getJobList(pathParams.clusterUid, params),
   },
   {
     method: 'get',
-    url: '/kubernetes/clusters/:clusterId/namespaces/:namespace/jobs/:name',
+    url: '/kubernetes/clusters/:clusterUid/namespaces/:namespace/jobs/:name',
     handler: ({ pathParams }: { pathParams: Record<string, string> }): JobDetailResp =>
-      getJobDetail(pathParams.clusterId, pathParams.namespace, pathParams.name),
+      getJobDetail(pathParams.clusterUid, pathParams.namespace, pathParams.name),
   },
   {
     method: 'get',
-    url: '/kubernetes/clusters/:clusterId/namespaces/:namespace/jobs/:name/yaml',
+    url: '/kubernetes/clusters/:clusterUid/namespaces/:namespace/jobs/:name/yaml',
     handler: ({ pathParams }: { pathParams: Record<string, string> }): string =>
-      getJobYaml(pathParams.clusterId, pathParams.namespace, pathParams.name),
+      getJobYaml(pathParams.clusterUid, pathParams.namespace, pathParams.name),
   },
   {
     method: 'post',
-    url: '/kubernetes/clusters/:clusterId/namespaces/:namespace/jobs',
+    url: '/kubernetes/clusters/:clusterUid/namespaces/:namespace/jobs',
     handler: ({ pathParams, data }: { pathParams: Record<string, string>; data: JobReq }): void =>
-      createJob(pathParams.clusterId, pathParams.namespace, data),
+      createJob(pathParams.clusterUid, pathParams.namespace, data),
   },
   {
     method: 'put',
-    url: '/kubernetes/clusters/:clusterId/namespaces/:namespace/jobs/:name',
+    url: '/kubernetes/clusters/:clusterUid/namespaces/:namespace/jobs/:name',
     handler: ({ pathParams, data }: { pathParams: Record<string, string>; data: Partial<JobReq> }): void =>
-      updateJob(pathParams.clusterId, pathParams.namespace, pathParams.name, data),
+      updateJob(pathParams.clusterUid, pathParams.namespace, pathParams.name, data),
   },
   {
     method: 'put',
-    url: '/kubernetes/clusters/:clusterId/namespaces/:namespace/jobs/:name/labels',
+    url: '/kubernetes/clusters/:clusterUid/namespaces/:namespace/jobs/:name/labels',
     handler: ({ pathParams, data }: { pathParams: Record<string, string>; data: JobLabelsReq }): void =>
-      manageJobLabels(pathParams.clusterId, pathParams.namespace, pathParams.name, data),
+      manageJobLabels(pathParams.clusterUid, pathParams.namespace, pathParams.name, data),
   },
   {
     method: 'put',
-    url: '/kubernetes/clusters/:clusterId/namespaces/:namespace/jobs/:name/annotations',
+    url: '/kubernetes/clusters/:clusterUid/namespaces/:namespace/jobs/:name/annotations',
     handler: ({ pathParams, data }: { pathParams: Record<string, string>; data: JobAnnotationsReq }): void =>
-      manageJobAnnotations(pathParams.clusterId, pathParams.namespace, pathParams.name, data),
+      manageJobAnnotations(pathParams.clusterUid, pathParams.namespace, pathParams.name, data),
   },
   {
     method: 'delete',
-    url: '/kubernetes/clusters/:clusterId/namespaces/:namespace/jobs/:name',
+    url: '/kubernetes/clusters/:clusterUid/namespaces/:namespace/jobs/:name',
     handler: ({ pathParams }: { pathParams: Record<string, string> }): void =>
-      deleteJob(pathParams.clusterId, pathParams.namespace, pathParams.name),
+      deleteJob(pathParams.clusterUid, pathParams.namespace, pathParams.name),
   },
   {
     method: 'delete',
-    url: '/kubernetes/clusters/:clusterId/namespaces/:namespace/jobs/batch',
+    url: '/kubernetes/clusters/:clusterUid/namespaces/:namespace/jobs/batch',
     handler: ({ pathParams, data }: { pathParams: Record<string, string>; data: string[] }): void =>
-      deleteJobs(pathParams.clusterId, pathParams.namespace, data),
+      deleteJobs(pathParams.clusterUid, pathParams.namespace, data),
   },
   {
     method: 'get',
-    url: '/kubernetes/clusters/:clusterId/jobs/export',
+    url: '/kubernetes/clusters/:clusterUid/jobs/export',
     handler: ({ pathParams, params }: { pathParams: Record<string, string>; params: Partial<JobQueryReq> }): void =>
-      exportJob(pathParams.clusterId, params),
+      exportJob(pathParams.clusterUid, params),
   },
   {
     method: 'post',
-    url: '/kubernetes/clusters/:clusterId/jobs/import',
-    handler: ({ pathParams, data }: { pathParams: Record<string, string>; data: JobYamlReq }): void => importJob(pathParams.clusterId, data),
+    url: '/kubernetes/clusters/:clusterUid/jobs/import',
+    handler: ({ pathParams, data }: { pathParams: Record<string, string>; data: JobYamlReq }): void =>
+      importJob(pathParams.clusterUid, data),
   },
 ]
 
 /**
  * 获取 Job 分页列表
- * @param _clusterId - 集群ID（mock 中暂未使用，保留以对齐 API 签名）
+ * @param _clusterId - 集群 UID（mock 中暂未使用，保留以对齐 API 签名）
  * @param params - 查询参数（namespace 可选，不传则查询所有命名空间）
  * @returns 分页数据
  */
@@ -143,15 +149,15 @@ function getJobList(_clusterId: string, params: Partial<JobQueryReq>): PageVo<Jo
 
 /**
  * 获取 Job 详情
- * @param clusterId - 集群ID
+ * @param clusterUid - 集群 UID
  * @param namespace - 命名空间名称
  * @param name - Job 名称
  * @returns Job 详情
  */
-function getJobDetail(clusterId: string, namespace: string, name: string): JobDetailResp {
-  const job = mockJobs.find(j => j.clusterId === clusterId && j.namespace === namespace && j.name === name)
+function getJobDetail(clusterUid: string, namespace: string, name: string): JobDetailResp {
+  const job = mockJobs.find(j => j.clusterUid === clusterUid && j.namespace === namespace && j.name === name)
   if (!job) {
-    console.error('[Get Job Detail] can not find job:', clusterId, namespace, name)
+    console.error('[Get Job Detail] can not find job:', clusterUid, namespace, name)
     return null as unknown as JobDetailResp
   }
   return {
@@ -174,15 +180,15 @@ function getJobDetail(clusterId: string, namespace: string, name: string): JobDe
 
 /**
  * 查看 Job YAML
- * @param clusterId - 集群ID
+ * @param clusterUid - 集群 UID
  * @param namespace - 命名空间名称
  * @param name - Job 名称
  * @returns Job YAML 配置
  */
-function getJobYaml(clusterId: string, namespace: string, name: string): string {
-  const job = mockJobs.find(j => j.clusterId === clusterId && j.namespace === namespace && j.name === name)
+function getJobYaml(clusterUid: string, namespace: string, name: string): string {
+  const job = mockJobs.find(j => j.clusterUid === clusterUid && j.namespace === namespace && j.name === name)
   if (!job) {
-    console.error('[Get Job Yaml] can not find job:', clusterId, namespace, name)
+    console.error('[Get Job Yaml] can not find job:', clusterUid, namespace, name)
     return ''
   }
 
@@ -213,83 +219,83 @@ status:
 
 /**
  * 创建 Job
- * @param clusterId - 集群ID
+ * @param clusterUid - 集群 UID
  * @param namespace - 命名空间名称
  * @param data - 创建数据
  */
-function createJob(clusterId: string, namespace: string, data: JobReq): void {
-  console.log('[Mock] createJob', { clusterId, namespace, data })
+function createJob(clusterUid: string, namespace: string, data: JobReq): void {
+  console.log('[Mock] createJob', { clusterUid, namespace, data })
 }
 
 /**
  * 更新 Job
- * @param clusterId - 集群ID
+ * @param clusterUid - 集群 UID
  * @param namespace - 命名空间名称
  * @param name - Job 名称
  * @param data - 更新数据
  */
-function updateJob(clusterId: string, namespace: string, name: string, data: Partial<JobReq>): void {
-  console.log('[Mock] updateJob', { clusterId, namespace, name, data })
+function updateJob(clusterUid: string, namespace: string, name: string, data: Partial<JobReq>): void {
+  console.log('[Mock] updateJob', { clusterUid, namespace, name, data })
 }
 
 /**
  * 更新 Job 标签
- * @param clusterId - 集群ID
+ * @param clusterUid - 集群 UID
  * @param namespace - 命名空间名称
  * @param name - Job 名称
  * @param data - 标签数据
  */
-function manageJobLabels(clusterId: string, namespace: string, name: string, data: JobLabelsReq): void {
-  console.log('[Mock] manageJobLabels', { clusterId, namespace, name, data })
+function manageJobLabels(clusterUid: string, namespace: string, name: string, data: JobLabelsReq): void {
+  console.log('[Mock] manageJobLabels', { clusterUid, namespace, name, data })
 }
 
 /**
  * 更新 Job 注解
- * @param clusterId - 集群ID
+ * @param clusterUid - 集群 UID
  * @param namespace - 命名空间名称
  * @param name - Job 名称
  * @param data - 注解数据
  */
-function manageJobAnnotations(clusterId: string, namespace: string, name: string, data: JobAnnotationsReq): void {
-  console.log('[Mock] manageJobAnnotations', { clusterId, namespace, name, data })
+function manageJobAnnotations(clusterUid: string, namespace: string, name: string, data: JobAnnotationsReq): void {
+  console.log('[Mock] manageJobAnnotations', { clusterUid, namespace, name, data })
 }
 
 /**
  * 删除 Job
- * @param clusterId - 集群ID
+ * @param clusterUid - 集群 UID
  * @param namespace - 命名空间名称
  * @param name - Job 名称
  */
-function deleteJob(clusterId: string, namespace: string, name: string): void {
-  console.log('[Mock] deleteJob', { clusterId, namespace, name })
+function deleteJob(clusterUid: string, namespace: string, name: string): void {
+  console.log('[Mock] deleteJob', { clusterUid, namespace, name })
 }
 
 /**
  * 批量删除 Job
- * @param clusterId - 集群ID
+ * @param clusterUid - 集群 UID
  * @param namespace - 命名空间名称
  * @param names - Job 名称数组
  */
-function deleteJobs(clusterId: string, namespace: string, names: string[]): void {
-  console.log('[Mock] deleteJobs', { clusterId, namespace, names })
+function deleteJobs(clusterUid: string, namespace: string, names: string[]): void {
+  console.log('[Mock] deleteJobs', { clusterUid, namespace, names })
 }
 
 /**
  * 导出 Job CSV
- * @param clusterId - 集群ID
+ * @param clusterUid - 集群 UID
  * @param params - 查询参数
  */
-function exportJob(clusterId: string, params: Partial<JobQueryReq>): void {
-  console.log('[Mock] exportJob', { clusterId, params })
+function exportJob(clusterUid: string, params: Partial<JobQueryReq>): void {
+  console.log('[Mock] exportJob', { clusterUid, params })
 }
 
 /**
  * 导入 Job
- * @param clusterId - 集群ID
+ * @param clusterUid - 集群 UID
  * @param data - YAML 配置
  */
-function importJob(clusterId: string, data: JobYamlReq): void {
-  console.log('[Mock] importJob', { clusterId, data })
+function importJob(clusterUid: string, data: JobYamlReq): void {
+  console.log('[Mock] importJob', { clusterUid, data })
 }
 
 /**
@@ -302,7 +308,7 @@ const mockJobs: JobListResp[] = [
     uid: `job-uid-${generateId()}`,
     name: 'db-backup-20240320',
     namespace: 'data',
-    clusterId: 'c1',
+    clusterUid: 'c1',
     description: '每日数据库全量备份任务',
     status: 'Succeeded',
     statusMessage: '备份完成，共 2.3GB',
@@ -323,7 +329,7 @@ const mockJobs: JobListResp[] = [
     uid: `job-uid-${generateId()}`,
     name: 'data-import-001',
     namespace: 'etl',
-    clusterId: 'c1',
+    clusterUid: 'c1',
     description: '外部数据源批量导入任务',
     status: 'Failed',
     statusMessage: '数据源连接失败，超过最大重试次数',
@@ -344,7 +350,7 @@ const mockJobs: JobListResp[] = [
     uid: `job-uid-${generateId()}`,
     name: 'model-training',
     namespace: 'ml',
-    clusterId: 'c1',
+    clusterUid: 'c1',
     description: 'PyTorch 分布式模型训练任务',
     status: 'Active',
     statusMessage: '训练进行中，当前 epoch: 45/100',
@@ -365,7 +371,7 @@ const mockJobs: JobListResp[] = [
     uid: `job-uid-${generateId()}`,
     name: 'cache-warmup',
     namespace: 'middleware',
-    clusterId: 'c1',
+    clusterUid: 'c1',
     description: 'Redis 缓存预热脚本',
     status: 'Succeeded',
     statusMessage: '缓存预热完成，已加载 50000 个 key',
@@ -386,7 +392,7 @@ const mockJobs: JobListResp[] = [
     uid: `job-uid-${generateId()}`,
     name: 'log-cleanup-daily',
     namespace: 'logging',
-    clusterId: 'c1',
+    clusterUid: 'c1',
     description: '每日日志归档与清理',
     status: 'Succeeded',
     statusMessage: '已清理 15 天前的日志，释放 8.5GB 空间',
@@ -407,7 +413,7 @@ const mockJobs: JobListResp[] = [
     uid: `job-uid-${generateId()}`,
     name: 'report-generate-q1',
     namespace: 'analytics',
-    clusterId: 'c1',
+    clusterUid: 'c1',
     description: 'Q1 季度财务报表生成',
     status: 'Active',
     statusMessage: '正在生成报表，已完成 3/12 个维度',
@@ -428,7 +434,7 @@ const mockJobs: JobListResp[] = [
     uid: `job-uid-${generateId()}`,
     name: 'ssl-cert-renewal',
     namespace: 'kube-system',
-    clusterId: 'c1',
+    clusterUid: 'c1',
     description: 'SSL 证书自动续期',
     status: 'Failed',
     statusMessage: '证书签发接口返回 500，重试已达上限',
@@ -449,7 +455,7 @@ const mockJobs: JobListResp[] = [
     uid: `job-uid-${generateId()}`,
     name: 'index-rebuild',
     namespace: 'search',
-    clusterId: 'c1',
+    clusterUid: 'c1',
     description: 'Elasticsearch 索引重建',
     status: 'Succeeded',
     statusMessage: '索引重建完成，共处理 120 万文档',

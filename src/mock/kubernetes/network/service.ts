@@ -9,18 +9,18 @@ import { generateId } from '@/mock/utils'
 
 /**
  * 获取 Service 分页列表
- * @param clusterId - 集群 ID
+ * @param clusterUid - 集群 UID
  * @param namespaceName - 命名空间名称
  * @param params - 查询参数
  * @returns 分页数据
  */
 function getServicePage(
-  clusterId: string,
+  clusterUid: string,
   namespaceName: string,
   params: Partial<ServiceQueryReq>,
 ): PageVo<ServiceListVo> {
   const { name, type, page = 1, pageSize = 10 } = params || {}
-  let filtered = mockServices.filter(s => s.clusterId === clusterId && s.namespace === namespaceName)
+  let filtered = mockServices.filter(s => s.clusterUid === clusterUid && s.namespace === namespaceName)
   if (name) filtered = filtered.filter(s => s.name.toLowerCase().includes(name.toLowerCase()))
   if (type) filtered = filtered.filter(s => s.type === type)
   const total = filtered.length
@@ -32,26 +32,26 @@ function getServicePage(
 
 /**
  * 获取 Service 详情
- * @param clusterId - 集群 ID
+ * @param clusterUid - 集群 UID
  * @param namespaceName - 命名空间名称
  * @param name - Service 名称
  * @returns Service 详情
  */
-function getServiceDetail(clusterId: string, namespaceName: string, name: string): ServiceListVo | null {
-  return mockServices.find(s => s.clusterId === clusterId && s.namespace === namespaceName && s.name === name) || null
+function getServiceDetail(clusterUid: string, namespaceName: string, name: string): ServiceListVo | null {
+  return mockServices.find(s => s.clusterUid === clusterUid && s.namespace === namespaceName && s.name === name) || null
 }
 
 /**
  * 创建 Service
- * @param clusterId - 集群 ID
+ * @param clusterUid - 集群 UID
  * @param data - 创建参数
  */
-function createService(clusterId: string, data: Partial<ServiceReq>): void {
+function createService(clusterUid: string, data: Partial<ServiceReq>): void {
   const created: ServiceListVo = {
     id: generateId(),
     name: data.name || '',
     namespace: data.namespace || '',
-    clusterId,
+    clusterUid,
     clusterName: 'prod-cluster',
     type: data.type || 'ClusterIP',
     clusterIp: data.clusterIp || '10.96.0.0',
@@ -70,12 +70,12 @@ function createService(clusterId: string, data: Partial<ServiceReq>): void {
 
 /**
  * 更新 Service
- * @param clusterId - 集群 ID
+ * @param clusterUid - 集群 UID
  * @param data - 更新参数
  */
-function updateService(clusterId: string, data: Partial<ServiceReq>): void {
+function updateService(clusterUid: string, data: Partial<ServiceReq>): void {
   const index = mockServices.findIndex(
-    s => s.clusterId === clusterId && s.namespace === data.namespace && s.name === data.name,
+    s => s.clusterUid === clusterUid && s.namespace === data.namespace && s.name === data.name,
   )
   if (index === -1) {
     console.error('[Update Service] can not find service:', data.name)
@@ -92,21 +92,21 @@ function updateService(clusterId: string, data: Partial<ServiceReq>): void {
 
 /**
  * 更新 Service 标签
- * @param clusterId - 集群 ID
+ * @param clusterUid - 集群 UID
  * @param namespaceName - 命名空间名称
  * @param name - Service 名称
  * @param labels - 标签键值对
  * @param operation - 操作类型
  */
 function manageServiceLabels(
-  clusterId: string,
+  clusterUid: string,
   namespaceName: string,
   name: string,
   labels: Record<string, string>,
   operation: number,
 ): void {
   const index = mockServices.findIndex(
-    s => s.clusterId === clusterId && s.namespace === namespaceName && s.name === name,
+    s => s.clusterUid === clusterUid && s.namespace === namespaceName && s.name === name,
   )
   if (index === -1) {
     console.error('[Update Service Labels] can not find service:', name)
@@ -126,21 +126,21 @@ function manageServiceLabels(
 
 /**
  * 更新 Service 注解
- * @param clusterId - 集群 ID
+ * @param clusterUid - 集群 UID
  * @param namespaceName - 命名空间名称
  * @param name - Service 名称
  * @param annotations - 注解键值对
  * @param operation - 操作类型
  */
 function manageServiceAnnotations(
-  clusterId: string,
+  clusterUid: string,
   namespaceName: string,
   name: string,
   annotations: Record<string, string>,
   operation: number,
 ): void {
   const index = mockServices.findIndex(
-    s => s.clusterId === clusterId && s.namespace === namespaceName && s.name === name,
+    s => s.clusterUid === clusterUid && s.namespace === namespaceName && s.name === name,
   )
   if (index === -1) {
     console.error('[Update Service Annotations] can not find service:', name)
@@ -160,13 +160,13 @@ function manageServiceAnnotations(
 
 /**
  * 删除 Service
- * @param clusterId - 集群 ID
+ * @param clusterUid - 集群 UID
  * @param namespaceName - 命名空间名称
  * @param name - Service 名称
  */
-function deleteService(clusterId: string, namespaceName: string, name: string): void {
+function deleteService(clusterUid: string, namespaceName: string, name: string): void {
   const index = mockServices.findIndex(
-    s => s.clusterId === clusterId && s.namespace === namespaceName && s.name === name,
+    s => s.clusterUid === clusterUid && s.namespace === namespaceName && s.name === name,
   )
   if (index === -1) {
     console.error('[Delete Service] can not find service:', name)
@@ -177,14 +177,14 @@ function deleteService(clusterId: string, namespaceName: string, name: string): 
 
 /**
  * 批量删除 Service
- * @param clusterId - 集群 ID
+ * @param clusterUid - 集群 UID
  * @param namespaceName - 命名空间名称
  * @param names - 待删除的 Service 名称列表
  */
-function deleteServices(clusterId: string, namespaceName: string, names: string[]): void {
+function deleteServices(clusterUid: string, namespaceName: string, names: string[]): void {
   names.forEach(name => {
     const index = mockServices.findIndex(
-      s => s.clusterId === clusterId && s.namespace === namespaceName && s.name === name,
+      s => s.clusterUid === clusterUid && s.namespace === namespaceName && s.name === name,
     )
     if (index === -1) {
       console.error('[Delete Services] can not find service:', name)
@@ -197,54 +197,70 @@ function deleteServices(clusterId: string, namespaceName: string, names: string[
 /**
  * Service 路由配置
  * @remarks
- * - GET /kubernetes/clusters/:clusterId/namespaces/:namespaceName/services - 获取 Service 分页列表
- * - GET /kubernetes/clusters/:clusterId/namespaces/:namespaceName/services/:name - 获取 Service 详情
- * - POST /kubernetes/clusters/:clusterId/namespaces/:namespaceName/services - 创建 Service
- * - PUT /kubernetes/clusters/:clusterId/namespaces/:namespaceName/services/:name - 更新 Service
- * - PUT /kubernetes/clusters/:clusterId/namespaces/:namespaceName/services/:name/labels - 更新标签
- * - PUT /kubernetes/clusters/:clusterId/namespaces/:namespaceName/services/:name/annotations - 更新注解
- * - DELETE /kubernetes/clusters/:clusterId/namespaces/:namespaceName/services/:name - 删除 Service
- * - DELETE /kubernetes/clusters/:clusterId/namespaces/:namespaceName/services - 批量删除 Service
+ * - GET /kubernetes/clusters/:clusterUid/namespaces/:namespaceName/services - 获取 Service 分页列表
+ * - GET /kubernetes/clusters/:clusterUid/namespaces/:namespaceName/services/:name - 获取 Service 详情
+ * - POST /kubernetes/clusters/:clusterUid/namespaces/:namespaceName/services - 创建 Service
+ * - PUT /kubernetes/clusters/:clusterUid/namespaces/:namespaceName/services/:name - 更新 Service
+ * - PUT /kubernetes/clusters/:clusterUid/namespaces/:namespaceName/services/:name/labels - 更新标签
+ * - PUT /kubernetes/clusters/:clusterUid/namespaces/:namespaceName/services/:name/annotations - 更新注解
+ * - DELETE /kubernetes/clusters/:clusterUid/namespaces/:namespaceName/services/:name - 删除 Service
+ * - DELETE /kubernetes/clusters/:clusterUid/namespaces/:namespaceName/services - 批量删除 Service
  */
 export default [
   {
     method: 'get',
-    url: '/kubernetes/clusters/:clusterId/namespaces/:namespaceName/services',
+    url: '/kubernetes/clusters/:clusterUid/namespaces/:namespaceName/services',
     handler: ({ pathParams, params }: { pathParams: Record<string, string>; params: Partial<ServiceQueryReq> }) =>
-      getServicePage(pathParams.clusterId, pathParams.namespaceName, params),
+      getServicePage(pathParams.clusterUid, pathParams.namespaceName, params),
   },
   {
     method: 'get',
-    url: '/kubernetes/clusters/:clusterId/namespaces/:namespaceName/services/:name',
+    url: '/kubernetes/clusters/:clusterUid/namespaces/:namespaceName/services/:name',
     handler: ({ pathParams }: { pathParams: Record<string, string> }) =>
-      getServiceDetail(pathParams.clusterId, pathParams.namespaceName, pathParams.name),
+      getServiceDetail(pathParams.clusterUid, pathParams.namespaceName, pathParams.name),
   },
   {
     method: 'post',
-    url: '/kubernetes/clusters/:clusterId/namespaces/:namespaceName/services',
+    url: '/kubernetes/clusters/:clusterUid/namespaces/:namespaceName/services',
     handler: ({ pathParams, data }: { pathParams: Record<string, string>; data: Partial<ServiceReq> }) =>
-      createService(pathParams.clusterId, data),
+      createService(pathParams.clusterUid, data),
   },
   {
     method: 'put',
-    url: '/kubernetes/clusters/:clusterId/namespaces/:namespaceName/services/:name',
+    url: '/kubernetes/clusters/:clusterUid/namespaces/:namespaceName/services/:name',
     handler: ({ pathParams, data }: { pathParams: Record<string, string>; data: Partial<ServiceReq> }) =>
-      updateService(pathParams.clusterId, data),
+      updateService(pathParams.clusterUid, data),
   },
   {
     method: 'put',
-    url: '/kubernetes/clusters/:clusterId/namespaces/:namespaceName/services/:name/labels',
-    handler: ({ pathParams, data }: { pathParams: Record<string, string>; data: { labels: Record<string, string>; operation: number },
-     }) =>
-      manageServiceLabels(pathParams.clusterId, pathParams.namespaceName, pathParams.name, data.labels, data.operation),
+    url: '/kubernetes/clusters/:clusterUid/namespaces/:namespaceName/services/:name/labels',
+    handler: ({
+      pathParams,
+      data,
+    }: {
+      pathParams: Record<string, string>
+      data: { labels: Record<string, string>; operation: number }
+    }) =>
+      manageServiceLabels(
+        pathParams.clusterUid,
+        pathParams.namespaceName,
+        pathParams.name,
+        data.labels,
+        data.operation,
+      ),
   },
   {
     method: 'put',
-    url: '/kubernetes/clusters/:clusterId/namespaces/:namespaceName/services/:name/annotations',
-    handler: ({ pathParams, data }: { pathParams: Record<string, string>; data: { annotations: Record<string, string>; operation: number },
-     }) =>
+    url: '/kubernetes/clusters/:clusterUid/namespaces/:namespaceName/services/:name/annotations',
+    handler: ({
+      pathParams,
+      data,
+    }: {
+      pathParams: Record<string, string>
+      data: { annotations: Record<string, string>; operation: number }
+    }) =>
       manageServiceAnnotations(
-        pathParams.clusterId,
+        pathParams.clusterUid,
         pathParams.namespaceName,
         pathParams.name,
         data.annotations,
@@ -253,15 +269,15 @@ export default [
   },
   {
     method: 'delete',
-    url: '/kubernetes/clusters/:clusterId/namespaces/:namespaceName/services/:name',
+    url: '/kubernetes/clusters/:clusterUid/namespaces/:namespaceName/services/:name',
     handler: ({ pathParams }: { pathParams: Record<string, string> }) =>
-      deleteService(pathParams.clusterId, pathParams.namespaceName, pathParams.name),
+      deleteService(pathParams.clusterUid, pathParams.namespaceName, pathParams.name),
   },
   {
     method: 'delete',
-    url: '/kubernetes/clusters/:clusterId/namespaces/:namespaceName/services',
+    url: '/kubernetes/clusters/:clusterUid/namespaces/:namespaceName/services',
     handler: ({ pathParams, data }: { pathParams: Record<string, string>; data: string[] }) =>
-      deleteServices(pathParams.clusterId, pathParams.namespaceName, data),
+      deleteServices(pathParams.clusterUid, pathParams.namespaceName, data),
   },
 ]
 
@@ -273,7 +289,7 @@ const mockServices: ServiceListVo[] = [
     id: generateId(),
     name: 'kubernetes',
     namespace: 'default',
-    clusterId: 'cluster-1',
+    clusterUid: 'cluster-1',
     clusterName: 'prod-cluster',
     type: 'ClusterIP',
     clusterIp: '10.96.0.1',
@@ -290,7 +306,7 @@ const mockServices: ServiceListVo[] = [
     id: generateId(),
     name: 'kube-dns',
     namespace: 'kube-system',
-    clusterId: 'cluster-1',
+    clusterUid: 'cluster-1',
     clusterName: 'prod-cluster',
     type: 'ClusterIP',
     clusterIp: '10.96.0.10',
@@ -310,7 +326,7 @@ const mockServices: ServiceListVo[] = [
     id: generateId(),
     name: 'frontend-service',
     namespace: 'default',
-    clusterId: 'cluster-1',
+    clusterUid: 'cluster-1',
     clusterName: 'prod-cluster',
     type: 'ClusterIP',
     clusterIp: '10.96.0.100',
@@ -327,7 +343,7 @@ const mockServices: ServiceListVo[] = [
     id: generateId(),
     name: 'backend-service',
     namespace: 'default',
-    clusterId: 'cluster-1',
+    clusterUid: 'cluster-1',
     clusterName: 'prod-cluster',
     type: 'NodePort',
     clusterIp: '10.96.0.101',
@@ -344,7 +360,7 @@ const mockServices: ServiceListVo[] = [
     id: generateId(),
     name: 'api-service',
     namespace: 'default',
-    clusterId: 'cluster-1',
+    clusterUid: 'cluster-1',
     clusterName: 'prod-cluster',
     type: 'LoadBalancer',
     clusterIp: '10.96.0.102',

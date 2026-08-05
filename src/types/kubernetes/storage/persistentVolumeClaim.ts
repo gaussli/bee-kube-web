@@ -18,7 +18,7 @@ export interface PersistentVolumeClaimResp extends BaseEntity {
   name: string
   /** 所属命名空间 */
   namespace: string
-  /** 所属集群 ID */
+  /** 所属集群 UID */
   clusterUid: string
   /** 所属集群名称 */
   clusterName?: string

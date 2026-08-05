@@ -13,18 +13,18 @@ import { generateId } from '@/mock/utils'
 
 /**
  * 获取 NetworkPolicy 分页列表
- * @param clusterId - 集群 ID
+ * @param clusterUid - 集群 UID
  * @param namespaceName - 命名空间名称
  * @param params - 查询参数
  * @returns 分页数据
  */
 function getNetworkPolicyPage(
-  clusterId: string,
+  clusterUid: string,
   namespaceName: string,
   params: Partial<NetworkPolicyQueryReq>,
 ): PageVo<NetworkPolicyResp> {
   const { name, page = 1, pageSize = 10 } = params || {}
-  let filtered = mockNetworkPolicys.filter(n => n.clusterId === clusterId && n.namespace === namespaceName)
+  let filtered = mockNetworkPolicys.filter(n => n.clusterUid === clusterUid && n.namespace === namespaceName)
   if (name) filtered = filtered.filter(n => n.name.toLowerCase().includes(name.toLowerCase()))
   const total = filtered.length
   const start = (page - 1) * pageSize
@@ -35,28 +35,29 @@ function getNetworkPolicyPage(
 
 /**
  * 获取 NetworkPolicy 详情
- * @param clusterId - 集群 ID
+ * @param clusterUid - 集群 UID
  * @param namespaceName - 命名空间名称
  * @param name - NetworkPolicy 名称
  * @returns NetworkPolicy 详情
  */
-function getNetworkPolicyDetail(clusterId: string, namespaceName: string, name: string): NetworkPolicyResp | null {
+function getNetworkPolicyDetail(clusterUid: string, namespaceName: string, name: string): NetworkPolicyResp | null {
   return (
-    mockNetworkPolicys.find(n => n.clusterId === clusterId && n.namespace === namespaceName && n.name === name) || null
+    mockNetworkPolicys.find(n => n.clusterUid === clusterUid && n.namespace === namespaceName && n.name === name) ||
+    null
   )
 }
 
 /**
  * 创建 NetworkPolicy
- * @param clusterId - 集群 ID
+ * @param clusterUid - 集群 UID
  * @param data - 创建参数
  */
-function createNetworkPolicy(clusterId: string, data: Partial<NetworkPolicyReq>): void {
+function createNetworkPolicy(clusterUid: string, data: Partial<NetworkPolicyReq>): void {
   const created: NetworkPolicyResp = {
     id: generateId(),
     name: data.name || '',
     namespace: data.namespace || '',
-    clusterId,
+    clusterUid,
     clusterName: 'prod-cluster',
     podSelector: data.podSelector || {},
     ingress: data.ingress,
@@ -74,12 +75,12 @@ function createNetworkPolicy(clusterId: string, data: Partial<NetworkPolicyReq>)
 
 /**
  * 更新 NetworkPolicy
- * @param clusterId - 集群 ID
+ * @param clusterUid - 集群 UID
  * @param data - 更新参数
  */
-function updateNetworkPolicy(clusterId: string, data: Partial<NetworkPolicyReq>): void {
+function updateNetworkPolicy(clusterUid: string, data: Partial<NetworkPolicyReq>): void {
   const index = mockNetworkPolicys.findIndex(
-    n => n.clusterId === clusterId && n.namespace === data.namespace && n.name === data.name,
+    n => n.clusterUid === clusterUid && n.namespace === data.namespace && n.name === data.name,
   )
   if (index === -1) {
     console.error('[Update NetworkPolicy] can not find networkpolicy:', data.name)
@@ -96,21 +97,21 @@ function updateNetworkPolicy(clusterId: string, data: Partial<NetworkPolicyReq>)
 
 /**
  * 更新 NetworkPolicy 标签
- * @param clusterId - 集群 ID
+ * @param clusterUid - 集群 UID
  * @param namespaceName - 命名空间名称
  * @param name - NetworkPolicy 名称
  * @param labels - 标签键值对
  * @param operation - 操作类型
  */
 function manageNetworkPolicyLabels(
-  clusterId: string,
+  clusterUid: string,
   namespaceName: string,
   name: string,
   labels: Record<string, string>,
   operation: number,
 ): void {
   const index = mockNetworkPolicys.findIndex(
-    n => n.clusterId === clusterId && n.namespace === namespaceName && n.name === name,
+    n => n.clusterUid === clusterUid && n.namespace === namespaceName && n.name === name,
   )
   if (index === -1) {
     console.error('[Update NetworkPolicy Labels] can not find networkpolicy:', name)
@@ -130,21 +131,21 @@ function manageNetworkPolicyLabels(
 
 /**
  * 更新 NetworkPolicy 注解
- * @param clusterId - 集群 ID
+ * @param clusterUid - 集群 UID
  * @param namespaceName - 命名空间名称
  * @param name - NetworkPolicy 名称
  * @param annotations - 注解键值对
  * @param operation - 操作类型
  */
 function manageNetworkPolicyAnnotations(
-  clusterId: string,
+  clusterUid: string,
   namespaceName: string,
   name: string,
   annotations: Record<string, string>,
   operation: number,
 ): void {
   const index = mockNetworkPolicys.findIndex(
-    n => n.clusterId === clusterId && n.namespace === namespaceName && n.name === name,
+    n => n.clusterUid === clusterUid && n.namespace === namespaceName && n.name === name,
   )
   if (index === -1) {
     console.error('[Update NetworkPolicy Annotations] can not find networkpolicy:', name)
@@ -164,13 +165,13 @@ function manageNetworkPolicyAnnotations(
 
 /**
  * 删除 NetworkPolicy
- * @param clusterId - 集群 ID
+ * @param clusterUid - 集群 UID
  * @param namespaceName - 命名空间名称
  * @param name - NetworkPolicy 名称
  */
-function deleteNetworkPolicy(clusterId: string, namespaceName: string, name: string): void {
+function deleteNetworkPolicy(clusterUid: string, namespaceName: string, name: string): void {
   const index = mockNetworkPolicys.findIndex(
-    n => n.clusterId === clusterId && n.namespace === namespaceName && n.name === name,
+    n => n.clusterUid === clusterUid && n.namespace === namespaceName && n.name === name,
   )
   if (index === -1) {
     console.error('[Delete NetworkPolicy] can not find networkpolicy:', name)
@@ -181,14 +182,14 @@ function deleteNetworkPolicy(clusterId: string, namespaceName: string, name: str
 
 /**
  * 批量删除 NetworkPolicy
- * @param clusterId - 集群 ID
+ * @param clusterUid - 集群 UID
  * @param namespaceName - 命名空间名称
  * @param names - 待删除的 NetworkPolicy 名称列表
  */
-function deleteNetworkPolicys(clusterId: string, namespaceName: string, names: string[]): void {
+function deleteNetworkPolicys(clusterUid: string, namespaceName: string, names: string[]): void {
   names.forEach(name => {
     const index = mockNetworkPolicys.findIndex(
-      n => n.clusterId === clusterId && n.namespace === namespaceName && n.name === name,
+      n => n.clusterUid === clusterUid && n.namespace === namespaceName && n.name === name,
     )
     if (index === -1) {
       console.error('[Delete NetworkPolicys] can not find networkpolicy:', name)
@@ -201,47 +202,52 @@ function deleteNetworkPolicys(clusterId: string, namespaceName: string, names: s
 /**
  * NetworkPolicy 路由配置
  * @remarks
- * - GET /kubernetes/clusters/:clusterId/namespaces/:namespaceName/networkpolicies - 获取 NetworkPolicy 分页列表
- * - GET /kubernetes/clusters/:clusterId/namespaces/:namespaceName/networkpolicies/:name - 获取 NetworkPolicy 详情
- * - POST /kubernetes/clusters/:clusterId/namespaces/:namespaceName/networkpolicies - 创建 NetworkPolicy
- * - PUT /kubernetes/clusters/:clusterId/namespaces/:namespaceName/networkpolicies/:name - 更新 NetworkPolicy
- * - PUT /kubernetes/clusters/:clusterId/namespaces/:namespaceName/networkpolicies/:name/labels - 更新标签
- * - PUT /kubernetes/clusters/:clusterId/namespaces/:namespaceName/networkpolicies/:name/annotations - 更新注解
- * - DELETE /kubernetes/clusters/:clusterId/namespaces/:namespaceName/networkpolicies/:name - 删除 NetworkPolicy
- * - DELETE /kubernetes/clusters/:clusterId/namespaces/:namespaceName/networkpolicies - 批量删除 NetworkPolicy
+ * - GET /kubernetes/clusters/:clusterUid/namespaces/:namespaceName/networkpolicies - 获取 NetworkPolicy 分页列表
+ * - GET /kubernetes/clusters/:clusterUid/namespaces/:namespaceName/networkpolicies/:name - 获取 NetworkPolicy 详情
+ * - POST /kubernetes/clusters/:clusterUid/namespaces/:namespaceName/networkpolicies - 创建 NetworkPolicy
+ * - PUT /kubernetes/clusters/:clusterUid/namespaces/:namespaceName/networkpolicies/:name - 更新 NetworkPolicy
+ * - PUT /kubernetes/clusters/:clusterUid/namespaces/:namespaceName/networkpolicies/:name/labels - 更新标签
+ * - PUT /kubernetes/clusters/:clusterUid/namespaces/:namespaceName/networkpolicies/:name/annotations - 更新注解
+ * - DELETE /kubernetes/clusters/:clusterUid/namespaces/:namespaceName/networkpolicies/:name - 删除 NetworkPolicy
+ * - DELETE /kubernetes/clusters/:clusterUid/namespaces/:namespaceName/networkpolicies - 批量删除 NetworkPolicy
  */
 export default [
   {
     method: 'get',
-    url: '/kubernetes/clusters/:clusterId/namespaces/:namespaceName/networkpolicies',
+    url: '/kubernetes/clusters/:clusterUid/namespaces/:namespaceName/networkpolicies',
     handler: ({ pathParams, params }: { pathParams: Record<string, string>; params: Partial<NetworkPolicyQueryReq> }) =>
-      getNetworkPolicyPage(pathParams.clusterId, pathParams.namespaceName, params),
+      getNetworkPolicyPage(pathParams.clusterUid, pathParams.namespaceName, params),
   },
   {
     method: 'get',
-    url: '/kubernetes/clusters/:clusterId/namespaces/:namespaceName/networkpolicies/:name',
+    url: '/kubernetes/clusters/:clusterUid/namespaces/:namespaceName/networkpolicies/:name',
     handler: ({ pathParams }: { pathParams: Record<string, string> }) =>
-      getNetworkPolicyDetail(pathParams.clusterId, pathParams.namespaceName, pathParams.name),
+      getNetworkPolicyDetail(pathParams.clusterUid, pathParams.namespaceName, pathParams.name),
   },
   {
     method: 'post',
-    url: '/kubernetes/clusters/:clusterId/namespaces/:namespaceName/networkpolicies',
+    url: '/kubernetes/clusters/:clusterUid/namespaces/:namespaceName/networkpolicies',
     handler: ({ pathParams, data }: { pathParams: Record<string, string>; data: Partial<NetworkPolicyReq> }) =>
-      createNetworkPolicy(pathParams.clusterId, data),
+      createNetworkPolicy(pathParams.clusterUid, data),
   },
   {
     method: 'put',
-    url: '/kubernetes/clusters/:clusterId/namespaces/:namespaceName/networkpolicies/:name',
+    url: '/kubernetes/clusters/:clusterUid/namespaces/:namespaceName/networkpolicies/:name',
     handler: ({ pathParams, data }: { pathParams: Record<string, string>; data: Partial<NetworkPolicyReq> }) =>
-      updateNetworkPolicy(pathParams.clusterId, data),
+      updateNetworkPolicy(pathParams.clusterUid, data),
   },
   {
     method: 'put',
-    url: '/kubernetes/clusters/:clusterId/namespaces/:namespaceName/networkpolicies/:name/labels',
-    handler: ({ pathParams, data }: { pathParams: Record<string, string>; data: { labels: Record<string, string>; operation: number },
-     }) =>
+    url: '/kubernetes/clusters/:clusterUid/namespaces/:namespaceName/networkpolicies/:name/labels',
+    handler: ({
+      pathParams,
+      data,
+    }: {
+      pathParams: Record<string, string>
+      data: { labels: Record<string, string>; operation: number }
+    }) =>
       manageNetworkPolicyLabels(
-        pathParams.clusterId,
+        pathParams.clusterUid,
         pathParams.namespaceName,
         pathParams.name,
         data.labels,
@@ -250,11 +256,16 @@ export default [
   },
   {
     method: 'put',
-    url: '/kubernetes/clusters/:clusterId/namespaces/:namespaceName/networkpolicies/:name/annotations',
-    handler: ({ pathParams, data }: { pathParams: Record<string, string>; data: { annotations: Record<string, string>; operation: number },
-     }) =>
+    url: '/kubernetes/clusters/:clusterUid/namespaces/:namespaceName/networkpolicies/:name/annotations',
+    handler: ({
+      pathParams,
+      data,
+    }: {
+      pathParams: Record<string, string>
+      data: { annotations: Record<string, string>; operation: number }
+    }) =>
       manageNetworkPolicyAnnotations(
-        pathParams.clusterId,
+        pathParams.clusterUid,
         pathParams.namespaceName,
         pathParams.name,
         data.annotations,
@@ -263,15 +274,15 @@ export default [
   },
   {
     method: 'delete',
-    url: '/kubernetes/clusters/:clusterId/namespaces/:namespaceName/networkpolicies/:name',
+    url: '/kubernetes/clusters/:clusterUid/namespaces/:namespaceName/networkpolicies/:name',
     handler: ({ pathParams }: { pathParams: Record<string, string> }) =>
-      deleteNetworkPolicy(pathParams.clusterId, pathParams.namespaceName, pathParams.name),
+      deleteNetworkPolicy(pathParams.clusterUid, pathParams.namespaceName, pathParams.name),
   },
   {
     method: 'delete',
-    url: '/kubernetes/clusters/:clusterId/namespaces/:namespaceName/networkpolicies',
+    url: '/kubernetes/clusters/:clusterUid/namespaces/:namespaceName/networkpolicies',
     handler: ({ pathParams, data }: { pathParams: Record<string, string>; data: string[] }) =>
-      deleteNetworkPolicys(pathParams.clusterId, pathParams.namespaceName, data),
+      deleteNetworkPolicys(pathParams.clusterUid, pathParams.namespaceName, data),
   },
 ]
 
@@ -283,7 +294,7 @@ const mockNetworkPolicys: NetworkPolicyResp[] = [
     id: generateId(),
     name: 'default-deny-all',
     namespace: 'default',
-    clusterId: 'cluster-1',
+    clusterUid: 'cluster-1',
     clusterName: 'prod-cluster',
     podSelector: {},
     policyTypes: ['Ingress', 'Egress'],
@@ -298,7 +309,7 @@ const mockNetworkPolicys: NetworkPolicyResp[] = [
     id: generateId(),
     name: 'allow-dns',
     namespace: 'default',
-    clusterId: 'cluster-1',
+    clusterUid: 'cluster-1',
     clusterName: 'prod-cluster',
     podSelector: {},
     egress: [
@@ -322,7 +333,7 @@ const mockNetworkPolicys: NetworkPolicyResp[] = [
     id: generateId(),
     name: 'frontend-network-policy',
     namespace: 'default',
-    clusterId: 'cluster-1',
+    clusterUid: 'cluster-1',
     clusterName: 'prod-cluster',
     podSelector: { app: 'frontend' },
     ingress: [

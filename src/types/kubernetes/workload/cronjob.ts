@@ -47,7 +47,7 @@ export interface CronJobContainer {
 export interface CronJobListResp extends BaseEntity {
   /** 资源 UID */
   uid: string
-  /** 所属集群 ID */
+  /** 所属集群 UID */
   clusterUid: string
   /** 所属命名空间 */
   namespace: string
@@ -76,7 +76,7 @@ export interface CronJobListResp extends BaseEntity {
 export interface CronJobDetailResp extends BaseEntity {
   /** 资源 UID */
   uid: string
-  /** 所属集群 ID */
+  /** 所属集群 UID */
   clusterUid: string
   /** 所属命名空间 */
   namespace: string

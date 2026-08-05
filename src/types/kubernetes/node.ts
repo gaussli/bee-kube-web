@@ -32,7 +32,7 @@ export type NodeConditionType = 'Ready' | 'MemoryPressure' | 'DiskPressure' | 'P
 export interface NodeListResp extends BaseEntity {
   /** 资源 UID */
   uid: string
-  /** 所属集群 ID */
+  /** 所属集群 UID */
   clusterUid: string
   /** 所属集群名称 */
   clusterName: string
@@ -59,7 +59,7 @@ export interface NodeListResp extends BaseEntity {
 export interface NodeOverviewResp extends BaseEntity {
   /** 资源 UID */
   uid: string
-  /** 所属集群 ID */
+  /** 所属集群 UID */
   clusterUid: string
   /** 所属集群名称 */
   clusterName: string

@@ -21,7 +21,7 @@ export type PersistentVolumePhase = 'Pending' | 'Available' | 'Bound' | 'Release
 export interface PersistentVolumeResp extends BaseEntity {
   /** PersistentVolume 名称 */
   name: string
-  /** 所属集群 ID */
+  /** 所属集群 UID */
   clusterUid: string
   /** 所属集群名称 */
   clusterName?: string

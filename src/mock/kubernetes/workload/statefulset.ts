@@ -34,160 +34,175 @@ import { generateId } from '@/mock/utils'
 /**
  * StatefulSet 路由配置
  * @remarks
- * - GET /kubernetes/clusters/:clusterId/statefulsets - 获取 StatefulSet 分页列表
- * - GET /kubernetes/clusters/:clusterId/namespaces/:namespace/statefulsets/:name - 获取 StatefulSet 详情
- * - GET /kubernetes/clusters/:clusterId/namespaces/:namespace/statefulsets/:name/pods - 获取 Pod 列表
- * - GET /kubernetes/clusters/:clusterId/namespaces/:namespace/statefulsets/:name/schedule - 获取调度策略
- * - GET /kubernetes/clusters/:clusterId/namespaces/:namespace/statefulsets/:name/history - 获取历史版本列表
- * - GET /kubernetes/clusters/:clusterId/namespaces/:namespace/statefulsets/:name/network - 获取网络资源
- * - GET /kubernetes/clusters/:clusterId/namespaces/:namespace/statefulsets/:name/storages - 获取存储列表
- * - GET /kubernetes/clusters/:clusterId/namespaces/:namespace/statefulsets/:name/monitor - 获取监控数据
- * - GET /kubernetes/clusters/:clusterId/namespaces/:namespace/statefulsets/:name/events - 获取事件列表
- * - GET /kubernetes/clusters/:clusterId/namespaces/:namespace/statefulsets/:name/yaml - 查看 YAML
- * - POST /kubernetes/clusters/:clusterId/namespaces/:namespace/statefulsets - 创建 StatefulSet
- * - PUT /kubernetes/clusters/:clusterId/namespaces/:namespace/statefulsets/:name - 更新 StatefulSet
- * - POST /kubernetes/clusters/:clusterId/namespaces/:namespace/statefulsets/:name/labels - 更新标签
- * - POST /kubernetes/clusters/:clusterId/namespaces/:namespace/statefulsets/:name/annotations - 更新注解
- * - DELETE /kubernetes/clusters/:clusterId/namespaces/:namespace/statefulsets/:name - 删除 StatefulSet
- * - DELETE /kubernetes/clusters/:clusterId/namespaces/:namespace/statefulsets/batch - 批量删除
- * - GET /kubernetes/clusters/:clusterId/statefulsets/export - 导出 CSV
- * - POST /kubernetes/clusters/:clusterId/statefulsets/import - 导入 StatefulSet
- * - POST /kubernetes/clusters/:clusterId/namespaces/:namespace/statefulsets/:name/scale - 扩缩容
- * - POST /kubernetes/clusters/:clusterId/namespaces/:namespace/statefulsets/:name/restart - 重启
- * - POST /kubernetes/clusters/:clusterId/namespaces/:namespace/statefulsets/:name/rollback - 回滚
+ * - GET /kubernetes/clusters/:clusterUid/statefulsets - 获取 StatefulSet 分页列表
+ * - GET /kubernetes/clusters/:clusterUid/namespaces/:namespace/statefulsets/:name - 获取 StatefulSet 详情
+ * - GET /kubernetes/clusters/:clusterUid/namespaces/:namespace/statefulsets/:name/pods - 获取 Pod 列表
+ * - GET /kubernetes/clusters/:clusterUid/namespaces/:namespace/statefulsets/:name/schedule - 获取调度策略
+ * - GET /kubernetes/clusters/:clusterUid/namespaces/:namespace/statefulsets/:name/history - 获取历史版本列表
+ * - GET /kubernetes/clusters/:clusterUid/namespaces/:namespace/statefulsets/:name/network - 获取网络资源
+ * - GET /kubernetes/clusters/:clusterUid/namespaces/:namespace/statefulsets/:name/storages - 获取存储列表
+ * - GET /kubernetes/clusters/:clusterUid/namespaces/:namespace/statefulsets/:name/monitor - 获取监控数据
+ * - GET /kubernetes/clusters/:clusterUid/namespaces/:namespace/statefulsets/:name/events - 获取事件列表
+ * - GET /kubernetes/clusters/:clusterUid/namespaces/:namespace/statefulsets/:name/yaml - 查看 YAML
+ * - POST /kubernetes/clusters/:clusterUid/namespaces/:namespace/statefulsets - 创建 StatefulSet
+ * - PUT /kubernetes/clusters/:clusterUid/namespaces/:namespace/statefulsets/:name - 更新 StatefulSet
+ * - POST /kubernetes/clusters/:clusterUid/namespaces/:namespace/statefulsets/:name/labels - 更新标签
+ * - POST /kubernetes/clusters/:clusterUid/namespaces/:namespace/statefulsets/:name/annotations - 更新注解
+ * - DELETE /kubernetes/clusters/:clusterUid/namespaces/:namespace/statefulsets/:name - 删除 StatefulSet
+ * - DELETE /kubernetes/clusters/:clusterUid/namespaces/:namespace/statefulsets/batch - 批量删除
+ * - GET /kubernetes/clusters/:clusterUid/statefulsets/export - 导出 CSV
+ * - POST /kubernetes/clusters/:clusterUid/statefulsets/import - 导入 StatefulSet
+ * - POST /kubernetes/clusters/:clusterUid/namespaces/:namespace/statefulsets/:name/scale - 扩缩容
+ * - POST /kubernetes/clusters/:clusterUid/namespaces/:namespace/statefulsets/:name/restart - 重启
+ * - POST /kubernetes/clusters/:clusterUid/namespaces/:namespace/statefulsets/:name/rollback - 回滚
  */
 export default [
   {
     method: 'get',
-    url: '/kubernetes/clusters/:clusterId/statefulsets',
-    handler: ({ pathParams, params }: { pathParams: Record<string, string>; params: Partial<StatefulSetQueryForm> }): PageVo<StatefulSetListVo> =>
-      getStatefulSetList(pathParams.clusterId, params),
+    url: '/kubernetes/clusters/:clusterUid/statefulsets',
+    handler: ({
+      pathParams,
+      params,
+    }: {
+      pathParams: Record<string, string>
+      params: Partial<StatefulSetQueryForm>
+    }): PageVo<StatefulSetListVo> => getStatefulSetList(pathParams.clusterUid, params),
   },
   {
     method: 'get',
-    url: '/kubernetes/clusters/:clusterId/namespaces/:namespace/statefulsets/:name',
+    url: '/kubernetes/clusters/:clusterUid/namespaces/:namespace/statefulsets/:name',
     handler: ({ pathParams }: { pathParams: Record<string, string> }): StatefulSetDetailVo =>
-      getStatefulSetDetail(pathParams.clusterId, pathParams.namespace, pathParams.name),
+      getStatefulSetDetail(pathParams.clusterUid, pathParams.namespace, pathParams.name),
   },
   {
     method: 'get',
-    url: '/kubernetes/clusters/:clusterId/namespaces/:namespace/statefulsets/:name/pods',
+    url: '/kubernetes/clusters/:clusterUid/namespaces/:namespace/statefulsets/:name/pods',
     handler: ({ pathParams }: { pathParams: Record<string, string> }): StatefulSetPodListVo[] =>
-      getStatefulSetPodList(pathParams.clusterId, pathParams.namespace, pathParams.name),
+      getStatefulSetPodList(pathParams.clusterUid, pathParams.namespace, pathParams.name),
   },
   {
     method: 'get',
-    url: '/kubernetes/clusters/:clusterId/namespaces/:namespace/statefulsets/:name/schedule',
+    url: '/kubernetes/clusters/:clusterUid/namespaces/:namespace/statefulsets/:name/schedule',
     handler: ({ pathParams }: { pathParams: Record<string, string> }): StatefulSetScheduleVo =>
-      getStatefulSetSchedule(pathParams.clusterId, pathParams.namespace, pathParams.name),
+      getStatefulSetSchedule(pathParams.clusterUid, pathParams.namespace, pathParams.name),
   },
   {
     method: 'get',
-    url: '/kubernetes/clusters/:clusterId/namespaces/:namespace/statefulsets/:name/history',
+    url: '/kubernetes/clusters/:clusterUid/namespaces/:namespace/statefulsets/:name/history',
     handler: ({ pathParams }: { pathParams: Record<string, string> }): StatefulSetHistoryRevisionListVo[] =>
-      getStatefulSetHistoryRevisionList(pathParams.clusterId, pathParams.namespace, pathParams.name),
+      getStatefulSetHistoryRevisionList(pathParams.clusterUid, pathParams.namespace, pathParams.name),
   },
   {
     method: 'get',
-    url: '/kubernetes/clusters/:clusterId/namespaces/:namespace/statefulsets/:name/network',
+    url: '/kubernetes/clusters/:clusterUid/namespaces/:namespace/statefulsets/:name/network',
     handler: ({ pathParams }: { pathParams: Record<string, string> }): StatefulSetNetworkVo =>
-      getStatefulSetNetwork(pathParams.clusterId, pathParams.namespace, pathParams.name),
+      getStatefulSetNetwork(pathParams.clusterUid, pathParams.namespace, pathParams.name),
   },
   {
     method: 'get',
-    url: '/kubernetes/clusters/:clusterId/namespaces/:namespace/statefulsets/:name/storages',
+    url: '/kubernetes/clusters/:clusterUid/namespaces/:namespace/statefulsets/:name/storages',
     handler: ({ pathParams }: { pathParams: Record<string, string> }): StatefulSetStorageListVo[] =>
-      getStatefulSetStorageList(pathParams.clusterId, pathParams.namespace, pathParams.name),
+      getStatefulSetStorageList(pathParams.clusterUid, pathParams.namespace, pathParams.name),
   },
   {
     method: 'get',
-    url: '/kubernetes/clusters/:clusterId/namespaces/:namespace/statefulsets/:name/monitor',
+    url: '/kubernetes/clusters/:clusterUid/namespaces/:namespace/statefulsets/:name/monitor',
     handler: ({ pathParams }: { pathParams: Record<string, string> }): StatefulSetMonitorVo =>
-      getStatefulSetMonitor(pathParams.clusterId, pathParams.namespace, pathParams.name),
+      getStatefulSetMonitor(pathParams.clusterUid, pathParams.namespace, pathParams.name),
   },
   {
     method: 'get',
-    url: '/kubernetes/clusters/:clusterId/namespaces/:namespace/statefulsets/:name/events',
+    url: '/kubernetes/clusters/:clusterUid/namespaces/:namespace/statefulsets/:name/events',
     handler: ({ pathParams }: { pathParams: Record<string, string> }): StatefulSetEventListVo[] =>
-      getStatefulSetEventList(pathParams.clusterId, pathParams.namespace, pathParams.name),
+      getStatefulSetEventList(pathParams.clusterUid, pathParams.namespace, pathParams.name),
   },
   {
     method: 'get',
-    url: '/kubernetes/clusters/:clusterId/namespaces/:namespace/statefulsets/:name/yaml',
+    url: '/kubernetes/clusters/:clusterUid/namespaces/:namespace/statefulsets/:name/yaml',
     handler: ({ pathParams }: { pathParams: Record<string, string> }): string =>
-      getStatefulSetYaml(pathParams.clusterId, pathParams.namespace, pathParams.name),
+      getStatefulSetYaml(pathParams.clusterUid, pathParams.namespace, pathParams.name),
   },
   {
     method: 'post',
-    url: '/kubernetes/clusters/:clusterId/namespaces/:namespace/statefulsets',
+    url: '/kubernetes/clusters/:clusterUid/namespaces/:namespace/statefulsets',
     handler: ({ pathParams, data }: { pathParams: Record<string, string>; data: StatefulSetCreateForm }): void =>
-      createStatefulSet(pathParams.clusterId, pathParams.namespace, data),
+      createStatefulSet(pathParams.clusterUid, pathParams.namespace, data),
   },
   {
     method: 'put',
-    url: '/kubernetes/clusters/:clusterId/namespaces/:namespace/statefulsets/:name',
-    handler: ({ pathParams, data }: { pathParams: Record<string, string>; data: Partial<StatefulSetUpdateForm> }): void =>
-      updateStatefulSet(pathParams.clusterId, pathParams.namespace, pathParams.name, data),
+    url: '/kubernetes/clusters/:clusterUid/namespaces/:namespace/statefulsets/:name',
+    handler: ({
+      pathParams,
+      data,
+    }: {
+      pathParams: Record<string, string>
+      data: Partial<StatefulSetUpdateForm>
+    }): void => updateStatefulSet(pathParams.clusterUid, pathParams.namespace, pathParams.name, data),
   },
   {
     method: 'post',
-    url: '/kubernetes/clusters/:clusterId/namespaces/:namespace/statefulsets/:name/labels',
+    url: '/kubernetes/clusters/:clusterUid/namespaces/:namespace/statefulsets/:name/labels',
     handler: ({ pathParams, data }: { pathParams: Record<string, string>; data: StatefulSetLabelForm }): void =>
-      manageStatefulSetLabels(pathParams.clusterId, pathParams.namespace, pathParams.name, data),
+      manageStatefulSetLabels(pathParams.clusterUid, pathParams.namespace, pathParams.name, data),
   },
   {
     method: 'post',
-    url: '/kubernetes/clusters/:clusterId/namespaces/:namespace/statefulsets/:name/annotations',
+    url: '/kubernetes/clusters/:clusterUid/namespaces/:namespace/statefulsets/:name/annotations',
     handler: ({ pathParams, data }: { pathParams: Record<string, string>; data: StatefulSetAnnotationForm }): void =>
-      manageStatefulSetAnnotations(pathParams.clusterId, pathParams.namespace, pathParams.name, data),
+      manageStatefulSetAnnotations(pathParams.clusterUid, pathParams.namespace, pathParams.name, data),
   },
   {
     method: 'delete',
-    url: '/kubernetes/clusters/:clusterId/namespaces/:namespace/statefulsets/:name',
+    url: '/kubernetes/clusters/:clusterUid/namespaces/:namespace/statefulsets/:name',
     handler: ({ pathParams }: { pathParams: Record<string, string> }): void =>
-      deleteStatefulSet(pathParams.clusterId, pathParams.namespace, pathParams.name),
+      deleteStatefulSet(pathParams.clusterUid, pathParams.namespace, pathParams.name),
   },
   {
     method: 'delete',
-    url: '/kubernetes/clusters/:clusterId/namespaces/:namespace/statefulsets/batch',
+    url: '/kubernetes/clusters/:clusterUid/namespaces/:namespace/statefulsets/batch',
     handler: ({ pathParams, data }: { pathParams: Record<string, string>; data: string[] }): void =>
-      deleteStatefulSets(pathParams.clusterId, pathParams.namespace, data),
+      deleteStatefulSets(pathParams.clusterUid, pathParams.namespace, data),
   },
   {
     method: 'get',
-    url: '/kubernetes/clusters/:clusterId/statefulsets/export',
-    handler: ({ pathParams, params }: { pathParams: Record<string, string>; params: Partial<StatefulSetQueryForm> }): void =>
-      exportStatefulSet(pathParams.clusterId, params),
+    url: '/kubernetes/clusters/:clusterUid/statefulsets/export',
+    handler: ({
+      pathParams,
+      params,
+    }: {
+      pathParams: Record<string, string>
+      params: Partial<StatefulSetQueryForm>
+    }): void => exportStatefulSet(pathParams.clusterUid, params),
   },
   {
     method: 'post',
-    url: '/kubernetes/clusters/:clusterId/statefulsets/import',
+    url: '/kubernetes/clusters/:clusterUid/statefulsets/import',
     handler: ({ pathParams, data }: { pathParams: Record<string, string>; data: StatefulSetYamlForm }): void =>
-      importStatefulSet(pathParams.clusterId, data),
+      importStatefulSet(pathParams.clusterUid, data),
   },
   {
     method: 'post',
-    url: '/kubernetes/clusters/:clusterId/namespaces/:namespace/statefulsets/:name/scale',
+    url: '/kubernetes/clusters/:clusterUid/namespaces/:namespace/statefulsets/:name/scale',
     handler: ({ pathParams, data }: { pathParams: Record<string, string>; data: StatefulSetScaleForm }): void =>
-      scaleStatefulSet(pathParams.clusterId, pathParams.namespace, pathParams.name, data),
+      scaleStatefulSet(pathParams.clusterUid, pathParams.namespace, pathParams.name, data),
   },
   {
     method: 'post',
-    url: '/kubernetes/clusters/:clusterId/namespaces/:namespace/statefulsets/:name/restart',
+    url: '/kubernetes/clusters/:clusterUid/namespaces/:namespace/statefulsets/:name/restart',
     handler: ({ pathParams }: { pathParams: Record<string, string> }): void =>
-      restartStatefulSet(pathParams.clusterId, pathParams.namespace, pathParams.name),
+      restartStatefulSet(pathParams.clusterUid, pathParams.namespace, pathParams.name),
   },
   {
     method: 'post',
-    url: '/kubernetes/clusters/:clusterId/namespaces/:namespace/statefulsets/:name/rollback',
+    url: '/kubernetes/clusters/:clusterUid/namespaces/:namespace/statefulsets/:name/rollback',
     handler: ({ pathParams }: { pathParams: Record<string, string> }): void =>
-      rollbackStatefulSet(pathParams.clusterId, pathParams.namespace, pathParams.name),
+      rollbackStatefulSet(pathParams.clusterUid, pathParams.namespace, pathParams.name),
   },
 ]
 
 /**
  * 获取 StatefulSet 分页列表
- * @param _clusterId - 集群ID（mock 中未使用）
+ * @param _clusterId - 集群 UID（mock 中未使用）
  * @param params - 查询参数
  * @returns 分页数据
  */
@@ -230,7 +245,7 @@ function getStatefulSetList(_clusterId: string, params: Partial<StatefulSetQuery
 
 /**
  * 获取 StatefulSet 详情
- * @param _clusterId - 集群ID
+ * @param _clusterId - 集群 UID
  * @param _namespace - 命名空间
  * @param _name - StatefulSet 名称
  * @returns StatefulSet 详情
@@ -249,7 +264,7 @@ function getStatefulSetDetail(_clusterId: string, _namespace: string, _name: str
 
 /**
  * 获取 StatefulSet Pod 列表
- * @param _clusterId - 集群ID
+ * @param _clusterId - 集群 UID
  * @param _namespace - 命名空间
  * @param _name - StatefulSet 名称
  * @returns Pod 列表
@@ -273,7 +288,7 @@ function getStatefulSetPodList(_clusterId: string, _namespace: string, _name: st
       containerCount: 2,
       cpuUsage: '15%',
       memoryUsage: '32%',
-      clusterId: sts.clusterId,
+      clusterUid: sts.clusterUid,
       clusterUid: generateId(),
       clusterName: sts.clusterName,
       namespace: sts.namespace,
@@ -298,7 +313,7 @@ function getStatefulSetPodList(_clusterId: string, _namespace: string, _name: st
       containerCount: 2,
       cpuUsage: '18%',
       memoryUsage: '41%',
-      clusterId: sts.clusterId,
+      clusterUid: sts.clusterUid,
       clusterUid: generateId(),
       clusterName: sts.clusterName,
       namespace: sts.namespace,
@@ -323,7 +338,7 @@ function getStatefulSetPodList(_clusterId: string, _namespace: string, _name: st
       containerCount: 2,
       cpuUsage: '22%',
       memoryUsage: '56%',
-      clusterId: sts.clusterId,
+      clusterUid: sts.clusterUid,
       clusterUid: generateId(),
       clusterName: sts.clusterName,
       namespace: sts.namespace,
@@ -339,15 +354,15 @@ function getStatefulSetPodList(_clusterId: string, _namespace: string, _name: st
 
 /**
  * 获取 StatefulSet 调度策略
- * @param clusterId - 集群ID
+ * @param clusterUid - 集群 UID
  * @param namespace - 命名空间
  * @param name - StatefulSet 名称
  * @returns StatefulSet 调度策略
  */
-function getStatefulSetSchedule(clusterId: string, namespace: string, name: string): StatefulSetScheduleVo {
-  const sts = mockStatefulSets.find(s => s.clusterId === clusterId && s.namespace === namespace && s.name === name)
+function getStatefulSetSchedule(clusterUid: string, namespace: string, name: string): StatefulSetScheduleVo {
+  const sts = mockStatefulSets.find(s => s.clusterUid === clusterUid && s.namespace === namespace && s.name === name)
   if (!sts) {
-    console.error('[Get StatefulSet Schedule] can not find statefulset:', clusterId, namespace, name)
+    console.error('[Get StatefulSet Schedule] can not find statefulset:', clusterUid, namespace, name)
   }
   return {
     nodeSelector: { 'kubernetes.io/os': 'linux' },
@@ -414,7 +429,7 @@ function getStatefulSetSchedule(clusterId: string, namespace: string, name: stri
 
 /**
  * 获取 StatefulSet 历史版本列表
- * @param _clusterId - 集群ID
+ * @param _clusterId - 集群 UID
  * @param _namespace - 命名空间
  * @param _name - StatefulSet 名称
  * @returns 历史版本列表
@@ -443,7 +458,7 @@ function getStatefulSetHistoryRevisionList(
 
 /**
  * 获取 StatefulSet 网络资源
- * @param _clusterId - 集群ID
+ * @param _clusterId - 集群 UID
  * @param _namespace - 命名空间
  * @param _name - StatefulSet 名称
  * @returns 网络资源
@@ -463,7 +478,7 @@ function getStatefulSetNetwork(_clusterId: string, _namespace: string, _name: st
         selector: { app: sts.name },
         externalName: '',
         headless: true,
-        clusterId: sts.clusterId,
+        clusterUid: sts.clusterUid,
         clusterUid: generateId(),
         clusterName: sts.clusterName,
         namespace: sts.namespace,
@@ -485,7 +500,7 @@ function getStatefulSetNetwork(_clusterId: string, _namespace: string, _name: st
         selector: { app: sts.name, role: 'replica' },
         externalName: '',
         headless: false,
-        clusterId: sts.clusterId,
+        clusterUid: sts.clusterUid,
         clusterUid: generateId(),
         clusterName: sts.clusterName,
         namespace: sts.namespace,
@@ -503,7 +518,7 @@ function getStatefulSetNetwork(_clusterId: string, _namespace: string, _name: st
 
 /**
  * 获取 StatefulSet 存储列表
- * @param _clusterId - 集群ID
+ * @param _clusterId - 集群 UID
  * @param _namespace - 命名空间
  * @param _name - StatefulSet 名称
  * @returns 存储列表
@@ -548,7 +563,7 @@ function getStatefulSetStorageList(_clusterId: string, _namespace: string, _name
 
 /**
  * 获取 StatefulSet 监控数据
- * @param _clusterId - 集群ID
+ * @param _clusterId - 集群 UID
  * @param _namespace - 命名空间
  * @param _name - StatefulSet 名称
  * @returns 监控数据
@@ -559,7 +574,7 @@ function getStatefulSetMonitor(_clusterId: string, _namespace: string, _name: st
 
 /**
  * 获取 StatefulSet 事件列表
- * @param _clusterId - 集群ID
+ * @param _clusterId - 集群 UID
  * @param _namespace - 命名空间
  * @param _name - StatefulSet 名称
  * @returns 事件列表
@@ -622,15 +637,15 @@ function getStatefulSetEventList(_clusterId: string, _namespace: string, _name: 
 
 /**
  * 查看 StatefulSet YAML
- * @param clusterId - 集群ID
+ * @param clusterUid - 集群 UID
  * @param namespace - 命名空间
  * @param name - StatefulSet 名称
  * @returns StatefulSet YAML 配置
  */
-function getStatefulSetYaml(clusterId: string, namespace: string, name: string): string {
-  const sts = mockStatefulSets.find(s => s.clusterId === clusterId && s.namespace === namespace && s.name === name)
+function getStatefulSetYaml(clusterUid: string, namespace: string, name: string): string {
+  const sts = mockStatefulSets.find(s => s.clusterUid === clusterUid && s.namespace === namespace && s.name === name)
   if (!sts) {
-    console.error('[Get StatefulSet Yaml] can not find statefulset:', clusterId, namespace, name)
+    console.error('[Get StatefulSet Yaml] can not find statefulset:', clusterUid, namespace, name)
     return ''
   }
 
@@ -747,124 +762,129 @@ status:
 
 /**
  * 创建 StatefulSet
- * @param clusterId - 集群ID
+ * @param clusterUid - 集群 UID
  * @param namespace - 命名空间
  * @param data - 创建参数
  */
-function createStatefulSet(clusterId: string, namespace: string, data: StatefulSetCreateForm): void {
-  console.log('[Mock] createStatefulSet', { clusterId, namespace, data })
+function createStatefulSet(clusterUid: string, namespace: string, data: StatefulSetCreateForm): void {
+  console.log('[Mock] createStatefulSet', { clusterUid, namespace, data })
 }
 
 /**
  * 更新 StatefulSet
- * @param clusterId - 集群ID
+ * @param clusterUid - 集群 UID
  * @param namespace - 命名空间
  * @param name - StatefulSet 名称
  * @param data - 更新参数
  */
 function updateStatefulSet(
-  clusterId: string,
+  clusterUid: string,
   namespace: string,
   name: string,
   data: Partial<StatefulSetUpdateForm>,
 ): void {
-  console.log('[Mock] updateStatefulSet', { clusterId, namespace, name, data })
+  console.log('[Mock] updateStatefulSet', { clusterUid, namespace, name, data })
 }
 
 /**
  * 更新 StatefulSet 标签
- * @param clusterId - 集群ID
+ * @param clusterUid - 集群 UID
  * @param namespace - 命名空间
  * @param name - StatefulSet 名称
  * @param data - 标签数据
  */
-function manageStatefulSetLabels(clusterId: string, namespace: string, name: string, data: StatefulSetLabelForm): void {
-  console.log('[Mock] manageStatefulSetLabels', { clusterId, namespace, name, data })
+function manageStatefulSetLabels(
+  clusterUid: string,
+  namespace: string,
+  name: string,
+  data: StatefulSetLabelForm,
+): void {
+  console.log('[Mock] manageStatefulSetLabels', { clusterUid, namespace, name, data })
 }
 
 /**
  * 更新 StatefulSet 注解
- * @param clusterId - 集群ID
+ * @param clusterUid - 集群 UID
  * @param namespace - 命名空间
  * @param name - StatefulSet 名称
  * @param data - 注解数据
  */
 function manageStatefulSetAnnotations(
-  clusterId: string,
+  clusterUid: string,
   namespace: string,
   name: string,
   data: StatefulSetAnnotationForm,
 ): void {
-  console.log('[Mock] manageStatefulSetAnnotations', { clusterId, namespace, name, data })
+  console.log('[Mock] manageStatefulSetAnnotations', { clusterUid, namespace, name, data })
 }
 
 /**
  * 删除 StatefulSet
- * @param clusterId - 集群ID
+ * @param clusterUid - 集群 UID
  * @param namespace - 命名空间
  * @param name - StatefulSet 名称
  */
-function deleteStatefulSet(clusterId: string, namespace: string, name: string): void {
-  console.log('[Mock] deleteStatefulSet', { clusterId, namespace, name })
+function deleteStatefulSet(clusterUid: string, namespace: string, name: string): void {
+  console.log('[Mock] deleteStatefulSet', { clusterUid, namespace, name })
 }
 
 /**
  * 批量删除 StatefulSet
- * @param clusterId - 集群ID
+ * @param clusterUid - 集群 UID
  * @param namespace - 命名空间
  * @param names - StatefulSet 名称数组
  */
-function deleteStatefulSets(clusterId: string, namespace: string, names: string[]): void {
-  console.log('[Mock] deleteStatefulSets', { clusterId, namespace, names })
+function deleteStatefulSets(clusterUid: string, namespace: string, names: string[]): void {
+  console.log('[Mock] deleteStatefulSets', { clusterUid, namespace, names })
 }
 
 /**
  * 导出 StatefulSet CSV
- * @param clusterId - 集群ID
+ * @param clusterUid - 集群 UID
  * @param params - 查询参数
  */
-function exportStatefulSet(clusterId: string, params: Partial<StatefulSetQueryForm>): void {
-  console.log('[Mock] exportStatefulSet', { clusterId, params })
+function exportStatefulSet(clusterUid: string, params: Partial<StatefulSetQueryForm>): void {
+  console.log('[Mock] exportStatefulSet', { clusterUid, params })
 }
 
 /**
  * 导入 StatefulSet
- * @param clusterId - 集群ID
+ * @param clusterUid - 集群 UID
  * @param data - YAML 配置
  */
-function importStatefulSet(clusterId: string, data: StatefulSetYamlForm): void {
-  console.log('[Mock] importStatefulSet', { clusterId, data })
+function importStatefulSet(clusterUid: string, data: StatefulSetYamlForm): void {
+  console.log('[Mock] importStatefulSet', { clusterUid, data })
 }
 
 /**
  * 扩缩容 StatefulSet
- * @param clusterId - 集群ID
+ * @param clusterUid - 集群 UID
  * @param namespace - 命名空间
  * @param name - StatefulSet 名称
  * @param data - 扩缩容参数
  */
-function scaleStatefulSet(clusterId: string, namespace: string, name: string, data: StatefulSetScaleForm): void {
-  console.log('[Mock] scaleStatefulSet', { clusterId, namespace, name, data })
+function scaleStatefulSet(clusterUid: string, namespace: string, name: string, data: StatefulSetScaleForm): void {
+  console.log('[Mock] scaleStatefulSet', { clusterUid, namespace, name, data })
 }
 
 /**
  * 重启 StatefulSet
- * @param clusterId - 集群ID
+ * @param clusterUid - 集群 UID
  * @param namespace - 命名空间
  * @param name - StatefulSet 名称
  */
-function restartStatefulSet(clusterId: string, namespace: string, name: string): void {
-  console.log('[Mock] restartStatefulSet', { clusterId, namespace, name })
+function restartStatefulSet(clusterUid: string, namespace: string, name: string): void {
+  console.log('[Mock] restartStatefulSet', { clusterUid, namespace, name })
 }
 
 /**
  * 回滚 StatefulSet
- * @param clusterId - 集群ID
+ * @param clusterUid - 集群 UID
  * @param namespace - 命名空间
  * @param name - StatefulSet 名称
  */
-function rollbackStatefulSet(clusterId: string, namespace: string, name: string): void {
-  console.log('[Mock] rollbackStatefulSet', { clusterId, namespace, name })
+function rollbackStatefulSet(clusterUid: string, namespace: string, name: string): void {
+  console.log('[Mock] rollbackStatefulSet', { clusterUid, namespace, name })
 }
 
 /**
@@ -880,7 +900,7 @@ const mockStatefulSets: StatefulSetListVo[] = [
     namespace: 'data',
     namespaceId: generateId(),
     namespaceUid: generateId(),
-    clusterId: generateId(),
+    clusterUid: generateId(),
     clusterUid: generateId(),
     description: 'MySQL 主库集群，负责核心业务数据的读写操作',
     status: 'Running',
@@ -902,7 +922,7 @@ const mockStatefulSets: StatefulSetListVo[] = [
     namespace: 'data',
     namespaceId: generateId(),
     namespaceUid: generateId(),
-    clusterId: generateId(),
+    clusterUid: generateId(),
     clusterUid: generateId(),
     description: 'MongoDB 副本集，承载文档型业务数据存储',
     status: 'Running',
@@ -924,7 +944,7 @@ const mockStatefulSets: StatefulSetListVo[] = [
     namespace: 'middleware',
     namespaceId: generateId(),
     namespaceUid: generateId(),
-    clusterId: generateId(),
+    clusterUid: generateId(),
     clusterUid: generateId(),
     description: 'Kafka 消息队列集群，处理异步消息和事件流',
     status: 'Running',
@@ -947,7 +967,7 @@ const mockStatefulSets: StatefulSetListVo[] = [
     namespace: 'data',
     namespaceId: generateId(),
     namespaceUid: generateId(),
-    clusterId: generateId(),
+    clusterUid: generateId(),
     clusterUid: generateId(),
     description: 'MySQL 从库集群，提供读写分离的读流量承载',
     status: 'Available',
@@ -969,7 +989,7 @@ const mockStatefulSets: StatefulSetListVo[] = [
     namespace: 'data',
     namespaceId: generateId(),
     namespaceUid: generateId(),
-    clusterId: generateId(),
+    clusterUid: generateId(),
     clusterUid: generateId(),
     description: 'Redis Cluster 集群，提供分布式缓存服务',
     status: 'Available',
@@ -991,7 +1011,7 @@ const mockStatefulSets: StatefulSetListVo[] = [
     namespace: 'storage',
     namespaceId: generateId(),
     namespaceUid: generateId(),
-    clusterId: generateId(),
+    clusterUid: generateId(),
     clusterUid: generateId(),
     description: 'MinIO 对象存储集群，提供 S3 兼容的文件存储',
     status: 'Available',
@@ -1014,7 +1034,7 @@ const mockStatefulSets: StatefulSetListVo[] = [
     namespace: 'middleware',
     namespaceId: generateId(),
     namespaceUid: generateId(),
-    clusterId: generateId(),
+    clusterUid: generateId(),
     clusterUid: generateId(),
     description: 'Zookeeper 分布式协调服务，已缩容停止',
     status: 'Stopped',
@@ -1037,7 +1057,7 @@ const mockStatefulSets: StatefulSetListVo[] = [
     namespace: 'middleware',
     namespaceId: generateId(),
     namespaceUid: generateId(),
-    clusterId: generateId(),
+    clusterUid: generateId(),
     clusterUid: generateId(),
     description: 'Nexus 私有制品仓库，暂不使用时缩容停止',
     status: 'Stopped',
@@ -1061,7 +1081,7 @@ const mockStatefulSets: StatefulSetListVo[] = [
     namespace: 'data',
     namespaceId: generateId(),
     namespaceUid: generateId(),
-    clusterId: generateId(),
+    clusterUid: generateId(),
     clusterUid: generateId(),
     description: 'ClickHouse 分析型数据库，用于实时 OLAP 查询',
     status: 'Creating',
@@ -1084,7 +1104,7 @@ const mockStatefulSets: StatefulSetListVo[] = [
     namespace: 'data',
     namespaceId: generateId(),
     namespaceUid: generateId(),
-    clusterId: generateId(),
+    clusterUid: generateId(),
     clusterUid: generateId(),
     description: 'PostgreSQL 主数据库集群，迁移中新建',
     status: 'Creating',
@@ -1108,7 +1128,7 @@ const mockStatefulSets: StatefulSetListVo[] = [
     namespace: 'logging',
     namespaceId: generateId(),
     namespaceUid: generateId(),
-    clusterId: generateId(),
+    clusterUid: generateId(),
     clusterUid: generateId(),
     description: 'Elasticsearch 日志存储和全文检索集群',
     status: 'Updating',
@@ -1131,7 +1151,7 @@ const mockStatefulSets: StatefulSetListVo[] = [
     namespace: 'middleware',
     namespaceId: generateId(),
     namespaceUid: generateId(),
-    clusterId: generateId(),
+    clusterUid: generateId(),
     clusterUid: generateId(),
     description: 'Nacos 注册中心和配置管理集群',
     status: 'Updating',
@@ -1155,7 +1175,7 @@ const mockStatefulSets: StatefulSetListVo[] = [
     namespace: 'data',
     namespaceId: generateId(),
     namespaceUid: generateId(),
-    clusterId: generateId(),
+    clusterUid: generateId(),
     clusterUid: generateId(),
     description: 'Neo4j 图数据库，用于知识图谱存储',
     status: 'Terminating',
@@ -1178,7 +1198,7 @@ const mockStatefulSets: StatefulSetListVo[] = [
     namespace: 'monitoring',
     namespaceId: generateId(),
     namespaceUid: generateId(),
-    clusterId: generateId(),
+    clusterUid: generateId(),
     clusterUid: generateId(),
     description: 'Jaeger 分布式链路追踪后端存储',
     status: 'Terminating',
@@ -1202,7 +1222,7 @@ const mockStatefulSets: StatefulSetListVo[] = [
     namespace: 'data',
     namespaceId: generateId(),
     namespaceUid: generateId(),
-    clusterId: generateId(),
+    clusterUid: generateId(),
     clusterUid: generateId(),
     description: 'Cassandra 分布式 NoSQL 数据库集群',
     status: 'CreateTimeout',
@@ -1225,7 +1245,7 @@ const mockStatefulSets: StatefulSetListVo[] = [
     namespace: 'data',
     namespaceId: generateId(),
     namespaceUid: generateId(),
-    clusterId: generateId(),
+    clusterUid: generateId(),
     clusterUid: generateId(),
     description: 'TimescaleDB 时序数据库，用于 IoT 数据存储',
     status: 'CreateTimeout',
@@ -1249,7 +1269,7 @@ const mockStatefulSets: StatefulSetListVo[] = [
     namespace: 'data',
     namespaceId: generateId(),
     namespaceUid: generateId(),
-    clusterId: generateId(),
+    clusterUid: generateId(),
     clusterUid: generateId(),
     description: 'Hadoop DataNode 集群，负责 HDFS 数据存储',
     status: 'UpdateTimeout',
@@ -1272,7 +1292,7 @@ const mockStatefulSets: StatefulSetListVo[] = [
     namespace: 'middleware',
     namespaceId: generateId(),
     namespaceUid: generateId(),
-    clusterId: generateId(),
+    clusterUid: generateId(),
     clusterUid: generateId(),
     description: 'Etcd 分布式键值存储，Kubernetes 控制面依赖',
     status: 'UpdateTimeout',
@@ -1296,7 +1316,7 @@ const mockStatefulSets: StatefulSetListVo[] = [
     namespace: 'middleware',
     namespaceId: generateId(),
     namespaceUid: generateId(),
-    clusterId: generateId(),
+    clusterUid: generateId(),
     clusterUid: generateId(),
     description: 'RabbitMQ 消息队列集群，处理业务异步任务',
     status: 'Failed',
@@ -1319,7 +1339,7 @@ const mockStatefulSets: StatefulSetListVo[] = [
     namespace: 'monitoring',
     namespaceId: generateId(),
     namespaceUid: generateId(),
-    clusterId: generateId(),
+    clusterUid: generateId(),
     clusterUid: generateId(),
     description: 'InfluxDB 时间序列数据库，存储监控指标数据',
     status: 'Failed',
@@ -1343,7 +1363,7 @@ const mockStatefulSets: StatefulSetListVo[] = [
     namespace: 'middleware',
     namespaceId: generateId(),
     namespaceUid: generateId(),
-    clusterId: generateId(),
+    clusterUid: generateId(),
     clusterUid: generateId(),
     description: 'Consul 服务发现和配置中心集群',
     status: 'Unknown',
@@ -1366,7 +1386,7 @@ const mockStatefulSets: StatefulSetListVo[] = [
     namespace: 'data',
     namespaceId: generateId(),
     namespaceUid: generateId(),
-    clusterId: generateId(),
+    clusterUid: generateId(),
     clusterUid: generateId(),
     description: 'Greenplum MPP 数据仓库集群',
     status: 'Unknown',
@@ -1406,7 +1426,7 @@ const mockStatefulSetBasic: StatefulSetBasicVo = {
   serviceName: 'mysql-primary-headless',
   currentRevision: 'mysql-primary-6d4f8c9b7',
   updateRevision: 'mysql-primary-6d4f8c9b7',
-  clusterId: generateId(),
+  clusterUid: generateId(),
   clusterUid: generateId(),
   clusterName: 'prod-cluster',
   namespace: 'data',
