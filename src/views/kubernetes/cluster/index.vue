@@ -94,19 +94,6 @@
 
     <!-- 批量删除 Dialog -->
     <BeeDialog v-model="batchDeleteDialogVisible" title="确认删除" @confirm="handleConfirmBatchDelete">
-      <div class="batch-delete-dialog__content">
-        <p>
-          确定要删除选中的 <strong>{{ selectedRows.length }}</strong> 个集群吗？
-        </p>
-        <div class="batch-delete-dialog__tags">
-          <BeeTag v-for="row in selectedRows" :key="row.id" size="small">
-            {{ row.name }}
-          </BeeTag>
-        </div>
-      </div>
-    </BeeDialog>
-
-    <BeeDialog v-model="batchDeleteDialogVisible" title="确认删除" @confirm="handleConfirmBatchDelete">
       <div class="dialog-content">
         <template v-if="nonDeletableRows.length > 0">
           <p class="dialog-content__warning">
@@ -222,8 +209,6 @@ function handleSearch() {
   queryForm.uid = searchKey.value
   queryForm.name = searchKey.value
 
-  console.log(searchKey.value)
-  console.log(queryForm)
   pagination.page = 1
   void loadData()
 }
@@ -323,7 +308,7 @@ async function handleConfirmBatchDelete() {
   const uids = deletableRows.value.map(row => row.uid)
   try {
     await deleteClusters(uids)
-    BeeMessage.success(`成功删除 ${uids.length} 个 Deployment`)
+    BeeMessage.success(`成功删除 ${uids.length} 个集群`)
     batchDeleteDialogVisible.value = false
     selectedRows.value = []
     await loadData()
@@ -344,7 +329,7 @@ function handleSwitchCluster(row: ClusterListVo) {
 
 // ==================== Export & Import ====================
 /**
- * 导出 Deployment
+ * 导出集群
  * @remarks 功能开发中
  */
 function handleExport() {
@@ -352,7 +337,7 @@ function handleExport() {
 }
 
 /**
- * 导入 Deployment
+ * 导入集群
  * @remarks 功能开发中
  */
 function handleImport() {
@@ -390,7 +375,6 @@ function getActions(row: ClusterListVo): ActionItem[] {
 
 // ==================== Lifecycle ====================
 onMounted(() => {
-  const kubernetesStore = useKubernetesStore()
   // 已有选中集群时，直接跳转到集群概览
   if (kubernetesStore.activeClusterUid) {
     router
