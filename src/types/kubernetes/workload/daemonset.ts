@@ -4,38 +4,13 @@
  */
 import type { BaseEntity, PageForm } from '@/types/common'
 
-/**
- * DaemonSet 状态枚举
- * @remarks
- * - Running: 运行中（所有节点 Pod 正常运行）
- * - Available: 部分就绪（至少一个节点可用，但未全部就绪）
- * - Stopped: 已停止
- * - Creating: 创建中（正在创建 Pod）
- * - Updating: 更新中（正在执行滚动更新）
- * - Terminating: 终止中（正在删除）
- * - CreateTimeout: 创建超时（Pod 创建超时）
- * - UpdateTimeout: 更新超时（更新过程超时）
- * - Failed: 失败异常（创建或更新过程出现错误）
- * - Unknown: 未知状态
- */
-export type DaemonSetStatus =
-  | 'Running'
-  | 'Available'
-  | 'Stopped'
-  | 'Creating'
-  | 'Updating'
-  | 'Terminating'
-  | 'CreateTimeout'
-  | 'UpdateTimeout'
-  | 'Failed'
-  | 'Unknown'
+import type { DaemonSetStatus, DaemonSetStrategyType } from '@/config/kubernetes/workload/daemonset'
 
-/**
- * DaemonSet 更新策略枚举
- * - RollingUpdate: 滚动更新策略（按节点逐个更新 Pod）
- * - OnDelete: 手动删除策略（仅当 Pod 被手动删除时才重建）
- */
-export type DaemonSetUpdateStrategyType = 'RollingUpdate' | 'OnDelete'
+export type {
+  DaemonSetConditionType,
+  DaemonSetStatus,
+  DaemonSetStrategyType,
+} from '@/config/kubernetes/workload/daemonset'
 
 /**
  * DaemonSet 列表对象响应数据
@@ -61,7 +36,7 @@ export interface DaemonSetListResp extends BaseEntity {
   /** 就绪节点数 */
   numberReady: number
   /** 更新策略 */
-  updateStrategy: DaemonSetUpdateStrategyType
+  updateStrategy: DaemonSetStrategyType
   /** 是否可删除 */
   deletable?: boolean
 }
@@ -90,7 +65,7 @@ export interface DaemonSetDetailResp extends BaseEntity {
   /** 就绪节点数 */
   numberReady: number
   /** 更新策略 */
-  updateStrategy: DaemonSetUpdateStrategyType
+  updateStrategy: DaemonSetStrategyType
   /** 标签选择器 */
   selector: Record<string, string>
   /** 标签 */
@@ -127,7 +102,7 @@ export interface DaemonSetReq {
   /** 命名空间名称 */
   namespace: string
   /** 更新策略 */
-  updateStrategy: DaemonSetUpdateStrategyType
+  updateStrategy: DaemonSetStrategyType
   /** 标签选择器 */
   selector: Record<string, string>
   /** 容器配置列表 */

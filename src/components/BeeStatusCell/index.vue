@@ -21,7 +21,7 @@
  */
 import { computed } from 'vue'
 
-import type { StatusOption } from '@/config/kubernetes'
+import type { StatusOption } from '@/config/kubernetes/common'
 
 import BeeIcon from '@/components/BeeIcon/index.vue'
 import BeeTooltip from '@/components/BeeTooltip/index.vue'

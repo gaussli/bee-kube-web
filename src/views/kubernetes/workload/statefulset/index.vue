@@ -3,9 +3,9 @@
     <!-- 页面标题 -->
     <BeeCard class="statefulset-page__header">
       <BeePageHeader
-        icon="kubernetes-namespace"
-        title="有状态应用"
-        description="有状态应用（StatefulSet）是 Kubernetes 中用于管理有状态工作负载的控制器，为每个 Pod 提供稳定的网络标识和持久存储。"
+        :icon="STATEFULSET_PAGE_META.icon"
+        :title="STATEFULSET_PAGE_META.title"
+        :description="STATEFULSET_PAGE_META.description"
       />
     </BeeCard>
 
@@ -162,7 +162,6 @@ import type {
   StatefulSetQueryForm,
   StatefulSetListVo,
   StatefulSetStrategyType,
-  PodManagementPolicyType,
 } from '@/types/kubernetes/workload/statefulset'
 
 import { getNamespacePage } from '@/api/kubernetes/namespace'
@@ -187,7 +186,11 @@ import BeeTag from '@/components/BeeTag/index.vue'
 import BeeWorkloadInfoCell from '@/components/BeeWorkloadInfoCell/index.vue'
 
 import { usePermission } from '@/composables/usePermission'
-import { STATEFULSET_STATUS_OPTIONS } from '@/config/kubernetes'
+import {
+  STATEFULSET_PAGE_META,
+  STATEFULSET_POD_MANAGEMENT_POLICY_MAP,
+  STATEFULSET_STATUS_OPTIONS,
+} from '@/config/kubernetes/workload/statefulset'
 
 defineOptions({ name: 'StatefulSetManage' })
 
@@ -225,12 +228,6 @@ const UPDATE_STRATEGY_LABEL: Record<StatefulSetStrategyType, string> = {
   OnDelete: '手动删除',
 }
 
-/** Pod 管理策略中文映射 */
-const POD_MANAGEMENT_POLICY_LABEL: Record<PodManagementPolicyType, string> = {
-  OrderedReady: '按序就绪',
-  Parallel: '并行管理',
-}
-
 /**
  * 获取更新策略中文名称
  * @param type - 更新策略枚举值
@@ -245,8 +242,8 @@ function updateStrategyLabel(type: StatefulSetStrategyType): string {
  * @param type - Pod 管理策略枚举值
  * @returns 中文名称
  */
-function podManagementPolicyLabel(type: PodManagementPolicyType): string {
-  return POD_MANAGEMENT_POLICY_LABEL[type] || type
+function podManagementPolicyLabel(type: string): string {
+  return STATEFULSET_POD_MANAGEMENT_POLICY_MAP[type as keyof typeof STATEFULSET_POD_MANAGEMENT_POLICY_MAP] || type
 }
 
 // ==================== Data Loading ====================

@@ -4,7 +4,7 @@
  */
 import type { PageVo } from '@/types/common'
 import type {
-  NodeQueryReq,
+  NodeQueryForm,
   NodeListResp,
   NodeReq,
   NodeCordonReq,
@@ -22,7 +22,7 @@ import { request } from '@/utils'
  * @param params - 查询参数
  * @returns 分页后的节点列表
  */
-export function getNodePage(clusterUid: string, params: Partial<NodeQueryReq>): Promise<PageVo<NodeListResp>> {
+export function getNodePage(clusterUid: string, params: Partial<NodeQueryForm>): Promise<PageVo<NodeListResp>> {
   return request.get<PageVo<NodeListResp>>(`/kubernetes/clusters/${clusterUid}/nodes`, { params })
 }
 

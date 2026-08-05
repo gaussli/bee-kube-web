@@ -3,9 +3,9 @@
     <!-- 页面标题 -->
     <BeeCard class="daemonset-page__header">
       <BeePageHeader
-        icon="kubernetes-namespace"
-        title="守护应用"
-        description="守护应用（DaemonSet）是 Kubernetes 中用于确保每个节点运行一个 Pod 副本的控制器，常用于日志采集、监控代理、存储驱动等节点级守护服务。"
+        :icon="DAEMONSET_PAGE_META.icon"
+        :title="DAEMONSET_PAGE_META.title"
+        :description="DAEMONSET_PAGE_META.description"
       />
     </BeeCard>
 
@@ -144,11 +144,7 @@ import { onMounted, reactive, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 
 import type { NamespaceSimpleListResp } from '@/types/kubernetes/namespace'
-import type {
-  DaemonSetQueryReq,
-  DaemonSetListResp,
-  DaemonSetUpdateStrategyType,
-} from '@/types/kubernetes/workload/daemonset'
+import type { DaemonSetQueryReq, DaemonSetListResp, DaemonSetStrategyType } from '@/types/kubernetes/workload/daemonset'
 
 import { getNamespacePage } from '@/api/kubernetes/namespace'
 import { getDaemonSetList, deleteDaemonSet, deleteDaemonSets } from '@/api/kubernetes/workload/daemonset'
@@ -172,7 +168,7 @@ import BeeTag from '@/components/BeeTag/index.vue'
 import BeeWorkloadInfoCell from '@/components/BeeWorkloadInfoCell/index.vue'
 
 import { usePermission } from '@/composables/usePermission'
-import { DAEMONSET_STATUS_OPTIONS } from '@/config/kubernetes'
+import { DAEMONSET_PAGE_META, DAEMONSET_STATUS_OPTIONS } from '@/config/kubernetes/workload/daemonset'
 
 defineOptions({ name: 'DaemonSetManage' })
 
@@ -205,7 +201,7 @@ const namespaceOptions = ref<{ label: string; value: string | undefined }[]>([
 ])
 
 /** 更新策略中文映射 */
-const UPDATE_STRATEGY_LABEL: Record<DaemonSetUpdateStrategyType, string> = {
+const UPDATE_STRATEGY_LABEL: Record<DaemonSetStrategyType, string> = {
   RollingUpdate: '滚动更新',
   OnDelete: '手动删除',
 }
@@ -215,7 +211,7 @@ const UPDATE_STRATEGY_LABEL: Record<DaemonSetUpdateStrategyType, string> = {
  * @param type - 更新策略枚举值
  * @returns 中文名称
  */
-function updateStrategyLabel(type: DaemonSetUpdateStrategyType): string {
+function updateStrategyLabel(type: DaemonSetStrategyType): string {
   return UPDATE_STRATEGY_LABEL[type] || type
 }
 

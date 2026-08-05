@@ -3,9 +3,9 @@
     <!-- 页面标题 -->
     <BeeCard class="cronjob-page__header">
       <BeePageHeader
-        icon="kubernetes-namespace"
-        title="定时任务"
-        description="定时任务（CronJob）用于定时运行任务，按照 Cron 表达式调度 Job 执行。"
+        :icon="CRONJOB_PAGE_META.icon"
+        :title="CRONJOB_PAGE_META.title"
+        :description="CRONJOB_PAGE_META.description"
       />
     </BeeCard>
 
@@ -170,7 +170,7 @@ import BeeTag from '@/components/BeeTag/index.vue'
 import BeeWorkloadInfoCell from '@/components/BeeWorkloadInfoCell/index.vue'
 
 import { usePermission } from '@/composables/usePermission'
-import { CRONJOB_STATUS_OPTIONS } from '@/config/kubernetes'
+import { CRONJOB_PAGE_META, CRONJOB_STATUS_OPTIONS } from '@/config/kubernetes/workload/cronjob'
 
 defineOptions({ name: 'CronJobManage' })
 

@@ -7,57 +7,23 @@ import type { IngressListVo } from '@/types/kubernetes/network/ingress'
 import type { ServiceListVo } from '@/types/kubernetes/network/service'
 import type { PodListVo } from '@/types/kubernetes/pod'
 
+import type {
+  PodManagementPolicyType,
+  StatefulSetConditionType,
+  StatefulSetStatus,
+  StatefulSetStrategyType,
+} from '@/config/kubernetes/workload/statefulset'
+
 import type { Condition, ContainerResource, Event, Metadata, Namespaced } from '../types'
 
 import type { HistoryRevision, NodeAffinity, PodAffinity, PodAntiAffinity, RestartPolicy, Toleration } from './types'
 
-/**
- * StatefulSet 状态枚举
- * @remarks
- * - Running: 运行中（所有 Pod 正常运行）
- * - Available: 部分就绪（至少一个副本可用，但未全部就绪）
- * - Stopped: 已停止（副本数缩容为 0）
- * - Creating: 创建中（正在创建 Pod）
- * - Updating: 更新中（正在执行滚动更新）
- * - Terminating: 终止中（正在删除）
- * - CreateTimeout: 创建超时（Pod 创建超时）
- * - UpdateTimeout: 更新超时（更新过程超时）
- * - Failed: 失败异常（创建或更新过程出现错误）
- * - Unknown: 未知状态
- */
-export type StatefulSetStatus =
-  | 'Running'
-  | 'Available'
-  | 'Stopped'
-  | 'Creating'
-  | 'Updating'
-  | 'Terminating'
-  | 'CreateTimeout'
-  | 'UpdateTimeout'
-  | 'Failed'
-  | 'Unknown'
-
-/**
- * StatefulSet 条件类型枚举
- * - Available: StatefulSet 至少有一个可用副本
- * - Progressing: StatefulSet 正在处理中
- * - ReplicaFailure: StatefulSet 副本创建失败
- */
-export type StatefulSetConditionType = 'Available' | 'Progressing' | 'ReplicaFailure'
-
-/**
- * StatefulSet 更新策略枚举
- * - RollingUpdate: 滚动更新策略（按序逐个更新 Pod）
- * - OnDelete: 手动删除策略（仅当 Pod 被手动删除时才重建）
- */
-export type StatefulSetStrategyType = 'RollingUpdate' | 'OnDelete'
-
-/**
- * StatefulSet Pod 管理策略枚举
- * - OrderedReady: 按序就绪（按序号逐个启动和更新 Pod）
- * - Parallel: 并行管理（所有 Pod 并行启动和更新）
- */
-export type PodManagementPolicyType = 'OrderedReady' | 'Parallel'
+export type {
+  PodManagementPolicyType,
+  StatefulSetConditionType,
+  StatefulSetStatus,
+  StatefulSetStrategyType,
+} from '@/config/kubernetes/workload/statefulset'
 
 // ==================== 1. 查询表单 ====================
 

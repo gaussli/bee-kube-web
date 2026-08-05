@@ -4,7 +4,7 @@
  */
 import type { PageVo } from '@/types/common'
 import type {
-  NodeQueryReq,
+  NodeQueryForm,
   NodeReq,
   NodeListResp,
   NodeCordonReq,
@@ -39,7 +39,7 @@ export default [
       params,
     }: {
       pathParams: Record<string, string>
-      params: Partial<NodeQueryReq>
+      params: Partial<NodeQueryForm>
     }): PageVo<NodeListResp> => getNodePage(pathParams.clusterUid, params),
   },
   {
@@ -109,7 +109,7 @@ export default [
  * @param params - 查询参数
  * @returns 分页数据
  */
-function getNodePage(_clusterId: string, params: Partial<NodeQueryReq>): PageVo<NodeListResp> {
+function getNodePage(_clusterId: string, params: Partial<NodeQueryForm>): PageVo<NodeListResp> {
   const { id, name, ip, status, page = 1, pageSize = 10 } = params || {}
 
   let filtered = [...mockNodes]

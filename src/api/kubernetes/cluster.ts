@@ -4,12 +4,13 @@
  */
 import type { PageVo } from '@/types/common'
 import type {
-  ClusterDetailVo,
   ClusterListVo,
-  ClusterQueryForm,
-  ClusterRegisterForm,
-  ClusterCreateForm,
+  ClusterDetailVo,
   ClusterResourceVo,
+  ClusterQueryForm,
+  ClusterCreateForm,
+  ClusterRegisterForm,
+  ClusterUpdateForm,
 } from '@/types/kubernetes/cluster'
 
 import { request } from '@/utils'
@@ -62,7 +63,7 @@ export function registerCluster(data: Partial<ClusterRegisterForm>): Promise<voi
  * @param uid - 集群 UID
  * @param data - 集群配置信息
  */
-export function updateCluster(uid: string, data: Partial<ClusterCreateForm>): Promise<void> {
+export function updateCluster(uid: string, data: Partial<ClusterUpdateForm>): Promise<void> {
   return request.put(`/kubernetes/clusters/${uid}`, data)
 }
 

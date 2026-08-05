@@ -85,7 +85,7 @@ import BeeTableColumn from '@/components/BeeTable/BeeTableColumn.vue'
 import BeeTableCommonCell from '@/components/BeeTable/BeeTableCommonCell.vue'
 import BeeTable from '@/components/BeeTable/index.vue'
 
-import { POD_STATUS_OPTIONS } from '@/config/kubernetes'
+import { POD_STATUS_OPTIONS } from '@/config/kubernetes/pod'
 
 defineOptions({ name: 'DeploymentPods' })
 

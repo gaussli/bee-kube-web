@@ -184,7 +184,7 @@ import BeeTag from '@/components/BeeTag/index.vue'
 import BeeWorkloadInfoCell from '@/components/BeeWorkloadInfoCell/index.vue'
 
 import { usePermission } from '@/composables/usePermission'
-import { DEPLOYMENT_PAGE_META, DEPLOYMENT_STATUS_OPTIONS, DEPLOYMENT_STRATEGY_LABEL_MAP } from '@/config/kubernetes'
+import { DEPLOYMENT_PAGE_META, DEPLOYMENT_STATUS_OPTIONS, DEPLOYMENT_STRATEGY_LABEL_MAP } from '@/config/kubernetes/workload/deployment'
 
 defineOptions({ name: 'DeploymentPage' })
 

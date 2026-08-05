@@ -7,7 +7,7 @@ import type { IngressListVo } from '@/types/kubernetes/network/ingress'
 import type { ServiceListVo } from '@/types/kubernetes/network/service'
 import type { PodListVo } from '@/types/kubernetes/pod'
 
-import type { DeploymentConditionType, DeploymentStatus, DeploymentStrategyType } from '@/config/kubernetes'
+import type { DeploymentConditionType, DeploymentStatus, DeploymentStrategyType } from '@/config/kubernetes/workload/deployment'
 
 import type { Clustered, Condition, ContainerResource, Metadata, Namespaced } from '../types'
 

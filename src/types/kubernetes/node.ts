@@ -4,26 +4,12 @@
  */
 import type { BaseEntity, PageForm } from '@/types/common'
 
+import type { NodeConditionType, NodeStatus } from '@/config/kubernetes/node'
+
 import type { MetadataAnnotationForm, MetadataLabelForm, ResourceVo } from './comomn'
 import type { Condition, Event, Metadata, Taint } from './types'
 
-/**
- * 节点状态枚举
- * - Ready: 节点健康，可正常调度 Pod
- * - NotReady: 节点不健康，无法调度 Pod
- * - Unknown: 节点状态未知
- */
-export type NodeType = 'Ready' | 'NotReady' | 'Unknown'
-
-/**
- * 节点条件类型枚举
- * - Ready: 节点Ready状态
- * - MemoryPressure: 内存压力
- * - DiskPressure: 磁盘压力
- * - PIDPressure: PID压力
- * - NetworkUnavailable: 网络不可用
- */
-export type NodeConditionType = 'Ready' | 'MemoryPressure' | 'DiskPressure' | 'PIDPressure' | 'NetworkUnavailable'
+export type { NodeConditionType, NodeStatus } from '@/config/kubernetes/node'
 
 /**
  * 节点响应数据
@@ -41,7 +27,7 @@ export interface NodeListResp extends BaseEntity {
   /** 描述信息 */
   description?: string
   /** 状态 */
-  status: NodeType
+  status: NodeStatus
   /** 状态描述信息 */
   statusMsg?: string
   /** IP 地址 */
@@ -68,7 +54,7 @@ export interface NodeOverviewResp extends BaseEntity {
   /** 描述信息 */
   description: string
   /** 状态 */
-  status: NodeType
+  status: NodeStatus
   /** 状态描述信息 */
   statusMsg?: string
   /** 角色列表 */
@@ -138,14 +124,14 @@ export interface NodeVolumesResp {
  * 节点查询请求参数
  * @extends PageForm 继承分页请求（含 page, pageSize）
  */
-export interface NodeQueryReq extends PageForm {
+export interface NodeQueryForm extends PageForm {
   id: string
   /** 节点名称（模糊匹配） */
   name: string
   /** IP 地址 */
   ip: string
   /** 状态 */
-  status: NodeType
+  status: NodeStatus
   /** 状态描述信息 */
   statusMsg?: string
 }

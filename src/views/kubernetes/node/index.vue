@@ -3,9 +3,9 @@
     <!-- 页面标题 -->
     <BeeCard class="node-page__header">
       <BeePageHeader
-        icon="kubernetes-node"
-        title="节点管理"
-        description="节点（Node）是 Kubernetes 集群中的工作机器，负责运行容器化应用（Pod）。通过节点管理可以查看集群中所有节点的运行状态、资源使用情况，并支持节点调度控制等运维操作。"
+        :icon="NODE_PAGE_META.icon"
+        :title="NODE_PAGE_META.title"
+        :description="NODE_PAGE_META.description"
       />
     </BeeCard>
 
@@ -140,7 +140,7 @@ import { computed, onMounted, reactive, ref } from 'vue'
 
 import { useRoute, useRouter } from 'vue-router'
 
-import type { NodeQueryReq, NodeListResp } from '@/types/kubernetes/node'
+import type { NodeQueryForm, NodeListResp } from '@/types/kubernetes/node'
 
 import { calcPercentage } from '@/utils/kubernetes'
 
@@ -165,7 +165,7 @@ import BeeTableColumn from '@/components/BeeTable/BeeTableColumn.vue'
 import BeeTable from '@/components/BeeTable/index.vue'
 
 import { usePermission } from '@/composables/usePermission'
-import { NODE_STATUS_OPTIONS } from '@/config/kubernetes'
+import { NODE_PAGE_META, NODE_STATUS_OPTIONS } from '@/config/kubernetes/node'
 
 defineOptions({ name: 'NodeManage' })
 
@@ -180,7 +180,7 @@ const searchKey = ref('')
 const loading = ref(false)
 const tableData = ref<NodeListResp[]>([])
 const selectedRows = ref<NodeListResp[]>([])
-const queryForm = reactive<Partial<NodeQueryReq>>({
+const queryForm = reactive<Partial<NodeQueryForm>>({
   id: undefined,
   name: undefined,
   ip: undefined,

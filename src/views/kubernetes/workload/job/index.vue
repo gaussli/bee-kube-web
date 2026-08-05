@@ -3,9 +3,9 @@
     <!-- 页面标题 -->
     <BeeCard class="job-page__header">
       <BeePageHeader
-        icon="kubernetes-namespace"
-        title="任务"
-        description="任务（Job）用于运行一次性批量任务，任务完成后 Pod 会自动终止，适用于数据处理、备份、定时计算等场景。"
+        :icon="JOB_PAGE_META.icon"
+        :title="JOB_PAGE_META.title"
+        :description="JOB_PAGE_META.description"
       />
     </BeeCard>
 
@@ -170,7 +170,7 @@ import BeeTag from '@/components/BeeTag/index.vue'
 import BeeWorkloadInfoCell from '@/components/BeeWorkloadInfoCell/index.vue'
 
 import { usePermission } from '@/composables/usePermission'
-import { JOB_STATUS_OPTIONS } from '@/config/kubernetes'
+import { JOB_PAGE_META, JOB_STATUS_OPTIONS } from '@/config/kubernetes/workload/job'
 
 defineOptions({ name: 'JobManage' })
 
