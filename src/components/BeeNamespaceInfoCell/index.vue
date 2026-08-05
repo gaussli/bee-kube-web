@@ -13,7 +13,7 @@
           name="basic-copy"
           :size="14"
           class="bee-namespace-info-cell__copy-icon"
-          @click="useClipboard().copy(props.name)"
+          @click.stop="useClipboard().copy(props.name)"
         />
       </div>
       <div class="bee-namespace-info-cell__bottom">

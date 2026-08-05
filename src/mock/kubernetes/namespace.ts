@@ -385,7 +385,7 @@ const mockNamespaces: NamespaceListResp[] = [
     name: 'default',
     clusterUid: generateId(),
     clusterName: 'prod-cluster',
-    description: 'Kubernetes 默认命名空间，未指定命名空间的资源默认归属于此',
+    description: 'Kubernetes 默认命名空间，未指定命名空间的资源默认归属于此。该命名空间由系统自动创建，通常用于存放集群级别的默认资源和服务',
     status: 'Active',
     type: 0,
     createBy: 'system',

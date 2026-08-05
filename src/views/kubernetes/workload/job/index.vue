@@ -2,11 +2,7 @@
   <BeePage class="job-page">
     <!-- 页面标题 -->
     <BeeCard class="job-page__header">
-      <BeePageHeader
-        :icon="JOB_PAGE_META.icon"
-        :title="JOB_PAGE_META.title"
-        :description="JOB_PAGE_META.description"
-      />
+      <BeePageHeader :icon="JOB_PAGE_META.icon" :title="JOB_PAGE_META.title" :description="JOB_PAGE_META.description" />
     </BeeCard>
 
     <!-- 页面内容 -->
@@ -44,7 +40,7 @@
                 :name="row.name"
                 :description="row.description"
                 :icon-size="32"
-                icon="kubernetes-namespace"
+                icon="kubernetes-job"
               />
             </template>
           </BeeTableColumn>

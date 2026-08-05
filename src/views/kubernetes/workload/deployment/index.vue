@@ -44,7 +44,7 @@
                 :name="row.name"
                 :description="row.description"
                 :icon-size="32"
-                icon="kubernetes-namespace"
+                icon="kubernetes-deployment"
               />
             </template>
           </BeeTableColumn>
@@ -184,7 +184,11 @@ import BeeTag from '@/components/BeeTag/index.vue'
 import BeeWorkloadInfoCell from '@/components/BeeWorkloadInfoCell/index.vue'
 
 import { usePermission } from '@/composables/usePermission'
-import { DEPLOYMENT_PAGE_META, DEPLOYMENT_STATUS_OPTIONS, DEPLOYMENT_STRATEGY_LABEL_MAP } from '@/config/kubernetes/workload/deployment'
+import {
+  DEPLOYMENT_PAGE_META,
+  DEPLOYMENT_STATUS_OPTIONS,
+  DEPLOYMENT_STRATEGY_LABEL_MAP,
+} from '@/config/kubernetes/workload/deployment'
 
 defineOptions({ name: 'DeploymentPage' })
 

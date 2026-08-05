@@ -44,7 +44,7 @@
                 :name="row.name"
                 :description="row.description"
                 :icon-size="32"
-                icon="kubernetes-namespace"
+                icon="kubernetes-cronjob"
               />
             </template>
           </BeeTableColumn>
