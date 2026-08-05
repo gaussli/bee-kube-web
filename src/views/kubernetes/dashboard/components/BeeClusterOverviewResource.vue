@@ -37,7 +37,7 @@
 <script setup lang="ts">
 import { onMounted, ref } from 'vue'
 
-import { formatCpu, formatDisk, formatMemory } from '@/utils/kubernetes'
+import { calcPercentage, formatCpu, formatDisk, formatMemory } from '@/utils/kubernetes'
 
 import { getClusterResource } from '@/api/kubernetes/cluster'
 
@@ -61,17 +61,6 @@ const radarData = ref([
   { label: '磁盘', value: 0, used: '0', total: '0' },
   { label: '容器数', value: 0, used: '0 个', total: '0 个' },
 ])
-
-/**
- * 计算使用百分比
- * @param used - 已用量
- * @param total - 总量
- * @returns 百分比（0-100），总量为 0 时返回 0
- */
-function calcPercentage(used: number, total: number): number {
-  if (total <= 0) return 0
-  return Math.round((used / total) * 100)
-}
 
 /**
  * 加载资源用量数据并构建雷达图数据

@@ -22,7 +22,7 @@ import { request } from '@/utils'
  * @returns 分页后的 CronJob 列表
  */
 export function getCronJobList(clusterUid: string, params: Partial<CronJobQueryReq>): Promise<PageVo<CronJobListResp>> {
-  return request.get<PageVo<CronJobListResp>>(`/kubernetes/clusters/${clusterUid}/cronjobs`, params)
+  return request.get<PageVo<CronJobListResp>>(`/kubernetes/clusters/${clusterUid}/cronjobs`, { params })
 }
 
 /**

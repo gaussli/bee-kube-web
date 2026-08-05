@@ -14,9 +14,7 @@ import request from '@/utils/request'
  * @returns CRD 分页列表
  */
 export function getCrdPage(clusterUid: string, params: Partial<CrdQueryReq>): Promise<PageVo<CrdResp>> {
-  return request.get(`/kubernetes/clusters/${clusterUid}/crds`, {
-    params,
-  })
+  return request.get(`/kubernetes/clusters/${clusterUid}/crds`, { params })
 }
 
 /**

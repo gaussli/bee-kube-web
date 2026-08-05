@@ -25,7 +25,7 @@ export function getDaemonSetList(
   clusterUid: string,
   params: Partial<DaemonSetQueryReq>,
 ): Promise<PageVo<DaemonSetListResp>> {
-  return request.get<PageVo<DaemonSetListResp>>(`/kubernetes/clusters/${clusterUid}/daemonsets`, params)
+  return request.get<PageVo<DaemonSetListResp>>(`/kubernetes/clusters/${clusterUid}/daemonsets`, { params })
 }
 
 /**

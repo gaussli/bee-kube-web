@@ -34,7 +34,7 @@ export function getDeploymentList(
   clusterUid: string,
   params: Partial<DeploymentQueryForm>,
 ): Promise<PageVo<DeploymentListVo>> {
-  return request.get<PageVo<DeploymentListVo>>(`/kubernetes/clusters/${clusterUid}/deployments`, params)
+  return request.get<PageVo<DeploymentListVo>>(`/kubernetes/clusters/${clusterUid}/deployments`, { params })
 }
 
 /**
@@ -73,7 +73,7 @@ export function getDeploymentPodList(
 ): Promise<PageVo<DeploymentPodListVo>> {
   return request.get<PageVo<DeploymentPodListVo>>(
     `/kubernetes/clusters/${clusterUid}/namespaces/${namespace}/deployments/${name}/pods`,
-    params,
+    { params },
   )
 }
 
@@ -260,7 +260,10 @@ export function deleteDeployments(clusterUid: string, namespace: string, names: 
  * @param params - 查询参数
  */
 export function exportDeployment(clusterUid: string, params: Partial<DeploymentQueryForm>): Promise<void> {
-  return request.get(`/kubernetes/clusters/${clusterUid}/deployments/export`, { params, config: { responseType: 'blob' } })
+  return request.get(`/kubernetes/clusters/${clusterUid}/deployments/export`, {
+    params,
+    config: { responseType: 'blob' },
+  })
 }
 
 /**

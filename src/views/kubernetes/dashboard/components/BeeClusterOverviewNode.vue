@@ -33,11 +33,14 @@ import { computed, onMounted, ref } from 'vue'
 
 import type { NodeListResp } from '@/types/kubernetes/node'
 
+import { calcPercentage } from '@/utils/kubernetes'
+
 import { getNodeTopN } from '@/api/kubernetes/node'
 
 import BeeButton from '@/components/BeeButton/index.vue'
 import BeeCard from '@/components/BeeCard/index.vue'
 import BeeIcon from '@/components/BeeIcon/index.vue'
+import { BeeMessage } from '@/components/BeeMessage'
 import BeeNodeInfoCell from '@/components/BeeNodeInfoCell/index.vue'
 import BeeResourceUsageCell from '@/components/BeeResourceUsageCell/index.vue'
 import BeeSegmentedControl from '@/components/BeeSegmentedControl/index.vue'
@@ -72,17 +75,6 @@ function handleSortChange(value?: string | number) {
 const topNNodes = ref<NodeListResp[]>([])
 
 /**
- * 计算使用百分比
- * @param used - 已用量
- * @param total - 总量
- * @returns 百分比（0-100），总量为 0 时返回 0
- */
-function calcPercentage(used: number, total: number): number {
-  if (total <= 0) return 0
-  return Math.round((used / total) * 100)
-}
-
-/**
  * 加载节点 TopN 数据
  */
 async function loadData() {
@@ -111,8 +103,7 @@ const nodeListData = computed(() => {
  * 查看更多节点
  */
 function handleViewMore() {
-  // TODO: 跳转到节点列表页面
-  console.log('View more nodes...')
+  BeeMessage.info('查看全部节点，功能开发中')
 }
 
 onMounted(() => {

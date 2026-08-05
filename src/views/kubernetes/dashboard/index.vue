@@ -6,13 +6,13 @@
     <!-- 资源雷达图 + 节点列表 -->
     <div class="cluster-overview__metrics-row">
       <!-- 资源用量 -->
-      <BeeClusterOverviewResource :cluster-id="route.params.clusterUid as string" />
+      <BeeClusterOverviewResource :cluster-uid="route.params.clusterUid as string" />
       <!-- 节点列表 -->
-      <BeeClusterOverviewNode :cluster-id="route.params.clusterUid as string" />
+      <BeeClusterOverviewNode :cluster-uid="route.params.clusterUid as string" />
     </div>
 
     <!-- 最近事件 -->
-    <BeeClusterOverviewEvent :cluster-id="route.params.clusterUid as string" />
+    <BeeClusterOverviewEvent :cluster-uid="route.params.clusterUid as string" />
   </BeePage>
 </template>
 

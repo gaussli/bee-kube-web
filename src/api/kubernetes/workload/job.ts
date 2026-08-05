@@ -22,7 +22,7 @@ import { request } from '@/utils'
  * @returns 分页后的 Job 列表
  */
 export function getJobList(clusterUid: string, params: Partial<JobQueryReq>): Promise<PageVo<JobListResp>> {
-  return request.get<PageVo<JobListResp>>(`/kubernetes/clusters/${clusterUid}/jobs`, params)
+  return request.get<PageVo<JobListResp>>(`/kubernetes/clusters/${clusterUid}/jobs`, { params })
 }
 
 /**

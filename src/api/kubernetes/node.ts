@@ -56,7 +56,7 @@ export function getNodeTopN(
   clusterUid: string,
   params: Partial<{ metric: string; count: number }>,
 ): Promise<NodeListResp[]> {
-  return request.get<NodeListResp[]>(`/kubernetes/clusters/${clusterUid}/nodes/topn`, params)
+  return request.get<NodeListResp[]>(`/kubernetes/clusters/${clusterUid}/nodes/topn`, { params })
 }
 
 /**

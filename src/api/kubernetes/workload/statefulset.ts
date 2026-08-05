@@ -34,7 +34,7 @@ export function getStatefulSetList(
   clusterUid: string,
   params: Partial<StatefulSetQueryForm>,
 ): Promise<PageVo<StatefulSetListVo>> {
-  return request.get<PageVo<StatefulSetListVo>>(`/kubernetes/clusters/${clusterUid}/statefulsets`, params)
+  return request.get<PageVo<StatefulSetListVo>>(`/kubernetes/clusters/${clusterUid}/statefulsets`, { params })
 }
 
 /**
