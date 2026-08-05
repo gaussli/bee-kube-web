@@ -35,6 +35,25 @@ for (const path in modules) {
 }
 
 /**
+ * 对 mock handler 按路由精确度排序，确保静态路由优先于参数化路由匹配
+ * @remarks
+ * 排序规则：
+ * 1. 静态路由（无 :param）优先于参数化路由（有 :param）
+ * 2. 同级之间按路径段数降序（更具体的路径优先）
+ * 3. 确保 /batch 不会被 /:uid 抢先捕获
+ */
+mockHandlers.sort((a, b) => {
+  const aParamCount = (a.url.match(/:[^/]+/g) || []).length
+  const bParamCount = (b.url.match(/:[^/]+/g) || []).length
+  // 参数段少的优先（0个参数 = 静态路由，排最前）
+  if (aParamCount !== bParamCount) return aParamCount - bParamCount
+  // 参数段数量相同时，路径段数多的优先（更精确）
+  const aSegments = a.url.split('/').length
+  const bSegments = b.url.split('/').length
+  return bSegments - aSegments
+})
+
+/**
  * 将 URL 路径转换为正则表达式，支持 :param 格式
  * @param url
  */
