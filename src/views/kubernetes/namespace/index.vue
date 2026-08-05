@@ -3,9 +3,9 @@
     <!-- 页面标题 -->
     <BeeCard class="namespace-page__header">
       <BeePageHeader
-        icon="kubernetes-namespace"
-        title="命名空间管理"
-        description="命名空间（Namespace）是 Kubernetes 集群中用于资源隔离的虚拟集群，可以将集群划分为多个独立的工作空间，实现项目、团队或环境之间的资源隔离和管理。"
+        :icon="NAMESPACE_PAGE_META.icon"
+        :title="NAMESPACE_PAGE_META.title"
+        :description="NAMESPACE_PAGE_META.description"
       />
     </BeeCard>
 
@@ -162,7 +162,7 @@ import BeeTable from '@/components/BeeTable/index.vue'
 import BeeTag from '@/components/BeeTag/index.vue'
 
 import { usePermission } from '@/composables/usePermission'
-import { NAMESPACE_STATUS_OPTIONS } from '@/config/kubernetes/namespace'
+import { NAMESPACE_PAGE_META, NAMESPACE_STATUS_OPTIONS } from '@/config/kubernetes/namespace'
 
 defineOptions({ name: 'NamespaceManage' })
 

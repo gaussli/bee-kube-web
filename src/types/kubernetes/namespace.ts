@@ -4,35 +4,12 @@
  */
 import type { BaseEntity, PageForm } from '@/types/common'
 
+import type { NamespaceConditionType, NamespaceType } from '@/config/kubernetes/namespace'
+
 import type { MetadataAnnotationForm, MetadataLabelForm } from './comomn'
 import type { Condition, Metadata } from './types'
 
-/**
- * 命名空间状态枚举
- * - Active: 命名空间活跃，可正常使用
- * - Terminating: 命名空间正在终止中（等待资源清理）
- */
-export type NamespaceStatus = 'Active' | 'Terminating'
-
-/**
- * 命名空间类型枚举
- * - 0: 系统命名空间（如 kube-system、kube-public）
- * - 1: 用户命名空间
- */
-export type NamespaceType = 0 | 1
-
-/**
- * 命名空间条件类型枚举
- * - NamespaceContentRemaining: 命名空间内容未清理完成
- * - NamespaceDeletionDiscoveryFailure: 命名空间删除时资源发现失败
- * - NamespaceDeletionContentFailure: 命名空间内容删除失败
- * - NamespaceFinalizersRemaining: 命名空间终结器未清理完成
- */
-export type NamespaceConditionType =
-  | 'NamespaceContentRemaining'
-  | 'NamespaceDeletionDiscoveryFailure'
-  | 'NamespaceDeletionContentFailure'
-  | 'NamespaceFinalizersRemaining'
+export type { NamespaceConditionType, NamespaceStatus, NamespaceType } from '@/config/kubernetes/namespace'
 
 /**
  * 命名空间响应数据
