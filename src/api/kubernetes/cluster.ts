@@ -1,5 +1,5 @@
 /**
- * Kubernetes 集群管理 API
+ * 集群管理 API
  * @module api/kubernetes/cluster
  */
 import type { PageVo } from '@/types/common'
