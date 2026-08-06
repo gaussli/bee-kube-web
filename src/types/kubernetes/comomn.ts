@@ -50,7 +50,7 @@ export interface ResourceQuota {
 }
 
 /**
- * 资源用量响应数据
+ * 资源用量对象
  * @remarks 描述集群或节点的 CPU、内存、存储、Pod 等资源。capacity 为物理容量，allocation 为 Kubernetes 可分配容量（扣除操作系统等预留资源后），usage 为实际已用量
  */
 export interface ResourceVo {

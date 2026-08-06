@@ -1,5 +1,5 @@
 // 用户相关类型
-import type { BaseEntity, PageForm } from '@/types/common'
+import type { AuditEntity, PageForm } from '@/types/common'
 
 // 用户查询请求参数
 export interface UserQueryReq extends PageForm {
@@ -45,7 +45,7 @@ export interface UserChangeStatusReq {
 }
 
 // 用户列表响应
-export interface UserResp extends BaseEntity {
+export interface UserResp extends AuditEntity {
   username: string
   nickname: string
   gender?: number
@@ -53,7 +53,7 @@ export interface UserResp extends BaseEntity {
 }
 
 // 用户详情响应
-export interface UserDetailResp extends BaseEntity {
+export interface UserDetailResp extends AuditEntity {
   username: string
   nickname: string
   email?: string

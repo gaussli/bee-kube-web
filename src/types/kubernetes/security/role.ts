@@ -2,15 +2,15 @@
  * Role 资源类型定义
  * @module types/kubernetes/role
  */
-import type { BaseEntity, PageForm } from '@/types/common'
+import type { AuditEntity, PageForm } from '@/types/common'
 
 import type { ClusterRolePolicyRule } from './clusterRole'
 
 /**
  * Role 响应数据
- * @extends BaseEntity 继承基础实体（含 id, createAt, createBy, updateAt, updateBy）
+ * @extends AuditEntity 继承基础实体（含 id, createAt, createBy, updateAt, updateBy）
  */
-export interface RoleResp extends BaseEntity {
+export interface RoleResp extends AuditEntity {
   /** Role 名称 */
   name: string
   /** 所属命名空间 */

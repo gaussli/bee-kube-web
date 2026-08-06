@@ -2,13 +2,13 @@
  * ConfigMap 资源相关类型定义
  * @module types/kubernetes/config/configmap
  */
-import type { BaseEntity, PageForm } from '@/types/common'
+import type { AuditEntity, PageForm } from '@/types/common'
 
 /**
  * ConfigMap 列表响应数据
- * @extends BaseEntity 继承基础实体（含 id, createAt, createBy, updateAt, updateBy）
+ * @extends AuditEntity 继承基础实体（含 id, createAt, createBy, updateAt, updateBy）
  */
-export interface ConfigMapListResp extends BaseEntity {
+export interface ConfigMapListResp extends AuditEntity {
   /** 资源 UID */
   uid: string
   /** ConfigMap 名称 */
@@ -29,9 +29,9 @@ export interface ConfigMapListResp extends BaseEntity {
 
 /**
  * ConfigMap 详情响应数据
- * @extends BaseEntity 继承基础实体（含 id, createAt, createBy, updateAt, updateBy）
+ * @extends AuditEntity 继承基础实体（含 id, createAt, createBy, updateAt, updateBy）
  */
-export interface ConfigMapDetailResp extends BaseEntity {
+export interface ConfigMapDetailResp extends AuditEntity {
   /** 资源 UID */
   uid: string
   /** ConfigMap 名称 */

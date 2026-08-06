@@ -2,7 +2,7 @@
  * 节点管理相关类型定义
  * @module types/kubernetes/node
  */
-import type { BaseEntity, PageForm } from '@/types/common'
+import type { AuditEntity, PageForm } from '@/types/common'
 
 import type { NodeConditionType, NodeStatus } from '@/config/kubernetes/node'
 
@@ -13,9 +13,9 @@ export type { NodeConditionType, NodeStatus } from '@/config/kubernetes/node'
 
 /**
  * 节点响应数据
- * @extends BaseEntity 继承基础实体（含 id, createAt, createBy, updateAt, updateBy）
+ * @extends AuditEntity 继承基础实体（含 id, createAt, createBy, updateAt, updateBy）
  */
-export interface NodeListResp extends BaseEntity {
+export interface NodeListResp extends AuditEntity {
   /** 资源 UID */
   uid: string
   /** 所属集群 UID */
@@ -40,9 +40,9 @@ export interface NodeListResp extends BaseEntity {
 
 /**
  * 节点概览响应数据
- * @extends BaseEntity 继承基础实体（含 id, createAt, createBy, updateAt, updateBy）
+ * @extends AuditEntity 继承基础实体（含 id, createAt, createBy, updateAt, updateBy）
  */
-export interface NodeOverviewResp extends BaseEntity {
+export interface NodeOverviewResp extends AuditEntity {
   /** 资源 UID */
   uid: string
   /** 所属集群 UID */

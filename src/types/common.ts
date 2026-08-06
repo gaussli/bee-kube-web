@@ -44,20 +44,12 @@ export interface PageVo<T = any> {
 }
 
 /**
- * 基础实体
- * @remarks 所有列表/详情响应对象的基础类型，包含审计信息
+ * ID 实体
+ * @remarks 包含唯一标识的实体，继承该类型
  */
-export interface BaseEntity {
+export interface IdEntity {
   /** 唯一标识 */
   id: string
-  /** 创建时间 */
-  createAt?: string
-  /** 创建人 */
-  createBy?: string
-  /** 更新时间 */
-  updateAt?: string
-  /** 更新人 */
-  updateBy?: string
 }
 
 /**
@@ -67,6 +59,21 @@ export interface BaseEntity {
 export interface UidEntity {
   /** 资源 UID */
   uid: string
+}
+
+/**
+ * 审计实体
+ * @remarks 包含审计信息的实体，继承该类型
+ */
+export interface AuditEntity {
+  /** 创建时间 */
+  createAt?: string
+  /** 创建人 */
+  createBy?: string
+  /** 更新时间 */
+  updateAt?: string
+  /** 更新人 */
+  updateBy?: string
 }
 
 /**

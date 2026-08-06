@@ -38,7 +38,7 @@ const route = useRoute()
 const clusterOverviewInfoData = ref<ClusterOverviewInfoData>({
   name: '',
   description: '',
-  status: 0,
+  status: 'Unknown',
   createdAt: '',
   k8sVersion: '',
   apiServer: '',

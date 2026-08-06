@@ -2,7 +2,7 @@
  * Secret 资源相关类型定义
  * @module types/kubernetes/config/secret
  */
-import type { BaseEntity, PageForm } from '@/types/common'
+import type { AuditEntity, PageForm } from '@/types/common'
 
 /**
  * Secret 类型枚举
@@ -28,9 +28,9 @@ export type SecretType =
 
 /**
  * Secret 列表响应数据
- * @extends BaseEntity 继承基础实体（含 id, createAt, createBy, updateAt, updateBy）
+ * @extends AuditEntity 继承基础实体（含 id, createAt, createBy, updateAt, updateBy）
  */
-export interface SecretListResp extends BaseEntity {
+export interface SecretListResp extends AuditEntity {
   /** 资源 UID */
   uid: string
   /** Secret 名称 */
@@ -53,9 +53,9 @@ export interface SecretListResp extends BaseEntity {
 
 /**
  * Secret 详情响应数据
- * @extends BaseEntity 继承基础实体（含 id, createAt, createBy, updateAt, updateBy）
+ * @extends AuditEntity 继承基础实体（含 id, createAt, createBy, updateAt, updateBy）
  */
-export interface SecretDetailResp extends BaseEntity {
+export interface SecretDetailResp extends AuditEntity {
   /** 资源 UID */
   uid: string
   /** Secret 名称 */

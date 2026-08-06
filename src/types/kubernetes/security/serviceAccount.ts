@@ -2,13 +2,13 @@
  * ServiceAccount 资源类型定义
  * @module types/kubernetes/serviceAccount
  */
-import type { BaseEntity, PageForm } from '@/types/common'
+import type { AuditEntity, PageForm } from '@/types/common'
 
 /**
  * ServiceAccount 响应数据
- * @extends BaseEntity 继承基础实体（含 id, createAt, createBy, updateAt, updateBy）
+ * @extends AuditEntity 继承基础实体（含 id, createAt, createBy, updateAt, updateBy）
  */
-export interface ServiceAccountResp extends BaseEntity {
+export interface ServiceAccountResp extends AuditEntity {
   /** ServiceAccount 名称 */
   name: string
   /** 所属命名空间 */

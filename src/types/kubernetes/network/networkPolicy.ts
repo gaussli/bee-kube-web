@@ -2,7 +2,7 @@
  * NetworkPolicy 资源类型定义
  * @module types/kubernetes/networkPolicy
  */
-import type { BaseEntity, PageForm } from '@/types/common'
+import type { AuditEntity, PageForm } from '@/types/common'
 
 /**
  * IP 块配置
@@ -50,9 +50,9 @@ export interface NetworkPolicyEgressRule {
 
 /**
  * NetworkPolicy 响应数据
- * @extends BaseEntity 继承基础实体（含 id, createAt, createBy, updateAt, updateBy）
+ * @extends AuditEntity 继承基础实体（含 id, createAt, createBy, updateAt, updateBy）
  */
-export interface NetworkPolicyResp extends BaseEntity {
+export interface NetworkPolicyResp extends AuditEntity {
   /** NetworkPolicy 名称 */
   name: string
   /** 所属命名空间 */

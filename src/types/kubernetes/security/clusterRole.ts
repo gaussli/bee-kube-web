@@ -2,7 +2,7 @@
  * ClusterRole 资源类型定义
  * @module types/kubernetes/clusterRole
  */
-import type { BaseEntity, PageForm } from '@/types/common'
+import type { AuditEntity, PageForm } from '@/types/common'
 
 /**
  * 聚合策略类型
@@ -41,9 +41,9 @@ export interface ClusterRolePolicyRule {
 
 /**
  * ClusterRole 响应数据
- * @extends BaseEntity 继承基础实体（含 id, createAt, createBy, updateAt, updateBy）
+ * @extends AuditEntity 继承基础实体（含 id, createAt, createBy, updateAt, updateBy）
  */
-export interface ClusterRoleResp extends BaseEntity {
+export interface ClusterRoleResp extends AuditEntity {
   /** ClusterRole 名称 */
   name: string
   /** 所属集群 UID */

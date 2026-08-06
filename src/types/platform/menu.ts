@@ -1,6 +1,6 @@
 // 权限相关类型
 
-import type { BaseEntity, PageForm } from '@/types/common'
+import type { AuditEntity, PageForm } from '@/types/common'
 
 // 菜单查询请求参数
 export interface MenuQueryReq extends PageForm {
@@ -46,7 +46,7 @@ export interface MenuChangeStatusReq {
 }
 
 // 菜单列表响应
-export interface MenuResp extends BaseEntity {
+export interface MenuResp extends AuditEntity {
   code: string
   name: string
   parentId?: string
@@ -59,7 +59,7 @@ export interface MenuResp extends BaseEntity {
 }
 
 // 菜单详情响应
-export interface MenuDetailResp extends BaseEntity {
+export interface MenuDetailResp extends AuditEntity {
   code: string
   name: string
   parentId?: string

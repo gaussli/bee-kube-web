@@ -2,7 +2,7 @@
  * 命名空间管理相关类型定义
  * @module types/kubernetes/namespace
  */
-import type { BaseEntity, PageForm } from '@/types/common'
+import type { AuditEntity, PageForm } from '@/types/common'
 
 import type { NamespaceConditionType, NamespaceType } from '@/config/kubernetes/namespace'
 
@@ -13,9 +13,9 @@ export type { NamespaceConditionType, NamespaceStatus, NamespaceType } from '@/c
 
 /**
  * 命名空间响应数据
- * @extends BaseEntity 继承基础实体（含 id, createAt, createBy, updateAt, updateBy）
+ * @extends AuditEntity 继承基础实体（含 id, createAt, createBy, updateAt, updateBy）
  */
-export interface NamespaceListResp extends BaseEntity {
+export interface NamespaceListResp extends AuditEntity {
   /** 资源 UID */
   uid: string
   /** 所属集群 UID */
@@ -36,9 +36,9 @@ export interface NamespaceListResp extends BaseEntity {
 
 /**
  * 命名空间详情响应数据
- * @extends BaseEntity 继承基础实体（含 id, createAt, createBy, updateAt, updateBy）
+ * @extends AuditEntity 继承基础实体（含 id, createAt, createBy, updateAt, updateBy）
  */
-export interface NamespaceDetailResp extends BaseEntity {
+export interface NamespaceDetailResp extends AuditEntity {
   /** 资源 UID */
   uid: string
   /** 所属集群 UID */
@@ -67,9 +67,9 @@ export interface NamespaceDetailResp extends BaseEntity {
 
 /**
  * 命名空间概览响应数据
- * @extends BaseEntity 继承基础实体（含 id, createAt, createBy, updateAt, updateBy）
+ * @extends AuditEntity 继承基础实体（含 id, createAt, createBy, updateAt, updateBy）
  */
-export interface NamespaceOverviewResp extends BaseEntity {
+export interface NamespaceOverviewResp extends AuditEntity {
   /** 资源 UID */
   uid: string
   /** 所属集群 UID */

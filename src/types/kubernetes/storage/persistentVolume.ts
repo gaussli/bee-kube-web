@@ -2,7 +2,7 @@
  * PersistentVolume 资源类型定义
  * @module types/kubernetes/persistentVolume
  */
-import type { BaseEntity, PageForm } from '@/types/common'
+import type { AuditEntity, PageForm } from '@/types/common'
 
 /**
  * PersistentVolume 访问模式
@@ -16,9 +16,9 @@ export type PersistentVolumePhase = 'Pending' | 'Available' | 'Bound' | 'Release
 
 /**
  * PersistentVolume 响应数据
- * @extends BaseEntity 继承基础实体（含 id, createAt, createBy, updateAt, updateBy）
+ * @extends AuditEntity 继承基础实体（含 id, createAt, createBy, updateAt, updateBy）
  */
-export interface PersistentVolumeResp extends BaseEntity {
+export interface PersistentVolumeResp extends AuditEntity {
   /** PersistentVolume 名称 */
   name: string
   /** 所属集群 UID */

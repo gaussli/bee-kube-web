@@ -46,8 +46,8 @@ import BeeFieldCard from '@/components/BeeFieldCard/index.vue'
 import BeeFieldItem from '@/components/BeeFieldItem/index.vue'
 import BeeIcon from '@/components/BeeIcon/index.vue'
 
+import { CLUSTER_STATUS_OPTIONS, type ClusterStatus } from '@/config/kubernetes/cluster'
 import { CERT_EXPIRE_WARNING_DAYS } from '@/config/kubernetes/common'
-import { CLUSTER_STATUS_OPTIONS } from '@/config/kubernetes/cluster'
 
 defineOptions({ name: 'BeeClusterOverviewInfo' })
 
@@ -60,7 +60,7 @@ export interface ClusterOverviewInfoData {
   /** 集群描述 */
   description?: string
   /** 集群状态 */
-  status: number
+  status: ClusterStatus
   /** 创建时间 */
   createdAt: string
   /** Kubernetes 版本 */

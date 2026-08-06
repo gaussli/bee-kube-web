@@ -1,6 +1,6 @@
 // 角色相关类型
 
-import type { BaseEntity, PageForm } from '@/types/common'
+import type { AuditEntity, PageForm } from '@/types/common'
 
 // 角色查询请求参数
 export interface RoleQueryReq extends PageForm {
@@ -33,7 +33,7 @@ export interface RoleChangeStatusReq {
 }
 
 // 角色列表响应
-export interface RoleResp extends BaseEntity {
+export interface RoleResp extends AuditEntity {
   code: string
   name: string
   description?: string
@@ -43,7 +43,7 @@ export interface RoleResp extends BaseEntity {
 }
 
 // 角色详情响应
-export interface RoleDetailResp extends BaseEntity {
+export interface RoleDetailResp extends AuditEntity {
   code: string
   name: string
   description?: string

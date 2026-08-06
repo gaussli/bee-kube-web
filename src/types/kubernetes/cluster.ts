@@ -2,7 +2,7 @@
  * Kubernetes 集群管理类型定义
  * @module types/kubernetes/cluster
  */
-import type { BaseEntity, DeletableEntity, PageForm, UidEntity } from '@/types/common'
+import type { AuditEntity, DeletableEntity, PageForm, UidEntity } from '@/types/common'
 
 import type { ClusterStatus } from '@/config/kubernetes/cluster'
 
@@ -14,7 +14,7 @@ import type { ResourceVo } from './comomn'
  * @extends PageForm 继承分页请求
  */
 export interface ClusterQueryForm extends UidEntity, PageForm {
-  /** 集群名称（模糊匹配） */
+  /** 集群名称 */
   name: string
   /** 集群状态 */
   status: ClusterStatus
@@ -22,11 +22,11 @@ export interface ClusterQueryForm extends UidEntity, PageForm {
 
 /**
  * 集群列表对象响应数据
- * @extends BaseEntity 继承基础实体类型
  * @extends UidEntity 继承 UID 类型
+ * @extends AuditEntity 继承基础实体类型
  * @extends DeletableEntity 继承可删除类型
  */
-export interface ClusterListVo extends BaseEntity, UidEntity, DeletableEntity {
+export interface ClusterListVo extends UidEntity, AuditEntity, DeletableEntity {
   /** 集群名称 */
   name: string
   /** 集群描述 */
@@ -42,10 +42,12 @@ export interface ClusterListVo extends BaseEntity, UidEntity, DeletableEntity {
 }
 
 /**
- * 集群详情对象
- * @extends BaseEntity
+ * 集群详情对象响应数据
+ * @extends UidEntity 继承 UID 类型
+ * @extends AuditEntity 继承基础实体类型
+ * @extends DeletableEntity 继承可删除类型
  */
-export interface ClusterDetailVo extends BaseEntity, UidEntity, DeletableEntity {
+export interface ClusterDetailVo extends UidEntity, AuditEntity, DeletableEntity {
   /** 集群名称 */
   name: string
   /** API Server 地址 */
@@ -54,7 +56,7 @@ export interface ClusterDetailVo extends BaseEntity, UidEntity, DeletableEntity 
   description?: string
   /** 集群状态 */
   status: ClusterStatus
-  /** 集群状态描述 */
+  /** 集群状态描述信息（如异常原因） */
   statusMsg?: string
   /** Kubernetes 版本 */
   k8sVersion: string
@@ -63,8 +65,8 @@ export interface ClusterDetailVo extends BaseEntity, UidEntity, DeletableEntity 
 }
 
 /**
- * 集群资源用量对象
- * @extends ResourceVo
+ * 集群资源用量响应数据
+ * @extends ResourceVo 继承资源用量类型
  */
 export interface ClusterResourceVo extends ResourceVo {}
 

@@ -2,7 +2,7 @@
  * Job 资源相关类型定义
  * @module types/kubernetes/workload/job
  */
-import type { BaseEntity, PageForm } from '@/types/common'
+import type { AuditEntity, PageForm } from '@/types/common'
 
 /**
  * Job 状态枚举
@@ -15,9 +15,9 @@ export type JobStatus = 'Active' | 'Succeeded' | 'Failed'
 
 /**
  * Job 列表对象响应数据
- * @extends BaseEntity 继承基础实体（含 id, createAt, createBy, updateAt, updateBy）
+ * @extends AuditEntity 继承基础实体（含 id, createAt, createBy, updateAt, updateBy）
  */
-export interface JobListResp extends BaseEntity {
+export interface JobListResp extends AuditEntity {
   /** 资源 UID */
   uid: string
   /** 所属集群 UID */
@@ -50,9 +50,9 @@ export interface JobListResp extends BaseEntity {
 
 /**
  * Job 详情响应数据
- * @extends BaseEntity 继承基础实体（含 id, createAt, createBy, updateAt, updateBy）
+ * @extends AuditEntity 继承基础实体（含 id, createAt, createBy, updateAt, updateBy）
  */
-export interface JobDetailResp extends BaseEntity {
+export interface JobDetailResp extends AuditEntity {
   /** 资源 UID */
   uid: string
   /** 所属集群 UID */

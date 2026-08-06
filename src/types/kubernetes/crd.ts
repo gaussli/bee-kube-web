@@ -2,7 +2,7 @@
  * CRD 资源相关类型定义
  * @module types/kubernetes/customResourceDefinition
  */
-import type { BaseEntity, PageForm } from '@/types/common'
+import type { AuditEntity, PageForm } from '@/types/common'
 
 /**
  * CRD 版本配置
@@ -39,9 +39,9 @@ export interface CrdResource {
 
 /**
  * CRD 响应数据
- * @extends BaseEntity 继承基础实体（含 id, createAt, createBy, updateAt, updateBy）
+ * @extends AuditEntity 继承基础实体（含 id, createAt, createBy, updateAt, updateBy）
  */
-export interface CrdResp extends BaseEntity {
+export interface CrdResp extends AuditEntity {
   /** CRD ID */
   id: string
   /** CRD 名称 */

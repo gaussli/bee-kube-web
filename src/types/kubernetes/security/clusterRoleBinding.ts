@@ -2,7 +2,7 @@
  * ClusterRoleBinding 资源类型定义
  * @module types/kubernetes/clusterRoleBinding
  */
-import type { BaseEntity, PageForm } from '@/types/common'
+import type { AuditEntity, PageForm } from '@/types/common'
 
 /**
  * Subject 主体
@@ -21,9 +21,9 @@ export interface ClusterRoleBindingSubject {
 
 /**
  * ClusterRoleBinding 响应数据
- * @extends BaseEntity 继承基础实体（含 id, createAt, createBy, updateAt, updateBy）
+ * @extends AuditEntity 继承基础实体（含 id, createAt, createBy, updateAt, updateBy）
  */
-export interface ClusterRoleBindingResp extends BaseEntity {
+export interface ClusterRoleBindingResp extends AuditEntity {
   /** ClusterRoleBinding 名称 */
   name: string
   /** 所属集群 UID */

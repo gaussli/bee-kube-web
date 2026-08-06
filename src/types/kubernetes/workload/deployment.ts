@@ -2,7 +2,7 @@
  * Deployment 资源相关类型定义
  * @module types/kubernetes/workload/deployment
  */
-import type { BaseEntity, DeletableEntity, PageForm, UidEntity } from '@/types/common'
+import type { AuditEntity, DeletableEntity, PageForm, UidEntity } from '@/types/common'
 import type { IngressListVo } from '@/types/kubernetes/network/ingress'
 import type { ServiceListVo } from '@/types/kubernetes/network/service'
 import type { PodListVo } from '@/types/kubernetes/pod'
@@ -18,15 +18,12 @@ import type { Clustered, Condition, ContainerResource, Metadata, Namespaced } fr
 
 import type { HistoryRevision, NodeAffinity, PodAffinity, PodAntiAffinity, RestartPolicy, Toleration } from './types'
 
-// ==================== 1. 查询表单 ====================
-
 /**
  * Deployment 查询请求参数
- * @extends PageForm 继承分页请求（含 page, pageSize）
+ * @extends UidEntity 继承 UID 类型
+ * @extends PageForm 继承分页请求
  */
-export interface DeploymentQueryForm extends PageForm {
-  /** Deployment UID */
-  uid: string
+export interface DeploymentQueryForm extends UidEntity, PageForm {
   /** Deployment 名称（模糊匹配） */
   name: string
   /** 命名空间名称 */
@@ -37,7 +34,7 @@ export interface DeploymentQueryForm extends PageForm {
 
 /**
  * Deployment Pod 查询请求参数
- * @extends PageForm 继承分页请求（含 page, pageSize）
+ * @extends PageForm 继承分页请求
  */
 export interface DeploymentPodQueryForm extends PageForm {
   /** Pod 名称（模糊匹配） */
@@ -46,15 +43,15 @@ export interface DeploymentPodQueryForm extends PageForm {
   status: string
 }
 
-// ==================== 2. 列表对象 ====================
-
 /**
  * Deployment 列表对象响应数据
- * @extends Namespaced 继承命名空间类型（含 clusterUid, clusterName, namespace 等）
+ * @extends UidEntity 继承 UID 类型
+ * @extends Clustered 继承集群类型
+ * @extends Namespaced 继承命名空间类型
+ * @extends AuditEntity 继承基础实体类型
+ * @extends DeletableEntity 继承可删除类型
  */
-export interface DeploymentListVo extends Clustered, Namespaced, BaseEntity, UidEntity, DeletableEntity {
-  /** 资源 UID */
-  uid: string
+export interface DeploymentListVo extends UidEntity, Clustered, Namespaced, AuditEntity, DeletableEntity {
   /** Deployment 名称 */
   name: string
   /** 描述信息 */
@@ -71,10 +68,8 @@ export interface DeploymentListVo extends Clustered, Namespaced, BaseEntity, Uid
   strategyType: DeploymentStrategyType
 }
 
-// ==================== 3. 详情对象 ====================
-
 /**
- * Deployment 详情响应数据
+ * Deployment 详情对象响应数据
  * 组合多个子对象，提供完整详情信息
  */
 export interface DeploymentDetailVo {
@@ -92,6 +87,73 @@ export interface DeploymentDetailVo {
   strategy: DeploymentStrategyVo
   /** 高级配置 */
   advanced: DeploymentAdvancedVo
+}
+
+/**
+ * Deployment 基础信息响应数据
+ * @extends UidEntity 继承 UID 类型
+ * @extends Clustered 继承集群类型
+ * @extends Namespaced 继承命名空间类型
+ * @extends AuditEntity 继承基础实体类型
+ * @extends DeletableEntity 继承可删除类型
+ */
+export interface DeploymentBasicVo extends UidEntity, Clustered, Namespaced, AuditEntity, DeletableEntity {
+  /** Deployment 名称 */
+  name: string
+  /** 描述信息 */
+  description?: string
+  /** 状态 */
+  status: DeploymentStatus
+  /** 状态描述信息（如异常原因） */
+  statusMsg?: string
+  /** 版本计数 */
+  generation: number
+  /** 标签选择器 */
+  selector: Record<string, string>
+}
+
+/**
+ * Deployment 副本信息响应
+ */
+export interface DeploymentReplicasVo {
+  /** 期望副本数 */
+  replicas: number
+  /** 就绪副本数 */
+  readyReplicas: number
+  /** 可用副本数 */
+  availableReplicas: number
+  /** 已更新副本数 */
+  updatedReplicas: number
+}
+
+/**
+ * Deployment 元数据响应
+ * @extends Metadata 继承元数据类型
+ */
+export interface DeploymentMetadataVo extends Metadata {}
+
+/**
+ * Deployment 资源信息响应
+ * @extends ContainerResource 继承容器资源类型
+ */
+export interface DeploymentResourceVo extends ContainerResource {}
+
+/**
+ * Deployment 条件响应
+ * @extends Condition 继承条件类型
+ */
+export interface DeploymentConditionVo extends Condition<DeploymentConditionType> {}
+
+/**
+ * Deployment 更新策略响应数据
+ */
+export interface DeploymentStrategyVo {
+  /** 策略类型 */
+  type: DeploymentStrategyType
+  /** 最大不可用副本数 */
+  maxUnavailable: string
+  /** 最大超出副本数 */
+  maxSurge: string
 }
 
 /**
@@ -125,77 +187,7 @@ export interface DeploymentAdvancedVo {
 }
 
 /**
- * Deployment 基础信息响应
- * 用于下拉选择、关联引用等场景，仅返回核心标识字段
- * @extends Namespaced 继承命名空间类型（含 clusterUid, clusterName, namespace 等）
- */
-export interface DeploymentBasicVo extends Namespaced {
-  /** 资源 UID */
-  uid: string
-  /** Deployment 名称 */
-  name: string
-  /** 描述信息 */
-  description?: string
-  /** 状态 */
-  status: DeploymentStatus
-  /** 状态描述信息 */
-  statusMsg?: string
-  /** 是否可删除 */
-  deletable: boolean
-  /** 版本计数 */
-  generation: number
-  /** 标签选择器 */
-  selector: Record<string, string>
-}
-
-/**
- * Deployment 副本信息响应
- */
-export interface DeploymentReplicasVo {
-  /** 期望副本数 */
-  replicas: number
-  /** 就绪副本数 */
-  readyReplicas: number
-  /** 可用副本数 */
-  availableReplicas: number
-  /** 已更新副本数 */
-  updatedReplicas: number
-}
-
-/**
- * Deployment 元数据响应
- * @extends Metadata 继承元数据类型（含 labels, annotations）
- */
-export interface DeploymentMetadataVo extends Metadata {}
-
-/**
- * Deployment 资源信息响应
- * @extends ContainerResource 继承容器资源类型（含 request, limit）
- */
-export interface DeploymentResourceVo extends ContainerResource {}
-
-/**
- * Deployment 条件响应
- * @extends Condition 继承条件类型
- */
-export interface DeploymentConditionVo extends Condition<DeploymentConditionType> {}
-
-/**
- * Deployment 更新策略响应
- */
-export interface DeploymentStrategyVo {
-  /** 策略类型 */
-  type: DeploymentStrategyType
-  /** 最大不可用副本数 */
-  maxUnavailable: string
-  /** 最大超出副本数 */
-  maxSurge: string
-}
-
-// ==================== 4. 其他响应对象 ====================
-
-/**
- * Deployment Pod 列表响应
+ * Deployment Pod 列表响应数据
  * @extends PodListVo 继承 Pod 列表响应类型
  */
 export interface DeploymentPodListVo extends PodListVo {}
@@ -271,35 +263,25 @@ export interface DeploymentStorageListVo {
  */
 export interface DeploymentMonitorVo {}
 
-// ==================== 5. 创建表单 ====================
-
 /**
  * Deployment 创建请求参数
  */
 export interface DeploymentCreateForm {}
-
-// ==================== 6. 编辑表单 ====================
 
 /**
  * Deployment 编辑请求参数
  */
 export interface DeploymentUpdateForm {}
 
-// ==================== 7. 标签表单 ====================
-
 /**
  * Deployment 标签更新请求
  */
 export interface DeploymentLabelForm extends MetadataLabelForm {}
 
-// ==================== 8. 注解表单 ====================
-
 /**
  * Deployment 注解更新请求
  */
 export interface DeploymentAnnotationForm extends MetadataAnnotationForm {}
-
-// ==================== 9. 其他表单对象（尾部） ====================
 
 /**
  * Deployment 扩缩容请求

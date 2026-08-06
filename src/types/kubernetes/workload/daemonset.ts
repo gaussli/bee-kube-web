@@ -2,7 +2,7 @@
  * DaemonSet 资源相关类型定义
  * @module types/kubernetes/workload/daemonset
  */
-import type { BaseEntity, PageForm } from '@/types/common'
+import type { AuditEntity, PageForm } from '@/types/common'
 
 import type { DaemonSetStatus, DaemonSetStrategyType } from '@/config/kubernetes/workload/daemonset'
 
@@ -14,9 +14,9 @@ export type {
 
 /**
  * DaemonSet 列表对象响应数据
- * @extends BaseEntity 继承基础实体（含 id, createAt, createBy, updateAt, updateBy）
+ * @extends AuditEntity 继承基础实体（含 id, createAt, createBy, updateAt, updateBy）
  */
-export interface DaemonSetListResp extends BaseEntity {
+export interface DaemonSetListResp extends AuditEntity {
   /** 资源 UID */
   uid: string
   /** 所属集群 UID */
@@ -43,9 +43,9 @@ export interface DaemonSetListResp extends BaseEntity {
 
 /**
  * DaemonSet 详情响应数据
- * @extends BaseEntity 继承基础实体（含 id, createAt, createBy, updateAt, updateBy）
+ * @extends AuditEntity 继承基础实体（含 id, createAt, createBy, updateAt, updateBy）
  */
-export interface DaemonSetDetailResp extends BaseEntity {
+export interface DaemonSetDetailResp extends AuditEntity {
   /** 资源 UID */
   uid: string
   /** 所属集群 UID */
