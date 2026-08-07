@@ -158,7 +158,7 @@ import { computed, onMounted, reactive, ref } from 'vue'
 
 import { useRoute, useRouter } from 'vue-router'
 
-import type { NamespaceSimpleListResp } from '@/types/kubernetes/namespace'
+import type { NamespaceSimpleListVo } from '@/types/kubernetes/namespace'
 import type { DeploymentQueryForm, DeploymentListVo } from '@/types/kubernetes/workload/deployment'
 
 import { getNamespacePage } from '@/api/kubernetes/namespace'
@@ -230,7 +230,7 @@ const namespaceOptions = ref<{ label: string; value: string | undefined }[]>([
 async function loadNamespaceOptions() {
   if (!clusterUid.value) return
   try {
-    const namespaces = (await getNamespacePage(clusterUid.value, { mode: 'simple' })) as NamespaceSimpleListResp[]
+    const namespaces = (await getNamespacePage(clusterUid.value, { mode: 'simple' })) as NamespaceSimpleListVo[]
     namespaceOptions.value = [
       { label: '全部命名空间', value: undefined },
       ...namespaces.map(ns => ({ label: ns.name, value: ns.name })),

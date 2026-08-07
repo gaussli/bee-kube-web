@@ -33,17 +33,6 @@ export interface DeploymentQueryForm extends UidEntity, PageForm {
 }
 
 /**
- * Deployment Pod 查询请求参数
- * @extends PageForm 继承分页请求
- */
-export interface DeploymentPodQueryForm extends PageForm {
-  /** Pod 名称（模糊匹配） */
-  name: string
-  /** Pod 状态 */
-  status: string
-}
-
-/**
  * Deployment 列表对象响应数据
  * @extends UidEntity 继承 UID 类型
  * @extends Clustered 继承集群类型
@@ -187,6 +176,17 @@ export interface DeploymentAdvancedVo {
 }
 
 /**
+ * Deployment Pod 查询请求参数
+ * @extends PageForm 继承分页请求
+ */
+export interface DeploymentPodQueryForm extends PageForm {
+  /** Pod 名称（模糊匹配） */
+  name: string
+  /** Pod 状态 */
+  status: string
+}
+
+/**
  * Deployment Pod 列表响应数据
  * @extends PodListVo 继承 Pod 列表响应类型
  */
@@ -230,20 +230,6 @@ export interface DeploymentNetworkVo {
 }
 
 /**
- * Deployment 容器挂载配置
- */
-export interface DeploymentContainerMount {
-  /** 容器 ID */
-  containerId: string
-  /** 容器名称 */
-  container: string
-  /** 挂载路径 */
-  mountPath: string
-  /** 子路径 */
-  subPath: string
-}
-
-/**
  * Deployment 存储列表响应
  */
 export interface DeploymentStorageListVo {
@@ -254,7 +240,16 @@ export interface DeploymentStorageListVo {
   /** 额外字段 */
   extraFields: Record<string, string>
   /** 容器挂载列表 */
-  containerMounts: DeploymentContainerMount[]
+  containerMounts: {
+    /** 容器 ID */
+    containerId: string
+    /** 容器名称 */
+    container: string
+    /** 挂载路径 */
+    mountPath: string
+    /** 子路径 */
+    subPath: string
+  }[]
 }
 
 /**

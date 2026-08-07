@@ -3,15 +3,23 @@
  * @module types/kubernetes/types
  */
 
+/**
+ * 集群归属信息
+ */
 export interface Clustered {
+  /** 集群 UID */
   clusterUid: string
-  clusterUid: string
+  /** 集群名称 */
   clusterName: string
 }
 
+/**
+ * 命名空间归属信息
+ */
 export interface Namespaced {
-  namespaceId: string
+  /** 命名空间 UID */
   namespaceUid: string
+  /** 命名空间名称 */
   namespace: string
 }
 
@@ -127,49 +135,69 @@ export interface Event {
   lastTimestamp: string
 }
 
+/**
+ * 容器状态枚举
+ * - Waiting: 等待中（如镜像拉取、依赖未就绪）
+ * - Running: 运行中
+ * - Terminated: 已终止
+ */
 export type ContainerStatus = 'Waiting' | 'Running' | 'Terminated'
 
+/**
+ * 容器资源配置
+ * @remarks 包含资源请求（Request）和资源限制（Limit）两部分
+ */
 export interface ContainerResource {
+  /** 资源请求量 */
   request: {
+    /** CPU 请求量（单位：核） */
     cpu: number
+    /** 内存请求量（单位：Mi） */
     memory: number
   }
+  /** 资源限制量 */
   limit: {
+    /** CPU 限制量（单位：核） */
     cpu: number
+    /** 内存限制量（单位：Mi） */
     memory: number
   }
-}
-
-export interface ContainerPort {
-  name: string
-  protocol: string
-  containerPort: number
-  hostPort: number
-}
-
-export interface Container {
-  containerId: string
-  name: string
-  status: ContainerStatus
-  statusMessage: string
-  image: string
-  ports: ContainerPort[]
-  restart: number
-  isInit: boolean
 }
 
 /**
- * StatefulSet 副本状态
+ * 容器端口映射
  */
-export interface StatefulSetReplicaStatus {
-  /** 期望副本数 */
-  replicas: number
-  /** 就绪副本数 */
-  readyReplicas: number
-  /** 当前副本数 */
-  currentReplicas: number
-  /** 更新副本数 */
-  updatedReplicas: number
+export interface ContainerPort {
+  /** 端口名称 */
+  name: string
+  /** 协议类型（如 TCP、UDP） */
+  protocol: string
+  /** 容器端口号 */
+  containerPort: number
+  /** 宿主机端口号 */
+  hostPort: number
+}
+
+/**
+ * 容器信息
+ */
+export interface Container {
+  /** 容器 ID */
+  containerId: string
+  /** 容器名称 */
+  name: string
+  /** 容器状态 */
+  status: ContainerStatus
+  /** 容器状态详情信息 */
+  statusMessage: string
+  /** 容器镜像 */
+  image: string
+  /** 容器端口映射列表 */
+  ports: ContainerPort[]
+  /** 重启次数 */
+  restart: number
+  /** 是否为初始化容器 */
+  isInit: boolean
 }
 
 /**

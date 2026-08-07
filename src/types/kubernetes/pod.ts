@@ -2,6 +2,7 @@
  * Pod 资源相关类型定义
  * @module types/kubernetes/pod
  */
+import type { PageForm } from '@/types/common'
 import type { Namespaced } from './types'
 
 /**
@@ -14,6 +15,17 @@ import type { Namespaced } from './types'
  * - Unknown: 未知状态（无法获取 Pod 状态）
  */
 export type PodStatus = 'Running' | 'Pending' | 'Succeeded' | 'Failed' | 'Unknown'
+
+/**
+ * Pod 查询表单
+ * @extends PageForm 分页参数
+ */
+export interface PodQueryForm extends PageForm {
+  /** Pod 名称 */
+  name?: string
+  /** Pod 状态 */
+  status?: PodStatus
+}
 
 /**
  * Pod 列表响应数据
