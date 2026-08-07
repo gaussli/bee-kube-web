@@ -109,7 +109,7 @@ const route = useRoute()
 const router = useRouter()
 
 const clusterUid = ref(route.params.clusterUid as string)
-const namespaceName = ref(route.query.name as string)
+const namespaceName = ref(route.params.name as string)
 const loading = ref(false)
 const namespaceData = ref<NamespaceListResp>()
 const activeTab = ref('basic')
@@ -143,8 +143,7 @@ function handleEdit() {
   router
     .push({
       name: 'kubernetes:namespace:edit',
-      params: { clusterUid: clusterUid.value },
-      query: { name: namespaceName.value },
+      params: { clusterUid: clusterUid.value, name: namespaceName.value },
     })
     .catch(() => {})
 }

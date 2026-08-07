@@ -251,7 +251,7 @@ function handleSelectionChange(rows: Record<string, unknown>[]) {
  */
 function handleViewDetail(row: NodeListResp) {
   router
-    .push({ name: 'kubernetes:node:detail', params: { clusterUid: clusterUid.value }, query: { name: row.name } })
+    .push({ name: 'kubernetes:node:detail', params: { clusterUid: clusterUid.value, name: row.name } })
     .catch(() => {})
 }
 
@@ -261,7 +261,7 @@ function handleViewDetail(row: NodeListResp) {
  */
 function handleEdit(row: NodeListResp) {
   router
-    .push({ name: 'kubernetes:node:edit', params: { clusterUid: clusterUid.value }, query: { name: row.name } })
+    .push({ name: 'kubernetes:node:edit', params: { clusterUid: clusterUid.value, name: row.name } })
     .catch(() => {})
 }
 

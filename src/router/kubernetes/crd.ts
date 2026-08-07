@@ -7,7 +7,6 @@ export const crdRoutes: RouteRecordRaw[] = [
     component: () => import('@/views/kubernetes/crd/index.vue'),
     meta: {
       title: '资源定义',
-      icon: 'Coin',
       permission: 'kubernetes:crd:view',
       activeCode: 'kubernetes:crd',
     },
@@ -18,7 +17,6 @@ export const crdRoutes: RouteRecordRaw[] = [
     component: () => import('@/views/kubernetes/crd/create/index.vue'),
     meta: {
       title: '创建资源定义',
-      icon: 'Coin',
       permission: 'kubernetes:crd:create',
       activeCode: 'kubernetes:crd',
     },
@@ -29,7 +27,6 @@ export const crdRoutes: RouteRecordRaw[] = [
     component: () => import('@/views/kubernetes/crd/edit/index.vue'),
     meta: {
       title: '编辑资源定义',
-      icon: 'Coin',
       permission: 'kubernetes:crd:edit',
       activeCode: 'kubernetes:crd',
     },
@@ -40,7 +37,6 @@ export const crdRoutes: RouteRecordRaw[] = [
     component: () => import('@/views/kubernetes/crd/detail/index.vue'),
     meta: {
       title: '资源定义详情',
-      icon: 'Coin',
       permission: 'kubernetes:crd:view',
       activeCode: 'kubernetes:crd',
     },

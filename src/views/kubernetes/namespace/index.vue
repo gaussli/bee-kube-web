@@ -1,41 +1,37 @@
 <template>
-  <BeePage class="namespace-page">
-    <!-- 页面标题 -->
-    <BeeCard class="namespace-page__header">
-      <BeePageHeader
-        :icon="NAMESPACE_PAGE_META.icon"
-        :title="NAMESPACE_PAGE_META.title"
-        :description="NAMESPACE_PAGE_META.description"
-      />
-    </BeeCard>
+  <BeePage>
+    <!-- 页面 Header -->
+    <BeePageHeader v-bind="NAMESPACE_PAGE_META" />
 
-    <!-- 页面内容 -->
-    <BeeCard class="namespace-page__body">
-      <!-- 查询表单 -->
-      <div class="table-toolbar">
-        <BeeInputSearch v-model="searchKey" placeholder="按名称搜索" class="table-toolbar__search" />
+    <!-- 页面 Body -->
+    <BeeCard class="page-body">
+      <!-- 工具栏 -->
+      <div class="page-body__toolbar">
+        <BeeInputSearch v-model="searchKey" placeholder="按 UID / 名称搜索" class="page-body__toolbar-search" />
         <BeeSelect v-model="queryForm.status" :options="NAMESPACE_STATUS_OPTIONS" placeholder="状态筛选" />
         <BeeButton icon="basic-search" @click="handleSearch"> 搜索 </BeeButton>
         <BeeButton icon="basic-refresh" @click="handleReset"> 重置 </BeeButton>
+        <div v-if="perm.create" class="page-body__toolbar-seperator"></div>
         <BeeButton
-          v-if="hasPermission('kubernetes:namespace:create')"
+          v-if="perm.create"
           type="primary"
           icon="basic-create"
           @click="handleCreate"
         >
           新增
         </BeeButton>
+        <BeeButton v-if="perm.create" type="primary" icon="basic-create" @click="handleCreateYaml"> YAML </BeeButton>
       </div>
 
-      <!-- 表格主体 -->
-      <div class="table-body">
-        <BeeTable :data="tableData" :loading="loading" selectable @selection-change="handleSelectionChange">
-          <BeeTableColumn :width="200">
+      <!-- 表格 -->
+      <div class="page-body__table">
+        <BeeTable ref="tableRef" :data="tableData" :loading="loading" selectable @selection-change="handleSelectionChange">
+          <BeeTableColumn :width="500">
             <template #default="{ row }">
               <BeeNamespaceInfoCell :id="row.id" :name="row.name" :description="row.description" :icon-size="32" />
             </template>
           </BeeTableColumn>
-          <BeeTableColumn :width="160">
+          <BeeTableColumn :min-width="160">
             <template #default="{ row }">
               <BeeStatusCell :status="row.status" :status-msg="row.statusMsg" :options="NAMESPACE_STATUS_OPTIONS" />
             </template>
@@ -84,17 +80,15 @@
         </BeeTable>
       </div>
 
-      <!-- 表格底部 -->
-      <div class="table-footer">
-        <div>
-          <BeeButton
-            v-if="hasPermission('kubernetes:namespace:delete')"
-            type="danger"
-            :disabled="selectedRows.length === 0"
-            @click="handleBatchDelete"
-          >
+      <!-- 底栏 -->
+      <div class="page-body__footer">
+        <div class="page-body__footer-actions">
+          <BeeButton :disabled="selectedRows.length === 0" @click="handleClearSelection"> 取消选择 </BeeButton>
+          <BeeButton v-if="perm.delete" type="danger" :disabled="selectedRows.length === 0" @click="handleBatchDelete">
             批量删除 ({{ selectedRows.length }})
           </BeeButton>
+          <BeeButton v-if="perm.view" icon="basic-create" @click="handleExport"> 导出 </BeeButton>
+          <BeeButton v-if="perm.create" icon="basic-create" @click="handleImport"> 导入 </BeeButton>
         </div>
         <BeePagination
           v-model="pagination.page"
@@ -122,7 +116,7 @@
         <p>
           确定要删除选中的 <strong>{{ selectedRows.length }}</strong> 个命名空间吗？
         </p>
-        <div class="delete-namespace-tags">
+        <div class="delete-dialog-tags">
           <BeeTag v-for="row in selectedRows" :key="row.id">
             {{ row.name }}
           </BeeTag>
@@ -138,7 +132,7 @@ import { onMounted, reactive, ref } from 'vue'
 
 import { useRoute, useRouter } from 'vue-router'
 
-import type { NamespaceQueryReq, NamespaceListResp } from '@/types/kubernetes/namespace'
+import type { NamespaceListVo, NamespaceQueryForm } from '@/types/kubernetes/namespace'
 
 import { getNamespacePage, deleteNamespace, deleteNamespaces } from '@/api/kubernetes/namespace'
 
@@ -169,26 +163,33 @@ defineOptions({ name: 'NamespaceManage' })
 const { hasPermission } = usePermission()
 const route = useRoute()
 const router = useRouter()
-const searchKey = ref('')
-const clusterUid = ref(route.params.clusterUid as string)
 
+// ==================== Reactive State ====================
+// --- 上下文
+const clusterUid = ref(route.params.clusterUid as string)
+const searchKey = ref('')
+// --- 查询条件
+const queryForm = reactive<Partial<NamespaceQueryForm>>({})
+const pagination = reactive({ page: 1, pageSize: 10, total: 0 })
+// --- 表格数据
 const loading = ref(false)
-const tableData = ref<NamespaceListResp[]>([])
-const selectedRows = ref<NamespaceListResp[]>([])
+const tableData = ref<NamespaceListVo[]>([])
+const tableRef = ref<InstanceType<typeof BeeTable>>()
+// --- 选中逻辑
+const selectedRows = ref<NamespaceListVo[]>([])
+// --- 对话框
 const deleteDialogVisible = ref(false)
 const batchDeleteDialogVisible = ref(false)
-const currentTargetRow = ref<NamespaceListResp | null>(null)
+const currentTargetRow = ref<NamespaceListVo | null>(null)
 
-const queryForm = reactive<Partial<NamespaceQueryReq>>({
-  id: undefined,
-  name: undefined,
-  status: undefined,
-})
-const pagination = reactive({
-  page: 1,
-  pageSize: 10,
-  total: 0,
-})
+// --- 权限缓存
+/** 页面级权限缓存，避免模板/循环中重复调用 hasPermission */
+const perm: Record<string, boolean> = {
+  create: hasPermission('kubernetes:namespace:create'),
+  edit: hasPermission('kubernetes:namespace:edit'),
+  view: hasPermission('kubernetes:namespace:view'),
+  delete: hasPermission('kubernetes:namespace:delete'),
+}
 
 async function loadData() {
   if (!clusterUid.value) {
@@ -211,10 +212,10 @@ async function loadData() {
 
 /**
  * 搜索
- * @remarks 将 searchKey 映射到 name 字段进行模糊匹配
+ * @remarks 将 searchKey 同时映射到 uid/name 字段进行搜索匹配，并重置页码
  */
 function handleSearch() {
-  queryForm.id = searchKey.value
+  queryForm.uid = searchKey.value
   queryForm.name = searchKey.value
   pagination.page = 1
   void loadData()
@@ -222,9 +223,10 @@ function handleSearch() {
 
 /**
  * 重置搜索条件
+ * @remarks 清空所有筛选字段、搜索关键词、分页参数，重新加载数据
  */
 function handleReset() {
-  queryForm.id = undefined
+  queryForm.uid = undefined
   queryForm.name = undefined
   queryForm.status = undefined
   pagination.page = 1
@@ -241,19 +243,24 @@ function handleSelectionChange(rows: Record<string, unknown>[]) {
   selectedRows.value = rows as unknown as NamespaceListResp[]
 }
 
+/** 取消全部选中 */
+function handleClearSelection() {
+  tableRef.value?.clearSelection()
+}
+
 function handleCreate() {
   router.push({ name: 'kubernetes:namespace:create', params: { clusterUid: clusterUid.value } }).catch(() => {})
 }
 
 function handleEdit(row: NamespaceListResp) {
   router
-    .push({ name: 'kubernetes:namespace:edit', params: { clusterUid: row.clusterUid }, query: { name: row.name } })
+    .push({ name: 'kubernetes:namespace:edit', params: { clusterUid: row.clusterUid, name: row.name } })
     .catch(() => {})
 }
 
 function handleViewDetail(row: NamespaceListResp) {
   router
-    .push({ name: 'kubernetes:namespace:detail', params: { clusterUid: row.clusterUid }, query: { name: row.name } })
+    .push({ name: 'kubernetes:namespace:detail', params: { clusterUid: row.clusterUid, name: row.name } })
     .catch(() => {})
 }
 
@@ -300,51 +307,91 @@ async function handleConfirmBatchDelete() {
   }
 }
 
+/**
+ * 跳转创建页面（YAML 方式）
+ * @remarks 功能开发中，路由尚未实现
+ */
+function handleCreateYaml() {
+  BeeMessage.info('功能开发中')
+}
+
+// ==================== Export & Import ====================
+/**
+ * 导出命名空间
+ * @remarks 功能开发中
+ */
+function handleExport() {
+  BeeMessage.info('功能开发中')
+}
+
+/**
+ * 导入命名空间
+ * @remarks 功能开发中
+ */
+function handleImport() {
+  BeeMessage.info('功能开发中')
+}
+
+// ==================== Lifecycle ====================
 onMounted(() => {
   void loadData()
 })
 </script>
 
 <style lang="scss" scoped>
-.namespace-page {
-  .namespace-page__body {
+.page-body {
+  display: flex;
+  gap: $spacing-16;
+  flex-direction: column;
+  flex: 1;
+  min-height: 0;
+  padding: $spacing-16;
+  overflow: hidden;
+
+  &__toolbar {
     display: flex;
-    flex-direction: column;
-    flex: 1;
-    min-height: 0;
-    overflow: hidden;
+    gap: $spacing-8;
+    flex-direction: row;
+    align-items: center;
 
-    .table-toolbar {
-      display: flex;
-      gap: $spacing-8;
-      align-items: center;
-      padding: $spacing-16 0;
-
-      &__search {
-        flex: 1;
-        min-width: 0;
-      }
-    }
-
-    .table-body {
+    &-search {
       flex: 1;
-      min-height: 0;
+      min-width: 0;
     }
 
-    .table-action {
-      display: flex;
-      gap: $spacing-8;
-      width: 100%;
-      height: auto;
-    }
-
-    .table-footer {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: $spacing-16 0;
+    &-seperator {
+      width: 1px;
+      height: 40%;
+      margin: 0 $spacing-8;
+      background: $color-border-tertiary;
     }
   }
+
+  &__table {
+    flex: 1;
+    min-height: 0;
+  }
+
+  &__footer {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+
+    &-actions {
+      display: flex;
+      gap: $spacing-8;
+      flex-direction: row;
+      align-items: center;
+    }
+  }
+}
+
+.table-action {
+  display: flex;
+  gap: $spacing-8;
+  width: 100%;
+  height: auto;
 }
 
 .dialog-content {
@@ -358,10 +405,10 @@ onMounted(() => {
   }
 }
 
-.delete-namespace-tags {
+.delete-dialog-tags {
   display: flex;
-  gap: 8px;
-  flex-wrap: wrap;
+  gap: $spacing-8;
+  flex-flow: row wrap;
   margin: 12px 0;
 }
 </style>

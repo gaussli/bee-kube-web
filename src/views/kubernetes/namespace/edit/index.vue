@@ -82,7 +82,7 @@ const router = useRouter()
 const formRef = ref<FormInstance>()
 
 const clusterUid = ref(route.params.clusterUid as string)
-const namespaceName = ref(route.query.name as string)
+const namespaceName = ref(route.params.name as string)
 const loading = ref(false)
 const submitting = ref(false)
 const namespaceData = ref<NamespaceListResp>()

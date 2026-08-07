@@ -7,29 +7,26 @@ export const nodeRoutes: RouteRecordRaw[] = [
     component: () => import('@/views/kubernetes/node/index.vue'),
     meta: {
       title: '节点',
-      icon: 'Box',
       permission: 'kubernetes:node:view',
       activeCode: 'kubernetes:node',
     },
   },
   {
-    path: '/kubernetes/clusters/:clusterUid/nodes/detail',
+    path: '/kubernetes/clusters/:clusterUid/nodes/:name',
     name: 'kubernetes:node:detail',
     component: () => import('@/views/kubernetes/node/detail/index.vue'),
     meta: {
       title: '节点详情',
-      icon: 'Box',
       permission: 'kubernetes:node:view',
       activeCode: 'kubernetes:node',
     },
   },
   {
-    path: '/kubernetes/clusters/:clusterUid/nodes/edit',
+    path: '/kubernetes/clusters/:clusterUid/nodes/:name/edit',
     name: 'kubernetes:node:edit',
     component: () => import('@/views/kubernetes/node/edit/index.vue'),
     meta: {
       title: '编辑节点',
-      icon: 'Box',
       permission: 'kubernetes:node:edit',
       activeCode: 'kubernetes:node',
     },

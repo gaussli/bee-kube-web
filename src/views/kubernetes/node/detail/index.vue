@@ -151,7 +151,7 @@ const route = useRoute()
 const router = useRouter()
 
 const clusterUid = ref(route.params.clusterUid as string)
-const nodeName = ref(route.query.name as string)
+const nodeName = ref(route.params.name as string)
 const loading = ref(false)
 const nodeData = ref<NodeListResp>()
 const activeTab = ref('basic')
@@ -183,7 +183,7 @@ function handleBack() {
 
 function handleEdit() {
   router
-    .push({ name: 'kubernetes:node:edit', params: { clusterUid: clusterUid.value }, query: { name: nodeName.value } })
+    .push({ name: 'kubernetes:node:edit', params: { clusterUid: clusterUid.value, name: nodeName.value } })
     .catch(() => {})
 }
 

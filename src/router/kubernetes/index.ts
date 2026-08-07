@@ -22,7 +22,6 @@ export const kubernetesRoutes: RouteRecordRaw[] = [
     component: () => import('@/views/kubernetes/dashboard/index.vue'),
     meta: {
       title: 'Dashboard',
-      icon: 'Odometer',
     },
   },
   ...clusterRoutes,

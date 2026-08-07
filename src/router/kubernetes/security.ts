@@ -7,7 +7,6 @@ const serviceAccountRoutes: RouteRecordRaw[] = [
     component: () => import('@/views/kubernetes/security/serviceaccount/index.vue'),
     meta: {
       title: '服务账号',
-      icon: 'User',
       permission: 'kubernetes:security:serviceaccount:view',
       activeCode: 'kubernetes:security:serviceaccount',
     },
@@ -18,7 +17,6 @@ const serviceAccountRoutes: RouteRecordRaw[] = [
     component: () => import('@/views/kubernetes/security/serviceaccount/create/index.vue'),
     meta: {
       title: '创建服务账号',
-      icon: 'User',
       permission: 'kubernetes:security:serviceaccount:create',
       activeCode: 'kubernetes:security:serviceaccount',
     },
@@ -29,7 +27,6 @@ const serviceAccountRoutes: RouteRecordRaw[] = [
     component: () => import('@/views/kubernetes/security/serviceaccount/edit/index.vue'),
     meta: {
       title: '编辑服务账号',
-      icon: 'User',
       permission: 'kubernetes:security:serviceaccount:edit',
       activeCode: 'kubernetes:security:serviceaccount',
     },
@@ -40,7 +37,6 @@ const serviceAccountRoutes: RouteRecordRaw[] = [
     component: () => import('@/views/kubernetes/security/serviceaccount/detail/index.vue'),
     meta: {
       title: '服务账号详情',
-      icon: 'User',
       permission: 'kubernetes:security:serviceaccount:view',
       activeCode: 'kubernetes:security:serviceaccount',
     },
@@ -54,7 +50,6 @@ const clusteRoleRoutes: RouteRecordRaw[] = [
     component: () => import('@/views/kubernetes/security/clusterrole/index.vue'),
     meta: {
       title: '集群角色',
-      icon: 'Avatar',
       permission: 'kubernetes:security:clusterrole:view',
       activeCode: 'kubernetes:security:clusterrole',
     },
@@ -65,7 +60,6 @@ const clusteRoleRoutes: RouteRecordRaw[] = [
     component: () => import('@/views/kubernetes/security/clusterrole/create/index.vue'),
     meta: {
       title: '创建集群角色',
-      icon: 'Avatar',
       permission: 'kubernetes:security:clusterrole:create',
       activeCode: 'kubernetes:security:clusterrole',
     },
@@ -76,7 +70,6 @@ const clusteRoleRoutes: RouteRecordRaw[] = [
     component: () => import('@/views/kubernetes/security/clusterrole/edit/index.vue'),
     meta: {
       title: '编辑集群角色',
-      icon: 'Avatar',
       permission: 'kubernetes:security:clusterrole:edit',
       activeCode: 'kubernetes:security:clusterrole',
     },
@@ -87,7 +80,6 @@ const clusteRoleRoutes: RouteRecordRaw[] = [
     component: () => import('@/views/kubernetes/security/clusterrole/detail/index.vue'),
     meta: {
       title: '集群角色详情',
-      icon: 'Avatar',
       permission: 'kubernetes:security:clusterrole:view',
       activeCode: 'kubernetes:security:clusterrole',
     },
@@ -101,7 +93,6 @@ const roleRoutes: RouteRecordRaw[] = [
     component: () => import('@/views/kubernetes/security/role/index.vue'),
     meta: {
       title: '角色',
-      icon: 'UserFilled',
       permission: 'kubernetes:security:role:view',
       activeCode: 'kubernetes:security:role',
     },
@@ -112,7 +103,6 @@ const roleRoutes: RouteRecordRaw[] = [
     component: () => import('@/views/kubernetes/security/role/create/index.vue'),
     meta: {
       title: '创建角色',
-      icon: 'UserFilled',
       permission: 'kubernetes:security:role:create',
       activeCode: 'kubernetes:security:role',
     },
@@ -123,7 +113,6 @@ const roleRoutes: RouteRecordRaw[] = [
     component: () => import('@/views/kubernetes/security/role/edit/index.vue'),
     meta: {
       title: '编辑角色',
-      icon: 'UserFilled',
       permission: 'kubernetes:security:role:edit',
       activeCode: 'kubernetes:security:role',
     },
@@ -134,7 +123,6 @@ const roleRoutes: RouteRecordRaw[] = [
     component: () => import('@/views/kubernetes/security/role/detail/index.vue'),
     meta: {
       title: '角色详情',
-      icon: 'UserFilled',
       permission: 'kubernetes:security:role:view',
       activeCode: 'kubernetes:security:role',
     },
@@ -148,7 +136,6 @@ const clusteRoleBindingRoutes: RouteRecordRaw[] = [
     component: () => import('@/views/kubernetes/security/clusterrolebinding/index.vue'),
     meta: {
       title: '集群角色绑定',
-      icon: 'Connection',
       permission: 'kubernetes:security:clusterrolebinding:view',
       activeCode: 'kubernetes:security:clusterrolebinding',
     },
@@ -159,7 +146,6 @@ const clusteRoleBindingRoutes: RouteRecordRaw[] = [
     component: () => import('@/views/kubernetes/security/clusterrolebinding/create/index.vue'),
     meta: {
       title: '创建集群角色绑定',
-      icon: 'Connection',
       permission: 'kubernetes:security:clusterrolebinding:create',
       activeCode: 'kubernetes:security:clusterrolebinding',
     },
@@ -170,7 +156,6 @@ const clusteRoleBindingRoutes: RouteRecordRaw[] = [
     component: () => import('@/views/kubernetes/security/clusterrolebinding/edit/index.vue'),
     meta: {
       title: '编辑集群角色绑定',
-      icon: 'Connection',
       permission: 'kubernetes:security:clusterrolebinding:edit',
       activeCode: 'kubernetes:security:clusterrolebinding',
     },
@@ -181,7 +166,6 @@ const clusteRoleBindingRoutes: RouteRecordRaw[] = [
     component: () => import('@/views/kubernetes/security/clusterrolebinding/detail/index.vue'),
     meta: {
       title: '集群角色绑定详情',
-      icon: 'Connection',
       permission: 'kubernetes:security:clusterrolebinding:view',
       activeCode: 'kubernetes:security:clusterrolebinding',
     },
@@ -195,7 +179,6 @@ const roleBindingRoutes: RouteRecordRaw[] = [
     component: () => import('@/views/kubernetes/security/rolebinding/index.vue'),
     meta: {
       title: '角色绑定',
-      icon: 'Link',
       permission: 'kubernetes:security:rolebinding:view',
       activeCode: 'kubernetes:security:rolebinding',
     },
@@ -206,7 +189,6 @@ const roleBindingRoutes: RouteRecordRaw[] = [
     component: () => import('@/views/kubernetes/security/rolebinding/create/index.vue'),
     meta: {
       title: '创建角色绑定',
-      icon: 'Link',
       permission: 'kubernetes:security:rolebinding:create',
       activeCode: 'kubernetes:security:rolebinding',
     },
@@ -217,7 +199,6 @@ const roleBindingRoutes: RouteRecordRaw[] = [
     component: () => import('@/views/kubernetes/security/rolebinding/edit/index.vue'),
     meta: {
       title: '编辑角色绑定',
-      icon: 'Link',
       permission: 'kubernetes:security:rolebinding:edit',
       activeCode: 'kubernetes:security:rolebinding',
     },
@@ -228,7 +209,6 @@ const roleBindingRoutes: RouteRecordRaw[] = [
     component: () => import('@/views/kubernetes/security/rolebinding/detail/index.vue'),
     meta: {
       title: '角色绑定详情',
-      icon: 'Link',
       permission: 'kubernetes:security:rolebinding:view',
       activeCode: 'kubernetes:security:rolebinding',
     },
@@ -242,7 +222,6 @@ export const securityRoutes: RouteRecordRaw[] = [
     redirect: '/kubernetes/clusters/:clusterUid/security/serviceaccount',
     meta: {
       title: '安全',
-      icon: 'Key',
     },
     children: [
       ...serviceAccountRoutes,

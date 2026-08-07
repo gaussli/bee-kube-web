@@ -100,7 +100,7 @@ const router = useRouter()
 const formRef = ref<FormInstance>()
 
 const clusterUid = ref(route.params.clusterUid as string)
-const nodeName = ref(route.query.name as string)
+const nodeName = ref(route.params.name as string)
 const loading = ref(false)
 const submitting = ref(false)
 const nodeData = ref<NodeListResp>()
