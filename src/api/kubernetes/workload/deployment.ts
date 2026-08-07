@@ -19,7 +19,7 @@ import type {
   DeploymentQueryForm,
   DeploymentScaleForm,
   DeploymentScheduleVo,
-  DeploymentYamlForm,
+  DeploymentImportForm,
 } from '@/types/kubernetes/workload/deployment'
 
 import { request } from '@/utils'
@@ -271,7 +271,7 @@ export function exportDeployment(clusterUid: string, params: Partial<DeploymentQ
  * @param clusterUid - 集群 UID
  * @param data - YAML 配置
  */
-export function importDeployment(clusterUid: string, data: DeploymentYamlForm): Promise<void> {
+export function importDeployment(clusterUid: string, data: DeploymentImportForm): Promise<void> {
   return request.post(`/kubernetes/clusters/${clusterUid}/deployments/import`, data)
 }
 

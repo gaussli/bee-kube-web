@@ -1,6 +1,32 @@
 /**
  * Deployment 资源相关类型定义
  * @module types/kubernetes/workload/deployment
+ *
+ * @remarks
+ * 包含以下类型：
+ *   DeploymentQueryForm                 - 查询请求参数
+ *   DeploymentListVo                    - 列表对象响应
+ *   DeploymentDetailVo                  - 详情对象响应
+ *     DeploymentDetailBasicVo           - 基础信息（name/description/status/generation/selector）
+ *     DeploymentDetailReplicasVo        - 副本信息（replicas/ready/available/updated）
+ *     DeploymentDetailMetadataVo        - 元数据（labels/annotations）
+ *     DeploymentDetailResourceVo        - 资源信息（CPU/内存 request/limit）
+ *     DeploymentDetailConditionVo       - 状态条件
+ *     DeploymentDetailStrategyVo        - 更新策略（type/maxUnavailable/maxSurge）
+ *     DeploymentDetailAdvancedVo        - 高级配置（restartPolicy/hostNetwork/dnsPolicy 等）
+ *   DeploymentPodQueryForm              - Pod 查询请求参数
+ *   DeploymentPodListVo                 - Pod 列表响应
+ *   DeploymentScheduleVo                - 调度策略响应（nodeSelector/affinity/tolerations）
+ *   DeploymentHistoryRevisionListVo     - 历史版本响应
+ *   DeploymentNetworkVo                 - 网络资源响应（services/ingresses）
+ *   DeploymentStorageListVo             - 存储列表响应（containerMounts）
+ *   DeploymentMonitorVo                 - 监控响应
+ *   DeploymentCreateForm                - 创建请求表单
+ *   DeploymentUpdateForm                - 编辑请求表单
+ *   DeploymentLabelForm                 - 标签更新请求表单
+ *   DeploymentAnnotationForm            - 注解更新请求表单
+ *   DeploymentScaleForm                 - 扩缩容请求表单
+ *   DeploymentImportForm                - 导入请求
  */
 import type { AuditEntity, DeletableEntity, PageForm, UidEntity } from '@/types/common'
 import type { IngressListVo } from '@/types/kubernetes/network/ingress'
@@ -24,7 +50,7 @@ import type { HistoryRevision, NodeAffinity, PodAffinity, PodAntiAffinity, Resta
  * @extends PageForm 继承分页请求
  */
 export interface DeploymentQueryForm extends UidEntity, PageForm {
-  /** Deployment 名称（模糊匹配） */
+  /** Deployment 名称 */
   name: string
   /** 命名空间名称 */
   namespace: string
@@ -37,7 +63,7 @@ export interface DeploymentQueryForm extends UidEntity, PageForm {
  * @extends UidEntity 继承 UID 类型
  * @extends Clustered 继承集群类型
  * @extends Namespaced 继承命名空间类型
- * @extends AuditEntity 继承基础实体类型
+ * @extends AuditEntity 继承审计实体类型
  * @extends DeletableEntity 继承可删除类型
  */
 export interface DeploymentListVo extends UidEntity, Clustered, Namespaced, AuditEntity, DeletableEntity {
@@ -63,19 +89,19 @@ export interface DeploymentListVo extends UidEntity, Clustered, Namespaced, Audi
  */
 export interface DeploymentDetailVo {
   /** 基础信息 */
-  basic: DeploymentBasicVo
+  basic: DeploymentDetailBasicVo
   /** 副本信息 */
-  replicas: DeploymentReplicasVo
+  replicas: DeploymentDetailReplicasVo
   /** 元数据信息 */
-  metadata: DeploymentMetadataVo
+  metadata: DeploymentDetailMetadataVo
   /** 资源信息 */
-  resource: DeploymentResourceVo
+  resource: DeploymentDetailResourceVo
   /** 条件列表 */
-  conditions: DeploymentConditionVo[]
+  conditions: DeploymentDetailConditionVo[]
   /** 更新策略 */
-  strategy: DeploymentStrategyVo
+  strategy: DeploymentDetailStrategyVo
   /** 高级配置 */
-  advanced: DeploymentAdvancedVo
+  advanced: DeploymentDetailAdvancedVo
 }
 
 /**
@@ -83,10 +109,10 @@ export interface DeploymentDetailVo {
  * @extends UidEntity 继承 UID 类型
  * @extends Clustered 继承集群类型
  * @extends Namespaced 继承命名空间类型
- * @extends AuditEntity 继承基础实体类型
+ * @extends AuditEntity 继承审计实体类型
  * @extends DeletableEntity 继承可删除类型
  */
-export interface DeploymentBasicVo extends UidEntity, Clustered, Namespaced, AuditEntity, DeletableEntity {
+export interface DeploymentDetailBasicVo extends UidEntity, Clustered, Namespaced, AuditEntity, DeletableEntity {
   /** Deployment 名称 */
   name: string
   /** 描述信息 */
@@ -104,7 +130,7 @@ export interface DeploymentBasicVo extends UidEntity, Clustered, Namespaced, Aud
 /**
  * Deployment 副本信息响应
  */
-export interface DeploymentReplicasVo {
+export interface DeploymentDetailReplicasVo {
   /** 期望副本数 */
   replicas: number
   /** 就绪副本数 */
@@ -119,24 +145,24 @@ export interface DeploymentReplicasVo {
  * Deployment 元数据响应
  * @extends Metadata 继承元数据类型
  */
-export interface DeploymentMetadataVo extends Metadata {}
+export interface DeploymentDetailMetadataVo extends Metadata {}
 
 /**
  * Deployment 资源信息响应
  * @extends ContainerResource 继承容器资源类型
  */
-export interface DeploymentResourceVo extends ContainerResource {}
+export interface DeploymentDetailResourceVo extends ContainerResource {}
 
 /**
  * Deployment 条件响应
  * @extends Condition 继承条件类型
  */
-export interface DeploymentConditionVo extends Condition<DeploymentConditionType> {}
+export interface DeploymentDetailConditionVo extends Condition<DeploymentConditionType> {}
 
 /**
  * Deployment 更新策略响应数据
  */
-export interface DeploymentStrategyVo {
+export interface DeploymentDetailStrategyVo {
   /** 策略类型 */
   type: DeploymentStrategyType
   /** 最大不可用副本数 */
@@ -148,7 +174,7 @@ export interface DeploymentStrategyVo {
 /**
  * Deployment 高级配置信息
  */
-export interface DeploymentAdvancedVo {
+export interface DeploymentDetailAdvancedVo {
   /**
    * 重启策略
    * @remarks
@@ -254,37 +280,35 @@ export interface DeploymentStorageListVo {
 
 /**
  * Deployment 监控响应数据
- * TODO: 待补充监控相关属性（如 CPU、内存使用率等）
  */
 export interface DeploymentMonitorVo {}
 
 /**
- * Deployment 创建请求参数
+ * Deployment 创建请求表单
  */
 export interface DeploymentCreateForm {}
 
 /**
- * Deployment 编辑请求参数
+ * Deployment 编辑请求表单
  */
 export interface DeploymentUpdateForm {}
 
 /**
- * Deployment 标签更新请求
+ * Deployment 标签更新请求表单
  */
 export interface DeploymentLabelForm extends MetadataLabelForm {}
 
 /**
- * Deployment 注解更新请求
+ * Deployment 注解更新请求表单
  */
 export interface DeploymentAnnotationForm extends MetadataAnnotationForm {}
 
 /**
- * Deployment 扩缩容请求
+ * Deployment 扩缩容请求表单
  */
 export interface DeploymentScaleForm {}
 
 /**
- * Deployment YAML 导入请求
- * 通过 YAML 格式导入 Deployment 配置
+ * Deployment 导入请求表单
  */
-export interface DeploymentYamlForm {}
+export interface DeploymentImportForm {}

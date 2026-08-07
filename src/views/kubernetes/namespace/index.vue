@@ -12,20 +12,19 @@
         <BeeButton icon="basic-search" @click="handleSearch"> 搜索 </BeeButton>
         <BeeButton icon="basic-refresh" @click="handleReset"> 重置 </BeeButton>
         <div v-if="perm.create" class="page-body__toolbar-seperator"></div>
-        <BeeButton
-          v-if="perm.create"
-          type="primary"
-          icon="basic-create"
-          @click="handleCreate"
-        >
-          新增
-        </BeeButton>
+        <BeeButton v-if="perm.create" type="primary" icon="basic-create" @click="handleCreate"> 新增 </BeeButton>
         <BeeButton v-if="perm.create" type="primary" icon="basic-create" @click="handleCreateYaml"> YAML </BeeButton>
       </div>
 
       <!-- 表格 -->
       <div class="page-body__table">
-        <BeeTable ref="tableRef" :data="tableData" :loading="loading" selectable @selection-change="handleSelectionChange">
+        <BeeTable
+          ref="tableRef"
+          :data="tableData"
+          :loading="loading"
+          selectable
+          @selection-change="handleSelectionChange"
+        >
           <BeeTableColumn :width="500">
             <template #default="{ row }">
               <BeeNamespaceInfoCell :id="row.id" :name="row.name" :description="row.description" :icon-size="32" />

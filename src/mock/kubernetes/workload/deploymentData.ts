@@ -3,14 +3,14 @@
  * @module mock/kubernetes/workload/deploymentData
  */
 import type {
-  DeploymentAdvancedVo,
-  DeploymentBasicVo,
-  DeploymentConditionVo,
+  DeploymentDetailAdvancedVo,
+  DeploymentDetailBasicVo,
+  DeploymentDetailConditionVo,
+  DeploymentDetailMetadataVo,
+  DeploymentDetailReplicasVo,
+  DeploymentDetailResourceVo,
+  DeploymentDetailStrategyVo,
   DeploymentListVo,
-  DeploymentMetadataVo,
-  DeploymentReplicasVo,
-  DeploymentResourceVo,
-  DeploymentStrategyVo,
 } from '@/types/kubernetes/workload/deployment'
 
 import { generateId } from '@/mock/utils'
@@ -448,7 +448,7 @@ export const mockDeployments: DeploymentListVo[] = [
 /**
  * Deployment 详情模拟数据 - 基础信息
  */
-export const mockDeploymentBasic: DeploymentBasicVo = {
+export const mockDeploymentBasic: DeploymentDetailBasicVo = {
   uid: generateId(),
   name: 'nginx-ingress-controller',
   description:
@@ -477,7 +477,7 @@ export const mockDeploymentBasic: DeploymentBasicVo = {
 /**
  * Deployment 详情模拟数据 - 副本信息
  */
-export const mockDeploymentReplicas: DeploymentReplicasVo = {
+export const mockDeploymentReplicas: DeploymentDetailReplicasVo = {
   replicas: 3,
   readyReplicas: 2,
   availableReplicas: 2,
@@ -487,7 +487,7 @@ export const mockDeploymentReplicas: DeploymentReplicasVo = {
 /**
  * Deployment 详情模拟数据 - 元数据信息
  */
-export const mockDeploymentMetadata: DeploymentMetadataVo = {
+export const mockDeploymentMetadata: DeploymentDetailMetadataVo = {
   labels: {
     'app': 'nginx-ingress-controller',
     'app.kubernetes.io/name': 'nginx-ingress-controller',
@@ -507,7 +507,7 @@ export const mockDeploymentMetadata: DeploymentMetadataVo = {
 /**
  * Deployment 详情模拟数据 - 资源信息
  */
-export const mockDeploymentResource: DeploymentResourceVo = {
+export const mockDeploymentResource: DeploymentDetailResourceVo = {
   request: { cpu: 200, memory: 268435456 },
   limit: { cpu: 1000, memory: 536870912 },
 }
@@ -515,7 +515,7 @@ export const mockDeploymentResource: DeploymentResourceVo = {
 /**
  * Deployment 详情模拟数据 - 条件列表
  */
-export const mockDeploymentConditions: DeploymentConditionVo[] = [
+export const mockDeploymentConditions: DeploymentDetailConditionVo[] = [
   {
     type: 'Available',
     status: 'True',
@@ -561,7 +561,7 @@ export const mockDeploymentConditions: DeploymentConditionVo[] = [
 /**
  * Deployment 详情模拟数据 - 更新策略
  */
-export const mockDeploymentStrategy: DeploymentStrategyVo = {
+export const mockDeploymentStrategy: DeploymentDetailStrategyVo = {
   type: 'RollingUpdate',
   maxUnavailable: '25%',
   maxSurge: '25%',
@@ -570,7 +570,7 @@ export const mockDeploymentStrategy: DeploymentStrategyVo = {
 /**
  * Deployment 详情模拟数据 - 高级配置
  */
-export const mockDeploymentAdvanced: DeploymentAdvancedVo = {
+export const mockDeploymentAdvanced: DeploymentDetailAdvancedVo = {
   restartPolicy: 'Always',
   terminationGracePeriodSeconds: 30,
   hostNetwork: false,

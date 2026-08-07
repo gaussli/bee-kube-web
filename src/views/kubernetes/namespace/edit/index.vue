@@ -67,7 +67,7 @@ import { FolderOpened, Plus, Delete, Close, Check } from '@element-plus/icons-vu
 
 import type { FormInstance } from 'element-plus'
 
-import type { NamespaceListResp, NamespaceReq } from '@/types/kubernetes/namespace'
+import type { NamespaceDetailVo, NamespaceUpdateForm } from '@/types/kubernetes/namespace'
 
 import { getNamespaceDetail, updateNamespace } from '@/api/kubernetes/namespace'
 
@@ -85,9 +85,9 @@ const clusterUid = ref(route.params.clusterUid as string)
 const namespaceName = ref(route.params.name as string)
 const loading = ref(false)
 const submitting = ref(false)
-const namespaceData = ref<NamespaceListResp>()
+const namespaceData = ref<NamespaceDetailVo>()
 
-const formData = ref<NamespaceReq>({
+const formData = ref<NamespaceUpdateForm>({
   labels: {},
   annotations: {},
 })
@@ -119,12 +119,12 @@ async function loadData() {
   try {
     namespaceData.value = await getNamespaceDetail(clusterUid.value, namespaceName.value)
     // 初始化标签列表
-    if (namespaceData.value.labels) {
-      labelList.value = Object.entries(namespaceData.value.labels).map(([key, value]) => ({ key, value }))
+    if (namespaceData.value.metadata.labels) {
+      labelList.value = Object.entries(namespaceData.value.metadata.labels).map(([key, value]) => ({ key, value }))
     }
     // 初始化注解列表
-    if (namespaceData.value.annotations) {
-      annotationList.value = Object.entries(namespaceData.value.annotations).map(([key, value]) => ({ key, value }))
+    if (namespaceData.value.metadata.annotations) {
+      annotationList.value = Object.entries(namespaceData.value.metadata.annotations).map(([key, value]) => ({ key, value }))
     }
   } finally {
     loading.value = false
@@ -150,7 +150,7 @@ async function handleSubmit() {
     if (item.key) annotations[item.key] = item.value
   })
 
-  const data: NamespaceReq = {
+  const data: NamespaceUpdateForm = {
     labels,
     annotations,
   }

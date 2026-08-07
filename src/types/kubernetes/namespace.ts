@@ -1,52 +1,60 @@
 /**
  * 命名空间管理类型定义
  * @module types/kubernetes/namespace
+ *
+ * @remarks
+ * 包含以下类型：
+ *   NamespaceQueryForm                  - 查询请求参数
+ *   NamespaceListVo                     - 列表对象响应
+ *   NamespaceSimpleListVo               - 简要列表对象响应
+ *   NamespaceDetailVo                   - 详情对象响应
+ *     NamespaceDetailBasicVo            - 基础信息（name/description/status/type）
+ *     NamespaceDetailMetadataVo         - 元数据（labels/annotations）
+ *     NamespaceDetailQuotaVo            - 配额信息（resourceQuota/limitRange）
+ *   NamespaceConditionVo                - 状态条件
+ *   NamespaceMonitorVo                  - 监控对象响应
+ *   NamespaceEventVo                    - 事件对象响应
+ *   NamespaceCreateForm                 - 创建请求表单
+ *   NamespaceUpdateForm                 - 编辑请求表单
+ *   NamespaceLabelForm                  - 标签更新请求表单
+ *   NamespaceAnnotationForm             - 注解更新请求表单
+ *   NamespaceQuotaForm                  - 配额请求表单
+ *   NamespaceImportForm                 - 导入请求表单
+ *   NamespaceResourceQuota              - 资源配额数据结构
+ *   NamespaceLimitRange                 - 资源限制范围数据结构
  */
+
 import type { AuditEntity, DeletableEntity, PageForm, UidEntity } from '@/types/common'
 
-import type { NamespaceConditionType, NamespaceType } from '@/config/kubernetes/namespace'
-
 import type { MetadataAnnotationForm, MetadataLabelForm } from './comomn'
-import type { Condition, Metadata } from './types'
+import type { Clustered, Condition, Event, Metadata } from './types'
 
-export type { NamespaceConditionType, NamespaceStatus, NamespaceType } from '@/config/kubernetes/namespace'
-
-/**
- * 命名空间查询模式枚举
- * - normal: 标准分页查询，返回完整字段
- * - simple: 简化查询，不分页，仅返回 id、uid、name
- */
-export type NamespaceMode = 'normal' | 'simple'
-
-// ============================================================
-// 1. 查询表单
-// ============================================================
+/** 命名空间类型 */
+export type NamespaceType = 'kubernetes' | 'platform'
 
 /**
  * 命名空间查询请求参数
- * @extends UidEntity 继承 UID 类型
- * @extends PageForm 继承分页请求
+ * @extends PageForm 继承分页表单
  */
-export interface NamespaceQueryForm extends UidEntity, PageForm {
-  /** 命名空间名称（模糊匹配） */
-  name: string
+export interface NamespaceQueryForm extends PageForm {
+  /** 命名空间名称（支持模糊搜索） */
+  name?: string
   /** 状态 */
-  status: string
-  /** 查询模式：normal-标准分页 / simple-不分页仅返回 id/uid/name */
-  mode?: NamespaceMode
+  status?: string
+  /** 命名空间类型 */
+  type?: NamespaceType
+  /** 是否仅返回简要列表 */
+  simple?: boolean
 }
-
-// ============================================================
-// 2. 列表对象
-// ============================================================
 
 /**
  * 命名空间列表对象响应数据
  * @extends UidEntity 继承 UID 类型
+ * @extends Clustered 继承集群类型
  * @extends AuditEntity 继承审计实体类型
  * @extends DeletableEntity 继承可删除类型
  */
-export interface NamespaceListVo extends UidEntity, AuditEntity, DeletableEntity {
+export interface NamespaceListVo extends UidEntity, Clustered, AuditEntity, DeletableEntity {
   /** 命名空间名称 */
   name: string
   /** 描述信息 */
@@ -57,269 +65,168 @@ export interface NamespaceListVo extends UidEntity, AuditEntity, DeletableEntity
   statusMsg?: string
   /** 命名空间类型 */
   type: NamespaceType
-  /** 所属集群 UID */
-  clusterUid: string
-  /** 所属集群名称 */
-  clusterName: string
 }
-
-// ============================================================
-// 3. 简化列表对象
-// ============================================================
 
 /**
- * 命名空间简化列表对象响应数据
- * @remarks 不分页，仅返回 id、uid、name
+ * 命名空间简要列表对象响应数据
+ * @extends UidEntity 继承 UID 类型
  */
-export interface NamespaceSimpleListVo {
-  /** 资源 ID */
-  id: string
-  /** 资源 UID */
-  uid: string
+export interface NamespaceSimpleListVo extends UidEntity {
   /** 命名空间名称 */
   name: string
+  /** 描述信息 */
+  description?: string
+  /** 命名空间类型 */
+  type: NamespaceType
 }
-
-// ============================================================
-// 4. 详情对象
-// ============================================================
 
 /**
  * 命名空间详情对象响应数据
- * @extends UidEntity 继承 UID 类型
- * @extends AuditEntity 继承审计实体类型
+ * 组合多个子对象，提供完整详情信息
  */
-export interface NamespaceDetailVo extends UidEntity, AuditEntity {
+export interface NamespaceDetailVo {
+  /** 基础信息 */
+  basic: NamespaceDetailBasicVo
+  /** 元数据信息（标签、注解） */
+  metadata: NamespaceDetailMetadataVo
+  /** 配额信息（资源配额、限制范围） */
+  quota: NamespaceDetailQuotaVo
+}
+
+/**
+ * 命名空间基础信息响应数据
+ * @extends UidEntity 继承 UID 类型
+ * @extends Clustered 继承集群类型
+ * @extends AuditEntity 继承审计实体类型
+ * @extends DeletableEntity 继承可删除类型
+ */
+export interface NamespaceDetailBasicVo extends UidEntity, Clustered, AuditEntity, DeletableEntity {
   /** 命名空间名称 */
   name: string
   /** 描述信息 */
   description?: string
   /** 状态 */
   status: string
-  /** 状态描述信息 */
+  /** 状态描述信息（如异常原因） */
   statusMsg?: string
   /** 命名空间类型 */
   type: NamespaceType
-  /** 所属集群 UID */
-  clusterUid: string
-  /** 所属集群名称 */
-  clusterName: string
-  /** 标签 */
-  labels?: Record<string, string>
-  /** 注解 */
-  annotations?: Record<string, string>
+  /** 创建时间 */
+  createAt: string
+}
+
+/**
+ * 命名空间元数据响应数据
+ * @extends Metadata 继承通用元数据类型
+ */
+export interface NamespaceDetailMetadataVo extends Metadata {}
+
+/**
+ * 命名空间配额信息响应数据
+ */
+export interface NamespaceDetailQuotaVo {
   /** 资源配额 */
   resourceQuota?: NamespaceResourceQuota
   /** 资源限制范围 */
   limitRange?: NamespaceLimitRange
 }
 
-// ============================================================
-// 5. 创建表单
-// ============================================================
-
 /**
- * 命名空间创建表单
+ * 命名空间条件响应数据
+ * @extends Condition 继承 Kubernetes 条件类型
  */
-export interface NamespaceCreateForm {
-  /** 命名空间名称 */
-  name: string
-  /** 描述信息 */
-  description: string
-  /** 标签 */
-  labels: Record<string, string>
-  /** 注解 */
-  annotations: Record<string, string>
-}
-
-// ============================================================
-// 6. 更新表单
-// ============================================================
-
-/**
- * 命名空间更新表单
- */
-export interface NamespaceUpdateForm {
-  /** 资源 ID */
-  id: string
-  /** 命名空间名称 */
-  name: string
-  /** 描述信息 */
-  description: string
-  /** 标签 */
-  labels: Record<string, string>
-  /** 注解 */
-  annotations: Record<string, string>
-}
-
-// ============================================================
-// 7. 其他对象
-// ============================================================
-
-/**
- * 命名空间概览对象响应数据
- * @extends UidEntity 继承 UID 类型
- * @extends AuditEntity 继承审计实体类型
- */
-export interface NamespaceOverviewVo extends UidEntity, AuditEntity {
-  /** 命名空间名称 */
-  name: string
-  /** 描述信息 */
-  description: string
-  /** 状态 */
-  status: string
-  /** 命名空间类型 */
-  type: NamespaceType
-  /** 所属集群 UID */
-  clusterUid: string
-  /** 所属集群名称 */
-  clusterName: string
-  /** 触发删除时间 */
-  deletionTimestamp: string
-  /** 条件列表 */
-  conditions: Condition<NamespaceConditionType>[]
-}
-
-/**
- * 命名空间监控对象响应数据
- */
-export interface NamespaceMonitorVo {
-  /** Pod 使用数量 */
-  podUsage: number
-  /** Deployment 使用数量 */
-  deploymentUsage: number
-  /** StatefulSet 使用数量 */
-  statefulSetUsage: number
-  /** DaemonSet 使用数量 */
-  daemonSetUsage: number
-  /** Service 使用数量 */
-  serviceUsage: number
-}
-
-/**
- * 命名空间配额对象响应数据
- */
-export interface NamespaceQuotaVo {
-  /** 资源配额 */
-  resourceQuota: NamespaceResourceQuota
-  /** 资源限制范围 */
-  limitRange: NamespaceLimitRange
-}
-
-/**
- * 命名空间元数据对象响应数据
- * @extends Metadata 继承元数据类型
- */
-export interface NamespaceMetadataVo extends Metadata {}
+export interface NamespaceConditionVo extends Condition<string> {}
 
 /**
  * 命名空间事件对象响应数据
+ * @extends Event 继承 Kubernetes 事件类型
  */
 export interface NamespaceEventVo extends Event {}
 
-// ============================================================
-// 7.1 请求表单
-// ============================================================
+/**
+ * 命名空间创建请求表单
+ */
+export interface NamespaceCreateForm {}
 
 /**
- * 命名空间标签更新表单
+ * 命名空间编辑请求表单
+ */
+export interface NamespaceUpdateForm {}
+
+/**
+ * 命名空间标签更新请求表单
  * @extends MetadataLabelForm 继承元数据标签表单
  */
-export interface NamespaceLabelsForm extends MetadataLabelForm {}
+export interface NamespaceLabelForm extends MetadataLabelForm {}
 
 /**
- * 命名空间注解更新表单
+ * 命名空间注解更新请求表单
  * @extends MetadataAnnotationForm 继承元数据注解表单
  */
-export interface NamespaceAnnotationsForm extends MetadataAnnotationForm {}
+export interface NamespaceAnnotationForm extends MetadataAnnotationForm {}
 
 /**
- * 命名空间配额表单
+ * 命名空间配额请求表单
  */
-export interface NamespaceQuotaForm {
-  /** 资源配额 */
-  resourceQuota: NamespaceResourceQuota
-  /** 资源限制范围 */
-  limitRange: NamespaceLimitRange
-}
+export interface NamespaceQuotaForm {}
 
 /**
- * 命名空间导入表单
+ * 命名空间导入请求表单
  */
-export interface NamespaceImportForm {
-  /** YAML 配置内容 */
-  yaml: string
-}
-
-// ============================================================
-// 7.2 数据结构
-// ============================================================
+export interface NamespaceImportForm {}
 
 /**
- * 命名空间资源配额
+ * 命名空间资源配额数据结构
  */
 export interface NamespaceResourceQuota {
-  /** CPU 请求限制 */
-  requestsCpu: number
-  /** 内存请求限制 */
-  requestsMemory: string
-  /** CPU 上限 */
-  limitsCpu: number
-  /** 内存上限 */
-  limitsMemory: string
-  /** 持久化存储卷声明数量 */
-  persistentvolumeclaims: number
-  /** LoadBalancer 类型服务数量 */
-  servicesLoadbalancers: number
-  /** Deployment 数量上限 */
-  countDeploymentsApps: number
-  /** Pod 数量上限 */
-  countPods: number
+  /** CPU 请求（单位：核） */
+  requestsCpu?: string
+  /** CPU 限制（单位：核） */
+  limitsCpu?: string
+  /** 内存请求（单位：Mi/Gi） */
+  requestsMemory?: string
+  /** 内存限制（单位：Mi/Gi） */
+  limitsMemory?: string
+  /** 存储请求（单位：Gi） */
+  requestsStorage?: string
+  /** Pod 数量限制 */
+  countPods?: number
+  /** 服务数量限制 */
+  countServices?: number
+  /** ConfigMap 数量限制 */
+  countConfigMaps?: number
+  /** Secret 数量限制 */
+  countSecrets?: number
+  /** PersistentVolumeClaim 数量限制 */
+  countPersistentVolumeClaims?: number
 }
 
 /**
- * 命名空间资源限制范围
+ * 命名空间资源限制范围数据结构
  */
 export interface NamespaceLimitRange {
-  /** 容器资源限制 */
-  container?: {
-    /** CPU 默认上限 */
-    defaultCpu?: number
-    /** 内存默认上限 */
-    defaultMemory?: number
-    /** CPU 默认请求 */
-    defaultRequestCpu?: number
-    /** 内存默认请求 */
-    defaultRequestMemory?: number
-    /** CPU 上限 */
-    maxCpu?: number
-    /** 内存上限 */
-    maxMemory?: number
-    /** CPU 下限 */
-    minCpu?: number
-    /** 内存下限 */
-    minMemory?: number
-    /** CPU 的 limit/request 最大比率 */
-    maxLimitRequestRatioCpu?: number
-    /** 内存的 limit/request 最大比率 */
-    maxLimitRequestRatioMemory?: number
-  }
-  /** Pod 资源限制 */
-  pod?: {
-    /** CPU 上限 */
-    maxCpu?: number
-    /** 内存上限 */
-    maxMemory?: number
-    /** CPU 下限 */
-    minCpu?: number
-    /** 内存下限 */
-    minMemory?: number
-  }
-  /** 持久化存储卷限制 */
-  persistentvolumeclaim?: {
-    /** 最小存储大小 */
-    min?: string
-    /** 最大存储大小 */
-    max?: string
-  }
+  /** 容器默认 CPU 请求 */
+  defaultCpuRequest?: string
+  /** 容器默认 CPU 限制 */
+  defaultCpuLimit?: string
+  /** 容器默认内存请求 */
+  defaultMemoryRequest?: string
+  /** 容器默认内存限制 */
+  defaultMemoryLimit?: string
+  /** 容器最小 CPU 请求 */
+  minCpuRequest?: string
+  /** 容器最大 CPU 请求 */
+  maxCpuRequest?: string
+  /** 容器最小内存请求 */
+  minMemoryRequest?: string
+  /** 容器最大内存请求 */
+  maxMemoryRequest?: string
+  /** 容器最大 CPU 限制 */
+  maxCpuLimit?: string
+  /** 容器最大内存限制 */
+  maxMemoryLimit?: string
+  /** 容器 CPU 请求与限制最大比率 */
+  maxCpuRatio?: string
+  /** 容器内存请求与限制最大比率 */
+  maxMemoryRatio?: string
 }

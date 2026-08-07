@@ -19,7 +19,7 @@ import type {
   DeploymentScheduleVo,
   DeploymentStorageListVo,
   DeploymentUpdateForm,
-  DeploymentYamlForm,
+  DeploymentImportForm,
 } from '@/types/kubernetes/workload/deployment'
 
 import { generateId } from '@/mock/utils'
@@ -168,7 +168,7 @@ export default [
   {
     method: 'post',
     url: '/kubernetes/clusters/:clusterUid/deployments/import',
-    handler: ({ pathParams, data }: { pathParams: Record<string, string>; data: DeploymentYamlForm }): void =>
+    handler: ({ pathParams, data }: { pathParams: Record<string, string>; data: DeploymentImportForm }): void =>
       importDeployment(pathParams.clusterUid, data),
   },
   {
@@ -991,7 +991,7 @@ function exportDeployment(clusterUid: string, params: Partial<DeploymentQueryFor
  * @param clusterUid - 集群 UID
  * @param data - YAML 配置
  */
-function importDeployment(clusterUid: string, data: DeploymentYamlForm): void {
+function importDeployment(clusterUid: string, data: DeploymentImportForm): void {
   console.log('[Mock] importDeployment', { clusterUid, data })
 }
 

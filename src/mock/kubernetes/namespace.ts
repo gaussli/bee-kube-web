@@ -4,15 +4,16 @@
  */
 import type { PageVo } from '@/types/common'
 import type {
-  NamespaceQueryReq,
-  NamespaceReq,
-  NamespaceListResp,
-  NamespaceDetailResp,
-  NamespaceSimpleListResp,
-  NamespaceLabelsReq,
-  NamespaceAnnotationsReq,
-  NamespaceQuotaReq,
-  NamespaceImportReq,
+  NamespaceQueryForm,
+  NamespaceCreateForm,
+  NamespaceUpdateForm,
+  NamespaceListVo,
+  NamespaceDetailVo,
+  NamespaceSimpleListVo,
+  NamespaceLabelForm,
+  NamespaceAnnotationForm,
+  NamespaceQuotaForm,
+  NamespaceImportForm,
 } from '@/types/kubernetes/namespace'
 
 import { generateId } from '@/mock/utils'
@@ -44,13 +45,13 @@ export default [
       params,
     }: {
       pathParams: Record<string, string>
-      params: Partial<NamespaceQueryReq>
-    }): PageVo<NamespaceListResp> | NamespaceSimpleListResp[] => getNamespacePage(pathParams.clusterUid, params),
+      params: Partial<NamespaceQueryForm>
+    }): PageVo<NamespaceListVo> | NamespaceSimpleListVo[] => getNamespacePage(pathParams.clusterUid, params),
   },
   {
     method: 'get',
     url: '/kubernetes/clusters/:clusterUid/namespaces/:name',
-    handler: ({ pathParams }: { pathParams: Record<string, string> }): NamespaceDetailResp =>
+    handler: ({ pathParams }: { pathParams: Record<string, string> }): NamespaceDetailVo =>
       getNamespaceDetail(pathParams.clusterUid, pathParams.name),
   },
   {
@@ -62,19 +63,19 @@ export default [
   {
     method: 'post',
     url: '/kubernetes/clusters/:clusterUid/namespaces',
-    handler: ({ pathParams, data }: { pathParams: Record<string, string>; data: Partial<NamespaceReq> }): void =>
+    handler: ({ pathParams, data }: { pathParams: Record<string, string>; data: Partial<NamespaceCreateForm> }): void =>
       createNamespace(pathParams.clusterUid, data),
   },
   {
     method: 'put',
     url: '/kubernetes/clusters/:clusterUid/namespaces/:name',
-    handler: ({ pathParams, data }: { pathParams: Record<string, string>; data: Partial<NamespaceReq> }): void =>
+    handler: ({ pathParams, data }: { pathParams: Record<string, string>; data: Partial<NamespaceUpdateForm> }): void =>
       updateNamespace(pathParams.clusterUid, pathParams.name, data),
   },
   {
     method: 'post',
     url: '/kubernetes/clusters/:clusterUid/namespaces/:name/labels',
-    handler: ({ pathParams, data }: { pathParams: Record<string, string>; data: Partial<NamespaceLabelsReq> }): void =>
+    handler: ({ pathParams, data }: { pathParams: Record<string, string>; data: Partial<NamespaceLabelForm> }): void =>
       manageNamespaceLabels(pathParams.clusterUid, pathParams.name, data),
   },
   {
@@ -85,7 +86,7 @@ export default [
       data,
     }: {
       pathParams: Record<string, string>
-      data: Partial<NamespaceAnnotationsReq>
+      data: Partial<NamespaceAnnotationForm>
     }): void => manageNamespaceAnnotations(pathParams.clusterUid, pathParams.name, data),
   },
   {
@@ -108,25 +109,25 @@ export default [
       params,
     }: {
       pathParams: Record<string, string>
-      params: Partial<NamespaceQueryReq>
+      params: Partial<NamespaceQueryForm>
     }): void => exportNamespaces(pathParams.clusterUid, params),
   },
   {
     method: 'post',
     url: '/kubernetes/clusters/:clusterUid/namespaces/import',
-    handler: ({ pathParams, data }: { pathParams: Record<string, string>; data: Partial<NamespaceImportReq> }): void =>
+    handler: ({ pathParams, data }: { pathParams: Record<string, string>; data: Partial<NamespaceImportForm> }): void =>
       importNamespaces(pathParams.clusterUid, data),
   },
   {
     method: 'post',
     url: '/kubernetes/clusters/:clusterUid/namespaces/:name/quota',
-    handler: ({ pathParams, data }: { pathParams: Record<string, string>; data: Partial<NamespaceQuotaReq> }): void =>
+    handler: ({ pathParams, data }: { pathParams: Record<string, string>; data: Partial<NamespaceQuotaForm> }): void =>
       createNamespaceQuota(pathParams.clusterUid, pathParams.name, data),
   },
   {
     method: 'put',
     url: '/kubernetes/clusters/:clusterUid/namespaces/:name/quota',
-    handler: ({ pathParams, data }: { pathParams: Record<string, string>; data: Partial<NamespaceQuotaReq> }): void =>
+    handler: ({ pathParams, data }: { pathParams: Record<string, string>; data: Partial<NamespaceQuotaForm> }): void =>
       updateNamespaceQuota(pathParams.clusterUid, pathParams.name, data),
   },
   {
@@ -145,8 +146,8 @@ export default [
  */
 function getNamespacePage(
   _clusterId: string,
-  params: Partial<NamespaceQueryReq>,
-): PageVo<NamespaceListResp> | NamespaceSimpleListResp[] {
+  params: Partial<NamespaceQueryForm>,
+): PageVo<NamespaceListVo> | NamespaceSimpleListVo[] {
   const { id, name, status, mode = 'normal', page = 1, pageSize = 10 } = params || {}
 
   let filtered = [...mockNamespaces]
@@ -156,7 +157,7 @@ function getNamespacePage(
   }
 
   if (id || name) {
-    let searchFiltered: NamespaceListResp[] = []
+    let searchFiltered: NamespaceListVo[] = []
     if (id) {
       searchFiltered = [...searchFiltered, ...filtered.filter(n => n.id === id)]
       console.log(searchFiltered)
@@ -197,35 +198,41 @@ function getNamespacePage(
  * @param name - 命名空间名称
  * @returns 命名空间详情
  */
-function getNamespaceDetail(clusterUid: string, name: string): NamespaceDetailResp {
+function getNamespaceDetail(clusterUid: string, name: string): NamespaceDetailVo {
   const ns = mockNamespaces.find(n => n.clusterUid === clusterUid && n.name === name)
   if (!ns) {
     console.error('[Get Namespace Detail] can not find namespace:', clusterUid, name)
   }
   return {
-    ...ns!,
-    labels: { 'app.kubernetes.io/name': ns!.name },
-    annotations: { description: ns!.description || '' },
-    resourceQuota: {
-      requestsCpu: 4,
-      requestsMemory: '8Gi',
-      limitsCpu: 8,
-      limitsMemory: '16Gi',
-      persistentvolumeclaims: 10,
-      servicesLoadbalancers: 2,
-      countDeploymentsApps: 20,
-      countPods: 50,
+    basic: {
+      ...ns!,
     },
-    limitRange: {
-      container: {
-        defaultCpu: 0.5,
-        defaultMemory: 512,
-        defaultRequestCpu: 0.25,
-        defaultRequestMemory: 256,
-        maxCpu: 2,
-        maxMemory: 4096,
-        minCpu: 0.1,
-        minMemory: 128,
+    metadata: {
+      labels: { 'app.kubernetes.io/name': ns?.name || '' },
+      annotations: { description: ns?.description || '' },
+    },
+    quota: {
+      resourceQuota: {
+        requestsCpu: 4,
+        requestsMemory: '8Gi',
+        limitsCpu: 8,
+        limitsMemory: '16Gi',
+        persistentvolumeclaims: 10,
+        servicesLoadbalancers: 2,
+        countDeploymentsApps: 20,
+        countPods: 50,
+      },
+      limitRange: {
+        container: {
+          defaultCpu: 0.5,
+          defaultMemory: 512,
+          defaultRequestCpu: 0.25,
+          defaultRequestMemory: 256,
+          maxCpu: 2,
+          maxMemory: 4096,
+          minCpu: 0.1,
+          minMemory: 128,
+        },
       },
     },
   }
@@ -244,11 +251,16 @@ function getNamespaceYaml(clusterUid: string, name: string): string {
     return ''
   }
 
-  const labels = Object.entries(ns.labels || {})
+  const labels = Object.entries({
+    'kubernetes.io/metadata.name': ns.name,
+    'app.kubernetes.io/managed-by': 'bee-kube',
+  })
     .map(([key, value]) => `    ${key}: "${value}"`)
     .join('\n')
 
-  const annotations = Object.entries(ns.annotations || {})
+  const annotations = Object.entries({
+    description: ns.description || '',
+  })
     .map(([key, value]) => `    ${key}: "${value}"`)
     .join('\n')
 
@@ -257,7 +269,8 @@ kind: Namespace
 metadata:
   name: ${ns.name}
   ${ns.description ? `annotations:\n${annotations}` : ''}
-  ${Object.keys(ns.labels || {}).length > 0 ? `labels:\n${labels}` : ''}
+  labels:
+${labels}
   creationTimestamp: "${ns.createAt}"
   resourceVersion: "${generateId()}"
   uid: "${generateId()}"
@@ -275,7 +288,7 @@ status:
  * @param clusterUid - 集群 UID
  * @param data - 创建参数
  */
-function createNamespace(clusterUid: string, data: Partial<NamespaceReq>): void {
+function createNamespace(clusterUid: string, data: Partial<NamespaceCreateForm>): void {
   console.log('[Create Namespace]', clusterUid, data)
 }
 
@@ -285,7 +298,7 @@ function createNamespace(clusterUid: string, data: Partial<NamespaceReq>): void 
  * @param name - 命名空间名称
  * @param data - 更新参数
  */
-function updateNamespace(clusterUid: string, name: string, data: Partial<NamespaceReq>): void {
+function updateNamespace(clusterUid: string, name: string, data: Partial<NamespaceUpdateForm>): void {
   console.log('[Update Namespace]', clusterUid, name, data)
 }
 
@@ -295,7 +308,7 @@ function updateNamespace(clusterUid: string, name: string, data: Partial<Namespa
  * @param name - 命名空间名称
  * @param data - 标签数据
  */
-function manageNamespaceLabels(clusterUid: string, name: string, data: Partial<NamespaceLabelsReq>): void {
+function manageNamespaceLabels(clusterUid: string, name: string, data: Partial<NamespaceLabelForm>): void {
   console.log('[Manage Namespace Labels]', clusterUid, name, data)
 }
 
@@ -305,7 +318,7 @@ function manageNamespaceLabels(clusterUid: string, name: string, data: Partial<N
  * @param name - 命名空间名称
  * @param data - 注解数据
  */
-function manageNamespaceAnnotations(clusterUid: string, name: string, data: Partial<NamespaceAnnotationsReq>): void {
+function manageNamespaceAnnotations(clusterUid: string, name: string, data: Partial<NamespaceAnnotationForm>): void {
   console.log('[Manage Namespace Annotations]', clusterUid, name, data)
 }
 
@@ -332,7 +345,7 @@ function deleteNamespaces(clusterUid: string, names: string[]): void {
  * @param clusterUid - 集群 UID
  * @param params - 查询参数
  */
-function exportNamespaces(clusterUid: string, params: Partial<NamespaceQueryReq>): void {
+function exportNamespaces(clusterUid: string, params: Partial<NamespaceQueryForm>): void {
   console.log('[Export Namespaces]', clusterUid, params)
 }
 
@@ -341,7 +354,7 @@ function exportNamespaces(clusterUid: string, params: Partial<NamespaceQueryReq>
  * @param clusterUid - 集群 UID
  * @param data - 导入配置
  */
-function importNamespaces(clusterUid: string, data: Partial<NamespaceImportReq>): void {
+function importNamespaces(clusterUid: string, data: Partial<NamespaceImportForm>): void {
   console.log('[Import Namespaces]', clusterUid, data)
 }
 
@@ -351,7 +364,7 @@ function importNamespaces(clusterUid: string, data: Partial<NamespaceImportReq>)
  * @param name - 命名空间名称
  * @param data - 配额配置
  */
-function createNamespaceQuota(clusterUid: string, name: string, data: Partial<NamespaceQuotaReq>): void {
+function createNamespaceQuota(clusterUid: string, name: string, data: Partial<NamespaceQuotaForm>): void {
   console.log('[Create Namespace Quota]', clusterUid, name, data)
 }
 
@@ -361,7 +374,7 @@ function createNamespaceQuota(clusterUid: string, name: string, data: Partial<Na
  * @param name - 命名空间名称
  * @param data - 配额配置
  */
-function updateNamespaceQuota(clusterUid: string, name: string, data: Partial<NamespaceQuotaReq>): void {
+function updateNamespaceQuota(clusterUid: string, name: string, data: Partial<NamespaceQuotaForm>): void {
   console.log('[Update Namespace Quota]', clusterUid, name, data)
 }
 
@@ -378,7 +391,7 @@ function deleteNamespaceQuota(clusterUid: string, name: string): void {
  * 模拟命名空间数据
  * @remarks 包含系统命名空间、应用命名空间、监控命名空间等
  */
-const mockNamespaces: NamespaceListResp[] = [
+const mockNamespaces: NamespaceListVo[] = [
   {
     id: generateId(),
     uid: generateId(),

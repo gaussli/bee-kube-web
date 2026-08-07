@@ -2,7 +2,7 @@ import type { RouteRecordRaw } from 'vue-router'
 
 const configmapRoutes: RouteRecordRaw[] = [
   {
-    path: '/kubernetes/clusters/:clusterUid/config/configmap',
+    path: '/kubernetes/clusters/:clusterUid/config/configmaps',
     name: 'kubernetes:config:configmap',
     component: () => import('@/views/kubernetes/config/configmap/index.vue'),
     meta: {
@@ -12,7 +12,17 @@ const configmapRoutes: RouteRecordRaw[] = [
     },
   },
   {
-    path: '/kubernetes/clusters/:clusterUid/config/configmap/create',
+    path: '/kubernetes/clusters/:clusterUid/config/configmaps/:name',
+    name: 'kubernetes:config:configmap:detail',
+    component: () => import('@/views/kubernetes/config/configmap/detail/index.vue'),
+    meta: {
+      title: '配置映射详情',
+      permission: 'kubernetes:config:configmap:view',
+      activeCode: 'kubernetes:config:configmap',
+    },
+  },
+  {
+    path: '/kubernetes/clusters/:clusterUid/config/configmaps/create',
     name: 'kubernetes:config:configmap:create',
     component: () => import('@/views/kubernetes/config/configmap/create/index.vue'),
     meta: {
@@ -22,7 +32,17 @@ const configmapRoutes: RouteRecordRaw[] = [
     },
   },
   {
-    path: '/kubernetes/clusters/:clusterUid/config/configmap/edit',
+    path: '/kubernetes/clusters/:clusterUid/config/configmaps/create/yaml',
+    name: 'kubernetes:config:configmap:create:yaml',
+    component: () => import('@/views/kubernetes/config/configmap/create/yaml.vue'),
+    meta: {
+      title: '创建配置映射 YAML',
+      permission: 'kubernetes:config:configmap:create',
+      activeCode: 'kubernetes:config:configmap',
+    },
+  },
+  {
+    path: '/kubernetes/clusters/:clusterUid/config/configmaps/:name/edit',
     name: 'kubernetes:config:configmap:edit',
     component: () => import('@/views/kubernetes/config/configmap/edit/index.vue'),
     meta: {
@@ -32,12 +52,12 @@ const configmapRoutes: RouteRecordRaw[] = [
     },
   },
   {
-    path: '/kubernetes/clusters/:clusterUid/config/configmap/detail',
-    name: 'kubernetes:config:configmap:detail',
-    component: () => import('@/views/kubernetes/config/configmap/detail/index.vue'),
+    path: '/kubernetes/clusters/:clusterUid/config/configmaps/:name/edit/yaml',
+    name: 'kubernetes:config:configmap:edit:yaml',
+    component: () => import('@/views/kubernetes/config/configmap/edit/yaml.vue'),
     meta: {
-      title: '配置映射详情',
-      permission: 'kubernetes:config:configmap:view',
+      title: '编辑配置映射 YAML',
+      permission: 'kubernetes:config:configmap:edit',
       activeCode: 'kubernetes:config:configmap',
     },
   },
@@ -45,7 +65,7 @@ const configmapRoutes: RouteRecordRaw[] = [
 
 const secretRoutes: RouteRecordRaw[] = [
   {
-    path: '/kubernetes/clusters/:clusterUid/config/secret',
+    path: '/kubernetes/clusters/:clusterUid/config/secrets',
     name: 'kubernetes:config:secret',
     component: () => import('@/views/kubernetes/config/secret/index.vue'),
     meta: {
@@ -55,7 +75,17 @@ const secretRoutes: RouteRecordRaw[] = [
     },
   },
   {
-    path: '/kubernetes/clusters/:clusterUid/config/secret/create',
+    path: '/kubernetes/clusters/:clusterUid/config/secrets/:name',
+    name: 'kubernetes:config:secret:detail',
+    component: () => import('@/views/kubernetes/config/secret/detail/index.vue'),
+    meta: {
+      title: '密钥详情',
+      permission: 'kubernetes:config:secret:view',
+      activeCode: 'kubernetes:config:secret',
+    },
+  },
+  {
+    path: '/kubernetes/clusters/:clusterUid/config/secrets/create',
     name: 'kubernetes:config:secret:create',
     component: () => import('@/views/kubernetes/config/secret/create/index.vue'),
     meta: {
@@ -65,7 +95,17 @@ const secretRoutes: RouteRecordRaw[] = [
     },
   },
   {
-    path: '/kubernetes/clusters/:clusterUid/config/secret/edit',
+    path: '/kubernetes/clusters/:clusterUid/config/secrets/create/yaml',
+    name: 'kubernetes:config:secret:create:yaml',
+    component: () => import('@/views/kubernetes/config/secret/create/yaml.vue'),
+    meta: {
+      title: '创建密钥 YAML',
+      permission: 'kubernetes:config:secret:create',
+      activeCode: 'kubernetes:config:secret',
+    },
+  },
+  {
+    path: '/kubernetes/clusters/:clusterUid/config/secrets/:name/edit',
     name: 'kubernetes:config:secret:edit',
     component: () => import('@/views/kubernetes/config/secret/edit/index.vue'),
     meta: {
@@ -75,12 +115,12 @@ const secretRoutes: RouteRecordRaw[] = [
     },
   },
   {
-    path: '/kubernetes/clusters/:clusterUid/config/secret/detail',
-    name: 'kubernetes:config:secret:detail',
-    component: () => import('@/views/kubernetes/config/secret/detail/index.vue'),
+    path: '/kubernetes/clusters/:clusterUid/config/secrets/:name/edit/yaml',
+    name: 'kubernetes:config:secret:edit:yaml',
+    component: () => import('@/views/kubernetes/config/secret/edit/yaml.vue'),
     meta: {
-      title: '密钥详情',
-      permission: 'kubernetes:config:secret:view',
+      title: '编辑密钥 YAML',
+      permission: 'kubernetes:config:secret:edit',
       activeCode: 'kubernetes:config:secret',
     },
   },
@@ -90,7 +130,7 @@ export const configRoutes: RouteRecordRaw[] = [
   {
     path: '/kubernetes/clusters/:clusterUid/config',
     name: 'kubernetes:config',
-    redirect: '/kubernetes/clusters/:clusterUid/config/configmap',
+    redirect: '/kubernetes/clusters/:clusterUid/config/configmaps',
     meta: {
       title: '配置',
     },

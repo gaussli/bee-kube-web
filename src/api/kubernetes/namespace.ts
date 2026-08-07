@@ -4,15 +4,16 @@
  */
 import type { PageVo } from '@/types/common'
 import type {
-  NamespaceQueryReq,
-  NamespaceListResp,
-  NamespaceDetailResp,
-  NamespaceSimpleListResp,
-  NamespaceLabelsReq,
-  NamespaceReq,
-  NamespaceAnnotationsReq,
-  NamespaceQuotaReq,
-  NamespaceImportReq,
+  NamespaceAnnotationForm,
+  NamespaceCreateForm,
+  NamespaceDetailVo,
+  NamespaceImportForm,
+  NamespaceLabelForm,
+  NamespaceListVo,
+  NamespaceQuotaForm,
+  NamespaceQueryForm,
+  NamespaceSimpleListVo,
+  NamespaceUpdateForm,
 } from '@/types/kubernetes/namespace'
 
 import { request } from '@/utils'
@@ -25,9 +26,9 @@ import { request } from '@/utils'
  */
 export function getNamespacePage(
   clusterUid: string,
-  params: Partial<NamespaceQueryReq>,
-): Promise<PageVo<NamespaceListResp> | NamespaceSimpleListResp[]> {
-  return request.get<PageVo<NamespaceListResp> | NamespaceSimpleListResp[]>(
+  params: Partial<NamespaceQueryForm>,
+): Promise<PageVo<NamespaceListVo> | NamespaceSimpleListVo[]> {
+  return request.get<PageVo<NamespaceListVo> | NamespaceSimpleListVo[]>(
     `/kubernetes/clusters/${clusterUid}/namespaces`,
     { params },
   )
@@ -39,8 +40,18 @@ export function getNamespacePage(
  * @param name - 命名空间名称
  * @returns 命名空间详情
  */
-export function getNamespaceDetail(clusterUid: string, name: string): Promise<NamespaceDetailResp> {
-  return request.get<NamespaceDetailResp>(`/kubernetes/clusters/${clusterUid}/namespaces/${name}`)
+export function getNamespaceDetail(clusterUid: string, name: string): Promise<NamespaceDetailVo> {
+  return request.get<NamespaceDetailVo>(`/kubernetes/clusters/${clusterUid}/namespaces/${name}`)
+}
+
+/**
+ * 查看命名空间 YAML
+ * @param clusterUid - 集群 UID
+ * @param name - 命名空间名称
+ * @returns 命名空间 YAML 配置
+ */
+export function getNamespaceYaml(clusterUid: string, name: string): Promise<string> {
+  return request.get<string>(`/kubernetes/clusters/${clusterUid}/namespaces/${name}/yaml`)
 }
 
 /**
@@ -48,7 +59,7 @@ export function getNamespaceDetail(clusterUid: string, name: string): Promise<Na
  * @param clusterUid - 集群 UID
  * @param data - 创建参数
  */
-export function createNamespace(clusterUid: string, data: Partial<NamespaceReq>): Promise<void> {
+export function createNamespace(clusterUid: string, data: Partial<NamespaceCreateForm>): Promise<void> {
   return request.post(`/kubernetes/clusters/${clusterUid}/namespaces`, data)
 }
 
@@ -58,7 +69,7 @@ export function createNamespace(clusterUid: string, data: Partial<NamespaceReq>)
  * @param name - 命名空间名称
  * @param data - 更新参数
  */
-export function updateNamespace(clusterUid: string, name: string, data: Partial<NamespaceReq>): Promise<void> {
+export function updateNamespace(clusterUid: string, name: string, data: Partial<NamespaceUpdateForm>): Promise<void> {
   return request.put(`/kubernetes/clusters/${clusterUid}/namespaces/${name}`, data)
 }
 
@@ -71,7 +82,7 @@ export function updateNamespace(clusterUid: string, name: string, data: Partial<
 export function manageNamespaceLabels(
   clusterUid: string,
   name: string,
-  data: Partial<NamespaceLabelsReq>,
+  data: Partial<NamespaceLabelForm>,
 ): Promise<void> {
   return request.post(`/kubernetes/clusters/${clusterUid}/namespaces/${name}/labels`, data)
 }
@@ -85,7 +96,7 @@ export function manageNamespaceLabels(
 export function manageNamespaceAnnotations(
   clusterUid: string,
   name: string,
-  data: Partial<NamespaceAnnotationsReq>,
+  data: Partial<NamespaceAnnotationForm>,
 ): Promise<void> {
   return request.post(`/kubernetes/clusters/${clusterUid}/namespaces/${name}/annotations`, data)
 }
@@ -113,7 +124,7 @@ export function deleteNamespaces(clusterUid: string, names: string[]): Promise<v
  * @param clusterUid - 集群 UID
  * @param params - 查询参数
  */
-export function exportNamespaces(clusterUid: string, params: Partial<NamespaceQueryReq>): Promise<void> {
+export function exportNamespaces(clusterUid: string, params: Partial<NamespaceQueryForm>): Promise<void> {
   return request.get(`/kubernetes/clusters/${clusterUid}/namespaces/export`, {
     params,
     config: { responseType: 'blob' },
@@ -125,7 +136,7 @@ export function exportNamespaces(clusterUid: string, params: Partial<NamespaceQu
  * @param clusterUid - 集群 UID
  * @param data - 导入配置
  */
-export function importNamespaces(clusterUid: string, data: Partial<NamespaceImportReq>): Promise<void> {
+export function importNamespaces(clusterUid: string, data: Partial<NamespaceImportForm>): Promise<void> {
   return request.post(`/kubernetes/clusters/${clusterUid}/namespaces/import`, data)
 }
 
@@ -138,7 +149,7 @@ export function importNamespaces(clusterUid: string, data: Partial<NamespaceImpo
 export function createNamespaceQuota(
   clusterUid: string,
   name: string,
-  data: Partial<NamespaceQuotaReq>,
+  data: Partial<NamespaceQuotaForm>,
 ): Promise<void> {
   return request.post(`/kubernetes/clusters/${clusterUid}/namespaces/${name}/quota`, data)
 }
@@ -152,7 +163,7 @@ export function createNamespaceQuota(
 export function updateNamespaceQuota(
   clusterUid: string,
   name: string,
-  data: Partial<NamespaceQuotaReq>,
+  data: Partial<NamespaceQuotaForm>,
 ): Promise<void> {
   return request.put(`/kubernetes/clusters/${clusterUid}/namespaces/${name}/quota`, data)
 }
@@ -166,12 +177,4 @@ export function deleteNamespaceQuota(clusterUid: string, name: string): Promise<
   return request.delete(`/kubernetes/clusters/${clusterUid}/namespaces/${name}/quota`)
 }
 
-/**
- * 查看命名空间 YAML
- * @param clusterUid - 集群 UID
- * @param name - 命名空间名称
- * @returns 命名空间 YAML 配置
- */
-export function getNamespaceYaml(clusterUid: string, name: string): Promise<string> {
-  return request.get<string>(`/kubernetes/clusters/${clusterUid}/namespaces/${name}/yaml`)
-}
+

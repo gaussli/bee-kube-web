@@ -18,27 +18,27 @@
             <div class="detail-row">
               <div class="detail-item">
                 <span class="detail-label">命名空间名称:</span>
-                <span class="detail-value">{{ namespaceData?.name }}</span>
+                <span class="detail-value">{{ namespaceData?.basic.name }}</span>
               </div>
               <div class="detail-item">
                 <span class="detail-label">状态:</span>
-                <el-tag :type="getStatusType(namespaceData?.status)" size="small">{{ namespaceData?.status }}</el-tag>
+                <el-tag :type="getStatusType(namespaceData?.basic.status)" size="small">{{ namespaceData?.basic.status }}</el-tag>
               </div>
             </div>
             <div class="detail-row">
               <div class="detail-item">
                 <span class="detail-label">阶段:</span>
-                <span class="detail-value">{{ namespaceData?.phase }}</span>
+                <span class="detail-value">{{ namespaceData?.basic.status }}</span>
               </div>
               <div class="detail-item">
                 <span class="detail-label">集群:</span>
-                <span class="detail-value">{{ namespaceData?.clusterName || namespaceData?.clusterUid }}</span>
+                <span class="detail-value">{{ namespaceData?.basic.clusterName || namespaceData?.basic.clusterUid }}</span>
               </div>
             </div>
             <div class="detail-row">
               <div class="detail-item">
                 <span class="detail-label">创建时间:</span>
-                <span class="detail-value">{{ namespaceData?.createAt }}</span>
+                <span class="detail-value">{{ namespaceData?.basic.createAt }}</span>
               </div>
             </div>
           </div>
@@ -47,8 +47,8 @@
         <!-- 标签 -->
         <el-tab-pane label="标签" name="labels">
           <div v-loading="loading" class="detail-section">
-            <div v-if="namespaceData?.labels && Object.keys(namespaceData.labels).length > 0">
-              <div v-for="(value, key) in namespaceData.labels" :key="key" class="label-item">
+            <div v-if="namespaceData?.metadata.labels && Object.keys(namespaceData.metadata.labels).length > 0">
+              <div v-for="(value, key) in namespaceData.metadata.labels" :key="key" class="label-item">
                 <BeeTag>{{ key }}: {{ value }}</BeeTag>
               </div>
             </div>
@@ -59,8 +59,8 @@
         <!-- 注解 -->
         <el-tab-pane label="注解" name="annotations">
           <div v-loading="loading" class="detail-section">
-            <div v-if="namespaceData?.annotations && Object.keys(namespaceData.annotations).length > 0">
-              <div v-for="(value, key) in namespaceData.annotations" :key="key" class="annotation-item">
+            <div v-if="namespaceData?.metadata.annotations && Object.keys(namespaceData.metadata.annotations).length > 0">
+              <div v-for="(value, key) in namespaceData.metadata.annotations" :key="key" class="annotation-item">
                 <div class="annotation-key">{{ key }}</div>
                 <div class="annotation-value">{{ value }}</div>
               </div>
@@ -92,7 +92,7 @@ import { useRoute, useRouter } from 'vue-router'
 
 import { FolderOpened, ArrowLeft, EditPen } from '@element-plus/icons-vue'
 
-import type { NamespaceListResp } from '@/types/kubernetes/namespace'
+import type { NamespaceDetailVo } from '@/types/kubernetes/namespace'
 
 import { getNamespaceDetail } from '@/api/kubernetes/namespace'
 
@@ -111,7 +111,7 @@ const router = useRouter()
 const clusterUid = ref(route.params.clusterUid as string)
 const namespaceName = ref(route.params.name as string)
 const loading = ref(false)
-const namespaceData = ref<NamespaceListResp>()
+const namespaceData = ref<NamespaceDetailVo>()
 const activeTab = ref('basic')
 
 function getStatusType(status?: string) {

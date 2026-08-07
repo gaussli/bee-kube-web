@@ -33,118 +33,66 @@
 
 ## 3. 列表页设计
 
-### 3.1 页面结构
+Deployment 列表页遵循 [列表页通用设计规范](./list-design.md)，以下为 Deployment 的特化配置。
 
-- **BeePage** — 页面根容器
-  - **BeePageHeader** — 页面标题区
-    - icon — `kubernetes-deployment`
-    - title — "无状态应用"
-    - description — "无状态应用（Deployment）是 Kubernetes 中用于管理无状态工作负载的控制器，支持应用的部署、扩缩容、滚动更新和回滚等操作。"
-    - icon、title、desctipion 均从 `@/config/kubernetes/workload/deployment.ts` 中的 `DEPLOYMENT_PAGE_META` 获取
-  - **BeeCard** — 主体容器（class: `page-body`，`flex column`，`gap: 16px`，`flex: 1`，`min-height: 0`，`padding: 16px`，`overflow: hidden`）
-    - **工具栏**（class: `page-body__toolbar`，`flex row`，`gap: 8px`）
-      - `BeeInputSearch`（flex:1）— 搜索框，按 UID / 名称搜索
-      - `BeeSelect`（width: 300）— 命名空间筛选
-      - `BeeSelect` — 状态筛选
-      - `BeeButton`（icon: `basic-search`）— 搜索
-      - `BeeButton`（icon: `basic-refresh`）— 重置
-      - 分隔线（class: `page-body__toolbar-seperator`，`width 1px` + `height 40%`，`bg: $color-border-tertiary`，`margin: 0 8px`）
-      - `BeeButton`（type: primary，icon: `basic-create`）— 新增（需 create 权限）
-      - `BeeButton`（type: primary，icon: `basic-create-yaml`）— YAML（需 create 权限）
-    - **表格区**（class: `page-body__table`，`flex:1`，`min-height:0`，独立滚动）
-      - `BeeTable`（selectable，多选模式，共 8 列，详见 [3.2 展示属性](#32-展示属性)）
-    - **底栏**（class: `page-body__footer`，`flex row` + `gap: 8px` + `space-between`）
-      - 左侧操作组
-        - `BeeButton`（icon: `basic-clear`）— 取消选择
-        - `BeeButton`（type: danger，icon: `basic-delete`）— 批量删除（需 delete 权限）
-        - `BeeButton`（icon: `basic-export`）— 导出（需 view 权限）
-        - `BeeButton`（icon: `basic-import`）— 导入（需 create 权限）
-      - 右侧分页
-        - `BeePagination` — page / pageSize 双绑定，pageSizes: [10, 20, 50]
+### 3.1 页面元信息
 
-### 3.2 展示属性
+图标 `kubernetes-deployment`、标题 "无状态应用"、描述文本均从 `@/config/kubernetes/workload/deployment.ts` 中的 `DEPLOYMENT_PAGE_META` 获取。
+
+### 3.2 展示列
 
 | 列宽 | 组件 | 属性 | 说明 |
 | --- | --- | --- | --- |
-| 500px | `BeeWorkloadInfoCell` | `uid`, `name`, `description`, `icon: kubernetes-deployment` | 资源图标 + 名称 + UID，描述显示为副文本 |
-| 200px | `BeeTableCommonCell` | `text: namespace`, `subtext: "命名空间"` | 显示所属命名空间 |
-| 160px | `BeeStatusCell` | `status`, `statusMsg`, `options: DEPLOYMENT_STATUS_OPTIONS` | 状态圆点 + 中文标签 + 英文标签，异常时展示 `statusMsg` 帮助信息 |
-| 120px | `BeeTableCommonCell` | `text: "readyReplicas / replicas"`, `subtext: "副本数"` | 就绪副本 / 期望副本 |
-| 160px | `BeeTableCommonCell` | `text: 策略中文名`, `subtext: strategyType 原始值` | 使用 `DEPLOYMENT_STRATEGY_LABEL_MAP` 映射 |
-| 200px | `BeeAuditCell` | `username: createBy`, `datetime: createAt` | 创建人 / 时间 |
-| 200px | `BeeAuditCell` | `username: updateBy`, `datetime: updateAt` | 更新人 / 时间 |
-| 150px (fixed: right) | `BeeActionCell` | `actions: getActions(row)` | 操作列，固定右侧，≤3 项平铺，>3 项收起菜单 |
+| 500px | `BeeWorkloadInfoCell` | `uid`, `name`, `description`, `icon: kubernetes-deployment` | 资源图标 + 名称 + UID |
+| 200px | `BeeTableCommonCell` | `text: namespace`, `subtext: "命名空间"` | 所属命名空间 |
+| 160px | `BeeStatusCell` | `status`, `statusMsg`, `options: DEPLOYMENT_STATUS_OPTIONS` | 状态 |
+| 120px | `BeeTableCommonCell` | `text: "readyReplicas / replicas"`, `subtext: "副本数"` | 就绪/期望副本 |
+| 160px | `BeeTableCommonCell` | `text: 策略中文名`, `subtext: strategyType` | 更新策略 |
+| 200px | `BeeAuditCell` | `username: createBy`, `datetime: createAt` | 创建信息 |
+| 200px | `BeeAuditCell` | `username: updateBy`, `datetime: updateAt` | 更新信息 |
+| 150px | `BeeActionCell` | `actions: getActions(row)` | 操作列 |
 
-### 3.3 筛选与搜索
+### 3.3 筛选条件
 
 | 组件 | 绑定字段 | 说明 |
 | --- | --- | --- |
-| `BeeInputSearch` | `searchKey` | 搜索时同时映射到 `uid` 和 `name` 字段实现多字段模糊匹配 |
-| `BeeSelect` (命名空间) | `queryForm.namespace` | 加载时调用 `getNamespacePage(mode: 'simple')` 获取简化列表，含"全部命名空间"默认选项 |
-| `BeeSelect` (状态) | `queryForm.status` | 使用 `DEPLOYMENT_STATUS_OPTIONS`，含"全部状态"默认选项 |
-
-**搜索逻辑**：点击搜索时重置 `pagination.page = 1`，将 `searchKey` 同时赋值给 `queryForm.uid` 和 `queryForm.name`。
-
-**重置逻辑**：清空 `queryForm` 所有字段、`searchKey`、分页参数，重新加载数据。
+| `BeeInputSearch` | `searchKey` | 映射到 `uid` + `name` |
+| `BeeSelect` (w: 300) | `queryForm.namespace` | 命名空间筛选 |
+| `BeeSelect` | `queryForm.status` | `DEPLOYMENT_STATUS_OPTIONS` |
 
 ### 3.4 数据类型
 
 ```typescript
-/**
- * Deployment 查询请求参数
- * @extends UidEntity 继承 UID 类型
- * @extends PageForm 继承分页请求
- */
 export interface DeploymentQueryForm extends UidEntity, PageForm {
-  /** Deployment 名称（模糊匹配） */
   name: string
-  /** 命名空间名称 */
   namespace: string
-  /** Deployment 状态 */
   status: string
 }
 
-/**
- * Deployment 列表对象响应数据
- * @extends UidEntity 继承 UID 类型
- * @extends Clustered 继承集群类型
- * @extends Namespaced 继承命名空间类型
- * @extends AuditEntity 继承基础实体类型
- * @extends DeletableEntity 继承可删除类型
- */
 export interface DeploymentListVo extends UidEntity, Clustered, Namespaced, AuditEntity, DeletableEntity {
-  /** Deployment 名称 */
   name: string
-  /** 描述信息 */
   description?: string
-  /** 状态 */
   status: DeploymentStatus
-  /** 状态描述信息（如异常原因） */
   statusMessage?: string
-  /** 期望副本数 */
   replicas: number
-  /** 就绪副本数 */
   readyReplicas: number
-  /** 更新策略 */
   strategyType: DeploymentStrategyType
 }
 ```
 
-### 3.5 行操作列
+### 3.5 行操作
 
-操作列使用 `BeeActionCell` 组件，固定于表格右侧（fixed: right，150px）。行操作根据用户权限和行数据条件动态构建，通过 `getActions(row)` 函数返回操作数组。展示规则：≤3 项平铺展示，>3 项收起至下拉菜单。
-
-| 操作 | icon | 所需权限 | 显示条件 |
+| 操作 | icon | 权限 | 显示条件 |
 | --- | --- | --- | --- |
-| 详情 | `basic-view` | `view` | 始终显示 |
-| 编辑 | `basic-edit` | `edit` | 始终显示 |
-| 编辑 YAML | `basic-code` | `edit` | 始终显示 |
-| 扩缩容 | `kubernetes-namespace` | `edit` | 始终显示 |
-| 重启 | `basic-refresh` | `edit` | 始终显示 |
-| 回滚 | `kubernetes-namespace` | `edit` | 始终显示 |
+| 详情 | `basic-view` | `view` | 始终 |
+| 编辑 | `basic-edit` | `edit` | 始终 |
+| 编辑 YAML | `basic-code` | `edit` | 始终 |
+| 扩缩容 | `kubernetes-namespace` | `edit` | 始终 |
+| 重启 | `basic-refresh` | `edit` | 始终 |
+| 回滚 | `kubernetes-namespace` | `edit` | 始终 |
 | 删除 | `basic-delete` | `delete` | `row.deletable !== false` |
 
-操作执行后会触发对应的流程，详情参考 [5. 操作功能与权限](#5-操作功能与权限)。
+详细交互流程参见 [5. 操作功能与权限](#5-操作功能与权限)。
 
 ---
 
@@ -314,79 +262,43 @@ interface DeploymentStrategyVo {
 
 ## 5. 操作功能与权限
 
-### 5.1 权限矩阵
+> 通用权限模型、删除流程、操作列展示规则等参见 [列表页通用设计规范 - 权限模型](./list-design.md#7-权限模型)。
 
-| 权限标识                                | 粒度           | 控制范围                                                                    |
-| --------------------------------------- | -------------- | --------------------------------------------------------------------------- |
-| `kubernetes:workload:deployment:view`   | 页面级 + 行级  | 路由守卫控制页面访问；行操作"详情"显示                                      |
-| `kubernetes:workload:deployment:create` | 页面级 + UI 级 | 路由守卫控制创建页访问；列表页"新增"/"YAML"/"导入"按钮显隐                  |
-| `kubernetes:workload:deployment:edit`   | 页面级 + UI 级 | 路由守卫控制编辑页访问；行操作"编辑"/"编辑 YAML"/"扩缩容"/"重启"/"回滚"显隐 |
-| `kubernetes:workload:deployment:delete` | UI 级          | `perm.delete` 控制批量删除按钮、行操作"删除"显隐                            |
+### 5.1 权限标识
 
-**权限实现方式**：
+| 权限标识 | 粒度 | 控制范围 |
+| --- | --- | --- |
+| `kubernetes:workload:deployment:view` | 页面级 + 行级 | 路由守卫；行操作"详情"显隐 |
+| `kubernetes:workload:deployment:create` | 页面级 + UI 级 | 路由守卫；"新增"/"YAML"/"导入"按钮显隐 |
+| `kubernetes:workload:deployment:edit` | 页面级 + UI 级 | 路由守卫；"编辑"/"编辑 YAML"/"扩缩容"/"重启"/"回滚"显隐 |
+| `kubernetes:workload:deployment:delete` | UI 级 | "批量删除"按钮、"删除"行操作显隐 |
 
-```typescript
-// 页面级：在 <script> 顶层预计算，避免模板/循环中重复调用
-const perm: Record<string, boolean> = {
-  create: hasPermission('kubernetes:workload:deployment:create'),
-  edit: hasPermission('kubernetes:workload:deployment:edit'),
-  view: hasPermission('kubernetes:workload:deployment:view'),
-  delete: hasPermission('kubernetes:workload:deployment:delete'),
-}
-```
+### 5.2 Deployment 特有操作
 
-`hasPermission()` 由 `usePermission()` composable 提供，内部从 `userStore.getCurrentPermissions()` 获取用户权限列表进行匹配。
+#### 扩缩容
 
-### 5.2 操作列表
+- 触发：行操作 → "扩缩容"
+- 弹出对话框，修改 `replicas` 值
+- 确认 → 调用 `scaleDeployment(clusterUid, namespace, name, { replicas })`
 
-#### 列表页操作
+#### 重启
 
-| 操作      | 触发方式             | 权限                                 | 说明                                            |
-| --------- | -------------------- | ------------------------------------ | ----------------------------------------------- |
-| 查看详情  | 行操作 → "详情"      | `view`                               | 跳转详情页，携带 clusterUid/namespace/name      |
-| 编辑      | 行操作 → "编辑"      | `edit`                               | 跳转编辑页（表单模式）                          |
-| 编辑 YAML | 行操作 → "编辑 YAML" | `edit`                               | 跳转编辑页（YAML 模式）                         |
-| 扩缩容    | 行操作 → "扩缩容"    | `edit`                               | 弹出扩缩容对话框                                |
-| 重启      | 行操作 → "重启"      | `edit`                               | 调用 `restartDeployment` API                    |
-| 回滚      | 行操作 → "回滚"      | `edit`                               | 弹出回滚版本选择对话框                          |
-| 删除      | 行操作 → "删除"      | `delete` + `row.deletable !== false` | 弹出确认弹窗后调用 `deleteDeployment`           |
-| 新增      | 工具栏按钮           | `create`                             | 跳转创建页（表单模式）                          |
-| YAML 新建 | 工具栏按钮           | `create`                             | 跳转创建页（YAML 模式）                         |
-| 批量删除  | 底部操作栏           | `delete`                             | 区分可删除/不可删除行，调用 `deleteDeployments` |
-| 导出      | 底部操作栏           | `view`                               | 导出当前筛选结果为 CSV（开发中）                |
-| 导入      | 底部操作栏           | `create`                             | 导入 YAML 创建 Deployment（开发中）             |
+- 触发：行操作 → "重启"
+- 确认 → 调用 `restartDeployment(clusterUid, namespace, name)`
+- 成功后提示并刷新列表
 
-#### 详情页操作
+#### 回滚
 
-| 操作     | 位置               | 说明                                                  |
-| -------- | ------------------ | ----------------------------------------------------- |
-| 返回     | BeeBackHeader 左侧 | `window.history.back()`                               |
+- 触发：行操作 → "回滚"
+- 弹出版本选择对话框，展示历史版本列表
+- 选择目标版本 → 调用 `rollbackDeployment(clusterUid, namespace, name, { revision })`
+
+### 5.3 详情页操作
+
+| 操作 | 位置 | 说明 |
+| --- | --- | --- |
+| 返回 | BeeBackHeader 左侧 | `window.history.back()` |
 | 快捷操作 | BeeBackHeader 右侧 | 编辑、重启、扩缩容、回滚、删除（预留 `handleAction`） |
-
-### 5.3 行操作展示规则
-
-`BeeActionCell` 根据操作数量自动调整展示样式：
-
-- ≤ 3 个操作：水平平铺显示
-- > 3 个操作：显示前 2 个 + "更多" 下拉菜单
-
-Deployment 行操作最多 7 项（详情、编辑、编辑 YAML、扩缩容、重启、回滚、删除），因此使用收起菜单模式。
-
-### 5.4 删除确认流程
-
-**单个删除**：
-
-1. 点击行操作"删除" → `currentTargetRow` 记录目标行
-2. 弹出 `BeeDialog`，显示 "确定要删除 Deployment **{name}** 吗？"
-3. 确认 → 调用 `deleteDeployment(clusterUid, namespace, name)` → 成功提示 → 刷新列表
-
-**批量删除**：
-
-1. 勾选多行 → 点击底部"批量删除 (N)"
-2. `computed` 过滤：`deletableRows`（可删除）和 `nonDeletableRows`（不可删除，`deletable === false`）
-3. 弹窗展示不可删除行（黄色标签）和可删除行（默认标签）
-4. 如有不可删除行但无可删除行 → 仅展示警告，不执行删除
-5. 确认 → `deleteDeployments(clusterUid, namespace, names[])` → 成功提示 → 清空选中 → 刷新
 
 ---
 
