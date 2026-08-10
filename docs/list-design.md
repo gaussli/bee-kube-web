@@ -1,11 +1,10 @@
 # 列表页通用设计规范
 
-本文档以 **Deployment（无状态应用）** 和 **Namespace（命名空间）** 为参考标准，覆盖平台中所有 Kubernetes 资源列表页的通用设计模式与规范，涵盖 workload、config、network、storage、security、crd、node、namespace 全部模块。
+本文档为平台 Kubernetes 资源列表页的统一设计开发指导规范，覆盖 node、namespace、customresourcedefinition、pod、workload、config、network、storage、security 全部模块的通用设计模式、交互约定与实现规范。
 
 > **层级说明**：
 > - **通用层**（§1~12）：所有资源列表页共用的结构和约定，此层内容无例外
-> - **分类层**（§附录）：按资源的 namespace 归属、首列组件、继承链做分类，本章描述差异
-> - **特化层**：各资源的具体差异（列配置、操作项、筛选条件）在其专属设计文档中说明
+> - **分类层**（§4~6、§附录 A）：各资源的具体差异（列配置、操作项、筛选条件、继承链等），均在本章按模块分述
 
 ---
 
@@ -13,36 +12,39 @@
 
 ### 1.1 路由命名
 
-列表页路由命名遵循 `{domain}:{module}:{resource}` 格式：
+列表页路由命名遵循 `{domain}:{module}:{resource}` 格式，当模块与资源相同时退化为 `{domain}:{resource}`（如 namespace）：
 
 ```
 kubernetes:workload:deployment        // Kubernetes 工作负载 - Deployment
 kubernetes:namespace                  // Kubernetes - 命名空间（模块即资源，无子 module）
 kubernetes:network:service            // Kubernetes 网络 - Service
-kubernetes:storage:pvc                // Kubernetes 存储 - PVC
-platform:system:user                  // 平台管理 - 用户
+kubernetes:storage:persistentvolumeclaim  // Kubernetes 存储 - PersistentVolumeClaim
 ```
-
-当模块与资源相同时（如 namespace），命名退化为 `{domain}:{resource}`。
 
 ### 1.2 路径模式
 
 | 资源类别 | 路径模式 | 示例 |
 | --- | --- | --- |
-| Kubernetes 集群内资源 | `/kubernetes/clusters/:clusterUid/{resources}` | Deployments, Services, PVC |
-| Kubernetes 平台级资源 | `/kubernetes/clusters/:clusterUid/{resources}` | Namespaces |
-| Platform 资源 | `/platform/{resources}` | Users, Roles |
+| Kubernetes 集群内资源（命名空间级） | `/kubernetes/clusters/:clusterUid/{resources}` | Deployments, Services, PersistentVolumeClaims |
+| Kubernetes 集群内资源（集群级） | `/kubernetes/clusters/:clusterUid/{resources}` | Namespaces, Nodes |
 
 ### 1.3 权限
 
-每个列表页路由的 `meta.permission` 对应 `view` 权限，如 `kubernetes:workload:deployment:view`、`kubernetes:namespace:view`。
+列表页路由的 `meta.permission` 遵循 `{domain}:{module}:{resource}:view` 格式，模块与资源名相同时退化为 `{domain}:{resource}:view`：
+
+```
+kubernetes:workload:deployment:view        // Kubernetes 工作负载 - Deployment 查看
+kubernetes:namespace:view                  // Kubernetes 命名空间 - 查看（模块即资源）
+kubernetes:network:service:view            // Kubernetes 网络 - Service 查看
+kubernetes:storage:persistentvolumeclaim:view  // Kubernetes 存储 - PersistentVolumeClaim 查看
+```
 
 ### 1.4 参考示例
 
 | 维度 | Deployment | Namespace |
 | --- | --- | --- |
 | 路由名 | `kubernetes:workload:deployment` | `kubernetes:namespace` |
-| 路径 | `/kubernetes/clusters/:clusterUid/workload/deployment` | `/kubernetes/clusters/:clusterUid/namespace` |
+| 路径 | `/kubernetes/clusters/:clusterUid/deployments` | `/kubernetes/clusters/:clusterUid/namespaces` |
 | view 权限 | `kubernetes:workload:deployment:view` | `kubernetes:namespace:view` |
 
 **路径参数**：
@@ -54,28 +56,26 @@ platform:system:user                  // 平台管理 - 用户
 | --- | --- | --- | --- | --- |
 | Node | Node | `kubernetes:node` | `/kubernetes/clusters/:clusterUid/nodes` | 集群级 |
 | Namespace | Namespace | `kubernetes:namespace` | `/kubernetes/clusters/:clusterUid/namespaces` | 集群级 |
-| Crd | CustomResourceDefinition | `kubernetes:crd:customresourcedefinition` | `/kubernetes/clusters/:clusterUid/crd` | 集群级 |
+| CustomResourceDefinition | CustomResourceDefinition | `kubernetes:customresourcedefinition` | `/kubernetes/clusters/:clusterUid/customresourcedefinitions` | 集群级 |
 | Pod | Pod | `kubernetes:pod` | `/kubernetes/clusters/:clusterUid/pods` | 命名空间级 |
-| Workload | Deployment | `kubernetes:workload:deployment` | `/kubernetes/clusters/:clusterUid/workload/deployment` | 命名空间级 |
-| Workload | StatefulSet | `kubernetes:workload:statefulset` | `/kubernetes/clusters/:clusterUid/workload/statefulset` | 命名空间级 |
-| Workload | DaemonSet | `kubernetes:workload:daemonset` | `/kubernetes/clusters/:clusterUid/workload/daemonset` | 命名空间级 |
-| Workload | Job | `kubernetes:workload:job` | `/kubernetes/clusters/:clusterUid/workload/job` | 命名空间级 |
-| Workload | CronJob | `kubernetes:workload:cronjob` | `/kubernetes/clusters/:clusterUid/workload/cronjob` | 命名空间级 |
-| Config | ConfigMap | `kubernetes:config:configmap` | `/kubernetes/clusters/:clusterUid/config/configmap` | 命名空间级 |
-| Config | Secret | `kubernetes:config:secret` | `/kubernetes/clusters/:clusterUid/config/secret` | 命名空间级 |
-| Network | Service | `kubernetes:network:service` | `/kubernetes/clusters/:clusterUid/network/service` | 命名空间级 |
-| Network | Ingress | `kubernetes:network:ingress` | `/kubernetes/clusters/:clusterUid/network/ingress` | 命名空间级 |
-| Network | NetworkPolicy | `kubernetes:network:networkpolicy` | `/kubernetes/clusters/:clusterUid/network/networkpolicy` | 命名空间级 |
-| Storage | PersistentVolume | `kubernetes:storage:persistentvolume` | `/kubernetes/clusters/:clusterUid/storage/persistentvolume` | 集群级 |
-| Storage | PersistentVolumeClaim | `kubernetes:storage:persistentvolumeclaim` | `/kubernetes/clusters/:clusterUid/storage/persistentvolumeclaim` | 命名空间级 |
-| Storage | StorageClass | `kubernetes:storage:storageclass` | `/kubernetes/clusters/:clusterUid/storage/storageclass` | 集群级 |
-| Security | ServiceAccount | `kubernetes:security:serviceaccount` | `/kubernetes/clusters/:clusterUid/security/serviceaccount` | 命名空间级 |
-| Security | Role | `kubernetes:security:role` | `/kubernetes/clusters/:clusterUid/security/role` | 命名空间级 |
-| Security | ClusterRole | `kubernetes:security:clusterrole` | `/kubernetes/clusters/:clusterUid/security/clusterrole` | 集群级 |
-| Security | RoleBinding | `kubernetes:security:rolebinding` | `/kubernetes/clusters/:clusterUid/security/rolebinding` | 命名空间级 |
-| Security | ClusterRoleBinding | `kubernetes:security:clusterrolebinding` | `/kubernetes/clusters/:clusterUid/security/clusterrolebinding` | 集群级 |
-
-> **Pod 说明**：Pod 目前仅作为 Deployment 详情页的子 Tab 存在。上表为其未来独立列表页的设计路由。
+| Workload | Deployment | `kubernetes:workload:deployment` | `/kubernetes/clusters/:clusterUid/deployments` | 命名空间级 |
+| Workload | StatefulSet | `kubernetes:workload:statefulset` | `/kubernetes/clusters/:clusterUid/statefulsets` | 命名空间级 |
+| Workload | DaemonSet | `kubernetes:workload:daemonset` | `/kubernetes/clusters/:clusterUid/daemonsets` | 命名空间级 |
+| Workload | Job | `kubernetes:workload:job` | `/kubernetes/clusters/:clusterUid/jobs` | 命名空间级 |
+| Workload | CronJob | `kubernetes:workload:cronjob` | `/kubernetes/clusters/:clusterUid/cronjobs` | 命名空间级 |
+| Config | ConfigMap | `kubernetes:config:configmap` | `/kubernetes/clusters/:clusterUid/configmaps` | 命名空间级 |
+| Config | Secret | `kubernetes:config:secret` | `/kubernetes/clusters/:clusterUid/secrets` | 命名空间级 |
+| Network | Service | `kubernetes:network:service` | `/kubernetes/clusters/:clusterUid/services` | 命名空间级 |
+| Network | Ingress | `kubernetes:network:ingress` | `/kubernetes/clusters/:clusterUid/ingresses` | 命名空间级 |
+| Network | NetworkPolicy | `kubernetes:network:networkpolicy` | `/kubernetes/clusters/:clusterUid/networkpolicies` | 命名空间级 |
+| Storage | PersistentVolume | `kubernetes:storage:persistentvolume` | `/kubernetes/clusters/:clusterUid/persistentvolumes` | 集群级 |
+| Storage | PersistentVolumeClaim | `kubernetes:storage:persistentvolumeclaim` | `/kubernetes/clusters/:clusterUid/persistentvolumeclaims` | 命名空间级 |
+| Storage | StorageClass | `kubernetes:storage:storageclass` | `/kubernetes/clusters/:clusterUid/storageclasses` | 集群级 |
+| Security | ServiceAccount | `kubernetes:security:serviceaccount` | `/kubernetes/clusters/:clusterUid/serviceaccounts` | 命名空间级 |
+| Security | Role | `kubernetes:security:role` | `/kubernetes/clusters/:clusterUid/roles` | 命名空间级 |
+| Security | ClusterRole | `kubernetes:security:clusterrole` | `/kubernetes/clusters/:clusterUid/clusterroles` | 集群级 |
+| Security | RoleBinding | `kubernetes:security:rolebinding` | `/kubernetes/clusters/:clusterUid/rolebindings` | 命名空间级 |
+| Security | ClusterRoleBinding | `kubernetes:security:clusterrolebinding` | `/kubernetes/clusters/:clusterUid/clusterrolebindings` | 集群级 |
 
 ---
 
@@ -87,11 +87,11 @@ platform:system:user                  // 平台管理 - 用户
 
 ```
 BeePage
-├── BeePageHeader                                // 页面标题区
+├── BeePageHeader                                // 页面标题区，各列表页通过 v-bind 绑定
 │   ├── icon: {resource-icon}
 │   ├── title: "{中文标题}"
 │   └── description: "{功能描述}"
-│       （icon、title、description 均从 pageMeta 常量获取）
+│       （icon、title、description 均从 pageMeta 常量获取，各资源的具体定义见 [附录 A](#附录-a全部资源特性总表) 对应子节）
 └── BeeCard（class: page-body）                   // 主体容器
     ├── .page-body__toolbar                      // 工具栏（flex row，固定高度）
     │   ├── BeeInputSearch（flex:1）              // 搜索框，搜索字段由各资源独立定义
@@ -161,7 +161,6 @@ BeePage
 
 | 组件 | 用途 | 适用资源 |
 | --- | --- | --- |
-| `BeeClusterInfoCell` | 集群首列（UID + 图标 + 名称 + 描述） | Cluster |
 | `BeeNodeInfoCell` | 节点首列（UID + 图标 + 名称 + IP + 描述） | Node |
 | `BeeNamespaceInfoCell` | 命名空间首列（UID + 图标 + 名称 + 描述） | Namespace |
 | `BeeCustomResourceDefinitionInfoCell` | CRD 首列（UID + 图标 + 名称 + 描述） | CustomResourceDefinition |
@@ -172,6 +171,7 @@ BeePage
 | `BeeStorageInfoCell` | 存储首列（UID + 图标 + 名称 + 描述） | PersistentVolume, PersistentVolumeClaim, StorageClass |
 | `BeeSecurityInfoCell` | 安全首列（UID + 图标 + 名称 + 描述） | ServiceAccount, Role, ClusterRole, RoleBinding, ClusterRoleBinding |
 | `BeeTableCommonCell` | 通用两行单元格（text + subtext） | 所有资源 |
+| `BeeResourceUsageCell` | 资源使用率单元格（进度条 + 百分比） | Node 等含资源使用率的资源 |
 | `BeeStatusCell` | 状态标签（圆点 + 中文标签 + 英文标签 + 帮助） | 所有资源 |
 | `BeeAuditCell` | 审计信息（头像 + 时间 + 字段名） | 所有资源 |
 | `BeeActionCell` | 行操作（≤3 平铺，>3 收起菜单） | 所有资源 |
@@ -182,185 +182,35 @@ BeePage
 2. **中间列**：核心属性列（状态、指标、策略、审计等）
 3. **末尾列**：操作列，`fixed: right`，宽度 150px
 
-### 3.3 参考示例
+### 3.3 表格状态
 
-各模块选取代表性资源展示列配置，按资源路由顺序排列。
-
-#### 3.3.1 节点 — Node（集群级）
-
-| 列宽 | 组件 | 关键属性 |
+| 状态 | 组件/Props | 说明 |
 | --- | --- | --- |
-| 500px | `BeeNodeInfoCell` | `uid`, `name`, `ip`, `description`, `icon-size: 32` |
-| 180px | `BeeStatusCell` | `status`, `statusMsg`, `options: NODE_STATUS_OPTIONS` |
-| 180px | `BeeTableCommonCell` | `text: "cpuUsage / cpuTotal"`, `subtext: "CPU"` |
-| 180px | `BeeTableCommonCell` | `text: "memUsage / memTotal"`, `subtext: "内存"` |
-| 120px | `BeeTableCommonCell` | `text: podCount`, `subtext: "Pod 数"` |
-| 160px | `BeeTableCommonCell` | `text: kubeletVersion`, `subtext: "Kubelet 版本"` |
-| 200px | `BeeAuditCell` | `username: createBy`, `datetime: createAt` |
-| 150px | `BeeActionCell` | `actions: getActions(row)` |
+| 加载中 | `BeeTable` props `v-loading="loading"` | 请求未完成时展示加载骨架/遮罩 |
+| 无数据 | `BeeTable` props `empty-text="暂无{资源名}"` | 列表为空时展示空状态占位 |
+| 请求失败 | 与页级错误处理一致，建议通过 `loadData()` 的 `try/catch` 捕获并在表格区域展示错误提示 |
 
-> **Node 特殊说明**：
-> - 无创建路由，节点由集群自动发现
-> - CPU/内存列可通过进度条增强可视化
-> - 行操作含：隔离(Cordon) / 恢复(Uncordon) / 驱逐(Drain)
-
-#### 3.3.2 命名空间 — Namespace（集群级）
-
-| 列宽 | 组件 | 关键属性 |
-| --- | --- | --- |
-| 500px | `BeeNamespaceInfoCell` | `uid`, `name`, `description`, `icon-size: 32` |
-| min-160px | `BeeStatusCell` | `status`, `statusMsg`, `options: NAMESPACE_STATUS_OPTIONS` |
-| 200px | `BeeAuditCell` | `username: createBy`, `datetime: createAt`, `field-name: "创建人 / 时间"` |
-| 200px | `BeeAuditCell` | `username: updateBy`, `datetime: updateAt`, `field-name: "更新人 / 时间"` |
-| 150px | `BeeActionCell` | `actions: getActions(row)` |
-
-#### 3.3.3 CRD — CustomResourceDefinition（集群级）
-
-| 列宽 | 组件 | 关键属性 |
-| --- | --- | --- |
-| 500px | `BeeCustomResourceDefinitionInfoCell` | `uid`, `name`, `description`, `icon-size: 32` |
-| 250px | `BeeTableCommonCell` | `text: group`, `subtext: "API 组"` |
-| 120px | `BeeTableCommonCell` | `text: version`, `subtext: "版本"` |
-| 160px | `BeeTableCommonCell` | `text: scope`, `subtext: "作用范围"` |
-| 200px | `BeeAuditCell` | `username: createBy`, `datetime: createAt` |
-| 150px | `BeeActionCell` | `actions: getActions(row)` |
-
-#### 3.3.4 Pod（命名空间级）
-
-| 列宽 | 组件 | 关键属性 |
-| --- | --- | --- |
-| 500px | `BeePodInfoCell` | `uid`, `name`, `ip`, `icon-size: 32` |
-| 200px | `BeeTableCommonCell` | `text: namespace`, `subtext: "命名空间"` |
-| 200px | `BeeTableCommonCell` | `text: nodeName`, `subtext: "所在节点"` |
-| 160px | `BeeStatusCell` | `status: phase`, `options: POD_STATUS_OPTIONS` |
-| 120px | `BeeTableCommonCell` | `text: restartCount`, `subtext: "重启次数"` |
-| 160px | `BeeTableCommonCell` | `text: age`, `subtext: "运行时长"` |
-| 150px | `BeeActionCell` | `actions: getActions(row)` |
-
-> **Pod 特殊说明**：特有操作含查看日志、打开终端(exec)
-
-#### 3.3.5 工作负载 — Deployment（命名空间级）
-
-| 列宽 | 组件 | 关键属性 |
-| --- | --- | --- |
-| 500px | `BeeWorkloadInfoCell` | `uid`, `name`, `description`, `icon: kubernetes-deployment`, `icon-size: 32` |
-| 200px | `BeeTableCommonCell` | `text: namespace`, `subtext: "命名空间"` |
-| 160px | `BeeStatusCell` | `status`, `statusMsg`, `options: DEPLOYMENT_STATUS_OPTIONS` |
-| 120px | `BeeTableCommonCell` | `text: "readyReplicas / replicas"`, `subtext: "副本数"` |
-| 160px | `BeeTableCommonCell` | `text: 策略中文名`, `subtext: strategyType` |
-| 200px | `BeeAuditCell` | `username: createBy`, `datetime: createAt` |
-| 200px | `BeeAuditCell` | `username: updateBy`, `datetime: updateAt` |
-| 150px | `BeeActionCell` | `actions: getActions(row)` |
-
-#### 3.3.6 配置 — ConfigMap（命名空间级）
-
-| 列宽 | 组件 | 关键属性 |
-| --- | --- | --- |
-| 500px | `BeeConfigInfoCell` | `uid`, `name`, `description`, `icon-size: 32` |
-| 200px | `BeeTableCommonCell` | `text: namespace`, `subtext: "命名空间"` |
-| 160px | `BeeTableCommonCell` | `text: dataCount + " 条"`, `subtext: "数据条目"` |
-| 160px | `BeeStatusCell` | `status`, `statusMsg`, `options: CONFIGMAP_STATUS_OPTIONS` |
-| 200px | `BeeAuditCell` | `username: createBy`, `datetime: createAt` |
-| 200px | `BeeAuditCell` | `username: updateBy`, `datetime: updateAt` |
-| 150px | `BeeActionCell` | `actions: getActions(row)` |
-
-#### 3.3.7 配置 — Secret（命名空间级）
-
-| 列宽 | 组件 | 关键属性 |
-| --- | --- | --- |
-| 500px | `BeeConfigInfoCell` | `uid`, `name`, `description`, `icon-size: 32` |
-| 200px | `BeeTableCommonCell` | `text: namespace`, `subtext: "命名空间"` |
-| 160px | `BeeTableCommonCell` | `text: type`, `subtext: "类型"` |
-| 160px | `BeeTableCommonCell` | `text: dataCount + " 条"`, `subtext: "数据条目"` |
-| 200px | `BeeAuditCell` | `username: createBy`, `datetime: createAt` |
-| 200px | `BeeAuditCell` | `username: updateBy`, `datetime: updateAt` |
-| 150px | `BeeActionCell` | `actions: getActions(row)` |
-
-#### 3.3.8 网络 — Service（命名空间级）
-
-| 列宽 | 组件 | 关键属性 |
-| --- | --- | --- |
-| 500px | `BeeNetworkInfoCell` | `uid`, `name`, `description`, `icon-size: 32` |
-| 200px | `BeeTableCommonCell` | `text: namespace`, `subtext: "命名空间"` |
-| 180px | `BeeTableCommonCell` | `text: clusterIP`, `subtext: "集群 IP"` |
-| 160px | `BeeTableCommonCell` | `text: "ports列表"`, `subtext: "端口"` |
-| 120px | `BeeTableCommonCell` | `text: type`, `subtext: "类型"` |
-| 200px | `BeeAuditCell` | `username: createBy`, `datetime: createAt` |
-| 200px | `BeeAuditCell` | `username: updateBy`, `datetime: updateAt` |
-| 150px | `BeeActionCell` | `actions: getActions(row)` |
-
-#### 3.3.9 网络 — Ingress（命名空间级）
-
-| 列宽 | 组件 | 关键属性 |
-| --- | --- | --- |
-| 500px | `BeeNetworkInfoCell` | `uid`, `name`, `description`, `icon-size: 32` |
-| 200px | `BeeTableCommonCell` | `text: namespace`, `subtext: "命名空间"` |
-| 300px | `BeeTableCommonCell` | `text: host+path`, `subtext: "规则"` |
-| 200px | `BeeTableCommonCell` | `text: serviceName:port`, `subtext: "后端"` |
-| 200px | `BeeAuditCell` | `username: createBy`, `datetime: createAt` |
-| 200px | `BeeAuditCell` | `username: updateBy`, `datetime: updateAt` |
-| 150px | `BeeActionCell` | `actions: getActions(row)` |
-
-#### 3.3.10 存储 — PersistentVolume（集群级）
-
-| 列宽 | 组件 | 关键属性 |
-| --- | --- | --- |
-| 500px | `BeeStorageInfoCell` | `uid`, `name`, `description`, `icon-size: 32` |
-| 160px | `BeeTableCommonCell` | `text: "storageSize"`, `subtext: "容量"` |
-| 160px | `BeeTableCommonCell` | `text: accessModes`, `subtext: "访问模式"` |
-| 140px | `BeeTableCommonCell` | `text: reclaimPolicy`, `subtext: "回收策略"` |
-| 160px | `BeeStatusCell` | `status: phase`, `options: PV_PHASE_OPTIONS` |
-| 200px | `BeeAuditCell` | `username: createBy`, `datetime: createAt` |
-| 200px | `BeeAuditCell` | `username: updateBy`, `datetime: updateAt` |
-| 150px | `BeeActionCell` | `actions: getActions(row)` |
-
-#### 3.3.11 存储 — PersistentVolumeClaim（命名空间级）
-
-| 列宽 | 组件 | 关键属性 |
-| --- | --- | --- |
-| 500px | `BeeStorageInfoCell` | `uid`, `name`, `description`, `icon-size: 32` |
-| 200px | `BeeTableCommonCell` | `text: namespace`, `subtext: "命名空间"` |
-| 160px | `BeeTableCommonCell` | `text: "storageSize"`, `subtext: "容量"` |
-| 160px | `BeeTableCommonCell` | `text: accessModes`, `subtext: "访问模式"` |
-| 300px | `BeeTableCommonCell` | `text: volumeName`, `subtext: "绑定的 PV"` |
-| 160px | `BeeStatusCell` | `status: phase`, `options: PVC_PHASE_OPTIONS` |
-| 200px | `BeeAuditCell` | `username: createBy`, `datetime: createAt` |
-| 150px | `BeeActionCell` | `actions: getActions(row)` |
-
-#### 3.3.12 存储 — StorageClass（集群级）
-
-| 列宽 | 组件 | 关键属性 |
-| --- | --- | --- |
-| 500px | `BeeStorageInfoCell` | `uid`, `name`, `description`, `icon-size: 32` |
-| 200px | `BeeTableCommonCell` | `text: provisioner`, `subtext: "制备器"` |
-| 160px | `BeeTableCommonCell` | `text: reclaimPolicy`, `subtext: "回收策略"` |
-| 160px | `BeeTableCommonCell` | `text: 是/否`, `subtext: "默认存储类"` |
-| 200px | `BeeAuditCell` | `username: createBy`, `datetime: createAt` |
-| 150px | `BeeActionCell` | `actions: getActions(row)` |
-
-#### 3.3.13 安全 — Role / ClusterRole（命名空间级 / 集群级）
-
-| 列宽 | 组件 | 关键属性 |
-| --- | --- | --- |
-| 500px | `BeeSecurityInfoCell` | `uid`, `name`, `description`, `icon-size: 32` |
-| (namespace 仅 Role) | `BeeTableCommonCell` | `text: namespace`, `subtext: "命名空间"` |
-| 160px | `BeeTableCommonCell` | `text: ruleCount + " 条"`, `subtext: "规则数"` |
-| 200px | `BeeAuditCell` | `username: createBy`, `datetime: createAt` |
-| 200px | `BeeAuditCell` | `username: updateBy`, `datetime: updateAt` |
-| 150px | `BeeActionCell` | `actions: getActions(row)` |
-
-#### 3.3.14 安全 — RoleBinding / ClusterRoleBinding
-
-| 列宽 | 组件 | 关键属性 |
-| --- | --- | --- |
-| 500px | `BeeSecurityInfoCell` | `uid`, `name`, `description`, `icon-size: 32` |
-| (namespace 仅 RoleBinding) | `BeeTableCommonCell` | `text: namespace`, `subtext: "命名空间"` |
-| 180px | `BeeTableCommonCell` | `text: roleRef.name`, `subtext: "绑定角色"` |
-| 250px | `BeeTableCommonCell` | `text: "subjects摘要"`, `subtext: "授权主体"` |
-| 200px | `BeeAuditCell` | `username: createBy`, `datetime: createAt` |
-| 150px | `BeeActionCell` | `actions: getActions(row)` |
-
----
+```typescript
+// loadData 中的状态管理
+async function loadData() {
+  loading.value = true
+  try {
+    const { list, total } = await getXxxPage(clusterUid.value, {
+      ...queryForm,
+      page: pagination.page,
+      pageSize: pagination.pageSize,
+    })
+    tableData.value = list
+    pagination.total = total
+  } catch (e) {
+    tableData.value = []
+    pagination.total = 0
+    // ElMessage.error 由 request 拦截器统一处理
+  } finally {
+    loading.value = false
+  }
+}
+```
 
 ## 4. 筛选与搜索
 
@@ -370,8 +220,8 @@ BeePage
 
 | 资源类别 | 搜索框 | namespace 筛选 | 状态筛选 | 其他 |
 | --- | --- | --- | --- | --- |
-| **命名空间级资源**（Deployment, StatefulSet, Service, ConfigMap, Secret, PVC 等） | ✅ `searchKey` → 映射到资源定义的查询字段 | ✅ `queryForm.namespace` | ✅ `queryForm.status` | 按需 |
-| **集群级资源**（Node, Namespace, CRD, PV, StorageClass, ClusterRole 等） | ✅ `searchKey` → 映射到资源定义的查询字段 | ❌ 无 | ✅ `queryForm.status` | 按需 |
+| **命名空间级资源**（Deployment, StatefulSet, Service, ConfigMap, Secret, PersistentVolumeClaim 等） | ✅ `searchKey` → 映射到资源定义的查询字段 | ✅ `queryForm.namespace` | ✅ `queryForm.status`（ConfigMap/Secret 除外，无状态字段） | 按需 |
+| **集群级资源**（Node, Namespace, CustomResourceDefinition, PersistentVolume, StorageClass, ClusterRole 等） | ✅ `searchKey` → 映射到资源定义的查询字段 | ❌ 无 | ✅ `queryForm.status`（CustomResourceDefinition/PersistentVolume/StorageClass 除外） | 按需 |
 
 命名空间级资源**必须**有 namespace 筛选；集群级资源**禁止** namespace 筛选。
 
@@ -441,7 +291,6 @@ export interface XxxQueryForm extends UidEntity, PageForm {
 | --- | --- | --- |
 | **集群内 + 命名空间级** | `UidEntity, Clustered, Namespaced, AuditEntity, DeletableEntity` | Deployment, Service |
 | **集群内 + 集群级** | `UidEntity, Clustered, AuditEntity, DeletableEntity` | Namespace, Node |
-| **平台级** | `UidEntity, AuditEntity, DeletableEntity` | User, Role |
 
 ### 5.3 实体继承链参考
 
@@ -481,6 +330,622 @@ export interface NamespaceListVo extends UidEntity, Clustered, AuditEntity, Dele
 }
 ```
 
+
+
+### 5.5 pageMeta 类型定义
+
+```typescript
+/** 资源页面元信息 */
+export interface ResourcePageMeta {
+  /** SVG 图标名称（对应 icon-{name}） */
+  icon: string
+  /** 中文标题 */
+  title: string
+  /** 功能描述 */
+  description: string
+}
+```
+
+### 5.6 全部资源类型定义
+
+以下为全部 22 种 Kubernetes 资源列表页的 `QueryForm` 和 `ListVo` 类型定义，按模块分组。
+
+#### 5.6.1 Node 节点
+
+```typescript
+/** 节点列表查询表单 */
+export interface NodeQueryForm extends UidEntity, PageForm {
+  /** 节点名称（模糊匹配） */
+  name?: string
+  /** 节点状态 */
+  status?: string
+}
+
+/** 节点列表对象 */
+export interface NodeListVo extends UidEntity, Clustered, AuditEntity, DeletableEntity {
+  /** 节点名称 */
+  name: string
+  /** 节点描述 */
+  description?: string
+  /** 节点 IP 地址 */
+  ip: string
+  /** 节点状态 */
+  status: string
+  /** 状态描述信息 */
+  statusMsg?: string
+  /** CPU 使用率（百分比） */
+  cpuUsage: number
+  /** 内存使用率（百分比） */
+  memUsage: number
+  /** 当前 Pod 数量 */
+  podCount: number
+  /** Kubelet 版本号 */
+  kubeletVersion: string
+}
+```
+
+#### 5.6.2 Namespace 命名空间
+
+```typescript
+/** 命名空间列表查询表单 */
+export interface NamespaceQueryForm extends UidEntity, PageForm {
+  /** 命名空间名称（模糊匹配） */
+  name?: string
+  /** 命名空间状态 */
+  status?: string
+}
+
+/** 命名空间列表对象 */
+export interface NamespaceListVo extends UidEntity, Clustered, AuditEntity, DeletableEntity {
+  /** 命名空间名称 */
+  name: string
+  /** 命名空间描述 */
+  description?: string
+  /** 命名空间状态 */
+  status: string
+  /** 状态描述信息 */
+  statusMsg?: string
+  /** 命名空间类型 */
+  type: NamespaceType
+}
+```
+
+#### 5.6.3 CustomResourceDefinition 自定义资源定义
+
+```typescript
+/** CRD 列表查询表单 */
+export interface CustomResourceDefinitionQueryForm extends UidEntity, PageForm {
+  /** CRD 名称（模糊匹配） */
+  name?: string
+}
+
+/** CRD 列表对象 */
+export interface CustomResourceDefinitionListVo extends UidEntity, Clustered, AuditEntity, DeletableEntity {
+  /** CRD 名称 */
+  name: string
+  /** CRD 描述 */
+  description?: string
+  /** API 组 */
+  group: string
+  /** API 版本 */
+  version: string
+  /** 作用范围（Namespaced / Cluster） */
+  scope: string
+}
+```
+
+#### 5.6.4 Pod 容器组
+
+```typescript
+/** Pod 列表查询表单 */
+export interface PodQueryForm extends UidEntity, PageForm {
+  /** Pod 名称（模糊匹配） */
+  name?: string
+  /** 所属命名空间 */
+  namespace?: string
+  /** Pod 状态/阶段 */
+  status?: string
+}
+
+/** Pod 列表对象 */
+export interface PodListVo extends UidEntity, Clustered, Namespaced, AuditEntity, DeletableEntity {
+  /** Pod 名称 */
+  name: string
+  /** Pod IP 地址 */
+  ip: string
+  /** 所在节点名称 */
+  nodeName: string
+  /** Pod 运行阶段 */
+  phase: string
+  /** 重启次数 */
+  restartCount: number
+  /** 运行时长 */
+  age: string
+}
+```
+
+#### 5.6.5 Workload 工作负载
+
+##### Deployment 无状态应用
+
+```typescript
+/** Deployment 列表查询表单 */
+export interface DeploymentQueryForm extends UidEntity, PageForm {
+  /** 名称（模糊匹配） */
+  name?: string
+  /** 所属命名空间 */
+  namespace?: string
+  /** 状态 */
+  status?: string
+}
+
+/** Deployment 列表对象 */
+export interface DeploymentListVo extends UidEntity, Clustered, Namespaced, AuditEntity, DeletableEntity {
+  /** 名称 */
+  name: string
+  /** 描述 */
+  description?: string
+  /** 状态 */
+  status: DeploymentStatus
+  /** 状态描述信息 */
+  statusMsg?: string
+  /** 期望副本数 */
+  replicas: number
+  /** 就绪副本数 */
+  readyReplicas: number
+  /** 更新策略类型 */
+  strategyType: DeploymentStrategyType
+}
+```
+
+##### StatefulSet 有状态应用
+
+```typescript
+/** StatefulSet 列表查询表单 */
+export interface StatefulSetQueryForm extends UidEntity, PageForm {
+  /** 名称（模糊匹配） */
+  name?: string
+  /** 所属命名空间 */
+  namespace?: string
+  /** 状态 */
+  status?: string
+}
+
+/** StatefulSet 列表对象 */
+export interface StatefulSetListVo extends UidEntity, Clustered, Namespaced, AuditEntity, DeletableEntity {
+  /** 名称 */
+  name: string
+  /** 描述 */
+  description?: string
+  /** 状态 */
+  status: string
+  /** 状态描述信息 */
+  statusMsg?: string
+  /** 期望副本数 */
+  replicas: number
+  /** 就绪副本数 */
+  readyReplicas: number
+  /** Pod 管理策略 */
+  podManagementPolicy: string
+}
+```
+
+##### DaemonSet 守护应用
+
+```typescript
+/** DaemonSet 列表查询表单 */
+export interface DaemonSetQueryForm extends UidEntity, PageForm {
+  /** 名称（模糊匹配） */
+  name?: string
+  /** 所属命名空间 */
+  namespace?: string
+  /** 状态 */
+  status?: string
+}
+
+/** DaemonSet 列表对象 */
+export interface DaemonSetListVo extends UidEntity, Clustered, Namespaced, AuditEntity, DeletableEntity {
+  /** 名称 */
+  name: string
+  /** 描述 */
+  description?: string
+  /** 状态 */
+  status: string
+  /** 状态描述信息 */
+  statusMsg?: string
+  /** 节点总数 */
+  nodeCount: number
+  /** 就绪节点数 */
+  readyNodes: number
+}
+```
+
+##### Job 任务
+
+```typescript
+/** Job 列表查询表单 */
+export interface JobQueryForm extends UidEntity, PageForm {
+  /** 名称（模糊匹配） */
+  name?: string
+  /** 所属命名空间 */
+  namespace?: string
+  /** 状态 */
+  status?: string
+}
+
+/** Job 列表对象 */
+export interface JobListVo extends UidEntity, Clustered, Namespaced, AuditEntity, DeletableEntity {
+  /** 名称 */
+  name: string
+  /** 描述 */
+  description?: string
+  /** 状态 */
+  status: string
+  /** 状态描述信息 */
+  statusMsg?: string
+  /** 期望完成次数 */
+  completions: number
+  /** 已成功次数 */
+  succeeded: number
+  /** 运行时长 */
+  duration: string
+}
+```
+
+##### CronJob 定时任务
+
+```typescript
+/** CronJob 列表查询表单 */
+export interface CronJobQueryForm extends UidEntity, PageForm {
+  /** 名称（模糊匹配） */
+  name?: string
+  /** 所属命名空间 */
+  namespace?: string
+  /** 状态 */
+  status?: string
+}
+
+/** CronJob 列表对象 */
+export interface CronJobListVo extends UidEntity, Clustered, Namespaced, AuditEntity, DeletableEntity {
+  /** 名称 */
+  name: string
+  /** 描述 */
+  description?: string
+  /** 状态 */
+  status: string
+  /** 状态描述信息 */
+  statusMsg?: string
+  /** Cron 调度规则 */
+  schedule: string
+  /** 上次执行时间 */
+  lastScheduleTime: string
+}
+```
+
+#### 5.6.6 Config 配置
+
+##### ConfigMap 配置项
+
+```typescript
+/** ConfigMap 列表查询表单 */
+export interface ConfigMapQueryForm extends UidEntity, PageForm {
+  /** 名称（模糊匹配） */
+  name?: string
+  /** 所属命名空间 */
+  namespace?: string
+}
+
+/** ConfigMap 列表对象 */
+export interface ConfigMapListVo extends UidEntity, Clustered, Namespaced, AuditEntity, DeletableEntity {
+  /** 名称 */
+  name: string
+  /** 描述 */
+  description?: string
+  /** 数据条目数 */
+  dataCount: number
+}
+```
+
+##### Secret 保密字典
+
+```typescript
+/** Secret 列表查询表单 */
+export interface SecretQueryForm extends UidEntity, PageForm {
+  /** 名称（模糊匹配） */
+  name?: string
+  /** 所属命名空间 */
+  namespace?: string
+  /** Secret 类型 */
+  type?: string
+}
+
+/** Secret 列表对象 */
+export interface SecretListVo extends UidEntity, Clustered, Namespaced, AuditEntity, DeletableEntity {
+  /** 名称 */
+  name: string
+  /** 描述 */
+  description?: string
+  /** Secret 类型（Opaque / kubernetes.io/tls / kubernetes.io/dockerconfigjson 等） */
+  type: string
+  /** 数据条目数 */
+  dataCount: number
+}
+```
+
+#### 5.6.7 Network 网络
+
+##### Service 服务
+
+```typescript
+/** Service 列表查询表单 */
+export interface ServiceQueryForm extends UidEntity, PageForm {
+  /** 名称（模糊匹配） */
+  name?: string
+  /** 所属命名空间 */
+  namespace?: string
+}
+
+/** Service 列表对象 */
+export interface ServiceListVo extends UidEntity, Clustered, Namespaced, AuditEntity, DeletableEntity {
+  /** 名称 */
+  name: string
+  /** 描述 */
+  description?: string
+  /** 集群内部 IP */
+  clusterIP: string
+  /** 端口列表 */
+  ports: string
+  /** Service 类型（ClusterIP / NodePort / LoadBalancer / ExternalName） */
+  type: string
+}
+```
+
+##### Ingress 路由
+
+```typescript
+/** Ingress 列表查询表单 */
+export interface IngressQueryForm extends UidEntity, PageForm {
+  /** 名称（模糊匹配） */
+  name?: string
+  /** 所属命名空间 */
+  namespace?: string
+}
+
+/** Ingress 列表对象 */
+export interface IngressListVo extends UidEntity, Clustered, Namespaced, AuditEntity, DeletableEntity {
+  /** 名称 */
+  name: string
+  /** 描述 */
+  description?: string
+  /** 路由规则（域名 + 路径） */
+  rules: string
+  /** 后端服务（名称:端口） */
+  backend: string
+}
+```
+
+##### NetworkPolicy 网络策略
+
+```typescript
+/** NetworkPolicy 列表查询表单 */
+export interface NetworkPolicyQueryForm extends UidEntity, PageForm {
+  /** 名称（模糊匹配） */
+  name?: string
+  /** 所属命名空间 */
+  namespace?: string
+}
+
+/** NetworkPolicy 列表对象 */
+export interface NetworkPolicyListVo extends UidEntity, Clustered, Namespaced, AuditEntity, DeletableEntity {
+  /** 名称 */
+  name: string
+  /** 描述 */
+  description?: string
+  /** Pod 选择器 */
+  podSelector: string
+  /** 策略类型 */
+  policyTypes: string
+}
+```
+
+#### 5.6.8 Storage 存储
+
+##### PersistentVolume 持久卷
+
+```typescript
+/** PersistentVolume 列表查询表单 */
+export interface PersistentVolumeQueryForm extends UidEntity, PageForm {
+  /** 名称（模糊匹配） */
+  name?: string
+}
+
+/** PersistentVolume 列表对象 */
+export interface PersistentVolumeListVo extends UidEntity, Clustered, AuditEntity, DeletableEntity {
+  /** 名称 */
+  name: string
+  /** 描述 */
+  description?: string
+  /** 存储容量 */
+  storageSize: string
+  /** 访问模式 */
+  accessModes: string
+  /** 回收策略 */
+  reclaimPolicy: string
+  /** 绑定阶段 */
+  phase: string
+  /** 阶段描述信息 */
+  statusMsg?: string
+}
+```
+
+##### PersistentVolumeClaim 持久卷声明
+
+```typescript
+/** PersistentVolumeClaim 列表查询表单 */
+export interface PersistentVolumeClaimQueryForm extends UidEntity, PageForm {
+  /** 名称（模糊匹配） */
+  name?: string
+  /** 所属命名空间 */
+  namespace?: string
+  /** 绑定状态 */
+  status?: string
+}
+
+/** PersistentVolumeClaim 列表对象 */
+export interface PersistentVolumeClaimListVo extends UidEntity, Clustered, Namespaced, AuditEntity, DeletableEntity {
+  /** 名称 */
+  name: string
+  /** 描述 */
+  description?: string
+  /** 存储容量 */
+  storageSize: string
+  /** 访问模式 */
+  accessModes: string
+  /** 绑定的 PersistentVolume 名称 */
+  volumeName: string
+  /** 绑定阶段 */
+  phase: string
+  /** 阶段描述信息 */
+  statusMsg?: string
+}
+```
+
+##### StorageClass 存储类
+
+```typescript
+/** StorageClass 列表查询表单 */
+export interface StorageClassQueryForm extends UidEntity, PageForm {
+  /** 名称（模糊匹配） */
+  name?: string
+}
+
+/** StorageClass 列表对象 */
+export interface StorageClassListVo extends UidEntity, Clustered, AuditEntity, DeletableEntity {
+  /** 名称 */
+  name: string
+  /** 描述 */
+  description?: string
+  /** 存储制备器 */
+  provisioner: string
+  /** 回收策略 */
+  reclaimPolicy: string
+  /** 是否为默认存储类 */
+  isDefault: boolean
+}
+```
+
+#### 5.6.9 Security 安全
+
+##### ServiceAccount 服务账号
+
+```typescript
+/** ServiceAccount 列表查询表单 */
+export interface ServiceAccountQueryForm extends UidEntity, PageForm {
+  /** 名称（模糊匹配） */
+  name?: string
+  /** 所属命名空间 */
+  namespace?: string
+}
+
+/** ServiceAccount 列表对象 */
+export interface ServiceAccountListVo extends UidEntity, Clustered, Namespaced, AuditEntity, DeletableEntity {
+  /** 名称 */
+  name: string
+  /** 描述 */
+  description?: string
+  /** 关联 Secret 数量 */
+  secretCount: number
+}
+```
+
+##### Role 角色
+
+```typescript
+/** Role 列表查询表单 */
+export interface RoleQueryForm extends UidEntity, PageForm {
+  /** 名称（模糊匹配） */
+  name?: string
+  /** 所属命名空间 */
+  namespace?: string
+}
+
+/** Role 列表对象 */
+export interface RoleListVo extends UidEntity, Clustered, Namespaced, AuditEntity, DeletableEntity {
+  /** 名称 */
+  name: string
+  /** 描述 */
+  description?: string
+  /** 规则数 */
+  ruleCount: number
+}
+```
+
+##### ClusterRole 集群角色
+
+```typescript
+/** ClusterRole 列表查询表单 */
+export interface ClusterRoleQueryForm extends UidEntity, PageForm {
+  /** 名称（模糊匹配） */
+  name?: string
+}
+
+/** ClusterRole 列表对象 */
+export interface ClusterRoleListVo extends UidEntity, Clustered, AuditEntity, DeletableEntity {
+  /** 名称 */
+  name: string
+  /** 描述 */
+  description?: string
+  /** 规则数 */
+  ruleCount: number
+}
+```
+
+##### RoleBinding 角色绑定
+
+```typescript
+/** RoleBinding 列表查询表单 */
+export interface RoleBindingQueryForm extends UidEntity, PageForm {
+  /** 名称（模糊匹配） */
+  name?: string
+  /** 所属命名空间 */
+  namespace?: string
+}
+
+/** RoleBinding 列表对象 */
+export interface RoleBindingListVo extends UidEntity, Clustered, Namespaced, AuditEntity, DeletableEntity {
+  /** 名称 */
+  name: string
+  /** 描述 */
+  description?: string
+  /** 绑定的角色名称 */
+  roleRefName: string
+  /** 授权主体摘要 */
+  subjects: string
+}
+```
+
+##### ClusterRoleBinding 集群角色绑定
+
+```typescript
+/** ClusterRoleBinding 列表查询表单 */
+export interface ClusterRoleBindingQueryForm extends UidEntity, PageForm {
+  /** 名称（模糊匹配） */
+  name?: string
+}
+
+/** ClusterRoleBinding 列表对象 */
+export interface ClusterRoleBindingListVo extends UidEntity, Clustered, AuditEntity, DeletableEntity {
+  /** 名称 */
+  name: string
+  /** 描述 */
+  description?: string
+  /** 绑定的集群角色名称 */
+  roleRefName: string
+  /** 授权主体摘要 */
+  subjects: string
+}
+```
+
 ---
 
 ## 6. 行操作
@@ -491,7 +956,7 @@ export interface NamespaceListVo extends UidEntity, Clustered, AuditEntity, Dele
 
 ### 6.2 标准操作项清单
 
-行操作分为**通用操作**（默认所有资源支持）和**模块特有操作**两类。
+行操作分为**通用操作**（默认所有资源支持）和**模块特有操作**（详见 [附录 A](#附录-a全部资源特性总表) 对应子节）。
 
 #### 6.2.1 通用操作
 
@@ -502,37 +967,9 @@ export interface NamespaceListVo extends UidEntity, Clustered, AuditEntity, Dele
 | 编辑 YAML | `basic-code` | `edit` | 跳转编辑页（YAML 模式） |
 | 删除 | `basic-delete` | `delete` | 弹窗确认后删除，条件：`row.deletable !== false`（Node 除外） |
 
-#### 6.2.2 节点特有操作
+#### 6.2.2 各资源特有操作
 
-| 操作 | icon | 权限 | 说明 |
-| --- | --- | --- | --- |
-| 隔离 (Cordon) | `kubernetes-cordon` | `edit` | 标记节点不可调度，已有 Pod 不受影响 |
-| 恢复 (Uncordon) | `kubernetes-uncordon` | `edit` | 恢复节点可调度 |
-| 驱逐 (Drain) | `kubernetes-drain` | `edit` | 迁移节点上所有 Pod 后标记不可调度 |
-
-#### 6.2.3 命名空间特有操作
-
-| 操作 | icon | 权限 | 说明 |
-| --- | --- | --- | --- |
-| 资源配额 | `kubernetes-quota` | `edit` | 管理命名空间的 ResourceQuota 和 LimitRange |
-
-#### 6.2.4 Pod 特有操作
-
-| 操作 | icon | 权限 | 说明 |
-| --- | --- | --- | --- |
-| 查看日志 | `basic-log` | `view` | 打开 Pod 日志查看面板 |
-| 终端 (exec) | `basic-terminal` | `edit` | 打开 Web 终端连接到 Pod |
-| 删除 Pod | `basic-delete` | `delete` | 删除单个 Pod（对应控制器会自动重建） |
-
-#### 6.2.5 工作负载特有操作
-
-| 操作 | icon | 权限 | 适用资源 | 说明 |
-| --- | --- | --- | --- | --- |
-| 扩缩容 | `{resource-icon}` | `edit` | Deployment, StatefulSet | 弹窗修改副本数 |
-| 重启 | `basic-refresh` | `edit` | Deployment, StatefulSet, DaemonSet | 触发滚动重启 |
-| 回滚 | `{resource-icon}` | `edit` | Deployment, StatefulSet | 弹窗选择历史版本回滚 |
-| 触发执行 | `basic-play` | `edit` | CronJob | 手动触发一次 Job 执行 |
-| 暂停/恢复 | `basic-pause` / `basic-play` | `edit` | CronJob | 暂停/恢复定时调度 |
+各资源特有的行操作（含 pageMeta、列配置、行操作详情）请直接查阅 [附录 A](#附录-a全部资源特性总表) 对应资源子节，本文不再重复描述。
 
 ### 6.3 工具栏操作
 
@@ -567,7 +1004,7 @@ export interface NamespaceListVo extends UidEntity, Clustered, AuditEntity, Dele
 | 粒度 | 说明 |
 | --- | --- |
 | 页面级 | 路由守卫 `to.meta.permission` 控制页面访问 |
-| UI 级 | `v-if="perm.xxx"` 控制按钮显隐 |
+| UI 级 | `v-if="perm.xxx"` 或 `v-permission` 指令控制按钮显隐 |
 | 行级 | `getActions(row)` 中按权限过滤操作项 |
 
 ### 7.3 权限预计算模式
@@ -594,6 +1031,15 @@ const perm: Record<string, boolean> = {
 1. 点击行操作"删除" → `currentTargetRow` 记录目标行
 2. 弹出 `BeeDialog`，显示 "确定要删除 **{resource}** **{name}** 吗？"
 3. 资源有级联风险时，追加警告文本（如 Namespace："删除命名空间将同时删除该命名空间下的所有资源！"）
+
+**需添加级联删除警告的资源**：
+
+| 资源 | 级联风险 |
+| --- | --- |
+| Namespace | 删除命名空间将同时删除该命名空间下的所有资源 |
+| PersistentVolume | 删除 PersistentVolume 可能导致已绑定的 PersistentVolumeClaim 状态异常 |
+| PersistentVolumeClaim | 删除 PersistentVolumeClaim 可能导致绑定的 PersistentVolume 被连带删除（当 PV 回收策略为 Delete 时） |
+
 4. 确认 → 调用 `delete{Resource}(...)` → 成功提示 → 刷新列表
 
 ### 8.2 批量删除
@@ -622,6 +1068,7 @@ const perm: Record<string, boolean> = {
 | Selection | `handleSelectionChange()` / `handleClearSelection()` | 多选逻辑 |
 | CRUD: Create/Edit/View | 路由跳转函数 | `handleCreate()`、`handleEdit()`、`handleViewDetail()` |
 | CRUD: Delete | 删除确认 + 执行 | 单个 / 批量删除 |
+| Specific Actions | 资源特有操作处理函数 | 按附录 A 各资源子节定义实现，如 `handleScale(row)`、`handleRestart(row)`、`handleRollback(row)`、`handleCordon(row)`、`handleDrain(row)`、`handleViewLogs(row)`、`handleTerminal(row)`、`handleTriggerJob(row)` 等 |
 | Row Actions | `getActions(row): ActionItem[]` | 按权限 + 行条件构建操作数组（`BeeActionCell` 模式） |
 | Lifecycle | `onMounted` | 初始加载 |
 
@@ -654,6 +1101,8 @@ function handleSearch() {
 
 ### 10.1 自定义组件
 
+#### 10.1.1 页面级容器组件
+
 | 组件 | 用途 |
 | --- | --- |
 | `BeePage` | 页面容器 |
@@ -663,23 +1112,13 @@ function handleSearch() {
 | `BeeSelect` | 下拉选择器 |
 | `BeeButton` | 按钮 |
 | `BeeTable` / `BeeTableColumn` | 表格 |
-| `BeeClusterInfoCell` | 集群首列 |
-| `BeeNodeInfoCell` | 节点首列 |
-| `BeeNamespaceInfoCell` | 命名空间首列 |
-| `BeeCustomResourceDefinitionInfoCell` | CRD 首列 |
-| `BeePodInfoCell` | Pod 首列 |
-| `BeeWorkloadInfoCell` | 工作负载首列 |
-| `BeeConfigInfoCell` | 配置首列 |
-| `BeeNetworkInfoCell` | 网络首列 |
-| `BeeStorageInfoCell` | 存储首列 |
-| `BeeSecurityInfoCell` | 安全首列 |
-| `BeeTableCommonCell` | 通用两行单元格 |
-| `BeeStatusCell` | 状态标签（圆点 + 中文 + 英文 + 帮助） |
-| `BeeAuditCell` | 审计信息（头像 + 时间 + 字段名） |
-| `BeeActionCell` | 行操作（平铺 / 收起菜单自适应） |
 | `BeePagination` | 分页组件 |
 | `BeeDialog` | 确认对话框 |
 | `BeeTag` | 标签（删除确认弹窗中展示目标资源名） |
+
+#### 10.1.2 表格单元格组件
+
+> 表格单元格组件的完整列表及适用资源详见 [§3.1 标准列组件](#31-标准列组件)。
 
 ### 10.2 外部依赖
 
@@ -726,14 +1165,14 @@ function handleSearch() {
 4. **API 层** → `get{Resource}Page(params)` 返回 `PageVo<{Resource}ListVo>`
 5. **页面结构** → BeePage → BeePageHeader + BeeCard（toolbar / table / footer）（参考 §2）
 6. **首列组件** → 按附录 A 选择：`BeeWorkloadInfoCell` / `BeeNamespaceInfoCell` / `BeePodInfoCell`
-7. **列配置** → 参考 §3.3 对应模块的列配置示例
+7. **列配置** → 参考附录 A 对应模块的列配置示例
 8. **namespace 筛选** → 命名空间级：必须；集群级：不添加
 9. **loadNamespaceOptions** → 命名空间级：需加载；集群级：跳过
 10. **权限缓存** → `perm` 对象在 `<script>` 顶层预计算（参考 §7.3）
 11. **搜索映射** → `searchKey` → 资源定义的搜索字段（各资源独立定义）
 12. **分页模式** → `pagination` 与 `queryForm` 分离（参考 §4.4）
 13. **多选功能** → `selectedRows`、取消选择、批量删除
-14. **操作列** → `BeeActionCell` + `getActions(row)`，按 §6.2 添加模块特有操作
+14. **操作列** → `BeeActionCell` + `getActions(row)`，按附录 A 对应子节添加模块特有操作
 15. **操作确认** → 单个删除 / 批量删除（区分可删除/不可删除行）
 16. **删除警告** → 有级联删除风险的资源需添加 `warning-text`（参考 §8.1）
 
@@ -741,7 +1180,158 @@ function handleSearch() {
 
 ## 附录 A：全部资源特性总表
 
-### A.1 工作负载 (Workload)
+以下按模块分类列出所有资源的 summary、pageMeta、列配置和行操作，本附录为唯一信息源。
+
+### A.1 节点 (Node)
+
+#### A.1.1 摘要
+
+| 资源 | 英文名 | 类别 | 首列组件 | namespace筛选 | 核心列 | 特有操作 |
+| --- | --- | --- | --- | --- | --- | --- |
+| Node | 节点 | 集群级 | `BeeNodeInfoCell` | ❌ | CPU/内存使用率、Pod数、Kubelet版本、状态 | 隔离(Cordon)、恢复(Uncordon)、驱逐(Drain) |
+
+#### A.1.2 详细配置
+
+**pageMeta** (`src/config/kubernetes/node.ts` → `NODE_PAGE_META`)：
+
+| 属性 | 值 |
+| --- | --- |
+| `icon` | `kubernetes-node` |
+| `title` | `节点` |
+| `description` | `节点（Node）是 Kubernetes 集群中的工作机器，负责运行容器化应用（Pod）。通过节点管理可以查看集群中所有节点的运行状态、资源使用情况，并支持节点调度控制等运维操作。` |
+
+| 列宽 | 组件 | 关键属性 |
+| --- | --- | --- |
+| 500px | `BeeNodeInfoCell` | `uid`, `name`, `ip`, `description`, `icon-size: 32` |
+| 180px | `BeeStatusCell` | `status`, `statusMsg`, `options: NODE_STATUS_OPTIONS` |
+| 160px | `BeeResourceUsageCell` | `percentage: cpuUsage`, `fieldName: "CPU"` |
+| 160px | `BeeResourceUsageCell` | `percentage: memUsage`, `fieldName: "内存"` |
+| 120px | `BeeTableCommonCell` | `text: podCount`, `subtext: "Pod 数"` |
+| 160px | `BeeTableCommonCell` | `text: kubeletVersion`, `subtext: "Kubelet 版本"` |
+| 200px | `BeeAuditCell` | `username: createBy`, `datetime: createAt` |
+| 150px | `BeeActionCell` | `actions: getActions(row)` |
+
+**行操作**：通用操作（详情 + 编辑YAML + 删除）+ 以下特有操作
+
+| 特有操作 | icon | 权限 | 说明 |
+| --- | --- | --- | --- |
+| 隔离 (Cordon) | `kubernetes-cordon` | `edit` | 标记节点不可调度，已有 Pod 不受影响 |
+| 恢复 (Uncordon) | `kubernetes-uncordon` | `edit` | 恢复节点可调度 |
+| 驱逐 (Drain) | `kubernetes-drain` | `edit` | 迁移节点上所有 Pod 后标记不可调度 |
+
+> **Node 特殊说明**：
+> - 无创建路由，节点由集群自动发现注册
+> - CPU/内存使用率使用 `BeeResourceUsageCell` 展示（内置进度条）
+
+### A.2 命名空间 (Namespace)
+
+#### A.2.1 摘要
+
+| 资源 | 英文名 | 类别 | 首列组件 | namespace筛选 | 核心列 | 特有操作 |
+| --- | --- | --- | --- | --- | --- | --- |
+| Namespace | 命名空间 | 集群级 | `BeeNamespaceInfoCell` | ❌ | 状态、类型 | 资源配额 |
+
+#### A.2.2 详细配置
+
+**pageMeta** (`src/config/kubernetes/namespace.ts` → `NAMESPACE_PAGE_META`)：
+
+| 属性 | 值 |
+| --- | --- |
+| `icon` | `kubernetes-namespace` |
+| `title` | `命名空间` |
+| `description` | `命名空间（Namespace）是 Kubernetes 集群中用于资源隔离的虚拟集群，可以将集群划分为多个独立的工作空间，实现项目、团队或环境之间的资源隔离和管理。` |
+
+| 列宽 | 组件 | 关键属性 |
+| --- | --- | --- |
+| 500px | `BeeNamespaceInfoCell` | `uid`, `name`, `description`, `icon-size: 32` |
+| min-160px | `BeeStatusCell` | `status`, `statusMsg`, `options: NAMESPACE_STATUS_OPTIONS` |
+| 200px | `BeeAuditCell` | `username: createBy`, `datetime: createAt`, `field-name: "创建人 / 时间"` |
+| 200px | `BeeAuditCell` | `username: updateBy`, `datetime: updateAt`, `field-name: "更新人 / 时间"` |
+| 150px | `BeeActionCell` | `actions: getActions(row)` |
+
+**行操作**：通用操作（详情 + 编辑YAML + 删除）+ 以下特有操作
+
+| 特有操作 | icon | 权限 | 说明 |
+| --- | --- | --- | --- |
+| 资源配额 | `kubernetes-quota` | `edit` | 管理命名空间的 ResourceQuota 和 LimitRange |
+
+> **Namespace 特殊说明**：
+> - 集群级资源，无 namespace 筛选，无 Namespaced 继承
+> - 删除时需级联警告："删除命名空间将同时删除该命名空间下的所有资源！"
+
+---
+
+### A.3 CRD
+
+#### A.3.1 摘要
+
+| 资源 | 英文名 | 类别 | 首列组件 | namespace筛选 | 核心列 | 特有操作 |
+| --- | --- | --- | --- | --- | --- | --- |
+| CustomResourceDefinition | 自定义资源定义 | 集群级 | `BeeCustomResourceDefinitionInfoCell` | ❌ | Group、Version、Scope(Namespaced/Cluster)、状态 | — |
+
+#### A.3.2 详细配置
+
+**pageMeta** (`src/config/kubernetes/customresourcedefinition.ts` → `CUSTOMRESOURCEDEFINITION_PAGE_META`)：
+
+| 属性 | 值 |
+| --- | --- |
+| `icon` | `kubernetes-customresourcedefinition` |
+| `title` | `自定义资源定义` |
+| `description` | `自定义资源定义（CustomResourceDefinition）是 Kubernetes 中用于扩展 API 的机制，允许用户创建自定义资源类型，实现对 Kubernetes 集群功能的定制化扩展。` |
+
+| 列宽 | 组件 | 关键属性 |
+| --- | --- | --- |
+| 500px | `BeeCustomResourceDefinitionInfoCell` | `uid`, `name`, `description`, `icon-size: 32` |
+| 250px | `BeeTableCommonCell` | `text: group`, `subtext: "API 组"` |
+| 120px | `BeeTableCommonCell` | `text: version`, `subtext: "版本"` |
+| 160px | `BeeTableCommonCell` | `text: scope`, `subtext: "作用范围"` |
+| 200px | `BeeAuditCell` | `username: createBy`, `datetime: createAt` |
+| 200px | `BeeAuditCell` | `username: updateBy`, `datetime: updateAt` |
+| 150px | `BeeActionCell` | `actions: getActions(row)` |
+
+**行操作**：通用操作（详情 + 编辑YAML + 删除）
+
+### A.4 Pod 容器组
+
+#### A.4.1 摘要
+
+| 资源 | 英文名 | 类别 | 首列组件 | namespace筛选 | 核心列 | 特有操作 |
+| --- | --- | --- | --- | --- | --- | --- |
+| Pod | 容器组 | 命名空间级 | `BeePodInfoCell` | ✅ | 状态、节点、IP、重启次数 | 日志、终端、删除 |
+
+#### A.4.2 详细配置
+
+**pageMeta** (`src/config/kubernetes/pod.ts` → `POD_PAGE_META`)：
+
+| 属性 | 值 |
+| --- | --- |
+| `icon` | `kubernetes-pod` |
+| `title` | `容器组` |
+| `description` | `容器组（Pod）是 Kubernetes 中最小的可部署计算单元，由一个或多个共享网络和存储资源的容器组成。` |
+
+| 列宽 | 组件 | 关键属性 |
+| --- | --- | --- |
+| 500px | `BeePodInfoCell` | `uid`, `name`, `ip`, `icon-size: 32` |
+| 200px | `BeeTableCommonCell` | `text: namespace`, `subtext: "命名空间"` |
+| 200px | `BeeTableCommonCell` | `text: nodeName`, `subtext: "所在节点"` |
+| 160px | `BeeStatusCell` | `status: phase`, `options: POD_STATUS_OPTIONS` |
+| 120px | `BeeTableCommonCell` | `text: restartCount`, `subtext: "重启次数"` |
+| 160px | `BeeTableCommonCell` | `text: age`, `subtext: "运行时长"` |
+| 200px | `BeeAuditCell` | `username: createBy`, `datetime: createAt` |
+| 150px | `BeeActionCell` | `actions: getActions(row)` |
+
+**行操作**：通用操作（详情 + 编辑 + 编辑YAML + 删除）+ 以下特有操作
+
+| 特有操作 | icon | 权限 | 说明 |
+| --- | --- | --- | --- |
+| 查看日志 | `basic-log` | `view` | 打开 Pod 日志查看面板 |
+| 终端 (Exec) | `basic-terminal` | `edit` | 打开 Web 终端连接到 Pod |
+
+> **Pod 删除说明**：Pod 的通用操作「删除」即支持删除单个 Pod，对应控制器会自动重建。
+
+### A.5 工作负载 (Workload)
+
+#### A.5.1 摘要
 
 | 资源 | 英文名 | 类别 | 首列组件 | namespace筛选 | 核心列 | 特有操作 |
 | --- | --- | --- | --- | --- | --- | --- |
@@ -750,16 +1340,207 @@ function handleSearch() {
 | DaemonSet | 守护进程 | 命名空间级 | `BeeWorkloadInfoCell` | ✅ | 状态、节点数、策略 | 重启 |
 | Job | 任务 | 命名空间级 | `BeeWorkloadInfoCell` | ✅ | 状态、完成数、持续时间 | — |
 | CronJob | 定时任务 | 命名空间级 | `BeeWorkloadInfoCell` | ✅ | 状态、调度规则、上次执行 | 触发执行、暂停/恢复 |
-| Pod | 容器组 | 命名空间级 | `BeePodInfoCell` | ✅ | 状态、节点、IP、重启次数 | 日志、终端、删除 |
 
-### A.2 配置 (Config)
+#### A.5.2 Deployment 无状态应用
+
+**pageMeta** (`src/config/kubernetes/workload/deployment.ts` → `DEPLOYMENT_PAGE_META`)：
+
+| 属性 | 值 |
+| --- | --- |
+| `icon` | `kubernetes-deployment` |
+| `title` | `无状态应用` |
+| `description` | `无状态应用（Deployment）是 Kubernetes 中用于管理无状态工作负载的控制器，支持应用的部署、扩缩容、滚动更新和回滚等操作。` |
+
+| 列宽 | 组件 | 关键属性 |
+| --- | --- | --- |
+| 500px | `BeeWorkloadInfoCell` | `uid`, `name`, `description`, `icon: kubernetes-deployment`, `icon-size: 32` |
+| 200px | `BeeTableCommonCell` | `text: namespace`, `subtext: "命名空间"` |
+| 160px | `BeeStatusCell` | `status`, `statusMsg`, `options: DEPLOYMENT_STATUS_OPTIONS` |
+| 120px | `BeeTableCommonCell` | `text: "readyReplicas / replicas"`, `subtext: "副本数"` |
+| 160px | `BeeTableCommonCell` | `text: 策略中文名`, `subtext: strategyType` |
+| 200px | `BeeAuditCell` | `username: createBy`, `datetime: createAt` |
+| 200px | `BeeAuditCell` | `username: updateBy`, `datetime: updateAt` |
+| 150px | `BeeActionCell` | `actions: getActions(row)` |
+
+**行操作**：通用操作（详情 + 编辑 + 编辑YAML + 删除）+ 以下特有操作
+
+| 特有操作 | icon | 权限 | 说明 |
+| --- | --- | --- | --- |
+| 扩缩容 | `kubernetes-scale` | `edit` | 弹窗修改副本数 |
+| 重启 | `basic-refresh` | `edit` | 触发滚动重启 |
+| 回滚 | `kubernetes-rollback` | `edit` | 弹窗选择历史版本回滚 |
+
+#### A.5.3 StatefulSet 有状态应用
+
+**pageMeta** (`src/config/kubernetes/workload/statefulset.ts` → `STATEFULSET_PAGE_META`)：
+
+| 属性 | 值 |
+| --- | --- |
+| `icon` | `kubernetes-statefulset` |
+| `title` | `有状态应用` |
+| `description` | `有状态应用（StatefulSet）是 Kubernetes 中用于管理有状态工作负载的控制器，为每个 Pod 提供稳定的网络标识和持久存储。` |
+
+| 列宽 | 组件 | 关键属性 |
+| --- | --- | --- |
+| 500px | `BeeWorkloadInfoCell` | `uid`, `name`, `description`, `icon: kubernetes-statefulset`, `icon-size: 32` |
+| 200px | `BeeTableCommonCell` | `text: namespace`, `subtext: "命名空间"` |
+| 160px | `BeeStatusCell` | `status`, `statusMsg`, `options: STATEFULSET_STATUS_OPTIONS` |
+| 120px | `BeeTableCommonCell` | `text: "readyReplicas / replicas"`, `subtext: "副本数"` |
+| 160px | `BeeTableCommonCell` | `text: podManagementPolicy`, `subtext: "Pod 管理策略"` |
+| 200px | `BeeAuditCell` | `username: createBy`, `datetime: createAt` |
+| 200px | `BeeAuditCell` | `username: updateBy`, `datetime: updateAt` |
+| 150px | `BeeActionCell` | `actions: getActions(row)` |
+
+**行操作**：通用操作（详情 + 编辑 + 编辑YAML + 删除）+ 以下特有操作
+
+| 特有操作 | icon | 权限 | 说明 |
+| --- | --- | --- | --- |
+| 扩缩容 | `kubernetes-scale` | `edit` | 弹窗修改副本数 |
+| 重启 | `basic-refresh` | `edit` | 触发滚动重启 |
+| 回滚 | `kubernetes-rollback` | `edit` | 弹窗选择历史版本回滚 |
+
+#### A.5.4 DaemonSet 守护应用
+
+**pageMeta** (`src/config/kubernetes/workload/daemonset.ts` → `DAEMONSET_PAGE_META`)：
+
+| 属性 | 值 |
+| --- | --- |
+| `icon` | `kubernetes-daemonset` |
+| `title` | `守护应用` |
+| `description` | `守护应用（DaemonSet）是 Kubernetes 中用于确保每个节点运行一个 Pod 副本的控制器，常用于日志采集、监控代理、存储驱动等节点级守护服务。` |
+
+| 列宽 | 组件 | 关键属性 |
+| --- | --- | --- |
+| 500px | `BeeWorkloadInfoCell` | `uid`, `name`, `description`, `icon: kubernetes-daemonset`, `icon-size: 32` |
+| 200px | `BeeTableCommonCell` | `text: namespace`, `subtext: "命名空间"` |
+| 160px | `BeeStatusCell` | `status`, `statusMsg`, `options: DAEMONSET_STATUS_OPTIONS` |
+| 160px | `BeeTableCommonCell` | `text: "readyNodes / nodeCount"`, `subtext: "就绪节点数"` |
+| 200px | `BeeAuditCell` | `username: createBy`, `datetime: createAt` |
+| 200px | `BeeAuditCell` | `username: updateBy`, `datetime: updateAt` |
+| 150px | `BeeActionCell` | `actions: getActions(row)` |
+
+**行操作**：通用操作（详情 + 编辑 + 编辑YAML + 删除）+ 以下特有操作
+
+| 特有操作 | icon | 权限 | 说明 |
+| --- | --- | --- | --- |
+| 重启 | `basic-refresh` | `edit` | 触发滚动重启 |
+
+#### A.5.5 Job 任务
+
+**pageMeta** (`src/config/kubernetes/workload/job.ts` → `JOB_PAGE_META`)：
+
+| 属性 | 值 |
+| --- | --- |
+| `icon` | `kubernetes-job` |
+| `title` | `任务` |
+| `description` | `任务（Job）用于运行一次性批量任务，任务完成后 Pod 会自动终止，适用于数据处理、备份、定时计算等场景。` |
+
+| 列宽 | 组件 | 关键属性 |
+| --- | --- | --- |
+| 500px | `BeeWorkloadInfoCell` | `uid`, `name`, `description`, `icon: kubernetes-job`, `icon-size: 32` |
+| 200px | `BeeTableCommonCell` | `text: namespace`, `subtext: "命名空间"` |
+| 160px | `BeeStatusCell` | `status`, `statusMsg`, `options: JOB_STATUS_OPTIONS` |
+| 160px | `BeeTableCommonCell` | `text: "succeeded / completions"`, `subtext: "完成进度"` |
+| 160px | `BeeTableCommonCell` | `text: duration`, `subtext: "运行时长"` |
+| 200px | `BeeAuditCell` | `username: createBy`, `datetime: createAt` |
+| 200px | `BeeAuditCell` | `username: updateBy`, `datetime: updateAt` |
+| 150px | `BeeActionCell` | `actions: getActions(row)` |
+
+**行操作**：详情 + 删除（Job 创建后不可编辑，不支持编辑和编辑YAML操作）
+
+> **Job 特殊说明**：Job 创建后不可编辑，仅支持查看和删除操作。
+
+#### A.5.6 CronJob 定时任务
+
+**pageMeta** (`src/config/kubernetes/workload/cronjob.ts` → `CRONJOB_PAGE_META`)：
+
+| 属性 | 值 |
+| --- | --- |
+| `icon` | `kubernetes-cronjob` |
+| `title` | `定时任务` |
+| `description` | `定时任务（CronJob）用于定时运行任务，按照 Cron 表达式调度 Job 执行。` |
+
+| 列宽 | 组件 | 关键属性 |
+| --- | --- | --- |
+| 500px | `BeeWorkloadInfoCell` | `uid`, `name`, `description`, `icon: kubernetes-cronjob`, `icon-size: 32` |
+| 200px | `BeeTableCommonCell` | `text: namespace`, `subtext: "命名空间"` |
+| 160px | `BeeStatusCell` | `status`, `statusMsg`, `options: CRONJOB_STATUS_OPTIONS` |
+| 200px | `BeeTableCommonCell` | `text: schedule`, `subtext: "调度规则"` |
+| 160px | `BeeTableCommonCell` | `text: lastScheduleTime`, `subtext: "上次执行"` |
+| 200px | `BeeAuditCell` | `username: createBy`, `datetime: createAt` |
+| 200px | `BeeAuditCell` | `username: updateBy`, `datetime: updateAt` |
+| 150px | `BeeActionCell` | `actions: getActions(row)` |
+
+**行操作**：通用操作（详情 + 编辑 + 编辑YAML + 删除）+ 以下特有操作
+
+| 特有操作 | icon | 权限 | 说明 |
+| --- | --- | --- | --- |
+| 触发执行 | `basic-play` | `edit` | 手动触发一次 Job 执行 |
+| 暂停/恢复 | `basic-pause` / `basic-play` | `edit` | 暂停/恢复定时调度 |
+
+### A.6 配置 (Config)
+
+#### A.6.1 摘要
 
 | 资源 | 英文名 | 类别 | 首列组件 | namespace筛选 | 核心列 | 特有操作 |
 | --- | --- | --- | --- | --- | --- | --- |
-| ConfigMap | 配置项 | 命名空间级 | `BeeConfigInfoCell` | ✅ | 数据条目数 | — |
-| Secret | 保密字典 | 命名空间级 | `BeeConfigInfoCell` | ✅ | 类型、数据条目数 | — |
+| ConfigMap | 配置项 | 命名空间级 | `BeeConfigInfoCell` | ✅ | 数据条目数 | 管理数据 |
+| Secret | 保密字典 | 命名空间级 | `BeeConfigInfoCell` | ✅ | 类型、数据条目数 | 管理数据 |
 
-### A.3 网络 (Network)
+#### A.6.2 ConfigMap 配置项
+
+**pageMeta** (`src/config/kubernetes/config/configmap.ts` → `CONFIGMAP_PAGE_META`)：
+
+| 属性 | 值 |
+| --- | --- |
+| `icon` | `kubernetes-configmap` |
+| `title` | `配置项` |
+| `description` | `配置（ConfigMap）是 Kubernetes 中用于存储非敏感配置数据的资源对象，支持以键值对形式管理应用的配置信息。` |
+
+| 列宽 | 组件 | 关键属性 |
+| --- | --- | --- |
+| 500px | `BeeConfigInfoCell` | `uid`, `name`, `description`, `icon-size: 32` |
+| 200px | `BeeTableCommonCell` | `text: namespace`, `subtext: "命名空间"` |
+| 160px | `BeeTableCommonCell` | `text: dataCount + " 条"`, `subtext: "数据条目"` |
+| 200px | `BeeAuditCell` | `username: createBy`, `datetime: createAt` |
+| 200px | `BeeAuditCell` | `username: updateBy`, `datetime: updateAt` |
+| 150px | `BeeActionCell` | `actions: getActions(row)` |
+
+**行操作**：通用操作（详情 + 编辑 + 编辑YAML + 删除）+ 以下特有操作
+
+| 特有操作 | icon | 权限 | 说明 |
+| --- | --- | --- | --- |
+| 管理数据 | `basic-edit` | `edit` | 管理键值对数据条目 |
+
+#### A.6.3 Secret 保密字典
+
+**pageMeta** (`src/config/kubernetes/config/secret.ts` → `SECRET_PAGE_META`)：
+
+| 属性 | 值 |
+| --- | --- |
+| `icon` | `kubernetes-secret` |
+| `title` | `保密字典` |
+| `description` | `密钥（Secret）是 Kubernetes 中用于存储敏感信息（如密码、令牌、密钥）的资源对象，通过加密方式保障数据安全。` |
+
+| 列宽 | 组件 | 关键属性 |
+| --- | --- | --- |
+| 500px | `BeeConfigInfoCell` | `uid`, `name`, `description`, `icon-size: 32` |
+| 200px | `BeeTableCommonCell` | `text: namespace`, `subtext: "命名空间"` |
+| 160px | `BeeTableCommonCell` | `text: type`, `subtext: "类型"` |
+| 160px | `BeeTableCommonCell` | `text: dataCount + " 条"`, `subtext: "数据条目"` |
+| 200px | `BeeAuditCell` | `username: createBy`, `datetime: createAt` |
+| 200px | `BeeAuditCell` | `username: updateBy`, `datetime: updateAt` |
+| 150px | `BeeActionCell` | `actions: getActions(row)` |
+
+**行操作**：通用操作（详情 + 编辑 + 编辑YAML + 删除）+ 以下特有操作
+
+| 特有操作 | icon | 权限 | 说明 |
+| --- | --- | --- | --- |
+| 管理数据 | `basic-edit` | `edit` | 管理键值对数据条目 |
+
+### A.7 网络 (Network)
+
+#### A.7.1 摘要
 
 | 资源 | 英文名 | 类别 | 首列组件 | namespace筛选 | 核心列 | 特有操作 |
 | --- | --- | --- | --- | --- | --- | --- |
@@ -767,7 +1548,76 @@ function handleSearch() {
 | Ingress | 路由 | 命名空间级 | `BeeNetworkInfoCell` | ✅ | 规则(Host+Path)、Service后端 | — |
 | NetworkPolicy | 网络策略 | 命名空间级 | `BeeNetworkInfoCell` | ✅ | PodSelector、PolicyTypes | — |
 
-### A.4 存储 (Storage)
+#### A.7.2 Service 服务
+
+**pageMeta** (`src/config/kubernetes/network/service.ts` → `SERVICE_PAGE_META`)：
+
+| 属性 | 值 |
+| --- | --- |
+| `icon` | `kubernetes-service` |
+| `title` | `服务` |
+| `description` | `服务（Service）是 Kubernetes 中用于将一组 Pod 暴露为网络服务的资源对象，提供稳定的访问入口和负载均衡。` |
+
+| 列宽 | 组件 | 关键属性 |
+| --- | --- | --- |
+| 500px | `BeeNetworkInfoCell` | `uid`, `name`, `description`, `icon-size: 32` |
+| 200px | `BeeTableCommonCell` | `text: namespace`, `subtext: "命名空间"` |
+| 180px | `BeeTableCommonCell` | `text: clusterIP`, `subtext: "集群 IP"` |
+| 160px | `BeeTableCommonCell` | `text: "ports列表"`, `subtext: "端口"` |
+| 120px | `BeeTableCommonCell` | `text: type`, `subtext: "类型"` |
+| 200px | `BeeAuditCell` | `username: createBy`, `datetime: createAt` |
+| 200px | `BeeAuditCell` | `username: updateBy`, `datetime: updateAt` |
+| 150px | `BeeActionCell` | `actions: getActions(row)` |
+
+**行操作**：通用操作（详情 + 编辑 + 编辑YAML + 删除）
+
+#### A.7.3 Ingress 路由
+
+**pageMeta** (`src/config/kubernetes/network/ingress.ts` → `INGRESS_PAGE_META`)：
+
+| 属性 | 值 |
+| --- | --- |
+| `icon` | `kubernetes-ingress` |
+| `title` | `路由` |
+| `description` | `路由（Ingress）是 Kubernetes 中用于管理集群外部 HTTP/HTTPS 访问的资源对象，支持基于域名和路径的流量路由。` |
+
+| 列宽 | 组件 | 关键属性 |
+| --- | --- | --- |
+| 500px | `BeeNetworkInfoCell` | `uid`, `name`, `description`, `icon-size: 32` |
+| 200px | `BeeTableCommonCell` | `text: namespace`, `subtext: "命名空间"` |
+| 300px | `BeeTableCommonCell` | `text: host+path`, `subtext: "规则"` |
+| 200px | `BeeTableCommonCell` | `text: serviceName:port`, `subtext: "后端"` |
+| 200px | `BeeAuditCell` | `username: createBy`, `datetime: createAt` |
+| 200px | `BeeAuditCell` | `username: updateBy`, `datetime: updateAt` |
+| 150px | `BeeActionCell` | `actions: getActions(row)` |
+
+**行操作**：通用操作（详情 + 编辑 + 编辑YAML + 删除）
+
+#### A.7.4 NetworkPolicy 网络策略
+
+**pageMeta** (`src/config/kubernetes/network/networkpolicy.ts` → `NETWORKPOLICY_PAGE_META`)：
+
+| 属性 | 值 |
+| --- | --- |
+| `icon` | `kubernetes-networkpolicy` |
+| `title` | `网络策略` |
+| `description` | `网络策略（NetworkPolicy）是 Kubernetes 中用于控制 Pod 之间网络通信的资源对象，通过定义入站和出站规则实现网络隔离。` |
+
+| 列宽 | 组件 | 关键属性 |
+| --- | --- | --- |
+| 500px | `BeeNetworkInfoCell` | `uid`, `name`, `description`, `icon-size: 32` |
+| 200px | `BeeTableCommonCell` | `text: namespace`, `subtext: "命名空间"` |
+| 250px | `BeeTableCommonCell` | `text: podSelector`, `subtext: "Pod 选择器"` |
+| 200px | `BeeTableCommonCell` | `text: policyTypes`, `subtext: "策略类型"` |
+| 200px | `BeeAuditCell` | `username: createBy`, `datetime: createAt` |
+| 200px | `BeeAuditCell` | `username: updateBy`, `datetime: updateAt` |
+| 150px | `BeeActionCell` | `actions: getActions(row)` |
+
+**行操作**：通用操作（详情 + 编辑 + 编辑YAML + 删除）
+
+### A.8 存储 (Storage)
+
+#### A.8.1 摘要
 
 | 资源 | 英文名 | 类别 | 首列组件 | namespace筛选 | 核心列 | 特有操作 |
 | --- | --- | --- | --- | --- | --- | --- |
@@ -775,48 +1625,166 @@ function handleSearch() {
 | PersistentVolumeClaim | 持久卷声明 | 命名空间级 | `BeeStorageInfoCell` | ✅ | 容量、访问模式、绑定PV | — |
 | StorageClass | 存储类 | 集群级 | `BeeStorageInfoCell` | ❌ | Provisioner、回收策略、是否默认 | — |
 
-### A.5 安全 (Security)
+#### A.8.2 PersistentVolume 持久卷
+
+**pageMeta** (`src/config/kubernetes/storage/persistentvolume.ts` → `PERSISTENTVOLUME_PAGE_META`)：
+
+| 属性 | 值 |
+| --- | --- |
+| `icon` | `kubernetes-persistentvolume` |
+| `title` | `持久卷` |
+| `description` | `持久卷（PersistentVolume）是 Kubernetes 集群中管理员预先配置的存储资源，独立于 Pod 生命周期，为应用提供持久化存储能力。` |
+
+| 列宽 | 组件 | 关键属性 |
+| --- | --- | --- |
+| 500px | `BeeStorageInfoCell` | `uid`, `name`, `description`, `icon-size: 32` |
+| 160px | `BeeTableCommonCell` | `text: "storageSize"`, `subtext: "容量"` |
+| 160px | `BeeTableCommonCell` | `text: accessModes`, `subtext: "访问模式"` |
+| 140px | `BeeTableCommonCell` | `text: reclaimPolicy`, `subtext: "回收策略"` |
+| 160px | `BeeStatusCell` | `status: phase`, `options: PERSISTENTVOLUME_PHASE_OPTIONS` |
+| 200px | `BeeAuditCell` | `username: createBy`, `datetime: createAt` |
+| 200px | `BeeAuditCell` | `username: updateBy`, `datetime: updateAt` |
+| 150px | `BeeActionCell` | `actions: getActions(row)` |
+
+**行操作**：通用操作（详情 + 编辑 + 编辑YAML + 删除）
+
+#### A.8.3 PersistentVolumeClaim 持久卷声明
+
+**pageMeta** (`src/config/kubernetes/storage/persistentvolumeclaim.ts` → `PERSISTENTVOLUMECLAIM_PAGE_META`)：
+
+| 属性 | 值 |
+| --- | --- |
+| `icon` | `kubernetes-persistentvolumeclaim` |
+| `title` | `持久卷声明` |
+| `description` | `持久卷声明（PersistentVolumeClaim）是用户对持久卷的存储请求，支持指定容量、访问模式等存储需求，实现存储资源的动态申请与绑定。` |
+
+| 列宽 | 组件 | 关键属性 |
+| --- | --- | --- |
+| 500px | `BeeStorageInfoCell` | `uid`, `name`, `description`, `icon-size: 32` |
+| 200px | `BeeTableCommonCell` | `text: namespace`, `subtext: "命名空间"` |
+| 160px | `BeeTableCommonCell` | `text: "storageSize"`, `subtext: "容量"` |
+| 160px | `BeeTableCommonCell` | `text: accessModes`, `subtext: "访问模式"` |
+| 300px | `BeeTableCommonCell` | `text: volumeName`, `subtext: "绑定的 PersistentVolume"` |
+| 160px | `BeeStatusCell` | `status: phase`, `options: PERSISTENTVOLUMECLAIM_PHASE_OPTIONS` |
+| 200px | `BeeAuditCell` | `username: createBy`, `datetime: createAt` |
+| 200px | `BeeAuditCell` | `username: updateBy`, `datetime: updateAt` |
+| 150px | `BeeActionCell` | `actions: getActions(row)` |
+
+**行操作**：通用操作（详情 + 编辑 + 编辑YAML + 删除）
+
+#### A.8.4 StorageClass 存储类
+
+**pageMeta** (`src/config/kubernetes/storage/storageclass.ts` → `STORAGECLASS_PAGE_META`)：
+
+| 属性 | 值 |
+| --- | --- |
+| `icon` | `kubernetes-storageclass` |
+| `title` | `存储类` |
+| `description` | `存储类（StorageClass）是 Kubernetes 中用于定义动态存储制备策略的资源对象，管理员可配置不同的存储后端和参数供用户选择。` |
+
+| 列宽 | 组件 | 关键属性 |
+| --- | --- | --- |
+| 500px | `BeeStorageInfoCell` | `uid`, `name`, `description`, `icon-size: 32` |
+| 200px | `BeeTableCommonCell` | `text: provisioner`, `subtext: "制备器"` |
+| 160px | `BeeTableCommonCell` | `text: reclaimPolicy`, `subtext: "回收策略"` |
+| 160px | `BeeTableCommonCell` | `text: 是/否`, `subtext: "默认存储类"` |
+| 200px | `BeeAuditCell` | `username: createBy`, `datetime: createAt` |
+| 200px | `BeeAuditCell` | `username: updateBy`, `datetime: updateAt` |
+| 150px | `BeeActionCell` | `actions: getActions(row)` |
+
+**行操作**：通用操作（详情 + 编辑 + 编辑YAML + 删除）
+
+### A.9 安全 (Security)
+
+#### A.9.1 摘要
 
 | 资源 | 英文名 | 类别 | 首列组件 | namespace筛选 | 核心列 | 特有操作 |
 | --- | --- | --- | --- | --- | --- | --- |
-| ServiceAccount | 服务账号 | 命名空间级 | `BeeSecurityInfoCell` | ✅ | 关联Secret数 | — |
-| Role | 角色 | 命名空间级 | `BeeSecurityInfoCell` | ✅ | 规则数 | — |
-| ClusterRole | 集群角色 | 集群级 | `BeeSecurityInfoCell` | ❌ | 规则数 | — |
-| RoleBinding | 角色绑定 | 命名空间级 | `BeeSecurityInfoCell` | ✅ | 绑定Role、Subjects | — |
-| ClusterRoleBinding | 集群角色绑定 | 集群级 | `BeeSecurityInfoCell` | ❌ | 绑定ClusterRole、Subjects | — |
+| ServiceAccount | 服务账号 | 命名空间级 | `BeeSecurityInfoCell` | ✅ | 关联Secret数 | 管理镜像拉取密钥 |
+| Role | 角色 | 命名空间级 | `BeeSecurityInfoCell` | ✅ | 规则数 | 更新规则 |
+| ClusterRole | 集群角色 | 集群级 | `BeeSecurityInfoCell` | ❌ | 规则数 | 更新规则 |
+| RoleBinding | 角色绑定 | 命名空间级 | `BeeSecurityInfoCell` | ✅ | 绑定Role、Subjects | 管理授权主体 |
+| ClusterRoleBinding | 集群角色绑定 | 集群级 | `BeeSecurityInfoCell` | ❌ | 绑定ClusterRole、Subjects | 管理授权主体 |
 
-### A.6 节点 (Node)
+#### A.9.2 ServiceAccount 服务账号
 
-| 资源 | 英文名 | 类别 | 首列组件 | namespace筛选 | 核心列 | 特有操作 |
-| --- | --- | --- | --- | --- | --- | --- |
-| Node | 节点 | 集群级 | `BeeNodeInfoCell` | ❌ | CPU/内存使用率、Pod数、Kubelet版本、状态 | 隔离(Cordon)、驱逐(Drain) |
+**pageMeta** (`src/config/kubernetes/security/serviceaccount.ts` → `SERVICEACCOUNT_PAGE_META`)：
 
-**Node 特殊说明**：
-- 使用 `BeeNodeInfoCell`（含 IP 展示）
-- 无创建路由（节点由集群自动发现注册）
-- 列信息突出资源水位：CPU 使用率、内存使用率（可用进度条展示）
-- 特有操作：隔离(Cordon, 禁止新 Pod 调度) / 恢复隔离(Uncordon) / 驱逐(Drain, 迁移现有 Pod)
+| 属性 | 值 |
+| --- | --- |
+| `icon` | `kubernetes-serviceaccount` |
+| `title` | `服务账号` |
+| `description` | `服务账号（ServiceAccount）是 Kubernetes 中为 Pod 提供身份认证的账户资源，用于控制 Pod 对 API Server 的访问权限。` |
 
-### A.7 CRD
+| 列宽 | 组件 | 关键属性 |
+| --- | --- | --- |
+| 500px | `BeeSecurityInfoCell` | `uid`, `name`, `description`, `icon-size: 32` |
+| 200px | `BeeTableCommonCell` | `text: namespace`, `subtext: "命名空间"` |
+| 160px | `BeeTableCommonCell` | `text: secretCount + " 个"`, `subtext: "关联 Secret"` |
+| 200px | `BeeAuditCell` | `username: createBy`, `datetime: createAt` |
+| 200px | `BeeAuditCell` | `username: updateBy`, `datetime: updateAt` |
+| 150px | `BeeActionCell` | `actions: getActions(row)` |
 
-| 资源 | 英文名 | 类别 | 首列组件 | namespace筛选 | 核心列 | 特有操作 |
-| --- | --- | --- | --- | --- | --- | --- |
-| CustomResourceDefinition | 自定义资源定义 | 集群级 | `BeeCustomResourceDefinitionInfoCell` | ❌ | Group、Version、Scope(Namespaced/Cluster)、状态 | — |
+**行操作**：通用操作（详情 + 编辑 + 编辑YAML + 删除）+ 以下特有操作
 
-### A.8 命名空间 (Namespace)
+| 特有操作 | icon | 权限 | 说明 |
+| --- | --- | --- | --- |
+| 管理镜像拉取密钥 | `kubernetes-imagepullsecret` | `edit` | 管理关联的 imagePullSecrets |
 
-| 资源 | 英文名 | 类别 | 首列组件 | namespace筛选 | 核心列 | 特有操作 |
-| --- | --- | --- | --- | --- | --- | --- |
-| Namespace | 命名空间 | 集群级 | `BeeNamespaceInfoCell` | ❌ | 状态、类型 | 资源配额 |
+#### A.9.3 Role 角色 & ClusterRole 集群角色
 
-**Namespace 特殊说明**：
-- 集群级资源，无 namespace 筛选，无 Namespaced 继承
-- 使用 `BeeNamespaceInfoCell`（无 UID 展示）
-- 删除时需级联警告："删除命名空间将同时删除该命名空间下的所有资源！"
+**pageMeta**：Role → `src/config/kubernetes/security/role.ts` (`ROLE_PAGE_META`) / ClusterRole → `CLUSTERROLE_PAGE_META`
+
+| 属性 | 值 |
+| --- | --- |
+| `icon` | `kubernetes-role` |
+| `title` | `角色` / `集群角色` |
+| `description` | `角色（Role/ClusterRole）是 Kubernetes 中用于定义 API 资源访问权限规则集合的资源对象，Role 作用于命名空间级别，ClusterRole 作用于集群级别。` |
+
+| 列宽 | 组件 | 关键属性 |
+| --- | --- | --- |
+| 500px | `BeeSecurityInfoCell` | `uid`, `name`, `description`, `icon-size: 32` |
+| 200px | `BeeTableCommonCell` | `text: namespace`（仅 Role）, `subtext: "命名空间"` |
+| 160px | `BeeTableCommonCell` | `text: ruleCount + " 条"`, `subtext: "规则数"` |
+| 200px | `BeeAuditCell` | `username: createBy`, `datetime: createAt` |
+| 200px | `BeeAuditCell` | `username: updateBy`, `datetime: updateAt` |
+| 150px | `BeeActionCell` | `actions: getActions(row)` |
+
+**行操作**：通用操作（详情 + 编辑 + 编辑YAML + 删除）+ 以下特有操作
+
+| 特有操作 | icon | 权限 | 说明 |
+| --- | --- | --- | --- |
+| 更新规则 | `kubernetes-rule` | `edit` | 管理角色的权限规则 |
+
+#### A.9.4 RoleBinding 角色绑定 & ClusterRoleBinding 集群角色绑定
+
+**pageMeta**：RoleBinding → `src/config/kubernetes/security/rolebinding.ts` (`ROLEBINDING_PAGE_META`) / ClusterRoleBinding → `CLUSTERROLEBINDING_PAGE_META`
+
+| 属性 | 值 |
+| --- | --- |
+| `icon` | `kubernetes-rolebinding` |
+| `title` | `角色绑定` / `集群角色绑定` |
+| `description` | `角色绑定（RoleBinding/ClusterRoleBinding）是 Kubernetes 中用于将 Role 或 ClusterRole 授予用户、组或服务账户的资源对象。` |
+
+| 列宽 | 组件 | 关键属性 |
+| --- | --- | --- |
+| 500px | `BeeSecurityInfoCell` | `uid`, `name`, `description`, `icon-size: 32` |
+| 200px | `BeeTableCommonCell` | `text: namespace`（仅 RoleBinding）, `subtext: "命名空间"` |
+| 180px | `BeeTableCommonCell` | `text: roleRef.name`, `subtext: "绑定角色"` |
+| 250px | `BeeTableCommonCell` | `text: "subjects摘要"`, `subtext: "授权主体"` |
+| 200px | `BeeAuditCell` | `username: createBy`, `datetime: createAt` |
+| 200px | `BeeAuditCell` | `username: updateBy`, `datetime: updateAt` |
+| 150px | `BeeActionCell` | `actions: getActions(row)` |
+
+**行操作**：通用操作（详情 + 编辑 + 编辑YAML + 删除）+ 以下特有操作
+
+| 特有操作 | icon | 权限 | 说明 |
+| --- | --- | --- | --- |
+| 管理授权主体 | `kubernetes-subject` | `edit` | 管理绑定的用户/组/ServiceAccount |
 
 ---
 
-### A.9 分类速查对照
+### A.10 分类速查对照
 
 | 维度 | 命名空间级资源 | 集群级资源 |
 | --- | --- | --- |
@@ -825,7 +1793,7 @@ function handleSearch() {
 | **namespace 筛选** | ✅ 必须 | ❌ 不适用 |
 | **loadNamespaceOptions** | ✅ 需要 | ❌ 不需要 |
 | **搜索字段** | 各资源独立定义，典型：`uid`+`name` | 各资源独立定义，典型：`name` |
-| **删除级联警告** | ❌（常规资源） | ✅（如 Namespace / PV 等有级联风险的资源） |
+| **删除级联警告** | ❌（常规资源） | ✅（如 Namespace / PersistentVolume 等有级联风险的资源） |
 
 ## 附录 B：新增资源开发流程
 
