@@ -217,7 +217,7 @@ BeePage
 const queryForm = reactive<Partial<XxxQueryForm>>({})
 
 // API 调用时展开
-const { list, total } = await getXxxPage(clusterUid, {
+const { list, total } = await getXxxList(clusterUid, {
   ...queryForm,
   page: pagination.page,
   pageSize: pagination.pageSize,
@@ -246,7 +246,7 @@ const { list, total } = await getXxxPage(clusterUid, {
 async function loadData() {
   loading.value = true
   try {
-    const { list, total } = await getXxxPage(clusterUid.value, {
+    const { list, total } = await getXxxList(clusterUid.value, {
       ...queryForm,
       page: pagination.page,
       pageSize: pagination.pageSize,
@@ -272,11 +272,11 @@ onMounted(() => {
 **命名空间选项加载**（仅命名空间级资源）：
 
 ```typescript
-import { getNamespacePage } from '@/api/kubernetes/namespace'
+import { getNamespaceList } from '@/api/kubernetes/namespace'
 const namespaceOptions = ref<SelectOption[]>([])
 
 async function loadNamespaceOptions() {
-  const list = await getNamespacePage(clusterUid.value, { mode: 'simple' })
+  const list = await getNamespaceList(clusterUid.value, { mode: 'simple' })
   namespaceOptions.value = [
     { label: '全部命名空间', value: '' },
     ...list.map(ns => ({ label: ns.name, value: ns.name }))
@@ -586,13 +586,9 @@ const perm: Record<string, boolean> = {
 | 操作 | icon | 权限 | 说明 | 行为 | 个性操作 |
 | --- | --- | --- | --- | --- | --- |
 | 取消选择 | `basic-clear` | — | 清空当前表格多选 | 调用 `handleClearSelection()` | ❌ |
-| 导入 | `basic-import` | `create` | 导入 YAML 创建节点 | 打开导入面板 | ❌ |
 | 导出 | `basic-export` | `view` | 导出当前筛选结果 | 调用导出 API | ❌ |
-> **Node 特殊说明**：节点（Node）没有开放创建功能。
-> **Node 特殊说明**：节点（Node）没有开放删除功能。
 
-
-
+> **Node 特殊说明**：节点（Node）没有开放创建和删除功能。
 
 ---
 
@@ -647,11 +643,10 @@ const perm: Record<string, boolean> = {
 | 批量删除 | `basic-delete` | `delete` | 批量删除命名空间 | 区分可删除/不可删除行，弹出确认框 | ❌ |
 | 导入 | `basic-import` | `create` | 导入 YAML | 打开导入面板 | ❌ |
 | 导出 | `basic-export` | `view` | 导出当前筛选结果 | 调用导出 API | ❌ |
+
 > **Namespace 特殊说明**：
 > - 集群级资源，无 namespace 筛选，无 Namespaced 继承
 > - 删除时需级联警告："删除命名空间将同时删除该命名空间下的所有资源！"
-
-
 
 ---
 
@@ -707,7 +702,6 @@ const perm: Record<string, boolean> = {
 | 导入 | `basic-import` | `create` | 导入 YAML | 打开导入面板 | ❌ |
 | 导出 | `basic-export` | `view` | 导出当前筛选结果 | 调用导出 API | ❌ |
 
-
 ---
 
 ## Pod
@@ -757,11 +751,9 @@ const perm: Record<string, boolean> = {
 | --- | --- | --- | --- | --- | --- |
 | 取消选择 | `basic-clear` | — | 清空当前表格多选 | 调用 `handleClearSelection()` | ❌ |
 | 批量删除 | `basic-delete` | `delete` | 批量删除 Pod | 区分可删除/不可删除行，弹出确认框 | ❌ |
-| 导入 | `basic-import` | `create` | 导入 YAML | 打开导入面板 | ❌ |
 | 导出 | `basic-export` | `view` | 导出当前筛选结果 | 调用导出 API | ❌ |
+
 > **Pod 特殊说明**：Pod（Pod）没有开放新增和编辑功能。
-
-
 
 ---
 
@@ -823,7 +815,6 @@ const perm: Record<string, boolean> = {
 | 导入 | `basic-import` | `create` | 导入 YAML | 打开导入面板 | ❌ |
 | 导出 | `basic-export` | `view` | 导出当前筛选结果 | 调用导出 API | ❌ |
 
-
 ---
 
 ## Workload — StatefulSet
@@ -884,7 +875,6 @@ const perm: Record<string, boolean> = {
 | 导入 | `basic-import` | `create` | 导入 YAML | 打开导入面板 | ❌ |
 | 导出 | `basic-export` | `view` | 导出当前筛选结果 | 调用导出 API | ❌ |
 
-
 ---
 
 ## Workload — DaemonSet
@@ -942,7 +932,6 @@ const perm: Record<string, boolean> = {
 | 导入 | `basic-import` | `create` | 导入 YAML | 打开导入面板 | ❌ |
 | 导出 | `basic-export` | `view` | 导出当前筛选结果 | 调用导出 API | ❌ |
 
-
 ---
 
 ## Workload — Job
@@ -997,9 +986,8 @@ const perm: Record<string, boolean> = {
 | 批量删除 | `basic-delete` | `delete` | 批量删除 Job | 区分可删除/不可删除行，弹出确认框 | ❌ |
 | 导入 | `basic-import` | `create` | 导入 YAML | 打开导入面板 | ❌ |
 | 导出 | `basic-export` | `view` | 导出当前筛选结果 | 调用导出 API | ❌ |
+
 > **Job 特殊说明**：Job 创建后不可编辑，仅支持查看和删除操作，不提供编辑和编辑 YAML 操作。
-
-
 
 ---
 
@@ -1060,7 +1048,6 @@ const perm: Record<string, boolean> = {
 | 导入 | `basic-import` | `create` | 导入 YAML | 打开导入面板 | ❌ |
 | 导出 | `basic-export` | `view` | 导出当前筛选结果 | 调用导出 API | ❌ |
 
-
 ---
 
 ## Config — ConfigMap
@@ -1118,7 +1105,6 @@ const perm: Record<string, boolean> = {
 | 导入 | `basic-import` | `create` | 导入 YAML | 打开导入面板 | ❌ |
 | 导出 | `basic-export` | `view` | 导出当前筛选结果 | 调用导出 API | ❌ |
 
-
 ---
 
 ## Config — Secret
@@ -1175,7 +1161,6 @@ const perm: Record<string, boolean> = {
 | 批量删除 | `basic-delete` | `delete` | 批量删除 Secret | 区分可删除/不可删除行，弹出确认框 | ❌ |
 | 导入 | `basic-import` | `create` | 导入 YAML | 打开导入面板 | ❌ |
 | 导出 | `basic-export` | `view` | 导出当前筛选结果 | 调用导出 API | ❌ |
-
 
 ---
 
@@ -1235,7 +1220,6 @@ const perm: Record<string, boolean> = {
 | 导入 | `basic-import` | `create` | 导入 YAML | 打开导入面板 | ❌ |
 | 导出 | `basic-export` | `view` | 导出当前筛选结果 | 调用导出 API | ❌ |
 
-
 ---
 
 ## Network — Ingress
@@ -1291,7 +1275,6 @@ const perm: Record<string, boolean> = {
 | 导入 | `basic-import` | `create` | 导入 YAML | 打开导入面板 | ❌ |
 | 导出 | `basic-export` | `view` | 导出当前筛选结果 | 调用导出 API | ❌ |
 
-
 ---
 
 ## Network — NetworkPolicy
@@ -1346,7 +1329,6 @@ const perm: Record<string, boolean> = {
 | 批量删除 | `basic-delete` | `delete` | 批量删除 NetworkPolicy | 区分可删除/不可删除行，弹出确认框 | ❌ |
 | 导入 | `basic-import` | `create` | 导入 YAML | 打开导入面板 | ❌ |
 | 导出 | `basic-export` | `view` | 导出当前筛选结果 | 调用导出 API | ❌ |
-
 
 ---
 
@@ -1635,7 +1617,6 @@ const perm: Record<string, boolean> = {
 | 导入 | `basic-import` | `create` | 导入 YAML | 打开导入面板 | ❌ |
 | 导出 | `basic-export` | `view` | 导出当前筛选结果 | 调用导出 API | ❌ |
 
-
 ---
 
 ## Security — ClusterRole
@@ -1690,7 +1671,6 @@ const perm: Record<string, boolean> = {
 | 批量删除 | `basic-delete` | `delete` | 批量删除 ClusterRole | 区分可删除/不可删除行，弹出确认框 | ❌ |
 | 导入 | `basic-import` | `create` | 导入 YAML | 打开导入面板 | ❌ |
 | 导出 | `basic-export` | `view` | 导出当前筛选结果 | 调用导出 API | ❌ |
-
 
 ---
 
@@ -1748,7 +1728,6 @@ const perm: Record<string, boolean> = {
 | 导入 | `basic-import` | `create` | 导入 YAML | 打开导入面板 | ❌ |
 | 导出 | `basic-export` | `view` | 导出当前筛选结果 | 调用导出 API | ❌ |
 
-
 ---
 
 ## Security — ClusterRoleBinding
@@ -1804,7 +1783,6 @@ const perm: Record<string, boolean> = {
 | 批量删除 | `basic-delete` | `delete` | 批量删除 ClusterRoleBinding | 区分可删除/不可删除行，弹出确认框 | ❌ |
 | 导入 | `basic-import` | `create` | 导入 YAML | 打开导入面板 | ❌ |
 | 导出 | `basic-export` | `view` | 导出当前筛选结果 | 调用导出 API | ❌ |
-
 
 ---
 
