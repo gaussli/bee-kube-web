@@ -772,8 +772,8 @@ const perm: Record<string, boolean> = {
 | 500px | 【首列】`BeeWorkloadInfoCell` | `uid`, `name`, `description` | `icon: kubernetes-deployment`, `icon-size: 32` |
 | 200px | 【中间列】`BeeTableCommonCell` | `text: namespace` | `subtext: "命名空间"` |
 | 160px | 【中间列】`BeeStatusCell` | `status`, `statusMsg` | `options: DEPLOYMENT_STATUS_OPTIONS` |
-| 120px | 【中间列】`BeeTableCommonCell` | `text: "readyReplicas / replicas"` | `subtext: "副本数"` |
-| 160px | 【中间列】`BeeTableCommonCell` | `text: 策略中文名` | `subtext: strategyType` |
+| 120px | 【中间列】`BeeTableCommonCell` | `text: readyReplicas + '/' + replicas` | `subtext: "副本数"` |
+| 160px | 【中间列】`BeeTableCommonCell` | `text: DEPLOYMENT_STRATEGY_LABEL_MAP[strategyType]` | `subtext: strategyType` |
 | 200px | 【中间列】`BeeAuditCell` | `username: createBy`, `datetime: createAt` | |
 | 200px | 【中间列】`BeeAuditCell` | `username: updateBy`, `datetime: updateAt` | |
 | 150px | 【末尾列】`BeeActionCell` | ❌ 无 | `actions: getActions(row)` |
@@ -801,9 +801,9 @@ const perm: Record<string, boolean> = {
 | 详情 | `basic-view` | `view` | 查看 Deployment 详情 | 跳转详情页 | ❌ |
 | 编辑 | `basic-edit` | `edit` | 编辑 Deployment | 跳转编辑页（表单模式） | ❌ |
 | 编辑 YAML | `basic-yaml` | `edit` | 编辑 Deployment YAML | 跳转编辑页（YAML 模式） | ❌ |
-| 扩缩容 | `kubernetes-scale` | `edit` | 修改副本数 | 弹窗输入目标副本数 | ✅ |
-| 重启 | `kubernetes-restart` | `edit` | 触发滚动重启 | 弹出确认框后执行 | ✅ |
-| 回滚 | `kubernetes-rollback` | `edit` | 选择历史版本回滚 | 弹窗选择历史版本后执行 | ✅ |
+| 扩缩容 | `kubernetes-scale` | `edit` | 修改副本数 | 调用 `handleScale(row)`，弹窗输入目标副本数 | ✅ |
+| 重启 | `kubernetes-restart` | `edit` | 触发滚动重启 | 调用 `handleRestart(row)`，弹出确认框后执行 | ✅ |
+| 回滚 | `kubernetes-rollback` | `edit` | 选择历史版本回滚 | 调用 `handleRollback(row)`，弹窗选择历史版本后执行 | ✅ |
 | 删除 | `basic-delete` | `delete` | 删除 Deployment | 弹出确认框后删除 | ❌ |
 
 ### Footer 底部操作
@@ -832,7 +832,7 @@ const perm: Record<string, boolean> = {
 | 500px | 【首列】`BeeWorkloadInfoCell` | `uid`, `name`, `description` | `icon: kubernetes-statefulset`, `icon-size: 32` |
 | 200px | 【中间列】`BeeTableCommonCell` | `text: namespace` | `subtext: "命名空间"` |
 | 160px | 【中间列】`BeeStatusCell` | `status`, `statusMsg` | `options: STATEFULSET_STATUS_OPTIONS` |
-| 120px | 【中间列】`BeeTableCommonCell` | `text: "readyReplicas / replicas"` | `subtext: "副本数"` |
+| 120px | 【中间列】`BeeTableCommonCell` | `text: readyReplicas + '/' + replicas` | `subtext: "副本数"` |
 | 160px | 【中间列】`BeeTableCommonCell` | `text: podManagementPolicy` | `subtext: "Pod 管理策略"` |
 | 200px | 【中间列】`BeeAuditCell` | `username: createBy`, `datetime: createAt` | |
 | 200px | 【中间列】`BeeAuditCell` | `username: updateBy`, `datetime: updateAt` | |
@@ -861,9 +861,9 @@ const perm: Record<string, boolean> = {
 | 详情 | `basic-view` | `view` | 查看 StatefulSet 详情 | 跳转详情页 | ❌ |
 | 编辑 | `basic-edit` | `edit` | 编辑 StatefulSet | 跳转编辑页（表单模式） | ❌ |
 | 编辑 YAML | `basic-yaml` | `edit` | 编辑 StatefulSet YAML | 跳转编辑页（YAML 模式） | ❌ |
-| 扩缩容 | `kubernetes-scale` | `edit` | 修改副本数 | 弹窗输入目标副本数 | ✅ |
-| 重启 | `kubernetes-restart` | `edit` | 触发滚动重启 | 弹出确认框后执行 | ✅ |
-| 回滚 | `kubernetes-rollback` | `edit` | 选择历史版本回滚 | 弹窗选择历史版本后执行 | ✅ |
+| 扩缩容 | `kubernetes-scale` | `edit` | 修改副本数 | 调用 `handleScale(row)`，弹窗输入目标副本数 | ✅ |
+| 重启 | `kubernetes-restart` | `edit` | 触发滚动重启 | 调用 `handleRestart(row)`，弹出确认框后执行 | ✅ |
+| 回滚 | `kubernetes-rollback` | `edit` | 选择历史版本回滚 | 调用 `handleRollback(row)`，弹窗选择历史版本后执行 | ✅ |
 | 删除 | `basic-delete` | `delete` | 删除 StatefulSet | 弹出确认框后删除 | ❌ |
 
 ### Footer 底部操作
@@ -892,7 +892,7 @@ const perm: Record<string, boolean> = {
 | 500px | 【首列】`BeeWorkloadInfoCell` | `uid`, `name`, `description` | `icon: kubernetes-daemonset`, `icon-size: 32` |
 | 200px | 【中间列】`BeeTableCommonCell` | `text: namespace` | `subtext: "命名空间"` |
 | 160px | 【中间列】`BeeStatusCell` | `status`, `statusMsg` | `options: DAEMONSET_STATUS_OPTIONS` |
-| 160px | 【中间列】`BeeTableCommonCell` | `text: "readyNodes / nodeCount"` | `subtext: "就绪节点数"` |
+| 160px | 【中间列】`BeeTableCommonCell` | `text: readyNodes + '/' + nodeCount` | `subtext: "就绪节点数"` |
 | 200px | 【中间列】`BeeAuditCell` | `username: createBy`, `datetime: createAt` | |
 | 200px | 【中间列】`BeeAuditCell` | `username: updateBy`, `datetime: updateAt` | |
 | 150px | 【末尾列】`BeeActionCell` | ❌ 无 | `actions: getActions(row)` |
@@ -920,7 +920,7 @@ const perm: Record<string, boolean> = {
 | 详情 | `basic-view` | `view` | 查看 DaemonSet 详情 | 跳转详情页 | ❌ |
 | 编辑 | `basic-edit` | `edit` | 编辑 DaemonSet | 跳转编辑页（表单模式） | ❌ |
 | 编辑 YAML | `basic-yaml` | `edit` | 编辑 DaemonSet YAML | 跳转编辑页（YAML 模式） | ❌ |
-| 重启 | `kubernetes-restart` | `edit` | 触发滚动重启 | 弹出确认框后执行 | ✅ |
+| 重启 | `kubernetes-restart` | `edit` | 触发滚动重启 | 调用 `handleRestart(row)`，弹出确认框后执行 | ✅ |
 | 删除 | `basic-delete` | `delete` | 删除 DaemonSet | 弹出确认框后删除 | ❌ |
 
 ### Footer 底部操作
@@ -949,7 +949,7 @@ const perm: Record<string, boolean> = {
 | 500px | 【首列】`BeeWorkloadInfoCell` | `uid`, `name`, `description` | `icon: kubernetes-job`, `icon-size: 32` |
 | 200px | 【中间列】`BeeTableCommonCell` | `text: namespace` | `subtext: "命名空间"` |
 | 160px | 【中间列】`BeeStatusCell` | `status`, `statusMsg` | `options: JOB_STATUS_OPTIONS` |
-| 160px | 【中间列】`BeeTableCommonCell` | `text: "succeeded / completions"` | `subtext: "完成进度"` |
+| 160px | 【中间列】`BeeTableCommonCell` | `text: succeeded + '/' + completions` | `subtext: "完成进度"` |
 | 160px | 【中间列】`BeeTableCommonCell` | `text: duration` | `subtext: "运行时长"` |
 | 200px | 【中间列】`BeeAuditCell` | `username: createBy`, `datetime: createAt` | |
 | 200px | 【中间列】`BeeAuditCell` | `username: updateBy`, `datetime: updateAt` | |
@@ -1035,8 +1035,8 @@ const perm: Record<string, boolean> = {
 | 详情 | `basic-view` | `view` | 查看 CronJob 详情 | 跳转详情页 | ❌ |
 | 编辑 | `basic-edit` | `edit` | 编辑 CronJob | 跳转编辑页（表单模式） | ❌ |
 | 编辑 YAML | `basic-yaml` | `edit` | 编辑 CronJob YAML | 跳转编辑页（YAML 模式） | ❌ |
-| 触发执行 | `kubernetes-play` | `edit` | 手动触发一次 Job 执行 | 弹出确认框后执行 | ✅ |
-| 暂停/恢复 | `kubernetes-pause` / `kubernetes-play` | `edit` | 暂停或恢复定时调度 | 弹出确认框后执行 | ✅ |
+| 触发执行 | `kubernetes-play` | `edit` | 手动触发一次 Job 执行 | 调用 `handleTriggerJob(row)`，弹出确认框后执行 | ✅ |
+| 暂停/恢复 | `kubernetes-pause` / `kubernetes-play` | `edit` | 暂停或恢复定时调度 | 调用 `handleToggleSchedule(row)`，弹出确认框后执行 | ✅ |
 | 删除 | `basic-delete` | `delete` | 删除 CronJob | 弹出确认框后删除 | ❌ |
 
 ### Footer 底部操作
@@ -1121,7 +1121,7 @@ const perm: Record<string, boolean> = {
 | --- | --- | --- | --- |
 | 500px | 【首列】`BeeConfigInfoCell` | `uid`, `name`, `description` | `icon-size: 32` |
 | 200px | 【中间列】`BeeTableCommonCell` | `text: namespace` | `subtext: "命名空间"` |
-| 160px | 【中间列】`BeeTableCommonCell` | `text: type` | `subtext: "类型"` |
+| 160px | 【中间列】`BeeTableCommonCell` | `text: SECRET_TYPE_LABEL_MAP[type]` | `subtext: "类型"` |
 | 160px | 【中间列】`BeeTableCommonCell` | `text: dataCount + " 条"` | `subtext: "数据条目"` |
 | 200px | 【中间列】`BeeAuditCell` | `username: createBy`, `datetime: createAt` | |
 | 200px | 【中间列】`BeeAuditCell` | `username: updateBy`, `datetime: updateAt` | |
@@ -1179,8 +1179,8 @@ const perm: Record<string, boolean> = {
 | 500px | 【首列】`BeeNetworkInfoCell` | `uid`, `name`, `description` | `icon-size: 32` |
 | 200px | 【中间列】`BeeTableCommonCell` | `text: namespace` | `subtext: "命名空间"` |
 | 180px | 【中间列】`BeeTableCommonCell` | `text: clusterIP` | `subtext: "集群 IP"` |
-| 160px | 【中间列】`BeeTableCommonCell` | `text: "ports 列表"` | `subtext: "端口"` |
-| 120px | 【中间列】`BeeTableCommonCell` | `text: type` | `subtext: "类型"` |
+| 160px | 【中间列】`BeeTableCommonCell` | `text: ports.map(p => p.port).join(', ')` | `subtext: "端口"` |
+| 120px | 【中间列】`BeeTableCommonCell` | `text: SERVICE_TYPE_LABEL_MAP[type]` | `subtext: "类型"` |
 | 200px | 【中间列】`BeeAuditCell` | `username: createBy`, `datetime: createAt` | |
 | 200px | 【中间列】`BeeAuditCell` | `username: updateBy`, `datetime: updateAt` | |
 | 150px | 【末尾列】`BeeActionCell` | ❌ 无 | `actions: getActions(row)` |
@@ -1236,8 +1236,8 @@ const perm: Record<string, boolean> = {
 | --- | --- | --- | --- |
 | 500px | 【首列】`BeeNetworkInfoCell` | `uid`, `name`, `description` | `icon-size: 32` |
 | 200px | 【中间列】`BeeTableCommonCell` | `text: namespace` | `subtext: "命名空间"` |
-| 300px | 【中间列】`BeeTableCommonCell` | `text: rules (host+paths)` | `subtext: "规则"` |
-| 200px | 【中间列】`BeeTableCommonCell` | `text: backend (serviceName:port)` | `subtext: "后端"` |
+| 300px | 【中间列】`BeeTableCommonCell` | `text: rules` | `subtext: "规则（host+paths）"` |
+| 200px | 【中间列】`BeeTableCommonCell` | `text: backend` | `subtext: "后端（serviceName:port）"` |
 | 200px | 【中间列】`BeeAuditCell` | `username: createBy`, `datetime: createAt` | |
 | 200px | 【中间列】`BeeAuditCell` | `username: updateBy`, `datetime: updateAt` | |
 | 150px | 【末尾列】`BeeActionCell` | ❌ 无 | `actions: getActions(row)` |
@@ -1468,7 +1468,7 @@ const perm: Record<string, boolean> = {
 | 500px | 【首列】`BeeStorageInfoCell` | `uid`, `name`, `description` | `icon-size: 32` |
 | 200px | 【中间列】`BeeTableCommonCell` | `text: provisioner` | `subtext: "制备器"` |
 | 160px | 【中间列】`BeeTableCommonCell` | `text: reclaimPolicy` | `subtext: "回收策略"` |
-| 160px | 【中间列】`BeeTableCommonCell` | `text: "是" / "否"` | `subtext: "默认存储类"` |
+| 160px | 【中间列】`BeeTableCommonCell` | `text: isDefault ? '是' : '否'` | `subtext: "默认存储类"` |
 | 200px | 【中间列】`BeeAuditCell` | `username: createBy`, `datetime: createAt` | |
 | 200px | 【中间列】`BeeAuditCell` | `username: updateBy`, `datetime: updateAt` | |
 | 150px | 【末尾列】`BeeActionCell` | ❌ 无 | `actions: getActions(row)` |
@@ -1689,7 +1689,7 @@ const perm: Record<string, boolean> = {
 | 500px | 【首列】`BeeSecurityInfoCell` | `uid`, `name`, `description` | `icon-size: 32` |
 | 200px | 【中间列】`BeeTableCommonCell` | `text: namespace` | `subtext: "命名空间"` |
 | 180px | 【中间列】`BeeTableCommonCell` | `text: roleRef.name` | `subtext: "绑定角色"` |
-| 250px | 【中间列】`BeeTableCommonCell` | `text: "subjects 摘要"` | `subtext: "授权主体"` |
+| 250px | 【中间列】`BeeTableCommonCell` | `text: subjects` | `subtext: "授权主体"` |
 | 200px | 【中间列】`BeeAuditCell` | `username: createBy`, `datetime: createAt` | |
 | 200px | 【中间列】`BeeAuditCell` | `username: updateBy`, `datetime: updateAt` | |
 | 150px | 【末尾列】`BeeActionCell` | ❌ 无 | `actions: getActions(row)` |
@@ -1744,7 +1744,7 @@ const perm: Record<string, boolean> = {
 | --- | --- | --- | --- |
 | 500px | 【首列】`BeeSecurityInfoCell` | `uid`, `name`, `description` | `icon-size: 32` |
 | 180px | 【中间列】`BeeTableCommonCell` | `text: roleRef.name` | `subtext: "绑定角色"` |
-| 250px | 【中间列】`BeeTableCommonCell` | `text: "subjects 摘要"` | `subtext: "授权主体"` |
+| 250px | 【中间列】`BeeTableCommonCell` | `text: subjects` | `subtext: "授权主体"` |
 | 200px | 【中间列】`BeeAuditCell` | `username: createBy`, `datetime: createAt` | |
 | 200px | 【中间列】`BeeAuditCell` | `username: updateBy`, `datetime: updateAt` | |
 | 150px | 【末尾列】`BeeActionCell` | ❌ 无 | `actions: getActions(row)` |
