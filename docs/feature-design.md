@@ -33,7 +33,7 @@
 ### DeletableEntity - 可删除实体
 - deletable: boolean （是否可删除）
 
-## Kubernetes 通用类型定义 （`/src/types/kubernetes/comomn.ts`）
+## Kubernetes 通用类型定义 （`/src/types/kubernetes/common.ts`）
 
 ### MetadataLabelForm - 元数据标签配置请求
 - labels: Record<string, string> （标签键值对）
@@ -88,6 +88,46 @@
   - 'T' （十进制太，1 T = 1000 G）
   - 'P' （十进制拍，1 P = 1000 T）
   - 'E' （十进制艾，1 E = 1000 P）
+
+## Event 原始类型定义（`/src/types/kubernetes/event/types.ts`）
+
+### Event - 事件，继承 ObjectMeta
+- eventTime: string （事件首次被观测到的时间，microTime 精度，必填）
+- series: EventSeries （事件系列聚合信息，同一系列事件的聚合；单条事件为 nil，可选）
+- reportingController: string （上报该事件的控制器名称，例如 kubernetes.io/kubelet，必填）
+- reportingInstance: string （控制器实例 ID，例如 kubelet-xyzf，必填）
+- action: string （针对关联对象所采取/失败的动作，机器可读，必填，最长 128 字符）
+- reason: string （事件原因，人类可读，必填，最长 128 字符）
+- regarding: EventInvolvedObject （事件关联对象，即事件所描述的资源对象，可选）
+- related: EventInvolvedObject （可选的二级关联对象，用于更复杂的动作，可选）
+- note: string （事件描述，人类可读的状态说明，可选，最大 1kB）
+- type: EventType （事件类型，取值 Normal / Warning，必填）
+
+### EventType - 事件类型
+- 'Normal' （正常事件，资源生命周期中的常规状态变更）
+- 'Warning' （警告事件，资源出现异常或失败需关注）
+
+### EventInvolvedObject - 事件关联对象
+- apiVersion: string （关联对象的 API 版本）
+- kind: string （关联对象的类型，如 Pod / Deployment / StatefulSet）
+- name: string （关联对象的名称）
+- namespace: string （关联对象所属命名空间）
+- uid: string （关联对象的 UID）
+
+### EventSeries - 事件系列
+- count: number （该系列事件已发生的次数）
+- lastObservedTime: string （该系列事件最近一次被观测到的时间）
+- state: string （系列状态，取值 EventSeriesStateWindingDown 表示系列即将停止）
+
+## Event 类型定义（`/src/types/kubernetes/event.ts/index.ts`）
+
+### EventQueryForm - 事件查询条件请求对象
+- type: EventType （事件类型）
+- reason: string （事件原因）
+- note: string （事件描述）
+- regarding: EventInvolvedObject （事件关联对象）
+
+### EventListVo - 事件列表项响应对象，继承 Event
 
 ## Pod 原始类型定义（`/src/types/kubernetes/pod/types.ts`）
 
@@ -384,6 +424,13 @@
 - priority: number （优先级数值，值越大优先级越高）
 
 ## Workload 原始类型定义 （`/src/types/kubernetes/workload/types.ts`）
+
+### HistoryRevision - 历史版本
+- revision: number （修订版本号）
+- changeCause: string （变更原因）
+- createAt: string （创建时间）
+- active: boolean （是否为当前活跃版本）
+
 ### LabelExpression - 标签表达式
 - key: string （标签键）
 - operator: LabelExpressionOperator （匹配运算符，单独使用 `export type LabelExpressionOperator` 定义）
@@ -397,7 +444,7 @@
 - matchLabels: Record<string, string> （基于等值匹配的标签，AND 关系）
 - matchExpressions: LabelExpression[] （基于表达式的匹配条件，与 matchLabels 为 AND 关系）
 
-### DeploymentStrategy - Deployment 更新策略
+### DeploymentUpdateStrategy - Deployment 更新策略
 - type: DeploymentUpdateStrategyType （策略类型，来自 `/src/config/kubernetes/workload/deployment.ts`）
 - rollingUpdate: Record<string, string> （滚动更新属性）
   - maxUnavailable?: string （最大不可用副本数）
@@ -406,7 +453,7 @@
 ### DeploymentSpec - Deployment 规格信息
 - replicas: number （期望副本数，默认为 1）
 - selector: LabelSelector （Pod 标签选择器，须匹配 Pod 模板的标签）
-- strategy: DeploymentStrategy （用于替换旧 Pod 的更新策略）
+- strategy: DeploymentUpdateStrategy （用于替换旧 Pod 的更新策略）
 - minReadySeconds: number （新 Pod 就绪后被视为可用的最小秒数，默认为 0）
 - revisionHistoryLimit: number （保留的旧 ReplicaSet 数量，用于回滚，默认为 10）
 - paused: boolean （是否暂停部署）
@@ -426,7 +473,7 @@
 - reason: string （条件最后一次切换的原因）
 - message: string （描述切换细节的可读消息）
 
-### DeploymentStatus - Deployment 状态信息
+### DeploymentStatusObj - Deployment 状态信息
 - observedGeneration: number （Deployment 控制器已观测到的 generation 代次）
 - replicas: number （匹配选择器且未终止的 Pod 总数）
 - updatedReplicas: number （匹配选择器、且已应用期望模板 spec 的 Pod 总数）
@@ -437,11 +484,154 @@
 - conditions: DeploymentCondition[] （Deployment 当前状态的最新观测条件列表）
 - collisionCount: number （Deployment 的哈希冲突计数；控制器在为新 ReplicaSet 生成名称时用作冲突避免机制）
 
-### HistoryRevision - 历史版本
-- revision: number （修订版本号）
-- changeCause: string （变更原因）
-- createAt: string （创建时间）
-- active: boolean （是否为当前活跃版本）
+### StatefulSetVolumeClaimTemplate - 持久卷声明模板
+- name: string （模板名称，作为 Pod 内 volumeMount 的引用标识）
+- storageClass?: string （存储类名称，为空时使用集群默认 StorageClass）
+- accessModes: string[] （PVC 访问模式，如 ReadWriteOnce / ReadWriteMany）
+- capacity: Quantity （存储容量，如 10Gi）
+- mode?: number （挂载目录的文件权限位，如 0644）
+
+### StatefulSetUpdateStrategy - StatefulSet 更新策略
+- type: StatefulSetStrategyType （策略类型，来自 `/src/config/kubernetes/workload/statefulset.ts`）
+- rollingUpdate: Record<string, string> （滚动更新属性）
+  - partition?: string （滚动更新分区序号，序号 >= partition 的 Pod 才被更新，常用于金丝雀发布）
+
+### StatefulSetSpec - StatefulSet 规格信息
+- replicas: number （期望副本数，默认为 1）
+- serviceName: string （关联的无头 Service 名称，StatefulSet 为每个 Pod 生成稳定的网络标识 `<pod>-<sts>.<service>.<ns>.svc`）
+- selector: LabelSelector （Pod 标签选择器，须匹配 Pod 模板的标签）
+- podManagementPolicy: PodManagementPolicyType （Pod 管理策略，来自 `/src/config/kubernetes/workload/statefulset.ts`）
+- updateStrategy: StatefulSetUpdateStrategy （用于替换旧 Pod 的更新策略）
+- minReadySeconds: number （新 Pod 就绪后被视为可用的最小秒数，默认为 0）
+- revisionHistoryLimit: number （保留的旧 ControllerRevision 数量，用于回滚，默认为 10）
+- template: PodTemplateSpec （将要创建的 Pod 模板，其标签须匹配上方 selector 的标签选择器）
+  - metadata: Metadata （Pod 模板的元数据，包括 labels 与 annotations；其 labels 必须与 selector 匹配，否则会被控制器拒绝）
+  - spec: PodSpec （Pod 的规格定义，描述容器的实际运行期望）
+- volumeClaimTemplates: StatefulSetVolumeClaimTemplate[] （持久卷声明模板，StatefulSet 为每个 Pod 按序创建独立的 PVC 实现稳定持久存储）
+
+### StatefulSetCondition - StatefulSet 状态条件
+- type: StatefulSetConditionType （条件类型，来自 `/src/config/kubernetes/workload/statefulset.ts`，取值如下）
+  - 'Available' （StatefulSet 可用，即至少维持了 minReadySeconds 的最小就绪副本数）
+  - 'Progressing' （StatefulSet 正在推进；Pod 扩容、缩容或更新均视为推进）
+  - 'ReplicaFailure' （StatefulSet 的某个 Pod 创建或删除失败时添加）
+- status: string （条件状态，取值为 'True' / 'False' / 'Unknown' 之一）
+- lastUpdateTime: string （该条件最后一次更新的时间）
+- lastTransitionTime: string （条件状态上一次发生切换的时间）
+- reason: string （条件最后一次切换的原因）
+- message: string （描述切换细节的可读消息）
+
+### StatefulSetStatusObj - StatefulSet 状态信息
+- observedGeneration: number （StatefulSet 控制器已观测到的 generation 代次）
+- replicas: number （匹配选择器且未终止的 Pod 总数）
+- readyReplicas: number （匹配选择器、且处于 Ready 状态的 Pod 总数）
+- currentReplicas: number （当前版本（currentRevision）下已就绪且匹配模板的 Pod 总数）
+- updatedReplicas: number （匹配选择器、且已应用期望模板 spec 的 Pod 总数）
+- currentRevision: string （当前正在使用的 ControllerRevision 名称）
+- updateRevision: string （更新目标 ControllerRevision 名称）
+- collisionCount: number （StatefulSet 的哈希冲突计数；控制器在为新 ControllerRevision 生成名称时用作冲突避免机制）
+- conditions: StatefulSetCondition[] （StatefulSet 当前状态的最新观测条件列表）
+
+### DaemonSetUpdateStrategy - DaemonSet 更新策略
+- type: DaemonSetUpdateStrategyType （策略类型，来自 `/src/config/kubernetes/workload/daemonset.ts`）
+- rollingUpdate: Record<string, string> （滚动更新属性）
+  - maxUnavailable?: string （滚动更新期间允许的最大不可用节点 Pod 数或比例，默认 1）
+  - maxSurge?: string （滚动更新期间允许超出期望数的最大 Pod 数或比例，需 Kubernetes 1.21+）
+
+### DaemonSetSpec - DaemonSet 规格信息
+- selector: LabelSelector （Pod 标签选择器，须匹配 Pod 模板的标签；DaemonSet 不支持独立 selector，其值为只读派生）
+- minReadySeconds: number （新 Pod 就绪后被视为可用的最小秒数，默认为 0）
+- updateStrategy: DaemonSetUpdateStrategy （用于替换旧 Pod 的更新策略）
+- template: PodTemplateSpec （将要创建的 Pod 模板，其标签须匹配上方 selector 的标签选择器）
+  - metadata: Metadata （Pod 模板的元数据，包括 labels 与 annotations；其 labels 必须与 selector 匹配，否则会被控制器拒绝）
+  - spec: PodSpec （Pod 的规格定义，描述容器的实际运行期望）
+
+### DaemonSetCondition - DaemonSet 状态条件
+- type: DaemonSetConditionType （条件类型，来自 `/src/config/kubernetes/workload/daemonset.ts`，取值如下）
+  - 'Available' （DaemonSet 可用，即至少 minReadySeconds 内维持了所需的最小可用 Pod 数）
+  - 'Progressing' （DaemonSet 正在推进；Pod 扩容、缩容或更新均视为推进）
+  - 'ReplicaFailure' （DaemonSet 的某个 Pod 创建或删除失败时添加）
+  - 'Misconfigured' （DaemonSet 配置错误，如节点亲和性无法匹配任何节点）
+- status: string （条件状态，取值为 'True' / 'False' / 'Unknown' 之一）
+- lastUpdateTime: string （该条件最后一次更新的时间）
+- lastTransitionTime: string （条件状态上一次发生切换的时间）
+- reason: string （条件最后一次切换的原因）
+- message: string （描述切换细节的可读消息）
+
+### DaemonSetStatusObj - DaemonSet 状态信息
+- observedGeneration: number （DaemonSet 控制器已观测到的 generation 代次）
+- desiredNumberScheduled: number （应当在节点上调度的目标 Pod 总数）
+- currentNumberScheduled: number （当前已调度（含运行中）的 Pod 总数）
+- numberReady: number （处于 Ready 状态的 Pod 总数）
+- numberAvailable: number （至少就绪 minReadySeconds 的可用 Pod 总数）
+- numberUnavailable: number （不可用 Pod 总数）
+- updatedNumberScheduled: number （已应用期望模板 spec 的 Pod 总数）
+- collisionCount: number （DaemonSet 的哈希冲突计数；控制器在为新 ControllerRevision 生成名称时用作冲突避免机制）
+- conditions: DaemonSetCondition[] （DaemonSet 当前状态的最新观测条件列表）
+
+### JobSpec - Job 规格信息
+- parallelism: number （并行运行的最大 Pod 数量，默认为 1；Job 运行时可调整）
+- completions: number （需要成功完成的 Pod 数量，默认为 1）
+- backoffLimit: number （失败重试次数上限，超过后 Job 标记为 Failed，默认为 6）
+- activeDeadlineSeconds: number （Job 在节点上可存活的最长秒数，超时则标记失败并终止所有 Pod）
+- ttlSecondsAfterFinished: number （Job 完成后保留的秒数，超时由控制器清理；为空则永久保留；需启用 TTLAfterFinished featureGate）
+- suspend: boolean （是否暂停 Job；暂停时控制器不再创建新 Pod，已存在 Pod 不强制删除）
+- template: PodTemplateSpec （将要创建的 Pod 模板；其标签作为 Job 的自动选择器，不可与已有 Job 冲突）
+  - metadata: Metadata （Pod 模板的元数据，包括 labels 与 annotations）
+  - spec: PodSpec （Pod 的规格定义，描述容器的实际运行期望）
+
+### JobCondition - Job 状态条件
+- type: JobConditionType （条件类型，来自 `/src/config/kubernetes/workload/job.ts`，取值如下）
+  - 'Complete' （Job 已成功完成，即成功 Pod 数达到 completions）
+  - 'Failed' （Job 已失败，如重试次数超过 backoffLimit）
+  - 'Suspended' （Job 已被暂停）
+  - 'FailureTarget' （Job 标记为失败，因用户设置或不可重试错误）
+  - 'SuccessCriteriaMet' （Job 已满足成功标准，等价于 Complete）
+- status: string （条件状态，取值为 'True' / 'False' / 'Unknown' 之一）
+- lastUpdateTime: string （该条件最后一次更新的时间）
+- lastTransitionTime: string （条件状态上一次发生切换的时间）
+- reason: string （条件最后一次切换的原因）
+- message: string （描述切换细节的可读消息）
+
+### JobStatusObj - Job 状态信息
+- active: number （当前处于运行状态（非成功/失败）的 Pod 总数）
+- succeeded: number （已成功完成的 Pod 总数）
+- failed: number （已失败终止的 Pod 总数）
+- startTime: string （Job 首次被控制器接管的开始时间）
+- completionTime: string （Job 完成（成功或失败）的时间）
+- conditions: JobCondition[] （Job 当前状态的最新观测条件列表）
+
+### JobTemplateSpec - Job 模板
+- metadata: ObjectMeta （Job 模板的元数据，包括 labels 与 annotations）
+- spec: JobSpec （Job 的规格定义，详见 ### JobSpec）
+
+### CronJobSpec - CronJob 规格信息
+- schedule: string （Cron 调度表达式，如 '*/5 * * * *' 表示每 5 分钟执行一次）
+- concurrencyPolicy: ConcurrencyPolicy （并发策略，来自 `/src/config/kubernetes/workload/cronjob.ts`，取值如下）
+  - 'Allow' （允许新 Job 与旧 Job 并发运行）
+  - 'Forbid' （若上一轮 Job 未结束则跳过本轮）
+  - 'Replace' （若上一轮 Job 未结束则取消旧 Job，启动新 Job）
+- startingDeadlineSeconds?: number （调度错过后的最晚启动宽限秒数；超过则不再补执行并标记 MissSchedule）
+- suspend: boolean （是否暂停 CronJob；暂停后不再创建新 Job，已运行 Job 不受影响）
+- successfulJobsHistoryLimit: number （保留的成功 Job 历史数量上限，默认为 3）
+- failedJobsHistoryLimit: number （保留的失败 Job 历史数量上限，默认为 1）
+- jobTemplate: JobTemplateSpec （每次触发所创建的 Job 模板）
+
+### CronJobCondition - CronJob 状态条件
+- type: CronJobConditionType （条件类型，来自 `/src/config/kubernetes/workload/cronjob.ts`，取值如下）
+  - 'Complete' （CronJob 最近一轮 Job 已成功完成）
+  - 'Failed' （CronJob 最近一轮 Job 失败）
+  - 'Suspended' （CronJob 已被暂停）
+- status: string （条件状态，取值为 'True' / 'False' / 'Unknown' 之一）
+- lastUpdateTime: string （该条件最后一次更新的时间）
+- lastTransitionTime: string （条件状态上一次发生切换的时间）
+- reason: string （条件最后一次切换的原因）
+- message: string （描述切换细节的可读消息）
+
+### CronJobStatusObj - CronJob 状态信息
+- active: number （当前正在运行的 Job 总数）
+- lastScheduleTime: string （最近一次成功触发 Job 的时间）
+- lastSuccessfulTime: string （最近一次成功完成 Job 的时间）
+- conditions: CronJobCondition[] （CronJob 当前状态的最新观测条件列表）
 
 # Deployment 功能
 
@@ -458,12 +648,12 @@
     - `DeploymentQueryForm`（Deployment 查询条件请求对象） 继承 `UidEntity`, `PageForm`
       - name: string （Deployment 名称）
       - namespace: string （命名空间名称）
-      - status: DeploymentStatusLabel （状态，来自 `/src/config/kubernetes/workload/deployment.ts` 包）
+      - status: DeploymentStatus （状态，来自 `/src/config/kubernetes/workload/deployment.ts` 包）
     - `DeploymentListVo`（Deployment 列表项响应对象） 继承 `UidEntity`, `Clustered`, `Namespaced`, `AuditEntity`, `DeletableEntity`
       - name: string （Deployment 名称）
-      - description?: string （描述）
-      - status: DeploymentStatusLabel （状态，来自 `/src/config/kubernetes/workload/deployment.ts` 包）
-      - statusMessage?: string （状态信息）
+      - description?: string （Deployment 描述）
+      - status: DeploymentStatus （状态，来自 `/src/config/kubernetes/workload/deployment.ts` 包）
+      - statusMsg?: string （状态信息）
       - replicas: number （期望副本数）
       - readyReplicas: number （就绪副本数）
       - updateStrategyType: DeploymentUpdateStrategyType （更新策略）
@@ -482,11 +672,22 @@
     - name: string （Deployment 名称）
     - `DeploymentDetailVo`（Deployment 详情响应对象） 继承 `UidEntity`, `Clustered`, `Namespaced`, `AuditEntity`, `DeletableEntity`
       - description?: string （Deployment 描述）
-      - status: DeploymentStatusLabel （状态，来自 `/src/config/kubernetes/workload/deployment.ts` 包）
-      - statusMessage?: string （状态信息）
+      - status: DeploymentStatus （状态，来自 `/src/config/kubernetes/workload/deployment.ts` 包）
+      - statusMsg?: string （状态信息）
       - metadata: ObjectMeta （Deployment 的资源元数据，详见 ### ObjectMeta）
       - spec: DeploymentSpec （Deployment 的规格定义，详见 ### DeploymentSpec）
-      - status: DeploymentStatus （Deployment 的观测状态，详见 ### DeploymentStatus）
+      - statusObj: DeploymentStatusObj （Deployment 的观测状态，详见 ### DeploymentStatus）
+
+## 查看 Deployment YAML
+- 页面路由
+  - 无
+- API 接口
+  - URL: `GET /kubernetes/clusters/:clusterUid/namespaces/:namespace/deployments/:name/yaml`
+  - Function: `string getDeploymentYaml(clusterUid: string, namespace: string, name: string)`
+    - clusterUid: string （集群 UID）
+    - namespace: string （命名空间名称）
+    - name: string （Deployment 名称）
+    - 返回: Deployment 当前资源的 YAML 文本
 
 ## 查看 Deployment 关联 Pod 列表
 - 页面路由
@@ -523,7 +724,7 @@
     - `DeploymentHistoryRevisionQueryForm`（Deployment 历史版本查询条件请求对象） 继承 `PageForm`
       - revision: number （版本名称）
       - changeCause: string （变更原因）
-    - `DeploymentHistoryRevisionListVo` （Deployment 历史版本列表项响应对象）继承 `HistoryRevision`
+    - `DeploymentHistoryRevisionListVo` （Deployment 历史版本列表项响应对象） 继承 `HistoryRevision`
 
 ## 查看 Deployment 关联网络资源
 - 页面路由
@@ -535,8 +736,31 @@
     - namespace: string （命名空间名称）
     - name: string （Deployment 名称）
     - `DeploymentNetworkVo` （Deployment 关联网络资源响应对象）
-      - services: ServiceListVo[] （关联的 Service 列表，`ServiceListVo` 定义在 `/src/types/kubernetes/network/service.ts`）
-      - ingresses: IngressListVo[] （关联的 Ingress 列表，`IngressListVo` 定义在 `/src/types/kubernetes/network/ingress.ts`）
+      - services: DeploymentServiceListVo[] （关联的 Service 列表）
+      - ingresses: DeploymentIngressListVo[] （关联的 Ingress 列表）
+      - `DeploymentServiceListVo` （Deployment 关联 Service 列表项响应对象） 继承 `UidEntity`, `AuditEntity`
+        - name: string （Service 名称）
+        - description: string （Service 描述）
+        - type: ServiceType （Service 类型，来自 `/src/config/kubernetes/network/service.ts`）
+        - clusterIp: string （集群内部 IP，ClusterIP / NodePort / LoadBalancer 类型自动分配）
+        - externalName: string （外部域名，仅 ExternalName 类型生效）
+        - headless: boolean （是否为 Headless Service，clusterIp 为 None）
+      - `DeploymentIngressListVo` （Deployment 关联 Ingress 列表项响应对象） 继承 `UidEntity`, `AuditEntity`
+        - name: string （Ingress 名称）
+        - description: string （Ingress 描述）
+        - ingressClassName?: string （Ingress 类名，对应 IngressClassName 资源名称）
+
+## 查看 Deployment 事件列表
+- 页面路由
+  - 无
+- API 接口
+  - URL: `GET /kubernetes/clusters/:clusterUid/namespaces/:namespace/deployments/:name/events`
+  - Function: `PageVo<EventListVo> getDeploymentEventList(clusterUid: string, namespace: string, name: string, params: Partial<EventQueryForm>)`
+    - clusterUid: string （集群 UID）
+    - namespace: string （命名空间名称）
+    - name: string （Deployment 名称）
+    - `EventQueryForm`（事件查询条件请求对象）
+    - `EventListVo`（事件列表项响应对象）
 
 ## 查看 Deployment 监控数据
 - 页面路由
@@ -609,6 +833,32 @@
     - name: string （Deployment 名称）
     - yaml: string （Deployment YAML 字符串）
 
+## 管理标签
+- 页面路由
+  - 无
+- API 接口
+  - URL: `POST /kubernetes/clusters/:clusterUid/namespaces/:namespace/deployments/:name/labels`
+  - Function: `void manageDeploymentLabel(clusterUid: string, namespace: string, name: string, data: MetadataLabelForm)`
+    - clusterUid: string （集群 UID）
+    - namespace: string （命名空间名称）
+    - name: string （Deployment 名称）
+    - `MetadataLabelForm`（管理标签请求对象） 来自 `/src/types/kubernetes/common.ts`
+      - labels: Record<string, string> （标签键值对）
+      - operation: number （操作，1: 新增；2: 移除；3: 全量替换）
+
+## 管理注解
+- 页面路由
+  - 无
+- API 接口
+  - URL: `POST /kubernetes/clusters/:clusterUid/namespaces/:namespace/deployments/:name/annotations`
+  - Function: `void manageDeploymentAnnotation(clusterUid: string, namespace: string, name: string, data: MetadataAnnotationForm)`
+    - clusterUid: string （集群 UID）
+    - namespace: string （命名空间名称）
+    - name: string （Deployment 名称）
+    - `MetadataAnnotationForm`（管理注解请求对象） 来自 `/src/types/kubernetes/common.ts`
+      - annotations: Record<string, string> （注解键值对）
+      - operation: number （操作，1: 新增；2: 移除；3: 全量替换）
+
 ## 删除
 - 页面路由
   - 无
@@ -650,6 +900,7 @@
     - clusterUid: string （集群 UID）
     - `DeploymentQueryForm` 共享【查看 Deployment 详情】章节的实体定义
   - Permission: `kubernetes:workload:deployment:export`
+
 ## 扩缩容
 - 页面路由
   - 无
@@ -686,3 +937,1204 @@
     - `DeploymentRollbackForm` （Deployment 回滚请求对象）
       - revision: number （目标历史版本号）
   - Permission: `kubernetes:workload:deployment:edit`
+
+## 暂停更新
+- 页面路由
+  - 无
+- API 接口
+  - URL: `POST /kubernetes/clusters/:clusterUid/namespaces/:namespace/deployments/:name/pause`
+  - Function: `void pauseDeployment(clusterUid: string, namespace: string, name: string)`
+    - clusterUid: string （集群 UID）
+    - namespace: string （命名空间名称）
+    - name: string （Deployment 名称）
+  - Permission: `kubernetes:workload:deployment:edit`
+
+## 恢复更新
+- 页面路由
+  - 无
+- API 接口
+  - URL: `POST /kubernetes/clusters/:clusterUid/namespaces/:namespace/deployments/:name/resume`
+  - Function: `void resumeDeployment(clusterUid: string, namespace: string, name: string)`
+    - clusterUid: string （集群 UID）
+    - namespace: string （命名空间名称）
+    - name: string （Deployment 名称）
+  - Permission: `kubernetes:workload:deployment:edit`
+
+# StatefulSet 功能
+
+## 查看 StatefulSet 列表
+- 功能权限：`kubernetes:workload:statefulset:view`
+- 页面路由
+  - Name: `kubernetes:workload:statefulset`
+  - Path: `/kubernetes/clusters/:clusterUid/statefulsets`
+  - Component: `/src/view/kubernetes/workload/statefulset/index.vue`
+- API 接口
+  - URL: `GET /kubernetes/clusters/:clusterUid/statefulsets`
+  - Function: `PageVo<StatefulSetListVo> getStatefulSetList(clusterUid: string, params: Partial<StatefulSetQueryForm>)`
+    - clusterUid: string （集群 UID）
+    - `StatefulSetQueryForm`（StatefulSet 查询条件请求对象） 继承 `UidEntity`, `PageForm`
+      - name: string （StatefulSet 名称）
+      - namespace: string （命名空间名称）
+      - status: StatefulSetStatus （状态，来自 `/src/config/kubernetes/workload/statefulset.ts` 包）
+    - `StatefulSetListVo`（StatefulSet 列表项响应对象） 继承 `UidEntity`, `Clustered`, `Namespaced`, `AuditEntity`, `DeletableEntity`
+      - name: string （StatefulSet 名称）
+      - description?: string （StatefulSet 描述）
+      - status: StatefulSetStatus （状态，来自 `/src/config/kubernetes/workload/statefulset.ts` 包）
+      - statusMsg?: string （状态信息）
+      - replicas: number （期望副本数）
+      - readyReplicas: number （就绪副本数）
+      - currentReplicas: number （当前版本就绪副本数）
+      - updateStrategyType: StatefulSetStrategyType （更新策略）
+
+## 查看 StatefulSet 详情
+- 页面路由
+  - Name: `kubernetes:workload:statefulset:detail`
+  - Path: `/kubernetes/clusters/:clusterUid/namespaces/:namespace/statefulsets/:name`
+  - Component: `/src/view/kubernetes/workload/statefulset/detail/index.vue`
+  - Permission: `kubernetes:workload:statefulset:view`
+- API 接口
+  - URL: `GET /kubernetes/clusters/:clusterUid/namespaces/:namespace/statefulsets/:name`
+  - Function: `StatefulSetDetailVo getStatefulSetDetail(clusterUid: string, namespace: string, name: string)`
+    - clusterUid: string （集群 UID）
+    - namespace: string （命名空间名称）
+    - name: string （StatefulSet 名称）
+    - `StatefulSetDetailVo`（StatefulSet 详情响应对象） 继承 `UidEntity`, `Clustered`, `Namespaced`, `AuditEntity`, `DeletableEntity`
+      - description?: string （StatefulSet 描述）
+      - status: StatefulSetStatus （状态，来自 `/src/config/kubernetes/workload/statefulset.ts` 包）
+      - statusMsg?: string （状态信息）
+      - metadata: ObjectMeta （StatefulSet 的资源元数据，详见 ### ObjectMeta）
+      - spec: StatefulSetSpec （StatefulSet 的规格定义，详见 ### StatefulSetSpec）
+      - statusObj: StatefulSetStatusObj （StatefulSet 的观测状态，详见 ### StatefulSetStatus）
+
+## 查看 StatefulSet YAML
+- 页面路由
+  - 无
+- API 接口
+  - URL: `GET /kubernetes/clusters/:clusterUid/namespaces/:namespace/statefulsets/:name/yaml`
+  - Function: `string getStatefulSetYaml(clusterUid: string, namespace: string, name: string)`
+    - clusterUid: string （集群 UID）
+    - namespace: string （命名空间名称）
+    - name: string （StatefulSet 名称）
+    - 返回: StatefulSet 当前资源的 YAML 文本
+
+## 查看 StatefulSet 关联 Pod 列表
+- 页面路由
+  - 无
+- API 接口
+  - URL: `GET /kubernetes/clusters/:clusterUid/namespaces/:namespace/statefulsets/:name/pods`
+  - Function: `PageVo<StatefulSetPodListVo> getStatefulSetPodList(clusterUid: string, namespace: string, name: string, params: Partial<StatefulSetPodQueryForm>)`
+    - clusterUid: string （集群 UID）
+    - namespace: string （命名空间名称）
+    - name: string （StatefulSet 名称）
+    - `StatefulSetPodQueryForm`（StatefulSet 关联 Pod 查询条件请求对象） 继承 `UidEntity`, `PageForm`
+      - name: string （Pod 名称）
+      - status: PodStatus （Pod 状态）
+    - `StatefulSetPodListVo` （StatefulSet 关联 Pod 列表项响应对象） 继承 `UidEntity`, `AuditEntity`
+      - name: string （Pod 名称）
+      - ip: string （Pod IP）
+      - status: PodStatus （Pod 状态）
+      - statusMsg: string （Pod 状态信息）
+      - restarts: number （Pod 重启次数）
+      - nodeIp: string （Pod 所属节点 IP）
+      - nodeName: string （Pod 所属节点名称）
+      - readyContainerCount: number （Pod 就绪容器数量）
+      - containerCount: number （Pod 容器总数）
+
+## 查看 StatefulSet 历史版本列表
+- 页面路由
+  - 无
+- API 接口
+  - URL: `GET /kubernetes/clusters/:clusterUid/namespaces/:namespace/statefulsets/:name/history`
+  - Function: `PageVo<StatefulSetHistoryRevisionListVo> getStatefulSetHistoryRevisionList(clusterUid: string, namespace: string, name: string, params: Partial<StatefulSetHistoryRevisionQueryForm>)`
+    - clusterUid: string （集群 UID）
+    - namespace: string （命名空间名称）
+    - name: string （StatefulSet 名称）
+    - `StatefulSetHistoryRevisionQueryForm`（StatefulSet 历史版本查询条件请求对象） 继承 `PageForm`
+      - revision: number （版本名称）
+      - changeCause: string （变更原因）
+    - `StatefulSetHistoryRevisionListVo` （StatefulSet 历史版本列表项响应对象）继承 `HistoryRevision`
+
+## 查看 StatefulSet 关联网络资源
+- 页面路由
+  - 无
+- API 接口
+  - URL: `GET /kubernetes/clusters/:clusterUid/namespaces/:namespace/statefulsets/:name/network`
+  - Function: `StatefulSetNetworkVo getStatefulSetNetwork(clusterUid: string, namespace: string, name: string)`
+    - clusterUid: string （集群 UID）
+    - namespace: string （命名空间名称）
+    - name: string （StatefulSet 名称）
+    - `StatefulSetNetworkVo` （StatefulSet 关联网络资源响应对象）
+      - services: StatefulSetServiceListVo[] （关联的 Service 列表）
+      - ingresses: StatefulSetIngressListVo[] （关联的 Ingress 列表）
+      - `StatefulSetServiceListVo` （StatefulSet 关联 Service 列表项响应对象） 继承 `UidEntity`, `AuditEntity`
+        - name: string （Service 名称）
+        - description: string （Service 描述）
+        - type: ServiceType （Service 类型，来自 `/src/config/kubernetes/network/service.ts`）
+        - clusterIp: string （集群内部 IP，ClusterIP / NodePort / LoadBalancer 类型自动分配）
+        - externalName: string （外部域名，仅 ExternalName 类型生效）
+        - headless: boolean （是否为 Headless Service，clusterIp 为 None；StatefulSet 通常依赖无头 Service 提供稳定网络标识）
+      - `StatefulSetIngressListVo` （StatefulSet 关联 Ingress 列表项响应对象） 继承 `UidEntity`, `AuditEntity`
+        - name: string （Ingress 名称）
+        - description: string （Ingress 描述）
+        - ingressClassName?: string （Ingress 类名，对应 IngressClassName 资源名称）
+
+## 查看 StatefulSet 事件列表
+- 页面路由
+  - 无
+- API 接口
+  - URL: `GET /kubernetes/clusters/:clusterUid/namespaces/:namespace/statefulsets/:name/events`
+  - Function: `PageVo<EventListVo> getStatefulSetEventList(clusterUid: string, namespace: string, name: string, params: Partial<EventQueryForm>)`
+    - clusterUid: string （集群 UID）
+    - namespace: string （命名空间名称）
+    - name: string （StatefulSet 名称）
+    - `EventQueryForm`（事件查询条件请求对象）
+    - `EventListVo`（事件列表项响应对象）
+
+## 查看 StatefulSet 监控数据
+- 页面路由
+  - 无
+- API 接口
+  - URL: `GET /kubernetes/clusters/:clusterUid/namespaces/:namespace/statefulsets/:name/monitor`
+  - Function: `StatefulSetMonitorVo getStatefulSetMonitor(clusterUid: string, namespace: string, name: string)`
+    - clusterUid: string （集群 UID）
+    - namespace: string （命名空间名称）
+    - name: string （StatefulSet 名称）
+    - `StatefulSetMonitorVo` （StatefulSet 监控响应对象）
+      - {TODO: StatefulSetMonitorVo 对象属性}
+
+## 创建
+- 页面路由
+  - Name: `kubernetes:workload:statefulset:create`
+  - Path: `/kubernetes/clusters/:clusterUid/statefulsets/create`
+  - Component: `/src/view/kubernetes/workload/statefulset/create/index.vue`
+  - Permission: `kubernetes:workload:statefulset:create`
+- API 接口
+  - URL: `POST /kubernetes/clusters/:clusterUid/statefulsets`
+  - Function: `void createStatefulSet(clusterUid: string, data: Partial<StatefulSetCreateForm>)`
+    - clusterUid: string （集群 UID）
+    - `StatefulSetCreateForm` （StatefulSet 创建请求对象）
+      - description?: string （StatefulSet 描述）
+      - metadata: ObjectMeta （StatefulSet 的资源元数据，详见 ### ObjectMeta）
+      - spec: StatefulSetSpec （StatefulSet 的规格定义，详见 ### StatefulSetSpec）
+
+## YAML 创建
+- 页面路由
+  - Name: `kubernetes:workload:statefulset:create:yaml`
+  - Path: `/kubernetes/clusters/:clusterUid/statefulsets/create/yaml`
+  - Component: `/src/view/kubernetes/workload/statefulset/create/yaml.vue`
+  - Permission: `kubernetes:workload:statefulset:create`
+- API 接口
+  - URL: `POST /kubernetes/clusters/:clusterUid/statefulsets/yaml`
+  - Function: `void createStatefulSetYaml(clusterUid: string, yaml: string)`
+    - clusterUid: string （集群 UID）
+    - yaml: string （StatefulSet YAML 字符串）
+
+## 更新
+- 页面路由
+  - Name: `kubernetes:workload:statefulset:edit`
+  - Path: `/kubernetes/clusters/:clusterUid/namespaces/:namespace/statefulsets/:name/edit`
+  - Component: `/src/view/kubernetes/workload/statefulset/edit/index.vue`
+  - Permission: `kubernetes:workload:statefulset:edit`
+- API 接口
+  - URL: `PUT /kubernetes/clusters/:clusterUid/namespaces/:namespace/statefulsets/:name`
+  - Function: `void updateStatefulSet(clusterUid: string, namespace: string, name: string, data: Partial<StatefulSetUpdateForm>)`
+    - clusterUid: string （集群 UID）
+    - namespace: string （命名空间名称）
+    - name: string （StatefulSet 名称）
+    - `StatefulSetUpdateForm` （StatefulSet 更新请求对象）
+      - description?: string （StatefulSet 描述）
+      - metadata: ObjectMeta （StatefulSet 的资源元数据，详见 ### ObjectMeta）
+      - spec: StatefulSetSpec （StatefulSet 的规格定义，详见 ### StatefulSetSpec）
+
+## YAML 更新
+- 页面路由
+  - Name: `kubernetes:workload:statefulset:edit:yaml`
+  - Path: `/kubernetes/clusters/:clusterUid/namespaces/:namespace/statefulsets/:name/edit/yaml`
+  - Component: `/src/view/kubernetes/workload/statefulset/edit/yaml.vue`
+  - Permission: `kubernetes:workload:statefulset:edit`
+- API 接口
+  - URL: `PUT /kubernetes/clusters/:clusterUid/namespaces/:namespace/statefulsets/:name/yaml`
+  - Function: `void updateStatefulSetYaml(clusterUid: string, namespace: string, name: string, yaml: string)`
+    - clusterUid: string （集群 UID）
+    - namespace: string （命名空间名称）
+    - name: string （StatefulSet 名称）
+    - yaml: string （StatefulSet YAML 字符串）
+
+## 管理标签
+- 页面路由
+  - 无
+- API 接口
+  - URL: `POST /kubernetes/clusters/:clusterUid/namespaces/:namespace/statefulsets/:name/labels`
+  - Function: `void manageStatefulSetLabel(clusterUid: string, namespace: string, name: string, data: MetadataLabelForm)`
+    - clusterUid: string （集群 UID）
+    - namespace: string （命名空间名称）
+    - name: string （StatefulSet 名称）
+    - `MetadataLabelForm`（管理标签请求对象） 来自 `/src/types/kubernetes/common.ts`
+      - labels: Record<string, string> （标签键值对）
+      - operation: number （操作，1: 新增；2: 移除；3: 全量替换）
+
+## 管理注解
+- 页面路由
+  - 无
+- API 接口
+  - URL: `POST /kubernetes/clusters/:clusterUid/namespaces/:namespace/statefulsets/:name/annotations`
+  - Function: `void manageStatefulSetAnnotation(clusterUid: string, namespace: string, name: string, data: MetadataAnnotationForm)`
+    - clusterUid: string （集群 UID）
+    - namespace: string （命名空间名称）
+    - name: string （StatefulSet 名称）
+    - `MetadataAnnotationForm`（管理注解请求对象） 来自 `/src/types/kubernetes/common.ts`
+      - annotations: Record<string, string> （注解键值对）
+      - operation: number （操作，1: 新增；2: 移除；3: 全量替换）
+
+## 删除
+- 页面路由
+  - 无
+- API 接口
+  - URL: `DELETE /kubernetes/clusters/:clusterUid/namespaces/:namespace/statefulsets/:name`
+  - Function: `void deleteStatefulSet(clusterUid: string, namespace: string, name: string)`
+    - clusterUid: string （集群 UID）
+    - namespace: string （命名空间名称）
+    - name: string （StatefulSet 名称）
+  - Permission: `kubernetes:workload:statefulset:delete`
+
+## 批量删除
+- 页面路由
+  - 无
+- API 接口
+  - URL: `DELETE /kubernetes/clusters/:clusterUid/statefulsets/batch`
+  - Function: `void deleteStatefulSets(clusterUid: string, uids: string[])`
+    - clusterUid: string （集群 UID）
+    - uids: string[] （StatefulSet UID 列表）
+  - Permission: `kubernetes:workload:statefulset:delete`
+
+## 导入
+- 页面路由
+  - 无
+- API 接口
+  - URL: `POST /kubernetes/clusters/:clusterUid/statefulsets/import`
+  - Function: `void importStatefulSet(clusterUid: string, formData: FormData, onProgress?: (progressEvent: AxiosProgressEvent) => void)`
+    - clusterUid: string （集群 UID）
+    - formData: FormData （上传的文件）
+    - onProgress?: (progressEvent: AxiosProgressEvent) => void （上传进度回调）
+  - Permission: `kubernetes:workload:statefulset:import`
+
+## 导出
+- 页面路由
+  - 无
+- API 接口
+  - URL: `GET /kubernetes/clusters/:clusterUid/statefulsets/export`
+  - Function: `void exportStatefulSet(clusterUid: string, params: Partial<StatefulSetQueryForm>)`
+    - clusterUid: string （集群 UID）
+    - `StatefulSetQueryForm` 共享【查看 StatefulSet 详情】章节的实体定义
+  - Permission: `kubernetes:workload:statefulset:export`
+
+## 扩缩容
+- 页面路由
+  - 无
+- API 接口
+  - URL: `POST /kubernetes/clusters/:clusterUid/namespaces/:namespace/statefulsets/:name/scale`
+  - Function: `void scaleStatefulSet(clusterUid: string, namespace: string, name: string, data: StatefulSetScaleForm)`
+    - clusterUid: string （集群 UID）
+    - namespace: string （命名空间名称）
+    - name: string （StatefulSet 名称）
+    - `StatefulSetScaleForm` （StatefulSet 扩缩容请求对象）
+      - replicas: number （期望副本数）
+  - Permission: `kubernetes:workload:statefulset:edit`
+
+## 滚动更新分区
+- 页面路由
+  - 无
+- API 接口
+  - URL: `POST /kubernetes/clusters/:clusterUid/namespaces/:namespace/statefulsets/:name/partition`
+  - Function: `void partitionStatefulSet(clusterUid: string, namespace: string, name: string, data: StatefulSetPartitionForm)`
+    - clusterUid: string （集群 UID）
+    - namespace: string （命名空间名称）
+    - name: string （StatefulSet 名称）
+    - `StatefulSetPartitionForm` （StatefulSet 滚动更新分区请求对象）
+      - partition: number （分区序号，序号大于等于该值的 Pod 才会被滚动更新）
+  - Permission: `kubernetes:workload:statefulset:edit`
+
+## 重启
+- 页面路由
+  - 无
+- API 接口
+  - URL: `POST /kubernetes/clusters/:clusterUid/namespaces/:namespace/statefulsets/:name/restart`
+  - Function: `void restartStatefulSet(clusterUid: string, namespace: string, name: string)`
+    - clusterUid: string （集群 UID）
+    - namespace: string （命名空间名称）
+    - name: string （StatefulSet 名称）
+  - Permission: `kubernetes:workload:statefulset:edit`
+
+## 回滚
+- 页面路由
+  - 无
+- API 接口
+  - URL: `POST /kubernetes/clusters/:clusterUid/namespaces/:namespace/statefulsets/:name/rollback`
+  - Function: `void rollbackStatefulSet(clusterUid: string, namespace: string, name: string, data: StatefulSetRollbackForm)`
+    - clusterUid: string （集群 UID）
+    - namespace: string （命名空间名称）
+    - name: string （StatefulSet 名称）
+    - `StatefulSetRollbackForm` （StatefulSet 回滚请求对象）
+      - revision: number （目标历史版本号）
+  - Permission: `kubernetes:workload:statefulset:edit`
+
+## 暂停更新
+- 页面路由
+  - 无
+- API 接口
+  - URL: `POST /kubernetes/clusters/:clusterUid/namespaces/:namespace/statefulsets/:name/pause`
+  - Function: `void pauseStatefulSet(clusterUid: string, namespace: string, name: string)`
+    - clusterUid: string （集群 UID）
+    - namespace: string （命名空间名称）
+    - name: string （StatefulSet 名称）
+  - Permission: `kubernetes:workload:statefulset:edit`
+
+## 恢复更新
+- 页面路由
+  - 无
+- API 接口
+  - URL: `POST /kubernetes/clusters/:clusterUid/namespaces/:namespace/statefulsets/:name/resume`
+  - Function: `void resumeStatefulSet(clusterUid: string, namespace: string, name: string)`
+    - clusterUid: string （集群 UID）
+    - namespace: string （命名空间名称）
+    - name: string （StatefulSet 名称）
+  - Permission: `kubernetes:workload:statefulset:edit`
+
+# DaemonSet 功能
+
+## 查看 DaemonSet 列表
+- 功能权限：`kubernetes:workload:daemonset:view`
+- 页面路由
+  - Name: `kubernetes:workload:daemonset`
+  - Path: `/kubernetes/clusters/:clusterUid/daemonsets`
+  - Component: `/src/view/kubernetes/workload/daemonset/index.vue`
+- API 接口
+  - URL: `GET /kubernetes/clusters/:clusterUid/daemonsets`
+  - Function: `PageVo<DaemonSetListVo> getDaemonSetList(clusterUid: string, params: Partial<DaemonSetQueryForm>)`
+    - clusterUid: string （集群 UID）
+    - `DaemonSetQueryForm`（DaemonSet 查询条件请求对象） 继承 `UidEntity`, `PageForm`
+      - name: string （DaemonSet 名称）
+      - namespace: string （命名空间名称）
+      - status: DaemonSetStatus （状态，来自 `/src/config/kubernetes/workload/daemonset.ts` 包）
+    - `DaemonSetListVo`（DaemonSet 列表项响应对象） 继承 `UidEntity`, `Clustered`, `Namespaced`, `AuditEntity`, `DeletableEntity`
+      - name: string （DaemonSet 名称）
+      - description?: string （DaemonSet 描述）
+      - status: DaemonSetStatus （状态，来自 `/src/config/kubernetes/workload/daemonset.ts` 包）
+      - statusMsg?: string （状态信息）
+      - desiredNumberScheduled: number （目标调度 Pod 总数）
+      - numberReady: number （就绪 Pod 数）
+      - updateStrategyType: DaemonSetUpdateStrategyType （更新策略）
+
+## 查看 DaemonSet 详情
+- 页面路由
+  - Name: `kubernetes:workload:daemonset:detail`
+  - Path: `/kubernetes/clusters/:clusterUid/namespaces/:namespace/daemonsets/:name`
+  - Component: `/src/view/kubernetes/workload/daemonset/detail/index.vue`
+  - Permission: `kubernetes:workload:daemonset:view`
+- API 接口
+  - URL: `GET /kubernetes/clusters/:clusterUid/namespaces/:namespace/daemonsets/:name`
+  - Function: `DaemonSetDetailVo getDaemonSetDetail(clusterUid: string, namespace: string, name: string)`
+    - clusterUid: string （集群 UID）
+    - namespace: string （命名空间名称）
+    - name: string （DaemonSet 名称）
+    - `DaemonSetDetailVo`（DaemonSet 详情响应对象） 继承 `UidEntity`, `Clustered`, `Namespaced`, `AuditEntity`, `DeletableEntity`
+      - description?: string （DaemonSet 描述）
+      - status: DaemonSetStatus （状态，来自 `/src/config/kubernetes/workload/daemonset.ts` 包）
+      - statusMsg?: string （状态信息）
+      - metadata: ObjectMeta （DaemonSet 的资源元数据，详见 ### ObjectMeta）
+      - spec: DaemonSetSpec （DaemonSet 的规格定义，详见 ### DaemonSetSpec）
+      - statusObj: DaemonSetStatusObj （DaemonSet 的观测状态，详见 ### DaemonSetStatus）
+
+## 查看 DaemonSet YAML
+- 页面路由
+  - 无
+- API 接口
+  - URL: `GET /kubernetes/clusters/:clusterUid/namespaces/:namespace/daemonsets/:name/yaml`
+  - Function: `string getDaemonSetYaml(clusterUid: string, namespace: string, name: string)`
+    - clusterUid: string （集群 UID）
+    - namespace: string （命名空间名称）
+    - name: string （DaemonSet 名称）
+    - 返回: DaemonSet 当前资源的 YAML 文本
+
+## 查看 DaemonSet 关联 Pod 列表
+- 页面路由
+  - 无
+- API 接口
+  - URL: `GET /kubernetes/clusters/:clusterUid/namespaces/:namespace/daemonsets/:name/pods`
+  - Function: `PageVo<DaemonSetPodListVo> getDaemonSetPodList(clusterUid: string, namespace: string, name: string, params: Partial<DaemonSetPodQueryForm>)`
+    - clusterUid: string （集群 UID）
+    - namespace: string （命名空间名称）
+    - name: string （DaemonSet 名称）
+    - `DaemonSetPodQueryForm`（DaemonSet 关联 Pod 查询条件请求对象） 继承 `UidEntity`, `PageForm`
+      - name: string （Pod 名称）
+      - status: PodStatus （Pod 状态）
+    - `DaemonSetPodListVo` （DaemonSet 关联 Pod 列表项响应对象） 继承 `UidEntity`, `AuditEntity`
+      - name: string （Pod 名称）
+      - ip: string （Pod IP）
+      - status: PodStatus （Pod 状态）
+      - statusMsg: string （Pod 状态信息）
+      - restarts: number （Pod 重启次数）
+      - nodeIp: string （Pod 所属节点 IP）
+      - nodeName: string （Pod 所属节点名称）
+      - readyContainerCount: number （Pod 就绪容器数量）
+      - containerCount: number （Pod 容器总数）
+
+## 查看 DaemonSet 历史版本列表
+- 页面路由
+  - 无
+- API 接口
+  - URL: `GET /kubernetes/clusters/:clusterUid/namespaces/:namespace/daemonsets/:name/history`
+  - Function: `PageVo<DaemonSetHistoryRevisionListVo> getDaemonSetHistoryRevisionList(clusterUid: string, namespace: string, name: string, params: Partial<DaemonSetHistoryRevisionQueryForm>)`
+    - clusterUid: string （集群 UID）
+    - namespace: string （命名空间名称）
+    - name: string （DaemonSet 名称）
+    - `DaemonSetHistoryRevisionQueryForm`（DaemonSet 历史版本查询条件请求对象） 继承 `PageForm`
+      - revision: number （版本名称）
+      - changeCause: string （变更原因）
+    - `DaemonSetHistoryRevisionListVo` （DaemonSet 历史版本列表项响应对象）继承 `HistoryRevision`
+
+## 查看 DaemonSet 关联网络资源
+- 页面路由
+  - 无
+- API 接口
+  - URL: `GET /kubernetes/clusters/:clusterUid/namespaces/:namespace/daemonsets/:name/network`
+  - Function: `DaemonSetNetworkVo getDaemonSetNetwork(clusterUid: string, namespace: string, name: string)`
+    - clusterUid: string （集群 UID）
+    - namespace: string （命名空间名称）
+    - name: string （DaemonSet 名称）
+    - `DaemonSetNetworkVo` （DaemonSet 关联网络资源响应对象）
+      - services: DaemonSetServiceListVo[] （关联的 Service 列表）
+      - ingresses: DaemonSetIngressListVo[] （关联的 Ingress 列表）
+      - `DaemonSetServiceListVo` （DaemonSet 关联 Service 列表项响应对象） 继承 `UidEntity`, `AuditEntity`
+        - name: string （Service 名称）
+        - description: string （Service 描述）
+        - type: ServiceType （Service 类型，来自 `/src/config/kubernetes/network/service.ts`）
+        - clusterIp: string （集群内部 IP，ClusterIP / NodePort / LoadBalancer 类型自动分配）
+        - externalName: string （外部域名，仅 ExternalName 类型生效）
+        - headless: boolean （是否为 Headless Service，clusterIp 为 None）
+      - `DaemonSetIngressListVo` （DaemonSet 关联 Ingress 列表项响应对象） 继承 `UidEntity`, `AuditEntity`
+        - name: string （Ingress 名称）
+        - description: string （Ingress 描述）
+        - ingressClassName?: string （Ingress 类名，对应 IngressClassName 资源名称）
+
+## 查看 DaemonSet 事件列表
+- 页面路由
+  - 无
+- API 接口
+  - URL: `GET /kubernetes/clusters/:clusterUid/namespaces/:namespace/daemonsets/:name/events`
+  - Function: `PageVo<EventListVo> getDaemonSetEventList(clusterUid: string, namespace: string, name: string, params: Partial<EventQueryForm>)`
+    - clusterUid: string （集群 UID）
+    - namespace: string （命名空间名称）
+    - name: string （DaemonSet 名称）
+    - `EventQueryForm`（事件查询条件请求对象）
+    - `EventListVo`（事件列表项响应对象）
+
+## 查看 DaemonSet 监控数据
+- 页面路由
+  - 无
+- API 接口
+  - URL: `GET /kubernetes/clusters/:clusterUid/namespaces/:namespace/daemonsets/:name/monitor`
+  - Function: `DaemonSetMonitorVo getDaemonSetMonitor(clusterUid: string, namespace: string, name: string)`
+    - clusterUid: string （集群 UID）
+    - namespace: string （命名空间名称）
+    - name: string （DaemonSet 名称）
+    - `DaemonSetMonitorVo` （DaemonSet 监控响应对象）
+      - {TODO: DaemonSetMonitorVo 对象属性}
+
+## 创建
+- 页面路由
+  - Name: `kubernetes:workload:daemonset:create`
+  - Path: `/kubernetes/clusters/:clusterUid/daemonsets/create`
+  - Component: `/src/view/kubernetes/workload/daemonset/create/index.vue`
+  - Permission: `kubernetes:workload:daemonset:create`
+- API 接口
+  - URL: `POST /kubernetes/clusters/:clusterUid/daemonsets`
+  - Function: `void createDaemonSet(clusterUid: string, data: Partial<DaemonSetCreateForm>)`
+    - clusterUid: string （集群 UID）
+    - `DaemonSetCreateForm` （DaemonSet 创建请求对象）
+      - description?: string （DaemonSet 描述）
+      - metadata: ObjectMeta （DaemonSet 的资源元数据，详见 ### ObjectMeta）
+      - spec: DaemonSetSpec （DaemonSet 的规格定义，详见 ### DaemonSetSpec）
+
+## YAML 创建
+- 页面路由
+  - Name: `kubernetes:workload:daemonset:create:yaml`
+  - Path: `/kubernetes/clusters/:clusterUid/daemonsets/create/yaml`
+  - Component: `/src/view/kubernetes/workload/daemonset/create/yaml.vue`
+  - Permission: `kubernetes:workload:daemonset:create`
+- API 接口
+  - URL: `POST /kubernetes/clusters/:clusterUid/daemonsets/yaml`
+  - Function: `void createDaemonSetYaml(clusterUid: string, yaml: string)`
+    - clusterUid: string （集群 UID）
+    - yaml: string （DaemonSet YAML 字符串）
+
+## 更新
+- 页面路由
+  - Name: `kubernetes:workload:daemonset:edit`
+  - Path: `/kubernetes/clusters/:clusterUid/namespaces/:namespace/daemonsets/:name/edit`
+  - Component: `/src/view/kubernetes/workload/daemonset/edit/index.vue`
+  - Permission: `kubernetes:workload:daemonset:edit`
+- API 接口
+  - URL: `PUT /kubernetes/clusters/:clusterUid/namespaces/:namespace/daemonsets/:name`
+  - Function: `void updateDaemonSet(clusterUid: string, namespace: string, name: string, data: Partial<DaemonSetUpdateForm>)`
+    - clusterUid: string （集群 UID）
+    - namespace: string （命名空间名称）
+    - name: string （DaemonSet 名称）
+    - `DaemonSetUpdateForm` （DaemonSet 更新请求对象）
+      - description?: string （DaemonSet 描述）
+      - metadata: ObjectMeta （DaemonSet 的资源元数据，详见 ### ObjectMeta）
+      - spec: DaemonSetSpec （DaemonSet 的规格定义，详见 ### DaemonSetSpec）
+
+## YAML 更新
+- 页面路由
+  - Name: `kubernetes:workload:daemonset:edit:yaml`
+  - Path: `/kubernetes/clusters/:clusterUid/namespaces/:namespace/daemonsets/:name/edit/yaml`
+  - Component: `/src/view/kubernetes/workload/daemonset/edit/yaml.vue`
+  - Permission: `kubernetes:workload:daemonset:edit`
+- API 接口
+  - URL: `PUT /kubernetes/clusters/:clusterUid/namespaces/:namespace/daemonsets/:name/yaml`
+  - Function: `void updateDaemonSetYaml(clusterUid: string, namespace: string, name: string, yaml: string)`
+    - clusterUid: string （集群 UID）
+    - namespace: string （命名空间名称）
+    - name: string （DaemonSet 名称）
+    - yaml: string （DaemonSet YAML 字符串）
+
+## 管理标签
+- 页面路由
+  - 无
+- API 接口
+  - URL: `POST /kubernetes/clusters/:clusterUid/namespaces/:namespace/daemonsets/:name/labels`
+  - Function: `void manageDaemonSetLabel(clusterUid: string, namespace: string, name: string, data: MetadataLabelForm)`
+    - clusterUid: string （集群 UID）
+    - namespace: string （命名空间名称）
+    - name: string （DaemonSet 名称）
+    - `MetadataLabelForm`（管理标签请求对象） 来自 `/src/types/kubernetes/common.ts`
+      - labels: Record<string, string> （标签键值对）
+      - operation: number （操作，1: 新增；2: 移除；3: 全量替换）
+
+## 管理注解
+- 页面路由
+  - 无
+- API 接口
+  - URL: `POST /kubernetes/clusters/:clusterUid/namespaces/:namespace/daemonsets/:name/annotations`
+  - Function: `void manageDaemonSetAnnotation(clusterUid: string, namespace: string, name: string, data: MetadataAnnotationForm)`
+    - clusterUid: string （集群 UID）
+    - namespace: string （命名空间名称）
+    - name: string （DaemonSet 名称）
+    - `MetadataAnnotationForm`（管理注解请求对象） 来自 `/src/types/kubernetes/common.ts`
+      - annotations: Record<string, string> （注解键值对）
+      - operation: number （操作，1: 新增；2: 移除；3: 全量替换）
+
+## 删除
+- 页面路由
+  - 无
+- API 接口
+  - URL: `DELETE /kubernetes/clusters/:clusterUid/namespaces/:namespace/daemonsets/:name`
+  - Function: `void deleteDaemonSet(clusterUid: string, namespace: string, name: string)`
+    - clusterUid: string （集群 UID）
+    - namespace: string （命名空间名称）
+    - name: string （DaemonSet 名称）
+  - Permission: `kubernetes:workload:daemonset:delete`
+
+## 批量删除
+- 页面路由
+  - 无
+- API 接口
+  - URL: `DELETE /kubernetes/clusters/:clusterUid/daemonsets/batch`
+  - Function: `void deleteDaemonSets(clusterUid: string, uids: string[])`
+    - clusterUid: string （集群 UID）
+    - uids: string[] （DaemonSet UID 列表）
+  - Permission: `kubernetes:workload:daemonset:delete`
+
+## 导入
+- 页面路由
+  - 无
+- API 接口
+  - URL: `POST /kubernetes/clusters/:clusterUid/daemonsets/import`
+  - Function: `void importDaemonSet(clusterUid: string, formData: FormData, onProgress?: (progressEvent: AxiosProgressEvent) => void)`
+    - clusterUid: string （集群 UID）
+    - formData: FormData （上传的文件）
+    - onProgress?: (progressEvent: AxiosProgressEvent) => void （上传进度回调）
+  - Permission: `kubernetes:workload:daemonset:import`
+
+## 导出
+- 页面路由
+  - 无
+- API 接口
+  - URL: `GET /kubernetes/clusters/:clusterUid/daemonsets/export`
+  - Function: `void exportDaemonSet(clusterUid: string, params: Partial<DaemonSetQueryForm>)`
+    - clusterUid: string （集群 UID）
+    - `DaemonSetQueryForm` 共享【查看 DaemonSet 详情】章节的实体定义
+  - Permission: `kubernetes:workload:daemonset:export`
+
+## 重启
+- 页面路由
+  - 无
+- API 接口
+  - URL: `POST /kubernetes/clusters/:clusterUid/namespaces/:namespace/daemonsets/:name/restart`
+  - Function: `void restartDaemonSet(clusterUid: string, namespace: string, name: string)`
+    - clusterUid: string （集群 UID）
+    - namespace: string （命名空间名称）
+    - name: string （DaemonSet 名称）
+  - Permission: `kubernetes:workload:daemonset:edit`
+
+## 回滚
+- 页面路由
+  - 无
+- API 接口
+  - URL: `POST /kubernetes/clusters/:clusterUid/namespaces/:namespace/daemonsets/:name/rollback`
+  - Function: `void rollbackDaemonSet(clusterUid: string, namespace: string, name: string, data: DaemonSetRollbackForm)`
+    - clusterUid: string （集群 UID）
+    - namespace: string （命名空间名称）
+    - name: string （DaemonSet 名称）
+    - `DaemonSetRollbackForm` （DaemonSet 回滚请求对象）
+      - revision: number （目标历史版本号）
+  - Permission: `kubernetes:workload:daemonset:edit`
+
+## 暂停更新
+- 页面路由
+  - 无
+- API 接口
+  - URL: `POST /kubernetes/clusters/:clusterUid/namespaces/:namespace/daemonsets/:name/pause`
+  - Function: `void pauseDaemonSet(clusterUid: string, namespace: string, name: string)`
+    - clusterUid: string （集群 UID）
+    - namespace: string （命名空间名称）
+    - name: string （DaemonSet 名称）
+  - Permission: `kubernetes:workload:daemonset:edit`
+
+## 恢复更新
+- 页面路由
+  - 无
+- API 接口
+  - URL: `POST /kubernetes/clusters/:clusterUid/namespaces/:namespace/daemonsets/:name/resume`
+  - Function: `void resumeDaemonSet(clusterUid: string, namespace: string, name: string)`
+    - clusterUid: string （集群 UID）
+    - namespace: string （命名空间名称）
+    - name: string （DaemonSet 名称）
+  - Permission: `kubernetes:workload:daemonset:edit`
+
+# Job 功能
+
+## 查看 Job 列表
+- 功能权限：`kubernetes:workload:job:view`
+- 页面路由
+  - Name: `kubernetes:workload:job`
+  - Path: `/kubernetes/clusters/:clusterUid/jobs`
+  - Component: `/src/view/kubernetes/workload/job/index.vue`
+- API 接口
+  - URL: `GET /kubernetes/clusters/:clusterUid/jobs`
+  - Function: `PageVo<JobListVo> getJobList(clusterUid: string, params: Partial<JobQueryForm>)`
+    - clusterUid: string （集群 UID）
+    - `JobQueryForm`（Job 查询条件请求对象） 继承 `UidEntity`, `PageForm`
+      - name: string （Job 名称）
+      - namespace: string （命名空间名称）
+      - status: JobStatus （状态，来自 `/src/config/kubernetes/workload/job.ts` 包）
+    - `JobListVo`（Job 列表项响应对象） 继承 `UidEntity`, `Clustered`, `Namespaced`, `AuditEntity`, `DeletableEntity`
+      - name: string （Job 名称）
+      - description?: string （Job 描述）
+      - status: JobStatus （状态，来自 `/src/config/kubernetes/workload/job.ts` 包）
+      - statusMsg?: string （状态信息）
+      - active: number （运行中的 Pod 数）
+      - succeeded: number （已成功完成的 Pod 数）
+      - failed: number （已失败的 Pod 数）
+      - completions: number （需要成功完成的 Pod 数）
+      - parallelism: number （并行运行的 Pod 数）
+
+## 查看 Job 详情
+- 页面路由
+  - Name: `kubernetes:workload:job:detail`
+  - Path: `/kubernetes/clusters/:clusterUid/namespaces/:namespace/jobs/:name`
+  - Component: `/src/view/kubernetes/workload/job/detail/index.vue`
+  - Permission: `kubernetes:workload:job:view`
+- API 接口
+  - URL: `GET /kubernetes/clusters/:clusterUid/namespaces/:namespace/jobs/:name`
+  - Function: `JobDetailVo getJobDetail(clusterUid: string, namespace: string, name: string)`
+    - clusterUid: string （集群 UID）
+    - namespace: string （命名空间名称）
+    - name: string （Job 名称）
+    - `JobDetailVo`（Job 详情响应对象） 继承 `UidEntity`, `Clustered`, `Namespaced`, `AuditEntity`, `DeletableEntity`
+      - description?: string （Job 描述）
+      - status: JobStatus （状态，来自 `/src/config/kubernetes/workload/job.ts` 包）
+      - statusMsg?: string （状态信息）
+      - metadata: ObjectMeta （Job 的资源元数据，详见 ### ObjectMeta）
+      - spec: JobSpec （Job 的规格定义，详见 ### JobSpec）
+      - statusObj: JobStatusObj （Job 的观测状态，详见 ### JobStatus）
+
+## 查看 Job YAML
+- 页面路由
+  - 无
+- API 接口
+  - URL: `GET /kubernetes/clusters/:clusterUid/namespaces/:namespace/jobs/:name/yaml`
+  - Function: `string getJobYaml(clusterUid: string, namespace: string, name: string)`
+    - clusterUid: string （集群 UID）
+    - namespace: string （命名空间名称）
+    - name: string （Job 名称）
+    - 返回: Job 当前资源的 YAML 文本
+
+## 查看 Job 关联 Pod 列表
+- 页面路由
+  - 无
+- API 接口
+  - URL: `GET /kubernetes/clusters/:clusterUid/namespaces/:namespace/jobs/:name/pods`
+  - Function: `PageVo<JobPodListVo> getJobPodList(clusterUid: string, namespace: string, name: string, params: Partial<JobPodQueryForm>)`
+    - clusterUid: string （集群 UID）
+    - namespace: string （命名空间名称）
+    - name: string （Job 名称）
+    - `JobPodQueryForm`（Job 关联 Pod 查询条件请求对象） 继承 `UidEntity`, `PageForm`
+      - name: string （Pod 名称）
+      - status: PodStatus （Pod 状态）
+    - `JobPodListVo` （Job 关联 Pod 列表项响应对象） 继承 `UidEntity`, `AuditEntity`
+      - name: string （Pod 名称）
+      - ip: string （Pod IP）
+      - status: PodStatus （Pod 状态）
+      - statusMsg: string （Pod 状态信息）
+      - restarts: number （Pod 重启次数）
+      - nodeIp: string （Pod 所属节点 IP）
+      - nodeName: string （Pod 所属节点名称）
+      - readyContainerCount: number （Pod 就绪容器数量）
+      - containerCount: number （Pod 容器总数）
+
+## 查看 Job 事件列表
+- 页面路由
+  - 无
+- API 接口
+  - URL: `GET /kubernetes/clusters/:clusterUid/namespaces/:namespace/jobs/:name/events`
+  - Function: `PageVo<EventListVo> getJobEventList(clusterUid: string, namespace: string, name: string, params: Partial<EventQueryForm>)`
+    - clusterUid: string （集群 UID）
+    - namespace: string （命名空间名称）
+    - name: string （Job 名称）
+    - `EventQueryForm`（事件查询条件请求对象）
+    - `EventListVo`（事件列表项响应对象）
+
+## 查看 Job 监控数据
+- 页面路由
+  - 无
+- API 接口
+  - URL: `GET /kubernetes/clusters/:clusterUid/namespaces/:namespace/jobs/:name/monitor`
+  - Function: `JobMonitorVo getJobMonitor(clusterUid: string, namespace: string, name: string)`
+    - clusterUid: string （集群 UID）
+    - namespace: string （命名空间名称）
+    - name: string （Job 名称）
+    - `JobMonitorVo` （Job 监控响应对象）
+      - {TODO: JobMonitorVo 对象属性}
+
+## 创建
+- 页面路由
+  - Name: `kubernetes:workload:job:create`
+  - Path: `/kubernetes/clusters/:clusterUid/jobs/create`
+  - Component: `/src/view/kubernetes/workload/job/create/index.vue`
+  - Permission: `kubernetes:workload:job:create`
+- API 接口
+  - URL: `POST /kubernetes/clusters/:clusterUid/jobs`
+  - Function: `void createJob(clusterUid: string, data: Partial<JobCreateForm>)`
+    - clusterUid: string （集群 UID）
+    - `JobCreateForm` （Job 创建请求对象）
+      - description?: string （Job 描述）
+      - metadata: ObjectMeta （Job 的资源元数据，详见 ### ObjectMeta）
+      - spec: JobSpec （Job 的规格定义，详见 ### JobSpec）
+
+## YAML 创建
+- 页面路由
+  - Name: `kubernetes:workload:job:create:yaml`
+  - Path: `/kubernetes/clusters/:clusterUid/jobs/create/yaml`
+  - Component: `/src/view/kubernetes/workload/job/create/yaml.vue`
+  - Permission: `kubernetes:workload:job:create`
+- API 接口
+  - URL: `POST /kubernetes/clusters/:clusterUid/jobs/yaml`
+  - Function: `void createJobYaml(clusterUid: string, yaml: string)`
+    - clusterUid: string （集群 UID）
+    - yaml: string （Job YAML 字符串）
+
+## 更新
+- 页面路由
+  - Name: `kubernetes:workload:job:edit`
+  - Path: `/kubernetes/clusters/:clusterUid/namespaces/:namespace/jobs/:name/edit`
+  - Component: `/src/view/kubernetes/workload/job/edit/index.vue`
+  - Permission: `kubernetes:workload:job:edit`
+- API 接口
+  - URL: `PUT /kubernetes/clusters/:clusterUid/namespaces/:namespace/jobs/:name`
+  - Function: `void updateJob(clusterUid: string, namespace: string, name: string, data: Partial<JobUpdateForm>)`
+    - clusterUid: string （集群 UID）
+    - namespace: string （命名空间名称）
+    - name: string （Job 名称）
+    - `JobUpdateForm` （Job 更新请求对象）
+      - description?: string （Job 描述）
+      - metadata: ObjectMeta （Job 的资源元数据，详见 ### ObjectMeta）
+      - spec: JobSpec （Job 的规格定义，详见 ### JobSpec）
+
+## YAML 更新
+- 页面路由
+  - Name: `kubernetes:workload:job:edit:yaml`
+  - Path: `/kubernetes/clusters/:clusterUid/namespaces/:namespace/jobs/:name/edit/yaml`
+  - Component: `/src/view/kubernetes/workload/job/edit/yaml.vue`
+  - Permission: `kubernetes:workload:job:edit`
+- API 接口
+  - URL: `PUT /kubernetes/clusters/:clusterUid/namespaces/:namespace/jobs/:name/yaml`
+  - Function: `void updateJobYaml(clusterUid: string, namespace: string, name: string, yaml: string)`
+    - clusterUid: string （集群 UID）
+    - namespace: string （命名空间名称）
+    - name: string （Job 名称）
+    - yaml: string （Job YAML 字符串）
+
+## 管理标签
+- 页面路由
+  - 无
+- API 接口
+  - URL: `POST /kubernetes/clusters/:clusterUid/namespaces/:namespace/jobs/:name/labels`
+  - Function: `void manageJobLabel(clusterUid: string, namespace: string, name: string, data: MetadataLabelForm)`
+    - clusterUid: string （集群 UID）
+    - namespace: string （命名空间名称）
+    - name: string （Job 名称）
+    - `MetadataLabelForm`（管理标签请求对象） 来自 `/src/types/kubernetes/common.ts`
+      - labels: Record<string, string> （标签键值对）
+      - operation: number （操作，1: 新增；2: 移除；3: 全量替换）
+
+## 管理注解
+- 页面路由
+  - 无
+- API 接口
+  - URL: `POST /kubernetes/clusters/:clusterUid/namespaces/:namespace/jobs/:name/annotations`
+  - Function: `void manageJobAnnotation(clusterUid: string, namespace: string, name: string, data: MetadataAnnotationForm)`
+    - clusterUid: string （集群 UID）
+    - namespace: string （命名空间名称）
+    - name: string （Job 名称）
+    - `MetadataAnnotationForm`（管理注解请求对象） 来自 `/src/types/kubernetes/common.ts`
+      - annotations: Record<string, string> （注解键值对）
+      - operation: number （操作，1: 新增；2: 移除；3: 全量替换）
+
+## 删除
+- 页面路由
+  - 无
+- API 接口
+  - URL: `DELETE /kubernetes/clusters/:clusterUid/namespaces/:namespace/jobs/:name`
+  - Function: `void deleteJob(clusterUid: string, namespace: string, name: string)`
+    - clusterUid: string （集群 UID）
+    - namespace: string （命名空间名称）
+    - name: string （Job 名称）
+  - Permission: `kubernetes:workload:job:delete`
+
+## 批量删除
+- 页面路由
+  - 无
+- API 接口
+  - URL: `DELETE /kubernetes/clusters/:clusterUid/jobs/batch`
+  - Function: `void deleteJobs(clusterUid: string, uids: string[])`
+    - clusterUid: string （集群 UID）
+    - uids: string[] （Job UID 列表）
+  - Permission: `kubernetes:workload:job:delete`
+
+## 导入
+- 页面路由
+  - 无
+- API 接口
+  - URL: `POST /kubernetes/clusters/:clusterUid/jobs/import`
+  - Function: `void importJob(clusterUid: string, formData: FormData, onProgress?: (progressEvent: AxiosProgressEvent) => void)`
+    - clusterUid: string （集群 UID）
+    - formData: FormData （上传的文件）
+    - onProgress?: (progressEvent: AxiosProgressEvent) => void （上传进度回调）
+  - Permission: `kubernetes:workload:job:import`
+
+## 导出
+- 页面路由
+  - 无
+- API 接口
+  - URL: `GET /kubernetes/clusters/:clusterUid/jobs/export`
+  - Function: `void exportJob(clusterUid: string, params: Partial<JobQueryForm>)`
+    - clusterUid: string （集群 UID）
+    - `JobQueryForm` 共享【查看 Job 详情】章节的实体定义
+  - Permission: `kubernetes:workload:job:export`
+
+## 手动重跑
+- 页面路由
+  - 无
+- API 接口
+  - URL: `POST /kubernetes/clusters/:clusterUid/namespaces/:namespace/jobs/:name/rerun`
+  - Function: `void rerunJob(clusterUid: string, namespace: string, name: string)`
+    - clusterUid: string （集群 UID）
+    - namespace: string （命名空间名称）
+    - name: string （Job 名称）
+  - Permission: `kubernetes:workload:job:edit`
+
+## 暂停更新
+- 页面路由
+  - 无
+- API 接口
+  - URL: `POST /kubernetes/clusters/:clusterUid/namespaces/:namespace/jobs/:name/pause`
+  - Function: `void pauseJob(clusterUid: string, namespace: string, name: string)`
+    - clusterUid: string （集群 UID）
+    - namespace: string （命名空间名称）
+    - name: string （Job 名称）
+  - Permission: `kubernetes:workload:job:edit`
+
+## 恢复更新
+- 页面路由
+  - 无
+- API 接口
+  - URL: `POST /kubernetes/clusters/:clusterUid/namespaces/:namespace/jobs/:name/resume`
+  - Function: `void resumeJob(clusterUid: string, namespace: string, name: string)`
+    - clusterUid: string （集群 UID）
+    - namespace: string （命名空间名称）
+    - name: string （Job 名称）
+  - Permission: `kubernetes:workload:job:edit`
+
+# CronJob 功能
+
+## 查看 CronJob 列表
+- 功能权限：`kubernetes:workload:cronjob:view`
+- 页面路由
+  - Name: `kubernetes:workload:cronjob`
+  - Path: `/kubernetes/clusters/:clusterUid/cronjobs`
+  - Component: `/src/view/kubernetes/workload/cronjob/index.vue`
+- API 接口
+  - URL: `GET /kubernetes/clusters/:clusterUid/cronjobs`
+  - Function: `PageVo<CronJobListVo> getCronJobList(clusterUid: string, params: Partial<CronJobQueryForm>)`
+    - clusterUid: string （集群 UID）
+    - `CronJobQueryForm`（CronJob 查询条件请求对象） 继承 `UidEntity`, `PageForm`
+      - name: string （CronJob 名称）
+      - namespace: string （命名空间名称）
+      - status: CronJobStatus （状态，来自 `/src/config/kubernetes/workload/cronjob.ts` 包）
+    - `CronJobListVo`（CronJob 列表项响应对象） 继承 `UidEntity`, `Clustered`, `Namespaced`, `AuditEntity`, `DeletableEntity`
+      - name: string （CronJob 名称）
+      - description?: string （CronJob 描述）
+      - status: CronJobStatus （状态，来自 `/src/config/kubernetes/workload/cronjob.ts` 包）
+      - statusMsg?: string （状态信息）
+      - schedule: string （Cron 调度表达式）
+      - active: number （当前运行中的 Job 数）
+      - lastScheduleTime: string （最近一次触发时间）
+      - suspend: boolean （是否已暂停）
+
+## 查看 CronJob 详情
+- 页面路由
+  - Name: `kubernetes:workload:cronjob:detail`
+  - Path: `/kubernetes/clusters/:clusterUid/namespaces/:namespace/cronjobs/:name`
+  - Component: `/src/view/kubernetes/workload/cronjob/detail/index.vue`
+  - Permission: `kubernetes:workload:cronjob:view`
+- API 接口
+  - URL: `GET /kubernetes/clusters/:clusterUid/namespaces/:namespace/cronjobs/:name`
+  - Function: `CronJobDetailVo getCronJobDetail(clusterUid: string, namespace: string, name: string)`
+    - clusterUid: string （集群 UID）
+    - namespace: string （命名空间名称）
+    - name: string （CronJob 名称）
+    - `CronJobDetailVo`（CronJob 详情响应对象） 继承 `UidEntity`, `Clustered`, `Namespaced`, `AuditEntity`, `DeletableEntity`
+      - description?: string （CronJob 描述）
+      - status: CronJobStatus （状态，来自 `/src/config/kubernetes/workload/cronjob.ts` 包）
+      - statusMsg?: string （状态信息）
+      - metadata: ObjectMeta （CronJob 的资源元数据，详见 ### ObjectMeta）
+      - spec: CronJobSpec （CronJob 的规格定义，详见 ### CronJobSpec）
+      - statusObj: CronJobStatusObj （CronJob 的观测状态，详见 ### CronJobStatus）
+
+## 查看 CronJob YAML
+- 页面路由
+  - 无
+- API 接口
+  - URL: `GET /kubernetes/clusters/:clusterUid/namespaces/:namespace/cronjobs/:name/yaml`
+  - Function: `string getCronJobYaml(clusterUid: string, namespace: string, name: string)`
+    - clusterUid: string （集群 UID）
+    - namespace: string （命名空间名称）
+    - name: string （CronJob 名称）
+    - 返回: CronJob 当前资源的 YAML 文本
+
+## 查看 CronJob 关联 Job 列表
+- 页面路由
+  - 无
+- API 接口
+  - URL: `GET /kubernetes/clusters/:clusterUid/namespaces/:namespace/cronjobs/:name/jobs`
+  - Function: `PageVo<CronJobJobListVo> getCronJobJobList(clusterUid: string, namespace: string, name: string, params: Partial<CronJobJobQueryForm>)`
+    - clusterUid: string （集群 UID）
+    - namespace: string （命名空间名称）
+    - name: string （CronJob 名称）
+    - `CronJobJobQueryForm`（CronJob 关联 Job 查询条件请求对象） 继承 `UidEntity`, `PageForm`
+      - name: string （Job 名称）
+      - status: JobStatus （Job 状态）
+    - `CronJobJobListVo` （CronJob 关联 Job 列表项响应对象） 继承 `UidEntity`, `AuditEntity`
+      - name: string （Job 名称）
+      - status: JobStatus （Job 状态）
+      - statusMsg: string （Job 状态信息）
+      - active: number （运行中的 Pod 数）
+      - succeeded: number （已成功完成的 Pod 数）
+      - failed: number （已失败的 Pod 数）
+      - completions: number （需要成功完成的 Pod 数）
+      - parallelism: number （并行运行的 Pod 数）
+
+## 查看 CronJob 事件列表
+- 页面路由
+  - 无
+- API 接口
+  - URL: `GET /kubernetes/clusters/:clusterUid/namespaces/:namespace/cronjobs/:name/events`
+  - Function: `PageVo<EventListVo> getCronJobEventList(clusterUid: string, namespace: string, name: string, params: Partial<EventQueryForm>)`
+    - clusterUid: string （集群 UID）
+    - namespace: string （命名空间名称）
+    - name: string （CronJob 名称）
+    - `EventQueryForm`（事件查询条件请求对象）
+    - `EventListVo`（事件列表项响应对象）
+
+## 查看 CronJob 监控数据
+- 页面路由
+  - 无
+- API 接口
+  - URL: `GET /kubernetes/clusters/:clusterUid/namespaces/:namespace/cronjobs/:name/monitor`
+  - Function: `CronJobMonitorVo getCronJobMonitor(clusterUid: string, namespace: string, name: string)`
+    - clusterUid: string （集群 UID）
+    - namespace: string （命名空间名称）
+    - name: string （CronJob 名称）
+    - `CronJobMonitorVo` （CronJob 监控响应对象）
+      - {TODO: CronJobMonitorVo 对象属性}
+
+## 创建
+- 页面路由
+  - Name: `kubernetes:workload:cronjob:create`
+  - Path: `/kubernetes/clusters/:clusterUid/cronjobs/create`
+  - Component: `/src/view/kubernetes/workload/cronjob/create/index.vue`
+  - Permission: `kubernetes:workload:cronjob:create`
+- API 接口
+  - URL: `POST /kubernetes/clusters/:clusterUid/cronjobs`
+  - Function: `void createCronJob(clusterUid: string, data: Partial<CronJobCreateForm>)`
+    - clusterUid: string （集群 UID）
+    - `CronJobCreateForm` （CronJob 创建请求对象）
+      - description?: string （CronJob 描述）
+      - metadata: ObjectMeta （CronJob 的资源元数据，详见 ### ObjectMeta）
+      - spec: CronJobSpec （CronJob 的规格定义，详见 ### CronJobSpec）
+
+## YAML 创建
+- 页面路由
+  - Name: `kubernetes:workload:cronjob:create:yaml`
+  - Path: `/kubernetes/clusters/:clusterUid/cronjobs/create/yaml`
+  - Component: `/src/view/kubernetes/workload/cronjob/create/yaml.vue`
+  - Permission: `kubernetes:workload:cronjob:create`
+- API 接口
+  - URL: `POST /kubernetes/clusters/:clusterUid/cronjobs/yaml`
+  - Function: `void createCronJobYaml(clusterUid: string, yaml: string)`
+    - clusterUid: string （集群 UID）
+    - yaml: string （CronJob YAML 字符串）
+
+## 更新
+- 页面路由
+  - Name: `kubernetes:workload:cronjob:edit`
+  - Path: `/kubernetes/clusters/:clusterUid/namespaces/:namespace/cronjobs/:name/edit`
+  - Component: `/src/view/kubernetes/workload/cronjob/edit/index.vue`
+  - Permission: `kubernetes:workload:cronjob:edit`
+- API 接口
+  - URL: `PUT /kubernetes/clusters/:clusterUid/namespaces/:namespace/cronjobs/:name`
+  - Function: `void updateCronJob(clusterUid: string, namespace: string, name: string, data: Partial<CronJobUpdateForm>)`
+    - clusterUid: string （集群 UID）
+    - namespace: string （命名空间名称）
+    - name: string （CronJob 名称）
+    - `CronJobUpdateForm` （CronJob 更新请求对象）
+      - description?: string （CronJob 描述）
+      - metadata: ObjectMeta （CronJob 的资源元数据，详见 ### ObjectMeta）
+      - spec: CronJobSpec （CronJob 的规格定义，详见 ### CronJobSpec）
+
+## YAML 更新
+- 页面路由
+  - Name: `kubernetes:workload:cronjob:edit:yaml`
+  - Path: `/kubernetes/clusters/:clusterUid/namespaces/:namespace/cronjobs/:name/edit/yaml`
+  - Component: `/src/view/kubernetes/workload/cronjob/edit/yaml.vue`
+  - Permission: `kubernetes:workload:cronjob:edit`
+- API 接口
+  - URL: `PUT /kubernetes/clusters/:clusterUid/namespaces/:namespace/cronjobs/:name/yaml`
+  - Function: `void updateCronJobYaml(clusterUid: string, namespace: string, name: string, yaml: string)`
+    - clusterUid: string （集群 UID）
+    - namespace: string （命名空间名称）
+    - name: string （CronJob 名称）
+    - yaml: string （CronJob YAML 字符串）
+
+## 管理标签
+- 页面路由
+  - 无
+- API 接口
+  - URL: `POST /kubernetes/clusters/:clusterUid/namespaces/:namespace/cronjobs/:name/labels`
+  - Function: `void manageCronJobLabel(clusterUid: string, namespace: string, name: string, data: MetadataLabelForm)`
+    - clusterUid: string （集群 UID）
+    - namespace: string （命名空间名称）
+    - name: string （CronJob 名称）
+    - `MetadataLabelForm`（管理标签请求对象） 来自 `/src/types/kubernetes/common.ts`
+      - labels: Record<string, string> （标签键值对）
+      - operation: number （操作，1: 新增；2: 移除；3: 全量替换）
+
+## 管理注解
+- 页面路由
+  - 无
+- API 接口
+  - URL: `POST /kubernetes/clusters/:clusterUid/namespaces/:namespace/cronjobs/:name/annotations`
+  - Function: `void manageCronJobAnnotation(clusterUid: string, namespace: string, name: string, data: MetadataAnnotationForm)`
+    - clusterUid: string （集群 UID）
+    - namespace: string （命名空间名称）
+    - name: string （CronJob 名称）
+    - `MetadataAnnotationForm`（管理注解请求对象） 来自 `/src/types/kubernetes/common.ts`
+      - annotations: Record<string, string> （注解键值对）
+      - operation: number （操作，1: 新增；2: 移除；3: 全量替换）
+
+## 删除
+- 页面路由
+  - 无
+- API 接口
+  - URL: `DELETE /kubernetes/clusters/:clusterUid/namespaces/:namespace/cronjobs/:name`
+  - Function: `void deleteCronJob(clusterUid: string, namespace: string, name: string)`
+    - clusterUid: string （集群 UID）
+    - namespace: string （命名空间名称）
+    - name: string （CronJob 名称）
+  - Permission: `kubernetes:workload:cronjob:delete`
+
+## 批量删除
+- 页面路由
+  - 无
+- API 接口
+  - URL: `DELETE /kubernetes/clusters/:clusterUid/cronjobs/batch`
+  - Function: `void deleteCronJobs(clusterUid: string, uids: string[])`
+    - clusterUid: string （集群 UID）
+    - uids: string[] （CronJob UID 列表）
+  - Permission: `kubernetes:workload:cronjob:delete`
+
+## 导入
+- 页面路由
+  - 无
+- API 接口
+  - URL: `POST /kubernetes/clusters/:clusterUid/cronjobs/import`
+  - Function: `void importCronJob(clusterUid: string, formData: FormData, onProgress?: (progressEvent: AxiosProgressEvent) => void)`
+    - clusterUid: string （集群 UID）
+    - formData: FormData （上传的文件）
+    - onProgress?: (progressEvent: AxiosProgressEvent) => void （上传进度回调）
+  - Permission: `kubernetes:workload:cronjob:import`
+
+## 导出
+- 页面路由
+  - 无
+- API 接口
+  - URL: `GET /kubernetes/clusters/:clusterUid/cronjobs/export`
+  - Function: `void exportCronJob(clusterUid: string, params: Partial<CronJobQueryForm>)`
+    - clusterUid: string （集群 UID）
+    - `CronJobQueryForm` 共享【查看 CronJob 详情】章节的实体定义
+  - Permission: `kubernetes:workload:cronjob:export`
+
+## 立即触发
+- 页面路由
+  - 无
+- API 接口
+  - URL: `POST /kubernetes/clusters/:clusterUid/namespaces/:namespace/cronjobs/:name/trigger`
+  - Function: `void triggerCronJob(clusterUid: string, namespace: string, name: string)`
+    - clusterUid: string （集群 UID）
+    - namespace: string （命名空间名称）
+    - name: string （CronJob 名称）
+  - Permission: `kubernetes:workload:cronjob:edit`
+
+## 暂停更新
+- 页面路由
+  - 无
+- API 接口
+  - URL: `POST /kubernetes/clusters/:clusterUid/namespaces/:namespace/cronjobs/:name/pause`
+  - Function: `void pauseCronJob(clusterUid: string, namespace: string, name: string)`
+    - clusterUid: string （集群 UID）
+    - namespace: string （命名空间名称）
+    - name: string （CronJob 名称）
+  - Permission: `kubernetes:workload:cronjob:edit`
+
+## 恢复更新
+- 页面路由
+  - 无
+- API 接口
+  - URL: `POST /kubernetes/clusters/:clusterUid/namespaces/:namespace/cronjobs/:name/resume`
+  - Function: `void resumeCronJob(clusterUid: string, namespace: string, name: string)`
+    - clusterUid: string （集群 UID）
+    - namespace: string （命名空间名称）
+    - name: string （CronJob 名称）
+  - Permission: `kubernetes:workload:cronjob:edit`
