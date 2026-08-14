@@ -2,8 +2,8 @@
   <div class="deployment-pods">
     <!-- 查询表单 -->
     <div class="table-toolbar">
-      <BeeInputSearch v-model="searchKey" placeholder="按 UID / 名称 / IP 搜索" class="table-toolbar__search" />
-      <BeeSelect v-model="queryForm.status" placeholder="状态筛选" :options="POD_STATUS_OPTIONS" />
+      <BeeInputSearch v-model="searchKey" class="table-toolbar__search" placeholder="按 UID / 名称 / IP 搜索" />
+      <BeeSelect v-model="queryForm.status" :options="POD_STATUS_OPTIONS" placeholder="状态筛选" />
       <BeeButton icon="basic-search" @click="handleSearch"> 搜索 </BeeButton>
       <BeeButton icon="basic-refresh" @click="handleReset"> 重置 </BeeButton>
     </div>
@@ -13,37 +13,37 @@
       <BeeTable :data="tableData" :loading="loading">
         <BeeTableColumn :width="500">
           <template #default="{ row }">
-            <BeePodInfoCell :uid="row.uid" :name="row.name" :ip="row.ip" :icon-size="32" />
+            <BeePodInfoCell :icon-size="32" :ip="row.ip" :name="row.name" :uid="row.uid" />
           </template>
         </BeeTableColumn>
         <BeeTableColumn :width="120">
           <template #default="{ row }">
-            <BeeStatusCell :status="row.status" :status-msg="row.statusMsg" :options="POD_STATUS_OPTIONS" />
+            <BeeStatusCell :options="POD_STATUS_OPTIONS" :status="row.status" :status-msg="row.statusMsg" />
           </template>
         </BeeTableColumn>
         <BeeTableColumn :width="100">
           <template #default="{ row }">
-            <BeeTableCommonCell :text="String(row.restarts)" subtext="重启次数" />
+            <BeeTableCommonCell subtext="重启次数" :text="String(row.restarts)" />
           </template>
         </BeeTableColumn>
         <BeeTableColumn :width="200">
           <template #default="{ row }">
-            <BeeTableCommonCell :text="row.nodeName" :subtext="row.nodeIp" />
+            <BeeTableCommonCell :subtext="row.nodeIp" :text="row.nodeName" />
           </template>
         </BeeTableColumn>
         <BeeTableColumn :width="140">
           <template #default="{ row }">
-            <BeeTableCommonCell :text="`${row.readyContainerCount} / ${row.containerCount}`" subtext="就绪容器" />
+            <BeeTableCommonCell subtext="就绪容器" :text="`${row.readyContainerCount} / ${row.containerCount}`" />
           </template>
         </BeeTableColumn>
         <BeeTableColumn :width="120">
           <template #default="{ row }">
-            <BeeTableCommonCell :text="row.cpuUsage" subtext="CPU 使用率" />
+            <BeeTableCommonCell subtext="CPU 使用率" :text="row.cpuUsage" />
           </template>
         </BeeTableColumn>
         <BeeTableColumn :width="120">
           <template #default="{ row }">
-            <BeeTableCommonCell :text="row.memoryUsage" subtext="内存使用率" />
+            <BeeTableCommonCell subtext="内存使用率" :text="row.memoryUsage" />
           </template>
         </BeeTableColumn>
       </BeeTable>
@@ -54,8 +54,8 @@
       <BeePagination
         v-model="pagination.page"
         v-model:page-size="pagination.pageSize"
-        :total="pagination.total"
         :page-sizes="[10, 20, 50]"
+        :total="pagination.total"
         @change="loadData"
       />
     </div>
@@ -72,8 +72,6 @@ import { onMounted, reactive, ref } from 'vue'
 import { useRoute } from 'vue-router'
 
 import type { DeploymentPodListVo, DeploymentPodQueryForm } from '@/types/kubernetes/workload/deployment'
-
-import { getDeploymentPodList } from '@/api/kubernetes/workload/deployment'
 
 import BeeButton from '@/components/BeeButton/index.vue'
 import BeeInputSearch from '@/components/BeeInputSearch/index.vue'
@@ -96,8 +94,8 @@ const route = useRoute()
 // ==================== Reactive State ====================
 
 const clusterUid = ref(route.params.clusterUid as string)
-const namespace = ref(route.params.namespace as string)
-const deploymentName = ref(route.params.name as string)
+const namespaceUid = ref(route.params.namespaceUid as string)
+const deploymentUid = ref(route.params.uid as string)
 
 const loading = ref(false)
 const tableData = ref<DeploymentPodListVo[]>([])
@@ -105,7 +103,7 @@ const searchKey = ref('')
 
 /** 查询条件 */
 const queryForm = reactive<Partial<Omit<DeploymentPodQueryForm, 'name'>>>({
-  status: '',
+  status: undefined,
 })
 
 /** 分页 */
@@ -114,25 +112,18 @@ const pagination = reactive({ page: 1, pageSize: 10, total: 0 })
 // ==================== Data Loading ====================
 
 /**
- * 加载 Pod 分页列表
- * @remarks 调用 API 获取 Deployment 下的 Pod 分页数据
+ * 加载 Pod 分页列表（暂未对齐文档接口，占位展示）
  */
 async function loadData() {
-  if (!clusterUid.value || !namespace.value || !deploymentName.value) {
+  if (!clusterUid.value || !namespaceUid.value || !deploymentUid.value) {
     tableData.value = []
     pagination.total = 0
     return
   }
   loading.value = true
   try {
-    const result = await getDeploymentPodList(clusterUid.value, namespace.value, deploymentName.value, {
-      ...queryForm,
-      name: searchKey.value,
-      page: pagination.page,
-      pageSize: pagination.pageSize,
-    })
-    tableData.value = result.list
-    pagination.total = result.total
+    tableData.value = []
+    pagination.total = 0
   } finally {
     loading.value = false
   }
@@ -149,7 +140,7 @@ function handleSearch() {
 /** 重置搜索条件 */
 function handleReset() {
   searchKey.value = ''
-  queryForm.status = ''
+  queryForm.status = undefined
   pagination.page = 1
   pagination.pageSize = 10
   void loadData()

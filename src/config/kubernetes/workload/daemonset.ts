@@ -42,16 +42,18 @@ export const DAEMONSET_STATUS_OPTIONS: StatusOption[] = [
 export const DAEMONSET_CONDITION_TYPE_MAP = {
   Available: '可用',
   Progressing: '处理中',
+  ReplicaFailure: '副本失败',
+  Misconfigured: '配置错误',
 } as const
 
 /** DaemonSet 条件类型 */
 export type DaemonSetConditionType = keyof typeof DAEMONSET_CONDITION_TYPE_MAP
 
 /** DaemonSet 更新策略标签映射 */
-export const DAEMONSET_STRATEGY_LABEL_MAP = {
+export const DAEMONSET_UPDATE_STRATEGY_LABEL_MAP = {
   RollingUpdate: '滚动更新',
   OnDelete: '删除时更新',
 } as const
 
 /** DaemonSet 更新策略类型 */
-export type DaemonSetStrategyType = keyof typeof DAEMONSET_STRATEGY_LABEL_MAP
+export type DaemonSetUpdateStrategyType = keyof typeof DAEMONSET_UPDATE_STRATEGY_LABEL_MAP

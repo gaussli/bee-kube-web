@@ -22,6 +22,7 @@ const _deploymentStatuses = [
   { value: 'Stopped', label: '已停止', labelEn: 'Stopped', color: COLOR_GRAY_70 },
   { value: 'Creating', label: '创建中', labelEn: 'Creating', color: COLOR_PRIMARY },
   { value: 'Updating', label: '更新中', labelEn: 'Updating', color: COLOR_PRIMARY },
+  { value: 'Paused', label: '更新暂停', labelEn: 'Paused', color: COLOR_DANGER },
   { value: 'Terminating', label: '终止中', labelEn: 'Terminating', color: COLOR_PRIMARY },
   { value: 'CreateTimeout', label: '创建超时', labelEn: 'CreateTimeout', color: COLOR_DANGER },
   { value: 'UpdateTimeout', label: '更新超时', labelEn: 'UpdateTimeout', color: COLOR_DANGER },
@@ -49,10 +50,10 @@ export const DEPLOYMENT_CONDITION_TYPE_MAP = {
 export type DeploymentConditionType = keyof typeof DEPLOYMENT_CONDITION_TYPE_MAP
 
 /** Deployment 更新策略标签映射 */
-export const DEPLOYMENT_STRATEGY_LABEL_MAP = {
+export const DEPLOYMENT_UPDATE_STRATEGY_LABEL_MAP = {
   RollingUpdate: '滚动更新',
   Recreate: '重建',
 } as const
 
 /** Deployment 更新策略类型 */
-export type DeploymentStrategyType = keyof typeof DEPLOYMENT_STRATEGY_LABEL_MAP
+export type DeploymentUpdateStrategyType = keyof typeof DEPLOYMENT_UPDATE_STRATEGY_LABEL_MAP

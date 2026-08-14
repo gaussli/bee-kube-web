@@ -1,433 +1,461 @@
 /**
- * Kubernetes CronJob 管理 Mock API
+ * CronJob 管理 Mock
  * @module mock/kubernetes/workload/cronjob
  */
+import type { AxiosProgressEvent } from 'axios'
+
 import type { PageVo } from '@/types/common'
+import type { MetadataAnnotationForm, MetadataLabelForm } from '@/types/kubernetes/common'
+import type { EventListVo, EventQueryForm } from '@/types/kubernetes/event'
 import type {
-  CronJobAnnotationsReq,
-  CronJobDetailResp,
-  CronJobLabelsReq,
-  CronJobListResp,
-  CronJobQueryReq,
-  CronJobReq,
-  CronJobYamlReq,
+  CronJobCreateForm,
+  CronJobDetailVo,
+  CronJobJobListVo,
+  CronJobJobQueryForm,
+  CronJobListVo,
+  CronJobMonitorVo,
+  CronJobQueryForm,
+  CronJobUpdateForm,
+  CronJobYamlVo,
 } from '@/types/kubernetes/workload/cronjob'
 
 import { generateId } from '@/mock/utils'
 
-/**
- * CronJob 路由配置
- * @remarks
- * - GET /kubernetes/clusters/:clusterUid/cronjobs - 获取 CronJob 分页列表（namespace 通过 query 参数传递，可选）
- * - GET /kubernetes/clusters/:clusterUid/namespaces/:namespace/cronjobs/:name - 获取 CronJob 详情
- * - GET /kubernetes/clusters/:clusterUid/namespaces/:namespace/cronjobs/:name/yaml - 查看 YAML
- * - POST /kubernetes/clusters/:clusterUid/namespaces/:namespace/cronjobs - 创建 CronJob
- * - PUT /kubernetes/clusters/:clusterUid/namespaces/:namespace/cronjobs/:name - 更新 CronJob
- * - POST /kubernetes/clusters/:clusterUid/namespaces/:namespace/cronjobs/:name/suspend - 暂停
- * - POST /kubernetes/clusters/:clusterUid/namespaces/:namespace/cronjobs/:name/resume - 恢复
- * - POST /kubernetes/clusters/:clusterUid/namespaces/:namespace/cronjobs/:name/trigger - 手动触发
- * - PUT /kubernetes/clusters/:clusterUid/namespaces/:namespace/cronjobs/:name/labels - 更新标签
- * - PUT /kubernetes/clusters/:clusterUid/namespaces/:namespace/cronjobs/:name/annotations - 更新注解
- * - DELETE /kubernetes/clusters/:clusterUid/namespaces/:namespace/cronjobs/:name - 删除 CronJob
- * - DELETE /kubernetes/clusters/:clusterUid/namespaces/:namespace/cronjobs/batch - 批量删除
- * - GET /kubernetes/clusters/:clusterUid/cronjobs/export - 导出 CSV
- * - POST /kubernetes/clusters/:clusterUid/cronjobs/import - 导入 CronJob
- */
-export default [
-  {
-    method: 'get',
-    url: '/kubernetes/clusters/:clusterUid/cronjobs',
-    handler: ({
-      pathParams,
-      params,
-    }: {
-      pathParams: Record<string, string>
-      params: Partial<CronJobQueryReq>
-    }): PageVo<CronJobListResp> => getCronJobList(pathParams.clusterUid, params),
-  },
-  {
-    method: 'get',
-    url: '/kubernetes/clusters/:clusterUid/namespaces/:namespace/cronjobs/:name',
-    handler: ({ pathParams }: { pathParams: Record<string, string> }): CronJobDetailResp =>
-      getCronJobDetail(pathParams.clusterUid, pathParams.namespace, pathParams.name),
-  },
-  {
-    method: 'get',
-    url: '/kubernetes/clusters/:clusterUid/namespaces/:namespace/cronjobs/:name/yaml',
-    handler: ({ pathParams }: { pathParams: Record<string, string> }): string =>
-      getCronJobYaml(pathParams.clusterUid, pathParams.namespace, pathParams.name),
-  },
-  {
-    method: 'post',
-    url: '/kubernetes/clusters/:clusterUid/namespaces/:namespace/cronjobs',
-    handler: ({ pathParams, data }: { pathParams: Record<string, string>; data: CronJobReq }): void =>
-      createCronJob(pathParams.clusterUid, pathParams.namespace, data),
-  },
-  {
-    method: 'put',
-    url: '/kubernetes/clusters/:clusterUid/namespaces/:namespace/cronjobs/:name',
-    handler: ({ pathParams, data }: { pathParams: Record<string, string>; data: Partial<CronJobReq> }): void =>
-      updateCronJob(pathParams.clusterUid, pathParams.namespace, pathParams.name, data),
-  },
-  {
-    method: 'post',
-    url: '/kubernetes/clusters/:clusterUid/namespaces/:namespace/cronjobs/:name/suspend',
-    handler: ({ pathParams }: { pathParams: Record<string, string> }): void =>
-      suspendCronJob(pathParams.clusterUid, pathParams.namespace, pathParams.name),
-  },
-  {
-    method: 'post',
-    url: '/kubernetes/clusters/:clusterUid/namespaces/:namespace/cronjobs/:name/resume',
-    handler: ({ pathParams }: { pathParams: Record<string, string> }): void =>
-      resumeCronJob(pathParams.clusterUid, pathParams.namespace, pathParams.name),
-  },
-  {
-    method: 'post',
-    url: '/kubernetes/clusters/:clusterUid/namespaces/:namespace/cronjobs/:name/trigger',
-    handler: ({ pathParams }: { pathParams: Record<string, string> }): void =>
-      triggerCronJob(pathParams.clusterUid, pathParams.namespace, pathParams.name),
-  },
-  {
-    method: 'put',
-    url: '/kubernetes/clusters/:clusterUid/namespaces/:namespace/cronjobs/:name/labels',
-    handler: ({ pathParams, data }: { pathParams: Record<string, string>; data: CronJobLabelsReq }): void =>
-      manageCronJobLabels(pathParams.clusterUid, pathParams.namespace, pathParams.name, data),
-  },
-  {
-    method: 'put',
-    url: '/kubernetes/clusters/:clusterUid/namespaces/:namespace/cronjobs/:name/annotations',
-    handler: ({ pathParams, data }: { pathParams: Record<string, string>; data: CronJobAnnotationsReq }): void =>
-      manageCronJobAnnotations(pathParams.clusterUid, pathParams.namespace, pathParams.name, data),
-  },
-  {
-    method: 'delete',
-    url: '/kubernetes/clusters/:clusterUid/namespaces/:namespace/cronjobs/:name',
-    handler: ({ pathParams }: { pathParams: Record<string, string> }): void =>
-      deleteCronJob(pathParams.clusterUid, pathParams.namespace, pathParams.name),
-  },
-  {
-    method: 'delete',
-    url: '/kubernetes/clusters/:clusterUid/namespaces/:namespace/cronjobs/batch',
-    handler: ({ pathParams, data }: { pathParams: Record<string, string>; data: string[] }): void =>
-      deleteCronJobs(pathParams.clusterUid, pathParams.namespace, data),
-  },
-  {
-    method: 'get',
-    url: '/kubernetes/clusters/:clusterUid/cronjobs/export',
-    handler: ({ pathParams, params }: { pathParams: Record<string, string>; params: Partial<CronJobQueryReq> }): void =>
-      exportCronJob(pathParams.clusterUid, params),
-  },
-  {
-    method: 'post',
-    url: '/kubernetes/clusters/:clusterUid/cronjobs/import',
-    handler: ({ pathParams, data }: { pathParams: Record<string, string>; data: CronJobYamlReq }): void =>
-      importCronJob(pathParams.clusterUid, data),
-  },
-]
+import { cronJobMockData, cronJobMockDetail, cronJobMockEvents, cronJobMockJobs, cronJobMockYaml } from './cronjobData'
 
 /**
- * 获取 CronJob 分页列表
- * @param _clusterId - 集群 UID（mock 中暂未使用，保留以对齐 API 签名）
- * @param params - 查询参数（namespace 可选，不传则查询所有命名空间）
- * @returns 分页数据
+ * 查看 CronJob 列表
+ * @param clusterUid 集群 UID
+ * @param query CronJob 查询条件请求对象（名称、命名空间、状态、UID）
+ * @returns CronJob 分页列表
  */
-function getCronJobList(_clusterId: string, params: Partial<CronJobQueryReq>): PageVo<CronJobListResp> {
-  const { id, name, namespace, status, page = 1, pageSize = 10 } = params || {}
-
-  let filtered = [...mockCronJobs]
-
-  if (status) {
-    filtered = filtered.filter(c => c.status === status)
+function getCronJobListMock(clusterUid: string, query: Partial<CronJobQueryForm>): PageVo<CronJobListVo> {
+  console.log('[Mock] getCronJobList', clusterUid, query)
+  const filtered = cronJobMockData.filter((d: CronJobListVo) => {
+    if (d.clusterUid !== clusterUid) return false
+    if (query.namespace && d.namespace !== query.namespace) return false
+    if (query.status && d.status !== query.status) return false
+    return true
+  })
+  const filteredUid = query.uid ? filtered.filter(d => d.uid === query.uid) : []
+  const filteredName = query.name ? filtered.filter(d => d.name.includes(query.name as string)) : []
+  const matched = query.uid || query.name ? Array.from(new Set([...filteredUid, ...filteredName])) : filtered
+  const page = query.page || 1
+  const pageSize = query.pageSize || 10
+  return {
+    list: matched.slice((page - 1) * pageSize, page * pageSize),
+    total: matched.length,
+    page,
+    pageSize,
   }
-  if (namespace) {
-    filtered = filtered.filter(c => c.namespace === namespace)
-  }
-
-  if (id || name) {
-    let searchFiltered: CronJobListResp[] = []
-    if (id) {
-      searchFiltered = [...searchFiltered, ...filtered.filter(c => c.id === id)]
-    }
-    if (name) {
-      searchFiltered = [...searchFiltered, ...filtered.filter(c => c.name.toLowerCase().includes(name.toLowerCase()))]
-    }
-    // searchFiltered 基于 id 去重
-    const seenIds = new Set<string>()
-    filtered = searchFiltered.filter(c => {
-      if (seenIds.has(c.id)) return false
-      seenIds.add(c.id)
-      return true
-    })
-  }
-
-  const total = filtered.length
-  const start = (page - 1) * pageSize
-  const end = start + pageSize
-  const list = filtered.slice(start, end)
-
-  return { list, total, page, pageSize }
 }
 
 /**
- * 获取 CronJob 详情
- * @param clusterUid - 集群 UID
- * @param namespace - 命名空间名称
- * @param name - CronJob 名称
- * @returns CronJob 详情
+ * 查看 CronJob 详情
+ * @param clusterUid 集群 UID
+ * @param namespace 命名空间名称
+ * @param name CronJob 名称
+ * @returns CronJob 详情响应对象
  */
-function getCronJobDetail(clusterUid: string, namespace: string, name: string): CronJobDetailResp {
-  const job = mockCronJobs.find(c => c.clusterUid === clusterUid && c.namespace === namespace && c.name === name)
-  if (!job) {
-    console.error('[Get CronJob Detail] can not find cronjob:', clusterUid, namespace, name)
-    return null as unknown as CronJobDetailResp
-  }
-  return {
-    ...job,
-    concurrencyPolicy: job.name === 'log-rotate' ? 'Forbid' : job.name === 'cache-cleanup' ? 'Replace' : 'Allow',
-    suspend: job.name === 'cache-cleanup',
-    images: ['busybox:latest'],
-    labels: job.name === 'db-backup' ? { app: 'db-backup', env: 'production' } : { app: job.name },
-    annotations: {},
-    containers: [
-      {
-        name: job.name,
-        image: 'busybox:latest',
-        resources: { requests: { cpu: '100m', memory: '128Mi' }, limits: { cpu: '500m', memory: '512Mi' } },
-        command: ['/bin/sh', '-c'],
-        args: [`echo "Running ${job.name}"`],
-      },
-    ],
-  }
+function getCronJobDetailMock(clusterUid: string, namespace: string, name: string): CronJobDetailVo {
+  void clusterUid
+  void namespace
+  void name
+  console.log('[Mock] getCronJobDetail', clusterUid, namespace, name)
+  return cronJobMockDetail
 }
 
 /**
  * 查看 CronJob YAML
- * @param clusterUid - 集群 UID
- * @param namespace - 命名空间名称
- * @param name - CronJob 名称
- * @returns CronJob YAML 配置
+ * @param clusterUid 集群 UID
+ * @param namespace 命名空间名称
+ * @param name CronJob 名称
+ * @returns CronJob YAML 响应对象（完整 YAML 文本）
  */
-function getCronJobYaml(clusterUid: string, namespace: string, name: string): string {
-  const job = mockCronJobs.find(c => c.clusterUid === clusterUid && c.namespace === namespace && c.name === name)
-  if (!job) {
-    console.error('[Get CronJob Yaml] can not find cronjob:', clusterUid, namespace, name)
-    return ''
-  }
+function getCronJobYamlMock(clusterUid: string, namespace: string, name: string): CronJobYamlVo {
+  void clusterUid
+  void namespace
+  void name
+  console.log('[Mock] getCronJobYaml', clusterUid, namespace, name)
+  return cronJobMockYaml
+}
 
-  const yaml = `apiVersion: batch/v1
-kind: CronJob
-metadata:
-  name: ${job.name}
-  namespace: ${job.namespace}
-  creationTimestamp: "${job.createAt}"
-  uid: "${job.uid}"
-spec:
-  schedule: "${job.schedule}"
-  jobTemplate:
-    spec:
-      template:
-        spec:
-          containers:
-          - name: ${job.name}
-            image: busybox:latest
-            command: ["/bin/sh", "-c"]
-            args: ["echo 'Running ${job.name}'"]
-          restartPolicy: Never
-status:
-  lastSuccessfulTime: "${job.lastSuccessfulTime || ''}"
-  active:
-    - name: ${job.name}-manual-job`
+/**
+ * 查看 CronJob 关联 Job 列表
+ * @param clusterUid 集群 UID
+ * @param namespace 命名空间名称
+ * @param name CronJob 名称
+ * @param query CronJob 关联 Job 查询条件请求对象（Job 名称、Job 状态、UID）
+ * @returns CronJob 关联 Job 分页列表
+ */
+function getCronJobJobListMock(
+  clusterUid: string,
+  namespace: string,
+  name: string,
+  query: Partial<CronJobJobQueryForm>,
+): PageVo<CronJobJobListVo> {
+  void clusterUid
+  void namespace
+  console.log('[Mock] getCronJobJobList', clusterUid, namespace, name, query)
+  const page = query.page || 1
+  const pageSize = query.pageSize || 10
+  return { list: cronJobMockJobs, total: cronJobMockJobs.length, page, pageSize }
+}
 
-  return yaml
+/**
+ * 查看 CronJob 事件列表
+ * @param clusterUid 集群 UID
+ * @param namespace 命名空间名称
+ * @param name CronJob 名称
+ * @param query 事件查询条件请求对象（事件类型、事件原因、事件描述、事件关联对象）
+ * @returns CronJob 关联事件分页列表
+ */
+function getCronJobEventListMock(
+  clusterUid: string,
+  namespace: string,
+  name: string,
+  query: Partial<EventQueryForm>,
+): PageVo<EventListVo> {
+  void clusterUid
+  void namespace
+  console.log('[Mock] getCronJobEventList', clusterUid, namespace, name, query)
+  const matched = cronJobMockEvents.filter(e => {
+    if (query.type && e.type !== query.type) return false
+    if (query.reason && !e.reason.includes(query.reason as string)) return false
+    if (query.note && !(e.note ?? '').includes(query.note as string)) return false
+    if (query.regarding?.name && !(e.regarding?.name ?? '').includes(query.regarding.name as string)) return false
+    return true
+  })
+  const page = query.page || 1
+  const pageSize = query.pageSize || 10
+  const start = (page - 1) * pageSize
+  const list = matched.slice(start, start + pageSize)
+  return { list, total: matched.length, page, pageSize }
+}
+
+/**
+ * 查看 CronJob 监控数据
+ * @param clusterUid 集群 UID
+ * @param namespace 命名空间名称
+ * @param name CronJob 名称
+ * @returns CronJob 监控响应对象
+ */
+function getCronJobMonitorMock(clusterUid: string, namespace: string, name: string): CronJobMonitorVo {
+  void clusterUid
+  void namespace
+  console.log('[Mock] getCronJobMonitor', clusterUid, namespace, name)
+  return {}
 }
 
 /**
  * 创建 CronJob
- * @param clusterUid - 集群 UID
- * @param namespace - 命名空间名称
- * @param data - 创建数据
+ * @param clusterUid 集群 UID
+ * @param data CronJob 创建请求对象（description / metadata / spec）
+ * @returns void
  */
-function createCronJob(clusterUid: string, namespace: string, data: CronJobReq): void {
-  console.log('[Mock] createCronJob', { clusterUid, namespace, data })
+function createCronJobMock(clusterUid: string, data: Partial<CronJobCreateForm>): void {
+  console.log('[Mock] createCronJob', clusterUid, data)
+  const newItem: CronJobListVo = {
+    uid: generateId(),
+    clusterUid,
+    cluster: 'system-cluster',
+    namespaceUid: `ns-${data?.metadata?.namespace || 'default'}`,
+    namespace: data?.metadata?.namespace || 'default',
+    name: data?.metadata?.name || 'new-cronjob',
+    description: data?.description,
+    status: 'Active',
+    statusMsg: '调度正常',
+    schedule: data?.spec?.schedule || '*/5 * * * *',
+    active: 0,
+    lastScheduleTime: '',
+    suspend: data?.spec?.suspend || false,
+    createAt: new Date().toISOString(),
+    createBy: 'admin',
+    updateAt: new Date().toISOString(),
+    updateBy: 'admin',
+    deletable: true,
+  }
+  cronJobMockData.push(newItem)
+}
+
+/**
+ * YAML 创建 CronJob
+ * @param clusterUid 集群 UID
+ * @param yaml CronJob YAML 字符串
+ * @returns void
+ */
+function createCronJobYamlMock(clusterUid: string, yaml: string): void {
+  console.log('[Mock] createCronJobYaml', clusterUid, yaml)
 }
 
 /**
  * 更新 CronJob
- * @param clusterUid - 集群 UID
- * @param namespace - 命名空间名称
- * @param name - CronJob 名称
- * @param data - 更新数据
+ * @param clusterUid 集群 UID
+ * @param namespace 命名空间名称
+ * @param name CronJob 名称
+ * @param data CronJob 更新请求对象（description / metadata / spec）
+ * @returns void
  */
-function updateCronJob(clusterUid: string, namespace: string, name: string, data: Partial<CronJobReq>): void {
-  console.log('[Mock] updateCronJob', { clusterUid, namespace, name, data })
-}
-
-/**
- * 暂停 CronJob
- * @param clusterUid - 集群 UID
- * @param namespace - 命名空间名称
- * @param name - CronJob 名称
- */
-function suspendCronJob(clusterUid: string, namespace: string, name: string): void {
-  console.log('[Mock] suspendCronJob', { clusterUid, namespace, name })
-}
-
-/**
- * 恢复 CronJob
- * @param clusterUid - 集群 UID
- * @param namespace - 命名空间名称
- * @param name - CronJob 名称
- */
-function resumeCronJob(clusterUid: string, namespace: string, name: string): void {
-  console.log('[Mock] resumeCronJob', { clusterUid, namespace, name })
-}
-
-/**
- * 手动触发 CronJob
- * @param clusterUid - 集群 UID
- * @param namespace - 命名空间名称
- * @param name - CronJob 名称
- */
-function triggerCronJob(clusterUid: string, namespace: string, name: string): void {
-  console.log('[Mock] triggerCronJob', { clusterUid, namespace, name })
-}
-
-/**
- * 更新 CronJob 标签
- * @param clusterUid - 集群 UID
- * @param namespace - 命名空间名称
- * @param name - CronJob 名称
- * @param data - 标签数据
- */
-function manageCronJobLabels(clusterUid: string, namespace: string, name: string, data: CronJobLabelsReq): void {
-  console.log('[Mock] manageCronJobLabels', { clusterUid, namespace, name, data })
-}
-
-/**
- * 更新 CronJob 注解
- * @param clusterUid - 集群 UID
- * @param namespace - 命名空间名称
- * @param name - CronJob 名称
- * @param data - 注解数据
- */
-function manageCronJobAnnotations(
+function updateCronJobMock(
   clusterUid: string,
   namespace: string,
   name: string,
-  data: CronJobAnnotationsReq,
+  data: Partial<CronJobUpdateForm>,
 ): void {
-  console.log('[Mock] manageCronJobAnnotations', { clusterUid, namespace, name, data })
+  console.log('[Mock] updateCronJob', clusterUid, namespace, name, data)
+  const item = cronJobMockData.find(d => d.clusterUid === clusterUid && d.namespace === namespace && d.name === name)
+  if (item && data.description !== undefined) {
+    item.description = data.description
+  }
+}
+
+/**
+ * YAML 更新 CronJob
+ * @param clusterUid 集群 UID
+ * @param namespace 命名空间名称
+ * @param name CronJob 名称
+ * @param yaml CronJob YAML 字符串
+ * @returns void
+ */
+function updateCronJobYamlMock(clusterUid: string, namespace: string, name: string, yaml: string): void {
+  console.log('[Mock] updateCronJobYaml', clusterUid, namespace, name, yaml)
+}
+
+/**
+ * 管理 CronJob 标签
+ * @param clusterUid 集群 UID
+ * @param namespace 命名空间名称
+ * @param name CronJob 名称
+ * @param data 管理标签请求对象（labels 键值对、operation 操作类型）
+ * @returns void
+ */
+function manageCronJobLabelMock(clusterUid: string, namespace: string, name: string, data: MetadataLabelForm): void {
+  console.log('[Mock] manageCronJobLabel', clusterUid, namespace, name, data)
+}
+
+/**
+ * 管理 CronJob 注解
+ * @param clusterUid 集群 UID
+ * @param namespace 命名空间名称
+ * @param name CronJob 名称
+ * @param data 管理注解请求对象（annotations 键值对、operation 操作类型）
+ * @returns void
+ */
+function manageCronJobAnnotationMock(
+  clusterUid: string,
+  namespace: string,
+  name: string,
+  data: MetadataAnnotationForm,
+): void {
+  console.log('[Mock] manageCronJobAnnotation', clusterUid, namespace, name, data)
 }
 
 /**
  * 删除 CronJob
- * @param clusterUid - 集群 UID
- * @param namespace - 命名空间名称
- * @param name - CronJob 名称
+ * @param clusterUid 集群 UID
+ * @param namespace 命名空间名称
+ * @param name CronJob 名称
+ * @returns void
  */
-function deleteCronJob(clusterUid: string, namespace: string, name: string): void {
-  console.log('[Mock] deleteCronJob', { clusterUid, namespace, name })
+function deleteCronJobMock(clusterUid: string, namespace: string, name: string): void {
+  console.log('[Mock] deleteCronJob', clusterUid, namespace, name)
+  const index = cronJobMockData.findIndex(
+    d => d.clusterUid === clusterUid && d.namespace === namespace && d.name === name,
+  )
+  if (index > -1) {
+    cronJobMockData.splice(index, 1)
+  }
 }
 
 /**
  * 批量删除 CronJob
- * @param clusterUid - 集群 UID
- * @param namespace - 命名空间名称
- * @param names - CronJob 名称数组
+ * @param clusterUid 集群 UID
+ * @param uids CronJob UID 列表
+ * @returns void
  */
-function deleteCronJobs(clusterUid: string, namespace: string, names: string[]): void {
-  console.log('[Mock] deleteCronJobs', { clusterUid, namespace, names })
-}
-
-/**
- * 导出 CronJob CSV
- * @param clusterUid - 集群 UID
- * @param params - 查询参数
- */
-function exportCronJob(clusterUid: string, params: Partial<CronJobQueryReq>): void {
-  console.log('[Mock] exportCronJob', { clusterUid, params })
+function deleteCronJobsMock(clusterUid: string, uids: string[]): void {
+  console.log('[Mock] deleteCronJobs', clusterUid, uids)
+  for (const uid of uids) {
+    const index = cronJobMockData.findIndex(d => d.clusterUid === clusterUid && d.uid === uid)
+    if (index > -1) {
+      cronJobMockData.splice(index, 1)
+    }
+  }
 }
 
 /**
  * 导入 CronJob
- * @param clusterUid - 集群 UID
- * @param data - YAML 配置
+ * @param clusterUid 集群 UID
+ * @param formData 上传的文件
+ * @param onProgress 上传进度回调
+ * @returns void
  */
-function importCronJob(clusterUid: string, data: CronJobYamlReq): void {
-  console.log('[Mock] importCronJob', { clusterUid, data })
+function importCronJobMock(
+  clusterUid: string,
+  formData: FormData,
+  onProgress?: (progressEvent: AxiosProgressEvent) => void,
+): void {
+  void formData
+  void onProgress
+  console.log('[Mock] importCronJob', clusterUid)
 }
 
 /**
- * 模拟 CronJob 数据
- * @remarks 包含生产环境中常见的定时任务数据
+ * 导出 CronJob
+ * @param clusterUid 集群 UID
+ * @param query CronJob 查询条件请求对象（名称、命名空间、状态、UID）
+ * @returns void
  */
-const mockCronJobs: CronJobListResp[] = [
+function exportCronJobMock(clusterUid: string, query: Partial<CronJobQueryForm>): void {
+  console.log('[Mock] exportCronJob', clusterUid, query)
+}
+
+/**
+ * 立即触发 CronJob
+ * @param clusterUid 集群 UID
+ * @param namespace 命名空间名称
+ * @param name CronJob 名称
+ * @returns void
+ */
+function triggerCronJobMock(clusterUid: string, namespace: string, name: string): void {
+  console.log('[Mock] triggerCronJob', clusterUid, namespace, name)
+}
+
+/**
+ * 暂停更新 CronJob
+ * @param clusterUid 集群 UID
+ * @param namespace 命名空间名称
+ * @param name CronJob 名称
+ * @returns void
+ */
+function pauseCronJobMock(clusterUid: string, namespace: string, name: string): void {
+  console.log('[Mock] pauseCronJob', clusterUid, namespace, name)
+}
+
+/**
+ * 恢复更新 CronJob
+ * @param clusterUid 集群 UID
+ * @param namespace 命名空间名称
+ * @param name CronJob 名称
+ * @returns void
+ */
+function resumeCronJobMock(clusterUid: string, namespace: string, name: string): void {
+  console.log('[Mock] resumeCronJob', clusterUid, namespace, name)
+}
+
+export default [
   {
-    id: generateId(),
-    uid: generateId(),
-    name: 'db-backup',
-    namespace: 'data',
-    clusterUid: 'c1',
-    description: '数据库每日备份任务',
-    status: 'Active',
-    schedule: '0 2 * * *',
-    lastSuccessfulTime: '2024-03-20 02:00:00',
-    activeJobs: 0,
-    createAt: '2024-01-20 10:00:00',
-    createBy: 'admin',
-    updateAt: '2024-03-15 14:00:00',
-    updateBy: 'admin',
-    deletable: true,
+    method: 'get',
+    url: '/kubernetes/clusters/:clusterUid/cronjobs',
+    handler: (ctx: { pathParams: Record<string, string>; params: Partial<CronJobQueryForm> }) =>
+      getCronJobListMock(ctx.pathParams.clusterUid, ctx.params),
   },
   {
-    id: generateId(),
-    uid: generateId(),
-    name: 'log-rotate',
-    namespace: 'logging',
-    clusterUid: 'c1',
-    description: '日志轮转任务',
-    status: 'Active',
-    statusMsg: '1 个 Job 正在执行',
-    schedule: '0 0 * * *',
-    activeJobs: 1,
-    createAt: '2024-02-01 09:00:00',
-    createBy: 'admin',
-    updateAt: '2024-03-10 11:00:00',
-    updateBy: 'admin',
-    deletable: true,
+    method: 'get',
+    url: '/kubernetes/clusters/:clusterUid/namespaces/:namespace/cronjobs/:name',
+    handler: (ctx: { pathParams: Record<string, string> }) =>
+      getCronJobDetailMock(ctx.pathParams.clusterUid, ctx.pathParams.namespace, ctx.pathParams.name),
   },
   {
-    id: generateId(),
-    uid: generateId(),
-    name: 'report-generator',
-    namespace: 'analytics',
-    clusterUid: 'c1',
-    description: '周报生成任务',
-    status: 'Active',
-    schedule: '0 8 * * 1',
-    lastSuccessfulTime: '2024-03-18 08:00:00',
-    activeJobs: 0,
-    createAt: '2024-02-15 14:00:00',
-    createBy: 'admin',
-    updateAt: '2024-03-12 16:00:00',
-    updateBy: 'admin',
-    deletable: true,
+    method: 'get',
+    url: '/kubernetes/clusters/:clusterUid/namespaces/:namespace/cronjobs/:name/yaml',
+    handler: (ctx: { pathParams: Record<string, string> }) =>
+      getCronJobYamlMock(ctx.pathParams.clusterUid, ctx.pathParams.namespace, ctx.pathParams.name),
   },
   {
-    id: generateId(),
-    uid: generateId(),
-    name: 'cache-cleanup',
-    namespace: 'middleware',
-    clusterUid: 'c1',
-    description: '缓存清理任务',
-    status: 'Suspended',
-    statusMsg: '已被管理员暂停',
-    schedule: '0 */6 * * *',
-    activeJobs: 0,
-    createAt: '2024-03-01 10:00:00',
-    createBy: 'admin',
-    updateAt: '2024-03-19 08:00:00',
-    updateBy: 'admin',
-    deletable: true,
+    method: 'get',
+    url: '/kubernetes/clusters/:clusterUid/namespaces/:namespace/cronjobs/:name/jobs',
+    handler: (ctx: { pathParams: Record<string, string>; params: Partial<CronJobJobQueryForm> }) =>
+      getCronJobJobListMock(ctx.pathParams.clusterUid, ctx.pathParams.namespace, ctx.pathParams.name, ctx.params),
+  },
+  {
+    method: 'get',
+    url: '/kubernetes/clusters/:clusterUid/namespaces/:namespace/cronjobs/:name/events',
+    handler: (ctx: { pathParams: Record<string, string>; params: Partial<EventQueryForm> }) =>
+      getCronJobEventListMock(ctx.pathParams.clusterUid, ctx.pathParams.namespace, ctx.pathParams.name, ctx.params),
+  },
+  {
+    method: 'get',
+    url: '/kubernetes/clusters/:clusterUid/namespaces/:namespace/cronjobs/:name/monitor',
+    handler: (ctx: { pathParams: Record<string, string> }) =>
+      getCronJobMonitorMock(ctx.pathParams.clusterUid, ctx.pathParams.namespace, ctx.pathParams.name),
+  },
+  {
+    method: 'post',
+    url: '/kubernetes/clusters/:clusterUid/cronjobs',
+    handler: (ctx: { pathParams: Record<string, string>; data: Partial<CronJobCreateForm> }) =>
+      createCronJobMock(ctx.pathParams.clusterUid, ctx.data),
+  },
+  {
+    method: 'post',
+    url: '/kubernetes/clusters/:clusterUid/cronjobs/yaml',
+    handler: (ctx: { pathParams: Record<string, string>; data: string }) =>
+      createCronJobYamlMock(ctx.pathParams.clusterUid, ctx.data),
+  },
+  {
+    method: 'put',
+    url: '/kubernetes/clusters/:clusterUid/namespaces/:namespace/cronjobs/:name',
+    handler: (ctx: { pathParams: Record<string, string>; data: Partial<CronJobUpdateForm> }) =>
+      updateCronJobMock(ctx.pathParams.clusterUid, ctx.pathParams.namespace, ctx.pathParams.name, ctx.data),
+  },
+  {
+    method: 'put',
+    url: '/kubernetes/clusters/:clusterUid/namespaces/:namespace/cronjobs/:name/yaml',
+    handler: (ctx: { pathParams: Record<string, string>; data: string }) =>
+      updateCronJobYamlMock(ctx.pathParams.clusterUid, ctx.pathParams.namespace, ctx.pathParams.name, ctx.data),
+  },
+  {
+    method: 'post',
+    url: '/kubernetes/clusters/:clusterUid/namespaces/:namespace/cronjobs/:name/labels',
+    handler: (ctx: { pathParams: Record<string, string>; data: MetadataLabelForm }) =>
+      manageCronJobLabelMock(ctx.pathParams.clusterUid, ctx.pathParams.namespace, ctx.pathParams.name, ctx.data),
+  },
+  {
+    method: 'post',
+    url: '/kubernetes/clusters/:clusterUid/namespaces/:namespace/cronjobs/:name/annotations',
+    handler: (ctx: { pathParams: Record<string, string>; data: MetadataAnnotationForm }) =>
+      manageCronJobAnnotationMock(ctx.pathParams.clusterUid, ctx.pathParams.namespace, ctx.pathParams.name, ctx.data),
+  },
+  {
+    method: 'delete',
+    url: '/kubernetes/clusters/:clusterUid/namespaces/:namespace/cronjobs/:name',
+    handler: (ctx: { pathParams: Record<string, string> }) =>
+      deleteCronJobMock(ctx.pathParams.clusterUid, ctx.pathParams.namespace, ctx.pathParams.name),
+  },
+  {
+    method: 'delete',
+    url: '/kubernetes/clusters/:clusterUid/cronjobs/batch',
+    handler: (ctx: { pathParams: Record<string, string>; data: string[] }) =>
+      deleteCronJobsMock(ctx.pathParams.clusterUid, ctx.data),
+  },
+  {
+    method: 'post',
+    url: '/kubernetes/clusters/:clusterUid/cronjobs/import',
+    handler: (ctx: { pathParams: Record<string, string>; data: FormData }) =>
+      importCronJobMock(ctx.pathParams.clusterUid, ctx.data),
+  },
+  {
+    method: 'get',
+    url: '/kubernetes/clusters/:clusterUid/cronjobs/export',
+    handler: (ctx: { pathParams: Record<string, string>; params: Partial<CronJobQueryForm> }) =>
+      exportCronJobMock(ctx.pathParams.clusterUid, ctx.params),
+  },
+  {
+    method: 'post',
+    url: '/kubernetes/clusters/:clusterUid/namespaces/:namespace/cronjobs/:name/trigger',
+    handler: (ctx: { pathParams: Record<string, string> }) =>
+      triggerCronJobMock(ctx.pathParams.clusterUid, ctx.pathParams.namespace, ctx.pathParams.name),
+  },
+  {
+    method: 'post',
+    url: '/kubernetes/clusters/:clusterUid/namespaces/:namespace/cronjobs/:name/pause',
+    handler: (ctx: { pathParams: Record<string, string> }) =>
+      pauseCronJobMock(ctx.pathParams.clusterUid, ctx.pathParams.namespace, ctx.pathParams.name),
+  },
+  {
+    method: 'post',
+    url: '/kubernetes/clusters/:clusterUid/namespaces/:namespace/cronjobs/:name/resume',
+    handler: (ctx: { pathParams: Record<string, string> }) =>
+      resumeCronJobMock(ctx.pathParams.clusterUid, ctx.pathParams.namespace, ctx.pathParams.name),
   },
 ]

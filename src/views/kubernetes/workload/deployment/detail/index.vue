@@ -1,6 +1,6 @@
 <template>
   <BeePage class="deployment-detail">
-    <BeeBackHeader title="无状态应用详情" @back="handleBack" @action="handleAction" />
+    <BeeBackHeader title="无状态应用详情" @action="handleAction" @back="handleBack" />
     <BeeResourceOverviewInfo :data="resourceData" />
     <BeeCard class="deployment-detail__tabs">
       <BeeSegmentedControl v-model="activeTab" :options="tabOptions" />
@@ -53,8 +53,8 @@ defineOptions({ name: 'DeploymentDetail' })
 const route = useRoute()
 
 const clusterUid = ref(route.params.clusterUid as string)
-const namespace = ref(route.params.namespace as string)
-const deploymentName = ref(route.params.name as string)
+const namespaceUid = ref(route.params.namespaceUid as string)
+const deploymentUid = ref(route.params.uid as string)
 const loading = ref(false)
 
 const detailData = ref<DeploymentDetailVo>()
@@ -78,19 +78,19 @@ const tabOptions = [
 
 /** 从详情数据映射为资源概览数据 */
 const resourceData = computed<ResourceOverviewInfoData>(() => ({
-  namespace: detailData.value?.basic.namespace || '',
-  name: detailData.value?.basic.name || '',
-  description: detailData.value?.basic.description,
-  status: detailData.value?.basic.status || 'Unknown',
-  createdAt: detailData.value?.basic.createAt || '',
+  namespace: detailData.value?.namespace || '',
+  name: detailData.value?.name || '',
+  description: detailData.value?.description,
+  status: detailData.value?.status || 'Unknown',
+  createdAt: detailData.value?.createAt || '',
 }))
 
 /** 加载 Deployment 详情 */
 async function loadData() {
-  if (!clusterUid.value || !namespace.value || !deploymentName.value) return
+  if (!clusterUid.value || !namespaceUid.value || !deploymentUid.value) return
   loading.value = true
   try {
-    detailData.value = await getDeploymentDetail(clusterUid.value, namespace.value, deploymentName.value)
+    detailData.value = await getDeploymentDetail(clusterUid.value, namespaceUid.value, deploymentUid.value)
   } finally {
     loading.value = false
   }

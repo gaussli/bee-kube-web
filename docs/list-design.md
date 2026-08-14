@@ -1,103 +1,52 @@
-# 列表页通用设计规范
+# 页面视图
 
-本文档为平台 Kubernetes 资源列表页的统一设计开发指导规范，覆盖 Node、Namespace、CustomResourceDefinition、Pod、Workload、Config、Network、Storage、Security 全部模块的通用设计模式、交互约定与实现规范。
-
-> **层级说明**：
-
----
-
-# 路由约定
-
-## 命名规范
-
-列表页路由命名遵循 `{domain}:{module}:{resource}` 格式，当模块与资源相同时退化为 `{domain}:{resource}`（如 Namespace）：
-
-```
-kubernetes:workload:deployment        // Kubernetes 工作负载 - Deployment
-kubernetes:namespace                  // Kubernetes - 命名空间（模块即资源，无子 module）
-kubernetes:network:service            // Kubernetes 网络 - Service
-kubernetes:storage:persistentvolumeclaim  // Kubernetes 存储 - PersistentVolumeClaim
-```
-
-## 路径模式
-
-| 资源类别 | 路径模式 | 示例 |
-| --- | --- | --- |
-| Kubernetes 集群内资源（命名空间级） | `/kubernetes/clusters/:clusterUid/{resources}` | Deployments, Services, PersistentVolumeClaims |
-| Kubernetes 集群内资源（集群级） | `/kubernetes/clusters/:clusterUid/{resources}` | Namespaces, Nodes |
-
-**路径参数**：
-- `clusterUid`：集群唯一标识，由 `useKubernetesStore.activeClusterId` 维护
-
-## 路由权限
-
-列表页路由的 `meta.permission` 遵循 `{domain}:{module}:{resource}:view` 格式，模块与资源名相同时退化为 `{domain}:{resource}:view`：
-
-```
-kubernetes:workload:deployment:view        // Kubernetes 工作负载 - Deployment 查看
-kubernetes:namespace:view                  // Kubernetes 命名空间 - 查看（模块即资源）
-kubernetes:network:service:view            // Kubernetes 网络 - Service 查看
-kubernetes:storage:persistentvolumeclaim:view  // Kubernetes 存储 - PersistentVolumeClaim 查看
-```
-
-## 路由速查
-
-| 模块 | 资源 | 路由名称 | 列表路径 | 类别 |
-| --- | --- | --- | --- | --- |
-| Node | Node | `kubernetes:node` | `/kubernetes/clusters/:clusterUid/nodes` | 集群级 |
-| Namespace | Namespace | `kubernetes:namespace` | `/kubernetes/clusters/:clusterUid/namespaces` | 集群级 |
-| CustomResourceDefinition | CustomResourceDefinition | `kubernetes:customresourcedefinition` | `/kubernetes/clusters/:clusterUid/customresourcedefinitions` | 集群级 |
-| Pod | Pod | `kubernetes:pod` | `/kubernetes/clusters/:clusterUid/pods` | 命名空间级 |
-| Workload | Deployment | `kubernetes:workload:deployment` | `/kubernetes/clusters/:clusterUid/deployments` | 命名空间级 |
-| Workload | StatefulSet | `kubernetes:workload:statefulset` | `/kubernetes/clusters/:clusterUid/statefulsets` | 命名空间级 |
-| Workload | DaemonSet | `kubernetes:workload:daemonset` | `/kubernetes/clusters/:clusterUid/daemonsets` | 命名空间级 |
-| Workload | Job | `kubernetes:workload:job` | `/kubernetes/clusters/:clusterUid/jobs` | 命名空间级 |
-| Workload | CronJob | `kubernetes:workload:cronjob` | `/kubernetes/clusters/:clusterUid/cronjobs` | 命名空间级 |
-| Config | ConfigMap | `kubernetes:config:configmap` | `/kubernetes/clusters/:clusterUid/configmaps` | 命名空间级 |
-| Config | Secret | `kubernetes:config:secret` | `/kubernetes/clusters/:clusterUid/secrets` | 命名空间级 |
-| Network | Service | `kubernetes:network:service` | `/kubernetes/clusters/:clusterUid/services` | 命名空间级 |
-| Network | Ingress | `kubernetes:network:ingress` | `/kubernetes/clusters/:clusterUid/ingresses` | 命名空间级 |
-| Network | NetworkPolicy | `kubernetes:network:networkpolicy` | `/kubernetes/clusters/:clusterUid/networkpolicies` | 命名空间级 |
-| Storage | PersistentVolume | `kubernetes:storage:persistentvolume` | `/kubernetes/clusters/:clusterUid/persistentvolumes` | 集群级 |
-| Storage | PersistentVolumeClaim | `kubernetes:storage:persistentvolumeclaim` | `/kubernetes/clusters/:clusterUid/persistentvolumeclaims` | 命名空间级 |
-| Storage | StorageClass | `kubernetes:storage:storageclass` | `/kubernetes/clusters/:clusterUid/storageclasses` | 集群级 |
-| Security | ServiceAccount | `kubernetes:security:serviceaccount` | `/kubernetes/clusters/:clusterUid/serviceaccounts` | 命名空间级 |
-| Security | Role | `kubernetes:security:role` | `/kubernetes/clusters/:clusterUid/roles` | 命名空间级 |
-| Security | ClusterRole | `kubernetes:security:clusterrole` | `/kubernetes/clusters/:clusterUid/clusterroles` | 集群级 |
-| Security | RoleBinding | `kubernetes:security:rolebinding` | `/kubernetes/clusters/:clusterUid/rolebindings` | 命名空间级 |
-| Security | ClusterRoleBinding | `kubernetes:security:clusterrolebinding` | `/kubernetes/clusters/:clusterUid/clusterrolebindings` | 集群级 |
-
----
-
-# 页面布局
-
-列表页采用**三层弹性布局**（flex column），各层固定职责，通过 CSS 弹性盒模型实现表格区独占剩余高度并独立滚动。
-
-## 布局模版
-
+## 整体布局
 ```
 BeePage
-├── BeePageHeader                                // 页面标题区，各列表页通过 v-bind 绑定
-│   ├── icon: {resource-icon}
-│   ├── title: "{中文标题}"
-│   └── description: "{功能描述}"
-│       （icon、title、description 均从 pageMeta 常量获取，各资源的具体定义见"资源个性化"对应子节）
-└── BeeCard（class: page-body）                   // 主体容器
-    ├── .page-body__toolbar                      // 工具栏（flex row，固定高度）
-    │   ├── BeeInputSearch（flex:1）              // 搜索框，搜索字段由各资源独立定义
-    │   ├── BeeSelect × N                        // 筛选下拉
-    │   ├── BeeButton: 搜索 / 重置
-    │   ├── 分隔线                                // （仅 create 权限存在 + create 按钮存在时显示）
-    │   └── BeeButton: 新增 / YAML（需 create 权限）
-    ├── .page-body__table                        // 表格区（flex:1 + min-height:0，独立滚动）
-    │   └── BeeTable（selectable 多选模式）
-    └── .page-body__footer                       // 底栏（flex row + space-between，固定高度）
-        ├── 左侧操作组
-        │   ├── BeeButton: 取消选择
-        │   ├── BeeButton: 批量删除（需 delete 权限）
-        │   ├── BeeButton: 导出（需 view 权限）
-        │   └── BeeButton: 导入（需 create 权限）
+├── BeePageHeader                   // 页面标题区，通过 v-bind 绑定 /src/config/kubernetes/{Module}/{Resource}.ts 中的 {Resource}_PAGE_META 常量
+│   ├── icon: 资源 Icon
+│   ├── title: 资源名称
+│   └── description: 资源描述
+└── BeeCard(.page-body)                         // 主体容器
+    ├── div(.page-body__toolbar)                // 工具栏区
+    │   ├── BeeInputSearch                      // 搜索框
+    │   ├── BeeSelect × N                       // 下拉选择（按需允许存在多个）
+    │   ├── BeeButton                           // 搜索
+    │   ├── BeeButton                           // 重置
+    │   ├── div(.page-body__toolbar-seperator)  // 分隔线（v-if="perm.create"）
+    │   ├── BeeButton                           // 创建
+    │   └── BeeButton                           // YAML 创建
+    ├── div(.page-body__table)                  // 表格区
+    │   └── BeeTable                            // 表格
+    └── div(.page-body__footer)                 // 底栏
+        ├── 左侧：操作组
+        │   ├── BeeButton: 清空选择
+        │   ├── BeeButton: 批量删除
+        │   ├── BeeButton: 导出
+        │   └── BeeButton: 导入
         └── 右侧：BeePagination（page / pageSize 双绑定，pageSizes: [10, 20, 50]）
+```
+
+## 布局明细
+
+
+### 整体模版
+```vue
+<template>
+  <BeePage>
+    <!-- 页面 Header -->
+    <BeePageHeader v-bind="{RESOURCE}_PAGE_META" />
+    <!-- 页面 Body -->
+    <BeeCard class="page-body">
+      <!-- 工具栏 -->
+      <div class="page-body__toolbar"></div>
+      <!-- 表格 -->
+      <div class="page-body__table"></div>
+      <!-- 底栏 -->
+      <div class="page-body__footer"></div>
+    </BeeCard>
+  </BeePage>
+</template>
 ```
 
 ## CSS 关键样式
@@ -773,7 +722,7 @@ const perm: Record<string, boolean> = {
 | 200px | 【中间列】`BeeTableCommonCell` | `text: namespace` | `subtext: "命名空间"` |
 | 160px | 【中间列】`BeeStatusCell` | `status`, `statusMsg` | `options: DEPLOYMENT_STATUS_OPTIONS` |
 | 120px | 【中间列】`BeeTableCommonCell` | `text: readyReplicas + '/' + replicas` | `subtext: "副本数"` |
-| 160px | 【中间列】`BeeTableCommonCell` | `text: DEPLOYMENT_STRATEGY_LABEL_MAP[strategyType]` | `subtext: strategyType` |
+| 160px | 【中间列】`BeeTableCommonCell` | `text: DEPLOYMENT_UPDATE_STRATEGY_LABEL_MAP[strategyType]` | `subtext: strategyType` |
 | 200px | 【中间列】`BeeAuditCell` | `username: createBy`, `datetime: createAt` | |
 | 200px | 【中间列】`BeeAuditCell` | `username: updateBy`, `datetime: updateAt` | |
 | 150px | 【末尾列】`BeeActionCell` | ❌ 无 | `actions: getActions(row)` |

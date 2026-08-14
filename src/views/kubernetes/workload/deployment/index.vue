@@ -7,25 +7,25 @@
     <BeeCard class="page-body">
       <!-- 工具栏 -->
       <div class="page-body__toolbar">
-        <BeeInputSearch v-model="searchKey" placeholder="按 UID / 名称搜索" class="page-body__toolbar-search" />
+        <BeeInputSearch v-model="searchKey" class="page-body__toolbar-search" placeholder="按 UID / 名称搜索" />
         <BeeSelect
           v-model="queryForm.namespace"
-          placeholder="命名空间筛选"
-          :options="namespaceOptions"
-          :width="300"
           :menu-height="300"
+          :options="namespaceOptions"
+          placeholder="命名空间筛选"
+          :width="300"
         />
         <BeeSelect
           v-model="queryForm.status"
-          placeholder="状态筛选"
-          :options="DEPLOYMENT_STATUS_OPTIONS"
           :menu-height="300"
+          :options="DEPLOYMENT_STATUS_OPTIONS"
+          placeholder="状态筛选"
         />
         <BeeButton icon="basic-search" @click="handleSearch"> 搜索 </BeeButton>
         <BeeButton icon="basic-refresh" @click="handleReset"> 重置 </BeeButton>
         <div v-if="perm.create" class="page-body__toolbar-seperator"></div>
-        <BeeButton v-if="perm.create" type="primary" icon="basic-create" @click="handleCreate"> 新增 </BeeButton>
-        <BeeButton v-if="perm.create" type="primary" icon="basic-create" @click="handleCreateYaml"> YAML </BeeButton>
+        <BeeButton v-if="perm.create" icon="basic-create" type="primary" @click="handleCreate"> 新增 </BeeButton>
+        <BeeButton v-if="perm.create" icon="basic-create" type="primary" @click="handleCreateYaml"> YAML </BeeButton>
       </div>
 
       <!-- 表格 -->
@@ -40,51 +40,50 @@
           <BeeTableColumn :width="500">
             <template #default="{ row }">
               <BeeWorkloadInfoCell
-                :uid="row.uid"
-                :name="row.name"
                 :description="row.description"
                 icon="kubernetes-deployment"
+                :name="row.name"
+                :uid="row.uid"
               />
             </template>
           </BeeTableColumn>
           <BeeTableColumn :width="200">
             <template #default="{ row }">
-              <BeeTableCommonCell :text="row.namespace" subtext="命名空间" />
+              <BeeTableCommonCell subtext="命名空间" :text="row.namespace" />
             </template>
           </BeeTableColumn>
           <BeeTableColumn :width="160">
             <template #default="{ row }">
-              <BeeStatusCell
-                :status="row.status"
-                :status-msg="row.statusMessage"
-                :options="DEPLOYMENT_STATUS_OPTIONS"
-              />
+              <BeeStatusCell :options="DEPLOYMENT_STATUS_OPTIONS" :status="row.status" :status-msg="row.statusMsg" />
             </template>
           </BeeTableColumn>
           <BeeTableColumn :width="120">
             <template #default="{ row }">
-              <BeeTableCommonCell :text="`${row.readyReplicas} / ${row.replicas}`" subtext="副本数" />
+              <BeeTableCommonCell subtext="副本数" :text="`${row.readyReplicas} / ${row.replicas}`" />
             </template>
           </BeeTableColumn>
           <BeeTableColumn :width="160">
             <template #default="{ row }">
               <BeeTableCommonCell
-                :text="(DEPLOYMENT_STRATEGY_LABEL_MAP as Record<string, string>)[row.strategyType] || row.strategyType"
-                :subtext="row.strategyType"
+                :subtext="row.updateStrategyType"
+                :text="
+                  (DEPLOYMENT_UPDATE_STRATEGY_LABEL_MAP as Record<string, string>)[row.updateStrategyType] ||
+                  row.updateStrategyType
+                "
               />
             </template>
           </BeeTableColumn>
           <BeeTableColumn :width="200">
             <template #default="{ row }">
-              <BeeAuditCell :username="row.createBy" :datetime="row.createAt" field-name="创建人 / 时间" />
+              <BeeAuditCell :datetime="row.createAt" field-name="创建人 / 时间" :username="row.createBy" />
             </template>
           </BeeTableColumn>
           <BeeTableColumn :width="200">
             <template #default="{ row }">
-              <BeeAuditCell :username="row.updateBy" :datetime="row.updateAt" field-name="更新人 / 时间" />
+              <BeeAuditCell :datetime="row.updateAt" field-name="更新人 / 时间" :username="row.updateBy" />
             </template>
           </BeeTableColumn>
-          <BeeTableColumn :width="150" fixed="right">
+          <BeeTableColumn fixed="right" :width="150">
             <template #default="{ row }">
               <BeeActionCell :actions="getActions(row)" />
             </template>
@@ -96,7 +95,7 @@
       <div class="page-body__footer">
         <div class="page-body__footer-actions">
           <BeeButton :disabled="selectedRows.length === 0" @click="handleClearSelection"> 取消选择 </BeeButton>
-          <BeeButton v-if="perm.delete" type="danger" :disabled="selectedRows.length === 0" @click="handleBatchDelete">
+          <BeeButton v-if="perm.delete" :disabled="selectedRows.length === 0" type="danger" @click="handleBatchDelete">
             批量删除 ({{ selectedRows.length }})
           </BeeButton>
           <BeeButton v-if="perm.view" icon="basic-create" @click="handleExport"> 导出 </BeeButton>
@@ -105,8 +104,8 @@
         <BeePagination
           v-model="pagination.page"
           v-model:page-size="pagination.pageSize"
-          :total="pagination.total"
           :page-sizes="[10, 20, 50]"
+          :total="pagination.total"
           @change="loadData"
         />
       </div>
@@ -158,10 +157,9 @@ import { computed, onMounted, reactive, ref } from 'vue'
 
 import { useRoute, useRouter } from 'vue-router'
 
-import type { NamespaceSimpleListVo } from '@/types/kubernetes/namespace'
 import type { DeploymentQueryForm, DeploymentListVo } from '@/types/kubernetes/workload/deployment'
 
-import { getNamespacePage } from '@/api/kubernetes/namespace'
+import { getNamespaceList } from '@/api/kubernetes/namespace'
 import { getDeploymentList, deleteDeployment, deleteDeployments } from '@/api/kubernetes/workload/deployment'
 
 import BeeActionCell, { type ActionItem } from '@/components/BeeActionCell/index.vue'
@@ -186,7 +184,7 @@ import { usePermission } from '@/composables/usePermission'
 import {
   DEPLOYMENT_PAGE_META,
   DEPLOYMENT_STATUS_OPTIONS,
-  DEPLOYMENT_STRATEGY_LABEL_MAP,
+  DEPLOYMENT_UPDATE_STRATEGY_LABEL_MAP,
 } from '@/config/kubernetes/workload/deployment'
 
 defineOptions({ name: 'DeploymentPage' })
@@ -225,12 +223,13 @@ const namespaceOptions = ref<{ label: string; value: string | undefined }[]>([
 // ==================== Data Loading ====================
 /**
  * 加载命名空间选项
- * @remarks 通过 getNamespacePage mode=simple 获取简化列表，转换后填充下拉选项
+ * @remarks 通过 getNamespaceList 获取列表，转换后填充下拉选项
  */
 async function loadNamespaceOptions() {
   if (!clusterUid.value) return
   try {
-    const namespaces = (await getNamespacePage(clusterUid.value, { mode: 'simple' })) as NamespaceSimpleListVo[]
+    const res = await getNamespaceList(clusterUid.value, {})
+    const namespaces = 'list' in res ? res.list : []
     namespaceOptions.value = [
       { label: '全部命名空间', value: undefined },
       ...namespaces.map(ns => ({ label: ns.name, value: ns.name })),
@@ -314,7 +313,7 @@ function handleViewDetail(row: DeploymentListVo) {
   router
     .push({
       name: 'kubernetes:workload:deployment:detail',
-      params: { clusterUid: row.clusterUid, namespace: row.namespace, name: row.name },
+      params: { clusterId: route.params.clusterId, namespace: row.namespace, name: row.name },
     })
     .catch(() => {})
 }
@@ -345,7 +344,7 @@ function handleEdit(row: DeploymentListVo) {
   router
     .push({
       name: 'kubernetes:workload:deployment:edit',
-      params: { clusterUid: row.clusterUid, namespace: row.namespace, name: row.name },
+      params: { clusterId: route.params.clusterId, namespace: row.namespace, name: row.name },
     })
     .catch(() => {})
 }
@@ -358,7 +357,7 @@ function handleEditYaml(row: DeploymentListVo) {
   router
     .push({
       name: 'kubernetes:workload:deployment:edit:yaml',
-      params: { clusterUid: row.clusterUid, namespace: row.namespace, name: row.name },
+      params: { clusterId: route.params.clusterId, namespace: row.namespace, name: row.name },
     })
     .catch(() => {})
 }
@@ -410,12 +409,11 @@ function handleBatchDelete() {
  */
 async function handleConfirmBatchDelete() {
   if (deletableRows.value.length === 0) return
-  const targetClusterId = deletableRows.value[0].clusterUid
-  const targetNamespace = deletableRows.value[0].namespace
-  const names = deletableRows.value.map(row => row.name)
+  const targetClusterUid = deletableRows.value[0].clusterUid
+  const uids = deletableRows.value.map(row => row.uid)
   try {
-    await deleteDeployments(targetClusterId, targetNamespace, names)
-    BeeMessage.success(`成功删除 ${names.length} 个 Deployment`)
+    await deleteDeployments(targetClusterUid, uids)
+    BeeMessage.success(`成功删除 ${uids.length} 个 Deployment`)
     batchDeleteDialogVisible.value = false
     selectedRows.value = []
     await loadData()

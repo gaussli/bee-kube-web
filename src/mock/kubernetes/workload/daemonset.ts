@@ -1,512 +1,554 @@
 /**
- * Kubernetes DaemonSet 管理 Mock API
+ * DaemonSet 管理 Mock
  * @module mock/kubernetes/workload/daemonset
  */
+import type { AxiosProgressEvent } from 'axios'
+
 import type { PageVo } from '@/types/common'
+import type { MetadataAnnotationForm, MetadataLabelForm } from '@/types/kubernetes/common'
+import type { EventListVo, EventQueryForm } from '@/types/kubernetes/event'
 import type {
-  DaemonSetAnnotationsReq,
-  DaemonSetDetailResp,
-  DaemonSetLabelsReq,
-  DaemonSetListResp,
-  DaemonSetQueryReq,
-  DaemonSetReq,
-  DaemonSetYamlReq,
+  DaemonSetCreateForm,
+  DaemonSetDetailVo,
+  DaemonSetHistoryRevisionListVo,
+  DaemonSetHistoryRevisionQueryForm,
+  DaemonSetListVo,
+  DaemonSetMonitorVo,
+  DaemonSetNetworkVo,
+  DaemonSetPodListVo,
+  DaemonSetPodQueryForm,
+  DaemonSetQueryForm,
+  DaemonSetRollbackForm,
+  DaemonSetUpdateForm,
+  DaemonSetYamlVo,
 } from '@/types/kubernetes/workload/daemonset'
 
 import { generateId } from '@/mock/utils'
 
-/**
- * DaemonSet 路由配置
- * @remarks
- * - GET /kubernetes/clusters/:clusterUid/daemonsets - 获取 DaemonSet 分页列表
- * - GET /kubernetes/clusters/:clusterUid/namespaces/:namespace/daemonsets/:name - 获取 DaemonSet 详情
- * - GET /kubernetes/clusters/:clusterUid/namespaces/:namespace/daemonsets/:name/yaml - 查看 YAML
- * - POST /kubernetes/clusters/:clusterUid/namespaces/:namespace/daemonsets - 创建 DaemonSet
- * - PUT /kubernetes/clusters/:clusterUid/namespaces/:namespace/daemonsets/:name - 更新 DaemonSet
- * - POST /kubernetes/clusters/:clusterUid/namespaces/:namespace/daemonsets/:name/restart - 重启
- * - POST /kubernetes/clusters/:clusterUid/namespaces/:namespace/daemonsets/:name/labels - 更新标签
- * - POST /kubernetes/clusters/:clusterUid/namespaces/:namespace/daemonsets/:name/annotations - 更新注解
- * - DELETE /kubernetes/clusters/:clusterUid/namespaces/:namespace/daemonsets/:name - 删除 DaemonSet
- * - DELETE /kubernetes/clusters/:clusterUid/namespaces/:namespace/daemonsets/batch - 批量删除
- * - GET /kubernetes/clusters/:clusterUid/daemonsets/export - 导出 CSV
- * - POST /kubernetes/clusters/:clusterUid/daemonsets/import - 导入 DaemonSet
- */
-export default [
-  {
-    method: 'get',
-    url: '/kubernetes/clusters/:clusterUid/daemonsets',
-    handler: ({
-      pathParams,
-      params,
-    }: {
-      pathParams: Record<string, string>
-      params: Partial<DaemonSetQueryReq>
-    }): PageVo<DaemonSetListResp> => getDaemonSetList(pathParams.clusterUid, params),
-  },
-  {
-    method: 'get',
-    url: '/kubernetes/clusters/:clusterUid/namespaces/:namespace/daemonsets/:name',
-    handler: ({ pathParams }: { pathParams: Record<string, string> }): DaemonSetDetailResp =>
-      getDaemonSetDetail(pathParams.clusterUid, pathParams.namespace, pathParams.name),
-  },
-  {
-    method: 'get',
-    url: '/kubernetes/clusters/:clusterUid/namespaces/:namespace/daemonsets/:name/yaml',
-    handler: ({ pathParams }: { pathParams: Record<string, string> }): string =>
-      getDaemonSetYaml(pathParams.clusterUid, pathParams.namespace, pathParams.name),
-  },
-  {
-    method: 'post',
-    url: '/kubernetes/clusters/:clusterUid/namespaces/:namespace/daemonsets',
-    handler: ({ pathParams, data }: { pathParams: Record<string, string>; data: DaemonSetReq }): void =>
-      createDaemonSet(pathParams.clusterUid, pathParams.namespace, data),
-  },
-  {
-    method: 'put',
-    url: '/kubernetes/clusters/:clusterUid/namespaces/:namespace/daemonsets/:name',
-    handler: ({ pathParams, data }: { pathParams: Record<string, string>; data: Partial<DaemonSetReq> }): void =>
-      updateDaemonSet(pathParams.clusterUid, pathParams.namespace, pathParams.name, data),
-  },
-  {
-    method: 'post',
-    url: '/kubernetes/clusters/:clusterUid/namespaces/:namespace/daemonsets/:name/restart',
-    handler: ({ pathParams }: { pathParams: Record<string, string> }): void =>
-      restartDaemonSet(pathParams.clusterUid, pathParams.namespace, pathParams.name),
-  },
-  {
-    method: 'post',
-    url: '/kubernetes/clusters/:clusterUid/namespaces/:namespace/daemonsets/:name/labels',
-    handler: ({ pathParams, data }: { pathParams: Record<string, string>; data: DaemonSetLabelsReq }): void =>
-      manageDaemonSetLabels(pathParams.clusterUid, pathParams.namespace, pathParams.name, data),
-  },
-  {
-    method: 'post',
-    url: '/kubernetes/clusters/:clusterUid/namespaces/:namespace/daemonsets/:name/annotations',
-    handler: ({ pathParams, data }: { pathParams: Record<string, string>; data: DaemonSetAnnotationsReq }): void =>
-      manageDaemonSetAnnotations(pathParams.clusterUid, pathParams.namespace, pathParams.name, data),
-  },
-  {
-    method: 'delete',
-    url: '/kubernetes/clusters/:clusterUid/namespaces/:namespace/daemonsets/:name',
-    handler: ({ pathParams }: { pathParams: Record<string, string> }): void =>
-      deleteDaemonSet(pathParams.clusterUid, pathParams.namespace, pathParams.name),
-  },
-  {
-    method: 'delete',
-    url: '/kubernetes/clusters/:clusterUid/namespaces/:namespace/daemonsets/batch',
-    handler: ({ pathParams, data }: { pathParams: Record<string, string>; data: string[] }): void =>
-      deleteDaemonSets(pathParams.clusterUid, pathParams.namespace, data),
-  },
-  {
-    method: 'get',
-    url: '/kubernetes/clusters/:clusterUid/daemonsets/export',
-    handler: ({
-      pathParams,
-      params,
-    }: {
-      pathParams: Record<string, string>
-      params: Partial<DaemonSetQueryReq>
-    }): void => exportDaemonSet(pathParams.clusterUid, params),
-  },
-  {
-    method: 'post',
-    url: '/kubernetes/clusters/:clusterUid/daemonsets/import',
-    handler: ({ pathParams, data }: { pathParams: Record<string, string>; data: DaemonSetYamlReq }): void =>
-      importDaemonSet(pathParams.clusterUid, data),
-  },
-]
+import {
+  daemonSetMockData,
+  daemonSetMockDetail,
+  daemonSetMockEvents,
+  daemonSetMockHistoryRevisions,
+  daemonSetMockNetwork,
+  daemonSetMockPods,
+  daemonSetMockYaml,
+} from './daemonsetData'
 
 /**
- * 获取 DaemonSet 分页列表
- * @param _clusterId - 集群 UID
- * @param params - 查询参数
- * @returns 分页数据
+ * 查看 DaemonSet 列表
+ * @param clusterUid 集群 UID
+ * @param query DaemonSet 查询条件请求对象（名称、命名空间、状态、UID）
+ * @returns DaemonSet 分页列表
  */
-function getDaemonSetList(_clusterId: string, params: Partial<DaemonSetQueryReq>): PageVo<DaemonSetListResp> {
-  const { id, name, namespace, status, page = 1, pageSize = 10 } = params || {}
-
-  let filtered = [...mockDaemonSets]
-
-  if (status) {
-    filtered = filtered.filter(d => d.status === status)
+function getDaemonSetListMock(clusterUid: string, query: Partial<DaemonSetQueryForm>): PageVo<DaemonSetListVo> {
+  console.log('[Mock] getDaemonSetList', clusterUid, query)
+  const filtered = daemonSetMockData.filter((d: DaemonSetListVo) => {
+    if (d.clusterUid !== clusterUid) return false
+    if (query.namespace && d.namespace !== query.namespace) return false
+    if (query.status && d.status !== query.status) return false
+    return true
+  })
+  const filteredUid = query.uid ? filtered.filter(d => d.uid === query.uid) : []
+  const filteredName = query.name ? filtered.filter(d => d.name.includes(query.name as string)) : []
+  const matched = query.uid || query.name ? Array.from(new Set([...filteredUid, ...filteredName])) : filtered
+  const page = query.page || 1
+  const pageSize = query.pageSize || 10
+  return {
+    list: matched.slice((page - 1) * pageSize, page * pageSize),
+    total: matched.length,
+    page,
+    pageSize,
   }
-  if (namespace) {
-    filtered = filtered.filter(d => d.namespace === namespace)
-  }
-
-  if (id || name) {
-    let searchFiltered: DaemonSetListResp[] = []
-    if (id) {
-      searchFiltered = [...searchFiltered, ...filtered.filter(d => d.id === id)]
-    }
-    if (name) {
-      searchFiltered = [...searchFiltered, ...filtered.filter(d => d.name.toLowerCase().includes(name.toLowerCase()))]
-    }
-    const seenIds = new Set<string>()
-    filtered = searchFiltered.filter(d => {
-      if (seenIds.has(d.id)) return false
-      seenIds.add(d.id)
-      return true
-    })
-  }
-
-  const total = filtered.length
-  const start = (page - 1) * pageSize
-  const end = start + pageSize
-  const list = filtered.slice(start, end)
-
-  return { list, total, page, pageSize }
 }
 
 /**
- * 获取 DaemonSet 详情
- * @param clusterUid - 集群 UID
- * @param namespace - 命名空间
- * @param name - DaemonSet 名称
- * @returns DaemonSet 详情
+ * 查看 DaemonSet 详情
+ * @param clusterUid 集群 UID
+ * @param namespace 命名空间名称
+ * @param name DaemonSet 名称
+ * @returns DaemonSet 详情响应对象
  */
-function getDaemonSetDetail(clusterUid: string, namespace: string, name: string): DaemonSetDetailResp {
-  const ds = mockDaemonSets.find(d => d.clusterUid === clusterUid && d.namespace === namespace && d.name === name)
-  if (!ds) {
-    console.error('[Get DaemonSet Detail] can not find daemonset:', clusterUid, namespace, name)
-  }
-  return {
-    ...ds!,
-    selector: { app: ds!.name },
-    labels: { app: ds!.name },
-    annotations: { description: ds!.description || '' },
-    containers: [
-      {
-        name: ds!.name,
-        image: `${ds!.name}:latest`,
-      },
-    ],
-  }
+function getDaemonSetDetailMock(clusterUid: string, namespace: string, name: string): DaemonSetDetailVo {
+  void clusterUid
+  void namespace
+  void name
+  console.log('[Mock] getDaemonSetDetail', clusterUid, namespace, name)
+  return daemonSetMockDetail
 }
 
 /**
  * 查看 DaemonSet YAML
- * @param clusterUid - 集群 UID
- * @param namespace - 命名空间
- * @param name - DaemonSet 名称
- * @returns DaemonSet YAML 配置
+ * @param clusterUid 集群 UID
+ * @param namespace 命名空间名称
+ * @param name DaemonSet 名称
+ * @returns DaemonSet YAML 响应对象（完整 YAML 文本）
  */
-function getDaemonSetYaml(clusterUid: string, namespace: string, name: string): string {
-  const ds = mockDaemonSets.find(d => d.clusterUid === clusterUid && d.namespace === namespace && d.name === name)
-  if (!ds) {
-    console.error('[Get DaemonSet Yaml] can not find daemonset:', clusterUid, namespace, name)
-    return ''
-  }
+function getDaemonSetYamlMock(clusterUid: string, namespace: string, name: string): DaemonSetYamlVo {
+  void clusterUid
+  void namespace
+  void name
+  console.log('[Mock] getDaemonSetYaml', clusterUid, namespace, name)
+  return daemonSetMockYaml
+}
 
-  const yaml = `apiVersion: apps/v1
-kind: DaemonSet
-metadata:
-  name: ${ds.name}
-  namespace: ${ds.namespace}
-  creationTimestamp: "${ds.createAt}"
-spec:
-  selector:
-    matchLabels:
-      app: ${ds.name}
-  updateStrategy:
-    type: ${ds.updateStrategy}
-  template:
-    metadata:
-      labels:
-        app: ${ds.name}
-    spec:
-      containers:
-      - name: ${ds.name}
-        image: ${ds.name}:latest
-status:
-  desiredNumberScheduled: ${ds.desiredNumberScheduled}
-  numberReady: ${ds.numberReady}`
+/**
+ * 查看 DaemonSet 关联 Pod 列表
+ * @param clusterUid 集群 UID
+ * @param namespace 命名空间名称
+ * @param name DaemonSet 名称
+ * @param query DaemonSet 关联 Pod 查询条件请求对象（Pod 名称、Pod 状态、UID）
+ * @returns DaemonSet 关联 Pod 分页列表
+ */
+function getDaemonSetPodListMock(
+  clusterUid: string,
+  namespace: string,
+  name: string,
+  query: Partial<DaemonSetPodQueryForm>,
+): PageVo<DaemonSetPodListVo> {
+  void clusterUid
+  void namespace
+  void name
+  console.log('[Mock] getDaemonSetPodList', clusterUid, namespace, name, query)
+  const page = query.page || 1
+  const pageSize = query.pageSize || 10
+  return { list: daemonSetMockPods, total: daemonSetMockPods.length, page, pageSize }
+}
 
-  return yaml
+/**
+ * 查看 DaemonSet 历史版本列表
+ * @param clusterUid 集群 UID
+ * @param namespace 命名空间名称
+ * @param name DaemonSet 名称
+ * @param query DaemonSet 历史版本查询条件请求对象（版本名称、变更原因）
+ * @returns DaemonSet 历史版本分页列表
+ */
+function getDaemonSetHistoryRevisionListMock(
+  clusterUid: string,
+  namespace: string,
+  name: string,
+  query: Partial<DaemonSetHistoryRevisionQueryForm>,
+): PageVo<DaemonSetHistoryRevisionListVo> {
+  void clusterUid
+  void namespace
+  void name
+  console.log('[Mock] getDaemonSetHistoryRevisionList', clusterUid, namespace, name, query)
+  const matched = daemonSetMockHistoryRevisions.filter(r => {
+    if (query.revision && r.revision !== query.revision) return false
+    if (query.changeCause && !r.changeCause.includes(query.changeCause as string)) return false
+    return true
+  })
+  const page = query.page || 1
+  const pageSize = query.pageSize || 10
+  const start = (page - 1) * pageSize
+  const list = matched.slice(start, start + pageSize)
+  return { list, total: matched.length, page, pageSize }
+}
+
+/**
+ * 查看 DaemonSet 关联网络资源
+ * @param clusterUid 集群 UID
+ * @param namespace 命名空间名称
+ * @param name DaemonSet 名称
+ * @returns DaemonSet 关联网络资源响应对象（关联的 Service 与 Ingress 列表）
+ */
+function getDaemonSetNetworkMock(clusterUid: string, namespace: string, name: string): DaemonSetNetworkVo {
+  void clusterUid
+  void namespace
+  void name
+  console.log('[Mock] getDaemonSetNetwork', clusterUid, namespace, name)
+  return daemonSetMockNetwork
+}
+
+/**
+ * 查看 DaemonSet 事件列表
+ * @param clusterUid 集群 UID
+ * @param namespace 命名空间名称
+ * @param name DaemonSet 名称
+ * @param query 事件查询条件请求对象（事件类型、事件原因、事件描述、事件关联对象）
+ * @returns DaemonSet 关联事件分页列表
+ */
+function getDaemonSetEventListMock(
+  clusterUid: string,
+  namespace: string,
+  name: string,
+  query: Partial<EventQueryForm>,
+): PageVo<EventListVo> {
+  void clusterUid
+  void namespace
+  void name
+  console.log('[Mock] getDaemonSetEventList', clusterUid, namespace, name, query)
+  const matched = daemonSetMockEvents.filter(e => {
+    if (query.type && e.type !== query.type) return false
+    if (query.reason && !e.reason.includes(query.reason as string)) return false
+    if (query.note && !(e.note ?? '').includes(query.note as string)) return false
+    if (query.regarding?.name && !(e.regarding?.name ?? '').includes(query.regarding.name as string)) return false
+    return true
+  })
+  const page = query.page || 1
+  const pageSize = query.pageSize || 10
+  const start = (page - 1) * pageSize
+  const list = matched.slice(start, start + pageSize)
+  return { list, total: matched.length, page, pageSize }
+}
+
+/**
+ * 查看 DaemonSet 监控数据
+ * @param clusterUid 集群 UID
+ * @param namespace 命名空间名称
+ * @param name DaemonSet 名称
+ * @returns DaemonSet 监控响应对象
+ */
+function getDaemonSetMonitorMock(clusterUid: string, namespace: string, name: string): DaemonSetMonitorVo {
+  void clusterUid
+  void namespace
+  console.log('[Mock] getDaemonSetMonitor', clusterUid, namespace, name)
+  return {}
 }
 
 /**
  * 创建 DaemonSet
- * @param clusterUid - 集群 UID
- * @param namespace - 命名空间
- * @param data - 创建参数
+ * @param clusterUid 集群 UID
+ * @param data DaemonSet 创建请求对象（description / metadata / spec）
+ * @returns void
  */
-function createDaemonSet(clusterUid: string, namespace: string, data: DaemonSetReq): void {
-  console.log('[Mock] createDaemonSet', { clusterUid, namespace, data })
+function createDaemonSetMock(clusterUid: string, data: Partial<DaemonSetCreateForm>): void {
+  console.log('[Mock] createDaemonSet', clusterUid, data)
+  const newItem: DaemonSetListVo = {
+    uid: generateId(),
+    clusterUid,
+    cluster: 'system-cluster',
+    namespaceUid: `ns-${data?.metadata?.namespace || 'default'}`,
+    namespace: data?.metadata?.namespace || 'default',
+    name: data?.metadata?.name || 'new-daemonset',
+    description: data?.description,
+    status: 'Creating',
+    statusMsg: '创建中',
+    desiredNumberScheduled: 0,
+    numberReady: 0,
+    updateStrategyType: data?.spec?.updateStrategy?.type || 'RollingUpdate',
+    createAt: new Date().toISOString(),
+    createBy: 'admin',
+    updateAt: new Date().toISOString(),
+    updateBy: 'admin',
+    deletable: true,
+  }
+  daemonSetMockData.push(newItem)
+}
+
+/**
+ * YAML 创建 DaemonSet
+ * @param clusterUid 集群 UID
+ * @param yaml DaemonSet YAML 字符串
+ * @returns void
+ */
+function createDaemonSetYamlMock(clusterUid: string, yaml: string): void {
+  console.log('[Mock] createDaemonSetYaml', clusterUid, yaml)
 }
 
 /**
  * 更新 DaemonSet
- * @param clusterUid - 集群 UID
- * @param namespace - 命名空间
- * @param name - DaemonSet 名称
- * @param data - 更新参数
+ * @param clusterUid 集群 UID
+ * @param namespace 命名空间名称
+ * @param name DaemonSet 名称
+ * @param data DaemonSet 更新请求对象（description / metadata / spec）
+ * @returns void
  */
-function updateDaemonSet(clusterUid: string, namespace: string, name: string, data: Partial<DaemonSetReq>): void {
-  console.log('[Mock] updateDaemonSet', { clusterUid, namespace, name, data })
-}
-
-/**
- * 重启 DaemonSet
- * @param clusterUid - 集群 UID
- * @param namespace - 命名空间
- * @param name - DaemonSet 名称
- */
-function restartDaemonSet(clusterUid: string, namespace: string, name: string): void {
-  console.log('[Mock] restartDaemonSet', { clusterUid, namespace, name })
-}
-
-/**
- * 更新 DaemonSet 标签
- * @param clusterUid - 集群 UID
- * @param namespace - 命名空间
- * @param name - DaemonSet 名称
- * @param data - 标签数据
- */
-function manageDaemonSetLabels(clusterUid: string, namespace: string, name: string, data: DaemonSetLabelsReq): void {
-  console.log('[Mock] manageDaemonSetLabels', { clusterUid, namespace, name, data })
-}
-
-/**
- * 更新 DaemonSet 注解
- * @param clusterUid - 集群 UID
- * @param namespace - 命名空间
- * @param name - DaemonSet 名称
- * @param data - 注解数据
- */
-function manageDaemonSetAnnotations(
+function updateDaemonSetMock(
   clusterUid: string,
   namespace: string,
   name: string,
-  data: DaemonSetAnnotationsReq,
+  data: Partial<DaemonSetUpdateForm>,
 ): void {
-  console.log('[Mock] manageDaemonSetAnnotations', { clusterUid, namespace, name, data })
+  console.log('[Mock] updateDaemonSet', clusterUid, namespace, name, data)
+  const item = daemonSetMockData.find(d => d.clusterUid === clusterUid && d.namespace === namespace && d.name === name)
+  if (item && data.description !== undefined) {
+    item.description = data.description
+  }
+}
+
+/**
+ * YAML 更新 DaemonSet
+ * @param clusterUid 集群 UID
+ * @param namespace 命名空间名称
+ * @param name DaemonSet 名称
+ * @param yaml DaemonSet YAML 字符串
+ * @returns void
+ */
+function updateDaemonSetYamlMock(clusterUid: string, namespace: string, name: string, yaml: string): void {
+  console.log('[Mock] updateDaemonSetYaml', clusterUid, namespace, name, yaml)
+}
+
+/**
+ * 管理 DaemonSet 标签
+ * @param clusterUid 集群 UID
+ * @param namespace 命名空间名称
+ * @param name DaemonSet 名称
+ * @param data 管理标签请求对象（labels 键值对、operation 操作类型）
+ * @returns void
+ */
+function manageDaemonSetLabelMock(clusterUid: string, namespace: string, name: string, data: MetadataLabelForm): void {
+  console.log('[Mock] manageDaemonSetLabel', clusterUid, namespace, name, data)
+}
+
+/**
+ * 管理 DaemonSet 注解
+ * @param clusterUid 集群 UID
+ * @param namespace 命名空间名称
+ * @param name DaemonSet 名称
+ * @param data 管理注解请求对象（annotations 键值对、operation 操作类型）
+ * @returns void
+ */
+function manageDaemonSetAnnotationMock(
+  clusterUid: string,
+  namespace: string,
+  name: string,
+  data: MetadataAnnotationForm,
+): void {
+  console.log('[Mock] manageDaemonSetAnnotation', clusterUid, namespace, name, data)
 }
 
 /**
  * 删除 DaemonSet
- * @param clusterUid - 集群 UID
- * @param namespace - 命名空间
- * @param name - DaemonSet 名称
+ * @param clusterUid 集群 UID
+ * @param namespace 命名空间名称
+ * @param name DaemonSet 名称
+ * @returns void
  */
-function deleteDaemonSet(clusterUid: string, namespace: string, name: string): void {
-  console.log('[Mock] deleteDaemonSet', { clusterUid, namespace, name })
+function deleteDaemonSetMock(clusterUid: string, namespace: string, name: string): void {
+  console.log('[Mock] deleteDaemonSet', clusterUid, namespace, name)
+  const index = daemonSetMockData.findIndex(
+    d => d.clusterUid === clusterUid && d.namespace === namespace && d.name === name,
+  )
+  if (index > -1) {
+    daemonSetMockData.splice(index, 1)
+  }
 }
 
 /**
  * 批量删除 DaemonSet
- * @param clusterUid - 集群 UID
- * @param namespace - 命名空间
- * @param names - DaemonSet 名称数组
+ * @param clusterUid 集群 UID
+ * @param uids DaemonSet UID 列表
+ * @returns void
  */
-function deleteDaemonSets(clusterUid: string, namespace: string, names: string[]): void {
-  console.log('[Mock] deleteDaemonSets', { clusterUid, namespace, names })
-}
-
-/**
- * 导出 DaemonSet CSV
- * @param clusterUid - 集群 UID
- * @param params - 查询参数
- */
-function exportDaemonSet(clusterUid: string, params: Partial<DaemonSetQueryReq>): void {
-  console.log('[Mock] exportDaemonSet', { clusterUid, params })
+function deleteDaemonSetsMock(clusterUid: string, uids: string[]): void {
+  console.log('[Mock] deleteDaemonSets', clusterUid, uids)
+  for (const uid of uids) {
+    const index = daemonSetMockData.findIndex(d => d.clusterUid === clusterUid && d.uid === uid)
+    if (index > -1) {
+      daemonSetMockData.splice(index, 1)
+    }
+  }
 }
 
 /**
  * 导入 DaemonSet
- * @param clusterUid - 集群 UID
- * @param data - YAML 配置
+ * @param clusterUid 集群 UID
+ * @param formData 上传的文件
+ * @param onProgress 上传进度回调
+ * @returns void
  */
-function importDaemonSet(clusterUid: string, data: DaemonSetYamlReq): void {
-  console.log('[Mock] importDaemonSet', { clusterUid, data })
+function importDaemonSetMock(
+  clusterUid: string,
+  formData: FormData,
+  onProgress?: (progressEvent: AxiosProgressEvent) => void,
+): void {
+  void formData
+  void onProgress
+  console.log('[Mock] importDaemonSet', clusterUid)
 }
 
 /**
- * 模拟 DaemonSet 数据
- * @remarks 包含日志采集、监控代理、存储插件等各类节点级守护 Pod
+ * 导出 DaemonSet
+ * @param clusterUid 集群 UID
+ * @param query DaemonSet 查询条件请求对象（名称、命名空间、状态、UID）
+ * @returns void
  */
-const mockDaemonSets: DaemonSetListResp[] = [
-  // ==================== Running（运行中）- 3 条 ====================
+function exportDaemonSetMock(clusterUid: string, query: Partial<DaemonSetQueryForm>): void {
+  console.log('[Mock] exportDaemonSet', clusterUid, query)
+}
+
+/**
+ * 重启 DaemonSet
+ * @param clusterUid 集群 UID
+ * @param namespace 命名空间名称
+ * @param name DaemonSet 名称
+ * @returns void
+ */
+function restartDaemonSetMock(clusterUid: string, namespace: string, name: string): void {
+  console.log('[Mock] restartDaemonSet', clusterUid, namespace, name)
+}
+
+/**
+ * 回滚 DaemonSet
+ * @param clusterUid 集群 UID
+ * @param namespace 命名空间名称
+ * @param name DaemonSet 名称
+ * @param data DaemonSet 回滚请求对象（目标历史版本号）
+ * @returns void
+ */
+function rollbackDaemonSetMock(clusterUid: string, namespace: string, name: string, data: DaemonSetRollbackForm): void {
+  console.log('[Mock] rollbackDaemonSet', clusterUid, namespace, name, data)
+}
+
+/**
+ * 暂停 DaemonSet 更新
+ * @param clusterUid 集群 UID
+ * @param namespace 命名空间名称
+ * @param name DaemonSet 名称
+ * @returns void
+ */
+function pauseDaemonSetMock(clusterUid: string, namespace: string, name: string): void {
+  console.log('[Mock] pauseDaemonSet', clusterUid, namespace, name)
+}
+
+/**
+ * 恢复 DaemonSet 更新
+ * @param clusterUid 集群 UID
+ * @param namespace 命名空间名称
+ * @param name DaemonSet 名称
+ * @returns void
+ */
+function resumeDaemonSetMock(clusterUid: string, namespace: string, name: string): void {
+  console.log('[Mock] resumeDaemonSet', clusterUid, namespace, name)
+}
+
+export default [
   {
-    id: generateId(),
-    uid: generateId(),
-    name: 'fluentd-logging',
-    namespace: 'kube-system',
-    clusterUid: generateId(),
-    description: 'Fluentd 日志采集 DaemonSet，在每个节点运行并采集容器日志发送到日志平台',
-    status: 'Running',
-    desiredNumberScheduled: 8,
-    numberReady: 8,
-    updateStrategy: 'RollingUpdate',
-    createAt: '2024-01-15 10:30:00',
-    createBy: 'admin',
-    updateAt: '2024-03-20 14:00:00',
-    updateBy: 'admin',
-    deletable: false,
+    method: 'get',
+    url: '/kubernetes/clusters/:clusterUid/daemonsets',
+    handler: (ctx: { pathParams: Record<string, string>; params: Partial<DaemonSetQueryForm> }) =>
+      getDaemonSetListMock(ctx.pathParams.clusterUid, ctx.params),
   },
   {
-    id: generateId(),
-    uid: generateId(),
-    name: 'node-exporter',
-    namespace: 'monitoring',
-    clusterUid: generateId(),
-    description: 'Prometheus Node Exporter，采集节点级别的 CPU、内存、磁盘等硬件指标',
-    status: 'Running',
-    desiredNumberScheduled: 8,
-    numberReady: 8,
-    updateStrategy: 'RollingUpdate',
-    createAt: '2024-01-20 09:00:00',
-    createBy: 'admin',
-    updateAt: '2024-03-19 16:30:00',
-    updateBy: 'admin',
-    deletable: true,
+    method: 'get',
+    url: '/kubernetes/clusters/:clusterUid/namespaces/:namespace/daemonsets/:name',
+    handler: (ctx: { pathParams: Record<string, string> }) =>
+      getDaemonSetDetailMock(ctx.pathParams.clusterUid, ctx.pathParams.namespace, ctx.pathParams.name),
   },
   {
-    id: generateId(),
-    uid: generateId(),
-    name: 'kube-proxy',
-    namespace: 'kube-system',
-    clusterUid: generateId(),
-    description: 'Kubernetes 网络代理组件，维护节点上的网络规则和 Service 流量转发',
-    status: 'Running',
-    desiredNumberScheduled: 8,
-    numberReady: 8,
-    updateStrategy: 'RollingUpdate',
-    createAt: '2024-01-15 10:35:00',
-    createBy: 'system',
-    updateAt: '2024-03-18 10:00:00',
-    updateBy: 'system',
-    deletable: false,
-  },
-  // ==================== Available（部分就绪）- 2 条 ====================
-  {
-    id: generateId(),
-    uid: generateId(),
-    name: 'filebeat',
-    namespace: 'logging',
-    clusterUid: generateId(),
-    description: 'Filebeat 日志采集器，将应用日志文件实时发送到 ElasticSearch',
-    status: 'Available',
-    statusMessage: '1 个节点上的 Pod 未就绪，正在等待节点资源',
-    desiredNumberScheduled: 8,
-    numberReady: 7,
-    updateStrategy: 'RollingUpdate',
-    createAt: '2024-02-10 10:00:00',
-    createBy: 'developer',
-    updateAt: '2024-03-20 11:00:00',
-    updateBy: 'developer',
-    deletable: true,
+    method: 'get',
+    url: '/kubernetes/clusters/:clusterUid/namespaces/:namespace/daemonsets/:name/yaml',
+    handler: (ctx: { pathParams: Record<string, string> }) =>
+      getDaemonSetYamlMock(ctx.pathParams.clusterUid, ctx.pathParams.namespace, ctx.pathParams.name),
   },
   {
-    id: generateId(),
-    uid: generateId(),
-    name: 'csi-driver',
-    namespace: 'storage',
-    clusterUid: generateId(),
-    description: 'CSI 存储驱动插件，为每个节点提供持久化存储卷的挂载和管理能力',
-    status: 'Available',
-    statusMessage: '新增节点上 Pod 初始化中，存储卷尚未挂载完成',
-    desiredNumberScheduled: 10,
-    numberReady: 9,
-    updateStrategy: 'OnDelete',
-    createAt: '2024-02-15 08:00:00',
-    createBy: 'admin',
-    updateAt: '2024-03-19 12:00:00',
-    updateBy: 'admin',
-    deletable: true,
-  },
-  // ==================== Updating（更新中）- 2 条 ====================
-  {
-    id: generateId(),
-    uid: generateId(),
-    name: 'datadog-agent',
-    namespace: 'monitoring',
-    clusterUid: generateId(),
-    description: 'Datadog Agent，提供应用性能监控(APM)和基础设施监控能力',
-    status: 'Updating',
-    statusMessage: '滚动更新中，按节点逐个替换旧版本 Pod',
-    desiredNumberScheduled: 8,
-    numberReady: 5,
-    updateStrategy: 'RollingUpdate',
-    createAt: '2024-02-20 14:00:00',
-    createBy: 'developer',
-    updateAt: '2024-03-20 16:00:00',
-    updateBy: 'developer',
-    deletable: true,
+    method: 'get',
+    url: '/kubernetes/clusters/:clusterUid/namespaces/:namespace/daemonsets/:name/pods',
+    handler: (ctx: { pathParams: Record<string, string>; params: Partial<DaemonSetPodQueryForm> }) =>
+      getDaemonSetPodListMock(ctx.pathParams.clusterUid, ctx.pathParams.namespace, ctx.pathParams.name, ctx.params),
   },
   {
-    id: generateId(),
-    uid: generateId(),
-    name: 'calico-node',
-    namespace: 'kube-system',
-    clusterUid: generateId(),
-    description: 'Calico 网络插件节点组件，管理 Pod 网络策略和路由',
-    status: 'Updating',
-    statusMessage: '版本升级进行中，网络策略迁移中',
-    desiredNumberScheduled: 8,
-    numberReady: 6,
-    updateStrategy: 'RollingUpdate',
-    createAt: '2024-01-10 08:00:00',
-    createBy: 'admin',
-    updateAt: '2024-03-20 15:30:00',
-    updateBy: 'admin',
-    deletable: false,
+    method: 'get',
+    url: '/kubernetes/clusters/:clusterUid/namespaces/:namespace/daemonsets/:name/history',
+    handler: (ctx: { pathParams: Record<string, string>; params: Partial<DaemonSetHistoryRevisionQueryForm> }) =>
+      getDaemonSetHistoryRevisionListMock(
+        ctx.pathParams.clusterUid,
+        ctx.pathParams.namespace,
+        ctx.pathParams.name,
+        ctx.params,
+      ),
   },
-  // ==================== Creating（创建中）- 1 条 ====================
   {
-    id: generateId(),
-    uid: generateId(),
-    name: 'gpu-device-plugin',
-    namespace: 'kube-system',
-    clusterUid: generateId(),
-    description: 'NVIDIA GPU 设备插件，使 Kubernetes 能够发现和调度 GPU 资源',
-    status: 'Creating',
-    statusMessage: 'Pod 正在节点上创建，等待镜像拉取完成',
-    desiredNumberScheduled: 4,
-    numberReady: 1,
-    updateStrategy: 'OnDelete',
-    createAt: '2024-03-19 15:00:00',
-    createBy: 'admin',
-    updateAt: '2024-03-19 15:00:00',
-    updateBy: 'admin',
-    deletable: false,
+    method: 'get',
+    url: '/kubernetes/clusters/:clusterUid/namespaces/:namespace/daemonsets/:name/network',
+    handler: (ctx: { pathParams: Record<string, string> }) =>
+      getDaemonSetNetworkMock(ctx.pathParams.clusterUid, ctx.pathParams.namespace, ctx.pathParams.name),
   },
-  // ==================== Failed（失败异常）- 1 条 ====================
   {
-    id: generateId(),
-    uid: generateId(),
-    name: 'network-monitor',
-    namespace: 'monitoring',
-    clusterUid: generateId(),
-    description: '网络监控探针，检测节点间网络延迟和连通性',
-    status: 'Failed',
-    statusMessage: '部分节点 Pod 启动失败，CrashLoopBackOff',
-    desiredNumberScheduled: 8,
-    numberReady: 3,
-    updateStrategy: 'RollingUpdate',
-    createAt: '2024-02-25 10:00:00',
-    createBy: 'admin',
-    updateAt: '2024-03-18 09:00:00',
-    updateBy: 'admin',
-    deletable: true,
+    method: 'get',
+    url: '/kubernetes/clusters/:clusterUid/namespaces/:namespace/daemonsets/:name/events',
+    handler: (ctx: { pathParams: Record<string, string>; params: Partial<EventQueryForm> }) =>
+      getDaemonSetEventListMock(ctx.pathParams.clusterUid, ctx.pathParams.namespace, ctx.pathParams.name, ctx.params),
   },
-  // ==================== Unknown（未知）- 1 条 ====================
   {
-    id: generateId(),
-    uid: generateId(),
-    name: 'auditbeat',
-    namespace: 'logging',
-    clusterUid: generateId(),
-    description: 'Auditbeat 审计日志采集器，记录系统级别审计事件',
-    status: 'Unknown',
-    statusMessage: 'API Server 连接异常，无法获取 DaemonSet 状态',
-    desiredNumberScheduled: 8,
-    numberReady: 0,
-    updateStrategy: 'RollingUpdate',
-    createAt: '2024-03-01 08:00:00',
-    createBy: 'admin',
-    updateAt: '2024-03-20 17:00:00',
-    updateBy: 'admin',
-    deletable: true,
+    method: 'get',
+    url: '/kubernetes/clusters/:clusterUid/namespaces/:namespace/daemonsets/:name/monitor',
+    handler: (ctx: { pathParams: Record<string, string> }) =>
+      getDaemonSetMonitorMock(ctx.pathParams.clusterUid, ctx.pathParams.namespace, ctx.pathParams.name),
+  },
+  {
+    method: 'post',
+    url: '/kubernetes/clusters/:clusterUid/daemonsets',
+    handler: (ctx: { pathParams: Record<string, string>; data: Partial<DaemonSetCreateForm> }) =>
+      createDaemonSetMock(ctx.pathParams.clusterUid, ctx.data),
+  },
+  {
+    method: 'post',
+    url: '/kubernetes/clusters/:clusterUid/daemonsets/yaml',
+    handler: (ctx: { pathParams: Record<string, string>; data: string }) =>
+      createDaemonSetYamlMock(ctx.pathParams.clusterUid, ctx.data),
+  },
+  {
+    method: 'put',
+    url: '/kubernetes/clusters/:clusterUid/namespaces/:namespace/daemonsets/:name',
+    handler: (ctx: { pathParams: Record<string, string>; data: Partial<DaemonSetUpdateForm> }) =>
+      updateDaemonSetMock(ctx.pathParams.clusterUid, ctx.pathParams.namespace, ctx.pathParams.name, ctx.data),
+  },
+  {
+    method: 'put',
+    url: '/kubernetes/clusters/:clusterUid/namespaces/:namespace/daemonsets/:name/yaml',
+    handler: (ctx: { pathParams: Record<string, string>; data: string }) =>
+      updateDaemonSetYamlMock(ctx.pathParams.clusterUid, ctx.pathParams.namespace, ctx.pathParams.name, ctx.data),
+  },
+  {
+    method: 'post',
+    url: '/kubernetes/clusters/:clusterUid/namespaces/:namespace/daemonsets/:name/labels',
+    handler: (ctx: { pathParams: Record<string, string>; data: MetadataLabelForm }) =>
+      manageDaemonSetLabelMock(ctx.pathParams.clusterUid, ctx.pathParams.namespace, ctx.pathParams.name, ctx.data),
+  },
+  {
+    method: 'post',
+    url: '/kubernetes/clusters/:clusterUid/namespaces/:namespace/daemonsets/:name/annotations',
+    handler: (ctx: { pathParams: Record<string, string>; data: MetadataAnnotationForm }) =>
+      manageDaemonSetAnnotationMock(ctx.pathParams.clusterUid, ctx.pathParams.namespace, ctx.pathParams.name, ctx.data),
+  },
+  {
+    method: 'delete',
+    url: '/kubernetes/clusters/:clusterUid/namespaces/:namespace/daemonsets/:name',
+    handler: (ctx: { pathParams: Record<string, string> }) =>
+      deleteDaemonSetMock(ctx.pathParams.clusterUid, ctx.pathParams.namespace, ctx.pathParams.name),
+  },
+  {
+    method: 'delete',
+    url: '/kubernetes/clusters/:clusterUid/daemonsets/batch',
+    handler: (ctx: { pathParams: Record<string, string>; data: string[] }) =>
+      deleteDaemonSetsMock(ctx.pathParams.clusterUid, ctx.data),
+  },
+  {
+    method: 'post',
+    url: '/kubernetes/clusters/:clusterUid/daemonsets/import',
+    handler: (ctx: { pathParams: Record<string, string>; data: FormData }) =>
+      importDaemonSetMock(ctx.pathParams.clusterUid, ctx.data),
+  },
+  {
+    method: 'get',
+    url: '/kubernetes/clusters/:clusterUid/daemonsets/export',
+    handler: (ctx: { pathParams: Record<string, string>; params: Partial<DaemonSetQueryForm> }) =>
+      exportDaemonSetMock(ctx.pathParams.clusterUid, ctx.params),
+  },
+  {
+    method: 'post',
+    url: '/kubernetes/clusters/:clusterUid/namespaces/:namespace/daemonsets/:name/restart',
+    handler: (ctx: { pathParams: Record<string, string> }) =>
+      restartDaemonSetMock(ctx.pathParams.clusterUid, ctx.pathParams.namespace, ctx.pathParams.name),
+  },
+  {
+    method: 'post',
+    url: '/kubernetes/clusters/:clusterUid/namespaces/:namespace/daemonsets/:name/rollback',
+    handler: (ctx: { pathParams: Record<string, string>; data: DaemonSetRollbackForm }) =>
+      rollbackDaemonSetMock(ctx.pathParams.clusterUid, ctx.pathParams.namespace, ctx.pathParams.name, ctx.data),
+  },
+  {
+    method: 'post',
+    url: '/kubernetes/clusters/:clusterUid/namespaces/:namespace/daemonsets/:name/pause',
+    handler: (ctx: { pathParams: Record<string, string> }) =>
+      pauseDaemonSetMock(ctx.pathParams.clusterUid, ctx.pathParams.namespace, ctx.pathParams.name),
+  },
+  {
+    method: 'post',
+    url: '/kubernetes/clusters/:clusterUid/namespaces/:namespace/daemonsets/:name/resume',
+    handler: (ctx: { pathParams: Record<string, string> }) =>
+      resumeDaemonSetMock(ctx.pathParams.clusterUid, ctx.pathParams.namespace, ctx.pathParams.name),
   },
 ]

@@ -1,16 +1,7 @@
 /**
  * Kubernetes 通用类型定义（元数据操作、资源用量等跨模块复用类型）
- * @module types/kubernetes/comomn
+ * @module types/kubernetes/common
  */
-
-/**
- * 元数据操作类型枚举
- * @remarks 用于标签、注解等元数据的增删改操作
- * - 1: 新增键值对（已存在的键将被忽略）
- * - 2: 移除键值对
- * - 3: 全量替换（传入的键值对将完全覆盖现有数据）
- */
-type MetadataOperation = 1 | 2 | 3
 
 /**
  * 元数据标签配置请求
@@ -19,8 +10,8 @@ type MetadataOperation = 1 | 2 | 3
 export interface MetadataLabelForm {
   /** 标签键值对 */
   labels: Record<string, string>
-  /** 操作类型（1: 新增；2: 移除；3: 全量替换） */
-  operation: MetadataOperation
+  /** 操作类型：1 新增；2 移除；3 全量替换（传入的键值对将完全覆盖现有数据） */
+  operation: number
 }
 
 /**
@@ -30,8 +21,8 @@ export interface MetadataLabelForm {
 export interface MetadataAnnotationForm {
   /** 注解键值对 */
   annotations: Record<string, string>
-  /** 操作类型（1: 新增；2: 移除；3: 全量替换） */
-  operation: MetadataOperation
+  /** 操作类型：1 新增；2 移除；3 全量替换（传入的键值对将完全覆盖现有数据） */
+  operation: number
 }
 
 /**

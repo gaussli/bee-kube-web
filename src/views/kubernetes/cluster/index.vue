@@ -7,18 +7,18 @@
     <BeeCard class="page-body">
       <!-- 工具栏 -->
       <div class="page-body__toolbar">
-        <BeeInputSearch v-model="searchKey" placeholder="按 UID / 名称 搜索" class="page-body__toolbar-search" />
+        <BeeInputSearch v-model="searchKey" class="page-body__toolbar-search" placeholder="按 UID / 名称 搜索" />
         <BeeSelect
           v-model="queryForm.status"
-          placeholder="状态筛选"
-          :options="CLUSTER_STATUS_OPTIONS"
           :menu-height="300"
+          :options="CLUSTER_STATUS_OPTIONS"
+          placeholder="状态筛选"
         />
         <BeeButton icon="basic-search" @click="handleSearch"> 搜索 </BeeButton>
         <BeeButton icon="basic-refresh" @click="handleReset"> 重置 </BeeButton>
         <div v-if="perm.create" class="page-body__toolbar-seperator"></div>
-        <BeeButton v-if="perm.create" type="primary" icon="basic-create" @click="handleCreate"> 新增 </BeeButton>
-        <BeeButton v-if="perm.create" type="primary" icon="basic-create" @click="handleRegister"> 纳管 </BeeButton>
+        <BeeButton v-if="perm.create" icon="basic-create" type="primary" @click="handleCreate"> 新增 </BeeButton>
+        <BeeButton v-if="perm.create" icon="basic-create" type="primary" @click="handleRegister"> 纳管 </BeeButton>
       </div>
 
       <!-- 表格 -->
@@ -32,30 +32,30 @@
         >
           <BeeTableColumn :width="500">
             <template #default="{ row }">
-              <BeeClusterInfoCell :uid="row.uid" :name="row.name" :description="row.description" />
+              <BeeClusterInfoCell :description="row.description" :name="row.name" :uid="row.uid" />
             </template>
           </BeeTableColumn>
           <BeeTableColumn :min-width="300">
             <template #default="{ row }">
-              <BeeTableCommonCell :text="row.apiServer" subtext="API Server" />
+              <BeeTableCommonCell subtext="API Server" :text="row.apiServer" />
             </template>
           </BeeTableColumn>
           <BeeTableColumn prop="status" :width="160">
             <template #default="{ row }">
-              <BeeStatusCell :status="row.status" :status-msg="row.statusMsg" :options="CLUSTER_STATUS_OPTIONS" />
+              <BeeStatusCell :options="CLUSTER_STATUS_OPTIONS" :status="row.status" :status-msg="row.statusMsg" />
             </template>
           </BeeTableColumn>
           <BeeTableColumn :width="200">
             <template #default="{ row }">
-              <BeeAuditCell :username="row.createBy" :datetime="row.createAt" field-name="创建人 / 时间" />
+              <BeeAuditCell :datetime="row.createAt" field-name="创建人 / 时间" :username="row.createBy" />
             </template>
           </BeeTableColumn>
           <BeeTableColumn :width="200">
             <template #default="{ row }">
-              <BeeAuditCell :username="row.updateBy" :datetime="row.updateAt" field-name="更新人 / 时间" />
+              <BeeAuditCell :datetime="row.updateAt" field-name="更新人 / 时间" :username="row.updateBy" />
             </template>
           </BeeTableColumn>
-          <BeeTableColumn :width="150" fixed="right">
+          <BeeTableColumn fixed="right" :width="150">
             <template #default="{ row }">
               <BeeActionCell :actions="getActions(row)" />
             </template>
@@ -67,7 +67,7 @@
       <div class="page-body__footer">
         <div class="page-body__footer-actions">
           <BeeButton :disabled="selectedRows.length === 0" @click="handleClearSelection"> 取消选择 </BeeButton>
-          <BeeButton v-if="perm.delete" type="danger" :disabled="selectedRows.length === 0" @click="handleBatchDelete">
+          <BeeButton v-if="perm.delete" :disabled="selectedRows.length === 0" type="danger" @click="handleBatchDelete">
             批量删除 ({{ selectedRows.length }})
           </BeeButton>
           <BeeButton v-if="perm.view" icon="basic-create" @click="handleExport"> 导出 </BeeButton>
@@ -76,8 +76,8 @@
         <BeePagination
           v-model="pagination.page"
           v-model:page-size="pagination.pageSize"
-          :total="pagination.total"
           :page-sizes="[10, 20, 50]"
+          :total="pagination.total"
           @change="loadData"
         />
       </div>
@@ -101,7 +101,7 @@
             不可删除，将从列表忽略：
           </p>
           <div class="delete-dialog-tags">
-            <BeeTag v-for="row in nonDeletableRows" :key="row.id" type="warning">
+            <BeeTag v-for="row in nonDeletableRows" :key="row.uid" type="warning">
               {{ row.name }}
             </BeeTag>
           </div>
@@ -111,7 +111,7 @@
         </p>
         <p v-else class="dialog-content__warning">所有选中的集群均不可删除。</p>
         <div v-if="deletableRows.length > 0" class="delete-dialog-tags">
-          <BeeTag v-for="row in deletableRows" :key="row.id">
+          <BeeTag v-for="row in deletableRows" :key="row.uid">
             {{ row.name }}
           </BeeTag>
         </div>
@@ -259,7 +259,7 @@ function handleRegister() {
  * @param row
  */
 function handleEdit(row: ClusterListVo) {
-  router.push({ name: 'kubernetes:cluster:edit', query: { id: row.id } }).catch(() => {})
+  router.push({ name: 'kubernetes:cluster:edit', query: { id: row.uid } }).catch(() => {})
 }
 
 /**

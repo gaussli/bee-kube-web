@@ -12,7 +12,9 @@ import type {
   NamespaceSimpleListVo,
   NamespaceLabelForm,
   NamespaceAnnotationForm,
-  NamespaceQuotaForm,
+  NamespaceQuotaCreateForm,
+  NamespaceQuotaUpdateForm,
+  NamespaceQuotaDetailVo,
   NamespaceImportForm,
 } from '@/types/kubernetes/namespace'
 
@@ -21,20 +23,26 @@ import { generateId } from '@/mock/utils'
 /**
  * 命名空间路由配置
  * @remarks
- * - GET /kubernetes/clusters/:clusterUid/namespaces - 获取命名空间分页列表
+ * - GET /kubernetes/clusters/:clusterUid/namespaces - 获取命名空间列表
  * - GET /kubernetes/clusters/:clusterUid/namespaces/:name - 获取命名空间详情
- * - GET /kubernetes/clusters/:clusterUid/namespaces/:name/yaml - 查看 YAML
  * - POST /kubernetes/clusters/:clusterUid/namespaces - 创建命名空间
+ * - POST /kubernetes/clusters/:clusterUid/namespaces/yaml - 通过 YAML 创建命名空间
  * - PUT /kubernetes/clusters/:clusterUid/namespaces/:name - 更新命名空间
+ * - PUT /kubernetes/clusters/:clusterUid/namespaces/:name/yaml - 通过 YAML 更新命名空间
  * - POST /kubernetes/clusters/:clusterUid/namespaces/:name/labels - 更新标签
  * - POST /kubernetes/clusters/:clusterUid/namespaces/:name/annotations - 更新注解
+ * - GET /kubernetes/clusters/:clusterUid/namespaces/:name/export - 导出命名空间 YAML
+ * - POST /kubernetes/clusters/:clusterUid/namespaces/import - 导入命名空间 YAML
+ * - GET /kubernetes/clusters/:clusterUid/namespaces/:name/yaml - 查看 YAML
  * - DELETE /kubernetes/clusters/:clusterUid/namespaces/:name - 删除命名空间
  * - DELETE /kubernetes/clusters/:clusterUid/namespaces/batch - 批量删除命名空间
- * - POST /kubernetes/clusters/:clusterUid/namespaces/export - 导出命名空间
- * - POST /kubernetes/clusters/:clusterUid/namespaces/import - 导入命名空间
+ * - GET /kubernetes/clusters/:clusterUid/namespaces/export - 批量导出命名空间
+ * - POST /kubernetes/clusters/:clusterUid/namespaces/import - 批量导入命名空间
  * - POST /kubernetes/clusters/:clusterUid/namespaces/:name/quota - 创建配额
  * - PUT /kubernetes/clusters/:clusterUid/namespaces/:name/quota - 更新配额
  * - DELETE /kubernetes/clusters/:clusterUid/namespaces/:name/quota - 删除配额
+ * - GET /kubernetes/clusters/:clusterUid/namespaces/:name/quota - 获取配额（getNamespaceQuota）
+ * - GET /kubernetes/clusters/:clusterUid/namespaces/:name/quota/yaml - 查看配额 YAML（getNamespaceQuotaYaml）
  */
 export default [
   {
@@ -46,7 +54,7 @@ export default [
     }: {
       pathParams: Record<string, string>
       params: Partial<NamespaceQueryForm>
-    }): PageVo<NamespaceListVo> | NamespaceSimpleListVo[] => getNamespacePage(pathParams.clusterUid, params),
+    }): PageVo<NamespaceListVo> | NamespaceSimpleListVo[] => getNamespaceList(pathParams.clusterUid, params),
   },
   {
     method: 'get',
@@ -67,16 +75,28 @@ export default [
       createNamespace(pathParams.clusterUid, data),
   },
   {
+    method: 'post',
+    url: '/kubernetes/clusters/:clusterUid/namespaces/yaml',
+    handler: ({ pathParams, data }: { pathParams: Record<string, string>; data: string }): void =>
+      createNamespaceYaml(pathParams.clusterUid, data),
+  },
+  {
     method: 'put',
     url: '/kubernetes/clusters/:clusterUid/namespaces/:name',
     handler: ({ pathParams, data }: { pathParams: Record<string, string>; data: Partial<NamespaceUpdateForm> }): void =>
       updateNamespace(pathParams.clusterUid, pathParams.name, data),
   },
   {
+    method: 'put',
+    url: '/kubernetes/clusters/:clusterUid/namespaces/:name/yaml',
+    handler: ({ pathParams, data }: { pathParams: Record<string, string>; data: string }): void =>
+      updateNamespaceYaml(pathParams.clusterUid, pathParams.name, data),
+  },
+  {
     method: 'post',
     url: '/kubernetes/clusters/:clusterUid/namespaces/:name/labels',
     handler: ({ pathParams, data }: { pathParams: Record<string, string>; data: Partial<NamespaceLabelForm> }): void =>
-      manageNamespaceLabels(pathParams.clusterUid, pathParams.name, data),
+      manageNamespaceLabel(pathParams.clusterUid, pathParams.name, data),
   },
   {
     method: 'post',
@@ -87,7 +107,19 @@ export default [
     }: {
       pathParams: Record<string, string>
       data: Partial<NamespaceAnnotationForm>
-    }): void => manageNamespaceAnnotations(pathParams.clusterUid, pathParams.name, data),
+    }): void => manageNamespaceAnnotation(pathParams.clusterUid, pathParams.name, data),
+  },
+  {
+    method: 'get',
+    url: '/kubernetes/clusters/:clusterUid/namespaces/:name/export',
+    handler: ({ pathParams }: { pathParams: Record<string, string> }): string =>
+      exportNamespace(pathParams.clusterUid, pathParams.name),
+  },
+  {
+    method: 'post',
+    url: '/kubernetes/clusters/:clusterUid/namespaces/import',
+    handler: ({ pathParams, data }: { pathParams: Record<string, string>; data: string }): void =>
+      importNamespace(pathParams.clusterUid, data),
   },
   {
     method: 'delete',
@@ -119,32 +151,50 @@ export default [
       importNamespaces(pathParams.clusterUid, data),
   },
   {
+    method: 'get',
+    url: '/kubernetes/clusters/:clusterUid/namespaces/:name/quota',
+    handler: ({ pathParams }: { pathParams: Record<string, string> }): NamespaceQuotaDetailVo =>
+      getNamespaceQuota(pathParams.clusterUid, pathParams.name),
+  },
+  {
+    method: 'get',
+    url: '/kubernetes/clusters/:clusterUid/namespaces/:name/quota/yaml',
+    handler: ({ pathParams }: { pathParams: Record<string, string> }): string =>
+      getNamespaceQuotaYaml(pathParams.clusterUid, pathParams.name),
+  },
+  {
     method: 'post',
     url: '/kubernetes/clusters/:clusterUid/namespaces/:name/quota',
-    handler: ({ pathParams, data }: { pathParams: Record<string, string>; data: Partial<NamespaceQuotaForm> }): void =>
+    handler: ({ pathParams, data }: { pathParams: Record<string, string>; data: Partial<NamespaceQuotaCreateForm> }): void =>
       createNamespaceQuota(pathParams.clusterUid, pathParams.name, data),
   },
   {
     method: 'put',
     url: '/kubernetes/clusters/:clusterUid/namespaces/:name/quota',
-    handler: ({ pathParams, data }: { pathParams: Record<string, string>; data: Partial<NamespaceQuotaForm> }): void =>
+    handler: ({ pathParams, data }: { pathParams: Record<string, string>; data: Partial<NamespaceQuotaUpdateForm> }): void =>
       updateNamespaceQuota(pathParams.clusterUid, pathParams.name, data),
   },
   {
     method: 'delete',
     url: '/kubernetes/clusters/:clusterUid/namespaces/:name/quota',
     handler: ({ pathParams }: { pathParams: Record<string, string> }): void =>
-      deleteNamespaceQuota(pathParams.clusterUid, pathParams.name),
+      deleteNamespaceResourceQuota(pathParams.clusterUid, pathParams.name),
+  },
+  {
+    method: 'delete',
+    url: '/kubernetes/clusters/:clusterUid/namespaces/:name/limitrange',
+    handler: ({ pathParams }: { pathParams: Record<string, string> }): void =>
+      deleteNamespaceLimitRange(pathParams.clusterUid, pathParams.name),
   },
 ]
 
 /**
- * 获取命名空间分页列表
+ * 获取命名空间列表
  * @param _clusterId - 集群 UID
  * @param params - 查询参数
  * @returns 分页数据（normal）或简化列表（simple）
  */
-function getNamespacePage(
+function getNamespaceList(
   _clusterId: string,
   params: Partial<NamespaceQueryForm>,
 ): PageVo<NamespaceListVo> | NamespaceSimpleListVo[] {
@@ -195,11 +245,11 @@ function getNamespacePage(
 /**
  * 获取命名空间详情
  * @param clusterUid - 集群 UID
- * @param name - 命名空间名称
+ * @param uid - 命名空间 UID
  * @returns 命名空间详情
  */
-function getNamespaceDetail(clusterUid: string, name: string): NamespaceDetailVo {
-  const ns = mockNamespaces.find(n => n.clusterUid === clusterUid && n.name === name)
+function getNamespaceDetail(clusterUid: string, uid: string): NamespaceDetailVo {
+  const ns = mockNamespaces.find((n) => n.clusterUid === clusterUid && n.name === uid)
   if (!ns) {
     console.error('[Get Namespace Detail] can not find namespace:', clusterUid, name)
   }
@@ -241,11 +291,11 @@ function getNamespaceDetail(clusterUid: string, name: string): NamespaceDetailVo
 /**
  * 查看命名空间 YAML
  * @param clusterUid - 集群 UID
- * @param name - 命名空间名称
+ * @param uid - 命名空间 UID
  * @returns 命名空间 YAML 配置
  */
-function getNamespaceYaml(clusterUid: string, name: string): string {
-  const ns = mockNamespaces.find(n => n.clusterUid === clusterUid && n.name === name)
+function getNamespaceYaml(clusterUid: string, uid: string): string {
+  const ns = mockNamespaces.find((n) => n.clusterUid === clusterUid && n.name === uid)
   if (!ns) {
     console.error('[Get Namespace Yaml] can not find namespace:', clusterUid, name)
     return ''
@@ -295,11 +345,11 @@ function createNamespace(clusterUid: string, data: Partial<NamespaceCreateForm>)
 /**
  * 更新命名空间
  * @param clusterUid - 集群 UID
- * @param name - 命名空间名称
+ * @param uid - 命名空间 UID
  * @param data - 更新参数
  */
-function updateNamespace(clusterUid: string, name: string, data: Partial<NamespaceUpdateForm>): void {
-  console.log('[Update Namespace]', clusterUid, name, data)
+function updateNamespace(clusterUid: string, uid: string, data: Partial<NamespaceUpdateForm>): void {
+  console.log('[Update Namespace]', clusterUid, uid, data)
 }
 
 /**
@@ -308,8 +358,8 @@ function updateNamespace(clusterUid: string, name: string, data: Partial<Namespa
  * @param name - 命名空间名称
  * @param data - 标签数据
  */
-function manageNamespaceLabels(clusterUid: string, name: string, data: Partial<NamespaceLabelForm>): void {
-  console.log('[Manage Namespace Labels]', clusterUid, name, data)
+function manageNamespaceLabel(clusterUid: string, uid: string, data: Partial<NamespaceLabelForm>): void {
+  console.log('[Manage Namespace Label]', clusterUid, uid, data)
 }
 
 /**
@@ -318,26 +368,26 @@ function manageNamespaceLabels(clusterUid: string, name: string, data: Partial<N
  * @param name - 命名空间名称
  * @param data - 注解数据
  */
-function manageNamespaceAnnotations(clusterUid: string, name: string, data: Partial<NamespaceAnnotationForm>): void {
-  console.log('[Manage Namespace Annotations]', clusterUid, name, data)
+function manageNamespaceAnnotation(clusterUid: string, uid: string, data: Partial<NamespaceAnnotationForm>): void {
+  console.log('[Manage Namespace Annotation]', clusterUid, uid, data)
 }
 
 /**
  * 删除命名空间
  * @param clusterUid - 集群 UID
- * @param name - 命名空间名称
+ * @param uid - 命名空间 UID
  */
-function deleteNamespace(clusterUid: string, name: string): void {
-  console.log('[Delete Namespace]', clusterUid, name)
+function deleteNamespace(clusterUid: string, uid: string): void {
+  console.log('[Delete Namespace]', clusterUid, uid)
 }
 
 /**
  * 批量删除命名空间
  * @param clusterUid - 集群 UID
- * @param names - 命名空间名称数组
+ * @param uids - 命名空间 UID 数组
  */
-function deleteNamespaces(clusterUid: string, names: string[]): void {
-  console.log('[Delete Namespaces]', clusterUid, names)
+function deleteNamespaces(clusterUid: string, uids: string[]): void {
+  console.log('[Delete Namespaces]', clusterUid, uids)
 }
 
 /**
@@ -364,8 +414,30 @@ function importNamespaces(clusterUid: string, data: Partial<NamespaceImportForm>
  * @param name - 命名空间名称
  * @param data - 配额配置
  */
-function createNamespaceQuota(clusterUid: string, name: string, data: Partial<NamespaceQuotaForm>): void {
-  console.log('[Create Namespace Quota]', clusterUid, name, data)
+function getNamespaceQuota(clusterUid: string, uid: string): NamespaceQuotaDetailVo {
+  console.log('[Get Namespace Quota]', clusterUid, uid)
+  return {} as NamespaceQuotaDetailVo
+}
+
+/**
+ * 查看命名空间配额 YAML
+ * @param clusterUid - 集群 UID
+ * @param name - 命名空间名称
+ * @returns 命名空间配额 YAML 配置字符串
+ */
+function getNamespaceQuotaYaml(clusterUid: string, uid: string): string {
+  console.log('[Get Namespace Quota Yaml]', clusterUid, uid)
+  return `apiVersion: v1\nkind: ResourceQuota\nmetadata:\n  name: ${uid}\n`
+}
+
+/**
+ * 创建命名空间配额
+ * @param clusterUid - 集群 UID
+ * @param name - 命名空间名称
+ * @param data - 配额配置
+ */
+function createNamespaceQuota(clusterUid: string, uid: string, data: Partial<NamespaceQuotaCreateForm>): void {
+  console.log('[Create Namespace Quota]', clusterUid, uid, data)
 }
 
 /**
@@ -374,8 +446,8 @@ function createNamespaceQuota(clusterUid: string, name: string, data: Partial<Na
  * @param name - 命名空间名称
  * @param data - 配额配置
  */
-function updateNamespaceQuota(clusterUid: string, name: string, data: Partial<NamespaceQuotaForm>): void {
-  console.log('[Update Namespace Quota]', clusterUid, name, data)
+function updateNamespaceQuota(clusterUid: string, uid: string, data: Partial<NamespaceQuotaUpdateForm>): void {
+  console.log('[Update Namespace Quota]', clusterUid, uid, data)
 }
 
 /**
@@ -383,8 +455,56 @@ function updateNamespaceQuota(clusterUid: string, name: string, data: Partial<Na
  * @param clusterUid - 集群 UID
  * @param name - 命名空间名称
  */
-function deleteNamespaceQuota(clusterUid: string, name: string): void {
-  console.log('[Delete Namespace Quota]', clusterUid, name)
+function deleteNamespaceResourceQuota(clusterUid: string, uid: string): void {
+  console.log('[Delete Namespace Quota]', clusterUid, uid)
+}
+
+/**
+ * 删除命名空间限制范围
+ * @param clusterUid - 集群 UID
+ * @param uid - 命名空间 UID
+ */
+function deleteNamespaceLimitRange(clusterUid: string, uid: string): void {
+  console.log('[Delete Namespace LimitRange]', clusterUid, uid)
+}
+
+/**
+ * 通过 YAML 创建命名空间
+ * @param clusterUid - 集群 UID
+ * @param data - YAML 配置字符串
+ */
+function createNamespaceYaml(clusterUid: string, data: string): void {
+  console.log('[Create Namespace Yaml]', clusterUid, data)
+}
+
+/**
+ * 通过 YAML 更新命名空间
+ * @param clusterUid - 集群 UID
+ * @param uid - 命名空间 UID
+ * @param data - YAML 配置字符串
+ */
+function updateNamespaceYaml(clusterUid: string, uid: string, data: string): void {
+  console.log('[Update Namespace Yaml]', clusterUid, uid, data)
+}
+
+/**
+ * 导出命名空间 YAML
+ * @param clusterUid - 集群 UID
+ * @param name - 命名空间名称
+ * @returns 命名空间 YAML 配置字符串
+ */
+function exportNamespace(clusterUid: string, name: string): string {
+  console.log('[Export Namespace]', clusterUid, name)
+  return `apiVersion: v1\nkind: Namespace\nmetadata:\n  name: ${name}\n`
+}
+
+/**
+ * 导入命名空间 YAML
+ * @param clusterUid - 集群 UID
+ * @param data - YAML 配置字符串
+ */
+function importNamespace(clusterUid: string, data: string): void {
+  console.log('[Import Namespace]', clusterUid, data)
 }
 
 /**

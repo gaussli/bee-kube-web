@@ -10,27 +10,26 @@
  *   NamespaceDetailVo                   - 详情对象响应
  *     NamespaceDetailBasicVo            - 基础信息（name/description/status/type）
  *     NamespaceDetailMetadataVo         - 元数据（labels/annotations）
- *     NamespaceDetailQuotaVo            - 配额信息（resourceQuota/limitRange）
- *   NamespaceConditionVo                - 状态条件
+ *   NamespaceDetailConditionVo                - 状态条件
  *   NamespaceMonitorVo                  - 监控对象响应
  *   NamespaceEventVo                    - 事件对象响应
  *   NamespaceCreateForm                 - 创建请求表单
  *   NamespaceUpdateForm                 - 编辑请求表单
  *   NamespaceLabelForm                  - 标签更新请求表单
  *   NamespaceAnnotationForm             - 注解更新请求表单
- *   NamespaceQuotaForm                  - 配额请求表单
- *   NamespaceImportForm                 - 导入请求表单
+ *   NamespaceQuotaDetailVo              - 配额详情对象响应
+ *   NamespaceQuotaCreateForm            - 配额创建请求表单
+ *   NamespaceQuotaUpdateForm            - 配额创建请求表单
  *   NamespaceResourceQuota              - 资源配额数据结构
  *   NamespaceLimitRange                 - 资源限制范围数据结构
  */
 
 import type { AuditEntity, DeletableEntity, PageForm, UidEntity } from '@/types/common'
 
-import type { MetadataAnnotationForm, MetadataLabelForm } from './comomn'
-import type { Clustered, Condition, Event, Metadata } from './types'
+import type { NamespaceConditionType, NamespaceType } from '@/config/kubernetes/namespace'
 
-/** 命名空间类型 */
-export type NamespaceType = 'kubernetes' | 'platform'
+import type { MetadataAnnotationForm, MetadataLabelForm } from './common'
+import type { Clustered, Condition, Event, Metadata } from './types'
 
 /**
  * 命名空间查询请求参数
@@ -38,13 +37,13 @@ export type NamespaceType = 'kubernetes' | 'platform'
  */
 export interface NamespaceQueryForm extends PageForm {
   /** 命名空间名称（支持模糊搜索） */
-  name?: string
+  name: string
   /** 状态 */
-  status?: string
+  status: string
   /** 命名空间类型 */
-  type?: NamespaceType
+  type: NamespaceType
   /** 是否仅返回简要列表 */
-  simple?: boolean
+  simple: boolean
 }
 
 /**
@@ -89,8 +88,7 @@ export interface NamespaceDetailVo {
   basic: NamespaceDetailBasicVo
   /** 元数据信息（标签、注解） */
   metadata: NamespaceDetailMetadataVo
-  /** 配额信息（资源配额、限制范围） */
-  quota: NamespaceDetailQuotaVo
+  conditions: NamespaceDetailConditionVo[]
 }
 
 /**
@@ -111,8 +109,6 @@ export interface NamespaceDetailBasicVo extends UidEntity, Clustered, AuditEntit
   statusMsg?: string
   /** 命名空间类型 */
   type: NamespaceType
-  /** 创建时间 */
-  createAt: string
 }
 
 /**
@@ -122,20 +118,10 @@ export interface NamespaceDetailBasicVo extends UidEntity, Clustered, AuditEntit
 export interface NamespaceDetailMetadataVo extends Metadata {}
 
 /**
- * 命名空间配额信息响应数据
- */
-export interface NamespaceDetailQuotaVo {
-  /** 资源配额 */
-  resourceQuota?: NamespaceResourceQuota
-  /** 资源限制范围 */
-  limitRange?: NamespaceLimitRange
-}
-
-/**
  * 命名空间条件响应数据
  * @extends Condition 继承 Kubernetes 条件类型
  */
-export interface NamespaceConditionVo extends Condition<string> {}
+export interface NamespaceDetailConditionVo extends Condition<NamespaceConditionType> {}
 
 /**
  * 命名空间事件对象响应数据
@@ -166,14 +152,34 @@ export interface NamespaceLabelForm extends MetadataLabelForm {}
 export interface NamespaceAnnotationForm extends MetadataAnnotationForm {}
 
 /**
- * 命名空间配额请求表单
+ * 命名空间配额信息响应数据
  */
-export interface NamespaceQuotaForm {}
+export interface NamespaceQuotaDetailVo {
+  /** 资源配额 */
+  resourceQuota?: NamespaceResourceQuota
+  /** 资源限制范围 */
+  limitRange?: NamespaceLimitRange
+}
 
 /**
- * 命名空间导入请求表单
+ * 命名空间配额创建请求表单
  */
-export interface NamespaceImportForm {}
+export interface NamespaceQuotaCreateForm {
+  /** 资源配额 */
+  resourceQuota?: NamespaceResourceQuota
+  /** 资源限制范围 */
+  limitRange?: NamespaceLimitRange
+}
+
+/**
+ * 命名空间配额更新请求表单
+ */
+export interface NamespaceQuotaUpdateForm {
+  /** 资源配额 */
+  resourceQuota?: NamespaceResourceQuota
+  /** 资源限制范围 */
+  limitRange?: NamespaceLimitRange
+}
 
 /**
  * 命名空间资源配额数据结构

@@ -43,8 +43,8 @@ export type NamespaceConditionType = keyof typeof NAMESPACE_CONDITION_TYPE_MAP
 
 /** 命名空间类型映射 */
 export const NAMESPACE_TYPE_MAP = {
-  0: '系统命名空间',
-  1: '用户命名空间',
+  0: '系统级',
+  1: '用户级',
 } as const
 
 /** 命名空间类型 */

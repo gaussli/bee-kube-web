@@ -35,14 +35,14 @@
               <BeeStatusCell :status="row.status" :status-msg="row.statusMsg" :options="NAMESPACE_STATUS_OPTIONS" />
             </template>
           </BeeTableColumn>
-          <BeeTableColumn :width="200">
+          <BeeTableColumn :width="160" label="类型">
             <template #default="{ row }">
-              <BeeAuditCell :username="row.createBy" :datetime="row.createAt" field-name="创建人 / 时间" />
+              <BeeTableCommonCell :text="NAMESPACE_TYPE_MAP[row.type]" :subtext="row.type" />
             </template>
           </BeeTableColumn>
           <BeeTableColumn :width="200">
             <template #default="{ row }">
-              <BeeAuditCell :username="row.updateBy" :datetime="row.updateAt" field-name="更新人 / 时间" />
+              <BeeAuditCell :username="row.createBy" :datetime="row.createAt" field-name="创建人 / 时间" />
             </template>
           </BeeTableColumn>
           <BeeTableColumn :width="150" fixed="right">
@@ -53,6 +53,12 @@
                   icon="basic-edit"
                   tooltip="编辑"
                   @click="handleEdit(row)"
+                />
+                <BeeCircleButton
+                  v-if="hasPermission('kubernetes:namespace:edit')"
+                  icon="basic-yaml"
+                  tooltip="编辑 YAML"
+                  @click="handleEditYaml(row)"
                 />
                 <BeeCircleButton icon="basic-view" tooltip="详情" @click="handleViewDetail(row)" />
                 <BeeDropdown trigger="click">
@@ -113,13 +119,16 @@
     <BeeDialog v-model="batchDeleteDialogVisible" title="确认删除" @confirm="handleConfirmBatchDelete">
       <div class="dialog-content">
         <p>
-          确定要删除选中的 <strong>{{ selectedRows.length }}</strong> 个命名空间吗？
+          确定要删除选中的 <strong>{{ deletableRows.length }}</strong> 个命名空间吗？
         </p>
         <div class="delete-dialog-tags">
-          <BeeTag v-for="row in selectedRows" :key="row.id">
+          <BeeTag v-for="row in deletableRows" :key="row.uid">
             {{ row.name }}
           </BeeTag>
         </div>
+        <p v-if="nonDeletableRows.length" class="warning-text">
+          以下 {{ nonDeletableRows.length }} 个命名空间不可删除：{{ nonDeletableRows.map(r => r.name).join('、') }}
+        </p>
         <p class="warning-text">删除命名空间将同时删除该命名空间下的所有资源！</p>
       </div>
     </BeeDialog>
@@ -127,13 +136,13 @@
 </template>
 
 <script setup lang="ts">
-import { onMounted, reactive, ref } from 'vue'
+import { computed, onMounted, reactive, ref } from 'vue'
 
 import { useRoute, useRouter } from 'vue-router'
 
 import type { NamespaceListVo, NamespaceQueryForm } from '@/types/kubernetes/namespace'
 
-import { getNamespacePage, deleteNamespace, deleteNamespaces } from '@/api/kubernetes/namespace'
+import { getNamespaceList, deleteNamespace, deleteNamespaces } from '@/api/kubernetes/namespace'
 
 import BeeAuditCell from '@/components/BeeAuditCell/index.vue'
 import BeeButton from '@/components/BeeButton/index.vue'
@@ -155,7 +164,7 @@ import BeeTable from '@/components/BeeTable/index.vue'
 import BeeTag from '@/components/BeeTag/index.vue'
 
 import { usePermission } from '@/composables/usePermission'
-import { NAMESPACE_PAGE_META, NAMESPACE_STATUS_OPTIONS } from '@/config/kubernetes/namespace'
+import { NAMESPACE_PAGE_META, NAMESPACE_STATUS_OPTIONS, NAMESPACE_TYPE_MAP } from '@/config/kubernetes/namespace'
 
 defineOptions({ name: 'NamespaceManage' })
 
@@ -181,6 +190,15 @@ const deleteDialogVisible = ref(false)
 const batchDeleteDialogVisible = ref(false)
 const currentTargetRow = ref<NamespaceListVo | null>(null)
 
+/**
+ * 可删除行（deletable 不为 false 的选中行）
+ */
+const deletableRows = computed(() => selectedRows.value.filter(row => row.deletable !== false))
+/**
+ * 不可删除行（deletable 为 false 的选中行）
+ */
+const nonDeletableRows = computed(() => selectedRows.value.filter(row => row.deletable === false))
+
 // --- 权限缓存
 /** 页面级权限缓存，避免模板/循环中重复调用 hasPermission */
 const perm: Record<string, boolean> = {
@@ -197,7 +215,7 @@ async function loadData() {
   }
   loading.value = true
   try {
-    const resp = await getNamespacePage(clusterUid.value, {
+    const resp = await getNamespaceList(clusterUid.value, {
       ...queryForm,
       page: pagination.page,
       pageSize: pagination.pageSize,
@@ -214,8 +232,8 @@ async function loadData() {
  * @remarks 将 searchKey 同时映射到 uid/name 字段进行搜索匹配，并重置页码
  */
 function handleSearch() {
-  queryForm.uid = searchKey.value
-  queryForm.name = searchKey.value
+  queryForm.uid = searchKey.value || undefined
+  queryForm.name = searchKey.value || undefined
   pagination.page = 1
   void loadData()
 }
@@ -238,8 +256,13 @@ function handleReset() {
  * 表格选中行变化
  * @param rows
  */
+/**
+ * 表格选中行变化
+ * @param rows
+ * @remarks BeeTable 的 selection-change 事件固定返回 Record<string, unknown>[]，需通过 unknown 桥接断言为目标类型
+ */
 function handleSelectionChange(rows: Record<string, unknown>[]) {
-  selectedRows.value = rows as unknown as NamespaceListResp[]
+  selectedRows.value = rows as unknown as NamespaceListVo[]
 }
 
 /** 取消全部选中 */
@@ -247,29 +270,58 @@ function handleClearSelection() {
   tableRef.value?.clearSelection()
 }
 
+/**
+ * 新建命名空间
+ */
 function handleCreate() {
   router.push({ name: 'kubernetes:namespace:create', params: { clusterUid: clusterUid.value } }).catch(() => {})
 }
 
-function handleEdit(row: NamespaceListResp) {
+/**
+ * 编辑命名空间
+ * @param row
+ */
+function handleEdit(row: NamespaceListVo) {
   router
-    .push({ name: 'kubernetes:namespace:edit', params: { clusterUid: row.clusterUid, name: row.name } })
+    .push({ name: 'kubernetes:namespace:edit', params: { clusterUid: clusterUid.value, uid: row.uid } })
     .catch(() => {})
 }
 
-function handleViewDetail(row: NamespaceListResp) {
+/**
+ * 编辑 YAML
+ * @param row
+ */
+function handleEditYaml(row: NamespaceListVo) {
   router
-    .push({ name: 'kubernetes:namespace:detail', params: { clusterUid: row.clusterUid, name: row.name } })
+    .push({ name: 'kubernetes:namespace:edit:yaml', params: { clusterUid: clusterUid.value, uid: row.uid } })
     .catch(() => {})
 }
 
-function handleResourceQuota(row: NamespaceListResp) {
+/**
+ * 查看详情
+ * @param row
+ */
+function handleViewDetail(row: NamespaceListVo) {
   router
-    .push({ name: 'kubernetes:resourcequota:list', query: { clusterUid: row.clusterUid, namespace: row.name } })
+    .push({ name: 'kubernetes:namespace:detail', params: { clusterUid: clusterUid.value, uid: row.uid } })
     .catch(() => {})
 }
 
-function handleDelete(row: NamespaceListResp) {
+/**
+ * 查看资源配额
+ * @param row
+ */
+function handleResourceQuota(row: NamespaceListVo) {
+  router
+    .push({ name: 'kubernetes:resourcequota:list', query: { clusterUid: clusterUid.value, namespace: row.name } })
+    .catch(() => {})
+}
+
+/**
+ * 删除命名空间
+ * @param row
+ */
+function handleDelete(row: NamespaceListVo) {
   currentTargetRow.value = row
   deleteDialogVisible.value = true
 }
@@ -277,7 +329,7 @@ function handleDelete(row: NamespaceListResp) {
 async function handleConfirmDelete() {
   if (!currentTargetRow.value) return
   try {
-    await deleteNamespace(currentTargetRow.value.clusterUid, currentTargetRow.value.name)
+    await deleteNamespace(currentTargetRow.value.clusterUid, currentTargetRow.value.uid)
     BeeMessage.success('删除成功')
     deleteDialogVisible.value = false
     currentTargetRow.value = null
@@ -287,17 +339,22 @@ async function handleConfirmDelete() {
   }
 }
 
+/**
+ * 批量删除
+ * @remarks 仅对可删除行（deletable 不为 false）进行批量删除确认
+ */
 function handleBatchDelete() {
+  if (deletableRows.value.length === 0) return
   batchDeleteDialogVisible.value = true
 }
 
 async function handleConfirmBatchDelete() {
-  if (selectedRows.value.length === 0) return
-  const targetClusterId = selectedRows.value[0].clusterUid
-  const names = selectedRows.value.map(row => row.name)
+  if (deletableRows.value.length === 0) return
+  const targetClusterId = deletableRows.value[0].clusterUid
+  const uids = deletableRows.value.map((row) => row.uid)
   try {
-    await deleteNamespaces(targetClusterId, names)
-    BeeMessage.success(`成功删除 ${names.length} 个命名空间`)
+    await deleteNamespaces(targetClusterId, uids)
+    BeeMessage.success(`成功删除 ${uids.length} 个命名空间`)
     batchDeleteDialogVisible.value = false
     selectedRows.value = []
     await loadData()

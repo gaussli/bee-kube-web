@@ -5,7 +5,7 @@
 
 import type { ResourcePageMeta, StatusOption } from '@/config/kubernetes/common'
 
-import { COLOR_DANGER, COLOR_SUCCESS } from '@/config/color'
+import { COLOR_DANGER, COLOR_SUCCESS, COLOR_WARNING } from '@/config/color'
 
 /** Job 页面元数据 */
 export const JOB_PAGE_META: ResourcePageMeta = {
@@ -29,3 +29,15 @@ export const JOB_STATUS_OPTIONS: StatusOption[] = [
   { value: undefined, label: '全部状态', labelEn: 'ALL', color: COLOR_SUCCESS },
   ..._jobStatuses,
 ]
+
+/** Job 条件类型原始数据（不含"全部"选项，用于派生类型） */
+const _jobConditionTypes = [
+  { value: 'Complete', label: '已完成', labelEn: 'Complete', color: COLOR_SUCCESS },
+  { value: 'Failed', label: '已失败', labelEn: 'Failed', color: COLOR_DANGER },
+  { value: 'Suspended', label: '已暂停', labelEn: 'Suspended', color: COLOR_WARNING },
+  { value: 'FailureTarget', label: '目标失败', labelEn: 'FailureTarget', color: COLOR_DANGER },
+  { value: 'SuccessCriteriaMet', label: '满足成功标准', labelEn: 'SuccessCriteriaMet', color: COLOR_SUCCESS },
+] as const
+
+/** Job 条件类型 */
+export type JobConditionType = (typeof _jobConditionTypes)[number]['value']

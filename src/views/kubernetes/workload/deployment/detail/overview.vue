@@ -21,22 +21,22 @@
         <div class="replica-stats__grid">
           <div class="replica-stats__item">
             <div class="replica-stats__item-label">期望副本</div>
-            <div class="replica-stats__item-value">{{ data.replicas.replicas }}</div>
+            <div class="replica-stats__item-value">{{ data.spec.replicas }}</div>
             <div class="replica-stats__item-sublabel">Desired Replicas</div>
           </div>
           <div class="replica-stats__item">
             <div class="replica-stats__item-label">就绪副本</div>
-            <div class="replica-stats__item-value">{{ data.replicas.readyReplicas }}</div>
+            <div class="replica-stats__item-value">{{ data.statusObj.readyReplicas }}</div>
             <div class="replica-stats__item-sublabel">Ready Replicas</div>
           </div>
           <div class="replica-stats__item">
             <div class="replica-stats__item-label">可用副本</div>
-            <div class="replica-stats__item-value">{{ data.replicas.availableReplicas }}</div>
+            <div class="replica-stats__item-value">{{ data.statusObj.availableReplicas }}</div>
             <div class="replica-stats__item-sublabel">Available Replicas</div>
           </div>
           <div class="replica-stats__item">
             <div class="replica-stats__item-label">已更新副本</div>
-            <div class="replica-stats__item-value">{{ data.replicas.updatedReplicas }}</div>
+            <div class="replica-stats__item-value">{{ data.statusObj.updatedReplicas }}</div>
             <div class="replica-stats__item-sublabel">Updated Replicas</div>
           </div>
         </div>
@@ -48,18 +48,18 @@
       <div class="deployment-overview__section-title">基本信息</div>
       <div class="basic-info">
         <div class="basic-info__col">
-          <BeeFieldItem field-name="名称" :field-value="data.basic.name" />
-          <BeeFieldItem field-name="UID" :field-value="data.basic.uid" />
+          <BeeFieldItem field-name="名称" :field-value="data.metadata.name" />
+          <BeeFieldItem field-name="UID" :field-value="data.uid" />
           <BeeFieldItem field-name="标签选择器" :field-value="selectorText" />
-          <BeeFieldItem field-name="版本" :field-value="`v${data.basic.generation}`" />
-          <BeeFieldItem field-name="创建者" :field-value="data.basic.createBy" />
-          <BeeFieldItem field-name="Namespace" :field-value="data.basic.namespace" />
+          <BeeFieldItem field-name="版本" :field-value="`v${data.metadata.generation}`" />
+          <BeeFieldItem field-name="创建者" :field-value="data.createBy" />
+          <BeeFieldItem field-name="Namespace" :field-value="data.namespace" />
         </div>
         <div class="basic-info__col">
-          <BeeFieldItem field-name="副本计数" :field-value="String(data.replicas.replicas)" />
-          <BeeFieldItem field-name="集群名称" :field-value="data.basic.clusterName" />
-          <BeeFieldItem field-name="创建时间" :field-value="data.basic.createAt" />
-          <BeeFieldItem field-name="更新时间" :field-value="data.basic.updateAt" />
+          <BeeFieldItem field-name="副本计数" :field-value="String(data.spec.replicas)" />
+          <BeeFieldItem field-name="集群名称" :field-value="data.cluster" />
+          <BeeFieldItem field-name="创建时间" :field-value="data.createAt" />
+          <BeeFieldItem field-name="更新时间" :field-value="data.updateAt" />
         </div>
       </div>
     </BeeCard>
@@ -88,11 +88,11 @@
           <div class="resource-item__detail">
             <div class="resource-item__group">
               <div class="resource-item__group-label">请求 / Request</div>
-              <div class="resource-item__group-value">{{ formatCpu(data.resource.request.cpu) }}</div>
+              <div class="resource-item__group-value">{{ resources?.request?.cpu || '-' }}</div>
             </div>
             <div class="resource-item__group">
               <div class="resource-item__group-label">限制 / Limit</div>
-              <div class="resource-item__group-value">{{ formatCpu(data.resource.limit.cpu) }}</div>
+              <div class="resource-item__group-value">{{ resources?.limit?.cpu || '-' }}</div>
             </div>
           </div>
         </div>
@@ -101,11 +101,11 @@
           <div class="resource-item__detail">
             <div class="resource-item__group">
               <div class="resource-item__group-label">请求 / Request</div>
-              <div class="resource-item__group-value">{{ formatMemoryBytes(data.resource.request.memory) }}</div>
+              <div class="resource-item__group-value">{{ resources?.request?.memory || '-' }}</div>
             </div>
             <div class="resource-item__group">
               <div class="resource-item__group-label">限制 / Limit</div>
-              <div class="resource-item__group-value">{{ formatMemoryBytes(data.resource.limit.memory) }}</div>
+              <div class="resource-item__group-value">{{ resources?.limit?.memory || '-' }}</div>
             </div>
           </div>
         </div>
@@ -115,7 +115,7 @@
     <!-- 6. 条件 -->
     <BeeCard class="deployment-overview__section">
       <div class="condition-list">
-        <div v-for="(cond, index) in data.conditions" :key="index" class="condition-item">
+        <div v-for="(cond, index) in data.statusObj.conditions" :key="index" class="condition-item">
           <div class="condition-item__type">{{ cond.type }}</div>
           <div
             class="condition-item__status"
@@ -140,11 +140,13 @@
         </div>
         <div class="strategy-info__item">
           <div class="strategy-info__item-label">最大不可用量</div>
-          <div class="strategy-info__item-value">maxUnavailable {{ data.strategy.maxUnavailable }}</div>
+          <div class="strategy-info__item-value">
+            maxUnavailable {{ data.spec.strategy.rollingUpdate.maxUnavailable }}
+          </div>
         </div>
         <div class="strategy-info__item">
           <div class="strategy-info__item-label">最大超出副本数</div>
-          <div class="strategy-info__item-value">maxSurge {{ data.strategy.maxSurge }}</div>
+          <div class="strategy-info__item-value">maxSurge {{ data.spec.strategy.rollingUpdate.maxSurge }}</div>
         </div>
       </div>
     </BeeCard>
@@ -156,7 +158,7 @@ import { computed } from 'vue'
 
 import type { DeploymentDetailVo } from '@/types/kubernetes/workload/deployment'
 
-import { calcPercentage, formatCpu } from '@/utils/kubernetes'
+import { calcPercentage } from '@/utils/kubernetes'
 
 import BeeCard from '@/components/BeeCard/index.vue'
 import BeeFieldItem from '@/components/BeeFieldItem/index.vue'
@@ -170,8 +172,9 @@ const props = defineProps<{
 
 /** 副本就绪百分比 */
 const replicaPercentage = computed(() => {
-  const { replicas, readyReplicas } = props.data.replicas
-  return calcPercentage(readyReplicas, replicas)
+  const { readyReplicas } = props.data.status
+  const desired = props.data.spec.replicas
+  return calcPercentage(readyReplicas, desired)
 })
 
 /** 副本就绪环形颜色 */
@@ -184,7 +187,7 @@ const replicaRingColor = computed(() => {
 
 /** 标签选择器展示文本 */
 const selectorText = computed(() => {
-  const sel = props.data.basic.selector
+  const sel = props.data.spec.selector.matchLabels
   return Object.entries(sel)
     .map(([k, v]) => `${k}: ${v}`)
     .join(', ')
@@ -196,6 +199,12 @@ const labels = computed(() => Object.entries(props.data.metadata.labels))
 /** 注解列表 */
 const annotations = computed(() => Object.entries(props.data.metadata.annotations))
 
+/** 主容器计算资源配置（取模板中第一个主容器） */
+const resources = computed(() => {
+  const containers = props.data.spec.template.spec.containers
+  return containers.length > 0 ? containers[0].resources : undefined
+})
+
 /** 更新策略中文名称映射 */
 const strategyLabelMap: Record<string, string> = {
   RollingUpdate: '滚动更新 / RollingUpdate',
@@ -204,24 +213,8 @@ const strategyLabelMap: Record<string, string> = {
 
 /** 更新策略展示文本 */
 const strategyLabel = computed(() => {
-  return strategyLabelMap[props.data.strategy.type] || props.data.strategy.type
+  return strategyLabelMap[props.data.spec.strategy.type] || props.data.spec.strategy.type
 })
-
-/**
- * 格式化内存容量
- * @param bytes
- */
-function formatMemoryBytes(bytes: number): string {
-  if (bytes === 0) return '0'
-  const units = ['B', 'Ki', 'Mi', 'Gi', 'Ti']
-  let unitIdx = 0
-  let val = bytes
-  while (val >= 1024 && unitIdx < units.length - 1) {
-    val /= 1024
-    unitIdx++
-  }
-  return `${parseFloat(val.toFixed(2))} ${units[unitIdx]}`
-}
 </script>
 
 <style lang="scss" scoped>

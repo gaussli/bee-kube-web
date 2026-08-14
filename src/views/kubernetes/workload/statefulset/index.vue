@@ -1,35 +1,35 @@
 <template>
-  <BeePage class="statefulset-page">
-    <!-- 页面标题 -->
-    <BeeCard class="statefulset-page__header">
-      <BeePageHeader
-        :icon="STATEFULSET_PAGE_META.icon"
-        :title="STATEFULSET_PAGE_META.title"
-        :description="STATEFULSET_PAGE_META.description"
-      />
-    </BeeCard>
+  <BeePage>
+    <!-- 页面 Header -->
+    <BeePageHeader v-bind="STATEFULSET_PAGE_META" />
 
-    <!-- 页面内容 -->
-    <BeeCard class="statefulset-page__body">
-      <!-- 查询表单 -->
-      <div class="table-toolbar">
-        <BeeInputSearch v-model="searchKey" placeholder="按 ID / 名称搜索" class="table-toolbar__search" />
+    <!-- 页面 Body -->
+    <BeeCard class="page-body">
+      <!-- 工具栏 -->
+      <div class="page-body__toolbar">
+        <BeeInputSearch v-model="searchKey" class="page-body__toolbar-search" placeholder="按 UID / 名称搜索" />
         <BeeSelect
           v-model="queryForm.namespace"
-          placeholder="命名空间筛选"
-          :options="namespaceOptions"
-          :width="300"
           :menu-height="300"
+          :options="namespaceOptions"
+          placeholder="命名空间筛选"
+          :width="300"
         />
-        <BeeSelect v-model="queryForm.status" placeholder="状态筛选" :options="STATEFULSET_STATUS_OPTIONS" />
+        <BeeSelect
+          v-model="queryForm.status"
+          :menu-height="300"
+          :options="STATEFULSET_STATUS_OPTIONS"
+          placeholder="状态筛选"
+        />
         <BeeButton icon="basic-search" @click="handleSearch"> 搜索 </BeeButton>
         <BeeButton icon="basic-refresh" @click="handleReset"> 重置 </BeeButton>
-        <BeeButton v-if="perm.create" type="primary" icon="basic-create" @click="handleCreate"> 新增 </BeeButton>
-        <BeeButton v-if="perm.create" type="primary" icon="basic-create" @click="handleCreateYaml"> YAML </BeeButton>
+        <div v-if="perm.create" class="page-body__toolbar-seperator"></div>
+        <BeeButton v-if="perm.create" icon="basic-create" type="primary" @click="handleCreate"> 新增 </BeeButton>
+        <BeeButton v-if="perm.create" icon="basic-create" type="primary" @click="handleCreateYaml"> YAML </BeeButton>
       </div>
 
-      <!-- 表格主体 -->
-      <div class="table-body">
+      <!-- 表格 -->
+      <div class="page-body__table">
         <BeeTable
           ref="tableRef"
           :data="tableData"
@@ -40,61 +40,50 @@
           <BeeTableColumn :width="500">
             <template #default="{ row }">
               <BeeWorkloadInfoCell
-                :uid="row.uid"
-                :name="row.name"
                 :description="row.description"
                 icon="kubernetes-statefulset"
+                :name="row.name"
+                :uid="row.uid"
               />
             </template>
           </BeeTableColumn>
           <BeeTableColumn :width="200">
             <template #default="{ row }">
-              <BeeTableCommonCell :text="row.namespace" subtext="命名空间" />
+              <BeeTableCommonCell subtext="命名空间" :text="row.namespace" />
             </template>
           </BeeTableColumn>
           <BeeTableColumn :width="160">
             <template #default="{ row }">
-              <BeeStatusCell
-                :status="row.status"
-                :status-msg="row.statusMessage"
-                :options="STATEFULSET_STATUS_OPTIONS"
-              />
+              <BeeStatusCell :options="STATEFULSET_STATUS_OPTIONS" :status="row.status" :status-msg="row.statusMsg" />
             </template>
           </BeeTableColumn>
           <BeeTableColumn :width="120">
             <template #default="{ row }">
-              <BeeTableCommonCell :text="`${row.readyReplicas} / ${row.replicas}`" subtext="副本数" />
-            </template>
-          </BeeTableColumn>
-          <BeeTableColumn :width="200">
-            <template #default="{ row }">
-              <BeeTableCommonCell :text="row.serviceName" subtext="服务名" />
+              <BeeTableCommonCell subtext="副本数" :text="`${row.readyReplicas} / ${row.replicas}`" />
             </template>
           </BeeTableColumn>
           <BeeTableColumn :width="160">
             <template #default="{ row }">
-              <BeeTableCommonCell :text="row.strategyType" :subtext="updateStrategyLabel(row.strategyType)" />
-            </template>
-          </BeeTableColumn>
-          <BeeTableColumn :width="140">
-            <template #default="{ row }">
               <BeeTableCommonCell
-                :text="row.podManagementPolicy"
-                :subtext="podManagementPolicyLabel(row.podManagementPolicy)"
+                :subtext="row.updateStrategyType"
+                :text="
+                  (STATEFULSET_UPDATE_STRATEGY_LABEL_MAP as Record<string, string>)[row.updateStrategyType] ||
+                  row.updateStrategyType
+                "
               />
             </template>
           </BeeTableColumn>
           <BeeTableColumn :width="200">
             <template #default="{ row }">
-              <BeeAuditCell :username="row.createBy" :datetime="row.createAt" field-name="创建人 / 时间" />
+              <BeeAuditCell :datetime="row.createAt" field-name="创建人 / 时间" :username="row.createBy" />
             </template>
           </BeeTableColumn>
           <BeeTableColumn :width="200">
             <template #default="{ row }">
-              <BeeAuditCell :username="row.updateBy" :datetime="row.updateAt" field-name="更新人 / 时间" />
+              <BeeAuditCell :datetime="row.updateAt" field-name="更新人 / 时间" :username="row.updateBy" />
             </template>
           </BeeTableColumn>
-          <BeeTableColumn :width="150" fixed="right">
+          <BeeTableColumn fixed="right" :width="150">
             <template #default="{ row }">
               <BeeActionCell :actions="getActions(row)" />
             </template>
@@ -102,11 +91,11 @@
         </BeeTable>
       </div>
 
-      <!-- 表格底部 -->
-      <div class="table-footer">
-        <div class="table-footer__actions">
+      <!-- 底栏 -->
+      <div class="page-body__footer">
+        <div class="page-body__footer-actions">
           <BeeButton :disabled="selectedRows.length === 0" @click="handleClearSelection"> 取消选择 </BeeButton>
-          <BeeButton v-if="perm.delete" type="danger" :disabled="selectedRows.length === 0" @click="handleBatchDelete">
+          <BeeButton v-if="perm.delete" :disabled="selectedRows.length === 0" type="danger" @click="handleBatchDelete">
             批量删除 ({{ selectedRows.length }})
           </BeeButton>
           <BeeButton v-if="perm.view" icon="basic-create" @click="handleExport"> 导出 </BeeButton>
@@ -115,8 +104,8 @@
         <BeePagination
           v-model="pagination.page"
           v-model:page-size="pagination.pageSize"
-          :total="pagination.total"
           :page-sizes="[10, 20, 50]"
+          :total="pagination.total"
           @change="loadData"
         />
       </div>
@@ -134,11 +123,23 @@
     <!-- 批量删除 Dialog -->
     <BeeDialog v-model="batchDeleteDialogVisible" title="确认删除" @confirm="handleConfirmBatchDelete">
       <div class="dialog-content">
-        <p>
-          确定要删除选中的 <strong>{{ selectedRows.length }}</strong> 个 StatefulSet 吗？
+        <template v-if="nonDeletableRows.length > 0">
+          <p class="dialog-content__warning">
+            共选中 {{ selectedRows.length }} 个 StatefulSet，但以下 {{ nonDeletableRows.length }} 个 StatefulSet
+            不可删除，将从列表忽略：
+          </p>
+          <div class="delete-dialog-tags">
+            <BeeTag v-for="row in nonDeletableRows" :key="row.uid" type="warning">
+              {{ row.name }}
+            </BeeTag>
+          </div>
+        </template>
+        <p v-if="deletableRows.length > 0">
+          确定要删除选中的 <strong>{{ deletableRows.length }}</strong> 个 StatefulSet 吗？
         </p>
-        <div class="delete-statefulset-tags">
-          <BeeTag v-for="row in selectedRows" :key="row.id">
+        <p v-else class="dialog-content__warning">所有选中的 StatefulSet 均不可删除。</p>
+        <div v-if="deletableRows.length > 0" class="delete-dialog-tags">
+          <BeeTag v-for="row in deletableRows" :key="row.uid">
             {{ row.name }}
           </BeeTag>
         </div>
@@ -152,18 +153,13 @@
  * StatefulSet 管理页面
  * @module views/kubernetes/workload/statefulset
  */
-import { onMounted, reactive, ref } from 'vue'
+import { computed, onMounted, reactive, ref } from 'vue'
 
 import { useRoute, useRouter } from 'vue-router'
 
-import type { NamespaceSimpleListResp } from '@/types/kubernetes/namespace'
-import type {
-  StatefulSetQueryForm,
-  StatefulSetListVo,
-  StatefulSetStrategyType,
-} from '@/types/kubernetes/workload/statefulset'
+import type { StatefulSetQueryForm, StatefulSetListVo } from '@/types/kubernetes/workload/statefulset'
 
-import { getNamespacePage } from '@/api/kubernetes/namespace'
+import { getNamespaceList } from '@/api/kubernetes/namespace'
 import { getStatefulSetList, deleteStatefulSet, deleteStatefulSets } from '@/api/kubernetes/workload/statefulset'
 
 import BeeActionCell, { type ActionItem } from '@/components/BeeActionCell/index.vue'
@@ -187,74 +183,53 @@ import BeeWorkloadInfoCell from '@/components/BeeWorkloadInfoCell/index.vue'
 import { usePermission } from '@/composables/usePermission'
 import {
   STATEFULSET_PAGE_META,
-  STATEFULSET_POD_MANAGEMENT_POLICY_MAP,
   STATEFULSET_STATUS_OPTIONS,
+  STATEFULSET_UPDATE_STRATEGY_LABEL_MAP,
 } from '@/config/kubernetes/workload/statefulset'
 
-defineOptions({ name: 'StatefulSetManage' })
+defineOptions({ name: 'StatefulSetPage' })
 
 // ==================== Composables & Route ====================
-
 const { hasPermission } = usePermission()
 const route = useRoute()
 const router = useRouter()
 
 // ==================== Reactive State ====================
-
+// --- 上下文
 const clusterUid = ref(route.params.clusterUid as string)
+// --- 查询条件
 const searchKey = ref('')
+const queryForm = reactive<Partial<StatefulSetQueryForm>>({})
+const pagination = reactive({ page: 1, pageSize: 10, total: 0 })
+// --- 表格数据
 const loading = ref(false)
 const tableData = ref<StatefulSetListVo[]>([])
 const tableRef = ref<InstanceType<typeof BeeTable>>()
+// --- 选中逻辑
 const selectedRows = ref<StatefulSetListVo[]>([])
+const deletableRows = computed(() => selectedRows.value.filter(row => row.deletable !== false))
+const nonDeletableRows = computed(() => selectedRows.value.filter(row => row.deletable === false))
+// --- 对话框
 const deleteDialogVisible = ref(false)
 const batchDeleteDialogVisible = ref(false)
 const currentTargetRow = ref<StatefulSetListVo | null>(null)
 
-const queryForm = reactive<Partial<StatefulSetQueryForm>>({})
-const pagination = reactive({ page: 1, pageSize: 10, total: 0 })
-
-// ==================== Options ====================
-
+// --- 选项数据
 /** 命名空间选项 */
 const namespaceOptions = ref<{ label: string; value: string | undefined }[]>([
   { label: '全部命名空间', value: undefined },
 ])
 
-/** 更新策略中文映射 */
-const UPDATE_STRATEGY_LABEL: Record<StatefulSetStrategyType, string> = {
-  RollingUpdate: '滚动更新',
-  OnDelete: '手动删除',
-}
-
-/**
- * 获取更新策略中文名称
- * @param type - 更新策略枚举值
- * @returns 中文名称
- */
-function updateStrategyLabel(type: StatefulSetStrategyType): string {
-  return UPDATE_STRATEGY_LABEL[type] || type
-}
-
-/**
- * 获取 Pod 管理策略中文名称
- * @param type - Pod 管理策略枚举值
- * @returns 中文名称
- */
-function podManagementPolicyLabel(type: string): string {
-  return STATEFULSET_POD_MANAGEMENT_POLICY_MAP[type as keyof typeof STATEFULSET_POD_MANAGEMENT_POLICY_MAP] || type
-}
-
 // ==================== Data Loading ====================
-
 /**
  * 加载命名空间选项
- * @remarks 通过 getNamespacePage mode=simple 获取简化列表，转换后填充下拉选项
+ * @remarks 通过 getNamespaceList 获取列表，转换后填充下拉选项
  */
 async function loadNamespaceOptions() {
   if (!clusterUid.value) return
   try {
-    const namespaces = (await getNamespacePage(clusterUid.value, { mode: 'simple' })) as NamespaceSimpleListResp[]
+    const res = await getNamespaceList(clusterUid.value, {})
+    const namespaces = 'list' in res ? res.list : []
     namespaceOptions.value = [
       { label: '全部命名空间', value: undefined },
       ...namespaces.map(ns => ({ label: ns.name, value: ns.name })),
@@ -288,13 +263,12 @@ async function loadData() {
 }
 
 // ==================== Search & Reset ====================
-
 /**
  * 搜索
- * @remarks 将 searchKey 同时映射到 id/name 字段进行模糊匹配
+ * @remarks 将 searchKey 同时映射到 uid/name 字段进行搜索匹配，并重置页码
  */
 function handleSearch() {
-  queryForm.id = searchKey.value
+  queryForm.uid = searchKey.value
   queryForm.name = searchKey.value
   pagination.page = 1
   void loadData()
@@ -302,9 +276,10 @@ function handleSearch() {
 
 /**
  * 重置搜索条件
+ * @remarks 清空所有筛选字段、搜索关键词、分页参数，重新加载数据
  */
 function handleReset() {
-  queryForm.id = undefined
+  queryForm.uid = undefined
   queryForm.name = undefined
   queryForm.namespace = undefined
   queryForm.status = undefined
@@ -315,7 +290,6 @@ function handleReset() {
 }
 
 // ==================== Selection ====================
-
 /**
  * 表格选中行变化
  * @param rows
@@ -330,30 +304,36 @@ function handleClearSelection() {
   tableRef.value?.clearSelection()
 }
 
-// ==================== CRUD: Create / Edit / View ====================
+// ==================== CRUD ====================
+/**
+ * 跳转详情页面
+ * @param row
+ */
+function handleViewDetail(row: StatefulSetListVo) {
+  router
+    .push({
+      name: 'kubernetes:workload:statefulset:detail',
+      params: { clusterId: route.params.clusterId, namespace: row.namespace, name: row.name },
+    })
+    .catch(() => {})
+}
 
-/** 跳转创建页面 */
+/**
+ * 跳转创建页面
+ */
 function handleCreate() {
   router
     .push({ name: 'kubernetes:workload:statefulset:create', params: { clusterUid: clusterUid.value } })
     .catch(() => {})
 }
 
-/** YAML 方式创建 */
+/**
+ * 跳转创建页面（YAML 方式）
+ */
 function handleCreateYaml() {
   router
     .push({ name: 'kubernetes:workload:statefulset:create:yaml', params: { clusterUid: clusterUid.value } })
     .catch(() => {})
-}
-
-/** 导出 StatefulSet（功能开发中） */
-function handleExport() {
-  BeeMessage.info('功能开发中')
-}
-
-/** 导入 StatefulSet（功能开发中） */
-function handleImport() {
-  BeeMessage.info('功能开发中')
 }
 
 /**
@@ -364,54 +344,23 @@ function handleEdit(row: StatefulSetListVo) {
   router
     .push({
       name: 'kubernetes:workload:statefulset:edit',
-      params: { clusterUid: row.clusterUid, namespace: row.namespace, name: row.name },
+      params: { clusterId: route.params.clusterId, namespace: row.namespace, name: row.name },
     })
     .catch(() => {})
 }
 
 /**
- * 编辑 YAML
+ * 跳转编辑页面（YAML 方式）
  * @param row
  */
 function handleEditYaml(row: StatefulSetListVo) {
   router
     .push({
       name: 'kubernetes:workload:statefulset:edit:yaml',
-      params: { clusterUid: row.clusterUid, namespace: row.namespace, name: row.name },
+      params: { clusterId: route.params.clusterId, namespace: row.namespace, name: row.name },
     })
     .catch(() => {})
 }
-
-/**
- * 跳转详情页面
- * @param row
- */
-function handleViewDetail(row: StatefulSetListVo) {
-  router
-    .push({
-      name: 'kubernetes:workload:statefulset:detail',
-      params: { clusterUid: row.clusterUid, namespace: row.namespace, name: row.name },
-    })
-    .catch(() => {})
-}
-
-/**
- * 扩缩容
- * @param row
- */
-function handleScale(row: StatefulSetListVo) {
-  BeeMessage.info(`扩缩容: ${row.name}`)
-}
-
-/**
- * 重启
- * @param row
- */
-function handleRestart(row: StatefulSetListVo) {
-  BeeMessage.info(`重启: ${row.name}`)
-}
-
-// ==================== CRUD: Delete ====================
 
 /**
  * 打开删除确认弹窗
@@ -422,7 +371,10 @@ function handleDelete(row: StatefulSetListVo) {
   deleteDialogVisible.value = true
 }
 
-/** 确认单个删除 */
+/**
+ * 确认单个删除
+ * @remarks 调用删除 API，成功后关闭弹窗并刷新列表
+ */
 async function handleConfirmDelete() {
   if (!currentTargetRow.value) return
   try {
@@ -440,20 +392,28 @@ async function handleConfirmDelete() {
   }
 }
 
-/** 打开批量删除确认弹窗 */
+/**
+ * 打开批量删除确认弹窗
+ */
 function handleBatchDelete() {
+  if (deletableRows.value.length === 0) {
+    BeeMessage.warning('选中的 StatefulSet 均不可删除')
+    return
+  }
   batchDeleteDialogVisible.value = true
 }
 
-/** 确认批量删除 */
+/**
+ * 确认批量删除
+ * @remarks 仅删除可删除的选中行，成功后清空选中并刷新列表
+ */
 async function handleConfirmBatchDelete() {
-  if (selectedRows.value.length === 0) return
-  const targetClusterId = selectedRows.value[0].clusterUid
-  const targetNamespace = selectedRows.value[0].namespace
-  const names = selectedRows.value.map(row => row.name)
+  if (deletableRows.value.length === 0) return
+  const targetClusterUid = deletableRows.value[0].clusterUid
+  const uids = deletableRows.value.map(row => row.uid)
   try {
-    await deleteStatefulSets(targetClusterId, targetNamespace, names)
-    BeeMessage.success(`成功删除 ${names.length} 个 StatefulSet`)
+    await deleteStatefulSets(targetClusterUid, uids)
+    BeeMessage.success(`成功删除 ${uids.length} 个 StatefulSet`)
     batchDeleteDialogVisible.value = false
     selectedRows.value = []
     await loadData()
@@ -462,8 +422,57 @@ async function handleConfirmBatchDelete() {
   }
 }
 
-// ==================== Row Actions ====================
+// ==================== Other Actions ====================
+/**
+ * 扩缩容
+ * @param row
+ */
+function handleScale(row: StatefulSetListVo) {
+  BeeMessage.info(`扩缩容: ${row.name}`)
+}
 
+/**
+ * 滚动更新分区
+ * @param row
+ */
+function handlePartition(row: StatefulSetListVo) {
+  BeeMessage.info(`滚动更新分区: ${row.name}`)
+}
+
+/**
+ * 重启
+ * @param row
+ */
+function handleRestart(row: StatefulSetListVo) {
+  BeeMessage.info(`重启: ${row.name}`)
+}
+
+/**
+ * 回滚
+ * @param row
+ */
+function handleRollback(row: StatefulSetListVo) {
+  BeeMessage.info(`回滚: ${row.name}`)
+}
+
+// ==================== Export & Import ====================
+/**
+ * 导出 StatefulSet
+ * @remarks 功能开发中
+ */
+function handleExport() {
+  BeeMessage.info('功能开发中')
+}
+
+/**
+ * 导入 StatefulSet
+ * @remarks 功能开发中
+ */
+function handleImport() {
+  BeeMessage.info('功能开发中')
+}
+
+// ==================== Row Actions ====================
 /** 页面级权限缓存，避免模板/循环中重复调用 hasPermission */
 const perm: Record<string, boolean> = {
   create: hasPermission('kubernetes:workload:statefulset:create'),
@@ -476,33 +485,30 @@ const perm: Record<string, boolean> = {
  * 构建行操作数组
  * @param row - 当前行数据
  * @returns 操作项数组
- * @remarks 按权限和 row.deletable 条件过滤，由调用方负责
+ * @remarks 按权限和 row.deletable 条件过滤
  */
 function getActions(row: StatefulSetListVo): ActionItem[] {
   const actions: ActionItem[] = []
-  // 查看权限
   if (perm.view) {
     actions.push({ value: 'view', label: '详情', icon: 'basic-view', handler: () => handleViewDetail(row) })
   }
-  // 编辑权限：编辑、扩缩容、重启、编辑 YAML
   if (perm.edit) {
     actions.push(
       { value: 'edit', label: '编辑', icon: 'basic-edit', handler: () => handleEdit(row) },
       { value: 'yamledit', label: '编辑 YAML', icon: 'basic-code', handler: () => handleEditYaml(row) },
-      { value: 'scale', label: '扩缩容', icon: 'kubernetes-scale', handler: () => handleScale(row) },
+      { value: 'scale', label: '扩缩容', icon: 'kubernetes-namespace', handler: () => handleScale(row) },
+      { value: 'partition', label: '滚动更新分区', icon: 'kubernetes-namespace', handler: () => handlePartition(row) },
       { value: 'restart', label: '重启', icon: 'basic-refresh', handler: () => handleRestart(row) },
+      { value: 'rollback', label: '回滚', icon: 'kubernetes-namespace', handler: () => handleRollback(row) },
     )
   }
-  // 删除权限 + deletable 条件
   if (perm.delete && row.deletable !== false) {
     actions.push({ value: 'delete', label: '删除', icon: 'basic-delete', handler: () => handleDelete(row) })
   }
-
   return actions
 }
 
 // ==================== Lifecycle ====================
-
 onMounted(() => {
   void loadNamespaceOptions()
   void loadData()
@@ -510,42 +516,49 @@ onMounted(() => {
 </script>
 
 <style lang="scss" scoped>
-.statefulset-page {
-  .statefulset-page__body {
+.page-body {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-height: 0;
+  padding: $spacing-16;
+  overflow: hidden;
+
+  &__toolbar {
     display: flex;
-    flex-direction: column;
+    gap: $spacing-8;
+    flex-direction: row;
+    align-items: center;
+
+    &-search {
+      flex: 1;
+      min-width: 0;
+    }
+
+    &-seperator {
+      width: 1px;
+      height: 40%;
+      margin: 0 $spacing-8;
+      background: $color-border-tertiary;
+    }
+  }
+
+  &__table {
     flex: 1;
     min-height: 0;
-    overflow: hidden;
+  }
 
-    .table-toolbar {
+  &__footer {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+
+    &-actions {
       display: flex;
       gap: $spacing-8;
+      flex-direction: row;
       align-items: center;
-      padding: $spacing-16 0;
-
-      &__search {
-        flex: 1;
-        min-width: 0;
-      }
-    }
-
-    .table-body {
-      flex: 1;
-      min-height: 0;
-    }
-
-    .table-footer {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: $spacing-16 0;
-
-      &__actions {
-        display: flex;
-        gap: 8px;
-        align-items: center;
-      }
     }
   }
 }
@@ -556,10 +569,10 @@ onMounted(() => {
   }
 }
 
-.delete-statefulset-tags {
+.delete-dialog-tags {
   display: flex;
-  gap: 8px;
-  flex-wrap: wrap;
+  gap: $spacing-8;
+  flex-flow: row wrap;
   margin: 12px 0;
 }
 </style>

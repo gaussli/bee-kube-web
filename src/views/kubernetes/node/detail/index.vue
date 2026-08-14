@@ -4,7 +4,7 @@
     <div class="page-header">
       <BeePageHeader
         :icon="Box"
-        :title="`节点详情: ${nodeName}`"
+        :title="`节点详情: ${nodeUid}`"
         description="查看节点详细信息、资源使用情况、标签和污点等。"
       />
     </div>
@@ -151,7 +151,7 @@ const route = useRoute()
 const router = useRouter()
 
 const clusterUid = ref(route.params.clusterUid as string)
-const nodeName = ref(route.params.name as string)
+const nodeUid = ref(route.params.name as string)
 const loading = ref(false)
 const nodeData = ref<NodeListResp>()
 const activeTab = ref('basic')
@@ -168,10 +168,10 @@ function getStatusType(status?: string) {
 }
 
 async function loadData() {
-  if (!clusterUid.value || !nodeName.value) return
+  if (!clusterUid.value || !nodeUid.value) return
   loading.value = true
   try {
-    nodeData.value = await getNodeDetail(clusterUid.value, nodeName.value)
+    nodeData.value = await getNodeDetail(clusterUid.value, nodeUid.value)
   } finally {
     loading.value = false
   }

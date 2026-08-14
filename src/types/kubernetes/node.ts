@@ -6,7 +6,7 @@ import type { AuditEntity, PageForm } from '@/types/common'
 
 import type { NodeConditionType, NodeStatus } from '@/config/kubernetes/node'
 
-import type { MetadataAnnotationForm, MetadataLabelForm, ResourceVo } from './comomn'
+import type { MetadataAnnotationForm, MetadataLabelForm, ResourceVo } from './common'
 import type { Condition, Event, Metadata, Taint } from './types'
 
 export type { NodeConditionType, NodeStatus } from '@/config/kubernetes/node'
@@ -36,6 +36,10 @@ export interface NodeListResp extends AuditEntity {
   unschedulable: boolean
   /** 节点资源（容量/可分配/已用） */
   resource: NodeResourceVo
+  /** 节点上运行的 Pod 数量 */
+  podCount: number
+  /** Kubelet 版本 */
+  kubeletVersion: string
 }
 
 /**

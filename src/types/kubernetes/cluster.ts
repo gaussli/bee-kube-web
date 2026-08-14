@@ -6,7 +6,7 @@ import type { AuditEntity, DeletableEntity, PageForm, UidEntity } from '@/types/
 
 import type { ClusterStatus } from '@/config/kubernetes/cluster'
 
-import type { ResourceVo } from './comomn'
+import type { ResourceVo } from './common'
 
 /**
  * 集群查询请求参数

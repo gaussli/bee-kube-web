@@ -2,7 +2,7 @@
   <div class="node-edit">
     <!-- 页面标题 -->
     <div class="page-header">
-      <BeePageHeader :icon="Box" :title="`编辑节点: ${nodeName}`" description="编辑节点标签、注解和污点配置。" />
+      <BeePageHeader :icon="Box" :title="`编辑节点: ${nodeUid}`" description="编辑节点标签、注解和污点配置。" />
     </div>
 
     <!-- 表单内容 -->
@@ -100,7 +100,7 @@ const router = useRouter()
 const formRef = ref<FormInstance>()
 
 const clusterUid = ref(route.params.clusterUid as string)
-const nodeName = ref(route.params.name as string)
+const nodeUid = ref(route.params.name as string)
 const loading = ref(false)
 const submitting = ref(false)
 const nodeData = ref<NodeListResp>()
@@ -142,10 +142,10 @@ function removeTaint(index: number) {
 }
 
 async function loadData() {
-  if (!clusterUid.value || !nodeName.value) return
+  if (!clusterUid.value || !nodeUid.value) return
   loading.value = true
   try {
-    nodeData.value = await getNodeDetail(clusterUid.value, nodeName.value)
+    nodeData.value = await getNodeDetail(clusterUid.value, nodeUid.value)
     // 初始化标签列表
     if (nodeData.value.labels) {
       labelList.value = Object.entries(nodeData.value.labels).map(([key, value]) => ({ key, value }))
@@ -195,7 +195,7 @@ async function handleSubmit() {
 
   submitting.value = true
   try {
-    await updateNode(clusterUid.value, nodeName.value, data)
+    await updateNode(clusterUid.value, nodeUid.value, data)
     BeeMessage.success('保存成功')
     router.back()
   } catch {

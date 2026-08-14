@@ -1,201 +1,166 @@
 /**
  * Job 资源相关类型定义
  * @module types/kubernetes/workload/job
- */
-import type { AuditEntity, PageForm } from '@/types/common'
-
-/**
- * Job 状态枚举
+ *
  * @remarks
- * - Active: 运行中（任务正在执行）
- * - Succeeded: 已完成（所有 Pod 成功终止）
- * - Failed: 已失败（达到重试上限或 Pod 异常终止）
+ * 类型分区及对象简述（按文档功能描述出现顺序排列）：
+ *   1. 查看 Job 列表
+ *      - JobQueryForm：Job 查询条件请求对象
+ *      - JobListVo：Job 列表项响应对象
+ *   2. 查看 Job 详情
+ *      - JobDetailVo：Job 详情响应对象
+ *   3. 查看 Job YAML
+ *      - JobYamlVo：Job YAML 响应对象
+ *   4. 查看 Job 关联 Pod 列表
+ *      - JobPodQueryForm：Job 关联 Pod 查询条件请求对象
+ *      - JobPodListVo：Job 关联 Pod 列表项响应对象
+ *   5. 查看 Job 监控数据
+ *      - JobMonitorVo：Job 监控响应对象
+ *   6. 创建
+ *      - JobCreateForm：Job 创建请求对象
+ *   7. 更新
+ *      - JobUpdateForm：Job 更新请求对象
  */
-export type JobStatus = 'Active' | 'Succeeded' | 'Failed'
+import type { AuditEntity, DeletableEntity, PageForm, UidEntity } from '@/types/common'
+
+import type { PodStatus } from '@/config/kubernetes/pod'
+import type { JobStatus } from '@/config/kubernetes/workload/job'
+
+import type { Clustered, Namespaced, ObjectMeta } from '../types'
+
+import type { JobSpec, JobStatusObj } from './types'
 
 /**
- * Job 列表对象响应数据
- * @extends AuditEntity 继承基础实体（含 id, createAt, createBy, updateAt, updateBy）
+ * Job 查询条件请求对象
+ * @extends UidEntity 继承 UID 类型
+ * @extends PageForm 继承分页请求
  */
-export interface JobListResp extends AuditEntity {
-  /** 资源 UID */
-  uid: string
-  /** 所属集群 UID */
-  clusterUid: string
-  /** 所属命名空间 */
-  namespace: string
+export interface JobQueryForm extends UidEntity, PageForm {
   /** Job 名称 */
   name: string
-  /** 描述信息 */
-  description?: string
-  /** 状态 */
+  /** 命名空间名称 */
+  namespace: string
+  /** Job 状态 */
   status: JobStatus
-  /** 状态描述信息（如异常原因） */
-  statusMessage?: string
-  /** 期望并行副本数 */
-  parallelism: number
-  /** 完成数 */
-  completions: number
-  /** 成功数 */
-  succeeded: number
-  /** 活动数 */
-  active: number
-  /** 开始时间 */
-  startTime?: string
-  /** 完成时间 */
-  completionTime?: string
-  /** 是否可删除 */
-  deletable?: boolean
 }
 
 /**
- * Job 详情响应数据
- * @extends AuditEntity 继承基础实体（含 id, createAt, createBy, updateAt, updateBy）
+ * Job 列表项响应对象
+ * @extends UidEntity 继承 UID 类型
+ * @extends Clustered 继承集群类型
+ * @extends Namespaced 继承命名空间类型
+ * @extends AuditEntity 继承审计实体类型
+ * @extends DeletableEntity 继承可删除类型
  */
-export interface JobDetailResp extends AuditEntity {
-  /** 资源 UID */
-  uid: string
-  /** 所属集群 UID */
-  clusterUid: string
-  /** 所属命名空间 */
-  namespace: string
+export interface JobListVo extends UidEntity, Clustered, Namespaced, AuditEntity, DeletableEntity {
   /** Job 名称 */
   name: string
-  /** 描述信息 */
+  /** 描述 */
   description?: string
   /** 状态 */
   status: JobStatus
-  /** 状态描述信息（如异常原因） */
-  statusMessage?: string
-  /** 期望并行副本数 */
-  parallelism: number
-  /** 完成数 */
-  completions: number
-  /** 成功数 */
+  /** 状态信息 */
+  statusMsg?: string
+  /** 运行中的 Pod 数 */
+  active: number
+  /** 已成功完成的 Pod 数 */
   succeeded: number
-  /** 失败数 */
+  /** 已失败的 Pod 数 */
   failed: number
-  /** 活动数 */
-  active: number
-  /** 开始时间 */
-  startTime?: string
-  /** 完成时间 */
-  completionTime?: string
-  /** 失败重试次数 */
-  backoffLimit?: number
-  /** 超时秒数 */
-  activeDeadlineSeconds?: number
-  /** 使用的镜像列表 */
-  images: string[]
-  /** 标签选择器 */
-  selector?: Record<string, string>
-  /** 标签 */
-  labels?: Record<string, string>
-  /** 注解 */
-  annotations?: Record<string, string>
-  /** 容器配置列表 */
-  containers: JobContainer[]
-  /** 是否可删除 */
-  deletable?: boolean
+  /** 需要成功完成的 Pod 数 */
+  completions: number
+  /** 并行运行的 Pod 数 */
+  parallelism: number
 }
 
 /**
- * Job 查询请求参数
- * @extends PageForm 继承分页请求（含 page, pageSize）
+ * Job 详情响应对象
+ * @extends UidEntity 继承 UID 类型
+ * @extends Clustered 继承集群类型
+ * @extends Namespaced 继承命名空间类型
+ * @extends AuditEntity 继承审计实体类型
+ * @extends DeletableEntity 继承可删除类型
  */
-export interface JobQueryReq extends PageForm {
-  /** 资源 ID */
-  id: string
-  /** Job 名称（模糊匹配） */
-  name: string
-  /** 命名空间名称 */
-  namespace: string
-  /** 状态 */
-  status: string
+export interface JobDetailVo extends UidEntity, Clustered, Namespaced, AuditEntity, DeletableEntity {
+  /** 描述信息 */
+  description?: string
+  /** 状态标签 */
+  status: JobStatus
+  /** 状态信息 */
+  statusMsg?: string
+  /** Job 的资源元数据 */
+  metadata: ObjectMeta
+  /** Job 的规格定义 */
+  spec: JobSpec
+  /** Job 的观测状态 */
+  statusObj: JobStatusObj
 }
 
 /**
- * Job 创建/更新请求参数
+ * Job YAML 响应对象
  */
-export interface JobReq {
-  /** Job 名称 */
-  name: string
-  /** 命名空间名称 */
-  namespace: string
-  /** 期望并行副本数 */
-  parallelism?: number
-  /** 完成数 */
-  completions?: number
-  /** 失败重试次数 */
-  backoffLimit?: number
-  /** 超时秒数 */
-  activeDeadlineSeconds?: number
-  /** 容器配置列表 */
-  containers: JobContainer[]
-  /** 标签 */
-  labels?: Record<string, string>
-  /** 注解 */
-  annotations?: Record<string, string>
-}
-
-/**
- * Job 标签更新请求
- */
-export interface JobLabelsReq {
-  /** 标签键值对 */
-  labels: Record<string, string>
-  /** 操作（1: 新增；2: 移除：3: 全量替换） */
-  operation: number
-}
-
-/**
- * Job 注解更新请求
- */
-export interface JobAnnotationsReq {
-  /** 注解键值对 */
-  annotations: Record<string, string>
-  /** 操作（1: 新增；2: 移除：3: 全量替换） */
-  operation: number
-}
-
-/**
- * Job YAML 导入请求
- * @remarks 通过 YAML 格式导入 Job 配置
- */
-export interface JobYamlReq {
-  /** YAML 配置内容 */
+export interface JobYamlVo {
+  /** Job 的完整 YAML 文本 */
   yaml: string
 }
 
 /**
- * Job 容器配置
+ * Job 关联 Pod 查询条件请求对象
+ * @extends UidEntity 继承 UID 类型
+ * @extends PageForm 继承分页请求
  */
-export interface JobContainer {
-  /** 容器名称 */
+export interface JobPodQueryForm extends UidEntity, PageForm {
+  /** Pod 名称 */
   name: string
-  /** 镜像 */
-  image: string
-  /** 镜像拉取策略 */
-  imagePullPolicy?: string
-  /** 资源请求 */
-  resources?: {
-    requests?: {
-      cpu?: string
-      memory?: string
-    }
-    limits?: {
-      cpu?: string
-      memory?: string
-    }
-  }
-  /** 命令 */
-  command?: string[]
-  /** 参数 */
-  args?: string[]
-  /** 环境变量 */
-  env?: Array<{
-    name: string
-    value?: string
-    valueFrom?: Record<string, unknown>
-  }>
+  /** Pod 状态 */
+  status: PodStatus
+}
+
+/**
+ * Job 关联 Pod 列表项响应对象
+ * @extends UidEntity 继承 UID 类型
+ * @extends AuditEntity 继承审计实体类型
+ */
+export interface JobPodListVo extends UidEntity, AuditEntity {
+  /** Pod 名称 */
+  name: string
+  /** Pod IP */
+  ip: string
+  /** Pod 状态 */
+  status: PodStatus
+  /** Pod 状态信息 */
+  statusMsg: string
+  /** Pod 重启次数 */
+  restarts: number
+  /** Pod 所属节点 IP */
+  nodeIp: string
+  /** Pod 所属节点名称 */
+  nodeName: string
+  /** Pod 就绪容器数量 */
+  readyContainerCount: number
+  /** Pod 容器总数 */
+  containerCount: number
+}
+
+/** Job 监控响应对象 */
+export interface JobMonitorVo {}
+
+/** Job 创建请求对象 */
+export interface JobCreateForm {
+  /** Job 描述 */
+  description?: string
+  /** Job 的资源元数据 */
+  metadata: ObjectMeta
+  /** Job 的规格定义 */
+  spec: JobSpec
+}
+
+/** Job 更新请求对象 */
+export interface JobUpdateForm {
+  /** Job 描述 */
+  description?: string
+  /** Job 的资源元数据 */
+  metadata: ObjectMeta
+  /** Job 的规格定义 */
+  spec: JobSpec
 }

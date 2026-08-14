@@ -5,7 +5,7 @@
 
 import type { ResourcePageMeta, StatusOption } from '@/config/kubernetes/common'
 
-import { COLOR_GRAY_70, COLOR_SUCCESS, COLOR_WARNING } from '@/config/color'
+import { COLOR_DANGER, COLOR_GRAY_70, COLOR_SUCCESS, COLOR_WARNING } from '@/config/color'
 
 /** CronJob 页面元数据 */
 export const CRONJOB_PAGE_META: ResourcePageMeta = {
@@ -29,3 +29,23 @@ export const CRONJOB_STATUS_OPTIONS: StatusOption[] = [
   { value: undefined, label: '全部状态', labelEn: 'ALL', color: COLOR_SUCCESS },
   ..._cronjobStatuses,
 ]
+
+/** CronJob 并发策略原始数据（用于派生类型） */
+const _concurrencyPolicies = [
+  { value: 'Allow', label: '允许并发', labelEn: 'Allow' },
+  { value: 'Forbid', label: '禁止并发', labelEn: 'Forbid' },
+  { value: 'Replace', label: '替换旧任务', labelEn: 'Replace' },
+] as const
+
+/** CronJob 并发策略（Allow / Forbid / Replace） */
+export type ConcurrencyPolicy = (typeof _concurrencyPolicies)[number]['value']
+
+/** CronJob 条件类型原始数据（不含"全部"选项，用于派生类型） */
+const _cronjobConditionTypes = [
+  { value: 'Complete', label: '已完成', labelEn: 'Complete', color: COLOR_SUCCESS },
+  { value: 'Failed', label: '已失败', labelEn: 'Failed', color: COLOR_DANGER },
+  { value: 'Suspended', label: '已暂停', labelEn: 'Suspended', color: COLOR_WARNING },
+] as const
+
+/** CronJob 条件类型 */
+export type CronJobConditionType = (typeof _cronjobConditionTypes)[number]['value']

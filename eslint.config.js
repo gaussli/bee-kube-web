@@ -146,6 +146,29 @@ export default [
       'vue/no-v-html': 'off', // 允许 v-html（YAML 高亮等场景需要）
       'vue/require-toggle-inside-transition': 'off', // 页面入场动画无需 v-if/v-show（静态子元素 + mode="out-in" 即可）
 
+      // --- 元素属性排序（与 .vue 列表页规范一致）---
+      // 顺序：指令(v-if/v-for/v-model) → id → ref/key → 其他指令 → 自定义属性(静态+动态绑定+简写布尔) → 事件
+      // 注：class/style 不在 order 枚举内，由 Prettier 默认行为处理；同一类别内按字母升序(alphabetical)
+      // 例：<BeeInputSearch v-model="x" class="y" placeholder="z" />
+      'vue/attributes-order': [
+        'error',
+        {
+          order: [
+            'DEFINITION', // is / v-is
+            'LIST_RENDERING', // v-for
+            'CONDITIONALS', // v-if / v-else-if / v-else / v-show
+            'RENDER_MODIFIERS', // v-once / v-pre / v-cloak
+            'GLOBAL', // 全局属性（id 等）
+            'UNIQUE', // ref / key
+            'TWO_WAY_BINDING', // v-model
+            'OTHER_DIRECTIVES', // 其他指令（v-bind / v-on 之外）
+            'OTHER_ATTR', // 自定义属性（静态 + 动态绑定 + 简写布尔，如 placeholder / :options / selectable）
+            'EVENTS', // 事件（@click / @change）
+          ],
+          alphabetical: true, // 同组内按字母升序排列
+        },
+      ],
+
       // --- TypeScript 规则（与 Block 6 保持一致，确保 .vue 脚本享有同等检查）---
       'no-redeclare': 'off', // 关闭 ESLint 原生规则
       '@typescript-eslint/no-redeclare': 'error', // 启用 TS 版本（兼容类型声明和接口重复检测）

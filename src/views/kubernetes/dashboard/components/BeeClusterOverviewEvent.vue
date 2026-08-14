@@ -25,17 +25,17 @@
         </BeeTableColumn>
         <BeeTableColumn :min-width="200">
           <template #default="{ row }">
-            <BeeTableCommonCell :text="`${row.involvedObject.kind}/${row.involvedObject.name}`" subtext="关联资源" />
+            <BeeTableCommonCell :text="`${row.regarding?.kind}/${row.regarding?.name}`" subtext="关联资源" />
           </template>
         </BeeTableColumn>
         <BeeTableColumn :min-width="300">
           <template #default="{ row }">
-            <BeeTableCommonCell :text="row.message" subtext="事件信息" />
+            <BeeTableCommonCell :text="row.note" subtext="事件信息" />
           </template>
         </BeeTableColumn>
         <BeeTableColumn :width="180">
           <template #default="{ row }">
-            <BeeTableCommonCell :text="row.lastTimestamp" subtext="最后触发时间" />
+            <BeeTableCommonCell :text="row.eventTime" subtext="最后触发时间" />
           </template>
         </BeeTableColumn>
       </BeeTable>

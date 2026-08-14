@@ -101,11 +101,11 @@ export const request = {
     return service.get(url, { params, data, ...config })
   },
 
-  post<T = any>(url: string, data?: object, config?: AxiosRequestConfig): Promise<T> {
+  post<T = any>(url: string, data?: object | string, config?: AxiosRequestConfig): Promise<T> {
     return service.post(url, data, config)
   },
 
-  put<T = any>(url: string, data?: object, config?: AxiosRequestConfig): Promise<T> {
+  put<T = any>(url: string, data?: object | string, config?: AxiosRequestConfig): Promise<T> {
     return service.put(url, data, config)
   },
 
@@ -116,6 +116,18 @@ export const request = {
   delete<T = any>(url: string, options?: { params?: object; data?: object; config?: AxiosRequestConfig }): Promise<T> {
     const { params, data, ...config } = options || {}
     return service.delete(url, { params, data, ...config })
+  },
+
+  upload<T = any>(url: string, formData?: FormData, config?: AxiosRequestConfig): Promise<T> {
+    return service.post(url, formData, config)
+  },
+
+  download<T = any>(
+    url: string,
+    options?: { params?: object; data?: object; config?: AxiosRequestConfig },
+  ): Promise<T> {
+    const { params, data, ...config } = options || {}
+    return service.get(url, { params, data, ...config, responseType: 'blob' })
   },
 }
 

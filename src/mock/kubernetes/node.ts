@@ -19,15 +19,18 @@ import { generateId } from '@/mock/utils'
 /**
  * 节点路由配置
  * @remarks
- * - GET /kubernetes/clusters/:clusterUid/nodes - 获取节点分页列表（getNodePage）
+ * - GET /kubernetes/clusters/:clusterUid/nodes - 获取节点列表（getNodeList）
  * - GET /kubernetes/clusters/:clusterUid/nodes/topn - 获取节点 TopN 排行（getNodeTopN）
  * - GET /kubernetes/clusters/:clusterUid/nodes/:name - 获取节点详情（getNodeDetail）
+ * - GET /kubernetes/clusters/:clusterUid/nodes/:name/yaml - 查看节点 YAML（getNodeYaml）
  * - GET /kubernetes/clusters/:clusterUid/nodes/:name/resource - 获取节点资源用量（getNodeResource）
  * - PUT /kubernetes/clusters/:clusterUid/nodes/:name - 更新节点（updateNode）
+ * - PUT /kubernetes/clusters/:clusterUid/nodes/:name/yaml - 通过 YAML 更新节点（updateNodeYaml）
  * - POST /kubernetes/clusters/:clusterUid/nodes/:name/drain - 驱逐节点（drainNode）
  * - POST /kubernetes/clusters/:clusterUid/nodes/:name/cordon - 设置可调度状态（cordonNode）
- * - POST /kubernetes/clusters/:clusterUid/nodes/:name/labels - 更新节点标签（manageNodeLabels）
- * - POST /kubernetes/clusters/:clusterUid/nodes/:name/annotations - 更新节点注解（manageNodeAnnotations）
+ * - POST /kubernetes/clusters/:clusterUid/nodes/:name/labels - 更新节点标签（manageNodeLabel）
+ * - POST /kubernetes/clusters/:clusterUid/nodes/:name/annotations - 更新节点注解（manageNodeAnnotation）
+ * - GET /kubernetes/clusters/:clusterUid/nodes/:name/export - 导出节点 YAML（exportNode）
  * - POST /kubernetes/clusters/:clusterUid/nodes/:name/taints - 更新节点污点（manageNodeTaints）
  */
 export default [
@@ -40,7 +43,7 @@ export default [
     }: {
       pathParams: Record<string, string>
       params: Partial<NodeQueryForm>
-    }): PageVo<NodeListResp> => getNodePage(pathParams.clusterUid, params),
+    }): PageVo<NodeListResp> => getNodeList(pathParams.clusterUid, params),
   },
   {
     method: 'get',
@@ -61,6 +64,12 @@ export default [
   },
   {
     method: 'get',
+    url: '/kubernetes/clusters/:clusterUid/nodes/:name/yaml',
+    handler: ({ pathParams }: { pathParams: Record<string, string> }): string =>
+      getNodeYaml(pathParams.clusterUid, pathParams.name),
+  },
+  {
+    method: 'get',
     url: '/kubernetes/clusters/:clusterUid/nodes/:name/resource',
     handler: ({ pathParams }: { pathParams: Record<string, string> }): NodeResourceVo =>
       getNodeResource(pathParams.clusterUid, pathParams.name),
@@ -70,6 +79,12 @@ export default [
     url: '/kubernetes/clusters/:clusterUid/nodes/:name',
     handler: ({ pathParams, data }: { pathParams: Record<string, string>; data: Partial<NodeReq> }): void =>
       updateNode(pathParams.clusterUid, pathParams.name, data),
+  },
+  {
+    method: 'put',
+    url: '/kubernetes/clusters/:clusterUid/nodes/:name/yaml',
+    handler: ({ pathParams, data }: { pathParams: Record<string, string>; data: string }): void =>
+      updateNodeYaml(pathParams.clusterUid, pathParams.name, data),
   },
   {
     method: 'post',
@@ -87,13 +102,19 @@ export default [
     method: 'post',
     url: '/kubernetes/clusters/:clusterUid/nodes/:name/labels',
     handler: ({ pathParams, data }: { pathParams: Record<string, string>; data: Partial<NodeLabelsReq> }): void =>
-      manageNodeLabels(pathParams.clusterUid, pathParams.name, data),
+      manageNodeLabel(pathParams.clusterUid, pathParams.name, data),
   },
   {
     method: 'post',
     url: '/kubernetes/clusters/:clusterUid/nodes/:name/annotations',
     handler: ({ pathParams, data }: { pathParams: Record<string, string>; data: Partial<NodeAnnotationsReq> }): void =>
-      manageNodeAnnotations(pathParams.clusterUid, pathParams.name, data),
+      manageNodeAnnotation(pathParams.clusterUid, pathParams.name, data),
+  },
+  {
+    method: 'get',
+    url: '/kubernetes/clusters/:clusterUid/nodes/:name/export',
+    handler: ({ pathParams }: { pathParams: Record<string, string> }): string =>
+      exportNode(pathParams.clusterUid, pathParams.name),
   },
   {
     method: 'post',
@@ -104,12 +125,12 @@ export default [
 ]
 
 /**
- * 获取节点分页列表
+ * 获取节点列表
  * @param _clusterId - 集群 UID
  * @param params - 查询参数
  * @returns 分页数据
  */
-function getNodePage(_clusterId: string, params: Partial<NodeQueryForm>): PageVo<NodeListResp> {
+function getNodeList(_clusterId: string, params: Partial<NodeQueryForm>): PageVo<NodeListResp> {
   const { id, name, ip, status, page = 1, pageSize = 10 } = params || {}
 
   let filtered = [...mockNodes]
@@ -150,16 +171,27 @@ function getNodePage(_clusterId: string, params: Partial<NodeQueryForm>): PageVo
 /**
  * 获取节点详情
  * @param clusterUid - 集群 UID
- * @param name - 节点名称
+ * @param uid - 节点 UID
  * @returns 节点详情
  */
-function getNodeDetail(clusterUid: string, name: string): NodeListResp {
-  const node = mockNodes.find(n => n.clusterUid === clusterUid && n.name === name)
+function getNodeDetail(clusterUid: string, uid: string): NodeListResp {
+  const node = mockNodes.find((n) => n.clusterUid === clusterUid && n.name === uid)
   if (!node) {
-    console.error('[getNodeDetail] can not find node:', clusterUid, name)
+    console.error('[getNodeDetail] can not find node:', clusterUid, uid)
     return mockNodes[0]
   }
   return node
+}
+
+/**
+ * 查看节点 YAML
+ * @param clusterUid - 集群 UID
+ * @param uid - 节点 UID
+ * @returns 节点 YAML 配置字符串
+ */
+function getNodeYaml(clusterUid: string, uid: string): string {
+  console.debug('[getNodeYaml] clusterUid:', clusterUid, 'uid:', uid)
+  return `apiVersion: v1\nkind: Node\nmetadata:\n  name: ${uid}\n`
 }
 
 /**
@@ -186,60 +218,81 @@ function getNodeTopN(_clusterId: string, params: Partial<{ metric: string; count
 /**
  * 更新节点
  * @param clusterUid - 集群 UID
- * @param name - 节点名称
+ * @param uid - 节点 UID
  * @param data - 更新数据
  */
-function updateNode(clusterUid: string, name: string, data: Partial<NodeReq>): void {
-  console.debug('[updateNode] clusterUid:', clusterUid, 'name:', name, 'data:', data)
+function updateNode(clusterUid: string, uid: string, data: Partial<NodeReq>): void {
+  console.debug('[updateNode] clusterUid:', clusterUid, 'uid:', uid, 'data:', data)
 }
 
 /**
  * 驱逐节点上的 Pod
  * @param clusterUid - 集群 UID
- * @param name - 节点名称
+ * @param uid - 节点 UID
  */
-function drainNode(clusterUid: string, name: string): void {
-  console.debug('[drainNode] clusterUid:', clusterUid, 'name:', name)
+function drainNode(clusterUid: string, uid: string): void {
+  console.debug('[drainNode] clusterUid:', clusterUid, 'uid:', uid)
 }
 
 /**
  * 设置节点可调度/不可调度
  * @param clusterUid - 集群 UID
- * @param name - 节点名称
+ * @param uid - 节点 UID
  * @param data - 调度配置
  */
-function cordonNode(clusterUid: string, name: string, data: NodeCordonReq): void {
-  console.debug('[cordonNode] clusterUid:', clusterUid, 'name:', name, 'data:', data)
+function cordonNode(clusterUid: string, uid: string, data: NodeCordonReq): void {
+  console.debug('[cordonNode] clusterUid:', clusterUid, 'uid:', uid, 'data:', data)
 }
 
 /**
  * 更新节点标签配置
  * @param clusterUid - 集群 UID
- * @param name - 节点名称
+ * @param uid - 节点 UID
  * @param data - 标签配置
  */
-function manageNodeLabels(clusterUid: string, name: string, data: Partial<NodeLabelsReq>): void {
-  console.debug('[manageNodeLabels] clusterUid:', clusterUid, 'name:', name, 'data:', data)
+function manageNodeLabel(clusterUid: string, uid: string, data: Partial<NodeLabelsReq>): void {
+  console.debug('[manageNodeLabel] clusterUid:', clusterUid, 'uid:', uid, 'data:', data)
 }
 
 /**
  * 更新节点注解配置
  * @param clusterUid - 集群 UID
- * @param name - 节点名称
+ * @param uid - 节点 UID
  * @param data - 注解配置
  */
-function manageNodeAnnotations(clusterUid: string, name: string, data: Partial<NodeAnnotationsReq>): void {
-  console.debug('[manageNodeAnnotations] clusterUid:', clusterUid, 'name:', name, 'data:', data)
+function manageNodeAnnotation(clusterUid: string, uid: string, data: Partial<NodeAnnotationsReq>): void {
+  console.debug('[manageNodeAnnotation] clusterUid:', clusterUid, 'uid:', uid, 'data:', data)
 }
 
 /**
  * 更新节点污点配置
  * @param clusterUid - 集群 UID
- * @param name - 节点名称
+ * @param uid - 节点 UID
  * @param data - 污点配置
  */
-function manageNodeTaints(clusterUid: string, name: string, data: Partial<NodeTaintsReq>): void {
-  console.debug('[manageNodeTaints] clusterUid:', clusterUid, 'name:', name, 'data:', data)
+function manageNodeTaints(clusterUid: string, uid: string, data: Partial<NodeTaintsReq>): void {
+  console.debug('[manageNodeTaints] clusterUid:', clusterUid, 'uid:', uid, 'data:', data)
+}
+
+/**
+ * 通过 YAML 更新节点
+ * @param clusterUid - 集群 UID
+ * @param uid - 节点 UID
+ * @param data - YAML 配置字符串
+ */
+function updateNodeYaml(clusterUid: string, uid: string, data: string): void {
+  console.debug('[updateNodeYaml] clusterUid:', clusterUid, 'uid:', uid, 'data:', data)
+}
+
+/**
+ * 导出节点 YAML
+ * @param clusterUid - 集群 UID
+ * @param name - 节点名称
+ * @returns 节点 YAML 配置字符串
+ */
+function exportNode(clusterUid: string, name: string): string {
+  console.debug('[exportNode] clusterUid:', clusterUid, 'name:', name)
+  return `apiVersion: v1\nkind: Node\nmetadata:\n  name: ${name}\n`
 }
 
 function generateNodeResources() {
@@ -275,6 +328,18 @@ function generateNodeResources() {
 }
 
 /**
+ * 生成节点列表附加字段
+ * @returns 包含 Pod 数量与 Kubelet 版本
+ */
+function generateNodeMeta(): { podCount: number; kubeletVersion: string } {
+  const versions = ['v1.28.3', 'v1.27.6', 'v1.29.1']
+  return {
+    podCount: 5 + Math.floor(Math.random() * 96),
+    kubeletVersion: versions[Math.floor(Math.random() * versions.length)],
+  }
+}
+
+/**
  * 模拟节点数据
  */
 const mockNodes: NodeListResp[] = [
@@ -294,6 +359,7 @@ const mockNodes: NodeListResp[] = [
     updateBy: 'admin',
     updateAt: '2024-01-15 10:30:25',
     resource: generateNodeResources(),
+    ...generateNodeMeta(),
   },
   {
     id: generateId(),
@@ -310,6 +376,7 @@ const mockNodes: NodeListResp[] = [
     updateBy: 'admin',
     updateAt: '2024-03-20 09:15:30',
     resource: generateNodeResources(),
+    ...generateNodeMeta(),
   },
   {
     id: generateId(),
@@ -326,6 +393,7 @@ const mockNodes: NodeListResp[] = [
     updateBy: 'admin',
     updateAt: '2024-05-10 14:22:08',
     resource: generateNodeResources(),
+    ...generateNodeMeta(),
   },
   {
     id: generateId(),
@@ -342,6 +410,7 @@ const mockNodes: NodeListResp[] = [
     updateBy: 'ops',
     updateAt: '2024-06-01 10:00:00',
     resource: generateNodeResources(),
+    ...generateNodeMeta(),
   },
   {
     id: generateId(),
@@ -358,6 +427,7 @@ const mockNodes: NodeListResp[] = [
     updateBy: 'admin',
     updateAt: '2024-02-20 09:30:00',
     resource: generateNodeResources(),
+    ...generateNodeMeta(),
   },
   {
     id: generateId(),
@@ -375,6 +445,7 @@ const mockNodes: NodeListResp[] = [
     updateBy: 'admin',
     updateAt: '2024-06-15 16:45:00',
     resource: generateNodeResources(),
+    ...generateNodeMeta(),
   },
   {
     id: generateId(),
@@ -392,6 +463,7 @@ const mockNodes: NodeListResp[] = [
     updateBy: 'admin',
     updateAt: '2024-02-10 10:30:25',
     resource: generateNodeResources(),
+    ...generateNodeMeta(),
   },
   {
     id: generateId(),
@@ -408,6 +480,7 @@ const mockNodes: NodeListResp[] = [
     updateBy: 'qa',
     updateAt: '2024-04-15 13:25:10',
     resource: generateNodeResources(),
+    ...generateNodeMeta(),
   },
   {
     id: generateId(),
@@ -424,6 +497,7 @@ const mockNodes: NodeListResp[] = [
     updateBy: 'qa',
     updateAt: '2024-05-20 10:00:00',
     resource: generateNodeResources(),
+    ...generateNodeMeta(),
   },
   {
     id: generateId(),
@@ -440,6 +514,7 @@ const mockNodes: NodeListResp[] = [
     updateBy: 'ops',
     updateAt: '2024-06-10 12:00:00',
     resource: generateNodeResources(),
+    ...generateNodeMeta(),
   },
   {
     id: generateId(),
@@ -456,6 +531,7 @@ const mockNodes: NodeListResp[] = [
     updateBy: 'devops',
     updateAt: '2024-03-18 16:00:00',
     resource: generateNodeResources(),
+    ...generateNodeMeta(),
   },
   {
     id: generateId(),
@@ -472,6 +548,7 @@ const mockNodes: NodeListResp[] = [
     updateBy: 'dev1',
     updateAt: '2024-04-02 11:30:00',
     resource: generateNodeResources(),
+    ...generateNodeMeta(),
   },
   {
     id: generateId(),
@@ -488,6 +565,7 @@ const mockNodes: NodeListResp[] = [
     updateBy: 'devops',
     updateAt: '2024-05-05 08:45:00',
     resource: generateNodeResources(),
+    ...generateNodeMeta(),
   },
   {
     id: generateId(),
@@ -505,6 +583,7 @@ const mockNodes: NodeListResp[] = [
     updateBy: 'devops',
     updateAt: '2024-06-18 15:00:00',
     resource: generateNodeResources(),
+    ...generateNodeMeta(),
   },
   {
     id: generateId(),
@@ -521,6 +600,7 @@ const mockNodes: NodeListResp[] = [
     updateBy: 'qa',
     updateAt: '2024-02-01 09:00:00',
     resource: generateNodeResources(),
+    ...generateNodeMeta(),
   },
   {
     id: generateId(),
@@ -537,6 +617,7 @@ const mockNodes: NodeListResp[] = [
     updateBy: 'qa',
     updateAt: '2024-03-10 14:00:00',
     resource: generateNodeResources(),
+    ...generateNodeMeta(),
   },
   {
     id: generateId(),
@@ -553,6 +634,7 @@ const mockNodes: NodeListResp[] = [
     updateBy: 'qa',
     updateAt: '2024-05-22 09:20:00',
     resource: generateNodeResources(),
+    ...generateNodeMeta(),
   },
   {
     id: generateId(),
@@ -569,6 +651,7 @@ const mockNodes: NodeListResp[] = [
     updateBy: 'admin',
     updateAt: '2024-04-01 10:00:00',
     resource: generateNodeResources(),
+    ...generateNodeMeta(),
   },
   {
     id: generateId(),
@@ -585,6 +668,7 @@ const mockNodes: NodeListResp[] = [
     updateBy: 'admin',
     updateAt: '2024-06-12 11:00:00',
     resource: generateNodeResources(),
+    ...generateNodeMeta(),
   },
   {
     id: generateId(),
@@ -601,5 +685,6 @@ const mockNodes: NodeListResp[] = [
     updateBy: 'qa',
     updateAt: '2024-05-28 16:30:00',
     resource: generateNodeResources(),
+    ...generateNodeMeta(),
   },
 ]

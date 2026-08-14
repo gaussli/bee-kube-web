@@ -49,13 +49,13 @@ export const STATEFULSET_CONDITION_TYPE_MAP = {
 export type StatefulSetConditionType = keyof typeof STATEFULSET_CONDITION_TYPE_MAP
 
 /** StatefulSet 更新策略标签映射 */
-export const STATEFULSET_STRATEGY_LABEL_MAP = {
+export const STATEFULSET_UPDATE_STRATEGY_LABEL_MAP = {
   RollingUpdate: '滚动更新',
   OnDelete: '删除时更新',
 } as const
 
 /** StatefulSet 更新策略类型 */
-export type StatefulSetStrategyType = keyof typeof STATEFULSET_STRATEGY_LABEL_MAP
+export type StatefulSetUpdateStrategyType = keyof typeof STATEFULSET_UPDATE_STRATEGY_LABEL_MAP
 
 /** StatefulSet Pod 管理策略中文映射 */
 export const STATEFULSET_POD_MANAGEMENT_POLICY_MAP = {

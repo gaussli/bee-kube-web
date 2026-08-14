@@ -119,7 +119,7 @@
 - lastObservedTime: string （该系列事件最近一次被观测到的时间）
 - state: string （系列状态，取值 EventSeriesStateWindingDown 表示系列即将停止）
 
-## Event 类型定义（`/src/types/kubernetes/event.ts/index.ts`）
+## Event 类型定义（`/src/types/kubernetes/event/index.ts`）
 
 ### EventQueryForm - 事件查询条件请求对象
 - type: EventType （事件类型）
@@ -492,7 +492,7 @@
 - mode?: number （挂载目录的文件权限位，如 0644）
 
 ### StatefulSetUpdateStrategy - StatefulSet 更新策略
-- type: StatefulSetStrategyType （策略类型，来自 `/src/config/kubernetes/workload/statefulset.ts`）
+- type: StatefulSetUpdateStrategyType （策略类型，来自 `/src/config/kubernetes/workload/statefulset.ts`）
 - rollingUpdate: Record<string, string> （滚动更新属性）
   - partition?: string （滚动更新分区序号，序号 >= partition 的 Pod 才被更新，常用于金丝雀发布）
 
@@ -676,18 +676,19 @@
       - statusMsg?: string （状态信息）
       - metadata: ObjectMeta （Deployment 的资源元数据，详见 ### ObjectMeta）
       - spec: DeploymentSpec （Deployment 的规格定义，详见 ### DeploymentSpec）
-      - statusObj: DeploymentStatusObj （Deployment 的观测状态，详见 ### DeploymentStatus）
+      - statusObj: DeploymentStatusObj （Deployment 的观测状态，详见 ### DeploymentStatusObj）
 
 ## 查看 Deployment YAML
 - 页面路由
   - 无
 - API 接口
   - URL: `GET /kubernetes/clusters/:clusterUid/namespaces/:namespace/deployments/:name/yaml`
-  - Function: `string getDeploymentYaml(clusterUid: string, namespace: string, name: string)`
+  - Function: `DeploymentYamlVo getDeploymentYaml(clusterUid: string, namespace: string, name: string)`
     - clusterUid: string （集群 UID）
     - namespace: string （命名空间名称）
     - name: string （Deployment 名称）
-    - 返回: Deployment 当前资源的 YAML 文本
+    - `DeploymentYamlVo`: （Deployment YAML 响应对象）
+      - yaml: string（Deployment YAML 文本）
 
 ## 查看 Deployment 关联 Pod 列表
 - 页面路由
@@ -984,7 +985,7 @@
       - replicas: number （期望副本数）
       - readyReplicas: number （就绪副本数）
       - currentReplicas: number （当前版本就绪副本数）
-      - updateStrategyType: StatefulSetStrategyType （更新策略）
+      - updateStrategyType: StatefulSetUpdateStrategyType （更新策略）
 
 ## 查看 StatefulSet 详情
 - 页面路由
@@ -1004,18 +1005,19 @@
       - statusMsg?: string （状态信息）
       - metadata: ObjectMeta （StatefulSet 的资源元数据，详见 ### ObjectMeta）
       - spec: StatefulSetSpec （StatefulSet 的规格定义，详见 ### StatefulSetSpec）
-      - statusObj: StatefulSetStatusObj （StatefulSet 的观测状态，详见 ### StatefulSetStatus）
+      - statusObj: StatefulSetStatusObj （StatefulSet 的观测状态，详见 ### StatefulSetStatusObj）
 
 ## 查看 StatefulSet YAML
 - 页面路由
   - 无
 - API 接口
   - URL: `GET /kubernetes/clusters/:clusterUid/namespaces/:namespace/statefulsets/:name/yaml`
-  - Function: `string getStatefulSetYaml(clusterUid: string, namespace: string, name: string)`
+  - Function: `StatefulSetYamlVo getStatefulSetYaml(clusterUid: string, namespace: string, name: string)`
     - clusterUid: string （集群 UID）
     - namespace: string （命名空间名称）
     - name: string （StatefulSet 名称）
-    - 返回: StatefulSet 当前资源的 YAML 文本
+    - `StatefulSetYamlVo`: （StatefulSet YAML 响应对象）
+      - yaml: string（StatefulSet YAML 文本）
 
 ## 查看 StatefulSet 关联 Pod 列表
 - 页面路由
@@ -1343,18 +1345,19 @@
       - statusMsg?: string （状态信息）
       - metadata: ObjectMeta （DaemonSet 的资源元数据，详见 ### ObjectMeta）
       - spec: DaemonSetSpec （DaemonSet 的规格定义，详见 ### DaemonSetSpec）
-      - statusObj: DaemonSetStatusObj （DaemonSet 的观测状态，详见 ### DaemonSetStatus）
+      - statusObj: DaemonSetStatusObj （DaemonSet 的观测状态，详见 ### DaemonSetStatusObj）
 
 ## 查看 DaemonSet YAML
 - 页面路由
   - 无
 - API 接口
   - URL: `GET /kubernetes/clusters/:clusterUid/namespaces/:namespace/daemonsets/:name/yaml`
-  - Function: `string getDaemonSetYaml(clusterUid: string, namespace: string, name: string)`
+  - Function: `DaemonSetYamlVo getDaemonSetYaml(clusterUid: string, namespace: string, name: string)`
     - clusterUid: string （集群 UID）
     - namespace: string （命名空间名称）
     - name: string （DaemonSet 名称）
-    - 返回: DaemonSet 当前资源的 YAML 文本
+    - `DaemonSetYamlVo`: （DaemonSet YAML 响应对象）
+      - yaml: string（DaemonSet YAML 文本）
 
 ## 查看 DaemonSet 关联 Pod 列表
 - 页面路由
@@ -1658,18 +1661,19 @@
       - statusMsg?: string （状态信息）
       - metadata: ObjectMeta （Job 的资源元数据，详见 ### ObjectMeta）
       - spec: JobSpec （Job 的规格定义，详见 ### JobSpec）
-      - statusObj: JobStatusObj （Job 的观测状态，详见 ### JobStatus）
+      - statusObj: JobStatusObj （Job 的观测状态，详见 ### JobStatusObj）
 
 ## 查看 Job YAML
 - 页面路由
   - 无
 - API 接口
   - URL: `GET /kubernetes/clusters/:clusterUid/namespaces/:namespace/jobs/:name/yaml`
-  - Function: `string getJobYaml(clusterUid: string, namespace: string, name: string)`
+  - Function: `JobYamlVo getJobYaml(clusterUid: string, namespace: string, name: string)`
     - clusterUid: string （集群 UID）
     - namespace: string （命名空间名称）
     - name: string （Job 名称）
-    - 返回: Job 当前资源的 YAML 文本
+    - `JobYamlVo`: （Job YAML 响应对象）
+      - yaml: string（Job YAML 文本）
 
 ## 查看 Job 关联 Pod 列表
 - 页面路由
@@ -1921,18 +1925,19 @@
       - statusMsg?: string （状态信息）
       - metadata: ObjectMeta （CronJob 的资源元数据，详见 ### ObjectMeta）
       - spec: CronJobSpec （CronJob 的规格定义，详见 ### CronJobSpec）
-      - statusObj: CronJobStatusObj （CronJob 的观测状态，详见 ### CronJobStatus）
+      - statusObj: CronJobStatusObj （CronJob 的观测状态，详见 ### CronJobStatusObj）
 
 ## 查看 CronJob YAML
 - 页面路由
   - 无
 - API 接口
   - URL: `GET /kubernetes/clusters/:clusterUid/namespaces/:namespace/cronjobs/:name/yaml`
-  - Function: `string getCronJobYaml(clusterUid: string, namespace: string, name: string)`
+  - Function: `CronJobYamlVo getCronJobYaml(clusterUid: string, namespace: string, name: string)`
     - clusterUid: string （集群 UID）
     - namespace: string （命名空间名称）
     - name: string （CronJob 名称）
-    - 返回: CronJob 当前资源的 YAML 文本
+    - `CronJobYamlVo`: （CronJob YAML 响应对象）
+      - yaml: string（CronJob YAML 文本）
 
 ## 查看 CronJob 关联 Job 列表
 - 页面路由
