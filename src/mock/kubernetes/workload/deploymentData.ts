@@ -592,6 +592,52 @@ export const mockDeploymentDetail: DeploymentDetailVo = {
   deletable: false,
 }
 
+/**
+ * Deployment YAML 模拟数据
+ * @remarks 对应 DeploymentYamlVo，返回 nginx-ingress-controller 的完整 YAML 文本
+ */
+export const mockDeploymentYaml: DeploymentYamlVo = {
+  yaml: `apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nginx-ingress-controller
+  namespace: kube-system
+  labels:
+    app.kubernetes.io/name: nginx-ingress-controller
+    app.kubernetes.io/managed-by: bee-kube
+  annotations:
+    kubernetes.io/change-cause: kubectl apply
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: nginx-ingress-controller
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 25%
+      maxSurge: 25%
+  template:
+    metadata:
+      labels:
+        app: nginx-ingress-controller
+    spec:
+      containers:
+        - name: nginx-ingress-controller
+          image: registry.k8s.io/ingress-nginx/controller:v1.9.0
+          ports:
+            - containerPort: 80
+            - containerPort: 443
+          resources:
+            requests:
+              cpu: 200m
+              memory: 256Mi
+            limits:
+              cpu: 1000m
+              memory: 512Mi
+`,
+}
+
 /** Deployment 关联 Pod 列表 mock 数据 */
 export const mockDeploymentPods: DeploymentPodListVo[] = [
   {
@@ -754,52 +800,6 @@ export const mockDeploymentIngresses: DeploymentIngressListVo[] = [
     createBy: 'developer',
   },
 ]
-
-/**
- * Deployment YAML 模拟数据
- * @remarks 对应 DeploymentYamlVo，返回 nginx-ingress-controller 的完整 YAML 文本
- */
-export const mockDeploymentYaml: DeploymentYamlVo = {
-  yaml: `apiVersion: apps/v1
-kind: Deployment
-metadata:
-  name: nginx-ingress-controller
-  namespace: kube-system
-  labels:
-    app.kubernetes.io/name: nginx-ingress-controller
-    app.kubernetes.io/managed-by: bee-kube
-  annotations:
-    kubernetes.io/change-cause: kubectl apply
-spec:
-  replicas: 3
-  selector:
-    matchLabels:
-      app: nginx-ingress-controller
-  strategy:
-    type: RollingUpdate
-    rollingUpdate:
-      maxUnavailable: 25%
-      maxSurge: 25%
-  template:
-    metadata:
-      labels:
-        app: nginx-ingress-controller
-    spec:
-      containers:
-        - name: nginx-ingress-controller
-          image: registry.k8s.io/ingress-nginx/controller:v1.9.0
-          ports:
-            - containerPort: 80
-            - containerPort: 443
-          resources:
-            requests:
-              cpu: 200m
-              memory: 256Mi
-            limits:
-              cpu: 1000m
-              memory: 512Mi
-`,
-}
 
 /**
  * Deployment 关联事件模拟数据

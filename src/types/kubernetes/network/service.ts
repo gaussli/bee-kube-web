@@ -10,16 +10,6 @@ import type { ServicePort } from './types'
 
 // ==================== 1. 基础枚举 ====================
 
-/**
- * Service 类型枚举
- * @remarks
- * - ClusterIP: 集群内部 IP 暴露（默认类型，仅集群内可访问）
- * - NodePort: 节点端口暴露（每个节点上开放固定端口，外部可通过 `<NodeIP>:<NodePort>` 访问）
- * - LoadBalancer: 负载均衡器暴露（由云厂商提供外部 LB，自动分配公网 IP）
- * - ExternalName: 外部域名映射（将 Service 映射为集群外部域名，通过 DNS CNAME 转发）
- */
-export type ServiceType = 'ClusterIP' | 'NodePort' | 'LoadBalancer' | 'ExternalName'
-
 // ==================== 2. 查询表单 ====================
 
 /**

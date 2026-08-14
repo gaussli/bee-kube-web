@@ -445,7 +445,7 @@
 - matchExpressions: LabelExpression[] （基于表达式的匹配条件，与 matchLabels 为 AND 关系）
 
 ### DeploymentUpdateStrategy - Deployment 更新策略
-- type: DeploymentUpdateStrategyType （策略类型，来自 `/src/config/kubernetes/workload/deployment.ts`）
+- type: DeploymentUpdateStrategyType （更新策略类型，来自 `/src/config/kubernetes/workload/deployment.ts`）
 - rollingUpdate: Record<string, string> （滚动更新属性）
   - maxUnavailable?: string （最大不可用副本数）
   - maxSurge?: string （最大超出副本数）
@@ -492,7 +492,7 @@
 - mode?: number （挂载目录的文件权限位，如 0644）
 
 ### StatefulSetUpdateStrategy - StatefulSet 更新策略
-- type: StatefulSetUpdateStrategyType （策略类型，来自 `/src/config/kubernetes/workload/statefulset.ts`）
+- type: StatefulSetUpdateStrategyType （更新策略类型，来自 `/src/config/kubernetes/workload/statefulset.ts`）
 - rollingUpdate: Record<string, string> （滚动更新属性）
   - partition?: string （滚动更新分区序号，序号 >= partition 的 Pod 才被更新，常用于金丝雀发布）
 
@@ -510,7 +510,7 @@
 - volumeClaimTemplates: StatefulSetVolumeClaimTemplate[] （持久卷声明模板，StatefulSet 为每个 Pod 按序创建独立的 PVC 实现稳定持久存储）
 
 ### StatefulSetCondition - StatefulSet 状态条件
-- type: StatefulSetConditionType （条件类型，来自 `/src/config/kubernetes/workload/statefulset.ts`，取值如下）
+- type: StatefulSetConditionType （条件类型，来自 `/src/config/kubernetes/workload/statefulset.ts`）
   - 'Available' （StatefulSet 可用，即至少维持了 minReadySeconds 的最小就绪副本数）
   - 'Progressing' （StatefulSet 正在推进；Pod 扩容、缩容或更新均视为推进）
   - 'ReplicaFailure' （StatefulSet 的某个 Pod 创建或删除失败时添加）
@@ -532,7 +532,7 @@
 - conditions: StatefulSetCondition[] （StatefulSet 当前状态的最新观测条件列表）
 
 ### DaemonSetUpdateStrategy - DaemonSet 更新策略
-- type: DaemonSetUpdateStrategyType （策略类型，来自 `/src/config/kubernetes/workload/daemonset.ts`）
+- type: DaemonSetUpdateStrategyType （更新策略类型，来自 `/src/config/kubernetes/workload/daemonset.ts`）
 - rollingUpdate: Record<string, string> （滚动更新属性）
   - maxUnavailable?: string （滚动更新期间允许的最大不可用节点 Pod 数或比例，默认 1）
   - maxSurge?: string （滚动更新期间允许超出期望数的最大 Pod 数或比例，需 Kubernetes 1.21+）
@@ -546,7 +546,7 @@
   - spec: PodSpec （Pod 的规格定义，描述容器的实际运行期望）
 
 ### DaemonSetCondition - DaemonSet 状态条件
-- type: DaemonSetConditionType （条件类型，来自 `/src/config/kubernetes/workload/daemonset.ts`，取值如下）
+- type: DaemonSetConditionType （条件类型，来自 `/src/config/kubernetes/workload/daemonset.ts`）
   - 'Available' （DaemonSet 可用，即至少 minReadySeconds 内维持了所需的最小可用 Pod 数）
   - 'Progressing' （DaemonSet 正在推进；Pod 扩容、缩容或更新均视为推进）
   - 'ReplicaFailure' （DaemonSet 的某个 Pod 创建或删除失败时添加）
@@ -580,7 +580,7 @@
   - spec: PodSpec （Pod 的规格定义，描述容器的实际运行期望）
 
 ### JobCondition - Job 状态条件
-- type: JobConditionType （条件类型，来自 `/src/config/kubernetes/workload/job.ts`，取值如下）
+- type: JobConditionType （条件类型，来自 `/src/config/kubernetes/workload/job.ts`）
   - 'Complete' （Job 已成功完成，即成功 Pod 数达到 completions）
   - 'Failed' （Job 已失败，如重试次数超过 backoffLimit）
   - 'Suspended' （Job 已被暂停）
@@ -606,7 +606,7 @@
 
 ### CronJobSpec - CronJob 规格信息
 - schedule: string （Cron 调度表达式，如 '*/5 * * * *' 表示每 5 分钟执行一次）
-- concurrencyPolicy: ConcurrencyPolicy （并发策略，来自 `/src/config/kubernetes/workload/cronjob.ts`，取值如下）
+- concurrencyPolicy: ConcurrencyPolicy （并发策略，来自 `/src/config/kubernetes/workload/cronjob.ts`）
   - 'Allow' （允许新 Job 与旧 Job 并发运行）
   - 'Forbid' （若上一轮 Job 未结束则跳过本轮）
   - 'Replace' （若上一轮 Job 未结束则取消旧 Job，启动新 Job）
@@ -617,7 +617,7 @@
 - jobTemplate: JobTemplateSpec （每次触发所创建的 Job 模板）
 
 ### CronJobCondition - CronJob 状态条件
-- type: CronJobConditionType （条件类型，来自 `/src/config/kubernetes/workload/cronjob.ts`，取值如下）
+- type: CronJobConditionType （条件类型，来自 `/src/config/kubernetes/workload/cronjob.ts`）
   - 'Complete' （CronJob 最近一轮 Job 已成功完成）
   - 'Failed' （CronJob 最近一轮 Job 失败）
   - 'Suspended' （CronJob 已被暂停）
@@ -633,14 +633,75 @@
 - lastSuccessfulTime: string （最近一次成功完成 Job 的时间）
 - conditions: CronJobCondition[] （CronJob 当前状态的最新观测条件列表）
 
+## Network 原始类型定义 （`/src/types/kubernetes/network/types.ts`）
+
+### ServiceSpec - Service 规格定义
+- ports?: ServicePort[] （端口列表，详见 ### ServicePort）
+- selector?: Record<string, string> （标签选择器，匹配目标 Pod；ExternalName 忽略）
+- clusterIP?: string （集群内部 IP；'None' 为 Headless；ExternalName 须空）
+- type?: ServiceType （暴露方式，默认 'ClusterIP'）
+- externalIPs?: string[] （节点额外接受的外部 IP，非 K8s 管理）
+- sessionAffinity?: ServiceAffinity （会话亲和性，默认 'None'）
+  - 'ClientIP' （基于客户端 IP）
+  - 'None' （无会话亲和性）
+- externalName?: string （ExternalName 外部别名，须小写 RFC-1123 主机名）
+- externalTrafficPolicy?: ServiceExternalTrafficPolicy （外部流量策略，默认 'Cluster'）
+  - 'Cluster' （流量路由到所有端点）
+  - 'Local' （仅路由到接收流量的同节点端点，保留客户端源 IP；无本地端点则丢弃）
+- healthCheckNodePort?: number （LoadBalancer + Local 时的健康检查节点端口）
+- publishNotReadyAddresses?: boolean （未就绪 Pod 也发布为端点）
+- sessionAffinityConfig?: SessionAffinityConfig （会话亲和性配置）
+  - clientIP?: ClientIPConfig （基于客户端 IP 的会话亲和性配置）
+    - timeoutSeconds?: number （会话保持时长（秒），须 0 < 值 ≤ 86400；默认 10800（3 小时））
+- loadBalancerClass?: string （负载均衡器类别，仅 LoadBalancer 可设且不可改）
+- internalTrafficPolicy?: ServiceInternalTrafficPolicy （内部流量策略，默认 'Cluster'）
+  - 'Cluster' （流量路由到所有端点）
+  - 'Local' （仅路由到同节点端点，无本地端点则丢弃）
+- trafficDistribution?: string （流量分布偏好，如 'PreferClose'）
+
+### ServicePort - Service 端口定义
+- name?: string （端口名称，须唯一且为 DNS_LABEL；单端口时可选）
+- protocol?: Protocol （网络协议，默认 'TCP'）
+- appProtocol?: string （应用层协议提示；IANA 标准名或 'kubernetes.io/' 前缀或自定义前缀）
+- port: number （Service 暴露的端口）
+- targetPort?: number | string （目标 Pod 端口；未指定则等同 port；clusterIP=None 时忽略）
+- nodePort?: number （NodePort/LoadBalancer 在各节点暴露的端口；通常由系统分配）
+
+### Protocol - 网络协议枚举
+- 'TCP' （TCP 协议）
+- 'UDP' （UDP 协议）
+- 'SCTP' （SCTP 协议）
+
+### ServiceStatusObj - Service 观测状态
+- loadBalancer?: LoadBalancerStatus （负载均衡器当前状态，存在时返回，详见 ### LoadBalancerStatus）
+- conditions?: Condition[] （Service 当前状态条件列表，详见 ### Condition）
+
+### LoadBalancerStatus - 负载均衡器状态
+- ingress?: LoadBalancerIngress[] （外部负载均衡器对外暴露的入口地址列表）
+
+### LoadBalancerIngress - 负载均衡器入口
+- ip?: string （负载均衡器 IP 地址）
+- hostname?: string （负载均衡器主机名）
+- ports?: PortStatus[] （端口状态列表）
+- ipMode?: LoadBalancerIPMode （IP 模式）
+  - 'VIP' （流量以负载均衡器 IP 和端口为目的地送达节点）
+  - 'Proxy' （流量以节点 IP+端口或 Pod IP+端口为目的地送达节点或 Pod）
+
+### PortStatus - 端口状态
+- port: number （端口号）
+- protocol?: Protocol （协议，'TCP' / 'UDP' / 'SCTP'，默认 'TCP'）
+- error?: string （端口分配错误信息）
+
 # Deployment 功能
 
 ## 查看 Deployment 列表
-- 页面路由
-  - Name: `kubernetes:workload:deployment`
-  - Path: `/kubernetes/clusters/:clusterUid/deployments`
-  - Component: `/src/view/kubernetes/workload/deployment/index.vue`
-  - Permission: `kubernetes:workload:deployment:view`
+- 页面效果
+  - 触发条件：功能菜单“Deployment 管理”点击
+  - 权限限制：`kubernetes:workload:deployment:view`
+  - 路由跳转
+    - Name: `kubernetes:workload:deployment`
+    - Path: `/kubernetes/clusters/:clusterUid/deployments`
+    - Component: `/src/view/kubernetes/workload/deployment/index.vue`
 - API 接口
   - URL: `GET /kubernetes/clusters/:clusterUid/deployments`
   - Function: `PageVo<DeploymentListVo> getDeploymentList(clusterUid: string, params: Partial<DeploymentQueryForm>)`
@@ -648,22 +709,34 @@
     - `DeploymentQueryForm`（Deployment 查询条件请求对象） 继承 `UidEntity`, `PageForm`
       - name: string （Deployment 名称）
       - namespace: string （命名空间名称）
-      - status: DeploymentStatus （状态，来自 `/src/config/kubernetes/workload/deployment.ts` 包）
+      - status: DeploymentStatus （状态，来自 `/src/config/kubernetes/workload/deployment.ts`）
+      - labelSelector: Record<string, string> （标签过滤）
     - `DeploymentListVo`（Deployment 列表项响应对象） 继承 `UidEntity`, `Clustered`, `Namespaced`, `AuditEntity`, `DeletableEntity`
       - name: string （Deployment 名称）
       - description?: string （Deployment 描述）
-      - status: DeploymentStatus （状态，来自 `/src/config/kubernetes/workload/deployment.ts` 包）
+      - status: DeploymentStatus （状态，来自 `/src/config/kubernetes/workload/deployment.ts`）
       - statusMsg?: string （状态信息）
       - replicas: number （期望副本数）
       - readyReplicas: number （就绪副本数）
       - updateStrategyType: DeploymentUpdateStrategyType （更新策略）
+- Mock
+  - 函数：`/src/mock/kubernetes/workload/deployment.ts#getDeploymentListMock()`
+  - 数据：`/src/mock/kubernetes/workload/deploymentData.ts#mockDeployments`，模拟数量：32
+  - 逻辑
+    - 基于 `mockDeployments` 进行 `status` 精准过滤，得到 `filtered`
+    - 基于 `filtered` 进行 `uid` 精准过滤，得到 `filteredUid`
+    - 基于 `filtered` 进行 `name` 模糊过滤，得到 `filteredName`
+    - 基于 `filteredUid` 和 `filteredName` 求合集，得到 `matched`
+    - 基于 `matched`、`page`、`pageSize` 计算截取并构建返回对象
 
 ## 查看 Deployment 详情
-- 页面路由
-  - Name: `kubernetes:workload:deployment:detail`
-  - Path: `/kubernetes/clusters/:clusterUid/namespaces/:namespace/deployments/:name`
-  - Component: `/src/view/kubernetes/workload/deployment/detail/index.vue`
-  - Permission: `kubernetes:workload:deployment:view`
+- 页面效果
+  - 触发条件：列表页 -> 表格 -> 行内“详情”按钮点击
+  - 权限限制：`kubernetes:workload:deployment:view`
+  - 路由跳转
+    - Name: `kubernetes:workload:deployment:detail`
+    - Path: `/kubernetes/clusters/:clusterUid/namespaces/:namespace/deployments/:name`
+    - Component: `/src/view/kubernetes/workload/deployment/detail/index.vue`
 - API 接口
   - URL: `GET /kubernetes/clusters/:clusterUid/namespaces/:namespace/deployments/:name`
   - Function: `DeploymentDetailVo getDeploymentDetail(clusterUid: string, namespace: string, name: string)`
@@ -672,15 +745,19 @@
     - name: string （Deployment 名称）
     - `DeploymentDetailVo`（Deployment 详情响应对象） 继承 `UidEntity`, `Clustered`, `Namespaced`, `AuditEntity`, `DeletableEntity`
       - description?: string （Deployment 描述）
-      - status: DeploymentStatus （状态，来自 `/src/config/kubernetes/workload/deployment.ts` 包）
+      - status: DeploymentStatus （状态，来自 `/src/config/kubernetes/workload/deployment.ts`）
       - statusMsg?: string （状态信息）
       - metadata: ObjectMeta （Deployment 的资源元数据，详见 ### ObjectMeta）
       - spec: DeploymentSpec （Deployment 的规格定义，详见 ### DeploymentSpec）
       - statusObj: DeploymentStatusObj （Deployment 的观测状态，详见 ### DeploymentStatusObj）
+- Mock
+  - 函数：`/src/mock/kubernetes/workload/deployment.ts#getDeploymentDetailMock()`
+  - 数据：`/src/mock/kubernetes/workload/deploymentData.ts#mockDeploymentDetail`
+  - 逻辑：直接返回 `mockDeploymentDetail`
 
 ## 查看 Deployment YAML
-- 页面路由
-  - 无
+- 页面效果
+  - 触发条件：详情页 -> “YAML” TAB 点击
 - API 接口
   - URL: `GET /kubernetes/clusters/:clusterUid/namespaces/:namespace/deployments/:name/yaml`
   - Function: `DeploymentYamlVo getDeploymentYaml(clusterUid: string, namespace: string, name: string)`
@@ -689,10 +766,14 @@
     - name: string （Deployment 名称）
     - `DeploymentYamlVo`: （Deployment YAML 响应对象）
       - yaml: string（Deployment YAML 文本）
+- Mock
+  - 函数：`/src/mock/kubernetes/workload/deployment.ts#getDeploymentYamlMock()`
+  - 数据：`/src/mock/kubernetes/workload/deploymentData.ts#mockDeploymentYaml`
+  - 逻辑：直接返回 `mockDeploymentYaml`
 
 ## 查看 Deployment 关联 Pod 列表
-- 页面路由
-  - 无
+- 页面效果
+  - 触发条件：详情页 -> “容器组” TAB 点击
 - API 接口
   - URL: `GET /kubernetes/clusters/:clusterUid/namespaces/:namespace/deployments/:name/pods`
   - Function: `PageVo<DeploymentPodListVo> getDeploymentPodList(clusterUid: string, namespace: string, name: string, params: Partial<DeploymentPodQueryForm>)`
@@ -712,10 +793,19 @@
       - nodeName: string （Pod 所属节点名称）
       - readyContainerCount: number （Pod 就绪容器数量）
       - containerCount: number （Pod 容器总数）
+- Mock
+  - 函数：`/src/mock/kubernetes/workload/deployment.ts#getDeploymentPodListMock()`
+  - 数据：`/src/mock/kubernetes/workload/deploymentData.ts#mockDeploymentPods`，模拟数量：24
+  - 逻辑
+    - 基于 `mockDeploymentPods` 进行 `status` 精准过滤，得到 `filtered`
+    - 基于 `filtered` 进行 `uid` 精准过滤，得到 `filteredUid`
+    - 基于 `filtered` 进行 `name` 模糊过滤，得到 `filteredName`
+    - 基于 `filteredUid` 和 `filteredName` 求合集，得到 `matched`
+    - 基于 `matched`、`page`、`pageSize` 计算截取并构建返回对象
 
 ## 查看 Deployment 历史版本列表
-- 页面路由
-  - 无
+- 页面效果
+  - 触发条件：详情页 -> “部署历史” TAB 点击
 - API 接口
   - URL: `GET /kubernetes/clusters/:clusterUid/namespaces/:namespace/deployments/:name/history`
   - Function: `PageVo<DeploymentHistoryRevisionListVo> getDeploymentHistoryRevisionList(clusterUid: string, namespace: string, name: string, params: Partial<DeploymentHistoryRevisionQueryForm>)`
@@ -726,10 +816,16 @@
       - revision: number （版本名称）
       - changeCause: string （变更原因）
     - `DeploymentHistoryRevisionListVo` （Deployment 历史版本列表项响应对象） 继承 `HistoryRevision`
+- Mock
+  - 函数：`/src/mock/kubernetes/workload/deployment.ts#getDeploymentHistoryRevisionListMock()`
+  - 数据：`/src/mock/kubernetes/workload/deploymentData.ts#mockDeploymentHistoryRevisions`，模拟数量：24
+  - 逻辑
+    - 基于 `mockDeploymentHistoryRevisions` 进行 `revision` 精准过滤和 `changeCause` 模糊过滤，得到 `matched`
+    - 基于 `matched`、`page`、`pageSize` 计算截取并构建返回对象
 
 ## 查看 Deployment 关联网络资源
-- 页面路由
-  - 无
+- 页面效果
+  - 触发条件：详情页 -> “关联网络” TAB 点击
 - API 接口
   - URL: `GET /kubernetes/clusters/:clusterUid/namespaces/:namespace/deployments/:name/network`
   - Function: `DeploymentNetworkVo getDeploymentNetwork(clusterUid: string, namespace: string, name: string)`
@@ -750,22 +846,38 @@
         - name: string （Ingress 名称）
         - description: string （Ingress 描述）
         - ingressClassName?: string （Ingress 类名，对应 IngressClassName 资源名称）
+- Mock
+  - 函数：`/src/mock/kubernetes/workload/deployment.ts#getDeploymentNetworkMock()`
+  - 数据
+    - `/src/mock/kubernetes/workload/deploymentData.ts#mockDeploymentServices`，模拟数量：8
+    - `/src/mock/kubernetes/workload/deploymentData.ts#mockDeploymentIngresses`，模拟数量：8
+  - 逻辑
+    - 直接基于 `mockDeploymentServices`、`mockDeploymentIngresses` 构建返回对象
 
 ## 查看 Deployment 事件列表
-- 页面路由
-  - 无
+- 页面效果
+  - 触发条件：详情页 -> “事件信息” TAB 点击
 - API 接口
   - URL: `GET /kubernetes/clusters/:clusterUid/namespaces/:namespace/deployments/:name/events`
   - Function: `PageVo<EventListVo> getDeploymentEventList(clusterUid: string, namespace: string, name: string, params: Partial<EventQueryForm>)`
     - clusterUid: string （集群 UID）
     - namespace: string （命名空间名称）
     - name: string （Deployment 名称）
-    - `EventQueryForm`（事件查询条件请求对象）
-    - `EventListVo`（事件列表项响应对象）
+    - `EventQueryForm`（事件查询条件请求对象，来自 `/src/types/kubernetes/event/index.ts`）
+    - `EventListVo`（事件列表项响应对象，来自 `/src/types/kubernetes/event/index.ts`）
+- Mock
+  - 函数：`/src/mock/kubernetes/workload/deployment.ts#getDeploymentEventListMock()`
+  - 数据：`/src/mock/kubernetes/workload/deploymentData.ts#mockDeploymentEvents`，模拟数量：24
+  - 逻辑
+    - 基于 `mockDeploymentEvents` 进行 `type` 精准过滤，得到 `filtered`
+    - 基于 `filtered` 进行 `reason` 精准过滤，得到 `filteredReason`
+    - 基于 `filtered` 进行 `note` 模糊过滤，得到 `filteredNote`
+    - 基于 `filteredReason` 和 `filteredNote` 求合集，得到 `matched`
+    - 基于 `matched`、`page`、`pageSize` 计算截取并构建返回对象
 
 ## 查看 Deployment 监控数据
-- 页面路由
-  - 无
+- 页面效果
+  - 触发条件：详情页 -> “监控数据” TAB 点击
 - API 接口
   - URL: `GET /kubernetes/clusters/:clusterUid/namespaces/:namespace/deployments/:name/monitor`
   - Function: `DeploymentMonitorVo getDeploymentMonitor(clusterUid: string, namespace: string, name: string)`
@@ -774,13 +886,20 @@
     - name: string （Deployment 名称）
     - `DeploymentMonitorVo` （Deployment 监控响应对象）
       - {TODO: DeploymentMonitorVo 对象属性}
+- Mock
+  - 函数：`/src/mock/kubernetes/workload/deployment.ts#getDeploymentMonitorMock()`
+  - 数据：`/src/mock/kubernetes/workload/deploymentData.ts#mockDeploymentMonitor`，模拟数量：24
+  - 逻辑
+    - 直接返回 `mockDeploymentMonitor` {TODO：暂为空对象}
 
-## 创建
-- 页面路由
-  - Name: `kubernetes:workload:deployment:create`
-  - Path: `/kubernetes/clusters/:clusterUid/deployments/create`
-  - Component: `/src/view/kubernetes/workload/deployment/create/index.vue`
-  - Permission: `kubernetes:workload:deployment:create`
+## 创建 Deployment
+- 页面效果
+  - 触发条件：列表页 -> 工具栏 -> “创建”按钮点击
+  - 权限限制：`kubernetes:workload:deployment:create`
+  - 路由跳转
+    - Name: `kubernetes:workload:deployment:create`
+    - Path: `/kubernetes/clusters/:clusterUid/deployments/create`
+    - Component: `/src/view/kubernetes/workload/deployment/create/index.vue`
 - API 接口
   - URL: `POST /kubernetes/clusters/:clusterUid/deployments`
   - Function: `void createDeployment(clusterUid: string, data: Partial<DeploymentCreateForm>)`
@@ -789,25 +908,37 @@
       - description?: string （Deployment 描述）
       - metadata: ObjectMeta （Deployment 的资源元数据，详见 ### ObjectMeta）
       - spec: DeploymentSpec （Deployment 的规格定义，详见 ### DeploymentSpec）
+- Mock
+  - 函数：`/src/mock/kubernetes/workload/deployment.ts#createDeploymentMock()`
+  - 逻辑
+    - 不实现逻辑，直接打印一句日志，格式：`console.log('[Mock] 方法名', ...入参)`
 
-## YAML 创建
-- 页面路由
-  - Name: `kubernetes:workload:deployment:create:yaml`
-  - Path: `/kubernetes/clusters/:clusterUid/deployments/create/yaml`
-  - Component: `/src/view/kubernetes/workload/deployment/create/yaml.vue`
-  - Permission: `kubernetes:workload:deployment:create`
+## 创建 Deployment（YAML 方式）
+- 页面效果
+  - 触发条件：列表页 -> 工具栏 -> “YAML”按钮点击
+  - 权限限制：`kubernetes:workload:deployment:create`
+  - 路由跳转
+    - Name: `kubernetes:workload:deployment:create:yaml`
+    - Path: `/kubernetes/clusters/:clusterUid/deployments/create/yaml`
+    - Component: `/src/view/kubernetes/workload/deployment/create/yaml.vue`
 - API 接口
   - URL: `POST /kubernetes/clusters/:clusterUid/deployments/yaml`
   - Function: `void createDeploymentYaml(clusterUid: string, yaml: string)`
     - clusterUid: string （集群 UID）
     - yaml: string （Deployment YAML 字符串）
+- Mock
+  - 函数：`/src/mock/kubernetes/workload/deployment.ts#createDeploymentYamlMock()`
+  - 逻辑
+    - 不实现逻辑，直接打印一句日志，格式：`console.log('[Mock] 方法名')`
 
-## 更新
-- 页面路由
-  - Name: `kubernetes:workload:deployment:edit`
-  - Path: `/kubernetes/clusters/:clusterUid/namespaces/:namespace/deployments/:name/edit`
-  - Component: `/src/view/kubernetes/workload/deployment/edit/index.vue`
-  - Permission: `kubernetes:workload:deployment:edit`
+## 更新 Deployment
+- 页面效果
+  - 触发条件：列表页 -> 表格 -> 行内“编辑应用”按钮点击
+  - 权限限制：`kubernetes:workload:deployment:edit`
+  - 路由跳转
+    - Name: `kubernetes:workload:deployment:edit`
+    - Path: `/kubernetes/clusters/:clusterUid/namespaces/:namespace/deployments/:name/edit`
+    - Component: `/src/view/kubernetes/workload/deployment/edit/index.vue`
 - API 接口
   - URL: `PUT /kubernetes/clusters/:clusterUid/namespaces/:namespace/deployments/:name`
   - Function: `void updateDeployment(clusterUid: string, namespace: string, name: string, data: Partial<DeploymentUpdateForm>)`
@@ -818,14 +949,20 @@
       - description?: string （Deployment 描述）
       - metadata: ObjectMeta （Deployment 的资源元数据，详见 ### ObjectMeta）
       - spec: DeploymentSpec （Deployment 的规格定义，详见 ### DeploymentSpec）
+- Mock
+  - 函数：`/src/mock/kubernetes/workload/deployment.ts#updateDeploymentMock()`
+  - 逻辑
+    - 不实现逻辑，直接打印一句日志，格式：`console.log('[Mock] 方法名', ...入参)`
     
 
-## YAML 更新
-- 页面路由
-  - Name: `kubernetes:workload:deployment:edit:yaml`
-  - Path: `/kubernetes/clusters/:clusterUid/namespaces/:namespace/deployments/:name/edit/yaml`
-  - Component: `/src/view/kubernetes/workload/deployment/edit/yaml.vue`
-  - Permission: `kubernetes:workload:deployment:edit`
+## 更新 Deployment（YAML 方式）
+- 页面效果
+  - 触发条件：列表页 -> 表格 -> 行内“编辑YAML”按钮点击
+  - 权限限制：`kubernetes:workload:deployment:edit`
+  - 路由跳转
+    - Name: `kubernetes:workload:deployment:edit:yaml`
+    - Path: `/kubernetes/clusters/:clusterUid/namespaces/:namespace/deployments/:name/edit/yaml`
+    - Component: `/src/view/kubernetes/workload/deployment/edit/yaml.vue`
 - API 接口
   - URL: `PUT /kubernetes/clusters/:clusterUid/namespaces/:namespace/deployments/:name/yaml`
   - Function: `void updateDeploymentYaml(clusterUid: string, namespace: string, name: string, yaml: string)`
@@ -833,78 +970,111 @@
     - namespace: string （命名空间名称）
     - name: string （Deployment 名称）
     - yaml: string （Deployment YAML 字符串）
+- Mock
+  - 函数：`/src/mock/kubernetes/workload/deployment.ts#updateDeploymentYamlMock()`
+  - 逻辑
+    - 不实现逻辑，直接打印一句日志，格式：`console.log('[Mock] 方法名')`
 
-## 管理标签
-- 页面路由
-  - 无
+## 管理 Deployment 标签
+- 页面效果
+  - 触发条件：列表页 -> 表格 -> 行内“修改标签”按钮点击
+  - 权限限制：`kubernetes:workload:deployment:edit`
+  - 路由跳转
+    - Name: `kubernetes:workload:deployment:edit:labels`
+    - Path: `/kubernetes/clusters/:clusterUid/namespaces/:namespace/deployments/:name/edit/labels`
+    - Component: `/src/view/kubernetes/workload/deployment/edit/labels.vue`
 - API 接口
   - URL: `POST /kubernetes/clusters/:clusterUid/namespaces/:namespace/deployments/:name/labels`
   - Function: `void manageDeploymentLabel(clusterUid: string, namespace: string, name: string, data: MetadataLabelForm)`
     - clusterUid: string （集群 UID）
     - namespace: string （命名空间名称）
     - name: string （Deployment 名称）
-    - `MetadataLabelForm`（管理标签请求对象） 来自 `/src/types/kubernetes/common.ts`
-      - labels: Record<string, string> （标签键值对）
-      - operation: number （操作，1: 新增；2: 移除；3: 全量替换）
+    - `MetadataLabelForm`（管理标签请求对象，来自 `/src/types/kubernetes/common.ts`）
+- Mock
+  - 函数：`/src/mock/kubernetes/workload/deployment.ts#manageDeploymentLabelMock()`
+  - 逻辑
+    - 不实现逻辑，直接打印一句日志，格式：`console.log('[Mock] 方法名', ...入参)`
 
-## 管理注解
-- 页面路由
-  - 无
+## 管理 Deployment 注解
+- 页面效果
+  - 触发条件：列表页 -> 表格 -> 行内“修改注解”按钮点击
+  - 权限限制：`kubernetes:workload:deployment:edit`
+  - 路由跳转
+    - Name: `kubernetes:workload:deployment:edit:annotations`
+    - Path: `/kubernetes/clusters/:clusterUid/namespaces/:namespace/deployments/:name/edit/annotations`
+    - Component: `/src/view/kubernetes/workload/deployment/edit/annotations.vue`
 - API 接口
   - URL: `POST /kubernetes/clusters/:clusterUid/namespaces/:namespace/deployments/:name/annotations`
   - Function: `void manageDeploymentAnnotation(clusterUid: string, namespace: string, name: string, data: MetadataAnnotationForm)`
     - clusterUid: string （集群 UID）
     - namespace: string （命名空间名称）
     - name: string （Deployment 名称）
-    - `MetadataAnnotationForm`（管理注解请求对象） 来自 `/src/types/kubernetes/common.ts`
-      - annotations: Record<string, string> （注解键值对）
-      - operation: number （操作，1: 新增；2: 移除；3: 全量替换）
+    - `MetadataAnnotationForm`（管理注解请求对象，来自 `/src/types/kubernetes/common.ts`）
+- Mock
+  - 函数：`/src/mock/kubernetes/workload/deployment.ts#manageDeploymentAnnotationMock()`
+  - 逻辑
+    - 不实现逻辑，直接打印一句日志，格式：`console.log('[Mock] 方法名', ...入参)`
 
-## 删除
-- 页面路由
-  - 无
+## 删除 Deployment
+- 页面效果
+  - 触发条件：列表页 -> 表格 -> 行内“删除应用”按钮点击，弹框（BeeDialog）进行二次确认
+  - 权限限制：`kubernetes:workload:deployment:delete`
 - API 接口
   - URL: `DELETE /kubernetes/clusters/:clusterUid/namespaces/:namespace/deployments/:name`
   - Function: `void deleteDeployment(clusterUid: string, namespace: string, name: string)`
     - clusterUid: string （集群 UID）
     - namespace: string （命名空间名称）
     - name: string （Deployment 名称）
-  - Permission: `kubernetes:workload:deployment:delete`
+- Mock
+  - 函数：`/src/mock/kubernetes/workload/deployment.ts#deleteDeploymentMock()`
+  - 逻辑
+    - 不实现逻辑，直接打印一句日志，格式：`console.log('[Mock] 方法名', ...入参)`
 
-## 批量删除
-- 页面路由
-  - 无
+## 批量删除 Deployment
+- 页面效果
+  - 触发条件：列表页 -> 底部栏 -> “删除”按钮点击，弹框（BeeDialog）进行二次确认
+  - 权限限制：`kubernetes:workload:deployment:delete`
 - API 接口
-  - URL: `DELETE /kubernetes/clusters/:clusterUid/deployments/batch`
+  - URL: `DELETE /kubernetes/clusters/:clusterUid/deployments`
   - Function: `void deleteDeployments(clusterUid: string, uids: string[])`
     - clusterUid: string （集群 UID）
     - uids: string[] （Deployment UID 列表）
-  - Permission: `kubernetes:workload:deployment:delete`
+- Mock
+  - 函数：`/src/mock/kubernetes/workload/deployment.ts#deleteDeploymentsMock()`
+  - 逻辑
+    - 不实现逻辑，直接打印一句日志，格式：`console.log('[Mock] 方法名', ...入参)`
 
-## 导入
-- 页面路由
-  - 无
+## 导入 Deployment
+- 页面效果
+  - 触发条件：列表页 -> 底部栏 -> “导入”按钮点击，弹框（BeeDialog）进行文档上传
+  - 权限限制：`kubernetes:workload:deployment:import`
 - API 接口
   - URL: `POST /kubernetes/clusters/:clusterUid/deployments/import`
   - Function: `void importDeployment(clusterUid: string, formData: FormData, onProgress?: (progressEvent: AxiosProgressEvent) => void)`
     - clusterUid: string （集群 UID）
     - formData: FormData （上传的文件）
-    - onProgress?: (progressEvent: AxiosProgressEvent) => void （上传进度回调）
-  - Permission: `kubernetes:workload:deployment:import`
+    - onProgress?: (progressEvent: AxiosProgressEvent) => void （上传进度回调）- Mock
+- 函数：`/src/mock/kubernetes/workload/deployment.ts#importDeploymentMock()`
+  - 逻辑
+    - 不实现逻辑，直接打印一句日志，格式：`console.log('[Mock] 方法名', ...入参)`
 
-## 导出
-- 页面路由
-  - 无
+## 导出 Deployment
+- 页面效果
+  - 触发条件：列表页 -> 底部栏 -> “导出”按钮点击，保存文档
+  - 权限限制：`kubernetes:workload:deployment:export`
 - API 接口
   - URL: `GET /kubernetes/clusters/:clusterUid/deployments/export`
   - Function: `void exportDeployment(clusterUid: string, params: Partial<DeploymentQueryForm>)`
     - clusterUid: string （集群 UID）
     - `DeploymentQueryForm` 共享【查看 Deployment 详情】章节的实体定义
-  - Permission: `kubernetes:workload:deployment:export`
+- 函数：`/src/mock/kubernetes/workload/deployment.ts#exportDeploymentMock()`
+  - 逻辑
+    - 不实现逻辑，直接打印一句日志，格式：`console.log('[Mock] 方法名', ...入参)`
 
-## 扩缩容
-- 页面路由
-  - 无
+## 扩缩容 Deployment
+- 页面效果
+  - 触发条件：列表页 -> 表格 -> 行内“扩缩容”按钮点击，弹框（BeeDialog）输入副本数并确认
+  - 权限限制：`kubernetes:workload:deployment:edit`
 - API 接口
   - URL: `POST /kubernetes/clusters/:clusterUid/namespaces/:namespace/deployments/:name/scale`
   - Function: `void scaleDeployment(clusterUid: string, namespace: string, name: string, data: DeploymentScaleForm)`
@@ -913,22 +1083,56 @@
     - name: string （Deployment 名称）
     - `DeploymentScaleForm` （Deployment 扩缩容请求对象）
       - replicas: number （期望副本数）
-  - Permission: `kubernetes:workload:deployment:edit`
+- 函数：`/src/mock/kubernetes/workload/deployment.ts#scaleDeploymentMock()`
+  - 逻辑
+    - 不实现逻辑，直接打印一句日志，格式：`console.log('[Mock] 方法名', ...入参)`
 
-## 重启
-- 页面路由
-  - 无
+## 重启 Deployment
+- 页面效果
+  - 触发条件：列表页 -> 表格 -> 行内“重启应用”按钮点击，弹框（BeeDialog）进行二次确认
+  - 权限限制：`kubernetes:workload:deployment:edit`
 - API 接口
   - URL: `POST /kubernetes/clusters/:clusterUid/namespaces/:namespace/deployments/:name/restart`
   - Function: `void restartDeployment(clusterUid: string, namespace: string, name: string)`
     - clusterUid: string （集群 UID）
     - namespace: string （命名空间名称）
     - name: string （Deployment 名称）
-  - Permission: `kubernetes:workload:deployment:edit`
+- 函数：`/src/mock/kubernetes/workload/deployment.ts#restartDeploymentMock()`
+  - 逻辑
+    - 不实现逻辑，直接打印一句日志，格式：`console.log('[Mock] 方法名', ...入参)`
 
-## 回滚
-- 页面路由
-  - 无
+## 暂停 Deployment 更新
+- 页面效果
+  - 触发条件：列表页 -> 表格 -> 行内“暂停更新”按钮点击，弹框（BeeDialog）进行二次确认
+  - 权限限制：`kubernetes:workload:deployment:edit`
+- API 接口
+  - URL: `POST /kubernetes/clusters/:clusterUid/namespaces/:namespace/deployments/:name/pause`
+  - Function: `void pauseDeployment(clusterUid: string, namespace: string, name: string)`
+    - clusterUid: string （集群 UID）
+    - namespace: string （命名空间名称）
+    - name: string （Deployment 名称）
+- 函数：`/src/mock/kubernetes/workload/deployment.ts#pauseDeploymentMock()`
+  - 逻辑
+    - 不实现逻辑，直接打印一句日志，格式：`console.log('[Mock] 方法名', ...入参)`
+
+## 恢复 Deployment 更新
+- 页面效果
+  - 触发条件：列表页 -> 表格 -> 行内“恢复更新”按钮点击，弹框（BeeDialog）进行二次确认
+  - 权限限制：`kubernetes:workload:deployment:edit`
+- API 接口
+  - URL: `POST /kubernetes/clusters/:clusterUid/namespaces/:namespace/deployments/:name/resume`
+  - Function: `void resumeDeployment(clusterUid: string, namespace: string, name: string)`
+    - clusterUid: string （集群 UID）
+    - namespace: string （命名空间名称）
+    - name: string （Deployment 名称）
+- 函数：`/src/mock/kubernetes/workload/deployment.ts#resumeDeploymentMock()`
+  - 逻辑
+    - 不实现逻辑，直接打印一句日志，格式：`console.log('[Mock] 方法名', ...入参)`
+
+## 回滚 Deployment
+- 页面效果
+  - 触发条件：详情页 -> “部署历史” TAB 页 -> 部署历史表格 -> 行内“回滚到这”按钮点击，弹框（BeeDialog）进行二次确认
+  - 权限限制：`kubernetes:workload:deployment:edit`
 - API 接口
   - URL: `POST /kubernetes/clusters/:clusterUid/namespaces/:namespace/deployments/:name/rollback`
   - Function: `void rollbackDeployment(clusterUid: string, namespace: string, name: string, data: DeploymentRollbackForm)`
@@ -937,38 +1141,20 @@
     - name: string （Deployment 名称）
     - `DeploymentRollbackForm` （Deployment 回滚请求对象）
       - revision: number （目标历史版本号）
-  - Permission: `kubernetes:workload:deployment:edit`
-
-## 暂停更新
-- 页面路由
-  - 无
-- API 接口
-  - URL: `POST /kubernetes/clusters/:clusterUid/namespaces/:namespace/deployments/:name/pause`
-  - Function: `void pauseDeployment(clusterUid: string, namespace: string, name: string)`
-    - clusterUid: string （集群 UID）
-    - namespace: string （命名空间名称）
-    - name: string （Deployment 名称）
-  - Permission: `kubernetes:workload:deployment:edit`
-
-## 恢复更新
-- 页面路由
-  - 无
-- API 接口
-  - URL: `POST /kubernetes/clusters/:clusterUid/namespaces/:namespace/deployments/:name/resume`
-  - Function: `void resumeDeployment(clusterUid: string, namespace: string, name: string)`
-    - clusterUid: string （集群 UID）
-    - namespace: string （命名空间名称）
-    - name: string （Deployment 名称）
-  - Permission: `kubernetes:workload:deployment:edit`
+- 函数：`/src/mock/kubernetes/workload/deployment.ts#rollbackDeploymentMock()`
+  - 逻辑
+    - 不实现逻辑，直接打印一句日志，格式：`console.log('[Mock] 方法名', ...入参)`
 
 # StatefulSet 功能
 
 ## 查看 StatefulSet 列表
-- 页面路由
-  - Name: `kubernetes:workload:statefulset`
-  - Path: `/kubernetes/clusters/:clusterUid/statefulsets`
-  - Component: `/src/view/kubernetes/workload/statefulset/index.vue`
-  - Permission: `kubernetes:workload:statefulset:view`
+- 页面效果
+  - 触发条件：功能菜单“StatefulSet 管理”点击
+  - 权限限制：`kubernetes:workload:statefulset:view`
+  - 路由跳转
+    - Name: `kubernetes:workload:statefulset`
+    - Path: `/kubernetes/clusters/:clusterUid/statefulsets`
+    - Component: `/src/view/kubernetes/workload/statefulset/index.vue`
 - API 接口
   - URL: `GET /kubernetes/clusters/:clusterUid/statefulsets`
   - Function: `PageVo<StatefulSetListVo> getStatefulSetList(clusterUid: string, params: Partial<StatefulSetQueryForm>)`
@@ -976,23 +1162,34 @@
     - `StatefulSetQueryForm`（StatefulSet 查询条件请求对象） 继承 `UidEntity`, `PageForm`
       - name: string （StatefulSet 名称）
       - namespace: string （命名空间名称）
-      - status: StatefulSetStatus （状态，来自 `/src/config/kubernetes/workload/statefulset.ts` 包）
+      - status: StatefulSetStatus （状态，来自 `/src/config/kubernetes/workload/statefulset.ts`）
+      - labelSelector: Record<string, string> （标签过滤）
     - `StatefulSetListVo`（StatefulSet 列表项响应对象） 继承 `UidEntity`, `Clustered`, `Namespaced`, `AuditEntity`, `DeletableEntity`
       - name: string （StatefulSet 名称）
       - description?: string （StatefulSet 描述）
-      - status: StatefulSetStatus （状态，来自 `/src/config/kubernetes/workload/statefulset.ts` 包）
+      - status: StatefulSetStatus （状态，来自 `/src/config/kubernetes/workload/statefulset.ts`）
       - statusMsg?: string （状态信息）
       - replicas: number （期望副本数）
       - readyReplicas: number （就绪副本数）
-      - currentReplicas: number （当前版本就绪副本数）
       - updateStrategyType: StatefulSetUpdateStrategyType （更新策略）
+- Mock
+  - 函数：`/src/mock/kubernetes/workload/statefulset.ts#getStatefulSetListMock()`
+  - 数据：`/src/mock/kubernetes/workload/statefulsetData.ts#mockStatefulSets`，模拟数量：32
+  - 逻辑
+    - 基于 `mockStatefulSets` 进行 `status` 精准过滤，得到 `filtered`
+    - 基于 `filtered` 进行 `uid` 精准过滤，得到 `filteredUid`
+    - 基于 `filtered` 进行 `name` 模糊过滤，得到 `filteredName`
+    - 基于 `filteredUid` 和 `filteredName` 求合集，得到 `matched`
+    - 基于 `matched`、`page`、`pageSize` 计算截取并构建返回对象
 
 ## 查看 StatefulSet 详情
-- 页面路由
-  - Name: `kubernetes:workload:statefulset:detail`
-  - Path: `/kubernetes/clusters/:clusterUid/namespaces/:namespace/statefulsets/:name`
-  - Component: `/src/view/kubernetes/workload/statefulset/detail/index.vue`
-  - Permission: `kubernetes:workload:statefulset:view`
+- 页面效果
+  - 触发条件：列表页 -> 表格 -> 行内“详情”按钮点击
+  - 权限限制：`kubernetes:workload:statefulset:view`
+  - 路由跳转
+    - Name: `kubernetes:workload:statefulset:detail`
+    - Path: `/kubernetes/clusters/:clusterUid/namespaces/:namespace/statefulsets/:name`
+    - Component: `/src/view/kubernetes/workload/statefulset/detail/index.vue`
 - API 接口
   - URL: `GET /kubernetes/clusters/:clusterUid/namespaces/:namespace/statefulsets/:name`
   - Function: `StatefulSetDetailVo getStatefulSetDetail(clusterUid: string, namespace: string, name: string)`
@@ -1001,15 +1198,19 @@
     - name: string （StatefulSet 名称）
     - `StatefulSetDetailVo`（StatefulSet 详情响应对象） 继承 `UidEntity`, `Clustered`, `Namespaced`, `AuditEntity`, `DeletableEntity`
       - description?: string （StatefulSet 描述）
-      - status: StatefulSetStatus （状态，来自 `/src/config/kubernetes/workload/statefulset.ts` 包）
+      - status: StatefulSetStatus （状态，来自 `/src/config/kubernetes/workload/statefulset.ts`）
       - statusMsg?: string （状态信息）
       - metadata: ObjectMeta （StatefulSet 的资源元数据，详见 ### ObjectMeta）
       - spec: StatefulSetSpec （StatefulSet 的规格定义，详见 ### StatefulSetSpec）
       - statusObj: StatefulSetStatusObj （StatefulSet 的观测状态，详见 ### StatefulSetStatusObj）
+- Mock
+  - 函数：`/src/mock/kubernetes/workload/statefulset.ts#getStatefulSetDetailMock()`
+  - 数据：`/src/mock/kubernetes/workload/statefulsetData.ts#mockStatefulSetDetail`
+  - 逻辑：直接返回 `mockStatefulSetDetail`
 
 ## 查看 StatefulSet YAML
-- 页面路由
-  - 无
+- 页面效果
+  - 触发条件：详情页 -> “YAML” TAB 点击
 - API 接口
   - URL: `GET /kubernetes/clusters/:clusterUid/namespaces/:namespace/statefulsets/:name/yaml`
   - Function: `StatefulSetYamlVo getStatefulSetYaml(clusterUid: string, namespace: string, name: string)`
@@ -1018,10 +1219,14 @@
     - name: string （StatefulSet 名称）
     - `StatefulSetYamlVo`: （StatefulSet YAML 响应对象）
       - yaml: string（StatefulSet YAML 文本）
+- Mock
+  - 函数：`/src/mock/kubernetes/workload/statefulset.ts#getStatefulSetYamlMock()`
+  - 数据：`/src/mock/kubernetes/workload/statefulsetData.ts#mockStatefulSetYaml`
+  - 逻辑：直接返回 `mockStatefulSetYaml`
 
 ## 查看 StatefulSet 关联 Pod 列表
-- 页面路由
-  - 无
+- 页面效果
+  - 触发条件：详情页 -> “容器组” TAB 点击
 - API 接口
   - URL: `GET /kubernetes/clusters/:clusterUid/namespaces/:namespace/statefulsets/:name/pods`
   - Function: `PageVo<StatefulSetPodListVo> getStatefulSetPodList(clusterUid: string, namespace: string, name: string, params: Partial<StatefulSetPodQueryForm>)`
@@ -1041,10 +1246,19 @@
       - nodeName: string （Pod 所属节点名称）
       - readyContainerCount: number （Pod 就绪容器数量）
       - containerCount: number （Pod 容器总数）
+- Mock
+  - 函数：`/src/mock/kubernetes/workload/statefulset.ts#getStatefulSetPodListMock()`
+  - 数据：`/src/mock/kubernetes/workload/statefulsetData.ts#mockStatefulSetPods`，模拟数量：24
+  - 逻辑
+    - 基于 `mockStatefulSetPods` 进行 `status` 精准过滤，得到 `filtered`
+    - 基于 `filtered` 进行 `uid` 精准过滤，得到 `filteredUid`
+    - 基于 `filtered` 进行 `name` 模糊过滤，得到 `filteredName`
+    - 基于 `filteredUid` 和 `filteredName` 求合集，得到 `matched`
+    - 基于 `matched`、`page`、`pageSize` 计算截取并构建返回对象
 
 ## 查看 StatefulSet 历史版本列表
-- 页面路由
-  - 无
+- 页面效果
+  - 触发条件：详情页 -> “部署历史” TAB 点击
 - API 接口
   - URL: `GET /kubernetes/clusters/:clusterUid/namespaces/:namespace/statefulsets/:name/history`
   - Function: `PageVo<StatefulSetHistoryRevisionListVo> getStatefulSetHistoryRevisionList(clusterUid: string, namespace: string, name: string, params: Partial<StatefulSetHistoryRevisionQueryForm>)`
@@ -1055,10 +1269,16 @@
       - revision: number （版本名称）
       - changeCause: string （变更原因）
     - `StatefulSetHistoryRevisionListVo` （StatefulSet 历史版本列表项响应对象）继承 `HistoryRevision`
+- Mock
+  - 函数：`/src/mock/kubernetes/workload/statefulset.ts#getStatefulSetHistoryRevisionListMock()`
+  - 数据：`/src/mock/kubernetes/workload/statefulsetData.ts#mockStatefulSetHistoryRevisions`，模拟数量：24
+  - 逻辑
+    - 基于 `mockStatefulSetHistoryRevisions` 进行 `revision` 精准过滤和 `changeCause` 模糊过滤，得到 `matched`
+    - 基于 `matched`、`page`、`pageSize` 计算截取并构建返回对象
 
 ## 查看 StatefulSet 关联网络资源
-- 页面路由
-  - 无
+- 页面效果
+  - 触发条件：详情页 -> “关联网络” TAB 点击
 - API 接口
   - URL: `GET /kubernetes/clusters/:clusterUid/namespaces/:namespace/statefulsets/:name/network`
   - Function: `StatefulSetNetworkVo getStatefulSetNetwork(clusterUid: string, namespace: string, name: string)`
@@ -1079,22 +1299,38 @@
         - name: string （Ingress 名称）
         - description: string （Ingress 描述）
         - ingressClassName?: string （Ingress 类名，对应 IngressClassName 资源名称）
+- Mock
+  - 函数：`/src/mock/kubernetes/workload/statefulset.ts#getStatefulSetNetworkMock()`
+  - 数据
+    - `/src/mock/kubernetes/workload/statefulsetData.ts#mockStatefulSetServices`，模拟数量：8
+    - `/src/mock/kubernetes/workload/statefulsetData.ts#mockStatefulSetIngresses`，模拟数量：8
+  - 逻辑
+    - 直接基于 `mockStatefulSetServices`、`mockStatefulSetIngresses` 构建返回对象
 
 ## 查看 StatefulSet 事件列表
-- 页面路由
-  - 无
+- 页面效果
+  - 触发条件：详情页 -> “事件信息” TAB 点击
 - API 接口
   - URL: `GET /kubernetes/clusters/:clusterUid/namespaces/:namespace/statefulsets/:name/events`
   - Function: `PageVo<EventListVo> getStatefulSetEventList(clusterUid: string, namespace: string, name: string, params: Partial<EventQueryForm>)`
     - clusterUid: string （集群 UID）
     - namespace: string （命名空间名称）
     - name: string （StatefulSet 名称）
-    - `EventQueryForm`（事件查询条件请求对象）
-    - `EventListVo`（事件列表项响应对象）
+    - `EventQueryForm`（事件查询条件请求对象，来自 `/src/types/kubernetes/event/index.ts`）
+    - `EventListVo`（事件列表项响应对象，来自 `/src/types/kubernetes/event/index.ts`）
+- Mock
+  - 函数：`/src/mock/kubernetes/workload/statefulset.ts#getStatefulSetEventListMock()`
+  - 数据：`/src/mock/kubernetes/workload/statefulsetData.ts#mockStatefulSetEvents`，模拟数量：24
+  - 逻辑
+    - 基于 `mockStatefulSetEvents` 进行 `type` 精准过滤，得到 `filtered`
+    - 基于 `filtered` 进行 `reason` 精准过滤，得到 `filteredReason`
+    - 基于 `filtered` 进行 `note` 模糊过滤，得到 `filteredNote`
+    - 基于 `filteredReason` 和 `filteredNote` 求合集，得到 `matched`
+    - 基于 `matched`、`page`、`pageSize` 计算截取并构建返回对象
 
 ## 查看 StatefulSet 监控数据
-- 页面路由
-  - 无
+- 页面效果
+  - 触发条件：详情页 -> “监控数据” TAB 点击
 - API 接口
   - URL: `GET /kubernetes/clusters/:clusterUid/namespaces/:namespace/statefulsets/:name/monitor`
   - Function: `StatefulSetMonitorVo getStatefulSetMonitor(clusterUid: string, namespace: string, name: string)`
@@ -1103,13 +1339,20 @@
     - name: string （StatefulSet 名称）
     - `StatefulSetMonitorVo` （StatefulSet 监控响应对象）
       - {TODO: StatefulSetMonitorVo 对象属性}
+- Mock
+  - 函数：`/src/mock/kubernetes/workload/statefulset.ts#getStatefulSetMonitorMock()`
+  - 数据：`/src/mock/kubernetes/workload/statefulsetData.ts#mockStatefulSetMonitor`，模拟数量：24
+  - 逻辑
+    - 直接返回 `mockStatefulSetMonitor` {TODO：暂为空对象}
 
-## 创建
-- 页面路由
-  - Name: `kubernetes:workload:statefulset:create`
-  - Path: `/kubernetes/clusters/:clusterUid/statefulsets/create`
-  - Component: `/src/view/kubernetes/workload/statefulset/create/index.vue`
-  - Permission: `kubernetes:workload:statefulset:create`
+## 创建 StatefulSet
+- 页面效果
+  - 触发条件：列表页 -> 工具栏 -> “创建”按钮点击
+  - 权限限制：`kubernetes:workload:statefulset:create`
+  - 路由跳转
+    - Name: `kubernetes:workload:statefulset:create`
+    - Path: `/kubernetes/clusters/:clusterUid/statefulsets/create`
+    - Component: `/src/view/kubernetes/workload/statefulset/create/index.vue`
 - API 接口
   - URL: `POST /kubernetes/clusters/:clusterUid/statefulsets`
   - Function: `void createStatefulSet(clusterUid: string, data: Partial<StatefulSetCreateForm>)`
@@ -1118,25 +1361,37 @@
       - description?: string （StatefulSet 描述）
       - metadata: ObjectMeta （StatefulSet 的资源元数据，详见 ### ObjectMeta）
       - spec: StatefulSetSpec （StatefulSet 的规格定义，详见 ### StatefulSetSpec）
+- Mock
+  - 函数：`/src/mock/kubernetes/workload/statefulset.ts#createStatefulSetMock()`
+  - 逻辑
+    - 不实现逻辑，直接打印一句日志，格式：`console.log('[Mock] 方法名', ...入参)`
 
-## YAML 创建
-- 页面路由
-  - Name: `kubernetes:workload:statefulset:create:yaml`
-  - Path: `/kubernetes/clusters/:clusterUid/statefulsets/create/yaml`
-  - Component: `/src/view/kubernetes/workload/statefulset/create/yaml.vue`
-  - Permission: `kubernetes:workload:statefulset:create`
+## 创建 StatefulSet（YAML 方式）
+- 页面效果
+  - 触发条件：列表页 -> 工具栏 -> “YAML”按钮点击
+  - 权限限制：`kubernetes:workload:statefulset:create`
+  - 路由跳转
+    - Name: `kubernetes:workload:statefulset:create:yaml`
+    - Path: `/kubernetes/clusters/:clusterUid/statefulsets/create/yaml`
+    - Component: `/src/view/kubernetes/workload/statefulset/create/yaml.vue`
 - API 接口
   - URL: `POST /kubernetes/clusters/:clusterUid/statefulsets/yaml`
   - Function: `void createStatefulSetYaml(clusterUid: string, yaml: string)`
     - clusterUid: string （集群 UID）
     - yaml: string （StatefulSet YAML 字符串）
+- Mock
+  - 函数：`/src/mock/kubernetes/workload/statefulset.ts#createStatefulSetYamlMock()`
+  - 逻辑
+    - 不实现逻辑，直接打印一句日志，格式：`console.log('[Mock] 方法名')`
 
-## 更新
-- 页面路由
-  - Name: `kubernetes:workload:statefulset:edit`
-  - Path: `/kubernetes/clusters/:clusterUid/namespaces/:namespace/statefulsets/:name/edit`
-  - Component: `/src/view/kubernetes/workload/statefulset/edit/index.vue`
-  - Permission: `kubernetes:workload:statefulset:edit`
+## 更新 StatefulSet
+- 页面效果
+  - 触发条件：列表页 -> 表格 -> 行内“编辑应用”按钮点击
+  - 权限限制：`kubernetes:workload:statefulset:edit`
+  - 路由跳转
+    - Name: `kubernetes:workload:statefulset:edit`
+    - Path: `/kubernetes/clusters/:clusterUid/namespaces/:namespace/statefulsets/:name/edit`
+    - Component: `/src/view/kubernetes/workload/statefulset/edit/index.vue`
 - API 接口
   - URL: `PUT /kubernetes/clusters/:clusterUid/namespaces/:namespace/statefulsets/:name`
   - Function: `void updateStatefulSet(clusterUid: string, namespace: string, name: string, data: Partial<StatefulSetUpdateForm>)`
@@ -1147,13 +1402,19 @@
       - description?: string （StatefulSet 描述）
       - metadata: ObjectMeta （StatefulSet 的资源元数据，详见 ### ObjectMeta）
       - spec: StatefulSetSpec （StatefulSet 的规格定义，详见 ### StatefulSetSpec）
+- Mock
+  - 函数：`/src/mock/kubernetes/workload/statefulset.ts#updateStatefulSetMock()`
+  - 逻辑
+    - 不实现逻辑，直接打印一句日志，格式：`console.log('[Mock] 方法名', ...入参)`
 
-## YAML 更新
-- 页面路由
-  - Name: `kubernetes:workload:statefulset:edit:yaml`
-  - Path: `/kubernetes/clusters/:clusterUid/namespaces/:namespace/statefulsets/:name/edit/yaml`
-  - Component: `/src/view/kubernetes/workload/statefulset/edit/yaml.vue`
-  - Permission: `kubernetes:workload:statefulset:edit`
+## 更新 StatefulSet（YAML 方式）
+- 页面效果
+  - 触发条件：列表页 -> 表格 -> 行内“编辑YAML”按钮点击
+  - 权限限制：`kubernetes:workload:statefulset:edit`
+  - 路由跳转
+    - Name: `kubernetes:workload:statefulset:edit:yaml`
+    - Path: `/kubernetes/clusters/:clusterUid/namespaces/:namespace/statefulsets/:name/edit/yaml`
+    - Component: `/src/view/kubernetes/workload/statefulset/edit/yaml.vue`
 - API 接口
   - URL: `PUT /kubernetes/clusters/:clusterUid/namespaces/:namespace/statefulsets/:name/yaml`
   - Function: `void updateStatefulSetYaml(clusterUid: string, namespace: string, name: string, yaml: string)`
@@ -1161,78 +1422,109 @@
     - namespace: string （命名空间名称）
     - name: string （StatefulSet 名称）
     - yaml: string （StatefulSet YAML 字符串）
+- Mock
+  - 函数：`/src/mock/kubernetes/workload/statefulset.ts#updateStatefulSetYamlMock()`
+  - 逻辑
+    - 不实现逻辑，直接打印一句日志，格式：`console.log('[Mock] 方法名')`
 
-## 管理标签
-- 页面路由
-  - 无
+## 管理 StatefulSet 标签
+- 页面效果
+  - 触发条件：列表页 -> 表格 -> 行内“修改标签”按钮点击
+  - 权限限制：`kubernetes:workload:statefulset:edit`
 - API 接口
   - URL: `POST /kubernetes/clusters/:clusterUid/namespaces/:namespace/statefulsets/:name/labels`
   - Function: `void manageStatefulSetLabel(clusterUid: string, namespace: string, name: string, data: MetadataLabelForm)`
     - clusterUid: string （集群 UID）
     - namespace: string （命名空间名称）
     - name: string （StatefulSet 名称）
-    - `MetadataLabelForm`（管理标签请求对象） 来自 `/src/types/kubernetes/common.ts`
+    - `MetadataLabelForm`（管理标签请求对象，来自 `/src/types/kubernetes/common.ts`）
       - labels: Record<string, string> （标签键值对）
       - operation: number （操作，1: 新增；2: 移除；3: 全量替换）
+- Mock
+  - 函数：`/src/mock/kubernetes/workload/statefulset.ts#manageStatefulSetLabelMock()`
+  - 逻辑
+    - 不实现逻辑，直接打印一句日志，格式：`console.log('[Mock] 方法名', ...入参)`
 
-## 管理注解
-- 页面路由
-  - 无
+## 管理 StatefulSet 注解
+- 页面效果
+  - 触发条件：列表页 -> 表格 -> 行内“修改注解”按钮点击
+  - 权限限制：`kubernetes:workload:statefulset:edit`
 - API 接口
   - URL: `POST /kubernetes/clusters/:clusterUid/namespaces/:namespace/statefulsets/:name/annotations`
   - Function: `void manageStatefulSetAnnotation(clusterUid: string, namespace: string, name: string, data: MetadataAnnotationForm)`
     - clusterUid: string （集群 UID）
     - namespace: string （命名空间名称）
     - name: string （StatefulSet 名称）
-    - `MetadataAnnotationForm`（管理注解请求对象） 来自 `/src/types/kubernetes/common.ts`
+    - `MetadataAnnotationForm`（管理注解请求对象，来自 `/src/types/kubernetes/common.ts`）
       - annotations: Record<string, string> （注解键值对）
       - operation: number （操作，1: 新增；2: 移除；3: 全量替换）
+- Mock
+  - 函数：`/src/mock/kubernetes/workload/statefulset.ts#manageStatefulSetAnnotationMock()`
+  - 逻辑
+    - 不实现逻辑，直接打印一句日志，格式：`console.log('[Mock] 方法名', ...入参)`
 
-## 删除
-- 页面路由
-  - 无
+## 删除 StatefulSet
+- 页面效果
+  - 触发条件：列表页 -> 表格 -> 行内“删除应用”按钮点击，弹框（BeeDialog）进行二次确认
+  - 权限限制：`kubernetes:workload:statefulset:delete`
 - API 接口
   - URL: `DELETE /kubernetes/clusters/:clusterUid/namespaces/:namespace/statefulsets/:name`
   - Function: `void deleteStatefulSet(clusterUid: string, namespace: string, name: string)`
     - clusterUid: string （集群 UID）
     - namespace: string （命名空间名称）
     - name: string （StatefulSet 名称）
-  - Permission: `kubernetes:workload:statefulset:delete`
+- Mock
+  - 函数：`/src/mock/kubernetes/workload/statefulset.ts#deleteStatefulSetMock()`
+  - 逻辑
+    - 不实现逻辑，直接打印一句日志，格式：`console.log('[Mock] 方法名', ...入参)`
 
-## 批量删除
-- 页面路由
-  - 无
+## 批量删除 StatefulSet
+- 页面效果
+  - 触发条件：列表页 -> 底部栏 -> “删除”按钮点击，弹框（BeeDialog）进行二次确认
+  - 权限限制：`kubernetes:workload:statefulset:delete`
 - API 接口
-  - URL: `DELETE /kubernetes/clusters/:clusterUid/statefulsets/batch`
+  - URL: `DELETE /kubernetes/clusters/:clusterUid/statefulsets`
   - Function: `void deleteStatefulSets(clusterUid: string, uids: string[])`
     - clusterUid: string （集群 UID）
     - uids: string[] （StatefulSet UID 列表）
-  - Permission: `kubernetes:workload:statefulset:delete`
+- Mock
+  - 函数：`/src/mock/kubernetes/workload/statefulset.ts#deleteStatefulSetsMock()`
+  - 逻辑
+    - 不实现逻辑，直接打印一句日志，格式：`console.log('[Mock] 方法名', ...入参)`
 
-## 导入
-- 页面路由
-  - 无
+## 导入 StatefulSet
+- 页面效果
+  - 触发条件：列表页 -> 底部栏 -> “导入”按钮点击，弹框（BeeDialog）进行文档上传
+  - 权限限制：`kubernetes:workload:statefulset:import`
 - API 接口
   - URL: `POST /kubernetes/clusters/:clusterUid/statefulsets/import`
   - Function: `void importStatefulSet(clusterUid: string, formData: FormData, onProgress?: (progressEvent: AxiosProgressEvent) => void)`
     - clusterUid: string （集群 UID）
     - formData: FormData （上传的文件）
     - onProgress?: (progressEvent: AxiosProgressEvent) => void （上传进度回调）
-  - Permission: `kubernetes:workload:statefulset:import`
+- Mock
+  - 函数：`/src/mock/kubernetes/workload/statefulset.ts#importStatefulSetMock()`
+  - 逻辑
+    - 不实现逻辑，直接打印一句日志，格式：`console.log('[Mock] 方法名', ...入参)`
 
-## 导出
-- 页面路由
-  - 无
+## 导出 StatefulSet
+- 页面效果
+  - 触发条件：列表页 -> 底部栏 -> “导出”按钮点击，保存文档
+  - 权限限制：`kubernetes:workload:statefulset:export`
 - API 接口
   - URL: `GET /kubernetes/clusters/:clusterUid/statefulsets/export`
   - Function: `void exportStatefulSet(clusterUid: string, params: Partial<StatefulSetQueryForm>)`
     - clusterUid: string （集群 UID）
     - `StatefulSetQueryForm` 共享【查看 StatefulSet 详情】章节的实体定义
-  - Permission: `kubernetes:workload:statefulset:export`
+- Mock
+  - 函数：`/src/mock/kubernetes/workload/statefulset.ts#exportStatefulSetMock()`
+  - 逻辑
+    - 不实现逻辑，直接打印一句日志，格式：`console.log('[Mock] 方法名', ...入参)`
 
-## 扩缩容
-- 页面路由
-  - 无
+## 扩缩容 StatefulSet
+- 页面效果
+  - 触发条件：列表页 -> 表格 -> 行内“扩缩容”按钮点击，弹框（BeeDialog）输入副本数并确认
+  - 权限限制：`kubernetes:workload:statefulset:edit`
 - API 接口
   - URL: `POST /kubernetes/clusters/:clusterUid/namespaces/:namespace/statefulsets/:name/scale`
   - Function: `void scaleStatefulSet(clusterUid: string, namespace: string, name: string, data: StatefulSetScaleForm)`
@@ -1241,11 +1533,15 @@
     - name: string （StatefulSet 名称）
     - `StatefulSetScaleForm` （StatefulSet 扩缩容请求对象）
       - replicas: number （期望副本数）
-  - Permission: `kubernetes:workload:statefulset:edit`
+- Mock
+  - 函数：`/src/mock/kubernetes/workload/statefulset.ts#scaleStatefulSetMock()`
+  - 逻辑
+    - 不实现逻辑，直接打印一句日志，格式：`console.log('[Mock] 方法名', ...入参)`
 
-## 滚动更新分区
-- 页面路由
-  - 无
+## 滚动更新分区 StatefulSet
+- 页面效果
+  - 触发条件：列表页 -> 表格 -> 行内“滚动更新分区”按钮点击，弹框（BeeDialog）输入分区序号并确认
+  - 权限限制：`kubernetes:workload:statefulset:edit`
 - API 接口
   - URL: `POST /kubernetes/clusters/:clusterUid/namespaces/:namespace/statefulsets/:name/partition`
   - Function: `void partitionStatefulSet(clusterUid: string, namespace: string, name: string, data: StatefulSetPartitionForm)`
@@ -1254,22 +1550,60 @@
     - name: string （StatefulSet 名称）
     - `StatefulSetPartitionForm` （StatefulSet 滚动更新分区请求对象）
       - partition: number （分区序号，序号大于等于该值的 Pod 才会被滚动更新）
-  - Permission: `kubernetes:workload:statefulset:edit`
+- Mock
+  - 函数：`/src/mock/kubernetes/workload/statefulset.ts#partitionStatefulSetMock()`
+  - 逻辑
+    - 不实现逻辑，直接打印一句日志，格式：`console.log('[Mock] 方法名', ...入参)`
 
-## 重启
-- 页面路由
-  - 无
+## 重启 StatefulSet
+- 页面效果
+  - 触发条件：列表页 -> 表格 -> 行内“重启应用”按钮点击，弹框（BeeDialog）进行二次确认
+  - 权限限制：`kubernetes:workload:statefulset:edit`
 - API 接口
   - URL: `POST /kubernetes/clusters/:clusterUid/namespaces/:namespace/statefulsets/:name/restart`
   - Function: `void restartStatefulSet(clusterUid: string, namespace: string, name: string)`
     - clusterUid: string （集群 UID）
     - namespace: string （命名空间名称）
     - name: string （StatefulSet 名称）
-  - Permission: `kubernetes:workload:statefulset:edit`
+- Mock
+  - 函数：`/src/mock/kubernetes/workload/statefulset.ts#restartStatefulSetMock()`
+  - 逻辑
+    - 不实现逻辑，直接打印一句日志，格式：`console.log('[Mock] 方法名', ...入参)`
 
-## 回滚
-- 页面路由
-  - 无
+## 暂停 StatefulSet 更新
+- 页面效果
+  - 触发条件：列表页 -> 表格 -> 行内“暂停更新”按钮点击，弹框（BeeDialog）进行二次确认
+  - 权限限制：`kubernetes:workload:statefulset:edit`
+- API 接口
+  - URL: `POST /kubernetes/clusters/:clusterUid/namespaces/:namespace/statefulsets/:name/pause`
+  - Function: `void pauseStatefulSet(clusterUid: string, namespace: string, name: string)`
+    - clusterUid: string （集群 UID）
+    - namespace: string （命名空间名称）
+    - name: string （StatefulSet 名称）
+- Mock
+  - 函数：`/src/mock/kubernetes/workload/statefulset.ts#pauseStatefulSetMock()`
+  - 逻辑
+    - 不实现逻辑，直接打印一句日志，格式：`console.log('[Mock] 方法名', ...入参)`
+
+## 恢复 StatefulSet 更新
+- 页面效果
+  - 触发条件：列表页 -> 表格 -> 行内“恢复更新”按钮点击，弹框（BeeDialog）进行二次确认
+  - 权限限制：`kubernetes:workload:statefulset:edit`
+- API 接口
+  - URL: `POST /kubernetes/clusters/:clusterUid/namespaces/:namespace/statefulsets/:name/resume`
+  - Function: `void resumeStatefulSet(clusterUid: string, namespace: string, name: string)`
+    - clusterUid: string （集群 UID）
+    - namespace: string （命名空间名称）
+    - name: string （StatefulSet 名称）
+- Mock
+  - 函数：`/src/mock/kubernetes/workload/statefulset.ts#resumeStatefulSetMock()`
+  - 逻辑
+    - 不实现逻辑，直接打印一句日志，格式：`console.log('[Mock] 方法名', ...入参)`
+
+## 回滚 StatefulSet
+- 页面效果
+  - 触发条件：详情页 -> “部署历史” TAB 页 -> 部署历史表格 -> 行内“回滚到这”按钮点击，弹框（BeeDialog）进行二次确认
+  - 权限限制：`kubernetes:workload:statefulset:edit`
 - API 接口
   - URL: `POST /kubernetes/clusters/:clusterUid/namespaces/:namespace/statefulsets/:name/rollback`
   - Function: `void rollbackStatefulSet(clusterUid: string, namespace: string, name: string, data: StatefulSetRollbackForm)`
@@ -1278,38 +1612,21 @@
     - name: string （StatefulSet 名称）
     - `StatefulSetRollbackForm` （StatefulSet 回滚请求对象）
       - revision: number （目标历史版本号）
-  - Permission: `kubernetes:workload:statefulset:edit`
-
-## 暂停更新
-- 页面路由
-  - 无
-- API 接口
-  - URL: `POST /kubernetes/clusters/:clusterUid/namespaces/:namespace/statefulsets/:name/pause`
-  - Function: `void pauseStatefulSet(clusterUid: string, namespace: string, name: string)`
-    - clusterUid: string （集群 UID）
-    - namespace: string （命名空间名称）
-    - name: string （StatefulSet 名称）
-  - Permission: `kubernetes:workload:statefulset:edit`
-
-## 恢复更新
-- 页面路由
-  - 无
-- API 接口
-  - URL: `POST /kubernetes/clusters/:clusterUid/namespaces/:namespace/statefulsets/:name/resume`
-  - Function: `void resumeStatefulSet(clusterUid: string, namespace: string, name: string)`
-    - clusterUid: string （集群 UID）
-    - namespace: string （命名空间名称）
-    - name: string （StatefulSet 名称）
-  - Permission: `kubernetes:workload:statefulset:edit`
+- Mock
+  - 函数：`/src/mock/kubernetes/workload/statefulset.ts#rollbackStatefulSetMock()`
+  - 逻辑
+    - 不实现逻辑，直接打印一句日志，格式：`console.log('[Mock] 方法名', ...入参)`
 
 # DaemonSet 功能
 
 ## 查看 DaemonSet 列表
-- 页面路由
-  - Name: `kubernetes:workload:daemonset`
-  - Path: `/kubernetes/clusters/:clusterUid/daemonsets`
-  - Component: `/src/view/kubernetes/workload/daemonset/index.vue`
-  - Permission: `kubernetes:workload:daemonset:view`
+- 页面效果
+  - 触发条件：功能菜单“DaemonSet 管理”点击
+  - 权限限制：`kubernetes:workload:daemonset:view`
+  - 路由跳转
+    - Name: `kubernetes:workload:daemonset`
+    - Path: `/kubernetes/clusters/:clusterUid/daemonsets`
+    - Component: `/src/view/kubernetes/workload/daemonset/index.vue`
 - API 接口
   - URL: `GET /kubernetes/clusters/:clusterUid/daemonsets`
   - Function: `PageVo<DaemonSetListVo> getDaemonSetList(clusterUid: string, params: Partial<DaemonSetQueryForm>)`
@@ -1317,22 +1634,34 @@
     - `DaemonSetQueryForm`（DaemonSet 查询条件请求对象） 继承 `UidEntity`, `PageForm`
       - name: string （DaemonSet 名称）
       - namespace: string （命名空间名称）
-      - status: DaemonSetStatus （状态，来自 `/src/config/kubernetes/workload/daemonset.ts` 包）
+      - status: DaemonSetStatus （状态，来自 `/src/config/kubernetes/workload/daemonset.ts`）
+      - labelSelector: Record<string, string> （标签过滤）
     - `DaemonSetListVo`（DaemonSet 列表项响应对象） 继承 `UidEntity`, `Clustered`, `Namespaced`, `AuditEntity`, `DeletableEntity`
       - name: string （DaemonSet 名称）
       - description?: string （DaemonSet 描述）
-      - status: DaemonSetStatus （状态，来自 `/src/config/kubernetes/workload/daemonset.ts` 包）
+      - status: DaemonSetStatus （状态，来自 `/src/config/kubernetes/workload/daemonset.ts`）
       - statusMsg?: string （状态信息）
       - desiredNumberScheduled: number （目标调度 Pod 总数）
       - numberReady: number （就绪 Pod 数）
       - updateStrategyType: DaemonSetUpdateStrategyType （更新策略）
+- Mock
+  - 函数：`/src/mock/kubernetes/workload/daemonset.ts#getDaemonSetListMock()`
+  - 数据：`/src/mock/kubernetes/workload/daemonsetData.ts#mockDaemonSets`，模拟数量：32
+  - 逻辑
+    - 基于 `mockDaemonSets` 进行 `status` 精准过滤，得到 `filtered`
+    - 基于 `filtered` 进行 `uid` 精准过滤，得到 `filteredUid`
+    - 基于 `filtered` 进行 `name` 模糊过滤，得到 `filteredName`
+    - 基于 `filteredUid` 和 `filteredName` 求合集，得到 `matched`
+    - 基于 `matched`、`page`、`pageSize` 计算截取并构建返回对象
 
 ## 查看 DaemonSet 详情
-- 页面路由
-  - Name: `kubernetes:workload:daemonset:detail`
-  - Path: `/kubernetes/clusters/:clusterUid/namespaces/:namespace/daemonsets/:name`
-  - Component: `/src/view/kubernetes/workload/daemonset/detail/index.vue`
-  - Permission: `kubernetes:workload:daemonset:view`
+- 页面效果
+  - 触发条件：列表页 -> 表格 -> 行内“详情”按钮点击
+  - 权限限制：`kubernetes:workload:daemonset:view`
+  - 路由跳转
+    - Name: `kubernetes:workload:daemonset:detail`
+    - Path: `/kubernetes/clusters/:clusterUid/namespaces/:namespace/daemonsets/:name`
+    - Component: `/src/view/kubernetes/workload/daemonset/detail/index.vue`
 - API 接口
   - URL: `GET /kubernetes/clusters/:clusterUid/namespaces/:namespace/daemonsets/:name`
   - Function: `DaemonSetDetailVo getDaemonSetDetail(clusterUid: string, namespace: string, name: string)`
@@ -1341,15 +1670,19 @@
     - name: string （DaemonSet 名称）
     - `DaemonSetDetailVo`（DaemonSet 详情响应对象） 继承 `UidEntity`, `Clustered`, `Namespaced`, `AuditEntity`, `DeletableEntity`
       - description?: string （DaemonSet 描述）
-      - status: DaemonSetStatus （状态，来自 `/src/config/kubernetes/workload/daemonset.ts` 包）
+      - status: DaemonSetStatus （状态，来自 `/src/config/kubernetes/workload/daemonset.ts`）
       - statusMsg?: string （状态信息）
       - metadata: ObjectMeta （DaemonSet 的资源元数据，详见 ### ObjectMeta）
       - spec: DaemonSetSpec （DaemonSet 的规格定义，详见 ### DaemonSetSpec）
       - statusObj: DaemonSetStatusObj （DaemonSet 的观测状态，详见 ### DaemonSetStatusObj）
+- Mock
+  - 函数：`/src/mock/kubernetes/workload/daemonset.ts#getDaemonSetDetailMock()`
+  - 数据：`/src/mock/kubernetes/workload/daemonsetData.ts#mockDaemonSetDetail`
+  - 逻辑：直接返回 `mockDaemonSetDetail`
 
 ## 查看 DaemonSet YAML
-- 页面路由
-  - 无
+- 页面效果
+  - 触发条件：详情页 -> “YAML” TAB 点击
 - API 接口
   - URL: `GET /kubernetes/clusters/:clusterUid/namespaces/:namespace/daemonsets/:name/yaml`
   - Function: `DaemonSetYamlVo getDaemonSetYaml(clusterUid: string, namespace: string, name: string)`
@@ -1358,10 +1691,14 @@
     - name: string （DaemonSet 名称）
     - `DaemonSetYamlVo`: （DaemonSet YAML 响应对象）
       - yaml: string（DaemonSet YAML 文本）
+- Mock
+  - 函数：`/src/mock/kubernetes/workload/daemonset.ts#getDaemonSetYamlMock()`
+  - 数据：`/src/mock/kubernetes/workload/daemonsetData.ts#mockDaemonSetYaml`
+  - 逻辑：直接返回 `mockDaemonSetYaml`
 
 ## 查看 DaemonSet 关联 Pod 列表
-- 页面路由
-  - 无
+- 页面效果
+  - 触发条件：详情页 -> “容器组” TAB 点击
 - API 接口
   - URL: `GET /kubernetes/clusters/:clusterUid/namespaces/:namespace/daemonsets/:name/pods`
   - Function: `PageVo<DaemonSetPodListVo> getDaemonSetPodList(clusterUid: string, namespace: string, name: string, params: Partial<DaemonSetPodQueryForm>)`
@@ -1381,10 +1718,19 @@
       - nodeName: string （Pod 所属节点名称）
       - readyContainerCount: number （Pod 就绪容器数量）
       - containerCount: number （Pod 容器总数）
+- Mock
+  - 函数：`/src/mock/kubernetes/workload/daemonset.ts#getDaemonSetPodListMock()`
+  - 数据：`/src/mock/kubernetes/workload/daemonsetData.ts#mockDaemonSetPods`，模拟数量：24
+  - 逻辑
+    - 基于 `mockDaemonSetPods` 进行 `status` 精准过滤，得到 `filtered`
+    - 基于 `filtered` 进行 `uid` 精准过滤，得到 `filteredUid`
+    - 基于 `filtered` 进行 `name` 模糊过滤，得到 `filteredName`
+    - 基于 `filteredUid` 和 `filteredName` 求合集，得到 `matched`
+    - 基于 `matched`、`page`、`pageSize` 计算截取并构建返回对象
 
 ## 查看 DaemonSet 历史版本列表
-- 页面路由
-  - 无
+- 页面效果
+  - 触发条件：详情页 -> “部署历史” TAB 点击
 - API 接口
   - URL: `GET /kubernetes/clusters/:clusterUid/namespaces/:namespace/daemonsets/:name/history`
   - Function: `PageVo<DaemonSetHistoryRevisionListVo> getDaemonSetHistoryRevisionList(clusterUid: string, namespace: string, name: string, params: Partial<DaemonSetHistoryRevisionQueryForm>)`
@@ -1395,10 +1741,16 @@
       - revision: number （版本名称）
       - changeCause: string （变更原因）
     - `DaemonSetHistoryRevisionListVo` （DaemonSet 历史版本列表项响应对象）继承 `HistoryRevision`
+- Mock
+  - 函数：`/src/mock/kubernetes/workload/daemonset.ts#getDaemonSetHistoryRevisionListMock()`
+  - 数据：`/src/mock/kubernetes/workload/daemonsetData.ts#mockDaemonSetHistoryRevisions`，模拟数量：24
+  - 逻辑
+    - 基于 `mockDaemonSetHistoryRevisions` 进行 `revision` 精准过滤和 `changeCause` 模糊过滤，得到 `matched`
+    - 基于 `matched`、`page`、`pageSize` 计算截取并构建返回对象
 
 ## 查看 DaemonSet 关联网络资源
-- 页面路由
-  - 无
+- 页面效果
+  - 触发条件：详情页 -> “关联网络” TAB 点击
 - API 接口
   - URL: `GET /kubernetes/clusters/:clusterUid/namespaces/:namespace/daemonsets/:name/network`
   - Function: `DaemonSetNetworkVo getDaemonSetNetwork(clusterUid: string, namespace: string, name: string)`
@@ -1419,22 +1771,38 @@
         - name: string （Ingress 名称）
         - description: string （Ingress 描述）
         - ingressClassName?: string （Ingress 类名，对应 IngressClassName 资源名称）
+- Mock
+  - 函数：`/src/mock/kubernetes/workload/daemonset.ts#getDaemonSetNetworkMock()`
+  - 数据
+    - `/src/mock/kubernetes/workload/daemonsetData.ts#mockDaemonSetServices`，模拟数量：8
+    - `/src/mock/kubernetes/workload/daemonsetData.ts#mockDaemonSetIngresses`，模拟数量：8
+  - 逻辑
+    - 直接基于 `mockDaemonSetServices`、`mockDaemonSetIngresses` 构建返回对象
 
 ## 查看 DaemonSet 事件列表
-- 页面路由
-  - 无
+- 页面效果
+  - 触发条件：详情页 -> “事件信息” TAB 点击
 - API 接口
   - URL: `GET /kubernetes/clusters/:clusterUid/namespaces/:namespace/daemonsets/:name/events`
   - Function: `PageVo<EventListVo> getDaemonSetEventList(clusterUid: string, namespace: string, name: string, params: Partial<EventQueryForm>)`
     - clusterUid: string （集群 UID）
     - namespace: string （命名空间名称）
     - name: string （DaemonSet 名称）
-    - `EventQueryForm`（事件查询条件请求对象）
-    - `EventListVo`（事件列表项响应对象）
+    - `EventQueryForm`（事件查询条件请求对象，来自 `/src/types/kubernetes/event/index.ts`）
+    - `EventListVo`（事件列表项响应对象，来自 `/src/types/kubernetes/event/index.ts`）
+- Mock
+  - 函数：`/src/mock/kubernetes/workload/daemonset.ts#getDaemonSetEventListMock()`
+  - 数据：`/src/mock/kubernetes/workload/daemonsetData.ts#mockDaemonSetEvents`，模拟数量：24
+  - 逻辑
+    - 基于 `mockDaemonSetEvents` 进行 `type` 精准过滤，得到 `filtered`
+    - 基于 `filtered` 进行 `reason` 精准过滤，得到 `filteredReason`
+    - 基于 `filtered` 进行 `note` 模糊过滤，得到 `filteredNote`
+    - 基于 `filteredReason` 和 `filteredNote` 求合集，得到 `matched`
+    - 基于 `matched`、`page`、`pageSize` 计算截取并构建返回对象
 
 ## 查看 DaemonSet 监控数据
-- 页面路由
-  - 无
+- 页面效果
+  - 触发条件：详情页 -> “监控数据” TAB 点击
 - API 接口
   - URL: `GET /kubernetes/clusters/:clusterUid/namespaces/:namespace/daemonsets/:name/monitor`
   - Function: `DaemonSetMonitorVo getDaemonSetMonitor(clusterUid: string, namespace: string, name: string)`
@@ -1443,13 +1811,20 @@
     - name: string （DaemonSet 名称）
     - `DaemonSetMonitorVo` （DaemonSet 监控响应对象）
       - {TODO: DaemonSetMonitorVo 对象属性}
+- Mock
+  - 函数：`/src/mock/kubernetes/workload/daemonset.ts#getDaemonSetMonitorMock()`
+  - 数据：`/src/mock/kubernetes/workload/daemonsetData.ts#mockDaemonSetMonitor`，模拟数量：24
+  - 逻辑
+    - 直接返回 `mockDaemonSetMonitor` {TODO：暂为空对象}
 
-## 创建
-- 页面路由
-  - Name: `kubernetes:workload:daemonset:create`
-  - Path: `/kubernetes/clusters/:clusterUid/daemonsets/create`
-  - Component: `/src/view/kubernetes/workload/daemonset/create/index.vue`
-  - Permission: `kubernetes:workload:daemonset:create`
+## 创建 DaemonSet
+- 页面效果
+  - 触发条件：列表页 -> 工具栏 -> “创建”按钮点击
+  - 权限限制：`kubernetes:workload:daemonset:create`
+  - 路由跳转
+    - Name: `kubernetes:workload:daemonset:create`
+    - Path: `/kubernetes/clusters/:clusterUid/daemonsets/create`
+    - Component: `/src/view/kubernetes/workload/daemonset/create/index.vue`
 - API 接口
   - URL: `POST /kubernetes/clusters/:clusterUid/daemonsets`
   - Function: `void createDaemonSet(clusterUid: string, data: Partial<DaemonSetCreateForm>)`
@@ -1458,25 +1833,37 @@
       - description?: string （DaemonSet 描述）
       - metadata: ObjectMeta （DaemonSet 的资源元数据，详见 ### ObjectMeta）
       - spec: DaemonSetSpec （DaemonSet 的规格定义，详见 ### DaemonSetSpec）
+- Mock
+  - 函数：`/src/mock/kubernetes/workload/daemonset.ts#createDaemonSetMock()`
+  - 逻辑
+    - 不实现逻辑，直接打印一句日志，格式：`console.log('[Mock] 方法名', ...入参)`
 
-## YAML 创建
-- 页面路由
-  - Name: `kubernetes:workload:daemonset:create:yaml`
-  - Path: `/kubernetes/clusters/:clusterUid/daemonsets/create/yaml`
-  - Component: `/src/view/kubernetes/workload/daemonset/create/yaml.vue`
-  - Permission: `kubernetes:workload:daemonset:create`
+## 创建 DaemonSet（YAML 方式）
+- 页面效果
+  - 触发条件：列表页 -> 工具栏 -> “YAML”按钮点击
+  - 权限限制：`kubernetes:workload:daemonset:create`
+  - 路由跳转
+    - Name: `kubernetes:workload:daemonset:create:yaml`
+    - Path: `/kubernetes/clusters/:clusterUid/daemonsets/create/yaml`
+    - Component: `/src/view/kubernetes/workload/daemonset/create/yaml.vue`
 - API 接口
   - URL: `POST /kubernetes/clusters/:clusterUid/daemonsets/yaml`
   - Function: `void createDaemonSetYaml(clusterUid: string, yaml: string)`
     - clusterUid: string （集群 UID）
     - yaml: string （DaemonSet YAML 字符串）
+- Mock
+  - 函数：`/src/mock/kubernetes/workload/daemonset.ts#createDaemonSetYamlMock()`
+  - 逻辑
+    - 不实现逻辑，直接打印一句日志，格式：`console.log('[Mock] 方法名')`
 
-## 更新
-- 页面路由
-  - Name: `kubernetes:workload:daemonset:edit`
-  - Path: `/kubernetes/clusters/:clusterUid/namespaces/:namespace/daemonsets/:name/edit`
-  - Component: `/src/view/kubernetes/workload/daemonset/edit/index.vue`
-  - Permission: `kubernetes:workload:daemonset:edit`
+## 更新 DaemonSet
+- 页面效果
+  - 触发条件：列表页 -> 表格 -> 行内“编辑应用”按钮点击
+  - 权限限制：`kubernetes:workload:daemonset:edit`
+  - 路由跳转
+    - Name: `kubernetes:workload:daemonset:edit`
+    - Path: `/kubernetes/clusters/:clusterUid/namespaces/:namespace/daemonsets/:name/edit`
+    - Component: `/src/view/kubernetes/workload/daemonset/edit/index.vue`
 - API 接口
   - URL: `PUT /kubernetes/clusters/:clusterUid/namespaces/:namespace/daemonsets/:name`
   - Function: `void updateDaemonSet(clusterUid: string, namespace: string, name: string, data: Partial<DaemonSetUpdateForm>)`
@@ -1487,13 +1874,19 @@
       - description?: string （DaemonSet 描述）
       - metadata: ObjectMeta （DaemonSet 的资源元数据，详见 ### ObjectMeta）
       - spec: DaemonSetSpec （DaemonSet 的规格定义，详见 ### DaemonSetSpec）
+- Mock
+  - 函数：`/src/mock/kubernetes/workload/daemonset.ts#updateDaemonSetMock()`
+  - 逻辑
+    - 不实现逻辑，直接打印一句日志，格式：`console.log('[Mock] 方法名', ...入参)`
 
-## YAML 更新
-- 页面路由
-  - Name: `kubernetes:workload:daemonset:edit:yaml`
-  - Path: `/kubernetes/clusters/:clusterUid/namespaces/:namespace/daemonsets/:name/edit/yaml`
-  - Component: `/src/view/kubernetes/workload/daemonset/edit/yaml.vue`
-  - Permission: `kubernetes:workload:daemonset:edit`
+## 更新 DaemonSet（YAML 方式）
+- 页面效果
+  - 触发条件：列表页 -> 表格 -> 行内“编辑YAML”按钮点击
+  - 权限限制：`kubernetes:workload:daemonset:edit`
+  - 路由跳转
+    - Name: `kubernetes:workload:daemonset:edit:yaml`
+    - Path: `/kubernetes/clusters/:clusterUid/namespaces/:namespace/daemonsets/:name/edit/yaml`
+    - Component: `/src/view/kubernetes/workload/daemonset/edit/yaml.vue`
 - API 接口
   - URL: `PUT /kubernetes/clusters/:clusterUid/namespaces/:namespace/daemonsets/:name/yaml`
   - Function: `void updateDaemonSetYaml(clusterUid: string, namespace: string, name: string, yaml: string)`
@@ -1501,89 +1894,154 @@
     - namespace: string （命名空间名称）
     - name: string （DaemonSet 名称）
     - yaml: string （DaemonSet YAML 字符串）
+- Mock
+  - 函数：`/src/mock/kubernetes/workload/daemonset.ts#updateDaemonSetYamlMock()`
+  - 逻辑
+    - 不实现逻辑，直接打印一句日志，格式：`console.log('[Mock] 方法名')`
 
-## 管理标签
-- 页面路由
-  - 无
+## 管理 DaemonSet 标签
+- 页面效果
+  - 触发条件：列表页 -> 表格 -> 行内“修改标签”按钮点击
+  - 权限限制：`kubernetes:workload:daemonset:edit`
 - API 接口
   - URL: `POST /kubernetes/clusters/:clusterUid/namespaces/:namespace/daemonsets/:name/labels`
   - Function: `void manageDaemonSetLabel(clusterUid: string, namespace: string, name: string, data: MetadataLabelForm)`
     - clusterUid: string （集群 UID）
     - namespace: string （命名空间名称）
     - name: string （DaemonSet 名称）
-    - `MetadataLabelForm`（管理标签请求对象） 来自 `/src/types/kubernetes/common.ts`
+    - `MetadataLabelForm`（管理标签请求对象，来自 `/src/types/kubernetes/common.ts`）
       - labels: Record<string, string> （标签键值对）
       - operation: number （操作，1: 新增；2: 移除；3: 全量替换）
+- Mock
+  - 函数：`/src/mock/kubernetes/workload/daemonset.ts#manageDaemonSetLabelMock()`
+  - 逻辑
+    - 不实现逻辑，直接打印一句日志，格式：`console.log('[Mock] 方法名', ...入参)`
 
-## 管理注解
-- 页面路由
-  - 无
+## 管理 DaemonSet 注解
+- 页面效果
+  - 触发条件：列表页 -> 表格 -> 行内“修改注解”按钮点击
+  - 权限限制：`kubernetes:workload:daemonset:edit`
 - API 接口
   - URL: `POST /kubernetes/clusters/:clusterUid/namespaces/:namespace/daemonsets/:name/annotations`
   - Function: `void manageDaemonSetAnnotation(clusterUid: string, namespace: string, name: string, data: MetadataAnnotationForm)`
     - clusterUid: string （集群 UID）
     - namespace: string （命名空间名称）
     - name: string （DaemonSet 名称）
-    - `MetadataAnnotationForm`（管理注解请求对象） 来自 `/src/types/kubernetes/common.ts`
+    - `MetadataAnnotationForm`（管理注解请求对象，来自 `/src/types/kubernetes/common.ts`）
       - annotations: Record<string, string> （注解键值对）
       - operation: number （操作，1: 新增；2: 移除；3: 全量替换）
+- Mock
+  - 函数：`/src/mock/kubernetes/workload/daemonset.ts#manageDaemonSetAnnotationMock()`
+  - 逻辑
+    - 不实现逻辑，直接打印一句日志，格式：`console.log('[Mock] 方法名', ...入参)`
 
-## 删除
-- 页面路由
-  - 无
+## 删除 DaemonSet
+- 页面效果
+  - 触发条件：列表页 -> 表格 -> 行内“删除应用”按钮点击，弹框（BeeDialog）进行二次确认
+  - 权限限制：`kubernetes:workload:daemonset:delete`
 - API 接口
   - URL: `DELETE /kubernetes/clusters/:clusterUid/namespaces/:namespace/daemonsets/:name`
   - Function: `void deleteDaemonSet(clusterUid: string, namespace: string, name: string)`
     - clusterUid: string （集群 UID）
     - namespace: string （命名空间名称）
     - name: string （DaemonSet 名称）
-  - Permission: `kubernetes:workload:daemonset:delete`
+- Mock
+  - 函数：`/src/mock/kubernetes/workload/daemonset.ts#deleteDaemonSetMock()`
+  - 逻辑
+    - 不实现逻辑，直接打印一句日志，格式：`console.log('[Mock] 方法名', ...入参)`
 
-## 批量删除
-- 页面路由
-  - 无
+## 批量删除 DaemonSet
+- 页面效果
+  - 触发条件：列表页 -> 底部栏 -> “删除”按钮点击，弹框（BeeDialog）进行二次确认
+  - 权限限制：`kubernetes:workload:daemonset:delete`
 - API 接口
-  - URL: `DELETE /kubernetes/clusters/:clusterUid/daemonsets/batch`
+  - URL: `DELETE /kubernetes/clusters/:clusterUid/daemonsets`
   - Function: `void deleteDaemonSets(clusterUid: string, uids: string[])`
     - clusterUid: string （集群 UID）
     - uids: string[] （DaemonSet UID 列表）
-  - Permission: `kubernetes:workload:daemonset:delete`
+- Mock
+  - 函数：`/src/mock/kubernetes/workload/daemonset.ts#deleteDaemonSetsMock()`
+  - 逻辑
+    - 不实现逻辑，直接打印一句日志，格式：`console.log('[Mock] 方法名', ...入参)`
 
-## 导入
-- 页面路由
-  - 无
+## 导入 DaemonSet
+- 页面效果
+  - 触发条件：列表页 -> 底部栏 -> “导入”按钮点击，弹框（BeeDialog）进行文档上传
+  - 权限限制：`kubernetes:workload:daemonset:import`
 - API 接口
   - URL: `POST /kubernetes/clusters/:clusterUid/daemonsets/import`
   - Function: `void importDaemonSet(clusterUid: string, formData: FormData, onProgress?: (progressEvent: AxiosProgressEvent) => void)`
     - clusterUid: string （集群 UID）
     - formData: FormData （上传的文件）
     - onProgress?: (progressEvent: AxiosProgressEvent) => void （上传进度回调）
-  - Permission: `kubernetes:workload:daemonset:import`
+- Mock
+  - 函数：`/src/mock/kubernetes/workload/daemonset.ts#importDaemonSetMock()`
+  - 逻辑
+    - 不实现逻辑，直接打印一句日志，格式：`console.log('[Mock] 方法名', ...入参)`
 
-## 导出
-- 页面路由
-  - 无
+## 导出 DaemonSet
+- 页面效果
+  - 触发条件：列表页 -> 底部栏 -> “导出”按钮点击，保存文档
+  - 权限限制：`kubernetes:workload:daemonset:export`
 - API 接口
   - URL: `GET /kubernetes/clusters/:clusterUid/daemonsets/export`
   - Function: `void exportDaemonSet(clusterUid: string, params: Partial<DaemonSetQueryForm>)`
     - clusterUid: string （集群 UID）
     - `DaemonSetQueryForm` 共享【查看 DaemonSet 详情】章节的实体定义
-  - Permission: `kubernetes:workload:daemonset:export`
+- Mock
+  - 函数：`/src/mock/kubernetes/workload/daemonset.ts#exportDaemonSetMock()`
+  - 逻辑
+    - 不实现逻辑，直接打印一句日志，格式：`console.log('[Mock] 方法名', ...入参)`
 
-## 重启
-- 页面路由
-  - 无
+## 重启 DaemonSet
+- 页面效果
+  - 触发条件：列表页 -> 表格 -> 行内“重启应用”按钮点击，弹框（BeeDialog）进行二次确认
+  - 权限限制：`kubernetes:workload:daemonset:edit`
 - API 接口
   - URL: `POST /kubernetes/clusters/:clusterUid/namespaces/:namespace/daemonsets/:name/restart`
   - Function: `void restartDaemonSet(clusterUid: string, namespace: string, name: string)`
     - clusterUid: string （集群 UID）
     - namespace: string （命名空间名称）
     - name: string （DaemonSet 名称）
-  - Permission: `kubernetes:workload:daemonset:edit`
+- Mock
+  - 函数：`/src/mock/kubernetes/workload/daemonset.ts#restartDaemonSetMock()`
+  - 逻辑
+    - 不实现逻辑，直接打印一句日志，格式：`console.log('[Mock] 方法名', ...入参)`
 
-## 回滚
-- 页面路由
-  - 无
+## 暂停 DaemonSet 更新
+- 页面效果
+  - 触发条件：列表页 -> 表格 -> 行内“暂停更新”按钮点击，弹框（BeeDialog）进行二次确认
+  - 权限限制：`kubernetes:workload:daemonset:edit`
+- API 接口
+  - URL: `POST /kubernetes/clusters/:clusterUid/namespaces/:namespace/daemonsets/:name/pause`
+  - Function: `void pauseDaemonSet(clusterUid: string, namespace: string, name: string)`
+    - clusterUid: string （集群 UID）
+    - namespace: string （命名空间名称）
+    - name: string （DaemonSet 名称）
+- Mock
+  - 函数：`/src/mock/kubernetes/workload/daemonset.ts#pauseDaemonSetMock()`
+  - 逻辑
+    - 不实现逻辑，直接打印一句日志，格式：`console.log('[Mock] 方法名', ...入参)`
+
+## 恢复 DaemonSet 更新
+- 页面效果
+  - 触发条件：列表页 -> 表格 -> 行内“恢复更新”按钮点击，弹框（BeeDialog）进行二次确认
+  - 权限限制：`kubernetes:workload:daemonset:edit`
+- API 接口
+  - URL: `POST /kubernetes/clusters/:clusterUid/namespaces/:namespace/daemonsets/:name/resume`
+  - Function: `void resumeDaemonSet(clusterUid: string, namespace: string, name: string)`
+    - clusterUid: string （集群 UID）
+    - namespace: string （命名空间名称）
+    - name: string （DaemonSet 名称）
+- Mock
+  - 函数：`/src/mock/kubernetes/workload/daemonset.ts#resumeDaemonSetMock()`
+  - 逻辑
+    - 不实现逻辑，直接打印一句日志，格式：`console.log('[Mock] 方法名', ...入参)`
+
+## 回滚 DaemonSet
+- 页面效果
+  - 触发条件：详情页 -> “部署历史” TAB 页 -> 部署历史表格 -> 行内“回滚到这”按钮点击，弹框（BeeDialog）进行二次确认
+  - 权限限制：`kubernetes:workload:daemonset:edit`
 - API 接口
   - URL: `POST /kubernetes/clusters/:clusterUid/namespaces/:namespace/daemonsets/:name/rollback`
   - Function: `void rollbackDaemonSet(clusterUid: string, namespace: string, name: string, data: DaemonSetRollbackForm)`
@@ -1592,38 +2050,21 @@
     - name: string （DaemonSet 名称）
     - `DaemonSetRollbackForm` （DaemonSet 回滚请求对象）
       - revision: number （目标历史版本号）
-  - Permission: `kubernetes:workload:daemonset:edit`
-
-## 暂停更新
-- 页面路由
-  - 无
-- API 接口
-  - URL: `POST /kubernetes/clusters/:clusterUid/namespaces/:namespace/daemonsets/:name/pause`
-  - Function: `void pauseDaemonSet(clusterUid: string, namespace: string, name: string)`
-    - clusterUid: string （集群 UID）
-    - namespace: string （命名空间名称）
-    - name: string （DaemonSet 名称）
-  - Permission: `kubernetes:workload:daemonset:edit`
-
-## 恢复更新
-- 页面路由
-  - 无
-- API 接口
-  - URL: `POST /kubernetes/clusters/:clusterUid/namespaces/:namespace/daemonsets/:name/resume`
-  - Function: `void resumeDaemonSet(clusterUid: string, namespace: string, name: string)`
-    - clusterUid: string （集群 UID）
-    - namespace: string （命名空间名称）
-    - name: string （DaemonSet 名称）
-  - Permission: `kubernetes:workload:daemonset:edit`
+- Mock
+  - 函数：`/src/mock/kubernetes/workload/daemonset.ts#rollbackDaemonSetMock()`
+  - 逻辑
+    - 不实现逻辑，直接打印一句日志，格式：`console.log('[Mock] 方法名', ...入参)`
 
 # Job 功能
 
 ## 查看 Job 列表
-- 页面路由
-  - Name: `kubernetes:workload:job`
-  - Path: `/kubernetes/clusters/:clusterUid/jobs`
-  - Component: `/src/view/kubernetes/workload/job/index.vue`
-  - Permission: `kubernetes:workload:job:view`
+- 页面效果
+  - 触发条件：功能菜单“Job 管理”点击
+  - 权限限制：`kubernetes:workload:job:view`
+  - 路由跳转
+    - Name: `kubernetes:workload:job`
+    - Path: `/kubernetes/clusters/:clusterUid/jobs`
+    - Component: `/src/view/kubernetes/workload/job/index.vue`
 - API 接口
   - URL: `GET /kubernetes/clusters/:clusterUid/jobs`
   - Function: `PageVo<JobListVo> getJobList(clusterUid: string, params: Partial<JobQueryForm>)`
@@ -1631,24 +2072,35 @@
     - `JobQueryForm`（Job 查询条件请求对象） 继承 `UidEntity`, `PageForm`
       - name: string （Job 名称）
       - namespace: string （命名空间名称）
-      - status: JobStatus （状态，来自 `/src/config/kubernetes/workload/job.ts` 包）
+      - status: JobStatus （状态，来自 `/src/config/kubernetes/workload/job.ts`）
     - `JobListVo`（Job 列表项响应对象） 继承 `UidEntity`, `Clustered`, `Namespaced`, `AuditEntity`, `DeletableEntity`
       - name: string （Job 名称）
       - description?: string （Job 描述）
-      - status: JobStatus （状态，来自 `/src/config/kubernetes/workload/job.ts` 包）
+      - status: JobStatus （状态，来自 `/src/config/kubernetes/workload/job.ts`）
       - statusMsg?: string （状态信息）
       - active: number （运行中的 Pod 数）
       - succeeded: number （已成功完成的 Pod 数）
       - failed: number （已失败的 Pod 数）
       - completions: number （需要成功完成的 Pod 数）
       - parallelism: number （并行运行的 Pod 数）
+- Mock
+  - 函数：`/src/mock/kubernetes/workload/job.ts#getJobListMock()`
+  - 数据：`/src/mock/kubernetes/workload/jobData.ts#mockJobs`，模拟数量：32
+  - 逻辑
+    - 基于 `mockJobs` 进行 `status` 精准过滤，得到 `filtered`
+    - 基于 `filtered` 进行 `uid` 精准过滤，得到 `filteredUid`
+    - 基于 `filtered` 进行 `name` 模糊过滤，得到 `filteredName`
+    - 基于 `filteredUid` 和 `filteredName` 求合集，得到 `matched`
+    - 基于 `matched`、`page`、`pageSize` 计算截取并构建返回对象
 
 ## 查看 Job 详情
-- 页面路由
-  - Name: `kubernetes:workload:job:detail`
-  - Path: `/kubernetes/clusters/:clusterUid/namespaces/:namespace/jobs/:name`
-  - Component: `/src/view/kubernetes/workload/job/detail/index.vue`
-  - Permission: `kubernetes:workload:job:view`
+- 页面效果
+  - 触发条件：列表页 -> 表格 -> 行内“详情”按钮点击
+  - 权限限制：`kubernetes:workload:job:view`
+  - 路由跳转
+    - Name: `kubernetes:workload:job:detail`
+    - Path: `/kubernetes/clusters/:clusterUid/namespaces/:namespace/jobs/:name`
+    - Component: `/src/view/kubernetes/workload/job/detail/index.vue`
 - API 接口
   - URL: `GET /kubernetes/clusters/:clusterUid/namespaces/:namespace/jobs/:name`
   - Function: `JobDetailVo getJobDetail(clusterUid: string, namespace: string, name: string)`
@@ -1657,15 +2109,19 @@
     - name: string （Job 名称）
     - `JobDetailVo`（Job 详情响应对象） 继承 `UidEntity`, `Clustered`, `Namespaced`, `AuditEntity`, `DeletableEntity`
       - description?: string （Job 描述）
-      - status: JobStatus （状态，来自 `/src/config/kubernetes/workload/job.ts` 包）
+      - status: JobStatus （状态，来自 `/src/config/kubernetes/workload/job.ts`）
       - statusMsg?: string （状态信息）
       - metadata: ObjectMeta （Job 的资源元数据，详见 ### ObjectMeta）
       - spec: JobSpec （Job 的规格定义，详见 ### JobSpec）
       - statusObj: JobStatusObj （Job 的观测状态，详见 ### JobStatusObj）
+- Mock
+  - 函数：`/src/mock/kubernetes/workload/job.ts#getJobDetailMock()`
+  - 数据：`/src/mock/kubernetes/workload/jobData.ts#mockJobDetail`
+  - 逻辑：直接返回 `mockJobDetail`
 
 ## 查看 Job YAML
-- 页面路由
-  - 无
+- 页面效果
+  - 触发条件：详情页 -> “YAML” TAB 点击
 - API 接口
   - URL: `GET /kubernetes/clusters/:clusterUid/namespaces/:namespace/jobs/:name/yaml`
   - Function: `JobYamlVo getJobYaml(clusterUid: string, namespace: string, name: string)`
@@ -1674,10 +2130,14 @@
     - name: string （Job 名称）
     - `JobYamlVo`: （Job YAML 响应对象）
       - yaml: string（Job YAML 文本）
+- Mock
+  - 函数：`/src/mock/kubernetes/workload/job.ts#getJobYamlMock()`
+  - 数据：`/src/mock/kubernetes/workload/jobData.ts#mockJobYaml`
+  - 逻辑：直接返回 `mockJobYaml`
 
 ## 查看 Job 关联 Pod 列表
-- 页面路由
-  - 无
+- 页面效果
+  - 触发条件：详情页 -> “容器组” TAB 点击
 - API 接口
   - URL: `GET /kubernetes/clusters/:clusterUid/namespaces/:namespace/jobs/:name/pods`
   - Function: `PageVo<JobPodListVo> getJobPodList(clusterUid: string, namespace: string, name: string, params: Partial<JobPodQueryForm>)`
@@ -1697,22 +2157,40 @@
       - nodeName: string （Pod 所属节点名称）
       - readyContainerCount: number （Pod 就绪容器数量）
       - containerCount: number （Pod 容器总数）
+- Mock
+  - 函数：`/src/mock/kubernetes/workload/job.ts#getJobPodListMock()`
+  - 数据：`/src/mock/kubernetes/workload/jobData.ts#mockJobPods`，模拟数量：24
+  - 逻辑
+    - 基于 `mockJobPods` 进行 `status` 精准过滤，得到 `filtered`
+    - 基于 `filtered` 进行 `uid` 精准过滤，得到 `filteredUid`
+    - 基于 `filtered` 进行 `name` 模糊过滤，得到 `filteredName`
+    - 基于 `filteredUid` 和 `filteredName` 求合集，得到 `matched`
+    - 基于 `matched`、`page`、`pageSize` 计算截取并构建返回对象
 
 ## 查看 Job 事件列表
-- 页面路由
-  - 无
+- 页面效果
+  - 触发条件：详情页 -> “事件信息” TAB 点击
 - API 接口
   - URL: `GET /kubernetes/clusters/:clusterUid/namespaces/:namespace/jobs/:name/events`
   - Function: `PageVo<EventListVo> getJobEventList(clusterUid: string, namespace: string, name: string, params: Partial<EventQueryForm>)`
     - clusterUid: string （集群 UID）
     - namespace: string （命名空间名称）
     - name: string （Job 名称）
-    - `EventQueryForm`（事件查询条件请求对象）
-    - `EventListVo`（事件列表项响应对象）
+    - `EventQueryForm`（事件查询条件请求对象，来自 `/src/types/kubernetes/event/index.ts`）
+    - `EventListVo`（事件列表项响应对象，来自 `/src/types/kubernetes/event/index.ts`）
+- Mock
+  - 函数：`/src/mock/kubernetes/workload/job.ts#getJobEventListMock()`
+  - 数据：`/src/mock/kubernetes/workload/jobData.ts#mockJobEvents`，模拟数量：24
+  - 逻辑
+    - 基于 `mockJobEvents` 进行 `type` 精准过滤，得到 `filtered`
+    - 基于 `filtered` 进行 `reason` 精准过滤，得到 `filteredReason`
+    - 基于 `filtered` 进行 `note` 模糊过滤，得到 `filteredNote`
+    - 基于 `filteredReason` 和 `filteredNote` 求合集，得到 `matched`
+    - 基于 `matched`、`page`、`pageSize` 计算截取并构建返回对象
 
 ## 查看 Job 监控数据
-- 页面路由
-  - 无
+- 页面效果
+  - 触发条件：详情页 -> “监控数据” TAB 点击
 - API 接口
   - URL: `GET /kubernetes/clusters/:clusterUid/namespaces/:namespace/jobs/:name/monitor`
   - Function: `JobMonitorVo getJobMonitor(clusterUid: string, namespace: string, name: string)`
@@ -1721,13 +2199,20 @@
     - name: string （Job 名称）
     - `JobMonitorVo` （Job 监控响应对象）
       - {TODO: JobMonitorVo 对象属性}
+- Mock
+  - 函数：`/src/mock/kubernetes/workload/job.ts#getJobMonitorMock()`
+  - 数据：`/src/mock/kubernetes/workload/jobData.ts#mockJobMonitor`，模拟数量：24
+  - 逻辑
+    - 直接返回 `mockJobMonitor` {TODO：暂为空对象}
 
-## 创建
-- 页面路由
-  - Name: `kubernetes:workload:job:create`
-  - Path: `/kubernetes/clusters/:clusterUid/jobs/create`
-  - Component: `/src/view/kubernetes/workload/job/create/index.vue`
-  - Permission: `kubernetes:workload:job:create`
+## 创建 Job
+- 页面效果
+  - 触发条件：列表页 -> 工具栏 -> “创建”按钮点击
+  - 权限限制：`kubernetes:workload:job:create`
+  - 路由跳转
+    - Name: `kubernetes:workload:job:create`
+    - Path: `/kubernetes/clusters/:clusterUid/jobs/create`
+    - Component: `/src/view/kubernetes/workload/job/create/index.vue`
 - API 接口
   - URL: `POST /kubernetes/clusters/:clusterUid/jobs`
   - Function: `void createJob(clusterUid: string, data: Partial<JobCreateForm>)`
@@ -1736,25 +2221,37 @@
       - description?: string （Job 描述）
       - metadata: ObjectMeta （Job 的资源元数据，详见 ### ObjectMeta）
       - spec: JobSpec （Job 的规格定义，详见 ### JobSpec）
+- Mock
+  - 函数：`/src/mock/kubernetes/workload/job.ts#createJobMock()`
+  - 逻辑
+    - 不实现逻辑，直接打印一句日志，格式：`console.log('[Mock] 方法名', ...入参)`
 
-## YAML 创建
-- 页面路由
-  - Name: `kubernetes:workload:job:create:yaml`
-  - Path: `/kubernetes/clusters/:clusterUid/jobs/create/yaml`
-  - Component: `/src/view/kubernetes/workload/job/create/yaml.vue`
-  - Permission: `kubernetes:workload:job:create`
+## 创建 Job（YAML 方式）
+- 页面效果
+  - 触发条件：列表页 -> 工具栏 -> “YAML”按钮点击
+  - 权限限制：`kubernetes:workload:job:create`
+  - 路由跳转
+    - Name: `kubernetes:workload:job:create:yaml`
+    - Path: `/kubernetes/clusters/:clusterUid/jobs/create/yaml`
+    - Component: `/src/view/kubernetes/workload/job/create/yaml.vue`
 - API 接口
   - URL: `POST /kubernetes/clusters/:clusterUid/jobs/yaml`
   - Function: `void createJobYaml(clusterUid: string, yaml: string)`
     - clusterUid: string （集群 UID）
     - yaml: string （Job YAML 字符串）
+- Mock
+  - 函数：`/src/mock/kubernetes/workload/job.ts#createJobYamlMock()`
+  - 逻辑
+    - 不实现逻辑，直接打印一句日志，格式：`console.log('[Mock] 方法名')`
 
-## 更新
-- 页面路由
-  - Name: `kubernetes:workload:job:edit`
-  - Path: `/kubernetes/clusters/:clusterUid/namespaces/:namespace/jobs/:name/edit`
-  - Component: `/src/view/kubernetes/workload/job/edit/index.vue`
-  - Permission: `kubernetes:workload:job:edit`
+## 更新 Job
+- 页面效果
+  - 触发条件：列表页 -> 表格 -> 行内“编辑应用”按钮点击
+  - 权限限制：`kubernetes:workload:job:edit`
+  - 路由跳转
+    - Name: `kubernetes:workload:job:edit`
+    - Path: `/kubernetes/clusters/:clusterUid/namespaces/:namespace/jobs/:name/edit`
+    - Component: `/src/view/kubernetes/workload/job/edit/index.vue`
 - API 接口
   - URL: `PUT /kubernetes/clusters/:clusterUid/namespaces/:namespace/jobs/:name`
   - Function: `void updateJob(clusterUid: string, namespace: string, name: string, data: Partial<JobUpdateForm>)`
@@ -1765,13 +2262,19 @@
       - description?: string （Job 描述）
       - metadata: ObjectMeta （Job 的资源元数据，详见 ### ObjectMeta）
       - spec: JobSpec （Job 的规格定义，详见 ### JobSpec）
+- Mock
+  - 函数：`/src/mock/kubernetes/workload/job.ts#updateJobMock()`
+  - 逻辑
+    - 不实现逻辑，直接打印一句日志，格式：`console.log('[Mock] 方法名', ...入参)`
 
-## YAML 更新
-- 页面路由
-  - Name: `kubernetes:workload:job:edit:yaml`
-  - Path: `/kubernetes/clusters/:clusterUid/namespaces/:namespace/jobs/:name/edit/yaml`
-  - Component: `/src/view/kubernetes/workload/job/edit/yaml.vue`
-  - Permission: `kubernetes:workload:job:edit`
+## 更新 Job（YAML 方式）
+- 页面效果
+  - 触发条件：列表页 -> 表格 -> 行内“编辑YAML”按钮点击
+  - 权限限制：`kubernetes:workload:job:edit`
+  - 路由跳转
+    - Name: `kubernetes:workload:job:edit:yaml`
+    - Path: `/kubernetes/clusters/:clusterUid/namespaces/:namespace/jobs/:name/edit/yaml`
+    - Component: `/src/view/kubernetes/workload/job/edit/yaml.vue`
 - API 接口
   - URL: `PUT /kubernetes/clusters/:clusterUid/namespaces/:namespace/jobs/:name/yaml`
   - Function: `void updateJobYaml(clusterUid: string, namespace: string, name: string, yaml: string)`
@@ -1779,116 +2282,160 @@
     - namespace: string （命名空间名称）
     - name: string （Job 名称）
     - yaml: string （Job YAML 字符串）
+- Mock
+  - 函数：`/src/mock/kubernetes/workload/job.ts#updateJobYamlMock()`
+  - 逻辑
+    - 不实现逻辑，直接打印一句日志，格式：`console.log('[Mock] 方法名')`
 
-## 管理标签
-- 页面路由
-  - 无
+## 管理 Job 标签
+- 页面效果
+  - 触发条件：列表页 -> 表格 -> 行内“修改标签”按钮点击
+  - 权限限制：`kubernetes:workload:job:edit`
 - API 接口
   - URL: `POST /kubernetes/clusters/:clusterUid/namespaces/:namespace/jobs/:name/labels`
   - Function: `void manageJobLabel(clusterUid: string, namespace: string, name: string, data: MetadataLabelForm)`
     - clusterUid: string （集群 UID）
     - namespace: string （命名空间名称）
     - name: string （Job 名称）
-    - `MetadataLabelForm`（管理标签请求对象） 来自 `/src/types/kubernetes/common.ts`
+    - `MetadataLabelForm`（管理标签请求对象，来自 `/src/types/kubernetes/common.ts`）
       - labels: Record<string, string> （标签键值对）
       - operation: number （操作，1: 新增；2: 移除；3: 全量替换）
+- Mock
+  - 函数：`/src/mock/kubernetes/workload/job.ts#manageJobLabelMock()`
+  - 逻辑
+    - 不实现逻辑，直接打印一句日志，格式：`console.log('[Mock] 方法名', ...入参)`
 
-## 管理注解
-- 页面路由
-  - 无
+## 管理 Job 注解
+- 页面效果
+  - 触发条件：列表页 -> 表格 -> 行内“修改注解”按钮点击
+  - 权限限制：`kubernetes:workload:job:edit`
 - API 接口
   - URL: `POST /kubernetes/clusters/:clusterUid/namespaces/:namespace/jobs/:name/annotations`
   - Function: `void manageJobAnnotation(clusterUid: string, namespace: string, name: string, data: MetadataAnnotationForm)`
     - clusterUid: string （集群 UID）
     - namespace: string （命名空间名称）
     - name: string （Job 名称）
-    - `MetadataAnnotationForm`（管理注解请求对象） 来自 `/src/types/kubernetes/common.ts`
+    - `MetadataAnnotationForm`（管理注解请求对象，来自 `/src/types/kubernetes/common.ts`）
       - annotations: Record<string, string> （注解键值对）
       - operation: number （操作，1: 新增；2: 移除；3: 全量替换）
+- Mock
+  - 函数：`/src/mock/kubernetes/workload/job.ts#manageJobAnnotationMock()`
+  - 逻辑
+    - 不实现逻辑，直接打印一句日志，格式：`console.log('[Mock] 方法名', ...入参)`
 
-## 删除
-- 页面路由
-  - 无
+## 删除 Job
+- 页面效果
+  - 触发条件：列表页 -> 表格 -> 行内“删除应用”按钮点击，弹框（BeeDialog）进行二次确认
+  - 权限限制：`kubernetes:workload:job:delete`
 - API 接口
   - URL: `DELETE /kubernetes/clusters/:clusterUid/namespaces/:namespace/jobs/:name`
   - Function: `void deleteJob(clusterUid: string, namespace: string, name: string)`
     - clusterUid: string （集群 UID）
     - namespace: string （命名空间名称）
     - name: string （Job 名称）
-  - Permission: `kubernetes:workload:job:delete`
+- Mock
+  - 函数：`/src/mock/kubernetes/workload/job.ts#deleteJobMock()`
+  - 逻辑
+    - 不实现逻辑，直接打印一句日志，格式：`console.log('[Mock] 方法名', ...入参)`
 
-## 批量删除
-- 页面路由
-  - 无
+## 批量删除 Job
+- 页面效果
+  - 触发条件：列表页 -> 底部栏 -> “删除”按钮点击，弹框（BeeDialog）进行二次确认
+  - 权限限制：`kubernetes:workload:job:delete`
 - API 接口
-  - URL: `DELETE /kubernetes/clusters/:clusterUid/jobs/batch`
+  - URL: `DELETE /kubernetes/clusters/:clusterUid/jobs`
   - Function: `void deleteJobs(clusterUid: string, uids: string[])`
     - clusterUid: string （集群 UID）
     - uids: string[] （Job UID 列表）
-  - Permission: `kubernetes:workload:job:delete`
+- Mock
+  - 函数：`/src/mock/kubernetes/workload/job.ts#deleteJobsMock()`
+  - 逻辑
+    - 不实现逻辑，直接打印一句日志，格式：`console.log('[Mock] 方法名', ...入参)`
 
-## 导入
-- 页面路由
-  - 无
+## 导入 Job
+- 页面效果
+  - 触发条件：列表页 -> 底部栏 -> “导入”按钮点击，弹框（BeeDialog）进行文档上传
+  - 权限限制：`kubernetes:workload:job:import`
 - API 接口
   - URL: `POST /kubernetes/clusters/:clusterUid/jobs/import`
   - Function: `void importJob(clusterUid: string, formData: FormData, onProgress?: (progressEvent: AxiosProgressEvent) => void)`
     - clusterUid: string （集群 UID）
     - formData: FormData （上传的文件）
     - onProgress?: (progressEvent: AxiosProgressEvent) => void （上传进度回调）
-  - Permission: `kubernetes:workload:job:import`
+- Mock
+  - 函数：`/src/mock/kubernetes/workload/job.ts#importJobMock()`
+  - 逻辑
+    - 不实现逻辑，直接打印一句日志，格式：`console.log('[Mock] 方法名', ...入参)`
 
-## 导出
-- 页面路由
-  - 无
+## 导出 Job
+- 页面效果
+  - 触发条件：列表页 -> 底部栏 -> “导出”按钮点击，保存文档
+  - 权限限制：`kubernetes:workload:job:export`
 - API 接口
   - URL: `GET /kubernetes/clusters/:clusterUid/jobs/export`
   - Function: `void exportJob(clusterUid: string, params: Partial<JobQueryForm>)`
     - clusterUid: string （集群 UID）
     - `JobQueryForm` 共享【查看 Job 详情】章节的实体定义
-  - Permission: `kubernetes:workload:job:export`
+- Mock
+  - 函数：`/src/mock/kubernetes/workload/job.ts#exportJobMock()`
+  - 逻辑
+    - 不实现逻辑，直接打印一句日志，格式：`console.log('[Mock] 方法名', ...入参)`
 
-## 手动重跑
-- 页面路由
-  - 无
+## 手动重跑 Job
+- 页面效果
+  - 触发条件：列表页 -> 表格 -> 行内“手动重跑”按钮点击，弹框（BeeDialog）进行二次确认
+  - 权限限制：`kubernetes:workload:job:edit`
 - API 接口
   - URL: `POST /kubernetes/clusters/:clusterUid/namespaces/:namespace/jobs/:name/rerun`
   - Function: `void rerunJob(clusterUid: string, namespace: string, name: string)`
     - clusterUid: string （集群 UID）
     - namespace: string （命名空间名称）
     - name: string （Job 名称）
-  - Permission: `kubernetes:workload:job:edit`
+- Mock
+  - 函数：`/src/mock/kubernetes/workload/job.ts#rerunJobMock()`
+  - 逻辑
+    - 不实现逻辑，直接打印一句日志，格式：`console.log('[Mock] 方法名', ...入参)`
 
-## 暂停更新
-- 页面路由
-  - 无
+## 暂停 Job 更新
+- 页面效果
+  - 触发条件：列表页 -> 表格 -> 行内“暂停更新”按钮点击，弹框（BeeDialog）进行二次确认
+  - 权限限制：`kubernetes:workload:job:edit`
 - API 接口
   - URL: `POST /kubernetes/clusters/:clusterUid/namespaces/:namespace/jobs/:name/pause`
   - Function: `void pauseJob(clusterUid: string, namespace: string, name: string)`
     - clusterUid: string （集群 UID）
     - namespace: string （命名空间名称）
     - name: string （Job 名称）
-  - Permission: `kubernetes:workload:job:edit`
+- Mock
+  - 函数：`/src/mock/kubernetes/workload/job.ts#pauseJobMock()`
+  - 逻辑
+    - 不实现逻辑，直接打印一句日志，格式：`console.log('[Mock] 方法名', ...入参)`
 
-## 恢复更新
-- 页面路由
-  - 无
+## 恢复 Job 更新
+- 页面效果
+  - 触发条件：列表页 -> 表格 -> 行内“恢复更新”按钮点击，弹框（BeeDialog）进行二次确认
+  - 权限限制：`kubernetes:workload:job:edit`
 - API 接口
   - URL: `POST /kubernetes/clusters/:clusterUid/namespaces/:namespace/jobs/:name/resume`
   - Function: `void resumeJob(clusterUid: string, namespace: string, name: string)`
     - clusterUid: string （集群 UID）
     - namespace: string （命名空间名称）
     - name: string （Job 名称）
-  - Permission: `kubernetes:workload:job:edit`
+- Mock
+  - 函数：`/src/mock/kubernetes/workload/job.ts#resumeJobMock()`
+  - 逻辑
+    - 不实现逻辑，直接打印一句日志，格式：`console.log('[Mock] 方法名', ...入参)`
 
 # CronJob 功能
 
 ## 查看 CronJob 列表
-- 页面路由
-  - Name: `kubernetes:workload:cronjob`
-  - Path: `/kubernetes/clusters/:clusterUid/cronjobs`
-  - Component: `/src/view/kubernetes/workload/cronjob/index.vue`
-  - Permission: `kubernetes:workload:cronjob:view`
+- 页面效果
+  - 触发条件：功能菜单“CronJob 管理”点击
+  - 权限限制：`kubernetes:workload:cronjob:view`
+  - 路由跳转
+    - Name: `kubernetes:workload:cronjob`
+    - Path: `/kubernetes/clusters/:clusterUid/cronjobs`
+    - Component: `/src/view/kubernetes/workload/cronjob/index.vue`
 - API 接口
   - URL: `GET /kubernetes/clusters/:clusterUid/cronjobs`
   - Function: `PageVo<CronJobListVo> getCronJobList(clusterUid: string, params: Partial<CronJobQueryForm>)`
@@ -1896,23 +2443,34 @@
     - `CronJobQueryForm`（CronJob 查询条件请求对象） 继承 `UidEntity`, `PageForm`
       - name: string （CronJob 名称）
       - namespace: string （命名空间名称）
-      - status: CronJobStatus （状态，来自 `/src/config/kubernetes/workload/cronjob.ts` 包）
+      - status: CronJobStatus （状态，来自 `/src/config/kubernetes/workload/cronjob.ts`）
     - `CronJobListVo`（CronJob 列表项响应对象） 继承 `UidEntity`, `Clustered`, `Namespaced`, `AuditEntity`, `DeletableEntity`
       - name: string （CronJob 名称）
       - description?: string （CronJob 描述）
-      - status: CronJobStatus （状态，来自 `/src/config/kubernetes/workload/cronjob.ts` 包）
+      - status: CronJobStatus （状态，来自 `/src/config/kubernetes/workload/cronjob.ts`）
       - statusMsg?: string （状态信息）
       - schedule: string （Cron 调度表达式）
       - active: number （当前运行中的 Job 数）
       - lastScheduleTime: string （最近一次触发时间）
       - suspend: boolean （是否已暂停）
+- Mock
+  - 函数：`/src/mock/kubernetes/workload/cronjob.ts#getCronJobListMock()`
+  - 数据：`/src/mock/kubernetes/workload/cronjobData.ts#mockCronJobs`，模拟数量：32
+  - 逻辑
+    - 基于 `mockCronJobs` 进行 `status` 精准过滤，得到 `filtered`
+    - 基于 `filtered` 进行 `uid` 精准过滤，得到 `filteredUid`
+    - 基于 `filtered` 进行 `name` 模糊过滤，得到 `filteredName`
+    - 基于 `filteredUid` 和 `filteredName` 求合集，得到 `matched`
+    - 基于 `matched`、`page`、`pageSize` 计算截取并构建返回对象
 
 ## 查看 CronJob 详情
-- 页面路由
-  - Name: `kubernetes:workload:cronjob:detail`
-  - Path: `/kubernetes/clusters/:clusterUid/namespaces/:namespace/cronjobs/:name`
-  - Component: `/src/view/kubernetes/workload/cronjob/detail/index.vue`
-  - Permission: `kubernetes:workload:cronjob:view`
+- 页面效果
+  - 触发条件：列表页 -> 表格 -> 行内“详情”按钮点击
+  - 权限限制：`kubernetes:workload:cronjob:view`
+  - 路由跳转
+    - Name: `kubernetes:workload:cronjob:detail`
+    - Path: `/kubernetes/clusters/:clusterUid/namespaces/:namespace/cronjobs/:name`
+    - Component: `/src/view/kubernetes/workload/cronjob/detail/index.vue`
 - API 接口
   - URL: `GET /kubernetes/clusters/:clusterUid/namespaces/:namespace/cronjobs/:name`
   - Function: `CronJobDetailVo getCronJobDetail(clusterUid: string, namespace: string, name: string)`
@@ -1921,15 +2479,19 @@
     - name: string （CronJob 名称）
     - `CronJobDetailVo`（CronJob 详情响应对象） 继承 `UidEntity`, `Clustered`, `Namespaced`, `AuditEntity`, `DeletableEntity`
       - description?: string （CronJob 描述）
-      - status: CronJobStatus （状态，来自 `/src/config/kubernetes/workload/cronjob.ts` 包）
+      - status: CronJobStatus （状态，来自 `/src/config/kubernetes/workload/cronjob.ts`）
       - statusMsg?: string （状态信息）
       - metadata: ObjectMeta （CronJob 的资源元数据，详见 ### ObjectMeta）
       - spec: CronJobSpec （CronJob 的规格定义，详见 ### CronJobSpec）
       - statusObj: CronJobStatusObj （CronJob 的观测状态，详见 ### CronJobStatusObj）
+- Mock
+  - 函数：`/src/mock/kubernetes/workload/cronjob.ts#getCronJobDetailMock()`
+  - 数据：`/src/mock/kubernetes/workload/cronjobData.ts#mockCronJobDetail`
+  - 逻辑：直接返回 `mockCronJobDetail`
 
 ## 查看 CronJob YAML
-- 页面路由
-  - 无
+- 页面效果
+  - 触发条件：详情页 -> “YAML” TAB 点击
 - API 接口
   - URL: `GET /kubernetes/clusters/:clusterUid/namespaces/:namespace/cronjobs/:name/yaml`
   - Function: `CronJobYamlVo getCronJobYaml(clusterUid: string, namespace: string, name: string)`
@@ -1938,10 +2500,14 @@
     - name: string （CronJob 名称）
     - `CronJobYamlVo`: （CronJob YAML 响应对象）
       - yaml: string（CronJob YAML 文本）
+- Mock
+  - 函数：`/src/mock/kubernetes/workload/cronjob.ts#getCronJobYamlMock()`
+  - 数据：`/src/mock/kubernetes/workload/cronjobData.ts#mockCronJobYaml`
+  - 逻辑：直接返回 `mockCronJobYaml`
 
 ## 查看 CronJob 关联 Job 列表
-- 页面路由
-  - 无
+- 页面效果
+  - 触发条件：详情页 -> “关联任务” TAB 点击
 - API 接口
   - URL: `GET /kubernetes/clusters/:clusterUid/namespaces/:namespace/cronjobs/:name/jobs`
   - Function: `PageVo<CronJobJobListVo> getCronJobJobList(clusterUid: string, namespace: string, name: string, params: Partial<CronJobJobQueryForm>)`
@@ -1960,22 +2526,40 @@
       - failed: number （已失败的 Pod 数）
       - completions: number （需要成功完成的 Pod 数）
       - parallelism: number （并行运行的 Pod 数）
+- Mock
+  - 函数：`/src/mock/kubernetes/workload/cronjob.ts#getCronJobJobListMock()`
+  - 数据：`/src/mock/kubernetes/workload/cronjobData.ts#mockCronJobJobs`，模拟数量：24
+  - 逻辑
+    - 基于 `mockCronJobJobs` 进行 `status` 精准过滤，得到 `filtered`
+    - 基于 `filtered` 进行 `uid` 精准过滤，得到 `filteredUid`
+    - 基于 `filtered` 进行 `name` 模糊过滤，得到 `filteredName`
+    - 基于 `filteredUid` 和 `filteredName` 求合集，得到 `matched`
+    - 基于 `matched`、`page`、`pageSize` 计算截取并构建返回对象
 
 ## 查看 CronJob 事件列表
-- 页面路由
-  - 无
+- 页面效果
+  - 触发条件：详情页 -> “事件信息” TAB 点击
 - API 接口
   - URL: `GET /kubernetes/clusters/:clusterUid/namespaces/:namespace/cronjobs/:name/events`
   - Function: `PageVo<EventListVo> getCronJobEventList(clusterUid: string, namespace: string, name: string, params: Partial<EventQueryForm>)`
     - clusterUid: string （集群 UID）
     - namespace: string （命名空间名称）
     - name: string （CronJob 名称）
-    - `EventQueryForm`（事件查询条件请求对象）
-    - `EventListVo`（事件列表项响应对象）
+    - `EventQueryForm`（事件查询条件请求对象，来自 `/src/types/kubernetes/event/index.ts`）
+    - `EventListVo`（事件列表项响应对象，来自 `/src/types/kubernetes/event/index.ts`）
+- Mock
+  - 函数：`/src/mock/kubernetes/workload/cronjob.ts#getCronJobEventListMock()`
+  - 数据：`/src/mock/kubernetes/workload/cronjobData.ts#mockCronJobEvents`，模拟数量：24
+  - 逻辑
+    - 基于 `mockCronJobEvents` 进行 `type` 精准过滤，得到 `filtered`
+    - 基于 `filtered` 进行 `reason` 精准过滤，得到 `filteredReason`
+    - 基于 `filtered` 进行 `note` 模糊过滤，得到 `filteredNote`
+    - 基于 `filteredReason` 和 `filteredNote` 求合集，得到 `matched`
+    - 基于 `matched`、`page`、`pageSize` 计算截取并构建返回对象
 
 ## 查看 CronJob 监控数据
-- 页面路由
-  - 无
+- 页面效果
+  - 触发条件：详情页 -> “监控数据” TAB 点击
 - API 接口
   - URL: `GET /kubernetes/clusters/:clusterUid/namespaces/:namespace/cronjobs/:name/monitor`
   - Function: `CronJobMonitorVo getCronJobMonitor(clusterUid: string, namespace: string, name: string)`
@@ -1984,13 +2568,20 @@
     - name: string （CronJob 名称）
     - `CronJobMonitorVo` （CronJob 监控响应对象）
       - {TODO: CronJobMonitorVo 对象属性}
+- Mock
+  - 函数：`/src/mock/kubernetes/workload/cronjob.ts#getCronJobMonitorMock()`
+  - 数据：`/src/mock/kubernetes/workload/cronjobData.ts#mockCronJobMonitor`，模拟数量：24
+  - 逻辑
+    - 直接返回 `mockCronJobMonitor` {TODO：暂为空对象}
 
-## 创建
-- 页面路由
-  - Name: `kubernetes:workload:cronjob:create`
-  - Path: `/kubernetes/clusters/:clusterUid/cronjobs/create`
-  - Component: `/src/view/kubernetes/workload/cronjob/create/index.vue`
-  - Permission: `kubernetes:workload:cronjob:create`
+## 创建 CronJob
+- 页面效果
+  - 触发条件：列表页 -> 工具栏 -> “创建”按钮点击
+  - 权限限制：`kubernetes:workload:cronjob:create`
+  - 路由跳转
+    - Name: `kubernetes:workload:cronjob:create`
+    - Path: `/kubernetes/clusters/:clusterUid/cronjobs/create`
+    - Component: `/src/view/kubernetes/workload/cronjob/create/index.vue`
 - API 接口
   - URL: `POST /kubernetes/clusters/:clusterUid/cronjobs`
   - Function: `void createCronJob(clusterUid: string, data: Partial<CronJobCreateForm>)`
@@ -1999,25 +2590,37 @@
       - description?: string （CronJob 描述）
       - metadata: ObjectMeta （CronJob 的资源元数据，详见 ### ObjectMeta）
       - spec: CronJobSpec （CronJob 的规格定义，详见 ### CronJobSpec）
+- Mock
+  - 函数：`/src/mock/kubernetes/workload/cronjob.ts#createCronJobMock()`
+  - 逻辑
+    - 不实现逻辑，直接打印一句日志，格式：`console.log('[Mock] 方法名', ...入参)`
 
-## YAML 创建
-- 页面路由
-  - Name: `kubernetes:workload:cronjob:create:yaml`
-  - Path: `/kubernetes/clusters/:clusterUid/cronjobs/create/yaml`
-  - Component: `/src/view/kubernetes/workload/cronjob/create/yaml.vue`
-  - Permission: `kubernetes:workload:cronjob:create`
+## 创建 CronJob（YAML 方式）
+- 页面效果
+  - 触发条件：列表页 -> 工具栏 -> “YAML”按钮点击
+  - 权限限制：`kubernetes:workload:cronjob:create`
+  - 路由跳转
+    - Name: `kubernetes:workload:cronjob:create:yaml`
+    - Path: `/kubernetes/clusters/:clusterUid/cronjobs/create/yaml`
+    - Component: `/src/view/kubernetes/workload/cronjob/create/yaml.vue`
 - API 接口
   - URL: `POST /kubernetes/clusters/:clusterUid/cronjobs/yaml`
   - Function: `void createCronJobYaml(clusterUid: string, yaml: string)`
     - clusterUid: string （集群 UID）
     - yaml: string （CronJob YAML 字符串）
+- Mock
+  - 函数：`/src/mock/kubernetes/workload/cronjob.ts#createCronJobYamlMock()`
+  - 逻辑
+    - 不实现逻辑，直接打印一句日志，格式：`console.log('[Mock] 方法名')`
 
-## 更新
-- 页面路由
-  - Name: `kubernetes:workload:cronjob:edit`
-  - Path: `/kubernetes/clusters/:clusterUid/namespaces/:namespace/cronjobs/:name/edit`
-  - Component: `/src/view/kubernetes/workload/cronjob/edit/index.vue`
-  - Permission: `kubernetes:workload:cronjob:edit`
+## 更新 CronJob
+- 页面效果
+  - 触发条件：列表页 -> 表格 -> 行内“编辑应用”按钮点击
+  - 权限限制：`kubernetes:workload:cronjob:edit`
+  - 路由跳转
+    - Name: `kubernetes:workload:cronjob:edit`
+    - Path: `/kubernetes/clusters/:clusterUid/namespaces/:namespace/cronjobs/:name/edit`
+    - Component: `/src/view/kubernetes/workload/cronjob/edit/index.vue`
 - API 接口
   - URL: `PUT /kubernetes/clusters/:clusterUid/namespaces/:namespace/cronjobs/:name`
   - Function: `void updateCronJob(clusterUid: string, namespace: string, name: string, data: Partial<CronJobUpdateForm>)`
@@ -2028,13 +2631,19 @@
       - description?: string （CronJob 描述）
       - metadata: ObjectMeta （CronJob 的资源元数据，详见 ### ObjectMeta）
       - spec: CronJobSpec （CronJob 的规格定义，详见 ### CronJobSpec）
+- Mock
+  - 函数：`/src/mock/kubernetes/workload/cronjob.ts#updateCronJobMock()`
+  - 逻辑
+    - 不实现逻辑，直接打印一句日志，格式：`console.log('[Mock] 方法名', ...入参)`
 
-## YAML 更新
-- 页面路由
-  - Name: `kubernetes:workload:cronjob:edit:yaml`
-  - Path: `/kubernetes/clusters/:clusterUid/namespaces/:namespace/cronjobs/:name/edit/yaml`
-  - Component: `/src/view/kubernetes/workload/cronjob/edit/yaml.vue`
-  - Permission: `kubernetes:workload:cronjob:edit`
+## 更新 CronJob（YAML 方式）
+- 页面效果
+  - 触发条件：列表页 -> 表格 -> 行内“编辑YAML”按钮点击
+  - 权限限制：`kubernetes:workload:cronjob:edit`
+  - 路由跳转
+    - Name: `kubernetes:workload:cronjob:edit:yaml`
+    - Path: `/kubernetes/clusters/:clusterUid/namespaces/:namespace/cronjobs/:name/edit/yaml`
+    - Component: `/src/view/kubernetes/workload/cronjob/edit/yaml.vue`
 - API 接口
   - URL: `PUT /kubernetes/clusters/:clusterUid/namespaces/:namespace/cronjobs/:name/yaml`
   - Function: `void updateCronJobYaml(clusterUid: string, namespace: string, name: string, yaml: string)`
@@ -2042,107 +2651,149 @@
     - namespace: string （命名空间名称）
     - name: string （CronJob 名称）
     - yaml: string （CronJob YAML 字符串）
+- Mock
+  - 函数：`/src/mock/kubernetes/workload/cronjob.ts#updateCronJobYamlMock()`
+  - 逻辑
+    - 不实现逻辑，直接打印一句日志，格式：`console.log('[Mock] 方法名')`
 
-## 管理标签
-- 页面路由
-  - 无
+## 管理 CronJob 标签
+- 页面效果
+  - 触发条件：列表页 -> 表格 -> 行内“修改标签”按钮点击
+  - 权限限制：`kubernetes:workload:cronjob:edit`
 - API 接口
   - URL: `POST /kubernetes/clusters/:clusterUid/namespaces/:namespace/cronjobs/:name/labels`
   - Function: `void manageCronJobLabel(clusterUid: string, namespace: string, name: string, data: MetadataLabelForm)`
     - clusterUid: string （集群 UID）
     - namespace: string （命名空间名称）
     - name: string （CronJob 名称）
-    - `MetadataLabelForm`（管理标签请求对象） 来自 `/src/types/kubernetes/common.ts`
+    - `MetadataLabelForm`（管理标签请求对象，来自 `/src/types/kubernetes/common.ts`）
       - labels: Record<string, string> （标签键值对）
       - operation: number （操作，1: 新增；2: 移除；3: 全量替换）
+- Mock
+  - 函数：`/src/mock/kubernetes/workload/cronjob.ts#manageCronJobLabelMock()`
+  - 逻辑
+    - 不实现逻辑，直接打印一句日志，格式：`console.log('[Mock] 方法名', ...入参)`
 
-## 管理注解
-- 页面路由
-  - 无
+## 管理 CronJob 注解
+- 页面效果
+  - 触发条件：列表页 -> 表格 -> 行内“修改注解”按钮点击
+  - 权限限制：`kubernetes:workload:cronjob:edit`
 - API 接口
   - URL: `POST /kubernetes/clusters/:clusterUid/namespaces/:namespace/cronjobs/:name/annotations`
   - Function: `void manageCronJobAnnotation(clusterUid: string, namespace: string, name: string, data: MetadataAnnotationForm)`
     - clusterUid: string （集群 UID）
     - namespace: string （命名空间名称）
     - name: string （CronJob 名称）
-    - `MetadataAnnotationForm`（管理注解请求对象） 来自 `/src/types/kubernetes/common.ts`
+    - `MetadataAnnotationForm`（管理注解请求对象，来自 `/src/types/kubernetes/common.ts`）
       - annotations: Record<string, string> （注解键值对）
       - operation: number （操作，1: 新增；2: 移除；3: 全量替换）
+- Mock
+  - 函数：`/src/mock/kubernetes/workload/cronjob.ts#manageCronJobAnnotationMock()`
+  - 逻辑
+    - 不实现逻辑，直接打印一句日志，格式：`console.log('[Mock] 方法名', ...入参)`
 
-## 删除
-- 页面路由
-  - 无
+## 删除 CronJob
+- 页面效果
+  - 触发条件：列表页 -> 表格 -> 行内“删除应用”按钮点击，弹框（BeeDialog）进行二次确认
+  - 权限限制：`kubernetes:workload:cronjob:delete`
 - API 接口
   - URL: `DELETE /kubernetes/clusters/:clusterUid/namespaces/:namespace/cronjobs/:name`
   - Function: `void deleteCronJob(clusterUid: string, namespace: string, name: string)`
     - clusterUid: string （集群 UID）
     - namespace: string （命名空间名称）
     - name: string （CronJob 名称）
-  - Permission: `kubernetes:workload:cronjob:delete`
+- Mock
+  - 函数：`/src/mock/kubernetes/workload/cronjob.ts#deleteCronJobMock()`
+  - 逻辑
+    - 不实现逻辑，直接打印一句日志，格式：`console.log('[Mock] 方法名', ...入参)`
 
-## 批量删除
-- 页面路由
-  - 无
+## 批量删除 CronJob
+- 页面效果
+  - 触发条件：列表页 -> 底部栏 -> “删除”按钮点击，弹框（BeeDialog）进行二次确认
+  - 权限限制：`kubernetes:workload:cronjob:delete`
 - API 接口
-  - URL: `DELETE /kubernetes/clusters/:clusterUid/cronjobs/batch`
+  - URL: `DELETE /kubernetes/clusters/:clusterUid/cronjobs`
   - Function: `void deleteCronJobs(clusterUid: string, uids: string[])`
     - clusterUid: string （集群 UID）
     - uids: string[] （CronJob UID 列表）
-  - Permission: `kubernetes:workload:cronjob:delete`
+- Mock
+  - 函数：`/src/mock/kubernetes/workload/cronjob.ts#deleteCronJobsMock()`
+  - 逻辑
+    - 不实现逻辑，直接打印一句日志，格式：`console.log('[Mock] 方法名', ...入参)`
 
-## 导入
-- 页面路由
-  - 无
+## 导入 CronJob
+- 页面效果
+  - 触发条件：列表页 -> 底部栏 -> “导入”按钮点击，弹框（BeeDialog）进行文档上传
+  - 权限限制：`kubernetes:workload:cronjob:import`
 - API 接口
   - URL: `POST /kubernetes/clusters/:clusterUid/cronjobs/import`
   - Function: `void importCronJob(clusterUid: string, formData: FormData, onProgress?: (progressEvent: AxiosProgressEvent) => void)`
     - clusterUid: string （集群 UID）
     - formData: FormData （上传的文件）
     - onProgress?: (progressEvent: AxiosProgressEvent) => void （上传进度回调）
-  - Permission: `kubernetes:workload:cronjob:import`
+- Mock
+  - 函数：`/src/mock/kubernetes/workload/cronjob.ts#importCronJobMock()`
+  - 逻辑
+    - 不实现逻辑，直接打印一句日志，格式：`console.log('[Mock] 方法名', ...入参)`
 
-## 导出
-- 页面路由
-  - 无
+## 导出 CronJob
+- 页面效果
+  - 触发条件：列表页 -> 底部栏 -> “导出”按钮点击，保存文档
+  - 权限限制：`kubernetes:workload:cronjob:export`
 - API 接口
   - URL: `GET /kubernetes/clusters/:clusterUid/cronjobs/export`
   - Function: `void exportCronJob(clusterUid: string, params: Partial<CronJobQueryForm>)`
     - clusterUid: string （集群 UID）
     - `CronJobQueryForm` 共享【查看 CronJob 详情】章节的实体定义
-  - Permission: `kubernetes:workload:cronjob:export`
+- Mock
+  - 函数：`/src/mock/kubernetes/workload/cronjob.ts#exportCronJobMock()`
+  - 逻辑
+    - 不实现逻辑，直接打印一句日志，格式：`console.log('[Mock] 方法名', ...入参)`
 
-## 立即触发
-- 页面路由
-  - 无
+## 立即触发 CronJob
+- 页面效果
+  - 触发条件：列表页 -> 表格 -> 行内“立即触发”按钮点击，弹框（BeeDialog）进行二次确认
+  - 权限限制：`kubernetes:workload:cronjob:edit`
 - API 接口
   - URL: `POST /kubernetes/clusters/:clusterUid/namespaces/:namespace/cronjobs/:name/trigger`
   - Function: `void triggerCronJob(clusterUid: string, namespace: string, name: string)`
     - clusterUid: string （集群 UID）
     - namespace: string （命名空间名称）
     - name: string （CronJob 名称）
-  - Permission: `kubernetes:workload:cronjob:edit`
+- Mock
+  - 函数：`/src/mock/kubernetes/workload/cronjob.ts#triggerCronJobMock()`
+  - 逻辑
+    - 不实现逻辑，直接打印一句日志，格式：`console.log('[Mock] 方法名', ...入参)`
 
-## 暂停更新
-- 页面路由
-  - 无
+## 暂停 CronJob 更新
+- 页面效果
+  - 触发条件：列表页 -> 表格 -> 行内“暂停更新”按钮点击，弹框（BeeDialog）进行二次确认
+  - 权限限制：`kubernetes:workload:cronjob:edit`
 - API 接口
   - URL: `POST /kubernetes/clusters/:clusterUid/namespaces/:namespace/cronjobs/:name/pause`
   - Function: `void pauseCronJob(clusterUid: string, namespace: string, name: string)`
     - clusterUid: string （集群 UID）
     - namespace: string （命名空间名称）
     - name: string （CronJob 名称）
-  - Permission: `kubernetes:workload:cronjob:edit`
+- Mock
+  - 函数：`/src/mock/kubernetes/workload/cronjob.ts#pauseCronJobMock()`
+  - 逻辑
+    - 不实现逻辑，直接打印一句日志，格式：`console.log('[Mock] 方法名', ...入参)`
 
-## 恢复更新
-- 页面路由
-  - 无
+## 恢复 CronJob 更新
+- 页面效果
+  - 触发条件：列表页 -> 表格 -> 行内“恢复更新”按钮点击，弹框（BeeDialog）进行二次确认
+  - 权限限制：`kubernetes:workload:cronjob:edit`
 - API 接口
   - URL: `POST /kubernetes/clusters/:clusterUid/namespaces/:namespace/cronjobs/:name/resume`
   - Function: `void resumeCronJob(clusterUid: string, namespace: string, name: string)`
     - clusterUid: string （集群 UID）
     - namespace: string （命名空间名称）
     - name: string （CronJob 名称）
-  - Permission: `kubernetes:workload:cronjob:edit`
+- Mock
+  - 函数：`/src/mock/kubernetes/workload/cronjob.ts#resumeCronJobMock()`
+  - 逻辑
+    - 不实现逻辑，直接打印一句日志，格式：`console.log('[Mock] 方法名', ...入参)`
 
 # ConfigMap 功能
 
@@ -2215,7 +2866,7 @@
       - immutable?: boolean （是否不可变）
   - Permission: `kubernetes:config:configmap:create`
 
-## 创建 ConfigMap YAML
+## 创建 ConfigMap（YAML 方式）
 - 页面路由
   - Name: `kubernetes:config:configmap:create:yaml`
   - Path: `/kubernetes/clusters/:clusterUid/configmaps/create/yaml`
@@ -2248,7 +2899,7 @@
       - immutable?: boolean （是否不可变）
   - Permission: `kubernetes:config:configmap:edit`
 
-## 更新 ConfigMap YAML
+## 更新 ConfigMap（YAML 方式）
 - 页面路由
   - Name: `kubernetes:config:configmap:edit:yaml`
   - Path: `/kubernetes/clusters/:clusterUid/namespaces/:namespace/configmaps/:name/edit/yaml`
@@ -2263,7 +2914,7 @@
     - yaml: string （ConfigMap YAML 字符串）
   - Permission: `kubernetes:config:configmap:edit`
 
-## 管理标签
+## 管理 ConfigMap 标签
 - 页面路由
   - 无
 - API 接口
@@ -2272,11 +2923,11 @@
     - clusterUid: string （集群 UID）
     - namespace: string （命名空间名称）
     - name: string （ConfigMap 名称）
-    - `MetadataLabelForm`（管理标签请求对象） 来自 `/src/types/kubernetes/common.ts`
+    - `MetadataLabelForm`（管理标签请求对象，来自 `/src/types/kubernetes/common.ts`）
       - labels: Record<string, string> （标签键值对）
       - operation: number （操作，1: 新增；2: 移除；3: 全量替换）
 
-## 管理注解
+## 管理 ConfigMap 注解
 - 页面路由
   - 无
 - API 接口
@@ -2285,7 +2936,7 @@
     - clusterUid: string （集群 UID）
     - namespace: string （命名空间名称）
     - name: string （ConfigMap 名称）
-    - `MetadataAnnotationForm`（管理注解请求对象） 来自 `/src/types/kubernetes/common.ts`
+    - `MetadataAnnotationForm`（管理注解请求对象，来自 `/src/types/kubernetes/common.ts`）
       - annotations: Record<string, string> （注解键值对）
       - operation: number （操作，1: 新增；2: 移除；3: 全量替换）
 
@@ -2300,15 +2951,36 @@
     - name: string （ConfigMap 名称）
   - Permission: `kubernetes:config:configmap:delete`
 
-## 批量删除
+## 批量删除 ConfigMap
 - 页面路由
   - 无
 - API 接口
-  - URL: `DELETE /kubernetes/clusters/:clusterUid/configmaps/batch`
+  - URL: `DELETE /kubernetes/clusters/:clusterUid/configmaps`
   - Function: `void deleteConfigMaps(clusterUid: string, uids: string[])`
     - clusterUid: string （集群 UID）
     - uids: string[] （ConfigMap UID 列表）
   - Permission: `kubernetes:config:configmap:delete`
+
+## 导入 ConfigMap
+- 页面路由
+  - 无
+- API 接口
+  - URL: `POST /kubernetes/clusters/:clusterUid/configmaps/import`
+  - Function: `void importConfigMap(clusterUid: string, data: ConfigMapYamlForm)`
+    - clusterUid: string （集群 UID）
+    - `ConfigMapYamlForm`（ConfigMap YAML 导入请求对象）
+      - yaml: string （ConfigMap YAML 字符串）
+  - Permission: `kubernetes:config:configmap:import`
+
+## 导出 ConfigMap
+- 页面路由
+  - 无
+- API 接口
+  - URL: `GET /kubernetes/clusters/:clusterUid/configmaps/export`
+  - Function: `void exportConfigMap(clusterUid: string, params: Partial<ConfigMapQueryForm>)`
+    - clusterUid: string （集群 UID）
+    - `ConfigMapQueryForm` 共享【查看 ConfigMap 列表】章节的实体定义
+  - Permission: `kubernetes:config:configmap:export`
 
 ## 克隆 ConfigMap
 - 页面路由
@@ -2339,12 +3011,12 @@
     - `SecretQueryForm`（Secret 查询条件请求对象） 继承 `UidEntity`, `PageForm`
       - name: string （Secret 名称）
       - namespace: string （命名空间名称）
-      - type: SecretType （密钥类型，定义来自 `/src/config/kubernetes/config/secret.ts`）
+      - type: SecretType （密钥类型，来自 `/src/config/kubernetes/config/secret.ts`）
       - labelSelector: Record<string, string> （标签过滤）
     - `SecretListVo`（Secret 列表项响应对象） 继承 `UidEntity`, `Clustered`, `Namespaced`, `AuditEntity`, `DeletableEntity`
       - name: string （Secret 名称）
       - description?: string （Secret 描述）
-      - type: SecretType （密钥类型，定义来自 `/src/config/kubernetes/config/secret.ts`）
+      - type: SecretType （密钥类型，来自 `/src/config/kubernetes/config/secret.ts`）
       - dataCount: number （数据条目数）
       - immutable: boolean （是否不可变）
 
@@ -2365,7 +3037,7 @@
     - name: string （Secret 名称）
     - `SecretDetailVo`（Secret 详情响应对象） 继承 `UidEntity`, `Clustered`, `Namespaced`, `AuditEntity`, `DeletableEntity`
       - description?: string （Secret 描述）
-      - type: SecretType （密钥类型，定义来自 `/src/config/kubernetes/config/secret.ts`）
+      - type: SecretType （密钥类型，来自 `/src/config/kubernetes/config/secret.ts`）
       - metadata: ObjectMeta （Secret 的资源元数据，详见 ### ObjectMeta）
       - data: Record<string, string> （密文数据，base64 编码，展示时脱敏）
       - stringData?: Record<string, string> （明文数据，写入时自动 base64 编码存储）
@@ -2396,13 +3068,13 @@
     - `SecretCreateForm`（Secret 创建请求对象）
       - description?: string （Secret 描述）
       - metadata: ObjectMeta （Secret 的资源元数据，详见 ### ObjectMeta）
-      - type: SecretType （密钥类型，定义来自 `/src/config/kubernetes/config/secret.ts`）
+      - type: SecretType （密钥类型，来自 `/src/config/kubernetes/config/secret.ts`）
       - data: Record<string, string> （密文数据，base64 编码）
       - stringData?: Record<string, string> （明文数据，自动 base64 编码存储）
       - immutable?: boolean （是否不可变）
   - Permission: `kubernetes:config:secret:create`
 
-## 创建 Secret YAML
+## 创建 Secret（YAML 方式）
 - 页面路由
   - Name: `kubernetes:config:secret:create:yaml`
   - Path: `/kubernetes/clusters/:clusterUid/secrets/create/yaml`
@@ -2415,7 +3087,7 @@
     - yaml: string （Secret YAML 字符串）
   - Permission: `kubernetes:config:secret:create`
 
-## 编辑 Secret
+## 更新 Secret
 - 页面路由
   - Name: `kubernetes:config:secret:edit`
   - Path: `/kubernetes/clusters/:clusterUid/namespaces/:namespace/secrets/:name/edit`
@@ -2430,13 +3102,13 @@
     - `SecretUpdateForm`（Secret 更新请求对象）
       - description?: string （Secret 描述）
       - metadata: ObjectMeta （Secret 的资源元数据，详见 ### ObjectMeta）
-      - type: SecretType （密钥类型，定义来自 `/src/config/kubernetes/config/secret.ts`）
+      - type: SecretType （密钥类型，来自 `/src/config/kubernetes/config/secret.ts`）
       - data: Record<string, string> （密文数据，base64 编码）
       - stringData?: Record<string, string> （明文数据，自动 base64 编码存储）
       - immutable?: boolean （是否不可变）
   - Permission: `kubernetes:config:secret:edit`
 
-## 编辑 Secret YAML
+## 更新 Secret（YAML 方式）
 - 页面路由
   - Name: `kubernetes:config:secret:edit:yaml`
   - Path: `/kubernetes/clusters/:clusterUid/namespaces/:namespace/secrets/:name/edit/yaml`
@@ -2451,7 +3123,7 @@
     - yaml: string （Secret YAML 字符串）
   - Permission: `kubernetes:config:secret:edit`
 
-## 管理标签
+## 管理 Secret 标签
 - 页面路由
   - 无
 - API 接口
@@ -2460,11 +3132,11 @@
     - clusterUid: string （集群 UID）
     - namespace: string （命名空间名称）
     - name: string （Secret 名称）
-    - `MetadataLabelForm`（管理标签请求对象） 来自 `/src/types/kubernetes/common.ts`
+    - `MetadataLabelForm`（管理标签请求对象，来自 `/src/types/kubernetes/common.ts`）
       - labels: Record<string, string> （标签键值对）
       - operation: number （操作，1: 新增；2: 移除；3: 全量替换）
 
-## 管理注解
+## 管理 Secret 注解
 - 页面路由
   - 无
 - API 接口
@@ -2473,7 +3145,7 @@
     - clusterUid: string （集群 UID）
     - namespace: string （命名空间名称）
     - name: string （Secret 名称）
-    - `MetadataAnnotationForm`（管理注解请求对象） 来自 `/src/types/kubernetes/common.ts`
+    - `MetadataAnnotationForm`（管理注解请求对象，来自 `/src/types/kubernetes/common.ts`）
       - annotations: Record<string, string> （注解键值对）
       - operation: number （操作，1: 新增；2: 移除；3: 全量替换）
 
@@ -2488,15 +3160,36 @@
     - name: string （Secret 名称）
   - Permission: `kubernetes:config:secret:delete`
 
-## 批量删除
+## 批量删除 Secret
 - 页面路由
   - 无
 - API 接口
-  - URL: `DELETE /kubernetes/clusters/:clusterUid/secrets/batch`
+  - URL: `DELETE /kubernetes/clusters/:clusterUid/secrets`
   - Function: `void deleteSecrets(clusterUid: string, uids: string[])`
     - clusterUid: string （集群 UID）
     - uids: string[] （Secret UID 列表）
   - Permission: `kubernetes:config:secret:delete`
+
+## 导入 Secret
+- 页面路由
+  - 无
+- API 接口
+  - URL: `POST /kubernetes/clusters/:clusterUid/secrets/import`
+  - Function: `void importSecret(clusterUid: string, data: SecretYamlForm)`
+    - clusterUid: string （集群 UID）
+    - `SecretYamlForm`（Secret YAML 导入请求对象）
+      - yaml: string （Secret YAML 字符串）
+  - Permission: `kubernetes:config:secret:import`
+
+## 导出 Secret
+- 页面路由
+  - 无
+- API 接口
+  - URL: `GET /kubernetes/clusters/:clusterUid/secrets/export`
+  - Function: `void exportSecret(clusterUid: string, params: Partial<SecretQueryForm>)`
+    - clusterUid: string （集群 UID）
+    - `SecretQueryForm` 共享【查看 Secret 列表】章节的实体定义
+  - Permission: `kubernetes:config:secret:export`
 
 ## 克隆 Secret
 - 页面路由
@@ -2511,3 +3204,556 @@
       - targetNamespace: string （目标命名空间名称，可跨命名空间克隆）
       - targetName: string （目标 Secret 名称）
   - Permission: `kubernetes:config:secret:create`
+
+---
+
+# Service 功能
+
+## 查看 Service 列表
+- 页面路由
+  - Name: `kubernetes:network:service`
+  - Path: `/kubernetes/clusters/:clusterUid/services`
+  - Component: `/src/view/kubernetes/network/service/index.vue`
+  - Permission: `kubernetes:network:service:view`
+- API 接口
+  - URL: `GET /kubernetes/clusters/:clusterUid/services`
+  - Function: `PageVo<ServiceListVo> getServiceList(clusterUid: string, namespace: string, params: Partial<ServiceQueryForm>)`
+    - clusterUid: string （集群 UID）
+    - `ServiceQueryForm`（Service 查询条件请求对象） 继承 `UidEntity`, `PageForm`
+      - name: string （Service 名称）
+      - namespace: string （命名空间名称）
+      - type: ServiceType （Service 类型，来自 `/src/config/kubernetes/network/service.ts`）
+      - labelSelector: Record<string, string> （标签过滤）
+    - `ServiceListVo`（Service 列表项响应对象） 继承 `UidEntity`, `Clustered`, `Namespaced`, `AuditEntity`, `DeletableEntity`
+      - name: string （Service 名称）
+      - description?: string （Service 描述）
+      - type: ServiceType （Service 类型，来自 `/src/types/kubernetes/network/service.ts`）
+      - clusterIp: string （集群内部 IP）
+      - ports?: ServicePort[] （端口配置列表）
+      - selector: Record<string, string> （标签选择器，匹配目标 Pod 的标签）
+      - externalName: string （外部域名，仅 ExternalName 类型生效）
+      - headless: boolean （是否为 Headless Service）
+
+## 查看 Service 详情
+- 页面路由
+  - Name: `kubernetes:network:service:detail`
+  - Path: `/kubernetes/clusters/:clusterUid/namespaces/:namespace/services/:name`
+  - Component: `/src/view/kubernetes/network/service/detail/index.vue`
+  - Permission: `kubernetes:network:service:view`
+- API 接口
+  - URL: `GET /kubernetes/clusters/:clusterUid/namespaces/:namespace/services/:name`
+  - Function: `ServiceDetailVo getServiceDetail(clusterUid: string, namespace: string, name: string)`
+    - clusterUid: string （集群 UID）
+    - namespace: string （命名空间名称）
+    - name: string （Service 名称）
+    - `ServiceDetailVo`（Service 详情响应对象） 继承 `UidEntity`, `Clustered`, `Namespaced`, `AuditEntity`, `DeletableEntity`
+      - description?: string （Service 描述）
+      - metadata: ObjectMeta （Service 的资源元数据，详见 ### ObjectMeta）
+      - spec: ServiceSpec （Service 的规格定义，详见 ### ServiceSpec）
+      - statusObj: ServiceStatusObj （Service 的观测状态，详见 ### ServiceStatusObj）
+
+## 查看 Service YAML
+- 页面路由
+  - 无
+- API 接口
+  - URL: `GET /kubernetes/clusters/:clusterUid/namespaces/:namespace/services/:name/yaml`
+  - Function: `ServiceYamlVo getServiceYaml(clusterUid: string, namespace: string, name: string)`
+    - clusterUid: string （集群 UID）
+    - namespace: string （命名空间名称）
+    - name: string （Service 名称）
+
+## 查看 Service Endpoint 列表
+
+## 创建 Service
+- 页面路由
+  - Name: `kubernetes:network:service:create`
+  - Path: `/kubernetes/clusters/:clusterUid/services/create`
+  - Component: `/src/view/kubernetes/network/service/create/index.vue`
+  - Permission: `kubernetes:network:service:create`
+- API 接口
+  - URL: `POST /kubernetes/clusters/:clusterUid/services`
+  - Function: `void createService(clusterUid: string, data: Partial<ServiceCreateForm>)`
+    - clusterUid: string （集群 UID）
+    - `ServiceCreateForm`（Service 创建请求对象）
+      - description?: string （Service 描述）
+      - metadata: ObjectMeta （Service 的资源元数据，详见 ### ObjectMeta）
+      - spec: ServiceSpec （Service 的规格定义，详见 ### ServiceSpec）
+
+## 创建 Service（YAML 方式）
+- 页面路由
+  - Name: `kubernetes:network:service:create:yaml`
+  - Path: `/kubernetes/clusters/:clusterUid/services/create/yaml`
+  - Component: `/src/view/kubernetes/network/service/create/yaml.vue`
+  - Permission: `kubernetes:network:service:create`
+- API 接口
+  - URL: `POST /kubernetes/clusters/:clusterUid/services/yaml`
+  - Function: `void createServiceYaml(clusterUid: string, yaml: string)`
+    - clusterUid: string （集群 UID）
+    - yaml: string （Service YAML 字符串）
+
+## 更新 Service
+- 页面路由
+  - Name: `kubernetes:network:service:edit`
+  - Path: `/kubernetes/clusters/:clusterUid/namespaces/:namespace/services/:name/edit`
+  - Component: `/src/view/kubernetes/network/service/edit.vue`
+  - Permission: `kubernetes:network:service:edit`
+- API 接口
+  - URL: `PUT /kubernetes/clusters/:clusterUid/namespaces/:namespace/services/:name`
+  - Function: `void updateService(clusterUid: string, data: ServiceUpdateForm)`
+    - clusterUid: string （集群 UID）
+    - `ServiceUpdateForm`（Service 更新请求对象）
+      - description?: string （Service 描述）
+      - metadata: ObjectMeta （Service 的资源元数据，详见 ### ObjectMeta）
+      - spec: ServiceSpec （Service 的规格定义，详见 ### ServiceSpec）
+
+## 更新 Service（YAML 方式）
+- 页面路由
+  - Name: `kubernetes:network:service:edit:yaml`
+  - Path: `/kubernetes/clusters/:clusterUid/namespaces/:namespace/services/:name/edit/yaml`
+  - Component: `/src/view/kubernetes/network/service/edit/yaml.vue`
+  - Permission: `kubernetes:network:service:edit`
+- API 接口
+  - URL: `PUT /kubernetes/clusters/:clusterUid/namespaces/:namespace/services/:name/yaml`
+  - Function: `void updateServiceYaml(clusterUid: string, namespace: string, name: string, yaml: string)`
+    - clusterUid: string （集群 UID）
+    - namespace: string （命名空间名称）
+    - name: string （Service 名称）
+    - yaml: string （Service YAML 字符串）
+
+## 管理 Service 标签
+- 页面路由
+  - 无
+- API 接口
+  - URL: `PUT /kubernetes/clusters/:clusterUid/namespaces/:namespace/services/:name/labels`
+  - Function: `void manageServiceLabels(clusterUid: string, namespace: string, name: string, data: MetadataLabelForm)`
+    - clusterUid: string （集群 UID）
+    - namespace: string （命名空间名称）
+    - name: string （Service 名称）
+    - `MetadataLabelForm`（管理标签请求对象，来自 `/src/types/kubernetes/common.ts`）
+      - labels: Record<string, string> （标签键值对）
+      - operation: number （操作，1: 新增；2: 移除；3: 全量替换）
+
+## 管理 Service 注解
+- 页面路由
+  - 无
+- API 接口
+  - URL: `PUT /kubernetes/clusters/:clusterUid/namespaces/:namespace/services/:name/annotations`
+  - Function: `void manageServiceAnnotations(clusterUid: string, namespace: string, name: string, data: MetadataAnnotationForm)`
+    - clusterUid: string （集群 UID）
+    - namespace: string （命名空间名称）
+    - name: string （Service 名称）
+    - `MetadataAnnotationForm`（管理注解请求对象，来自 `/src/types/kubernetes/common.ts`）
+      - annotations: Record<string, string> （注解键值对）
+      - operation: number （操作，1: 新增；2: 移除；3: 全量替换）
+
+## 删除 Service
+- 页面路由
+  - 无
+- API 接口
+  - URL: `DELETE /kubernetes/clusters/:clusterUid/namespaces/:namespace/services/:name`
+  - Function: `void deleteService(clusterUid: string, namespace: string, name: string)`
+    - clusterUid: string （集群 UID）
+    - namespace: string （命名空间名称）
+    - name: string （Service 名称）
+  - Permission: `kubernetes:network:service:delete`
+
+## 批量删除 Service
+- 页面路由
+  - 无
+- API 接口
+  - URL: `DELETE /kubernetes/clusters/:clusterUid/services`
+  - Function: `void deleteServices(clusterUid: string, namespace: string, uids: string[])`
+    - clusterUid: string （集群 UID）
+    - namespace: string （命名空间名称）
+    - uids: string[] （Service UID 列表）
+  - Permission: `kubernetes:network:service:delete`
+
+## 导入 Service
+
+## 导出 Service
+
+---
+
+# Ingress 功能
+
+## 查看 Ingress 列表
+- 页面路由
+  - Name: `kubernetes:network:ingress`
+  - Path: `/kubernetes/clusters/:clusterUid/namespaces/:namespace/ingresses`
+  - Component: `/src/view/kubernetes/network/ingress/index.vue`
+  - Permission: `kubernetes:network:ingress:view`
+- API 接口
+  - URL: `GET /kubernetes/clusters/:clusterUid/namespaces/:namespace/ingresses`
+  - Function: `PageVo<IngressListVo> getIngressList(clusterUid: string, namespace: string, params: Partial<IngressQueryForm>)`
+    - clusterUid: string （集群 UID）
+    - namespace: string （命名空间名称）
+    - `IngressQueryForm`（Ingress 查询条件请求对象） 继承 `PageForm`
+      - name: string （Ingress 名称，模糊匹配）
+      - ingressClassName?: string （Ingress 类名）
+      - labelSelector: string （标签选择器，key=value 格式，多个用逗号分隔）
+    - `IngressListVo`（Ingress 列表项响应对象） 继承 `Namespaced`
+      - uid: string （资源 UID）
+      - name: string （Ingress 名称）
+      - description: string （Ingress 描述，取自 annotations.bee.kube/description）
+      - ingressClassName?: string （Ingress 类名）
+      - loadBalancer?: IngressLoadBalancer[] （负载均衡器入口地址列表）
+      - rules: IngressRule[] （转发规则列表）
+      - tls?: IngressTLS[] （TLS 证书配置列表）
+
+## 查看 Ingress 详情
+- 页面路由
+  - Name: `kubernetes:network:ingress:detail`
+  - Path: `/kubernetes/clusters/:clusterUid/namespaces/:namespace/ingresses/:name`
+  - Component: `/src/view/kubernetes/network/ingress/detail/index.vue`
+  - Permission: `kubernetes:network:ingress:view`
+- API 接口
+  - URL: `GET /kubernetes/clusters/:clusterUid/namespaces/:namespace/ingresses/:name`
+  - Function: `IngressListVo getIngressDetail(clusterUid: string, namespace: string, name: string)`
+    - clusterUid: string （集群 UID）
+    - namespace: string （命名空间名称）
+    - name: string （Ingress 名称）
+
+## 查看 Ingress YAML
+- 页面路由
+  - 无
+- API 接口
+  - URL: `GET /kubernetes/clusters/:clusterUid/namespaces/:namespace/ingresses/:name/yaml`
+  - Function: `IngressYamlVo getIngressYaml(clusterUid: string, namespace: string, name: string)`
+    - clusterUid: string （集群 UID）
+    - namespace: string （命名空间名称）
+    - name: string （Ingress 名称）
+
+## 创建 Ingress
+- 页面路由
+  - Name: `kubernetes:network:ingress:create`
+  - Path: `/kubernetes/clusters/:clusterUid/namespaces/:namespace/ingresses/create`
+  - Component: `/src/view/kubernetes/network/ingress/create.vue`
+  - Permission: `kubernetes:network:ingress:create`
+- API 接口
+  - URL: `POST /kubernetes/clusters/:clusterUid/namespaces/:namespace/ingresses`
+  - Function: `void createIngress(clusterUid: string, data: IngressCreateForm)`
+    - clusterUid: string （集群 UID）
+    - `IngressCreateForm`（Ingress 创建请求对象）
+      - name: string （Ingress 名称）
+      - namespace: string （命名空间名称）
+      - ingressClassName?: string （Ingress 类名）
+      - rules: IngressRule[] （转发规则列表）
+      - tls?: IngressTLS[] （TLS 证书配置列表）
+      - labels?: Record<string, string> （标签）
+      - annotations?: Record<string, string> （注解）
+  - Permission: `kubernetes:network:ingress:create`
+
+## 创建 Ingress（YAML 方式）
+- 页面路由
+  - Name: `kubernetes:network:ingress:create:yaml`
+  - Path: `/kubernetes/clusters/:clusterUid/ingresses/create/yaml`
+  - Component: `/src/view/kubernetes/network/ingress/create/yaml.vue`
+  - Permission: `kubernetes:network:ingress:create`
+- API 接口
+  - URL: `POST /kubernetes/clusters/:clusterUid/ingresses/yaml`
+  - Function: `void createIngressYaml(clusterUid: string, yaml: string)`
+    - clusterUid: string （集群 UID）
+    - yaml: string （Ingress YAML 字符串）
+
+## 更新 Ingress
+- 页面路由
+  - Name: `kubernetes:network:ingress:edit`
+  - Path: `/kubernetes/clusters/:clusterUid/namespaces/:namespace/ingresses/:name/edit`
+  - Component: `/src/view/kubernetes/network/ingress/edit.vue`
+  - Permission: `kubernetes:network:ingress:edit`
+- API 接口
+  - URL: `PUT /kubernetes/clusters/:clusterUid/namespaces/:namespace/ingresses/:name`
+  - Function: `void updateIngress(clusterUid: string, data: IngressUpdateForm)`
+    - clusterUid: string （集群 UID）
+    - `IngressUpdateForm`（Ingress 更新请求对象）
+      - name: string （Ingress 名称）
+      - namespace: string （命名空间名称）
+      - ingressClassName?: string （Ingress 类名）
+      - rules: IngressRule[] （转发规则列表）
+      - tls?: IngressTLS[] （TLS 证书配置列表）
+      - labels?: Record<string, string> （标签）
+      - annotations?: Record<string, string> （注解）
+  - Permission: `kubernetes:network:ingress:edit`
+
+## 更新 Ingress（YAML 方式）
+- 页面路由
+  - Name: `kubernetes:network:ingress:edit:yaml`
+  - Path: `/kubernetes/clusters/:clusterUid/namespaces/:namespace/ingresses/:name/edit/yaml`
+  - Component: `/src/view/kubernetes/network/ingress/edit/yaml.vue`
+  - Permission: `kubernetes:network:ingress:edit`
+- API 接口
+  - URL: `PUT /kubernetes/clusters/:clusterUid/namespaces/:namespace/ingresses/:name/yaml`
+  - Function: `void updateIngressYaml(clusterUid: string, namespace: string, name: string, yaml: string)`
+    - clusterUid: string （集群 UID）
+    - namespace: string （命名空间名称）
+    - name: string （Ingress 名称）
+    - yaml: string （Ingress YAML 字符串）
+
+## 管理 Ingress 标签
+- 页面路由
+  - 无
+- API 接口
+  - URL: `PUT /kubernetes/clusters/:clusterUid/namespaces/:namespace/ingresses/:name/labels`
+  - Function: `void manageIngressLabels(clusterUid: string, namespace: string, name: string, data: MetadataLabelForm)`
+    - clusterUid: string （集群 UID）
+    - namespace: string （命名空间名称）
+    - name: string （Ingress 名称）
+    - `MetadataLabelForm`（管理标签请求对象，来自 `/src/types/kubernetes/common.ts`）
+      - labels: Record<string, string> （标签键值对）
+      - operation: number （操作，1: 新增；2: 移除；3: 全量替换）
+
+## 管理 Ingress 注解
+- 页面路由
+  - 无
+- API 接口
+  - URL: `PUT /kubernetes/clusters/:clusterUid/namespaces/:namespace/ingresses/:name/annotations`
+  - Function: `void manageIngressAnnotations(clusterUid: string, namespace: string, name: string, data: MetadataAnnotationForm)`
+    - clusterUid: string （集群 UID）
+    - namespace: string （命名空间名称）
+    - name: string （Ingress 名称）
+    - `MetadataAnnotationForm`（管理注解请求对象，来自 `/src/types/kubernetes/common.ts`）
+      - annotations: Record<string, string> （注解键值对）
+      - operation: number （操作，1: 新增；2: 移除；3: 全量替换）
+
+## 删除 Ingress
+- 页面路由
+  - 无
+- API 接口
+  - URL: `DELETE /kubernetes/clusters/:clusterUid/namespaces/:namespace/ingresses/:name`
+  - Function: `void deleteIngress(clusterUid: string, namespace: string, name: string)`
+    - clusterUid: string （集群 UID）
+    - namespace: string （命名空间名称）
+    - name: string （Ingress 名称）
+  - Permission: `kubernetes:network:ingress:delete`
+
+## 批量删除 Ingress
+- 页面路由
+  - 无
+- API 接口
+  - URL: `DELETE /kubernetes/clusters/:clusterUid/namespaces/:namespace/ingresses`
+  - Function: `void deleteIngresses(clusterUid: string, namespace: string, names: string[])`
+    - clusterUid: string （集群 UID）
+    - namespace: string （命名空间名称）
+    - names: string[] （Ingress 名称列表）
+  - Permission: `kubernetes:network:ingress:delete`
+
+## 导入 Ingress
+- 页面路由
+  - 无
+- API 接口
+  - URL: `POST /kubernetes/clusters/:clusterUid/namespaces/:namespace/ingresses/import`
+  - Function: `void importIngress(clusterUid: string, namespace: string, formData: FormData, onProgress?: (progressEvent: AxiosProgressEvent) => void)`
+    - clusterUid: string （集群 UID）
+    - namespace: string （命名空间名称）
+    - formData: FormData （上传的文件）
+    - onProgress?: (progressEvent: AxiosProgressEvent) => void （上传进度回调）
+  - Permission: `kubernetes:network:ingress:import`
+
+## 导出 Ingress
+- 页面路由
+  - 无
+- API 接口
+  - URL: `GET /kubernetes/clusters/:clusterUid/namespaces/:namespace/ingresses/export`
+  - Function: `void exportIngress(clusterUid: string, namespace: string, params: Partial<IngressQueryForm>)`
+    - clusterUid: string （集群 UID）
+    - namespace: string （命名空间名称）
+    - `IngressQueryForm` 共享【查看 Ingress 列表】章节的实体定义
+  - Permission: `kubernetes:network:ingress:export`
+
+# NetworkPolicy 功能
+
+## 查看 NetworkPolicy 列表
+- 页面路由
+  - Name: `kubernetes:network:networkpolicy`
+  - Path: `/kubernetes/clusters/:clusterUid/namespaces/:namespace/networkpolicies`
+  - Component: `/src/view/kubernetes/network/networkpolicy/index.vue`
+  - Permission: `kubernetes:network:networkpolicy:view`
+- API 接口
+  - URL: `GET /kubernetes/clusters/:clusterUid/namespaces/:namespace/networkpolicies`
+  - Function: `PageVo<NetworkPolicyListVo> getNetworkPolicyList(clusterUid: string, namespace: string, params: Partial<NetworkPolicyQueryForm>)`
+    - clusterUid: string （集群 UID）
+    - namespace: string （命名空间名称）
+    - `NetworkPolicyQueryForm`（NetworkPolicy 查询条件请求对象） 继承 `PageForm`
+      - name: string （NetworkPolicy 名称，模糊匹配）
+      - labelSelector: string （标签选择器）
+    - `NetworkPolicyListVo`（NetworkPolicy 列表项响应对象） 继承 `AuditEntity`
+      - name: string （NetworkPolicy 名称）
+      - namespace: string （命名空间名称）
+      - clusterUid: string （所属集群 UID）
+      - clusterName?: string （所属集群名称）
+      - podSelector: Record<string, string> （Pod 选择器）
+      - policyTypes?: string[] （策略类型列表，如 Ingress、Egress）
+      - deletable?: boolean （是否可删除）
+
+## 查看 NetworkPolicy 详情
+- 页面路由
+  - Name: `kubernetes:network:networkpolicy:detail`
+  - Path: `/kubernetes/clusters/:clusterUid/namespaces/:namespace/networkpolicies/:name`
+  - Component: `/src/view/kubernetes/network/networkpolicy/detail/index.vue`
+  - Permission: `kubernetes:network:networkpolicy:view`
+- API 接口
+  - URL: `GET /kubernetes/clusters/:clusterUid/namespaces/:namespace/networkpolicies/:name`
+  - Function: `NetworkPolicyDetailVo getNetworkPolicyDetail(clusterUid: string, namespace: string, name: string)`
+    - clusterUid: string （集群 UID）
+    - namespace: string （命名空间名称）
+    - name: string （NetworkPolicy 名称）
+    - `NetworkPolicyDetailVo`（NetworkPolicy 详情响应对象） 继承 `AuditEntity`
+      - name: string （NetworkPolicy 名称）
+      - namespace: string （命名空间名称）
+      - clusterUid: string （所属集群 UID）
+      - clusterName?: string （所属集群名称）
+      - podSelector: Record<string, string> （Pod 选择器）
+      - ingress?: NetworkPolicyIngressRule[] （入方向规则列表）
+      - egress?: NetworkPolicyEgressRule[] （出方向规则列表）
+      - policyTypes?: string[] （策略类型列表）
+      - labels?: Record<string, string> （标签）
+      - annotations?: Record<string, string> （注解）
+
+## 查看 NetworkPolicy YAML
+- 页面路由
+  - 无
+- API 接口
+  - URL: `GET /kubernetes/clusters/:clusterUid/namespaces/:namespace/networkpolicies/:name/yaml`
+  - Function: `NetworkPolicyYamlVo getNetworkPolicyYaml(clusterUid: string, namespace: string, name: string)`
+    - clusterUid: string （集群 UID）
+    - namespace: string （命名空间名称）
+    - name: string （NetworkPolicy 名称）
+
+## 创建 NetworkPolicy
+- 页面路由
+  - Name: `kubernetes:network:networkpolicy:create`
+  - Path: `/kubernetes/clusters/:clusterUid/namespaces/:namespace/networkpolicies/create`
+  - Component: `/src/view/kubernetes/network/networkpolicy/create.vue`
+  - Permission: `kubernetes:network:networkpolicy:create`
+- API 接口
+  - URL: `POST /kubernetes/clusters/:clusterUid/namespaces/:namespace/networkpolicies`
+  - Function: `void createNetworkPolicy(clusterUid: string, data: NetworkPolicyCreateForm)`
+    - clusterUid: string （集群 UID）
+    - `NetworkPolicyCreateForm`（NetworkPolicy 创建请求对象）
+      - name: string （NetworkPolicy 名称）
+      - namespace: string （命名空间名称）
+      - podSelector: Record<string, string> （Pod 选择器）
+      - ingress?: NetworkPolicyIngressRule[] （入方向规则列表）
+      - egress?: NetworkPolicyEgressRule[] （出方向规则列表）
+      - policyTypes?: ('Ingress' | 'Egress')[] （策略类型列表）
+      - labels?: Record<string, string> （标签）
+      - annotations?: Record<string, string> （注解）
+  - Permission: `kubernetes:network:networkpolicy:create`
+
+## 创建 NetworkPolicy（YAML 方式）
+- 页面路由
+  - Name: `kubernetes:network:networkpolicy:create:yaml`
+  - Path: `/kubernetes/clusters/:clusterUid/networkpolicies/create/yaml`
+  - Component: `/src/view/kubernetes/network/networkpolicy/create/yaml.vue`
+  - Permission: `kubernetes:network:networkpolicy:create`
+- API 接口
+  - URL: `POST /kubernetes/clusters/:clusterUid/networkpolicies/yaml`
+  - Function: `void createNetworkPolicyYaml(clusterUid: string, yaml: string)`
+    - clusterUid: string （集群 UID）
+    - yaml: string （NetworkPolicy YAML 字符串）
+
+## 更新 NetworkPolicy
+- 页面路由
+  - Name: `kubernetes:network:networkpolicy:edit`
+  - Path: `/kubernetes/clusters/:clusterUid/namespaces/:namespace/networkpolicies/:name/edit`
+  - Component: `/src/view/kubernetes/network/networkpolicy/edit.vue`
+  - Permission: `kubernetes:network:networkpolicy:edit`
+- API 接口
+  - URL: `PUT /kubernetes/clusters/:clusterUid/namespaces/:namespace/networkpolicies/:name`
+  - Function: `void updateNetworkPolicy(clusterUid: string, data: NetworkPolicyUpdateForm)`
+    - clusterUid: string （集群 UID）
+    - `NetworkPolicyUpdateForm`（NetworkPolicy 更新请求对象）
+      - name: string （NetworkPolicy 名称）
+      - namespace: string （命名空间名称）
+      - podSelector: Record<string, string> （Pod 选择器）
+      - ingress?: NetworkPolicyIngressRule[] （入方向规则列表）
+      - egress?: NetworkPolicyEgressRule[] （出方向规则列表）
+      - policyTypes?: ('Ingress' | 'Egress')[] （策略类型列表）
+      - labels?: Record<string, string> （标签）
+      - annotations?: Record<string, string> （注解）
+  - Permission: `kubernetes:network:networkpolicy:edit`
+
+## 更新 NetworkPolicy（YAML 方式）
+- 页面路由
+  - Name: `kubernetes:network:networkpolicy:edit:yaml`
+  - Path: `/kubernetes/clusters/:clusterUid/namespaces/:namespace/networkpolicies/:name/edit/yaml`
+  - Component: `/src/view/kubernetes/network/networkpolicy/edit/yaml.vue`
+  - Permission: `kubernetes:network:networkpolicy:edit`
+- API 接口
+  - URL: `PUT /kubernetes/clusters/:clusterUid/namespaces/:namespace/networkpolicies/:name/yaml`
+  - Function: `void updateNetworkPolicyYaml(clusterUid: string, namespace: string, name: string, yaml: string)`
+    - clusterUid: string （集群 UID）
+    - namespace: string （命名空间名称）
+    - name: string （NetworkPolicy 名称）
+    - yaml: string （NetworkPolicy YAML 字符串）
+
+## 管理 NetworkPolicy 标签
+- 页面路由
+  - 无
+- API 接口
+  - URL: `PUT /kubernetes/clusters/:clusterUid/namespaces/:namespace/networkpolicies/:name/labels`
+  - Function: `void manageNetworkPolicyLabels(clusterUid: string, namespace: string, name: string, data: MetadataLabelForm)`
+    - clusterUid: string （集群 UID）
+    - namespace: string （命名空间名称）
+    - name: string （NetworkPolicy 名称）
+    - `MetadataLabelForm`（管理标签请求对象，来自 `/src/types/kubernetes/common.ts`）
+      - labels: Record<string, string> （标签键值对）
+      - operation: number （操作，1: 新增；2: 移除；3: 全量替换）
+
+## 管理 NetworkPolicy 注解
+- 页面路由
+  - 无
+- API 接口
+  - URL: `PUT /kubernetes/clusters/:clusterUid/namespaces/:namespace/networkpolicies/:name/annotations`
+  - Function: `void manageNetworkPolicyAnnotations(clusterUid: string, namespace: string, name: string, data: MetadataAnnotationForm)`
+    - clusterUid: string （集群 UID）
+    - namespace: string （命名空间名称）
+    - name: string （NetworkPolicy 名称）
+    - `MetadataAnnotationForm`（管理注解请求对象，来自 `/src/types/kubernetes/common.ts`）
+      - annotations: Record<string, string> （注解键值对）
+      - operation: number （操作，1: 新增；2: 移除；3: 全量替换）
+
+## 删除 NetworkPolicy
+- 页面路由
+  - 无
+- API 接口
+  - URL: `DELETE /kubernetes/clusters/:clusterUid/namespaces/:namespace/networkpolicies/:name`
+  - Function: `void deleteNetworkPolicy(clusterUid: string, namespace: string, name: string)`
+    - clusterUid: string （集群 UID）
+    - namespace: string （命名空间名称）
+    - name: string （NetworkPolicy 名称）
+  - Permission: `kubernetes:network:networkpolicy:delete`
+
+## 批量删除 NetworkPolicy
+- 页面路由
+  - 无
+- API 接口
+  - URL: `DELETE /kubernetes/clusters/:clusterUid/namespaces/:namespace/networkpolicies`
+  - Function: `void deleteNetworkPolicys(clusterUid: string, namespace: string, names: string[])`
+    - clusterUid: string （集群 UID）
+    - namespace: string （命名空间名称）
+    - names: string[] （NetworkPolicy 名称列表）
+  - Permission: `kubernetes:network:networkpolicy:delete`
+
+## 导入 NetworkPolicy
+- 页面路由
+  - 无
+- API 接口
+  - URL: `POST /kubernetes/clusters/:clusterUid/namespaces/:namespace/networkpolicies/import`
+  - Function: `void importNetworkPolicy(clusterUid: string, namespace: string, formData: FormData, onProgress?: (progressEvent: AxiosProgressEvent) => void)`
+    - clusterUid: string （集群 UID）
+    - namespace: string （命名空间名称）
+    - formData: FormData （上传的文件）
+    - onProgress?: (progressEvent: AxiosProgressEvent) => void （上传进度回调）
+  - Permission: `kubernetes:network:networkpolicy:import`
+
+## 导出 NetworkPolicy
+- 页面路由
+  - 无
+- API 接口
+  - URL: `GET /kubernetes/clusters/:clusterUid/namespaces/:namespace/networkpolicies/export`
+  - Function: `void exportNetworkPolicy(clusterUid: string, namespace: string, params: Partial<NetworkPolicyQueryForm>)`
+    - clusterUid: string （集群 UID）
+    - namespace: string （命名空间名称）
+    - `NetworkPolicyQueryForm` 共享【查看 NetworkPolicy 列表】章节的实体定义
+  - Permission: `kubernetes:network:networkpolicy:export`
