@@ -206,7 +206,7 @@ const typeOptions = ref([
   { label: 'kubernetes.io/ssh-auth', value: 'kubernetes.io/ssh-auth' },
   { label: 'kubernetes.io/service-account-token', value: 'kubernetes.io/service-account-token' },
   { label: 'kubernetes.io/dockercfg', value: 'kubernetes.io/dockercfg' },
-  { label: 'kubernetes.io/boot-straph-token', value: 'kubernetes.io/boot-straph-token' },
+  { label: 'bootstrap.kubernetes.io/token', value: 'bootstrap.kubernetes.io/token' },
 ])
 
 // ==================== Data Loading ====================

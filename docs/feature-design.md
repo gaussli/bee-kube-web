@@ -636,11 +636,11 @@
 # Deployment 功能
 
 ## 查看 Deployment 列表
-- 功能权限：`kubernetes:workload:deployment:view`
 - 页面路由
   - Name: `kubernetes:workload:deployment`
   - Path: `/kubernetes/clusters/:clusterUid/deployments`
   - Component: `/src/view/kubernetes/workload/deployment/index.vue`
+  - Permission: `kubernetes:workload:deployment:view`
 - API 接口
   - URL: `GET /kubernetes/clusters/:clusterUid/deployments`
   - Function: `PageVo<DeploymentListVo> getDeploymentList(clusterUid: string, params: Partial<DeploymentQueryForm>)`
@@ -964,11 +964,11 @@
 # StatefulSet 功能
 
 ## 查看 StatefulSet 列表
-- 功能权限：`kubernetes:workload:statefulset:view`
 - 页面路由
   - Name: `kubernetes:workload:statefulset`
   - Path: `/kubernetes/clusters/:clusterUid/statefulsets`
   - Component: `/src/view/kubernetes/workload/statefulset/index.vue`
+  - Permission: `kubernetes:workload:statefulset:view`
 - API 接口
   - URL: `GET /kubernetes/clusters/:clusterUid/statefulsets`
   - Function: `PageVo<StatefulSetListVo> getStatefulSetList(clusterUid: string, params: Partial<StatefulSetQueryForm>)`
@@ -1305,11 +1305,11 @@
 # DaemonSet 功能
 
 ## 查看 DaemonSet 列表
-- 功能权限：`kubernetes:workload:daemonset:view`
 - 页面路由
   - Name: `kubernetes:workload:daemonset`
   - Path: `/kubernetes/clusters/:clusterUid/daemonsets`
   - Component: `/src/view/kubernetes/workload/daemonset/index.vue`
+  - Permission: `kubernetes:workload:daemonset:view`
 - API 接口
   - URL: `GET /kubernetes/clusters/:clusterUid/daemonsets`
   - Function: `PageVo<DaemonSetListVo> getDaemonSetList(clusterUid: string, params: Partial<DaemonSetQueryForm>)`
@@ -1619,11 +1619,11 @@
 # Job 功能
 
 ## 查看 Job 列表
-- 功能权限：`kubernetes:workload:job:view`
 - 页面路由
   - Name: `kubernetes:workload:job`
   - Path: `/kubernetes/clusters/:clusterUid/jobs`
   - Component: `/src/view/kubernetes/workload/job/index.vue`
+  - Permission: `kubernetes:workload:job:view`
 - API 接口
   - URL: `GET /kubernetes/clusters/:clusterUid/jobs`
   - Function: `PageVo<JobListVo> getJobList(clusterUid: string, params: Partial<JobQueryForm>)`
@@ -1884,11 +1884,11 @@
 # CronJob 功能
 
 ## 查看 CronJob 列表
-- 功能权限：`kubernetes:workload:cronjob:view`
 - 页面路由
   - Name: `kubernetes:workload:cronjob`
   - Path: `/kubernetes/clusters/:clusterUid/cronjobs`
   - Component: `/src/view/kubernetes/workload/cronjob/index.vue`
+  - Permission: `kubernetes:workload:cronjob:view`
 - API 接口
   - URL: `GET /kubernetes/clusters/:clusterUid/cronjobs`
   - Function: `PageVo<CronJobListVo> getCronJobList(clusterUid: string, params: Partial<CronJobQueryForm>)`
@@ -2143,3 +2143,371 @@
     - namespace: string （命名空间名称）
     - name: string （CronJob 名称）
   - Permission: `kubernetes:workload:cronjob:edit`
+
+# ConfigMap 功能
+
+## 查看 ConfigMap 列表
+- 页面路由
+  - Name: `kubernetes:config:configmap`
+  - Path: `/kubernetes/clusters/:clusterUid/configmaps`
+  - Component: `/src/view/kubernetes/config/configmap/index.vue`
+  - Permission: `kubernetes:config:configmap:view`
+- API 接口
+  - URL: `GET /kubernetes/clusters/:clusterUid/configmaps`
+  - Function: `PageVo<ConfigMapListVo> getConfigMapList(clusterUid: string, params: Partial<ConfigMapQueryForm>)`
+    - clusterUid: string （集群 UID）
+    - `ConfigMapQueryForm`（ConfigMap 查询条件请求对象） 继承 `UidEntity`, `PageForm`
+      - name: string （ConfigMap 名称）
+      - namespace: string （命名空间名称）
+      - labelSelector: Record<string, string> （标签过滤）
+    - `ConfigMapListVo`（ConfigMap 列表项响应对象） 继承 `UidEntity`, `Clustered`, `Namespaced`, `AuditEntity`, `DeletableEntity`
+      - name: string （ConfigMap 名称）
+      - description?: string （ConfigMap 描述）
+      - dataCount: number （键值对数量）
+      - immutable: boolean （是否不可变）
+
+## 查看 ConfigMap 详情
+- 页面路由
+  - Name: `kubernetes:config:configmap:detail`
+  - Path: `/kubernetes/clusters/:clusterUid/namespaces/:namespace/configmaps/:name`
+  - Component: `/src/view/kubernetes/config/configmap/detail/index.vue`
+  - Permission: `kubernetes:config:configmap:view`
+- API 接口
+  - URL: `GET /kubernetes/clusters/:clusterUid/namespaces/:namespace/configmaps/:name`
+  - Function: `ConfigMapDetailVo getConfigMapDetail(clusterUid: string, namespace: string, name: string)`
+    - clusterUid: string （集群 UID）
+    - namespace: string （命名空间名称）
+    - name: string （ConfigMap 名称）
+    - `ConfigMapDetailVo`（ConfigMap 详情响应对象） 继承 `UidEntity`, `Clustered`, `Namespaced`, `AuditEntity`, `DeletableEntity`
+      - description?: string （ConfigMap 描述）
+      - metadata: ObjectMeta （ConfigMap 的资源元数据，详见 ### ObjectMeta）
+      - immutable?: boolean （是否不可变）
+      - data: Record<string, string> （键值对配置数据，明文）
+      - binaryData: Record<string, string> （二进制数据，base64 编码）
+
+## 查看 ConfigMap YAML
+- 页面路由
+  - 无
+- API 接口
+  - URL: `GET /kubernetes/clusters/:clusterUid/namespaces/:namespace/configmaps/:name/yaml`
+  - Function: `ConfigMapYamlVo getConfigMapYaml(clusterUid: string, namespace: string, name: string)`
+    - clusterUid: string （集群 UID）
+    - namespace: string （命名空间名称）
+    - name: string （ConfigMap 名称）
+    - `ConfigMapYamlVo`: （ConfigMap YAML 响应对象）
+      - yaml: string（ConfigMap YAML 文本）
+
+## 创建 ConfigMap
+- 页面路由
+  - Name: `kubernetes:config:configmap:create`
+  - Path: `/kubernetes/clusters/:clusterUid/configmaps/create`
+  - Component: `/src/view/kubernetes/config/configmap/create.vue`
+  - Permission: `kubernetes:config:configmap:create`
+- API 接口
+  - URL: `POST /kubernetes/clusters/:clusterUid/configmaps`
+  - Function: `void createConfigMap(clusterUid: string, data: ConfigMapCreateForm)`
+    - clusterUid: string （集群 UID）
+    - `ConfigMapCreateForm`（ConfigMap 创建请求对象）
+      - description?: string （ConfigMap 描述）
+      - metadata: ObjectMeta （ConfigMap 的资源元数据，详见 ### ObjectMeta）
+      - data: Record<string, string> （键值对配置数据）
+      - binaryData?: Record<string, string> （二进制数据，base64）
+      - immutable?: boolean （是否不可变）
+  - Permission: `kubernetes:config:configmap:create`
+
+## 创建 ConfigMap YAML
+- 页面路由
+  - Name: `kubernetes:config:configmap:create:yaml`
+  - Path: `/kubernetes/clusters/:clusterUid/configmaps/create/yaml`
+  - Component: `/src/view/kubernetes/config/configmap/create/yaml.vue`
+  - Permission: `kubernetes:config:configmap:create`
+- API 接口
+  - URL: `POST /kubernetes/clusters/:clusterUid/configmaps/yaml`
+  - Function: `void createConfigMapYaml(clusterUid: string, yaml: string)`
+    - clusterUid: string （集群 UID）
+    - yaml: string （ConfigMap YAML 字符串）
+  - Permission: `kubernetes:config:configmap:create`
+
+## 更新 ConfigMap
+- 页面路由
+  - Name: `kubernetes:config:configmap:edit`
+  - Path: `/kubernetes/clusters/:clusterUid/namespaces/:namespace/configmaps/:name/edit`
+  - Component: `/src/view/kubernetes/config/configmap/edit.vue`
+  - Permission: `kubernetes:config:configmap:edit`
+- API 接口
+  - URL: `PUT /kubernetes/clusters/:clusterUid/configmaps/:name`
+  - Function: `void updateConfigMap(clusterUid: string, namespace: string, name: string, data: ConfigMapUpdateForm)`
+    - clusterUid: string （集群 UID）
+    - namespace: string （命名空间名称）
+    - name: string （ConfigMap 名称）
+    - `ConfigMapUpdateForm`（ConfigMap 更新请求对象）
+      - description?: string （ConfigMap 描述）
+      - metadata: ObjectMeta （ConfigMap 的资源元数据，详见 ### ObjectMeta）
+      - data: Record<string, string> （键值对配置数据）
+      - binaryData?: Record<string, string> （二进制数据，base64）
+      - immutable?: boolean （是否不可变）
+  - Permission: `kubernetes:config:configmap:edit`
+
+## 更新 ConfigMap YAML
+- 页面路由
+  - Name: `kubernetes:config:configmap:edit:yaml`
+  - Path: `/kubernetes/clusters/:clusterUid/namespaces/:namespace/configmaps/:name/edit/yaml`
+  - Component: `/src/view/kubernetes/config/configmap/edit/yaml.vue`
+  - Permission: `kubernetes:config:configmap:edit`
+- API 接口
+  - URL: `PUT /kubernetes/clusters/:clusterUid/namespaces/:namespace/configmaps/:name/yaml`
+  - Function: `void updateConfigMapYaml(clusterUid: string, namespace: string, name: string, yaml: string)`
+    - clusterUid: string （集群 UID）
+    - namespace: string （命名空间名称）
+    - name: string （ConfigMap 名称）
+    - yaml: string （ConfigMap YAML 字符串）
+  - Permission: `kubernetes:config:configmap:edit`
+
+## 管理标签
+- 页面路由
+  - 无
+- API 接口
+  - URL: `POST /kubernetes/clusters/:clusterUid/configmaps/:name/labels`
+  - Function: `void manageConfigMapLabel(clusterUid: string, namespace: string, name: string, data: MetadataLabelForm)`
+    - clusterUid: string （集群 UID）
+    - namespace: string （命名空间名称）
+    - name: string （ConfigMap 名称）
+    - `MetadataLabelForm`（管理标签请求对象） 来自 `/src/types/kubernetes/common.ts`
+      - labels: Record<string, string> （标签键值对）
+      - operation: number （操作，1: 新增；2: 移除；3: 全量替换）
+
+## 管理注解
+- 页面路由
+  - 无
+- API 接口
+  - URL: `POST /kubernetes/clusters/:clusterUid/configmaps/:name/annotations`
+  - Function: `void manageConfigMapAnnotation(clusterUid: string, namespace: string, name: string, data: MetadataAnnotationForm)`
+    - clusterUid: string （集群 UID）
+    - namespace: string （命名空间名称）
+    - name: string （ConfigMap 名称）
+    - `MetadataAnnotationForm`（管理注解请求对象） 来自 `/src/types/kubernetes/common.ts`
+      - annotations: Record<string, string> （注解键值对）
+      - operation: number （操作，1: 新增；2: 移除；3: 全量替换）
+
+## 删除 ConfigMap
+- 页面路由
+  - 无
+- API 接口
+  - URL: `DELETE /kubernetes/clusters/:clusterUid/namespaces/:namespace/configmaps/:name`
+  - Function: `void deleteConfigMap(clusterUid: string, namespace: string, name: string)`
+    - clusterUid: string （集群 UID）
+    - namespace: string （命名空间名称）
+    - name: string （ConfigMap 名称）
+  - Permission: `kubernetes:config:configmap:delete`
+
+## 批量删除
+- 页面路由
+  - 无
+- API 接口
+  - URL: `DELETE /kubernetes/clusters/:clusterUid/configmaps/batch`
+  - Function: `void deleteConfigMaps(clusterUid: string, uids: string[])`
+    - clusterUid: string （集群 UID）
+    - uids: string[] （ConfigMap UID 列表）
+  - Permission: `kubernetes:config:configmap:delete`
+
+## 克隆 ConfigMap
+- 页面路由
+  - 无
+- API 接口
+  - URL: `POST /kubernetes/clusters/:clusterUid/namespaces/:namespace/configmaps/:name/clone`
+  - Function: `void cloneConfigMap(clusterUid: string, namespace: string, name: string, data: ConfigMapCloneForm)`
+    - clusterUid: string （集群 UID）
+    - namespace: string （命名空间名称）
+    - name: string （源 ConfigMap 名称）
+    - `ConfigMapCloneForm`（ConfigMap 克隆请求对象）
+      - targetNamespace: string （目标命名空间名称，可跨命名空间克隆）
+      - targetName: string （目标 ConfigMap 名称）
+  - Permission: `kubernetes:config:configmap:create`
+
+# Secret 功能
+
+## 查看 Secret 列表
+- 页面路由
+  - Name: `kubernetes:config:secret`
+  - Path: `/kubernetes/clusters/:clusterUid/secrets`
+  - Component: `/src/view/kubernetes/config/secret/index.vue`
+  - Permission: `kubernetes:config:secret:view`
+- API 接口
+  - URL: `GET /kubernetes/clusters/:clusterUid/secrets`
+  - Function: `PageVo<SecretListVo> getSecretList(clusterUid: string, params: Partial<SecretQueryForm>)`
+    - clusterUid: string （集群 UID）
+    - `SecretQueryForm`（Secret 查询条件请求对象） 继承 `UidEntity`, `PageForm`
+      - name: string （Secret 名称）
+      - namespace: string （命名空间名称）
+      - type: SecretType （密钥类型，定义来自 `/src/config/kubernetes/config/secret.ts`）
+      - labelSelector: Record<string, string> （标签过滤）
+    - `SecretListVo`（Secret 列表项响应对象） 继承 `UidEntity`, `Clustered`, `Namespaced`, `AuditEntity`, `DeletableEntity`
+      - name: string （Secret 名称）
+      - description?: string （Secret 描述）
+      - type: SecretType （密钥类型，定义来自 `/src/config/kubernetes/config/secret.ts`）
+      - dataCount: number （数据条目数）
+      - immutable: boolean （是否不可变）
+
+## 查看 Secret 详情
+
+> 安全约束：列表/详情/编辑回显均不直接展示明文 value，仅用户主动点击「显示」时本地 base64 解码预览，不落日志。
+
+- 页面路由
+  - Name: `kubernetes:config:secret:detail`
+  - Path: `/kubernetes/clusters/:clusterUid/namespaces/:namespace/secrets/:name`
+  - Component: `/src/view/kubernetes/config/secret/detail/index.vue`
+  - Permission: `kubernetes:config:secret:view`
+- API 接口
+  - URL: `GET /kubernetes/clusters/:clusterUid/namespaces/:namespace/secrets/:name`
+  - Function: `SecretDetailVo getSecretDetail(clusterUid: string, namespace: string, name: string)`
+    - clusterUid: string （集群 UID）
+    - namespace: string （命名空间名称）
+    - name: string （Secret 名称）
+    - `SecretDetailVo`（Secret 详情响应对象） 继承 `UidEntity`, `Clustered`, `Namespaced`, `AuditEntity`, `DeletableEntity`
+      - description?: string （Secret 描述）
+      - type: SecretType （密钥类型，定义来自 `/src/config/kubernetes/config/secret.ts`）
+      - metadata: ObjectMeta （Secret 的资源元数据，详见 ### ObjectMeta）
+      - data: Record<string, string> （密文数据，base64 编码，展示时脱敏）
+      - stringData?: Record<string, string> （明文数据，写入时自动 base64 编码存储）
+      - immutable?: boolean （是否不可变）
+
+## 查看 Secret YAML
+- 页面路由
+  - 无
+- API 接口
+  - URL: `GET /kubernetes/clusters/:clusterUid/namespaces/:namespace/secrets/:name/yaml`
+  - Function: `SecretYamlVo getSecretYaml(clusterUid: string, namespace: string, name: string)`
+    - clusterUid: string （集群 UID）
+    - namespace: string （命名空间名称）
+    - name: string （Secret 名称）
+    - `SecretYamlVo`: （Secret YAML 响应对象）
+      - yaml: string（Secret YAML 文本）
+
+## 创建 Secret
+- 页面路由
+  - Name: `kubernetes:config:secret:create`
+  - Path: `/kubernetes/clusters/:clusterUid/secrets/create`
+  - Component: `/src/view/kubernetes/config/secret/create.vue`
+  - Permission: `kubernetes:config:secret:create`
+- API 接口
+  - URL: `POST /kubernetes/clusters/:clusterUid/secrets`
+  - Function: `void createSecret(clusterUid: string, data: SecretCreateForm)`
+    - clusterUid: string （集群 UID）
+    - `SecretCreateForm`（Secret 创建请求对象）
+      - description?: string （Secret 描述）
+      - metadata: ObjectMeta （Secret 的资源元数据，详见 ### ObjectMeta）
+      - type: SecretType （密钥类型，定义来自 `/src/config/kubernetes/config/secret.ts`）
+      - data: Record<string, string> （密文数据，base64 编码）
+      - stringData?: Record<string, string> （明文数据，自动 base64 编码存储）
+      - immutable?: boolean （是否不可变）
+  - Permission: `kubernetes:config:secret:create`
+
+## 创建 Secret YAML
+- 页面路由
+  - Name: `kubernetes:config:secret:create:yaml`
+  - Path: `/kubernetes/clusters/:clusterUid/secrets/create/yaml`
+  - Component: `/src/view/kubernetes/config/secret/create/yaml.vue`
+  - Permission: `kubernetes:config:secret:create`
+- API 接口
+  - URL: `POST /kubernetes/clusters/:clusterUid/secrets/yaml`
+  - Function: `void createSecretYaml(clusterUid: string, yaml: string)`
+    - clusterUid: string （集群 UID）
+    - yaml: string （Secret YAML 字符串）
+  - Permission: `kubernetes:config:secret:create`
+
+## 编辑 Secret
+- 页面路由
+  - Name: `kubernetes:config:secret:edit`
+  - Path: `/kubernetes/clusters/:clusterUid/namespaces/:namespace/secrets/:name/edit`
+  - Component: `/src/view/kubernetes/config/secret/edit.vue`
+  - Permission: `kubernetes:config:secret:edit`
+- API 接口
+  - URL: `PUT /kubernetes/clusters/:clusterUid/secrets/:name`
+  - Function: `void updateSecret(clusterUid: string, namespace: string, name: string, data: SecretUpdateForm)`
+    - clusterUid: string （集群 UID）
+    - namespace: string （命名空间名称）
+    - name: string （Secret 名称）
+    - `SecretUpdateForm`（Secret 更新请求对象）
+      - description?: string （Secret 描述）
+      - metadata: ObjectMeta （Secret 的资源元数据，详见 ### ObjectMeta）
+      - type: SecretType （密钥类型，定义来自 `/src/config/kubernetes/config/secret.ts`）
+      - data: Record<string, string> （密文数据，base64 编码）
+      - stringData?: Record<string, string> （明文数据，自动 base64 编码存储）
+      - immutable?: boolean （是否不可变）
+  - Permission: `kubernetes:config:secret:edit`
+
+## 编辑 Secret YAML
+- 页面路由
+  - Name: `kubernetes:config:secret:edit:yaml`
+  - Path: `/kubernetes/clusters/:clusterUid/namespaces/:namespace/secrets/:name/edit/yaml`
+  - Component: `/src/view/kubernetes/config/secret/edit/yaml.vue`
+  - Permission: `kubernetes:config:secret:edit`
+- API 接口
+  - URL: `PUT /kubernetes/clusters/:clusterUid/namespaces/:namespace/secrets/:name/yaml`
+  - Function: `void updateSecretYaml(clusterUid: string, namespace: string, name: string, yaml: string)`
+    - clusterUid: string （集群 UID）
+    - namespace: string （命名空间名称）
+    - name: string （Secret 名称）
+    - yaml: string （Secret YAML 字符串）
+  - Permission: `kubernetes:config:secret:edit`
+
+## 管理标签
+- 页面路由
+  - 无
+- API 接口
+  - URL: `POST /kubernetes/clusters/:clusterUid/secrets/:name/labels`
+  - Function: `void manageSecretLabel(clusterUid: string, namespace: string, name: string, data: MetadataLabelForm)`
+    - clusterUid: string （集群 UID）
+    - namespace: string （命名空间名称）
+    - name: string （Secret 名称）
+    - `MetadataLabelForm`（管理标签请求对象） 来自 `/src/types/kubernetes/common.ts`
+      - labels: Record<string, string> （标签键值对）
+      - operation: number （操作，1: 新增；2: 移除；3: 全量替换）
+
+## 管理注解
+- 页面路由
+  - 无
+- API 接口
+  - URL: `POST /kubernetes/clusters/:clusterUid/secrets/:name/annotations`
+  - Function: `void manageSecretAnnotation(clusterUid: string, namespace: string, name: string, data: MetadataAnnotationForm)`
+    - clusterUid: string （集群 UID）
+    - namespace: string （命名空间名称）
+    - name: string （Secret 名称）
+    - `MetadataAnnotationForm`（管理注解请求对象） 来自 `/src/types/kubernetes/common.ts`
+      - annotations: Record<string, string> （注解键值对）
+      - operation: number （操作，1: 新增；2: 移除；3: 全量替换）
+
+## 删除 Secret
+- 页面路由
+  - 无
+- API 接口
+  - URL: `DELETE /kubernetes/clusters/:clusterUid/namespaces/:namespace/secrets/:name`
+  - Function: `void deleteSecret(clusterUid: string, namespace: string, name: string)`
+    - clusterUid: string （集群 UID）
+    - namespace: string （命名空间名称）
+    - name: string （Secret 名称）
+  - Permission: `kubernetes:config:secret:delete`
+
+## 批量删除
+- 页面路由
+  - 无
+- API 接口
+  - URL: `DELETE /kubernetes/clusters/:clusterUid/secrets/batch`
+  - Function: `void deleteSecrets(clusterUid: string, uids: string[])`
+    - clusterUid: string （集群 UID）
+    - uids: string[] （Secret UID 列表）
+  - Permission: `kubernetes:config:secret:delete`
+
+## 克隆 Secret
+- 页面路由
+  - 无
+- API 接口
+  - URL: `POST /kubernetes/clusters/:clusterUid/namespaces/:namespace/secrets/:name/clone`
+  - Function: `void cloneSecret(clusterUid: string, namespace: string, name: string, data: SecretCloneForm)`
+    - clusterUid: string （集群 UID）
+    - namespace: string （命名空间名称）
+    - name: string （源 Secret 名称）
+    - `SecretCloneForm`（Secret 克隆请求对象）
+      - targetNamespace: string （目标命名空间名称，可跨命名空间克隆）
+      - targetName: string （目标 Secret 名称）
+  - Permission: `kubernetes:config:secret:create`

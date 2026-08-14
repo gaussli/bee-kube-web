@@ -379,7 +379,7 @@ const mockSecrets: SecretListResp[] = [
     namespace: 'kube-system',
     clusterUid: generateId(),
     description: '新节点加入集群的 Bootstrap 引导令牌',
-    type: 'kubernetes.io/boot-straph-token',
+    type: 'bootstrap.kubernetes.io/token',
     refs: [],
     dataKeysCount: 2,
     deletable: false,

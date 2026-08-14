@@ -3,28 +3,7 @@
  * @module types/kubernetes/config/secret
  */
 import type { AuditEntity, PageForm } from '@/types/common'
-
-/**
- * Secret 类型枚举
- * @remarks 对应 Kubernetes Secret.type 字段，不同类型用于不同的认证和配置场景
- */
-export type SecretType =
-  /** 通用密钥，存储用户自定义的键值对数据 */
-  | 'Opaque'
-  /** 服务账号 Token，由控制器自动挂载到 Pod，包含 API Server 访问凭证 */
-  | 'kubernetes.io/service-account-token'
-  /** Docker 守护进程认证信息（旧格式），用于访问私有镜像仓库 */
-  | 'kubernetes.io/dockercfg'
-  /** Docker 认证信息（JSON 格式），用于 containerd/CRI-O 等运行时拉取私有镜像 */
-  | 'kubernetes.io/dockerconfigjson'
-  /** 基础认证凭据，用于 HTTP Basic Auth */
-  | 'kubernetes.io/basic-auth'
-  /** SSH 认证凭据，用于 GitOps 等场景的 SSH 密钥管理 */
-  | 'kubernetes.io/ssh-auth'
-  /** TLS 证书，存储 TLS/SSL 证书和私钥，常用于 Ingress/IngressRoute 的安全配置 */
-  | 'kubernetes.io/tls'
-  /** Bootstrap Token，用于节点引导加入集群时的认证 */
-  | 'kubernetes.io/boot-straph-token'
+import type { SecretType } from '@/config/kubernetes/config/secret'
 
 /**
  * Secret 列表响应数据
