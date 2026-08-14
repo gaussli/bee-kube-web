@@ -1056,7 +1056,7 @@
     - onProgress?: (progressEvent: AxiosProgressEvent) => void （上传进度回调）- Mock
 - 函数：`/src/mock/kubernetes/workload/deployment.ts#importDeploymentMock()`
   - 逻辑
-    - 不实现逻辑，直接打印一句日志，格式：`console.log('[Mock] 方法名', ...入参)`
+    - 不实现逻辑，直接打印一句日志，格式：`console.log('[Mock] 方法名')`
 
 ## 导出 Deployment
 - 页面效果
@@ -1505,7 +1505,7 @@
 - Mock
   - 函数：`/src/mock/kubernetes/workload/statefulset.ts#importStatefulSetMock()`
   - 逻辑
-    - 不实现逻辑，直接打印一句日志，格式：`console.log('[Mock] 方法名', ...入参)`
+    - 不实现逻辑，直接打印一句日志，格式：`console.log('[Mock] 方法名')`
 
 ## 导出 StatefulSet
 - 页面效果
@@ -1977,7 +1977,7 @@
 - Mock
   - 函数：`/src/mock/kubernetes/workload/daemonset.ts#importDaemonSetMock()`
   - 逻辑
-    - 不实现逻辑，直接打印一句日志，格式：`console.log('[Mock] 方法名', ...入参)`
+    - 不实现逻辑，直接打印一句日志，格式：`console.log('[Mock] 方法名')`
 
 ## 导出 DaemonSet
 - 页面效果
@@ -2365,7 +2365,7 @@
 - Mock
   - 函数：`/src/mock/kubernetes/workload/job.ts#importJobMock()`
   - 逻辑
-    - 不实现逻辑，直接打印一句日志，格式：`console.log('[Mock] 方法名', ...入参)`
+    - 不实现逻辑，直接打印一句日志，格式：`console.log('[Mock] 方法名')`
 
 ## 导出 Job
 - 页面效果
@@ -2734,7 +2734,7 @@
 - Mock
   - 函数：`/src/mock/kubernetes/workload/cronjob.ts#importCronJobMock()`
   - 逻辑
-    - 不实现逻辑，直接打印一句日志，格式：`console.log('[Mock] 方法名', ...入参)`
+    - 不实现逻辑，直接打印一句日志，格式：`console.log('[Mock] 方法名')`
 
 ## 导出 CronJob
 - 页面效果
@@ -3048,7 +3048,7 @@
 - Mock
   - 函数：`/src/mock/kubernetes/config/configmap.ts#importConfigMapMock()`
   - 逻辑
-    - 不实现逻辑，直接打印一句日志，格式：`console.log('[Mock] 方法名', ...入参)`
+    - 不实现逻辑，直接打印一句日志，格式：`console.log('[Mock] 方法名')`
 
 ## 导出 ConfigMap
 - 页面效果
@@ -3345,7 +3345,7 @@
 - Mock
   - 函数：`/src/mock/kubernetes/config/secret.ts#importSecretMock()`
   - 逻辑
-    - 不实现逻辑，直接打印一句日志，格式：`console.log('[Mock] 方法名', ...入参)`
+    - 不实现逻辑，直接打印一句日志，格式：`console.log('[Mock] 方法名')`
 
 ## 导出 Secret
 - 页面效果
@@ -3637,7 +3637,7 @@
 - Mock
   - 函数：`/src/mock/kubernetes/network/service.ts#importServiceMock()`
   - 逻辑
-    - 不实现逻辑，直接打印一句日志，格式：`console.log('[Mock] 方法名', ...入参)`
+    - 不实现逻辑，直接打印一句日志，格式：`console.log('[Mock] 方法名')`
 
 ## 导出 Service
 - 页面效果
@@ -3904,7 +3904,7 @@
 - Mock
   - 函数：`/src/mock/kubernetes/network/ingress.ts#importIngressMock()`
   - 逻辑
-    - 不实现逻辑，直接打印一句日志，格式：`console.log('[Mock] 方法名', ...入参)`
+    - 不实现逻辑，直接打印一句日志，格式：`console.log('[Mock] 方法名')`
 
 ## 导出 Ingress
 - 页面效果
@@ -4187,7 +4187,7 @@
 - Mock
   - 函数：`/src/mock/kubernetes/network/networkpolicy.ts#importNetworkPolicyMock()`
   - 逻辑
-    - 不实现逻辑，直接打印一句日志，格式：`console.log('[Mock] 方法名', ...入参)`
+    - 不实现逻辑，直接打印一句日志，格式：`console.log('[Mock] 方法名')`
 
 ## 导出 NetworkPolicy
 - 页面效果
