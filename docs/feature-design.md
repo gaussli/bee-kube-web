@@ -487,7 +487,7 @@
 ### StatefulSetVolumeClaimTemplate - 持久卷声明模板
 - name: string （模板名称，作为 Pod 内 volumeMount 的引用标识）
 - storageClass?: string （存储类名称，为空时使用集群默认 StorageClass）
-- accessModes: string[] （PVC 访问模式，如 ReadWriteOnce / ReadWriteMany）
+- accessModes: PersistentVolumeAccessMode[] （PVC 访问模式，如 ReadWriteOnce / ReadWriteMany）
 - capacity: Quantity （存储容量，如 10Gi）
 - mode?: number （挂载目录的文件权限位，如 0644）
 
@@ -694,34 +694,56 @@
 
 ## Storage 原始类型定义 （`/src/types/kubernetes/storage/types.ts`）
 
-### PersistentVolumeClaimSpec - PersistentVolumeClaim 规格定义
-- accessModes?: string[] （访问模式，如 ReadWriteOnce / ReadOnlyMany / ReadWriteMany / ReadWriteOncePod）
-- selector?: Record<string, string> （标签选择器，用于匹配目标 PersistentVolume）
-- storageClassName?: string （关联的 StorageClass 名称；空字符串表示无类（延迟绑定））
-- volumeName?: string （预绑定的 PersistentVolume 名称）
-- resources?: PersistentVolumeClaimResources （资源申请，详见 ### PersistentVolumeClaimResources）
-- volumeMode?: string （卷模式，取值 Filesystem / Block）
-- dataSource?: ObjectReference （数据源引用，须为已有 PersistentVolumeClaim 或 VolumeSnapshot）
-- dataSourceRef?: ObjectReference （数据源引用（v1beta1），优先于 dataSource；仅设置其一）
+### PersistentVolumeAccessMode - PersistentVolume 访问模式
+  - 'ReadWriteOnce' （单节点读写，仅一个节点可挂载为读写）
+  - 'ReadOnlyMany' （多节点只读，多个节点可同时挂载为只读）
+  - 'ReadWriteMany' （多节点读写，多个节点可同时挂载为读写）
+  - 'ReadWriteOncePod' （单 Pod 读写，仅一个 Pod 可挂载为读写；不可与其他访问模式组合使用）
 
-### PersistentVolumeClaimResources - PersistentVolumeClaim 资源申请
+### PersistentVolumeMode - PersistentVolume 卷模式
+  - 'Block' （裸块设备，卷不格式化文件系统，直接以块设备暴露）
+  - 'Filesystem' （文件系统，卷已或将被格式化为文件系统）
+
+### TypedLocalObjectReference - 同命名空间内类型化对象引用
+- apiGroup?: string （被引用对象所属 API 组；不指定时 Kind 须属于 core API 组；第三方类型必填）
+- kind: string （被引用对象的类型（Kind））
+- name: string （被引用对象的名称）
+
+### TypedObjectReference - 类型化对象引用（可跨命名空间）
+- apiGroup?: string （被引用对象所属 API 组；不指定时 Kind 须属于 core API 组；第三方类型必填）
+- kind: string （被引用对象的类型（Kind））
+- name: string （被引用对象的名称）
+- namespace?: string （被引用对象所在命名空间；指定后需开启 CrossNamespaceVolumeDataSource 特性门控，并由 ReferenceGrant 授权）
+
+### VolumeResourceRequirements - 卷资源申请
 - requests?: Record<string, Quantity> （申请资源量，如 {storage: '10Gi'}）
 - limits?: Record<string, Quantity> （资源上限，如 {storage: '20Gi'}）
 
+### PersistentVolumeClaimSpec - PersistentVolumeClaim 规格定义
+- accessModes?: PersistentVolumeAccessMode[] （访问模式）
+- selector?: Record<string, string> （标签选择器，用于匹配目标 PersistentVolume）
+- storageClassName?: string （关联的 StorageClass 名称；空字符串表示无类（延迟绑定））
+- volumeName?: string （预绑定的 PersistentVolume 名称）
+- resources?: VolumeResourceRequirements （资源申请，详见 ### VolumeResourceRequirements）
+- volumeMode?: PersistentVolumeMode （卷模式，取值 Filesystem / Block）
+- dataSource?: TypedLocalObjectReference （数据源引用，须为已有 PersistentVolumeClaim 或 VolumeSnapshot，详见 ### TypedLocalObjectReference）
+- dataSourceRef?: TypedObjectReference （数据源引用，优先于 dataSource；可跨命名空间引用（须开启 CrossNamespaceVolumeDataSource），详见 ### TypedObjectReference）
+- volumeAttributesClassName?: string （卷属性类名称，引用 VolumeAttributesClass；可在 PVC 创建后动态修改以调整卷运行时属性（如 CSI 磁盘性能档位），为空表示不应用）
+
 ### PersistentVolumeClaimStatusObj - PersistentVolumeClaim 观测状态
 - phase?: string （绑定状态，取值 Pending / Bound / Lost）
-- accessModes?: string[] （实际绑定的访问模式）
+- accessModes?: PersistentVolumeAccessMode[] （实际绑定的访问模式）
 - capacity?: Record<string, Quantity> （实际绑定的容量，如 {storage: '10Gi'}）
 - conditions?: Condition[] （状态条件列表，如 Resizing / PersistentVolumeClaimResizing；condition 含 type/status/lastProbeTime/lastTransitionTime/reason/message）
 
 ### PersistentVolumeSpec - PersistentVolume 规格定义
 - capacity?: Record<string, Quantity> （存储容量，如 {storage: '20Gi'}）
-- accessModes?: string[] （访问模式）
+- accessModes?: PersistentVolumeAccessMode[] （访问模式）
 - persistentVolumeReclaimPolicy?: string （回收策略，取值 Delete / Retain / Recycle）
 - storageClassName?: string （关联的 StorageClass 名称；'' 表示无类）
 - claimRef?: ObjectReference （绑定的 PersistentVolumeClaim 引用，含 namespace/name）
 - persistentVolumeSource?: PersistentVolumeSource （存储后端来源，详见 ### PersistentVolumeSource）
-- volumeMode?: string （卷模式，取值 Filesystem / Block）
+- volumeMode?: PersistentVolumeMode （卷模式，取值 Filesystem / Block）
 - mountOptions?: string[] （挂载选项，如 ro、noexec、soft）
 - nodeAffinity?: VolumeNodeAffinity （节点亲和性限制；local 类型必须配置）
 
@@ -4300,9 +4322,9 @@
       - status: string （绑定状态，取值 Pending / Bound / Lost）
       - volume: string （绑定的 PersistentVolume 名称）
       - capacity: Quantity （申请存储容量，详见 ### Quantity）
-      - accessModes: string[] （访问模式，如 ReadWriteOnce / ReadOnlyMany / ReadWriteMany）
+      - accessModes: PersistentVolumeAccessMode[] （访问模式，如 ReadWriteOnce / ReadOnlyMany / ReadWriteMany / ReadWriteOncePod）
       - storageClassName: string （关联的 StorageClass 名称）
-      - volumeMode: string （卷模式，取值 Filesystem / Block）
+      - volumeMode: PersistentVolumeMode （卷模式，取值 Filesystem / Block）
 - Mock
   - 函数：`/src/mock/kubernetes/storage/persistentvolumeclaim.ts#getPersistentVolumeClaimListMock()`
   - 数据：`/src/mock/kubernetes/storage/persistentvolumeclaimData.ts#mockPersistentVolumeClaims`，模拟数量：32
@@ -4369,10 +4391,10 @@
       - description?: string （PersistentVolumeClaim 描述）
       - metadata: ObjectMeta （PersistentVolumeClaim 的资源元数据，详见 ### ObjectMeta）
       - namespace: string （目标命名空间名称）
-      - accessModes: string[] （访问模式）
+      - accessModes: PersistentVolumeAccessMode[] （访问模式）
       - storageClassName?: string （关联的 StorageClass 名称）
-      - resources: PersistentVolumeClaimResources （资源申请，详见 ### PersistentVolumeClaimResources）
-      - volumeMode?: string （卷模式，取值 Filesystem / Block）
+      - resources: VolumeResourceRequirements （资源申请，详见 ### VolumeResourceRequirements）
+      - volumeMode?: PersistentVolumeMode （卷模式，取值 Filesystem / Block）
       - dataSource?: string （数据源，引用的数据源名称）
   - Permission: `kubernetes:storage:persistentvolumeclaim:create`
 - Mock
@@ -4416,8 +4438,8 @@
     - `PersistentVolumeClaimUpdateForm`（PersistentVolumeClaim 更新请求对象）
       - description?: string （PersistentVolumeClaim 描述）
       - metadata: ObjectMeta （PersistentVolumeClaim 的资源元数据，详见 ### ObjectMeta）
-      - accessModes: string[] （访问模式）
-      - resources: PersistentVolumeClaimResources （资源申请，详见 ### PersistentVolumeClaimResources）
+      - accessModes: PersistentVolumeAccessMode[] （访问模式）
+      - resources: VolumeResourceRequirements （资源申请，详见 ### VolumeResourceRequirements）
   - Permission: `kubernetes:storage:persistentvolumeclaim:edit`
 - Mock
   - 函数：`/src/mock/kubernetes/storage/persistentvolumeclaim.ts#updatePersistentVolumeClaimMock()`
@@ -4595,7 +4617,7 @@
       - description?: string （PersistentVolume 描述）
       - status: string （状态，取值 Available / Bound / Released / Failed）
       - capacity: Quantity （存储容量，详见 ### Quantity）
-      - accessModes: string[] （访问模式）
+      - accessModes: PersistentVolumeAccessMode[] （访问模式）
       - reclaimPolicy: string （回收策略，取值 Delete / Retain / Recycle）
       - storageClassName: string （关联的 StorageClass 名称）
       - claimRef: string （绑定的 PersistentVolumeClaim 名称）
@@ -4662,7 +4684,7 @@
       - description?: string （PersistentVolume 描述）
       - metadata: ObjectMeta （PersistentVolume 的资源元数据，详见 ### ObjectMeta）
       - capacity: Quantity （存储容量，详见 ### Quantity）
-      - accessModes: string[] （访问模式）
+      - accessModes: PersistentVolumeAccessMode[] （访问模式）
       - reclaimPolicy?: string （回收策略）
       - storageClassName?: string （关联的 StorageClass 名称）
       - persistentVolumeSource: PersistentVolumeSource （存储后端来源，详见 ### PersistentVolumeSource）
@@ -4707,7 +4729,7 @@
     - `PersistentVolumeUpdateForm`（PersistentVolume 更新请求对象）
       - description?: string （PersistentVolume 描述）
       - metadata: ObjectMeta （PersistentVolume 的资源元数据，详见 ### ObjectMeta）
-      - accessModes: string[] （访问模式）
+      - accessModes: PersistentVolumeAccessMode[] （访问模式）
       - reclaimPolicy?: string （回收策略）
   - Permission: `kubernetes:storage:persistentvolume:edit`
 - Mock
