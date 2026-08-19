@@ -156,6 +156,15 @@ export interface TypedLocalObjectReference {
 }
 
 /**
+ * 同命名空间内对象引用
+ * 仅通过名称引用目标对象
+ */
+export interface LocalObjectReference {
+  /** 被引用对象的名称 */
+  name: string
+}
+
+/**
  * 宿主机路径存储来源
  * 将宿主机上已存在的路径挂载为卷
  */

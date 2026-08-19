@@ -52,3 +52,22 @@ export interface ResourceVo {
   /** 资源已用量 */
   usage: ResourceQuota
 }
+
+/**
+ * 容器资源统计
+ * @remarks 平台自定义业务类型，汇总容器级计算资源申请、限制与使用量
+ */
+export interface ContainerResource {
+  /** CPU 请求量 */
+  cpuRequest?: number
+  /** CPU 限制量 */
+  cpuLimit?: number
+  /** 内存请求量 */
+  memoryRequest?: number
+  /** 内存限制量 */
+  memoryLimit?: number
+  /** CPU 使用量 */
+  cpuUsage?: number
+  /** 内存使用量 */
+  memoryUsage?: number
+}

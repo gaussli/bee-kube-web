@@ -12,8 +12,6 @@
 
 > 简言之：**枚举 → 枚举定义见；复用 ≥2 次 → 定义见；仅用 1 次 → 直接展开；跨文件共用 → 仅引用 entity-kubernetes-design.md。**
 
-## Pod 类型定义（/src/types/kubernetes/pod.ts）
-
 ## Pod 常量定义（`/src/config/kubernetes/pod.ts`）
 
 ### PodStatus

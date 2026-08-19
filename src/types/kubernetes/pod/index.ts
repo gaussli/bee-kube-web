@@ -3,10 +3,10 @@
  * @module types/kubernetes/pod
  */
 import type { AuditEntity, PageForm, UidEntity } from '@/types/common'
+import type { ContainerResource } from '@/types/kubernetes/common'
+import type { Clustered, Metadata, Namespaced } from '@/types/kubernetes/types'
 
 import type { PodStatus } from '@/config/kubernetes/pod'
-
-import type { Clustered, ContainerResource, Metadata, Namespaced } from './types'
 
 /**
  * Pod 查询表单

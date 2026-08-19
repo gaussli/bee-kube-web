@@ -2,13 +2,11 @@
  * Pod 原始类型定义
  * @module types/kubernetes/pod/types
  */
-import type { ResourceName } from '@/config/kubernetes/core'
+import type { Protocol, ResourceName } from '@/config/kubernetes/core'
 import type {
   DNSPolicy,
-  HostPathType,
   MountPropagationMode,
   NodeExpressionOperator,
-  Protocol,
   PullPolicy,
   RecursiveReadOnlyMode,
   RestartPolicy,
@@ -19,8 +17,7 @@ import type {
   URIScheme,
 } from '@/config/kubernetes/pod'
 
-import type { Quantity } from '../types'
-import type { LabelSelector } from '../workload/types'
+import type { HostPathVolumeSource, NFSVolumeSource, Quantity, LabelSelector, LocalObjectReference } from '../types'
 
 /**
  * 键到路径映射
@@ -31,17 +28,7 @@ export interface KeyToPath {
   /** 映射到的相对文件路径，不能为绝对路径或以 .. 开头 */
   path: string
   /** 该文件的权限位，未指定时沿用 defaultMode，取值范围 0–511 */
-  mode: number
-}
-
-/**
- * 挂载宿主机上已存在的文件或目录
- */
-export interface HostPathVolumeSource {
-  /** 宿主机上的目录或文件路径，若为软链接则跟随至真实路径 */
-  path: string
-  /** HostPath 类型，默认为空，可选值见 HostPathType */
-  type: HostPathType
+  mode?: number
 }
 
 /**
@@ -52,6 +39,18 @@ export interface EmptyDirVolumeSource {
   medium?: StorageMedium
   /** 该 EmptyDir 卷所需的本地存储总量上限，默认未定义；内存介质下取该值与 Pod 内容器内存限制之和的较小值 */
   sizeLimit?: Quantity
+}
+
+/**
+ * 从 Git 仓库拉取的存储卷
+ */
+export interface GitRepoVolumeSource {
+  /** 仓库地址 */
+  repository: string
+  /** 检出分支或标签，默认 master */
+  revision?: string
+  /** 检出后映射的目标目录，默认仓库根目录 */
+  directory?: string
 }
 
 /**
@@ -89,23 +88,69 @@ export interface PersistentVolumeClaimVolumeSource {
   /** Pod 所在命名空间中引用的 PersistentVolumeClaim 名称 */
   claimName: string
   /** 是否以只读方式挂载，为 true 时强制 VolumeMounts 中的 ReadOnly 设置，默认 false */
-  readOnly: boolean
+  readOnly?: boolean
 }
 
 /**
- * 由外部 CSI 驱动处理的临时存储
+ * 以 RBD 镜像为后端存储
  */
-export interface CSIVolumeSource {
-  /** 处理该卷的 CSI 驱动名称，需与集群中注册的名称一致 */
-  driver: string
-  /** 是否以只读方式挂载，默认 false（读写） */
+export interface RBDVolumeSource {
+  /** 监控账本地址列表 */
+  monitors: string[]
+  /** 映像名称 */
+  image: string
+  /** 在块设备映射到系统上时的名称，必须唯一 */
+  pool?: string
+  /** 用户 ID，默认 admin */
+  user?: string
+  /** 秘钥文件，默认 /etc/ceph/keyring */
+  keyring?: string
+  /** 秘钥引用，默认空 */
+  secretRef?: LocalObjectReference
+  /** 只读挂载，默认 false */
   readOnly?: boolean
-  /** 挂载的文件系统类型，如 "ext4"、"xfs"、"ntfs"，未指定时由 CSI 驱动决定默认文件系统 */
-  fsType?: string
-  /** 传递给 CSI 驱动的特定属性，具体取值参考对应驱动文档 */
-  volumeAttributes: Record<string, string>
-  /** 引用包含敏感信息的 Secret 名称，用于完成 CSI NodePublishVolume 调用；可为空表示无需 Secret */
-  nodePublishSecretName?: string
+}
+
+/**
+ * 以 CephFS 卷为后端存储
+ */
+export interface CephFSVolumeSource {
+  /** 监控账本地址列表 */
+  monitors: string[]
+  /** 用户 ID，默认 admin */
+  user?: string
+  /** 独立的 Ceph 存储集群路径，默认 / */
+  path?: string
+  /** 秘钥文件，默认 /etc/ceph/user.keyring */
+  secretFile?: string
+  /** 秘钥引用，默认空 */
+  secretRef?: LocalObjectReference
+  /** 只读挂载，默认 false */
+  readOnly?: boolean
+}
+
+/**
+ * 容器 DownwardAPI 引用项
+ */
+export interface DownwardAPIVolumeFile {
+  /** 输出文件名 */
+  path: string
+  /** 字段引用，如 metadata.name、metadata.namespace */
+  fieldRef?: ObjectFieldSelector
+  /** 资源字段引用，如 requests.cpu、limits.memory */
+  resourceFieldRef?: ResourceFieldSelector
+  /** 文件权限位，默认 0444 */
+  mode?: number
+}
+
+/**
+ * 以 DownwardAPI 方式将 Pod 元信息下发给容器
+ */
+export interface DownwardAPIVolumeSource {
+  /** 容器引用的文件列表 */
+  items?: DownwardAPIVolumeFile[]
+  /** 创建文件的默认权限位，默认 0644 */
+  defaultMode?: number
 }
 
 /**
@@ -116,12 +161,22 @@ export interface VolumeSource {
   hostPath?: HostPathVolumeSource
   /** 与 Pod 生命周期一致的临时目录 */
   emptyDir?: EmptyDirVolumeSource
+  /** 从 Git 仓库拉取的存储卷 */
+  gitRepo?: GitRepoVolumeSource
   /** 从 Secret 填充的存储卷 */
   secret?: SecretVolumeSource
+  /** 挂载 NFS 共享目录 */
+  nfs?: NFSVolumeSource
   /** 从 ConfigMap 填充的存储卷 */
   configMap?: ConfigMapVolumeSource
   /** 引用同命名空间下的 PVC */
   persistentVolumeClaim?: PersistentVolumeClaimVolumeSource
+  /** 以 RBD 镜像为后端存储 */
+  rbd?: RBDVolumeSource
+  /** 以 CephFS 卷为后端存储 */
+  cephFS?: CephFSVolumeSource
+  /** 以 DownwardAPI 方式将 Pod 元信息下发给容器 */
+  downwardAPI?: DownwardAPIVolumeSource
   /** 由外部 CSI 驱动处理的临时存储 */
   csi?: CSIVolumeSource
 }
@@ -141,11 +196,11 @@ export interface Volume {
  */
 export interface PodSecurityContext {
   /** 容器进程入口点的运行 UID，未指定时默认使用镜像元数据中指定的用户 */
-  runAsUser: number
+  runAsUser?: number
   /** 容器进程入口点的运行 GID，未设置时使用运行时默认值 */
-  runAsGroup: number
+  runAsGroup?: number
   /** 是否必须以非 root 用户运行，为 true 时 Kubelet 会校验镜像运行时 UID 不为 0，否则启动失败 */
-  runAsNonRoot: boolean
+  runAsNonRoot?: boolean
 }
 
 /**
@@ -157,7 +212,7 @@ export interface NodeExpression {
   /** 匹配运算符 */
   operator: NodeExpressionOperator
   /** 匹配值列表，operator 为 Exists / DoesNotExist 时不生效 */
-  values: string[]
+  values?: string[]
 }
 
 /**
@@ -165,7 +220,7 @@ export interface NodeExpression {
  */
 export interface NodeAffinityTerm {
   /** 节点标签匹配表达式列表 */
-  matchExpressions: NodeExpression[]
+  matchExpressions?: NodeExpression[]
 }
 
 /**
@@ -182,9 +237,9 @@ export interface WeightedNodeAffinityTerm extends NodeAffinityTerm {
  */
 export interface NodeAffinity {
   /** 必须满足的硬性调度条件，不满足则 Pod 无法调度 */
-  required: NodeAffinityTerm[]
+  required?: NodeAffinityTerm[]
   /** 优先满足的软性调度条件，尽量满足，非强制 */
-  preferred: WeightedNodeAffinityTerm[]
+  preferred?: WeightedNodeAffinityTerm[]
 }
 
 /**
@@ -192,17 +247,17 @@ export interface NodeAffinity {
  */
 export interface PodAffinityTerm {
   /** 通过标签选择目标 Pod 集合 */
-  labelSelector: LabelSelector
+  labelSelector?: LabelSelector
   /** 目标 Pod 所在命名空间列表，不填或空数组表示当前命名空间 */
-  namespaces: string[]
+  namespaces?: string[]
   /** 通过命名空间标签选择目标命名空间 */
-  namespaceSelector: LabelSelector
+  namespaceSelector?: LabelSelector
   /** 拓扑域键，如 kubernetes.io/hostname 表示节点级别，failure-domain.beta.kubernetes.io/zone 表示可用区级别 */
   topologyKey: string
   /** 需匹配的标签键列表 */
-  matchLabelKeys: string[]
+  matchLabelKeys?: string[]
   /** 需排除匹配的标签键列表 */
-  mismatchLabelKeys: string[]
+  mismatchLabelKeys?: string[]
 }
 
 /**
@@ -219,9 +274,9 @@ export interface WeightedPodAffinityTerm extends PodAffinityTerm {
  */
 export interface PodAffinity {
   /** 必须满足的硬性亲和要求 */
-  required: PodAffinityTerm[]
+  required?: PodAffinityTerm[]
   /** 优先满足的软性亲和要求 */
-  preferred: WeightedPodAffinityTerm[]
+  preferred?: WeightedPodAffinityTerm[]
 }
 
 /**
@@ -229,9 +284,9 @@ export interface PodAffinity {
  */
 export interface PodAntiAffinity {
   /** 必须满足的硬性反亲和要求 */
-  required: PodAffinityTerm[]
+  required?: PodAffinityTerm[]
   /** 优先满足的软性反亲和要求 */
-  preferred: WeightedPodAffinityTerm[]
+  preferred?: WeightedPodAffinityTerm[]
 }
 
 /**
@@ -239,11 +294,11 @@ export interface PodAntiAffinity {
  */
 export interface Affinity {
   /** 节点亲和性 */
-  nodeAffinity: NodeAffinity
+  nodeAffinity?: NodeAffinity
   /** Pod 亲和性 */
-  podAffinity: PodAffinity
+  podAffinity?: PodAffinity
   /** Pod 反亲和性 */
-  podAntiAffinity: PodAntiAffinity
+  podAntiAffinity?: PodAntiAffinity
 }
 
 /**
@@ -251,15 +306,15 @@ export interface Affinity {
  */
 export interface Toleration {
   /** 容忍所匹配的污点键，为空表示匹配所有污点键；此时 operator 必须为 'Exists'，表示匹配所有键与值 */
-  key: string
+  key?: string
   /** 键与值的关系运算符，默认 'Equal' */
-  operator: TolerationOperator
+  operator?: TolerationOperator
   /** 容忍所匹配的污点值；operator 为 'Exists' 时应为空，否则为普通字符串 */
-  value: string
+  value?: string
   /** 匹配的污点效果，为空表示匹配所有污点效果；指定时可选 'NoSchedule' / 'PreferNoSchedule' / 'NoExecute' */
-  effect: TaintEffect
+  effect?: TaintEffect
   /** 容忍时长（秒），仅对 effect 为 'NoExecute' 的污点生效；未设置表示永久容忍（不驱逐），0 或负数按 0 处理（立即驱逐） */
-  tolerationSeconds: number
+  tolerationSeconds?: number
 }
 
 /**
@@ -269,7 +324,7 @@ export interface ConfigMapEnvSource {
   /** 引用的 ConfigMap 名称 */
   configMapName: string
   /** 该 ConfigMap 是否必须存在，为 true 时允许不存在 */
-  optional: boolean
+  optional?: boolean
 }
 
 /**
@@ -279,7 +334,7 @@ export interface SecretEnvSource {
   /** 引用的 Secret 名称 */
   secretName: string
   /** 该 Secret 是否必须存在，为 true 时允许不存在 */
-  optional: boolean
+  optional?: boolean
 }
 
 /**
@@ -287,11 +342,11 @@ export interface SecretEnvSource {
  */
 export interface EnvFromSource {
   /** 附加到每个环境变量名前的前缀，可为任意可打印 ASCII 字符，但不能为 '=' */
-  prefix: string
+  prefix?: string
   /** 引用的 ConfigMap 来源 */
-  configMapRef: ConfigMapEnvSource
+  configMapRef?: ConfigMapEnvSource
   /** 引用的 Secret 来源 */
-  secretRef: SecretEnvSource
+  secretRef?: SecretEnvSource
 }
 
 /**
@@ -299,7 +354,7 @@ export interface EnvFromSource {
  */
 export interface ObjectFieldSelector {
   /** 字段路径对应的 schema 版本，默认 "v1" */
-  apiVersion: string
+  apiVersion?: string
   /** 要选择的字段路径 */
   fieldPath: string
 }
@@ -313,7 +368,7 @@ export interface ResourceFieldSelector {
   /** 要选择的资源，如 limits.cpu、requests.memory */
   resource: string
   /** 暴露资源的输出格式除数，默认 "1" */
-  divisor: Quantity
+  divisor?: Quantity
 }
 
 /**
@@ -325,7 +380,7 @@ export interface ConfigMapKeySelector {
   /** 要选择的键 */
   key: string
   /** 该 ConfigMap 或其键是否必须存在，为 true 时允许不存在 */
-  optional: boolean
+  optional?: boolean
 }
 
 /**
@@ -337,7 +392,7 @@ export interface SecretKeySelector {
   /** 要选择的键 */
   key: string
   /** 该 Secret 或其键是否必须存在，为 true 时允许不存在 */
-  optional: boolean
+  optional?: boolean
 }
 
 /**
@@ -361,7 +416,7 @@ export interface EnvVar {
   /** 环境变量名称，可为任意可打印 ASCII 字符，但不能为 '=' */
   name: string
   /** 变量值，支持 $(VAR_NAME) 引用展开；与 valueFrom 互斥，默认空字符串 */
-  value: string
+  value?: string
   /** 变量值的来源，value 非空时不可使用 */
   valueFrom?: EnvVarSource
 }
@@ -371,9 +426,9 @@ export interface EnvVar {
  */
 export interface ResourceRequirements {
   /** 容器所需的最小计算资源量；未指定时默认等于 limit（若显式设置），否则由实现定义；request 不得超过 limit */
-  request: Record<ResourceName, Quantity>
+  request?: Record<ResourceName, Quantity>
   /** 容器允许使用的最大计算资源量；超过将被限制（如 CPU 限流或内存 OOM 终止） */
-  limit: Record<ResourceName, Quantity>
+  limit?: Record<ResourceName, Quantity>
 }
 
 /**
@@ -383,17 +438,17 @@ export interface VolumeMount {
   /** 必须匹配某个 Volume 的 Name，标识要挂载的卷 */
   name: string
   /** 为 true 时以只读方式挂载，否则读写；默认 false */
-  readOnly: boolean
+  readOnly?: boolean
   /** 只读挂载是否递归应用；readOnly 为 false 时无意义且不可设置；未设置等价于 Disabled；设为 IfPossible/Enabled 时 mountPropagation 必须为 None */
   recursiveReadOnly?: RecursiveReadOnlyMode
   /** 容器内挂载路径，卷将挂载到该位置 */
   mountPath: string
   /** 卷内从哪个子路径挂载，默认空字符串表示卷根目录 */
-  subPath: string
+  subPath?: string
   /** 挂载如何从宿主机传播到容器及反向；未设置时默认为 None；设为 IfPossible/Enabled 的 recursiveReadOnly 时必须为 None */
   mountPropagation?: MountPropagationMode
   /** 与 subPath 类似，但支持用容器环境变量 $(VAR_NAME) 展开；与 subPath 互斥；默认空字符串 */
-  subPathExpr: string
+  subPathExpr?: string
 }
 
 /**
@@ -411,7 +466,7 @@ export interface VolumeDevice {
  */
 export interface ExecAction {
   /** 容器内执行的命令行，工作目录为容器根目录 '/'；直接 exec 而非 shell，不支持 '|' 等 shell 语法 */
-  command: string[]
+  command?: string[]
 }
 
 /**
@@ -429,15 +484,15 @@ export interface HTTPHeader {
  */
 export interface HTTPGetAction {
   /** HTTP 服务器上访问的路径 */
-  path: string
+  path?: string
   /** 容器上访问的端口号或名称，名称须为 IANA_SVC_NAME，端口范围 1-65535 */
   port: number | string
   /** 要连接的主机名，默认 Pod IP；通常改用 httpHeaders 中的 Host 设置 */
-  host: string
+  host?: string
   /** 连接协议，默认 'HTTP' */
   scheme?: URIScheme
   /** 请求中设置的自定义请求头，HTTP 允许重复头 */
-  httpHeaders: HTTPHeader[]
+  httpHeaders?: HTTPHeader[]
 }
 
 /**
@@ -447,7 +502,7 @@ export interface TCPSocketAction {
   /** 容器上访问的端口号或名称，名称须为 IANA_SVC_NAME，端口范围 1-65535 */
   port: number | string
   /** 要连接的主机名，默认 Pod IP */
-  host: string
+  host?: string
 }
 
 /**
@@ -503,9 +558,9 @@ export interface LifecycleHandler {
  */
 export interface Lifecycle {
   /** 容器创建后立即调用；若钩子失败，容器按重启策略终止并重启；其他容器管理操作会阻塞直到钩子完成 */
-  postStart: LifecycleHandler
+  postStart?: LifecycleHandler
   /** 容器因 API 请求或管理事件即将终止前立即调用；容器崩溃或退出时不调用；无论钩子结果如何，容器最终会在宽限期内终止 */
-  preStop: LifecycleHandler
+  preStop?: LifecycleHandler
   /** 容器停止时发送的信号，未指定时使用容器运行时默认值；仅当 Pod 的 .spec.os.name 非空时可设置；如 'SIGTERM'、'SIGKILL' 等 */
   stopSignal?: string
 }
@@ -515,13 +570,13 @@ export interface Lifecycle {
  */
 export interface SecurityContext {
   /** 是否以特权模式运行容器；特权容器内进程等效于宿主机 root；默认 false；windows 时不可设置 */
-  privileged: boolean
+  privileged?: boolean
   /** 容器进程入口点的 UID；未指定时默认使用镜像元数据中的用户；容器级优先于 PodSecurityContext；windows 时不可设置 */
-  runAsUser: number
+  runAsUser?: number
   /** 容器进程入口点的 GID；未设置时使用运行时默认值；容器级优先于 PodSecurityContext；windows 时不可设置 */
-  runAsGroup: number
+  runAsGroup?: number
   /** 容器是否必须以非 root 用户运行；为 true 时 kubelet 运行时会校验镜像不以 UID 0 运行，否则启动失败；容器级优先于 PodSecurityContext */
-  runAsNonRoot: boolean
+  runAsNonRoot?: boolean
 }
 
 /**
@@ -529,15 +584,15 @@ export interface SecurityContext {
  */
 export interface ContainerPort {
   /** 端口名称，须为 IANA_SVC_NAME 且在 Pod 内唯一，可被 Service 引用 */
-  name: string
+  name?: string
   /** 映射到宿主机的端口号，0 < x < 65536，多数容器不需要此字段 */
-  hostPort: number
+  hostPort?: number
   /** Pod IP 上暴露的端口号，0 < x < 65536，必填 */
   containerPort: number
   /** 端口协议，默认 'TCP' */
   protocol?: Protocol
   /** 外部端口绑定的宿主机 IP */
-  hostIP: string
+  hostIP?: string
 }
 
 /**
@@ -593,37 +648,55 @@ export interface Container {
 }
 
 /**
+ * 由外部 CSI 驱动处理的临时存储
+ */
+export interface CSIVolumeSource {
+  /** 处理该卷的 CSI 驱动名称，需与集群中注册的名称一致 */
+  driver: string
+  /** 是否以只读方式挂载，默认 false（读写） */
+  readOnly?: boolean
+  /** 挂载的文件系统类型，如 "ext4"、"xfs"、"ntfs"，未指定时由 CSI 驱动决定默认文件系统 */
+  fsType?: string
+  /** 传递给 CSI 驱动的特定属性，具体取值参考对应驱动文档 */
+  volumeAttributes?: Record<string, string>
+  /** 引用包含敏感信息的 Secret 名称，用于完成 CSI NodePublishVolume 调用；可为空表示无需 Secret */
+  nodePublishSecretName?: string
+}
+
+/**
  * Pod 规格信息
  */
 export interface PodSpec {
+  /** 各命名空间级资源级别的 PVC 申请列表 */
+  ephemeralContainers?: Container[]
   /** Pod 内容器可挂载的存储卷列表 */
-  volumes: Volume[]
+  volumes?: Volume[]
   /** 初始化容器列表，按序执行于主容器之前 */
-  initContainers: Container[]
+  initContainers?: Container[]
   /** 主容器列表，Pod 中至少有一个容器 */
   containers: Container[]
   /** 所有容器的重启策略，默认 Always */
-  restartPolicy: RestartPolicy
+  restartPolicy?: RestartPolicy
   /** 优雅终止宽限秒数，默认 30 */
-  terminationGracePeriodSeconds: number
+  terminationGracePeriodSeconds?: number
   /** Pod 在节点上存活的最长秒数，超时则标记失败 */
   activeDeadlineSeconds?: number
   /** DNS 策略，默认 ClusterFirst */
-  dnsPolicy: DNSPolicy
+  dnsPolicy?: DNSPolicy
   /** 节点标签选择器，须匹配节点标签才可调度 */
-  nodeSelector: Record<string, string>
+  nodeSelector?: Record<string, string>
   /** 运行该 Pod 所使用的 ServiceAccount 名称 */
-  serviceAccountName: string
+  serviceAccountName?: string
   /** Pod 被调度到的节点名称，为空时由调度器决定 */
   nodeName?: string
   /** 是否使用宿主机网络命名空间，默认 false */
-  hostNetwork: boolean
+  hostNetwork?: boolean
   /** 是否使用宿主机 PID 命名空间，默认 false */
-  hostPID: boolean
+  hostPID?: boolean
   /** Pod 级安全上下文与容器通用设置 */
   securityContext?: PodSecurityContext
   /** 拉取镜像所用的 Secret 名称列表 */
-  imagePullSecrets: string[]
+  imagePullSecrets?: string[]
   /** Pod 主机名 */
   hostname?: string
   /** Pod 子域名 */
