@@ -37,7 +37,7 @@
           </BeeTableColumn>
           <BeeTableColumn :width="160" label="类型">
             <template #default="{ row }">
-              <BeeTableCommonCell :text="NAMESPACE_TYPE_MAP[row.type]" :subtext="row.type" />
+              <BeeTableCommonCell :text="row.type" :subtext="row.type" />
             </template>
           </BeeTableColumn>
           <BeeTableColumn :width="200">
@@ -164,7 +164,7 @@ import BeeTable from '@/components/BeeTable/index.vue'
 import BeeTag from '@/components/BeeTag/index.vue'
 
 import { usePermission } from '@/composables/usePermission'
-import { NAMESPACE_PAGE_META, NAMESPACE_STATUS_OPTIONS, NAMESPACE_TYPE_MAP } from '@/config/kubernetes/namespace'
+import { NAMESPACE_PAGE_META, NAMESPACE_STATUS_OPTIONS } from '@/config/kubernetes/namespace'
 
 defineOptions({ name: 'NamespaceManage' })
 

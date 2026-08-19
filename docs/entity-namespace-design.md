@@ -9,6 +9,14 @@
 
 ## Namespace 常量定义（/src/config/kubernetes/namespace.ts）
 
+### NAMESPACE_PAGE_META
+
+Namespace 列表页面元数据配置。
+
+- icon: 'kubernetes-namespace' （页面图标）
+- title: '命名空间管理' （页面标题）
+- description: '命名空间（Namespace）是 Kubernetes 集群中用于资源隔离的虚拟集群，可以将集群划分为多个独立的工作空间，实现项目、团队或环境之间的资源隔离和管理。' （页面描述）
+
 ### NamespaceStatus
 
 Namespace 状态选项，用于列表筛选与展示，含状态值、中文标签与配色。
@@ -35,8 +43,8 @@ export const NAMESPACE_STATUS_OPTIONS = [
 Namespace 的生命周期阶段。
 
 #### _namespacePhases (internal const)
-- 'Active' （label: '活跃'）
-- 'Terminating' （label: '终止中'）
+- { value: 'Active', label: '活跃' }
+- { value: 'Terminating', label: '终止中' }
 
 #### NamespacePhase (derived from _namespacePhases)
 ```ts
@@ -60,11 +68,11 @@ export type FinalizerName = (typeof _finalizerNames)[number]['value']
 Namespace 条件类型，描述命名空间删除过程中的各类观测状态。
 
 #### _namespaceConditionTypes (internal const)
-- 'NamespaceDeletionDiscoveryFailure' （label: '资源发现阶段命名空间删除器出错'）
-- 'NamespaceDeletionContentFailure' （label: '资源删除阶段命名空间删除器出错'）
-- 'NamespaceDeletionGroupVersionParsingFailure' （label: '解析历史类型 GroupVersion 时出错'）
-- 'NamespaceContentRemaining' （label: '命名空间内仍有残留资源'）
-- 'NamespaceFinalizersRemaining' （label: '残留资源上仍有未清空的 finalizer'）
+- 'NamespaceDeletionDiscoveryFailure' （label: '资源发现失败'）
+- 'NamespaceDeletionContentFailure' （label: '内容删除失败'）
+- 'NamespaceDeletionGroupVersionParsingFailure' （label: 'GroupVersion 解析失败'）
+- 'NamespaceContentRemaining' （label: '仍有残留内容'）
+- 'NamespaceFinalizersRemaining' （label: '仍有 finalizer 未清空'）
 
 #### NamespaceConditionType (derived from _namespaceConditionTypes)
 ```ts

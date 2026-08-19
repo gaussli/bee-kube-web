@@ -26,7 +26,7 @@
 
 import type { AuditEntity, DeletableEntity, PageForm, UidEntity } from '@/types/common'
 
-import type { NamespaceConditionType, NamespaceType } from '@/config/kubernetes/namespace'
+import type { NamespaceConditionType } from '@/config/kubernetes/namespace'
 
 import type { MetadataAnnotationForm, MetadataLabelForm } from './common'
 import type { Clustered, Condition, Event, Metadata } from './types'
@@ -40,8 +40,8 @@ export interface NamespaceQueryForm extends PageForm {
   name: string
   /** 状态 */
   status: string
-  /** 命名空间类型 */
-  type: NamespaceType
+  /** 命名空间类型（业务扩展，设计文档未涵盖，暂用 string 过渡） */
+  type?: string
   /** 是否仅返回简要列表 */
   simple: boolean
 }
@@ -62,8 +62,8 @@ export interface NamespaceListVo extends UidEntity, Clustered, AuditEntity, Dele
   status: string
   /** 状态描述信息 */
   statusMsg?: string
-  /** 命名空间类型 */
-  type: NamespaceType
+  /** 命名空间类型（业务扩展，设计文档未涵盖，暂用 string 过渡） */
+  type?: string
 }
 
 /**
@@ -75,8 +75,8 @@ export interface NamespaceSimpleListVo extends UidEntity {
   name: string
   /** 描述信息 */
   description?: string
-  /** 命名空间类型 */
-  type: NamespaceType
+  /** 命名空间类型（业务扩展，设计文档未涵盖，暂用 string 过渡） */
+  type?: string
 }
 
 /**
@@ -107,8 +107,8 @@ export interface NamespaceDetailBasicVo extends UidEntity, Clustered, AuditEntit
   status: string
   /** 状态描述信息（如异常原因） */
   statusMsg?: string
-  /** 命名空间类型 */
-  type: NamespaceType
+  /** 命名空间类型（业务扩展，设计文档未涵盖，暂用 string 过渡） */
+  type?: string
 }
 
 /**
