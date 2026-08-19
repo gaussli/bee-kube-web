@@ -14,13 +14,34 @@ Namespace 是 Kubernetes 中名称的隔离作用域，用于在同一集群内�
 
 ## Namespace 常量定义（/src/config/kubernetes/namespace.ts）
 
+### NamespaceStatus
+
+Namespace 状态选项，用于列表筛选与展示，含状态值、中文标签与配色。
+
+#### _namespaceStatuses (internal const)
+- 'Active' （label: '活跃', color: COLOR_SUCCESS）
+- 'Terminating' （label: '终止中', color: COLOR_PRIMARY）
+
+#### NamespaceStatuses (derived from _namespaceStatuses)
+```ts
+export type NamespaceStatuses = (typeof _namespaceStatuses)[number]['value']
+```
+
+#### NAMESPACE_STATUS_OPTIONS (options with '所有状态')
+```ts
+export const NAMESPACE_STATUS_OPTIONS = [
+  { value: undefined, label: '所有状态' },
+  ..._namespaceStatuses,
+]
+```
+
 ### NamespacePhase
 
 Namespace 的生命周期阶段。
 
 #### _namespacePhases (internal const)
-- 'Active' （label: '命名空间可用'）
-- 'Terminating' （label: '命名空间正在优雅终止中'）
+- 'Active' （label: '活跃'）
+- 'Terminating' （label: '终止中'）
 
 #### NamespacePhase (derived from _namespacePhases)
 ```ts
