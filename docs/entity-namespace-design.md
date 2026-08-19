@@ -1,10 +1,5 @@
 # Entity Namespace 设计文档
 
-Namespace 是 Kubernetes 中名称的隔离作用域，用于在同一集群内划分多个虚拟集群。本文档描述 Namespace 及其关联实体（NamespaceSpec / NamespaceStatus / NamespaceCondition）与枚举的设计。
-
-> 关联类型 `ObjectMeta`、`TypeMeta` 定义见 [`entity-kubernetes-design.md`](entity-kubernetes-design.md)。
-> 关联通用类型 `Condition` 定义见 [`entity-kubernetes-design.md#condition`](entity-kubernetes-design.md#condition)。
-
 ## 文档约定
 
 - 标题（`###` 章节）使用纯英文，中文说明置于标题下方的「定义说明」行，避免中文锚点乱码。
@@ -76,7 +71,7 @@ Namespace 条件类型，描述命名空间删除过程中的各类观测状态�
 export type NamespaceConditionType = (typeof _namespaceConditionTypes)[number]['value']
 ```
 
-## Namespace 类型定义（/src/types/kubernetes/namespace.ts）
+## Namespace 原始类型定义（/src/types/kubernetes/namespace/types.ts）
 
 ### NamespaceSpec
 
