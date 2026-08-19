@@ -3,7 +3,7 @@
  * @module types/kubernetes/types
  */
 
-import type { HostPathType, LabelSelectorOperator } from '@/config/kubernetes/core'
+import type { HostPathType, LabelSelectorOperator, QuantityUnit } from '@/config/kubernetes/core'
 
 /**
  * 基础原数据
@@ -88,11 +88,6 @@ export interface Namespaced {
   /** 所属命名空间的名称 */
   namespace: string
 }
-
-/**
- * 资源数量单位
- */
-export type QuantityUnit = '' | 'm' | 'Ki' | 'Mi' | 'Gi' | 'Ti' | 'Pi' | 'Ei' | 'K' | 'M' | 'G' | 'T' | 'P' | 'E'
 
 /**
  * 资源数量
