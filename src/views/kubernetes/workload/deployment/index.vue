@@ -67,7 +67,7 @@
               <BeeTableCommonCell
                 :subtext="row.updateStrategyType"
                 :text="
-                  (DEPLOYMENT_UPDATE_STRATEGY_LABEL_MAP as Record<string, string>)[row.updateStrategyType] ||
+                  DEPLOYMENT_UPDATE_STRATEGY_OPTIONS.find(item => item.value === row.updateStrategyType)?.label ||
                   row.updateStrategyType
                 "
               />
@@ -184,7 +184,7 @@ import { usePermission } from '@/composables/usePermission'
 import {
   DEPLOYMENT_PAGE_META,
   DEPLOYMENT_STATUS_OPTIONS,
-  DEPLOYMENT_UPDATE_STRATEGY_LABEL_MAP,
+  DEPLOYMENT_UPDATE_STRATEGY_OPTIONS,
 } from '@/config/kubernetes/workload/deployment'
 
 defineOptions({ name: 'DeploymentPage' })

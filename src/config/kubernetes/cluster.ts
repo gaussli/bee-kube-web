@@ -3,7 +3,7 @@
  * @module config/kubernetes/cluster
  */
 
-import type { ResourcePageMeta, StatusOption } from '@/config/kubernetes/common'
+import type { ResourcePageMeta, Option } from '@/config/kubernetes/common'
 
 import { COLOR_DANGER, COLOR_GRAY_70, COLOR_PRIMARY, COLOR_SUCCESS } from '@/config/color'
 
@@ -27,7 +27,7 @@ const _clusterStatuses = [
 export type ClusterStatus = (typeof _clusterStatuses)[number]['value']
 
 /** 集群状态配置选项 */
-export const CLUSTER_STATUS_OPTIONS: StatusOption[] = [
+export const CLUSTER_STATUS_OPTIONS: Option[] = [
   { value: undefined, label: '所有状态', labelEn: 'ALL', color: COLOR_SUCCESS },
   ..._clusterStatuses,
 ]

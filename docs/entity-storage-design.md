@@ -185,9 +185,9 @@ PersistentVolumeClaim 的观测状态，描述绑定阶段与扩容进度。
 
 - phase?: `PersistentVolumeClaimPhase` （绑定状态，枚举定义见 [`PersistentVolumeClaimPhase`](#persistentvolumeclaimphase)）
 - accessModes?: `PersistentVolumeAccessMode[]` （实际绑定的访问模式，枚举定义见 [`PersistentVolumeAccessMode`](entity-kubernetes-design.md#persistentvolumeaccessmode)）
-- capacity?: Record<string, `Quantity`> （实际绑定的容量（ResourceList），如 {storage: '10Gi'}，定义见 [`Quantity`](entity-kubernetes-design.md#quantity)）
+- capacity?: Record<`ResourceName`, `Quantity`> （实际绑定的容量（资源列表），如 {storage: '10Gi'}，定义见 [`ResourceName`](entity-kubernetes-design.md#resourcename)、[`Quantity`](entity-kubernetes-design.md#quantity)）
 - conditions?: `Condition<PersistentVolumeClaimConditionType>[]` （状态条件列表，条件类型枚举定义见 [`PersistentVolumeClaimConditionType`](#persistentvolumeclaimconditiontype)，条件结构定义见 [`Condition`](entity-kubernetes-design.md#condition)）
-- allocatedResources?: Record<string, `Quantity`> （已分配资源（ResourceList），含容量；扩容中可大于实际容量，定义见 [`Quantity`](entity-kubernetes-design.md#quantity)）
+- allocatedResources?: Record<`ResourceName`, `Quantity`> （已分配资源（资源列表），含容量；扩容中可大于实际容量，定义见 [`ResourceName`](entity-kubernetes-design.md#resourcename)、[`Quantity`](entity-kubernetes-design.md#quantity)）
 - allocatedResourceStatuses?: Record<string, string> （各资源扩容状态，key 为资源名（如 storage））
 - currentVolumeAttributesClassName?: string （当前生效的 VolumeAttributesClass 名称；为空表示未应用）
 - modifyVolumeStatus?: `ModifyVolumeStatus` （卷属性变更操作状态，定义见 [`ModifyVolumeStatus`](#modifyvolumestatus)）

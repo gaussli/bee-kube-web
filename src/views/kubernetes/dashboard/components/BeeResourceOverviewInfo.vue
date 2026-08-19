@@ -18,11 +18,11 @@
       </div>
     </BeeCard>
     <div class="bee-resource-overview-info__field-cards">
-      <BeeFieldCard field-name="运行时间 / Uptime" :field-value="resourceUptime" :field-sub-value="data.createdAt" />
+      <BeeFieldCard field-name="运行时间 / Uptime" :field-sub-value="data.createdAt" :field-value="resourceUptime" />
       <BeeFieldCard
         field-name="状态 / Status"
-        :field-value="statusConfig.label"
         :field-sub-value="statusConfig.labelEn"
+        :field-value="statusConfig.label"
         :style="{ '--bee-fieldcard-text-color': statusConfig.color }"
       />
     </div>

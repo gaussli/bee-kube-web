@@ -2,6 +2,23 @@
  * Pod 原始类型定义
  * @module types/kubernetes/pod/types
  */
+import type { ResourceName } from '@/config/kubernetes/core'
+import type {
+  DNSPolicy,
+  HostPathType,
+  MountPropagationMode,
+  NodeExpressionOperator,
+  Protocol,
+  PullPolicy,
+  RecursiveReadOnlyMode,
+  RestartPolicy,
+  StorageMedium,
+  TaintEffect,
+  TerminationMessagePolicy,
+  TolerationOperator,
+  URIScheme,
+} from '@/config/kubernetes/pod'
+
 import type { Quantity } from '../types'
 import type { LabelSelector } from '../workload/types'
 
@@ -18,28 +35,6 @@ export interface KeyToPath {
 }
 
 /**
- * HostPath 类型
- *
- * - '' 未指定类型，向后兼容留空
- * - 'DirectoryOrCreate' 路径不存在时按需创建空目录，权限 0755
- * - 'Directory' 路径必须为已存在的目录
- * - 'FileOrCreate' 路径不存在时按需创建空文件，权限 0644
- * - 'File' 路径必须为已存在的文件
- * - 'Socket' 路径必须为已存在的 UNIX 套接字
- * - 'CharDevice' 路径必须为已存在的字符设备
- * - 'BlockDevice' 路径必须为已存在的块设备
- */
-export type HostPathType =
-  | ''
-  | 'DirectoryOrCreate'
-  | 'Directory'
-  | 'FileOrCreate'
-  | 'File'
-  | 'Socket'
-  | 'CharDevice'
-  | 'BlockDevice'
-
-/**
  * 挂载宿主机上已存在的文件或目录
  */
 export interface HostPathVolumeSource {
@@ -48,16 +43,6 @@ export interface HostPathVolumeSource {
   /** HostPath 类型，默认为空，可选值见 HostPathType */
   type: HostPathType
 }
-
-/**
- * 存储介质类型
- *
- * - '' 使用节点默认介质
- * - 'Memory' 使用内存，如 Linux 上的 tmpfs
- * - 'HugePages' 使用大页内存
- * - 'HugePages-' 大页内存前缀，完整表示为 HugePages-<size>
- */
-export type StorageMedium = '' | 'Memory' | 'HugePages' | 'HugePages-'
 
 /**
  * 与 Pod 生命周期一致的临时目录
@@ -164,18 +149,6 @@ export interface PodSecurityContext {
 }
 
 /**
- * 节点标签匹配运算符
- *
- * - 'In' 值在给定列表中
- * - 'NotIn' 值不在给定列表中
- * - 'Exists' 标签存在，无需 values
- * - 'DoesNotExist' 标签不存在，无需 values
- * - 'Gt' 大于，仅对数字值有效
- * - 'Lt' 小于，仅对数字值有效
- */
-export type NodeExpressionOperator = 'In' | 'NotIn' | 'Exists' | 'DoesNotExist' | 'Gt' | 'Lt'
-
-/**
  * 节点选择器表达式
  */
 export interface NodeExpression {
@@ -272,25 +245,6 @@ export interface Affinity {
   /** Pod 反亲和性 */
   podAntiAffinity: PodAntiAffinity
 }
-
-/**
- * 污点容忍运算符
- *
- * - 'Exists' 等价于通配值，可容忍某类别下的所有污点
- * - 'Equal' 值与污点值相等才匹配
- * - 'Lt' 小于，执行数值比较，需开启 TaintTolerationComparisonOperators 特性门控
- * - 'Gt' 大于，执行数值比较，需开启 TaintTolerationComparisonOperators 特性门控
- */
-export type TolerationOperator = 'Exists' | 'Equal' | 'Lt' | 'Gt'
-
-/**
- * 污点效果
- *
- * - 'NoSchedule' 不允许新 Pod 调度到该节点，除非能容忍该污点
- * - 'PreferNoSchedule' 调度器尽量不将新 Pod 调度到该节点，而非完全禁止
- * - 'NoExecute' 驱逐所有无法容忍该污点的已运行 Pod
- */
-export type TaintEffect = 'NoSchedule' | 'PreferNoSchedule' | 'NoExecute'
 
 /**
  * 污点容忍
@@ -417,28 +371,10 @@ export interface EnvVar {
  */
 export interface ResourceRequirements {
   /** 容器所需的最小计算资源量；未指定时默认等于 limit（若显式设置），否则由实现定义；request 不得超过 limit */
-  request: Record<string, string>
+  request: Record<ResourceName, Quantity>
   /** 容器允许使用的最大计算资源量；超过将被限制（如 CPU 限流或内存 OOM 终止） */
-  limit: Record<string, string>
+  limit: Record<ResourceName, Quantity>
 }
-
-/**
- * 只读挂载递归模式
- *
- * - 'Disabled' 禁用递归只读模式
- * - 'IfPossible' 若容器运行时支持，则启用递归只读
- * - 'Enabled' 启用递归只读，若不支持则启动 Pod 失败并报错
- */
-export type RecursiveReadOnlyMode = 'Disabled' | 'IfPossible' | 'Enabled'
-
-/**
- * 挂载传播模式
- *
- * - 'None' 容器卷不接收宿主机或其他容器的挂载，容器内挂载也不传播到宿主机或其他容器；对应 Linux "private"
- * - 'HostToContainer' 容器卷接收宿主机或其他容器的新挂载，但容器内挂载不传播出去；对应 Linux "rslave"，递归应用于卷内所有挂载
- * - 'Bidirectional' 容器卷接收宿主机或其他容器的新挂载，且自身挂载也传播到宿主机或其他容器；对应 Linux "rshared"，递归应用于卷内所有挂载
- */
-export type MountPropagationMode = 'None' | 'HostToContainer' | 'Bidirectional'
 
 /**
  * 容器内卷挂载
@@ -487,14 +423,6 @@ export interface HTTPHeader {
   /** 请求头字段值 */
   value: string
 }
-
-/**
- * 连接协议
- *
- * - 'HTTP' 使用 http:// 协议
- * - 'HTTPS' 使用 https:// 协议
- */
-export type URIScheme = 'HTTP' | 'HTTPS'
 
 /**
  * 对容器发起 HTTP GET 请求探测
@@ -597,15 +525,6 @@ export interface SecurityContext {
 }
 
 /**
- * 端口协议
- *
- * - 'TCP' TCP 协议
- * - 'UDP' UDP 协议
- * - 'SCTP' SCTP 协议
- */
-export type Protocol = 'TCP' | 'UDP' | 'SCTP'
-
-/**
  * 容器暴露端口
  */
 export interface ContainerPort {
@@ -620,23 +539,6 @@ export interface ContainerPort {
   /** 外部端口绑定的宿主机 IP */
   hostIP: string
 }
-
-/**
- * 终止消息填充方式
- *
- * - 'File' 默认行为，容器退出时将 terminationMessagePath 文件内容作为终止消息
- * - 'FallbackToLogsOnError' 容器异常退出且 terminationMessagePath 无内容时，使用容器日志最近内容作为终止消息
- */
-export type TerminationMessagePolicy = 'File' | 'FallbackToLogsOnError'
-
-/**
- * 镜像拉取策略
- *
- * - 'Always' kubelet 总是尝试拉取最新镜像；拉取失败则容器启动失败
- * - 'Never' kubelet 从不拉取镜像，仅使用本地镜像；镜像不存在则容器启动失败
- * - 'IfNotPresent' kubelet 仅在本地不存在镜像时才拉取；镜像不存在且拉取失败则容器启动失败
- */
-export type PullPolicy = 'Always' | 'Never' | 'IfNotPresent'
 
 /**
  * 容器
@@ -689,27 +591,6 @@ export interface Container {
   /** 是否分配 TTY，需 stdin 为 true，默认 false */
   tty?: boolean
 }
-
-/**
- * 容器重启策略
- *
- * - 'Always' 容器终止时总是重启
- * - 'OnFailure' 仅在容器非正常终止时重启
- * - 'Never' 容器终止后从不重启
- *
- * 注：容器级 restartPolicy 与 Pod 级 RestartPolicy 枚举值相同，二者统一使用本定义，容器级优先于 Pod 级生效
- */
-export type RestartPolicy = 'Always' | 'OnFailure' | 'Never'
-
-/**
- * DNS 策略
- *
- * - 'ClusterFirstWithHostNet' 优先使用集群 DNS，不可用时回退到 kubelet 默认 DNS 设置
- * - 'ClusterFirst' 优先使用集群 DNS，hostNetwork 为 true 时除外，不可用时回退到默认设置
- * - 'Default' 使用 kubelet 确定的默认 DNS 设置
- * - 'None' 不使用任何 DNS 设置，由 DNSConfig 自行定义 nameservers、search paths 等参数
- */
-export type DNSPolicy = 'ClusterFirstWithHostNet' | 'ClusterFirst' | 'Default' | 'None'
 
 /**
  * Pod 规格信息

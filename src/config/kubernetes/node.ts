@@ -3,7 +3,7 @@
  * @module config/kubernetes/node
  */
 
-import type { ResourcePageMeta, StatusOption } from '@/config/kubernetes/common'
+import type { ResourcePageMeta, Option } from '@/config/kubernetes/common'
 
 import { COLOR_DANGER, COLOR_GRAY_70, COLOR_SUCCESS } from '@/config/color'
 
@@ -26,19 +26,51 @@ const _nodeStatuses = [
 export type NodeStatus = (typeof _nodeStatuses)[number]['value']
 
 /** 节点状态配置选项 */
-export const NODE_STATUS_OPTIONS: StatusOption[] = [
+export const NODE_STATUS_OPTIONS: Option[] = [
   { value: undefined, label: '所有状态', labelEn: 'ALL', color: COLOR_SUCCESS },
   ..._nodeStatuses,
 ]
 
-/** 节点条件类型映射 */
-export const NODE_CONDITION_TYPE_MAP = {
-  Ready: '就绪',
-  MemoryPressure: '内存压力',
-  DiskPressure: '磁盘压力',
-  PIDPressure: '进程压力',
-  NetworkUnavailable: '网络不可用',
-} as const
+/** 节点生命周期阶段原始数据（用于派生类型） */
+const _nodePhases = [
+  { value: 'Pending', label: '待配置' },
+  { value: 'Running', label: '运行中' },
+  { value: 'Terminated', label: '已终止' },
+] as const
+
+/** 节点生命周期阶段 */
+export type NodePhase = (typeof _nodePhases)[number]['value']
+
+/** Taint 作用效果原始数据（用于派生类型） */
+const _taintEffects = [
+  { value: 'NoSchedule', label: '不调度' },
+  { value: 'PreferNoSchedule', label: '尽量不调度' },
+  { value: 'NoExecute', label: '驱逐' },
+] as const
+
+/** Taint 作用效果 */
+export type TaintEffect = (typeof _taintEffects)[number]['value']
+
+/** 节点条件类型原始数据（用于派生类型） */
+const _nodeConditionTypes = [
+  { value: 'Ready', label: '就绪' },
+  { value: 'MemoryPressure', label: '内存压力' },
+  { value: 'DiskPressure', label: '磁盘压力' },
+  { value: 'PIDPressure', label: 'PID 压力' },
+  { value: 'NetworkUnavailable', label: '网络不可用' },
+] as const
 
 /** 节点条件类型 */
-export type NodeConditionType = keyof typeof NODE_CONDITION_TYPE_MAP
+export type NodeConditionType = (typeof _nodeConditionTypes)[number]['value']
+
+/** 节点地址类型原始数据（用于派生类型） */
+const _nodeAddressTypes = [
+  { value: 'Hostname', label: '主机名' },
+  { value: 'InternalIP', label: '内网 IP' },
+  { value: 'ExternalIP', label: '外网 IP' },
+  { value: 'InternalDNS', label: '内网 DNS' },
+  { value: 'ExternalDNS', label: '外网 DNS' },
+] as const
+
+/** 节点地址类型 */
+export type NodeAddressType = (typeof _nodeAddressTypes)[number]['value']

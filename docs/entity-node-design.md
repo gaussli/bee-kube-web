@@ -4,7 +4,7 @@ Node 是 Kubernetes 集群中的工作节点（worker node），承载 Pod 的�
 
 > 关联类型 `ObjectMeta`、`TypeMeta` 定义见 [`entity-kubernetes-design.md`](entity-kubernetes-design.md)。
 > 关联通用类型 `Condition` 定义见 [`entity-kubernetes-design.md#condition`](entity-kubernetes-design.md#condition)。
-> 关联通用类型 `ResourceList`、`ResourceName`、`Quantity` 定义见 [`entity-kubernetes-design.md`](entity-kubernetes-design.md)。
+> 关联通用类型 `ResourceName`、`Quantity` 定义见 [`entity-kubernetes-design.md`](entity-kubernetes-design.md)。
 
 ## 文档约定
 
@@ -20,9 +20,9 @@ Node 是 Kubernetes 集群中的工作节点（worker node），承载 Pod 的�
 Node 的生命周期阶段。
 
 #### _nodePhases (internal const)
-- 'Pending' （label: '节点已创建但还未完成配置'）
-- 'Running' （label: '节点已完成配置且 Kubernetes 组件运行中'）
-- 'Terminated' （label: '节点已从集群中移除'）
+- 'Pending' （label: '待配置'）
+- 'Running' （label: '运行中'）
+- 'Terminated' （label: '已终止'）
 
 #### NodePhase (derived from _nodePhases)
 ```ts
@@ -34,9 +34,9 @@ export type NodePhase = (typeof _nodePhases)[number]['value']
 Taint 对非容忍 Pod 的作用效果。
 
 #### _taintEffects (internal const)
-- 'NoSchedule' （label: '不允许新 Pod 调度到该节点，除非 Pod 容忍该污点；已运行的 Pod 不受影响'）
-- 'PreferNoSchedule' （label: '调度器尽量避免将新 Pod 调度到该节点，但不强制禁止'）
-- 'NoExecute' （label: '驱逐所有不容忍该污点的已运行 Pod'）
+- 'NoSchedule' （label: '不调度'）
+- 'PreferNoSchedule' （label: '尽量不调度'）
+- 'NoExecute' （label: '驱逐'）
 
 #### TaintEffect (derived from _taintEffects)
 ```ts
@@ -48,11 +48,11 @@ export type TaintEffect = (typeof _taintEffects)[number]['value']
 Node 条件类型，描述节点当前观测到的各类状态。
 
 #### _nodeConditionTypes (internal const)
-- 'Ready' （label: 'kubelet 健康且可接受 Pod'）
-- 'MemoryPressure' （label: '节点可用内存不足，存在内存压力'）
-- 'DiskPressure' （label: '节点可用磁盘不足，存在磁盘压力'）
-- 'PIDPressure' （label: '节点可用 PID 不足，存在 PID 压力'）
-- 'NetworkUnavailable' （label: '节点网络未正确配置'）
+- 'Ready' （label: '就绪'）
+- 'MemoryPressure' （label: '内存压力'）
+- 'DiskPressure' （label: '磁盘压力'）
+- 'PIDPressure' （label: 'PID 压力'）
+- 'NetworkUnavailable' （label: '网络不可用'）
 
 #### NodeConditionType (derived from _nodeConditionTypes)
 ```ts
@@ -64,18 +64,18 @@ export type NodeConditionType = (typeof _nodeConditionTypes)[number]['value']
 Node 地址类型。
 
 #### _nodeAddressTypes (internal const)
-- 'Hostname' （label: '节点主机名'）
-- 'InternalIP' （label: '节点内网 IP，通常可从其他节点访问'）
-- 'ExternalIP' （label: '节点外网 IP，意图上更便于集群外访问'）
-- 'InternalDNS' （label: '解析为内网 IP 的 DNS 名称'）
-- 'ExternalDNS' （label: '解析为外网 IP 的 DNS 名称'）
+- 'Hostname' （label: '主机名'）
+- 'InternalIP' （label: '内网 IP'）
+- 'ExternalIP' （label: '外网 IP'）
+- 'InternalDNS' （label: '内网 DNS'）
+- 'ExternalDNS' （label: '外网 DNS'）
 
 #### NodeAddressType (derived from _nodeAddressTypes)
 ```ts
 export type NodeAddressType = (typeof _nodeAddressTypes)[number]['value']
 ```
 
-## Node 类型定义（/src/types/kubernetes/node.ts）
+## Node 原始类型定义（/src/types/kubernetes/node/types.ts）
 
 ### NodeSpec
 
@@ -93,8 +93,8 @@ Node 的行为规格定义。
 
 Node 的当前状态信息（对应源码 `NodeStatus`）。
 
-- capacity?: `ResourceList` （节点总资源量，类型定义见 [`ResourceList`](entity-kubernetes-design.md#resourcelist)）
-- allocatable?: `ResourceList` （节点可调度资源量，默认等于 `capacity`；类型定义见 [`ResourceList`](entity-kubernetes-design.md#resourcelist)）
+- capacity?: Record<`ResourceName`, `Quantity`> （节点总资源量，类型定义见 [`ResourceName`](entity-kubernetes-design.md#resourcename)、[`Quantity`](entity-kubernetes-design.md#quantity)）
+- allocatable?: Record<`ResourceName`, `Quantity`> （节点可调度资源量，默认等于 `capacity`；类型定义见 [`ResourceName`](entity-kubernetes-design.md#resourcename)、[`Quantity`](entity-kubernetes-design.md#quantity)）
 - phase?: `NodePhase` （节点最近观测到的生命周期阶段，已废弃且不再填充；枚举定义见 [`NodePhase`](#nodephase)）
 - conditions?: `Condition<NodeConditionType>[]` （节点当前观测到的条件列表，条件类型枚举定义见 [`NodeConditionType`](#nodeconditiontype)；条件结构定义见 [`Condition`](entity-kubernetes-design.md#condition)）
 - addresses?: `NodeAddress[]` （节点可达地址列表；地址类型枚举定义见 [`NodeAddressType`](#nodeaddresstype)）

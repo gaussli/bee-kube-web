@@ -3,7 +3,7 @@
  * @module config/kubernetes/workload/cronjob
  */
 
-import type { ResourcePageMeta, StatusOption } from '@/config/kubernetes/common'
+import type { ResourcePageMeta, Option } from '@/config/kubernetes/common'
 
 import { COLOR_DANGER, COLOR_GRAY_70, COLOR_SUCCESS, COLOR_WARNING } from '@/config/color'
 
@@ -25,7 +25,7 @@ const _cronjobStatuses = [
 export type CronJobStatus = (typeof _cronjobStatuses)[number]['value']
 
 /** CronJob 状态配置选项 */
-export const CRONJOB_STATUS_OPTIONS: StatusOption[] = [
+export const CRONJOB_STATUS_OPTIONS: Option[] = [
   { value: undefined, label: '全部状态', labelEn: 'ALL', color: COLOR_SUCCESS },
   ..._cronjobStatuses,
 ]

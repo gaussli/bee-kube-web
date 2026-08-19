@@ -20,16 +20,16 @@
     <div class="bee-cluster-overview-info__field-cards">
       <BeeFieldCard
         field-name="状态 / Status"
-        :field-value="statusConfig.label"
         :field-sub-value="statusConfig.labelEn"
+        :field-value="statusConfig.label"
         :style="{ '--bee-fieldcard-text-color': statusConfig.color }"
       />
       <BeeFieldCard field-name="版本 / Version" :field-value="data.k8sVersion" />
-      <BeeFieldCard field-name="运行时间 / Uptime" :field-value="clusterUptime" :field-sub-value="data.createdAt" />
+      <BeeFieldCard field-name="运行时间 / Uptime" :field-sub-value="data.createdAt" :field-value="clusterUptime" />
       <BeeFieldCard
         field-name="证书期限 / Expired At"
-        :field-value="`剩余 ${certRemainDays} 天`"
         :field-sub-value="data.certExpireAt"
+        :field-value="`剩余 ${certRemainDays} 天`"
         :style="certRemainDays <= CERT_EXPIRE_WARNING_DAYS ? { '--bee-fieldcard-text-color': '#e6a23c' } : {}"
       />
     </div>

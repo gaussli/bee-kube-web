@@ -3,7 +3,7 @@
  * @module config/kubernetes/workload/statefulset
  */
 
-import type { ResourcePageMeta, StatusOption } from '@/config/kubernetes/common'
+import type { ResourcePageMeta, Option } from '@/config/kubernetes/common'
 
 import { COLOR_DANGER, COLOR_GRAY_70, COLOR_PRIMARY, COLOR_SUCCESS } from '@/config/color'
 
@@ -33,7 +33,7 @@ const _statefulsetStatuses = [
 export type StatefulSetStatus = (typeof _statefulsetStatuses)[number]['value']
 
 /** StatefulSet 状态配置选项 */
-export const STATEFULSET_STATUS_OPTIONS: StatusOption[] = [
+export const STATEFULSET_STATUS_OPTIONS: Option[] = [
   { value: undefined, label: '全部状态', labelEn: 'ALL', color: COLOR_SUCCESS },
   ..._statefulsetStatuses,
 ]

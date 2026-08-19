@@ -4,7 +4,7 @@
 
 ### ResourceName
 
-标识 ResourceList 中各类资源的名称（string literal 类型），命名须符合小写字母、数字及 `-`/`_`/`.` 组合、长度 ≤ 63、首尾非特殊字符的约定。
+标识资源列表（Record<`ResourceName`, `Quantity`>）中各类资源的名称（string literal 类型），命名须符合小写字母、数字及 `-`/`_`/`.` 组合、长度 ≤ 63、首尾非特殊字符的约定。
 
 #### _resourceNames (internal const)
 - 'cpu' （label: 'CPU'）

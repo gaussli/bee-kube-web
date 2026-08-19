@@ -3,7 +3,7 @@
  * @module config/kubernetes/workload/deployment
  */
 
-import type { ResourcePageMeta, StatusOption } from '@/config/kubernetes/common'
+import type { ResourcePageMeta, Option } from '@/config/kubernetes/common'
 
 import { COLOR_DANGER, COLOR_GRAY_70, COLOR_PRIMARY, COLOR_SUCCESS } from '@/config/color'
 
@@ -34,26 +34,29 @@ const _deploymentStatuses = [
 export type DeploymentStatus = (typeof _deploymentStatuses)[number]['value']
 
 /** Deployment 状态配置选项 */
-export const DEPLOYMENT_STATUS_OPTIONS: StatusOption[] = [
+export const DEPLOYMENT_STATUS_OPTIONS: Option[] = [
   { value: undefined, label: '全部状态', labelEn: 'ALL', color: COLOR_SUCCESS },
   ..._deploymentStatuses,
 ]
 
-/** Deployment 条件类型映射 */
-export const DEPLOYMENT_CONDITION_TYPE_MAP = {
-  Available: '可用',
-  Progressing: '处理中',
-  ReplicaFailure: '副本失败',
-} as const
+/** Deployment 条件类型原始数据（用于派生类型） */
+const _deploymentConditionTypes = [
+  { value: 'Available', label: '可用', labelEn: 'Available' },
+  { value: 'Progressing', label: '处理中', labelEn: 'Progressing' },
+  { value: 'ReplicaFailure', label: '副本失败', labelEn: 'ReplicaFailure' },
+] as const
 
 /** Deployment 条件类型 */
-export type DeploymentConditionType = keyof typeof DEPLOYMENT_CONDITION_TYPE_MAP
+export type DeploymentConditionType = (typeof _deploymentConditionTypes)[number]['value']
 
-/** Deployment 更新策略标签映射 */
-export const DEPLOYMENT_UPDATE_STRATEGY_LABEL_MAP = {
-  RollingUpdate: '滚动更新',
-  Recreate: '重建',
-} as const
+/** Deployment 更新策略原始数据（用于派生类型） */
+const _deploymentUpdateStrategies = [
+  { value: 'RollingUpdate', label: '滚动更新' },
+  { value: 'Recreate', label: '重建' },
+] as const
 
 /** Deployment 更新策略类型 */
-export type DeploymentUpdateStrategyType = keyof typeof DEPLOYMENT_UPDATE_STRATEGY_LABEL_MAP
+export type DeploymentUpdateStrategyType = (typeof _deploymentUpdateStrategies)[number]['value']
+
+/** Deployment 更新策略配置选项 */
+export const DEPLOYMENT_UPDATE_STRATEGY_OPTIONS: Option[] = [..._deploymentUpdateStrategies]

@@ -3,7 +3,7 @@
  * @module config/kubernetes/workload/job
  */
 
-import type { ResourcePageMeta, StatusOption } from '@/config/kubernetes/common'
+import type { ResourcePageMeta, Option } from '@/config/kubernetes/common'
 
 import { COLOR_DANGER, COLOR_SUCCESS, COLOR_WARNING } from '@/config/color'
 
@@ -25,7 +25,7 @@ const _jobStatuses = [
 export type JobStatus = (typeof _jobStatuses)[number]['value']
 
 /** Job 状态配置选项 */
-export const JOB_STATUS_OPTIONS: StatusOption[] = [
+export const JOB_STATUS_OPTIONS: Option[] = [
   { value: undefined, label: '全部状态', labelEn: 'ALL', color: COLOR_SUCCESS },
   ..._jobStatuses,
 ]
