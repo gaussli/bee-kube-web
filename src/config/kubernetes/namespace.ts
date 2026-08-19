@@ -40,10 +40,10 @@ export const _namespacePhases = [
 export type NamespacePhase = (typeof _namespacePhases)[number]['value']
 
 /** 命名空间终结器名称 */
-export const _finalizerNames = ['kubernetes'] as const
+export const _finalizerNames = [{ value: 'kubernetes', label: '内置终结器' }] as const
 
 /** 命名空间终结器名称类型 */
-export type FinalizerName = (typeof _finalizerNames)[number]
+export type FinalizerName = (typeof _finalizerNames)[number]['value']
 
 /** 命名空间条件类型（原生 K8s 条件类型） */
 export const _namespaceConditionTypes = [

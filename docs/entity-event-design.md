@@ -12,8 +12,6 @@
 
 > 简言之：**枚举 → 枚举定义见；复用 ≥2 次 → 定义见；仅用 1 次 → 直接展开；跨文件共用 → 仅引用 entity-kubernetes-design.md。**
 
-## Event 类型定义（/src/types/kubernetes/event.ts）
-
 ## Event 常量定义（`/src/config/kubernetes/event.ts）
 
 ### EventType
@@ -21,8 +19,8 @@
 事件类型，标识事件的严重程度分类（string literal 类型，+enum）。
 
 #### _eventTypes (internal const)
-- 'Normal' （label: '正常事件，资源生命周期中的常规状态变更'）
-- 'Warning' （label: '警告事件，资源出现异常或失败需关注'）
+- 'Normal' （label: '正常'）
+- 'Warning' （label: '警告'）
 
 #### EventType (derived from _eventTypes)
 ```ts

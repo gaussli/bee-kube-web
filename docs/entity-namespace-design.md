@@ -56,7 +56,7 @@ export type NamespacePhase = (typeof _namespacePhases)[number]['value']
 Namespace 终结器名称，标识在删除命名空间前必须清空的终结逻辑。
 
 #### _finalizerNames (internal const)
-- 'kubernetes' （label: 'Kubernetes 内置终结器，负责清理命名空间内所有资源'）
+- { value: 'kubernetes', label: '内置终结器' }
 
 #### FinalizerName (derived from _finalizerNames)
 ```ts

@@ -7,10 +7,10 @@
 标识 ResourceList 中各类资源的名称（string literal 类型），命名须符合小写字母、数字及 `-`/`_`/`.` 组合、长度 ≤ 63、首尾非特殊字符的约定。
 
 #### _resourceNames (internal const)
-- 'cpu' （label: 'CPU'，单位核，如 500m = 0.5 核）
-- 'memory' （label: '内存'，单位字节，如 500Gi = 500GiB）
-- 'storage' （label: '存储'，存储卷容量，单位字节，如 5Gi = 5GiB）
-- 'ephemeral-storage' （label: '临时存储'，节点本地临时存储，单位字节，如 500Gi = 500GiB）
+- 'cpu' （label: 'CPU'）
+- 'memory' （label: '内存'）
+- 'storage' （label: '存储'）
+- 'ephemeral-storage' （label: '临时存储'）
 
 #### ResourceName (derived from _resourceNames)
 ```ts
@@ -22,71 +22,71 @@ export type ResourceName = (typeof _resourceNames)[number]['value']
 容器停止时发送的信号（string literal 类型，+enum）。
 
 #### _signals (internal const)
-- 'SIGABRT' （label: '终止进程（Abort）'）
-- 'SIGALRM' （label: '定时器超时（Alarm）'）
-- 'SIGBUS' （label: '总线错误（Bus error）'）
-- 'SIGCHLD' （label: '子进程状态变更（Child）'）
-- 'SIGCLD' （label: '子进程状态变更别名（Child）'）
-- 'SIGCONT' （label: '继续执行（Continue）'）
-- 'SIGFPE' （label: '浮点异常（Floating point）'）
-- 'SIGHUP' （label: '终端挂起（Hangup）'）
-- 'SIGILL' （label: '非法指令（Illegal instruction）'）
-- 'SIGINT' （label: '中断（Interrupt）'）
-- 'SIGIO' （label: '异步 I/O 事件（I/O）'）
-- 'SIGIOT' （label: 'IOT 陷阱（IOT trap）'）
-- 'SIGKILL' （label: '强制终止（Kill）'）
-- 'SIGPIPE' （label: '管道断裂（Broken pipe）'）
-- 'SIGPOLL' （label: '轮询事件（Poll）'）
-- 'SIGPROF' （label: '性能定时器（Profiling）'）
-- 'SIGPWR' （label: '电源故障（Power fail）'）
-- 'SIGQUIT' （label: '退出并 Core dump（Quit）'）
-- 'SIGSEGV' （label: '段错误（Segmentation fault）'）
-- 'SIGSTKFLT' （label: '协处理器栈错误（Stack fault）'）
-- 'SIGSTOP' （label: '暂停执行（Stop）'）
-- 'SIGSYS' （label: '非法系统调用（Bad system call）'）
-- 'SIGTERM' （label: '终止请求（Terminate）'）
-- 'SIGTRAP' （label: '断点陷阱（Trace trap）'）
-- 'SIGTSTP' （label: '终端停止（Terminal stop）'）
-- 'SIGTTIN' （label: '后台读终端（TTY in）'）
-- 'SIGTTOU' （label: '后台写终端（TTY out）'）
-- 'SIGURG' （label: '紧急数据（Urgent）'）
-- 'SIGUSR1' （label: '用户自定义信号 1（User 1）'）
-- 'SIGUSR2' （label: '用户自定义信号 2（User 2）'）
-- 'SIGVTALRM' （label: '虚拟定时器（Virtual timer）'）
-- 'SIGWINCH' （label: '窗口大小变更（Window change）'）
-- 'SIGXCPU' （label: 'CPU 超时（CPU limit）'）
-- 'SIGXFSZ' （label: '文件大小超限（File size limit）'）
-- 'SIGRTMIN' （label: '实时信号最小值（Real-time min）'）
-- 'SIGRTMIN+1' （label: '实时信号（Real-time min+1）'）
-- 'SIGRTMIN+2' （label: '实时信号（Real-time min+2）'）
-- 'SIGRTMIN+3' （label: '实时信号（Real-time min+3）'）
-- 'SIGRTMIN+4' （label: '实时信号（Real-time min+4）'）
-- 'SIGRTMIN+5' （label: '实时信号（Real-time min+5）'）
-- 'SIGRTMIN+6' （label: '实时信号（Real-time min+6）'）
-- 'SIGRTMIN+7' （label: '实时信号（Real-time min+7）'）
-- 'SIGRTMIN+8' （label: '实时信号（Real-time min+8）'）
-- 'SIGRTMIN+9' （label: '实时信号（Real-time min+9）'）
-- 'SIGRTMIN+10' （label: '实时信号（Real-time min+10）'）
-- 'SIGRTMIN+11' （label: '实时信号（Real-time min+11）'）
-- 'SIGRTMIN+12' （label: '实时信号（Real-time min+12）'）
-- 'SIGRTMIN+13' （label: '实时信号（Real-time min+13）'）
-- 'SIGRTMIN+14' （label: '实时信号（Real-time min+14）'）
-- 'SIGRTMIN+15' （label: '实时信号（Real-time min+15）'）
-- 'SIGRTMAX-14' （label: '实时信号（Real-time max-14）'）
-- 'SIGRTMAX-13' （label: '实时信号（Real-time max-13）'）
-- 'SIGRTMAX-12' （label: '实时信号（Real-time max-12）'）
-- 'SIGRTMAX-11' （label: '实时信号（Real-time max-11）'）
-- 'SIGRTMAX-10' （label: '实时信号（Real-time max-10）'）
-- 'SIGRTMAX-9' （label: '实时信号（Real-time max-9）'）
-- 'SIGRTMAX-8' （label: '实时信号（Real-time max-8）'）
-- 'SIGRTMAX-7' （label: '实时信号（Real-time max-7）'）
-- 'SIGRTMAX-6' （label: '实时信号（Real-time max-6）'）
-- 'SIGRTMAX-5' （label: '实时信号（Real-time max-5）'）
-- 'SIGRTMAX-4' （label: '实时信号（Real-time max-4）'）
-- 'SIGRTMAX-3' （label: '实时信号（Real-time max-3）'）
-- 'SIGRTMAX-2' （label: '实时信号（Real-time max-2）'）
-- 'SIGRTMAX-1' （label: '实时信号（Real-time max-1）'）
-- 'SIGRTMAX' （label: '实时信号最大值（Real-time max）'）
+- 'SIGABRT' （label: '终止进程'）
+- 'SIGALRM' （label: '定时器超时'）
+- 'SIGBUS' （label: '总线错误'）
+- 'SIGCHLD' （label: '子进程状态变更'）
+- 'SIGCLD' （label: '子进程状态变更'）
+- 'SIGCONT' （label: '继续执行'）
+- 'SIGFPE' （label: '浮点异常'）
+- 'SIGHUP' （label: '终端挂起'）
+- 'SIGILL' （label: '非法指令'）
+- 'SIGINT' （label: '中断'）
+- 'SIGIO' （label: '异步 I/O'）
+- 'SIGIOT' （label: 'IOT 陷阱'）
+- 'SIGKILL' （label: '强制终止'）
+- 'SIGPIPE' （label: '管道断裂'）
+- 'SIGPOLL' （label: '轮询事件'）
+- 'SIGPROF' （label: '性能定时'）
+- 'SIGPWR' （label: '电源故障'）
+- 'SIGQUIT' （label: '退出转储'）
+- 'SIGSEGV' （label: '段错误'）
+- 'SIGSTKFLT' （label: '栈错误'）
+- 'SIGSTOP' （label: '暂停执行'）
+- 'SIGSYS' （label: '非法系统调用'）
+- 'SIGTERM' （label: '终止请求'）
+- 'SIGTRAP' （label: '断点陷阱'）
+- 'SIGTSTP' （label: '终端停止'）
+- 'SIGTTIN' （label: '后台读终端'）
+- 'SIGTTOU' （label: '后台写终端'）
+- 'SIGURG' （label: '紧急数据'）
+- 'SIGUSR1' （label: '用户信号 1'）
+- 'SIGUSR2' （label: '用户信号 2'）
+- 'SIGVTALRM' （label: '虚拟定时'）
+- 'SIGWINCH' （label: '窗口变更'）
+- 'SIGXCPU' （label: 'CPU 超时'）
+- 'SIGXFSZ' （label: '文件超限'）
+- 'SIGRTMIN' （label: '实时信号最小'）
+- 'SIGRTMIN+1' （label: '实时信号 +1'）
+- 'SIGRTMIN+2' （label: '实时信号 +2'）
+- 'SIGRTMIN+3' （label: '实时信号 +3'）
+- 'SIGRTMIN+4' （label: '实时信号 +4'）
+- 'SIGRTMIN+5' （label: '实时信号 +5'）
+- 'SIGRTMIN+6' （label: '实时信号 +6'）
+- 'SIGRTMIN+7' （label: '实时信号 +7'）
+- 'SIGRTMIN+8' （label: '实时信号 +8'）
+- 'SIGRTMIN+9' （label: '实时信号 +9'）
+- 'SIGRTMIN+10' （label: '实时信号 +10'）
+- 'SIGRTMIN+11' （label: '实时信号 +11'）
+- 'SIGRTMIN+12' （label: '实时信号 +12'）
+- 'SIGRTMIN+13' （label: '实时信号 +13'）
+- 'SIGRTMIN+14' （label: '实时信号 +14'）
+- 'SIGRTMIN+15' （label: '实时信号 +15'）
+- 'SIGRTMAX-14' （label: '实时信号 -14'）
+- 'SIGRTMAX-13' （label: '实时信号 -13'）
+- 'SIGRTMAX-12' （label: '实时信号 -12'）
+- 'SIGRTMAX-11' （label: '实时信号 -11'）
+- 'SIGRTMAX-10' （label: '实时信号 -10'）
+- 'SIGRTMAX-9' （label: '实时信号 -9'）
+- 'SIGRTMAX-8' （label: '实时信号 -8'）
+- 'SIGRTMAX-7' （label: '实时信号 -7'）
+- 'SIGRTMAX-6' （label: '实时信号 -6'）
+- 'SIGRTMAX-5' （label: '实时信号 -5'）
+- 'SIGRTMAX-4' （label: '实时信号 -4'）
+- 'SIGRTMAX-3' （label: '实时信号 -3'）
+- 'SIGRTMAX-2' （label: '实时信号 -2'）
+- 'SIGRTMAX-1' （label: '实时信号 -1'）
+- 'SIGRTMAX' （label: '实时信号最大'）
 
 #### Signal (derived from _signals)
 ```ts
@@ -98,10 +98,10 @@ export type Signal = (typeof _signals)[number]['value']
 持久卷访问模式（string literal 类型，+enum），描述卷可被挂载的读写方式与节点/ Pod 范围约束。
 
 #### _persistentVolumeAccessModes (internal const)
-- 'ReadWriteOnce' （label: '单节点读写，仅可被 1 个节点以读写模式挂载'）
-- 'ReadOnlyMany' （label: '多节点只读，可被多个节点以只读模式挂载'）
-- 'ReadWriteMany' （label: '多节点读写，可被多个节点以读写模式挂载'）
-- 'ReadWriteOncePod' （label: '单 Pod 读写，仅可被 1 个 Pod 以读写模式挂载，不可与其他模式组合'）
+- 'ReadWriteOnce' （label: '单节点读写'）
+- 'ReadOnlyMany' （label: '多节点只读'）
+- 'ReadWriteMany' （label: '多节点读写'）
+- 'ReadWriteOncePod' （label: '单 Pod 读写'）
 
 #### PersistentVolumeAccessMode (derived from _persistentVolumeAccessModes)
 ```ts
@@ -138,10 +138,10 @@ export type QuantityUnit = (typeof _quantityUnits)[number]['value']
 标签选择器运算符（string literal 类型，+enum），用于标签表达式的匹配运算。
 
 #### _labelSelectorOperators (internal const)
-- 'In' （label: '包含，values 中的任意值匹配即成立，需配合 values'）
-- 'NotIn' （label: '不包含，values 中的值均不匹配才成立，需配合 values'）
-- 'Exists' （label: '存在，标签键存在即成立，忽略 values'）
-- 'DoesNotExist' （label: '不存在，标签键不存在即成立，忽略 values'）
+- 'In' （label: '包含'）
+- 'NotIn' （label: '不包含'）
+- 'Exists' （label: '存在'）
+- 'DoesNotExist' （label: '不存在'）
 
 #### LabelSelectorOperator (derived from _labelSelectorOperators)
 ```ts
