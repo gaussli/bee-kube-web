@@ -11,7 +11,9 @@ import type { EventType } from '@/config/kubernetes/event'
 
 import type { PageForm } from '../../common'
 
-import type { Event, ObjectReference } from './types'
+import type { ObjectReference } from '../types'
+
+import type { Event } from './types'
 
 /**
  * 事件查询条件请求对象
