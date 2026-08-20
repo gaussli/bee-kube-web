@@ -5,9 +5,17 @@
 
 import type { Option } from './common'
 
-import { COLOR_DANGER, COLOR_GRAY_70, COLOR_PRIMARY, COLOR_SUCCESS, COLOR_WARNING } from '@/config/color'
+import { COLOR_DANGER, COLOR_GRAY_70, COLOR_SUCCESS, COLOR_WARNING } from '@/config/color'
 
-/** Pod 状态映射 */
+/** Pod 列表页面功能元数据 */
+export const POD_PAGE_META = {
+  icon: 'kubernetes-pod',
+  title: 'Pod',
+  description:
+    'Pod 是 Kubernetes 中最小的可调度单元，表示集群中运行的一个或多个容器的集合，通常用于部署和管理应用程序。',
+}
+
+/** Pod 状态原始数据（用于派生类型） */
 const _podStatuses = [
   { value: 'Running', label: '运行中', labelEn: 'Running', color: COLOR_SUCCESS },
   { value: 'Pending', label: '等待中', labelEn: 'Pending', color: COLOR_WARNING },
@@ -25,21 +33,10 @@ export const POD_STATUS_OPTIONS: Option[] = [
   ..._podStatuses,
 ]
 
-/** 存储介质类型映射 */
-const _storageMediums = [
-  { value: '', label: '默认介质' },
-  { value: 'Memory', label: '内存' },
-  { value: 'HugePages', label: '大页内存' },
-  { value: 'HugePages-', label: '大页内存前缀' },
-] as const
-
-/** 存储介质类型 */
-export type StorageMedium = (typeof _storageMediums)[number]['value']
-
 /** 节点标签匹配运算符映射 */
 const _nodeExpressionOperators = [
-  { value: 'In', label: '包含于' },
-  { value: 'NotIn', label: '不包含于' },
+  { value: 'In', label: '包含' },
+  { value: 'NotIn', label: '不包含' },
   { value: 'Exists', label: '存在' },
   { value: 'DoesNotExist', label: '不存在' },
   { value: 'Gt', label: '大于' },
@@ -60,15 +57,16 @@ const _tolerationOperators = [
 /** 污点容忍运算符 */
 export type TolerationOperator = (typeof _tolerationOperators)[number]['value']
 
-/** 污点效果映射 */
-const _taintEffects = [
-  { value: 'NoSchedule', label: '不可调度' },
-  { value: 'PreferNoSchedule', label: '尽量不可调度' },
-  { value: 'NoExecute', label: '驱逐' },
+/** EmptyDir 存储介质类型映射 */
+const _emptyDirStorageMediums = [
+  { value: '', label: '默认介质' },
+  { value: 'Memory', label: '内存' },
+  { value: 'HugePages', label: '大页内存' },
+  { value: 'HugePages-', label: '大页内存前缀' },
 ] as const
 
-/** 污点效果 */
-export type TaintEffect = (typeof _taintEffects)[number]['value']
+/** EmptyDir 存储介质类型 */
+export type EmptyDirStorageMedium = (typeof _emptyDirStorageMediums)[number]['value']
 
 /** 只读挂载递归模式映射 */
 const _recursiveReadOnlyModes = [
@@ -80,14 +78,14 @@ const _recursiveReadOnlyModes = [
 /** 只读挂载递归模式 */
 export type RecursiveReadOnlyMode = (typeof _recursiveReadOnlyModes)[number]['value']
 
-/** 挂载传播模式映射 */
+/** VolumeMount 挂载传播模式映射 */
 const _mountPropagationModes = [
   { value: 'None', label: '不传播' },
   { value: 'HostToContainer', label: '宿主机到容器' },
   { value: 'Bidirectional', label: '双向' },
 ] as const
 
-/** 挂载传播模式 */
+/** VolumeMount 挂载传播模式 */
 export type MountPropagationMode = (typeof _mountPropagationModes)[number]['value']
 
 /** 连接协议映射 */
@@ -99,36 +97,36 @@ const _uriSchemes = [
 /** 连接协议 */
 export type URIScheme = (typeof _uriSchemes)[number]['value']
 
-/** 终止消息填充方式映射 */
+/** Container 终止消息填充方式映射 */
 const _terminationMessagePolicies = [
   { value: 'File', label: '文件' },
   { value: 'FallbackToLogsOnError', label: '错误回退日志' },
 ] as const
 
-/** 终止消息填充方式 */
+/** Container 终止消息填充方式 */
 export type TerminationMessagePolicy = (typeof _terminationMessagePolicies)[number]['value']
 
-/** 镜像拉取策略映射 */
+/** Container 镜像拉取策略映射 */
 const _pullPolicies = [
   { value: 'Always', label: '总是拉取' },
   { value: 'Never', label: '从不拉取' },
   { value: 'IfNotPresent', label: '不存在时拉取' },
 ] as const
 
-/** 镜像拉取策略 */
+/** Container 镜像拉取策略 */
 export type PullPolicy = (typeof _pullPolicies)[number]['value']
 
-/** 容器/Pod 重启策略映射 */
+/** Container / PodSpec 重启策略映射 */
 const _restartPolicies = [
   { value: 'Always', label: '总是重启' },
   { value: 'OnFailure', label: '失败时重启' },
   { value: 'Never', label: '从不重启' },
 ] as const
 
-/** 容器/Pod 重启策略 */
+/** Container / PodSpec 重启策略 */
 export type RestartPolicy = (typeof _restartPolicies)[number]['value']
 
-/** DNS 策略映射 */
+/** PodSpec DNS 策略映射 */
 const _dnsPolicies = [
   { value: 'ClusterFirstWithHostNet', label: '集群优先(宿主网络)' },
   { value: 'ClusterFirst', label: '集群优先' },
@@ -136,5 +134,43 @@ const _dnsPolicies = [
   { value: 'None', label: '无' },
 ] as const
 
-/** DNS 策略 */
+/** PodSpec DNS 策略 */
 export type DNSPolicy = (typeof _dnsPolicies)[number]['value']
+
+/** Pod 生命周期阶段映射 */
+const _podPhases = [
+  { value: 'Pending', label: '等待中' },
+  { value: 'Running', label: '运行中' },
+  { value: 'Succeeded', label: '已完成' },
+  { value: 'Failed', label: '已失败' },
+  { value: 'Unknown', label: '未知' },
+] as const
+
+/** Pod 生命周期阶段 */
+export type PodPhase = (typeof _podPhases)[number]['value']
+
+/** Pod QoS 等级映射 */
+const _podQosClasses = [
+  { value: 'Guaranteed', label: 'Guaranteed' },
+  { value: 'Burstable', label: 'Burstable' },
+  { value: 'BestEffort', label: 'BestEffort' },
+] as const
+
+/** Pod QoS 等级 */
+export type PodQOSClass = (typeof _podQosClasses)[number]['value']
+
+/** Pod 条件类型映射 */
+const _podConditionTypes = [
+  { value: 'ContainersReady', label: '容器就绪' },
+  { value: 'Initialized', label: '初始化完成' },
+  { value: 'Ready', label: '就绪' },
+  { value: 'PodScheduled', label: '已调度' },
+  { value: 'DisruptionTarget', label: '中断目标' },
+  { value: 'PodReadyToStartContainers', label: '可启动容器' },
+  { value: 'PodResizePending', label: '待扩容' },
+  { value: 'PodResizeInProgress', label: '扩容中' },
+  { value: 'AllContainersRestarting', label: '全部容器重启中' },
+] as const
+
+/** Pod 条件类型 */
+export type PodConditionType = (typeof _podConditionTypes)[number]['value']

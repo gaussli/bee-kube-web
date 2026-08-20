@@ -1,36 +1,11 @@
 /**
  * Event 原始类型定义
  * @module types/kubernetes/event/types
- *
- * @remarks
- * 对应文档「Event 原始类型定义」章节（`/src/types/kubernetes/event/types.ts`）
  */
 
 import type { EventType } from '@/config/kubernetes/event'
 
 import type { ObjectMeta, ObjectReference } from '../types'
-
-/**
- * 事件来源
- * 包含产生事件的组件与主机信息
- */
-export interface EventSource {
-  /** 产生事件的组件，如 kubelet、controller-manager */
-  component?: string
-  /** 产生事件的主机名 */
-  host?: string
-}
-
-/**
- * 事件系列
- * 同一系列事件的聚合信息；单条事件为 undefined
- */
-export interface EventSeries {
-  /** 该系列事件已发生的次数 */
-  count?: number
-  /** 该系列事件最近一次被观测到的时间 */
-  lastObservedTime?: string
-}
 
 /**
  * Kubernetes 事件实体（core/v1）
@@ -66,4 +41,26 @@ export interface Event extends ObjectMeta {
   reportingController?: string
   /** 控制器实例 ID，例如 kubelet-xyzf */
   reportingInstance?: string
+}
+
+/**
+ * 事件来源
+ * 包含产生事件的组件与主机信息
+ */
+export interface EventSource {
+  /** 产生事件的组件，如 kubelet、controller-manager */
+  component?: string
+  /** 产生事件的主机名 */
+  host?: string
+}
+
+/**
+ * 事件系列
+ * 同一系列事件的聚合信息；单条事件为 undefined
+ */
+export interface EventSeries {
+  /** 该系列事件已发生的次数 */
+  count?: number
+  /** 该系列事件最近一次被观测到的时间 */
+  lastObservedTime?: string
 }

@@ -5,7 +5,7 @@
 
 import type { FinalizerName, NamespaceConditionType, NamespacePhase } from '@/config/kubernetes/namespace'
 
-import type { Condition } from './types'
+import type { Condition } from '../types'
 
 /**
  * 命名空间行为规格定义

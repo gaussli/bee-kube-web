@@ -7,7 +7,7 @@ import type { ResourcePageMeta, Option } from '@/config/kubernetes/common'
 
 import { COLOR_PRIMARY, COLOR_SUCCESS } from '@/config/color'
 
-/** 命名空间页面元数据 */
+/** 命名空间列表页面功能元数据 */
 export const NAMESPACE_PAGE_META: ResourcePageMeta = {
   icon: 'kubernetes-namespace',
   title: '命名空间管理',
@@ -56,3 +56,62 @@ export const _namespaceConditionTypes = [
 
 /** 命名空间条件类型 */
 export type NamespaceConditionType = (typeof _namespaceConditionTypes)[number]['value']
+
+const _namespaceResourceQuotaResourceTypes = [
+  { value: 'request.cpu', label: 'CPU' },
+  { value: 'limit.cpu', label: 'CPU' },
+  { value: 'request.memory', label: '内存' },
+  { value: 'limit.memory', label: '内存' },
+  { value: 'persistentvolumeclaims', label: 'PVC 数量' },
+  { value: 'requests.storage', label: '存储请求' },
+  { value: 'pods', label: 'Pod 数量' },
+  { value: 'services', label: 'Service 数量' },
+  { value: 'services.loadbalancers', label: 'LoadBalancer Service 数量' },
+  { value: 'services.nodeports', label: 'NodePort Service 数量' },
+  { value: 'configmaps', label: 'ConfigMap 数量' },
+  { value: 'secrets', label: 'Secret 数量' },
+  { value: 'replicationcontrollers', label: 'ReplicationController 数量' },
+] as const
+
+export type NamespaceResourceQuotaResourceType = (typeof _namespaceResourceQuotaResourceTypes)[number]['value']
+
+const _namespaceResourceQuotaScopeTypes = [
+  { value: 'Terminating', label: '终止中' },
+  { value: 'NotTerminating', label: '非终止中' },
+  { value: 'BestEffort', label: '最佳努力' },
+  { value: 'NotBestEffort', label: '非最佳努力' },
+  { value: 'PriorityClass', label: '指定优先级类' },
+  { value: 'CrossNamespacePodAffinity', label: '跨命名空间 Pod 亲和性' },
+  { value: 'VolumeAttributesClass', label: '指定卷属性类' },
+] as const
+
+export type NamespaceResourceQuotaScopeType = (typeof _namespaceResourceQuotaScopeTypes)[number]['value']
+
+export const NAMESPACE_RESOURCEQUOTA_SCOPE_TYPE_OPTIONS: Option[] = [..._namespaceResourceQuotaScopeTypes]
+
+const _namespaceResourceQuotaScopeSelectorOperators = [
+  { value: 'In', label: '包含' },
+  { value: 'NotIn', label: '不包含' },
+  { value: 'Exists', label: '存在' },
+  { value: 'DoesNotExist', label: '不存在' },
+] as const
+
+export type NamespaceResourceQuotaScopeSelectorOperator =
+  (typeof _namespaceResourceQuotaScopeSelectorOperators)[number]['value']
+
+export const NAMESPACE_RESOURCEQUOTA_SCOPE_SELECTOR_OPERATOR_OPTIONS: Option[] = [
+  ..._namespaceResourceQuotaScopeSelectorOperators,
+]
+
+/** 命名空间 LimitRange 类型原始数据（用于派生类型） */
+const _namespaceLimitRangeItemTypes = [
+  { value: 'Pod', label: 'Pod' },
+  { value: 'Container', label: '容器' },
+  { value: 'PersistentVolumeClaim', label: '持久卷声明' },
+] as const
+
+/** 命名空间 LimitRange 类型 */
+export type NamespaceLimitRangeItemType = (typeof _namespaceLimitRangeItemTypes)[number]['value']
+
+/** 命名空间 LimitRange 类型配置选项 */
+export const NAMESPACE_LIMITRANGE_ITEM_TYPE_OPTIONS: Option[] = [..._namespaceLimitRangeItemTypes]

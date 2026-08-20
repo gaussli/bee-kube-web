@@ -3,10 +3,10 @@
  * @module types/kubernetes/node/types
  */
 
-import type { ResourceName } from '@/config/kubernetes/core'
-import type { NodeAddressType, NodeConditionType, NodePhase, TaintEffect } from '@/config/kubernetes/node'
+import type { ResourceName, TaintEffect } from '@/config/kubernetes/core'
+import type { NodeAddressType, NodeConditionType, NodePhase } from '@/config/kubernetes/node'
 
-import type { ObjectMeta, Condition, Quantity } from '../types'
+import type { Condition, Quantity } from '../types'
 
 /**
  * 节点行为规格定义
@@ -26,6 +26,20 @@ export interface NodeSpec {
   configSource?: NodeConfigSource
   /** Deprecated：部分 kubelet 不再设置该字段，1.13 后移除，请勿依赖 */
   externalID?: string
+}
+
+/**
+ * 节点上的污点，对不容忍该污点的 Pod 施加 effect 指定的作用
+ */
+export interface Taint {
+  /** 污点键，必填 */
+  key: string
+  /** 与污点键对应的值 */
+  value?: string
+  /** 污点对 Pod 的作用效果，必填 */
+  effect: TaintEffect
+  /** 污点被添加的时间（ISO 时间） */
+  timeAdded?: string
 }
 
 /**
@@ -60,31 +74,6 @@ export interface NodeStatusObj {
   features?: NodeFeatures
   /** 节点声明的与 feature gate 相关的特性列表，+featureGate=NodeDeclaredFeatures */
   declaredFeatures?: string[]
-}
-
-/**
- * Kubernetes 节点根实体
- * @extends ObjectMeta 继承资源元数据（name / labels / annotations / uid 等）
- */
-export interface Node extends ObjectMeta {
-  /** 节点行为规格 */
-  spec?: NodeSpec
-  /** 节点当前状态 */
-  status?: NodeStatusObj
-}
-
-/**
- * 节点上的污点，对不容忍该污点的 Pod 施加 effect 指定的作用
- */
-export interface Taint {
-  /** 污点键，必填 */
-  key: string
-  /** 与污点键对应的值 */
-  value?: string
-  /** 污点对 Pod 的作用效果，必填 */
-  effect: TaintEffect
-  /** 污点被添加的时间（ISO 时间） */
-  timeAdded?: string
 }
 
 /**
@@ -170,34 +159,6 @@ export interface AttachedVolume {
 }
 
 /**
- * 运行时处理器信息集合
- */
-export interface NodeRuntimeHandler {
-  /** 运行时处理器名称，默认为空表示默认运行时处理器 */
-  name?: string
-  /** 支持的特性，+optional */
-  features?: NodeRuntimeHandlerFeatures
-}
-
-/**
- * 运行时处理器实现的特性集合
- */
-export interface NodeRuntimeHandlerFeatures {
-  /** 是否支持递归只读挂载 */
-  recursiveReadOnlyMounts?: boolean
-  /** 是否支持用户命名空间（含卷） */
-  userNamespaces?: boolean
-}
-
-/**
- * CRI 实现所支持的特性集合（仅依赖 CRI 实现，独立于运行时处理器）
- */
-export interface NodeFeatures {
-  /** 运行时是否支持 SupplementalGroupsPolicy 与 ContainerUser，+featureGate=SupplementalGroupsPolicy */
-  supplementalGroupsPolicy?: boolean
-}
-
-/**
  * Node.Spec.ConfigSource 所分配配置的状态
  */
 export interface NodeConfigStatus {
@@ -233,4 +194,32 @@ export interface ConfigMapNodeConfigSource {
   resourceVersion?: string
   /** 被引用 ConfigMap 中对应 KubeletConfiguration 结构的键名，必填 */
   kubeletConfigKey: string
+}
+
+/**
+ * 运行时处理器信息集合
+ */
+export interface NodeRuntimeHandler {
+  /** 运行时处理器名称，默认为空表示默认运行时处理器 */
+  name?: string
+  /** 支持的特性，+optional */
+  features?: NodeRuntimeHandlerFeatures
+}
+
+/**
+ * 运行时处理器实现的特性集合
+ */
+export interface NodeRuntimeHandlerFeatures {
+  /** 是否支持递归只读挂载 */
+  recursiveReadOnlyMounts?: boolean
+  /** 是否支持用户命名空间（含卷） */
+  userNamespaces?: boolean
+}
+
+/**
+ * CRI 实现所支持的特性集合（仅依赖 CRI 实现，独立于运行时处理器）
+ */
+export interface NodeFeatures {
+  /** 运行时是否支持 SupplementalGroupsPolicy 与 ContainerUser，+featureGate=SupplementalGroupsPolicy */
+  supplementalGroupsPolicy?: boolean
 }

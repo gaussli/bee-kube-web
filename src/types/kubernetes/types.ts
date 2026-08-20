@@ -3,16 +3,26 @@
  * @module types/kubernetes/types
  */
 
-import type { HostPathType, LabelSelectorOperator, QuantityUnit } from '@/config/kubernetes/core'
+import type { LabelSelectorOperator, QuantityUnit } from '@/config/kubernetes/core'
 
 /**
- * 基础原数据
+ * 集群归属信息
  */
-export interface Metadata {
-  /** 标签，用于组织与筛选资源 */
-  labels: Record<string, string>
-  /** 注解，用于存储非查询类元数据 */
-  annotations: Record<string, string>
+export interface Clustered {
+  /** 所属集群的 UID */
+  clusterUid: string
+  /** 所属集群的名称 */
+  cluster: string
+}
+
+/**
+ * 命名空间归属信息
+ */
+export interface Namespaced {
+  /** 所属命名空间的 UID */
+  namespaceUid: string
+  /** 所属命名空间的名称 */
+  namespace: string
 }
 
 /**
@@ -23,6 +33,16 @@ export interface KindMeta {
   kind: string
   /** 资源版本，对象表示形式的版本化 schema */
   apiVersion: string
+}
+
+/**
+ * 基础原数据
+ */
+export interface Metadata {
+  /** 标签，用于组织与筛选资源 */
+  labels: Record<string, string>
+  /** 注解，用于存储非查询类元数据 */
+  annotations: Record<string, string>
 }
 
 /**
@@ -70,23 +90,63 @@ export interface ObjectReference {
 }
 
 /**
- * 集群归属信息
+ * 标签选择器
+ * 通过标签匹配一组资源对象，支持精确标签与表达式两种匹配方式（逻辑与关系）
  */
-export interface Clustered {
-  /** 所属集群的 UID */
-  clusterUid: string
-  /** 所属集群的名称 */
-  cluster: string
+export interface LabelSelector {
+  /** 键值对，资源须同时具备所有标签且值相等才匹配 */
+  matchLabels?: Record<string, string>
+  /** 标签表达式匹配列表，与 matchLabels 取逻辑与 */
+  matchExpressions?: LabelSelectorRequirement[]
 }
 
 /**
- * 命名空间归属信息
+ * 标签表达式匹配项
+ * 用于 LabelSelector.matchExpressions，描述单条标签匹配规则
  */
-export interface Namespaced {
-  /** 所属命名空间的 UID */
-  namespaceUid: string
-  /** 所属命名空间的名称 */
-  namespace: string
+export interface LabelSelectorRequirement {
+  /** 标签键 */
+  key: string
+  /** 标签表达式运算符，In/NotIn 需配合 values */
+  operator: LabelSelectorOperator
+  /** 匹配值列表，operator 为 Exists / DoesNotExist 时忽略 */
+  values?: string[]
+}
+
+/**
+ * 类型化对象引用（可跨命名空间），指向数据源对象。
+ */
+export interface TypedObjectReference {
+  /** 被引用对象所属 API 组；不指定时 Kind 须属于 core API 组；第三方类型必填 */
+  apiGroup?: string
+  /** 被引用对象的类型（Kind） */
+  kind: string
+  /** 被引用对象的名称 */
+  name: string
+  /** 被引用对象所在命名空间 */
+  namespace?: string
+}
+
+/**
+ * 同命名空间内类型化对象引用
+ * 指向数据源或后端等目标对象
+ */
+export interface TypedLocalObjectReference {
+  /** 被引用对象所属 API 组；不指定时 Kind 须属于 core API 组；第三方类型必填 */
+  apiGroup?: string
+  /** 被引用对象的类型（Kind） */
+  kind: string
+  /** 被引用对象的名称 */
+  name: string
+}
+
+/**
+ * 同命名空间内对象引用
+ * 仅通过名称引用目标对象
+ */
+export interface LocalObjectReference {
+  /** 被引用对象的名称 */
+  name: string
 }
 
 /**
@@ -116,74 +176,4 @@ export interface Condition<T extends string = string> {
   reason?: string
   /** 状态转移的可读说明 */
   message?: string
-}
-
-/**
- * 标签表达式匹配项
- * 用于 LabelSelector.matchExpressions，描述单条标签匹配规则
- */
-export interface LabelSelectorRequirement {
-  /** 标签键 */
-  key: string
-  /** 标签表达式运算符，In/NotIn 需配合 values */
-  operator: LabelSelectorOperator
-  /** 匹配值列表，operator 为 Exists / DoesNotExist 时忽略 */
-  values?: string[]
-}
-
-/**
- * 标签选择器
- * 通过标签匹配一组资源对象，支持精确标签与表达式两种匹配方式（逻辑与关系）
- */
-export interface LabelSelector {
-  /** 键值对，资源须同时具备所有标签且值相等才匹配 */
-  matchLabels?: Record<string, string>
-  /** 标签表达式匹配列表，与 matchLabels 取逻辑与 */
-  matchExpressions?: LabelSelectorRequirement[]
-}
-
-/**
- * 同命名空间内类型化对象引用
- * 指向数据源或后端等目标对象
- */
-export interface TypedLocalObjectReference {
-  /** 被引用对象所属 API 组；不指定时 Kind 须属于 core API 组；第三方类型必填 */
-  apiGroup?: string
-  /** 被引用对象的类型（Kind） */
-  kind: string
-  /** 被引用对象的名称 */
-  name: string
-}
-
-/**
- * 同命名空间内对象引用
- * 仅通过名称引用目标对象
- */
-export interface LocalObjectReference {
-  /** 被引用对象的名称 */
-  name: string
-}
-
-/**
- * 宿主机路径存储来源
- * 将宿主机上已存在的路径挂载为卷
- */
-export interface HostPathVolumeSource {
-  /** 宿主机上的目录或文件路径，若为软链接则跟随至真实路径 */
-  path: string
-  /** HostPath 类型，默认为空即不检查 */
-  type?: HostPathType
-}
-
-/**
- * NFS 网络存储来源
- * 挂载 NFS 服务器导出的路径
- */
-export interface NFSVolumeSource {
-  /** NFS 服务器地址或主机名 */
-  server: string
-  /** NFS 服务器导出的路径 */
-  path: string
-  /** 是否只读挂载，默认 false */
-  readOnly?: boolean
 }
