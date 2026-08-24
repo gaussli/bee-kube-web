@@ -35,7 +35,7 @@ export interface SecretListVo extends UidEntity, Clustered, Namespaced, AuditEnt
   /** Secret 类型 */
   type: SecretType
   /** 配置项数量 */
-  dataCount?: number
+  dataCount: number
 }
 
 /**

@@ -56,7 +56,7 @@ export interface ClusterRoleBindingYamlVo {
  */
 export interface ClusterRoleBindingCreateForm extends ObjectMetaCreatableForm, ClusterRoleBinding {
   /** ClusterRoleBinding 描述 */
-  description?: string
+  description: string
 }
 
 /**
@@ -64,5 +64,5 @@ export interface ClusterRoleBindingCreateForm extends ObjectMetaCreatableForm, C
  */
 export interface ClusterRoleBindingUpdateForm extends ObjectMetaEditableForm, ClusterRoleBinding {
   /** ClusterRoleBinding 描述 */
-  description?: string
+  description: string
 }

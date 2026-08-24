@@ -5,7 +5,9 @@
 
 import type { AuditEntity, DeletableEntity, PageForm, UidEntity } from '@/types/common'
 
+import type { ObjectMetaCreatableForm, ObjectMetaEditableForm } from '../../common'
 import type { Clustered, Namespaced, ObjectMeta } from '../../types'
+
 import type { ServiceAccount } from './types'
 
 /**
@@ -29,21 +31,16 @@ export interface ServiceAccountListVo extends UidEntity, Clustered, Namespaced, 
   /** 关联的 Secret 数量 */
   secretCount: number
   /** 是否自动挂载 Token */
-  automountServiceAccountToken?: boolean
+  automountServiceAccountToken: boolean
 }
 
 /**
  * ServiceAccount 详情响应对象
  */
-export interface ServiceAccountDetailVo extends UidEntity, Clustered, Namespaced, AuditEntity, DeletableEntity, ObjectMeta {
+export interface ServiceAccountDetailVo
+  extends UidEntity, Clustered, Namespaced, AuditEntity, DeletableEntity, ObjectMeta, ServiceAccount {
   /** ServiceAccount 描述 */
   description?: string
-  /** 关联的 Secret 列表 */
-  secrets?: ServiceAccount['secrets']
-  /** 镜像拉取 Secret 列表 */
-  imagePullSecrets?: ServiceAccount['imagePullSecrets']
-  /** 是否自动挂载 Token */
-  automountServiceAccountToken?: boolean
 }
 
 /**
@@ -57,27 +54,15 @@ export interface ServiceAccountYamlVo {
 /**
  * ServiceAccount 创建请求对象
  */
-export interface ServiceAccountCreateForm {
-  /** ServiceAccount 名称 */
-  name: string
-  /** 所属命名空间 */
-  namespace: string
+export interface ServiceAccountCreateForm extends ObjectMetaCreatableForm, ServiceAccount {
   /** ServiceAccount 描述 */
   description?: string
-  /** 镜像拉取 Secret 名称列表 */
-  imagePullSecretNames?: string[]
-  /** 是否自动挂载 Token */
-  automountServiceAccountToken?: boolean
 }
 
 /**
  * ServiceAccount 更新请求对象
  */
-export interface ServiceAccountUpdateForm {
+export interface ServiceAccountUpdateForm extends ObjectMetaEditableForm, ServiceAccount {
   /** ServiceAccount 描述 */
-  description?: string
-  /** 镜像拉取 Secret 名称列表 */
-  imagePullSecretNames?: string[]
-  /** 是否自动挂载 Token */
-  automountServiceAccountToken?: boolean
+  description: string
 }

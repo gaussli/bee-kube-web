@@ -58,7 +58,7 @@ export interface RoleBindingYamlVo {
  */
 export interface RoleBindingCreateForm extends ObjectMetaCreatableForm, RoleBinding {
   /** RoleBinding 描述 */
-  description?: string
+  description: string
 }
 
 /**
@@ -66,5 +66,5 @@ export interface RoleBindingCreateForm extends ObjectMetaCreatableForm, RoleBind
  */
 export interface RoleBindingUpdateForm extends ObjectMetaEditableForm, RoleBinding {
   /** RoleBinding 描述 */
-  description?: string
+  description: string
 }

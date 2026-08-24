@@ -29,7 +29,7 @@ export interface ConfigMapListVo extends UidEntity, Clustered, Namespaced, Audit
   /** ConfigMap 描述 */
   description?: string
   /** 配置项数量 */
-  dataCount?: number
+  dataCount: number
 }
 
 /**
