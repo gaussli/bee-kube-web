@@ -7,7 +7,7 @@ import type {
   PodManagementPolicyType,
   StatefulSetConditionType,
   StatefulSetUpdateStrategyType,
-} from '@/config/kubernetes/workload'
+} from '@/config/kubernetes/workload/statefulset'
 
 import type { Condition, LabelSelector, ObjectMeta } from '../../types'
 import type { PodTemplateSpec } from '../types'

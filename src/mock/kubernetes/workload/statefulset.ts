@@ -7,6 +7,7 @@ import type { AxiosProgressEvent } from 'axios'
 import type { PageVo } from '@/types/common'
 import type { MetadataAnnotationForm, MetadataLabelForm } from '@/types/kubernetes/common'
 import type { EventListVo, EventQueryForm } from '@/types/kubernetes/event'
+import type { PodListVo, PodQueryForm } from '@/types/kubernetes/pod'
 import type {
   StatefulSetCreateForm,
   StatefulSetDetailVo,
@@ -16,8 +17,6 @@ import type {
   StatefulSetMonitorVo,
   StatefulSetNetworkVo,
   StatefulSetPartitionForm,
-  StatefulSetPodListVo,
-  StatefulSetPodQueryForm,
   StatefulSetQueryForm,
   StatefulSetRollbackForm,
   StatefulSetScaleForm,
@@ -97,8 +96,8 @@ function getStatefulSetPodListMock(
   clusterUid: string,
   namespace: string,
   name: string,
-  query: Partial<StatefulSetPodQueryForm>,
-): PageVo<StatefulSetPodListVo> {
+  query: Partial<PodQueryForm>,
+): PageVo<PodListVo> {
   console.log('[Mock] getStatefulSetPodList', clusterUid, namespace, name, query)
   const filtered = statefulSetMockPods.filter(pod => !query.status || pod.status === query.status)
   const filteredUid = query.uid ? filtered.filter(pod => pod.uid === query.uid) : []
@@ -171,7 +170,7 @@ function getStatefulSetEventListMock(
   console.log('[Mock] getStatefulSetEventList', clusterUid, namespace, name, query)
   const matched = statefulSetMockEvents.filter(e => {
     if (query.type && e.type !== query.type) return false
-    if (query.reason && !e.reason.includes(query.reason as string)) return false
+    if (query.reason && !(e.reason ?? '').includes(query.reason as string)) return false
     if (query.note && !(e.note ?? '').includes(query.note as string)) return false
     if (query.regarding?.name && !(e.regarding?.name ?? '').includes(query.regarding.name as string)) return false
     return true
@@ -425,7 +424,7 @@ export default [
   {
     method: 'get',
     url: '/kubernetes/clusters/:clusterUid/namespaces/:namespace/statefulsets/:name/pods',
-    handler: (ctx: { pathParams: Record<string, string>; params: Partial<StatefulSetPodQueryForm> }) =>
+    handler: (ctx: { pathParams: Record<string, string>; params: Partial<PodQueryForm> }) =>
       getStatefulSetPodListMock(ctx.pathParams.clusterUid, ctx.pathParams.namespace, ctx.pathParams.name, ctx.params),
   },
   {

@@ -3,7 +3,7 @@
  * @module types/kubernetes/workload/daemonset/types
  */
 
-import type { DaemonSetConditionType, DaemonSetUpdateStrategyType } from '@/config/kubernetes/workload'
+import type { DaemonSetConditionType, DaemonSetUpdateStrategyType } from '@/config/kubernetes/workload/daemonset'
 
 import type { Condition, LabelSelector } from '../../types'
 import type { PodTemplateSpec } from '../types'

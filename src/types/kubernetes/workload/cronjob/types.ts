@@ -3,7 +3,7 @@
  * @module types/kubernetes/workload/cronjob/types
  */
 
-import type { ConcurrencyPolicy, CronJobConditionType } from '@/config/kubernetes/workload'
+import type { ConcurrencyPolicy, CronJobConditionType } from '@/config/kubernetes/workload/cronjob'
 
 import type { Condition, Metadata } from '../../types'
 import type { JobSpec } from '../job/types'

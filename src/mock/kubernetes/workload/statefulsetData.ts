@@ -3,12 +3,12 @@
  * @module mock/kubernetes/workload/statefulsetData
  */
 import type { EventListVo } from '@/types/kubernetes/event'
+import type { PodListVo } from '@/types/kubernetes/pod'
 import type {
   StatefulSetDetailVo,
   StatefulSetHistoryRevisionListVo,
   StatefulSetListVo,
   StatefulSetNetworkVo,
-  StatefulSetPodListVo,
   StatefulSetYamlVo,
 } from '@/types/kubernetes/workload/statefulset'
 
@@ -28,7 +28,6 @@ export const statefulSetMockData: StatefulSetListVo[] = [
     statusMsg: '所有副本已就绪',
     replicas: 3,
     readyReplicas: 3,
-    currentReplicas: 3,
     updateStrategyType: 'RollingUpdate',
     createAt: '2024-01-15 10:30:00',
     createBy: 'admin',
@@ -48,7 +47,6 @@ export const statefulSetMockData: StatefulSetListVo[] = [
     statusMsg: '所有副本已就绪',
     replicas: 6,
     readyReplicas: 6,
-    currentReplicas: 6,
     updateStrategyType: 'RollingUpdate',
     createAt: '2024-01-16 09:15:00',
     createBy: 'admin',
@@ -68,7 +66,6 @@ export const statefulSetMockData: StatefulSetListVo[] = [
     statusMsg: '等待 Pod 调度',
     replicas: 2,
     readyReplicas: 1,
-    currentReplicas: 1,
     updateStrategyType: 'OnDelete',
     createAt: '2024-01-17 16:45:00',
     createBy: 'admin',
@@ -88,7 +85,6 @@ export const statefulSetMockData: StatefulSetListVo[] = [
     statusMsg: 'StorageClass 不存在',
     replicas: 3,
     readyReplicas: 0,
-    currentReplicas: 0,
     updateStrategyType: 'RollingUpdate',
     createAt: '2024-01-18 13:20:00',
     createBy: 'admin',
@@ -108,7 +104,6 @@ export const statefulSetMockData: StatefulSetListVo[] = [
     statusMsg: '所有副本已就绪',
     replicas: 3,
     readyReplicas: 3,
-    currentReplicas: 3,
     updateStrategyType: 'RollingUpdate',
     createAt: '2024-01-19 11:05:00',
     createBy: 'admin',
@@ -131,31 +126,48 @@ export const statefulSetMockDetail: StatefulSetDetailVo = {
   description: 'MySQL 有状态服务',
   status: 'Running',
   statusMsg: '所有副本已就绪',
-  metadata: {
-    name: 'mysql-sts',
-    namespace: 'default',
-    uid: 'sts-001',
-    resourceVersion: '1',
-    generation: 1,
-    deletionTimestamp: '',
-    ownerReferences: [],
-    finalizers: [],
-    labels: { 'app.kubernetes.io/name': 'mysql-sts' },
-    annotations: {},
-  },
+  name: 'mysql-sts',
+  resourceVersion: '1',
+  generation: 1,
+  deletionTimestamp: '',
+  ownerReferences: [],
+  finalizers: [],
+  labels: { 'app.kubernetes.io/name': 'mysql-sts' },
+  annotations: {},
   spec: {
     replicas: 3,
     serviceName: 'mysql-sts-service',
     selector: { matchLabels: { 'app.kubernetes.io/name': 'mysql-sts' }, matchExpressions: [] },
     podManagementPolicy: 'OrderedReady',
-    updateStrategy: { type: 'RollingUpdate', rollingUpdate: {} },
+    updateStrategy: {
+      type: 'RollingUpdate',
+      rollingUpdate: {
+        maxUnavailable: '1',
+        maxSurge: '1',
+      },
+    },
     minReadySeconds: 0,
     revisionHistoryLimit: 10,
     template: {
       metadata: { labels: { 'app.kubernetes.io/name': 'mysql-sts' }, annotations: {} },
       spec: {} as never,
     },
-    volumeClaimTemplates: [{ name: 'data', accessModes: ['ReadWriteOnce'], capacity: { value: 10, unit: 'Gi' } }],
+    volumeClaimTemplates: [
+      {
+        metadata: {
+          name: 'data',
+          namespace: 'default',
+          uid: 'sts-pvc-001',
+          resourceVersion: '1',
+          generation: 1,
+          deletionTimestamp: '',
+          ownerReferences: [],
+          finalizers: [],
+          labels: { 'app.kubernetes.io/name': 'mysql-sts' },
+          annotations: {},
+        },
+      },
+    ],
   },
   statusObj: {
     observedGeneration: 1,
@@ -205,9 +217,13 @@ spec:
  * StatefulSet 关联 Pod 模拟数据
  * @remarks 对应 StatefulSetPodListVo
  */
-export const statefulSetMockPods: StatefulSetPodListVo[] = [
+export const statefulSetMockPods: PodListVo[] = [
   {
     uid: generateId(),
+    clusterUid: 'cluster-001',
+    cluster: 'system-cluster',
+    namespaceUid: 'ns-default',
+    namespace: 'default',
     name: 'mysql-sts-pod-1',
     ip: '10.244.1.10',
     status: 'Running',
@@ -217,6 +233,23 @@ export const statefulSetMockPods: StatefulSetPodListVo[] = [
     nodeName: 'node-1',
     readyContainerCount: 2,
     containerCount: 2,
+    resource: {
+      request: {
+        cpu: { value: 500, unit: 'm' },
+        memory: { value: 512, unit: 'Mi' },
+      },
+      limit: {
+        cpu: { value: 1000, unit: 'm' },
+        memory: { value: 1, unit: 'Gi' },
+      },
+      usage: {
+        'cpu': { value: 320, unit: 'm' },
+        'memory': { value: 400, unit: 'Mi' },
+        'storage': { value: 0, unit: 'Mi' },
+        'ephemeral-storage': { value: 0, unit: 'Mi' },
+        'pods': { value: 1, unit: '' },
+      },
+    },
     createAt: '2024-01-15 10:30:00',
     createBy: 'system',
     updateAt: '2024-01-15 10:30:00',
@@ -224,6 +257,10 @@ export const statefulSetMockPods: StatefulSetPodListVo[] = [
   },
   {
     uid: generateId(),
+    clusterUid: 'cluster-001',
+    cluster: 'system-cluster',
+    namespaceUid: 'ns-default',
+    namespace: 'default',
     name: 'mysql-sts-pod-2',
     ip: '10.244.2.11',
     status: 'Running',
@@ -233,6 +270,23 @@ export const statefulSetMockPods: StatefulSetPodListVo[] = [
     nodeName: 'node-2',
     readyContainerCount: 2,
     containerCount: 2,
+    resource: {
+      request: {
+        cpu: { value: 500, unit: 'm' },
+        memory: { value: 512, unit: 'Mi' },
+      },
+      limit: {
+        cpu: { value: 1000, unit: 'm' },
+        memory: { value: 1, unit: 'Gi' },
+      },
+      usage: {
+        'cpu': { value: 300, unit: 'm' },
+        'memory': { value: 420, unit: 'Mi' },
+        'storage': { value: 0, unit: 'Mi' },
+        'ephemeral-storage': { value: 0, unit: 'Mi' },
+        'pods': { value: 1, unit: '' },
+      },
+    },
     createAt: '2024-01-15 10:30:00',
     createBy: 'system',
     updateAt: '2024-01-15 10:30:00',
@@ -240,6 +294,10 @@ export const statefulSetMockPods: StatefulSetPodListVo[] = [
   },
   {
     uid: generateId(),
+    clusterUid: 'cluster-001',
+    cluster: 'system-cluster',
+    namespaceUid: 'ns-default',
+    namespace: 'default',
     name: 'mysql-sts-pod-3',
     ip: '10.244.3.12',
     status: 'Running',
@@ -249,6 +307,23 @@ export const statefulSetMockPods: StatefulSetPodListVo[] = [
     nodeName: 'node-3',
     readyContainerCount: 2,
     containerCount: 2,
+    resource: {
+      request: {
+        cpu: { value: 500, unit: 'm' },
+        memory: { value: 512, unit: 'Mi' },
+      },
+      limit: {
+        cpu: { value: 1000, unit: 'm' },
+        memory: { value: 1, unit: 'Gi' },
+      },
+      usage: {
+        'cpu': { value: 310, unit: 'm' },
+        'memory': { value: 410, unit: 'Mi' },
+        'storage': { value: 0, unit: 'Mi' },
+        'ephemeral-storage': { value: 0, unit: 'Mi' },
+        'pods': { value: 1, unit: '' },
+      },
+    },
     createAt: '2024-01-15 10:30:00',
     createBy: 'system',
     updateAt: '2024-01-15 10:30:00',
@@ -294,6 +369,9 @@ export const statefulSetMockNetwork: StatefulSetNetworkVo = {
       name: 'mysql-sts-ingress',
       description: 'StatefulSet 入口',
       ingressClassName: 'nginx',
+      defaultBackendService: 'mysql-sts-service',
+      ruleCount: 1,
+      tlsCount: 0,
       createAt: '2024-01-15 10:30:00',
       createBy: 'admin',
       updateAt: '2024-01-15 10:30:00',

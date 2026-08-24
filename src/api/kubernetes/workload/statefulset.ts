@@ -8,6 +8,7 @@ import type { AxiosProgressEvent } from 'axios'
 import type { PageVo } from '@/types/common'
 import type { MetadataAnnotationForm, MetadataLabelForm } from '@/types/kubernetes/common'
 import type { EventListVo, EventQueryForm } from '@/types/kubernetes/event'
+import type { PodListVo, PodQueryForm } from '@/types/kubernetes/pod'
 import type {
   StatefulSetCreateForm,
   StatefulSetDetailVo,
@@ -17,8 +18,6 @@ import type {
   StatefulSetMonitorVo,
   StatefulSetNetworkVo,
   StatefulSetPartitionForm,
-  StatefulSetPodListVo,
-  StatefulSetPodQueryForm,
   StatefulSetQueryForm,
   StatefulSetRollbackForm,
   StatefulSetScaleForm,
@@ -76,9 +75,9 @@ export function getStatefulSetPodList(
   clusterUid: string,
   namespace: string,
   name: string,
-  params: Partial<StatefulSetPodQueryForm>,
+  params: Partial<PodQueryForm>,
 ) {
-  return request.get<PageVo<StatefulSetPodListVo>>(
+  return request.get<PageVo<PodListVo>>(
     `/kubernetes/clusters/${clusterUid}/namespaces/${namespace}/statefulsets/${name}/pods`,
     { params },
   )
@@ -167,7 +166,9 @@ export function createStatefulSet(clusterUid: string, data: Partial<StatefulSetC
  * @returns void
  */
 export function createStatefulSetYaml(clusterUid: string, yaml: string) {
-  return request.post<void>(`/kubernetes/clusters/${clusterUid}/statefulsets/yaml`, yaml)
+  return request.post<void>(`/kubernetes/clusters/${clusterUid}/statefulsets/yaml`, yaml, {
+    headers: { 'Content-Type': 'application/yaml' },
+  })
 }
 
 /**
@@ -196,7 +197,13 @@ export function updateStatefulSet(
  * @returns void
  */
 export function updateStatefulSetYaml(clusterUid: string, namespace: string, name: string, yaml: string) {
-  return request.put<void>(`/kubernetes/clusters/${clusterUid}/namespaces/${namespace}/statefulsets/${name}/yaml`, yaml)
+  return request.put<void>(
+    `/kubernetes/clusters/${clusterUid}/namespaces/${namespace}/statefulsets/${name}/yaml`,
+    yaml,
+    {
+      headers: { 'Content-Type': 'application/yaml' },
+    },
+  )
 }
 
 /**
