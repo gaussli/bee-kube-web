@@ -7,22 +7,42 @@ import type { AuditEntity, DeletableEntity, UidEntity } from '@/types/common'
 
 import type { ResourceQuotaSpec, ResourceQuotaStatusObj } from './types'
 
+/**
+ * Namespace ResourceQuota 详情视图对象
+ */
 export interface NamespaceResourceQuotaDetailVo extends UidEntity, AuditEntity, DeletableEntity {
+  /** 描述信息 */
   description?: string
+  /** ResourceQuota 资源配额规格 */
   spec: ResourceQuotaSpec
+  /** ResourceQuota 资源配额使用状态 */
   status: ResourceQuotaStatusObj
 }
 
+/**
+ * Namespace ResourceQuota YAML 响应对象
+ */
 export interface NamespaceResourceQuotaYamlVo {
+  /** ResourceQuota 完整 YAML 文本 */
   yaml: string
 }
 
+/**
+ * Namespace ResourceQuota 创建请求对象
+ */
 export interface NamespaceResourceQuotaCreateForm {
-  description?: string
+  /** 描述信息 */
+  description: string
+  /** ResourceQuota 资源配额规格 */
   spec: ResourceQuotaSpec
 }
 
+/**
+ * Namespace ResourceQuota 更新请求对象
+ */
 export interface NamespaceResourceQuotaUpdateForm {
-  description?: string
+  /** 描述信息 */
+  description: string
+  /** ResourceQuota 资源配额规格 */
   spec: ResourceQuotaSpec
 }

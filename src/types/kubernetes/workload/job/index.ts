@@ -7,6 +7,7 @@ import type { AuditEntity, DeletableEntity, PageForm, UidEntity } from '@/types/
 
 import type { JobStatus } from '@/config/kubernetes/workload/job'
 
+import type { ObjectMetaCreatableForm, ObjectMetaEditableForm } from '../../common'
 import type { Clustered, Namespaced, ObjectMeta } from '../../types'
 
 import type { JobSpec, JobStatusObj } from './types'
@@ -17,7 +18,7 @@ import type { JobSpec, JobStatusObj } from './types'
 export interface JobQueryForm extends UidEntity, PageForm {
   /** Job 名称 */
   name: string
-  /** 命名空间名称 */
+  /** Namespace 名称 */
   namespace: string
   /** Job 状态 */
   status: JobStatus
@@ -29,11 +30,11 @@ export interface JobQueryForm extends UidEntity, PageForm {
 export interface JobListVo extends UidEntity, Clustered, Namespaced, AuditEntity, DeletableEntity {
   /** Job 名称 */
   name: string
-  /** 描述 */
+  /** Job 描述 */
   description?: string
-  /** 状态 */
+  /** Job 状态 */
   status: JobStatus
-  /** 状态信息 */
+  /** Job 状态信息 */
   statusMsg?: string
   /** 运行中的 Pod 数 */
   active: number
@@ -51,43 +52,47 @@ export interface JobListVo extends UidEntity, Clustered, Namespaced, AuditEntity
  * Job 详情响应对象
  */
 export interface JobDetailVo extends UidEntity, Clustered, Namespaced, AuditEntity, DeletableEntity, ObjectMeta {
-  /** 描述信息 */
+  /** Job 描述 */
   description?: string
-  /** 状态标签 */
+  /** Job 状态 */
   status: JobStatus
-  /** 状态信息 */
+  /** Job 状态信息 */
   statusMsg?: string
-  /** Job 的规格定义 */
+  /** Job Spec */
   spec: JobSpec
-  /** Job 的观测状态 */
+  /** Job Status */
   statusObj: JobStatusObj
 }
 
-/** Job YAML 响应对象 */
+/**
+ * Job YAML 响应对象
+ */
 export interface JobYamlVo {
-  /** Job 的完整 YAML 文本 */
+  /** Job 完整 YAML 文本 */
   yaml: string
 }
 
-/** Job 监控响应对象 */
+/**
+ * Job 监控响应对象
+ */
 export interface JobMonitorVo {}
 
-/** Job 创建请求对象 */
-export interface JobCreateForm {
+/**
+ * Job 创建请求对象
+ */
+export interface JobCreateForm extends ObjectMetaCreatableForm {
   /** Job 描述 */
-  description?: string
-  /** Job 的资源元数据 */
-  metadata: ObjectMeta
-  /** Job 的规格定义 */
+  description: string
+  /** Job Spec */
   spec: JobSpec
 }
 
-/** Job 更新请求对象 */
-export interface JobUpdateForm {
+/**
+ * Job 更新请求对象
+ */
+export interface JobUpdateForm extends ObjectMetaEditableForm {
   /** Job 描述 */
-  description?: string
-  /** Job 的资源元数据 */
-  metadata: ObjectMeta
-  /** Job 的规格定义 */
+  description: string
+  /** Job Spec */
   spec: JobSpec
 }

@@ -9,6 +9,7 @@ import type { PersistentVolumeAccessMode } from '@/config/kubernetes/core'
 import type { PersistentVolumeMode } from '@/config/kubernetes/storage/persistentvolume'
 import type { PersistentVolumeClaimPhase } from '@/config/kubernetes/storage/persistentvolumeclaim'
 
+import type { ObjectMetaCreatableForm, ObjectMetaEditableForm } from '../../common'
 import type { Clustered, Namespaced, ObjectMeta, Quantity } from '../../types'
 
 import type { PersistentVolumeClaimSpec, PersistentVolumeClaimStatusObj } from './types'
@@ -17,12 +18,14 @@ import type { PersistentVolumeClaimSpec, PersistentVolumeClaimStatusObj } from '
  * PersistentVolumeClaim 查询条件请求对象
  */
 export interface PersistentVolumeClaimQueryForm extends UidEntity, PageForm {
-  /** PersistentVolumeClaim 名称（模糊匹配） */
-  name?: string
-  /** 状态 */
-  status?: PersistentVolumeClaimPhase
+  /** PersistentVolumeClaim 名称 */
+  name: string
+  /** Namespace 名称 */
+  namespace: string
+  /** PersistentVolumeClaim 状态 */
+  status: PersistentVolumeClaimPhase
   /** 存储类名 */
-  storageClassName?: string
+  storageClassName: string
 }
 
 /**
@@ -31,11 +34,11 @@ export interface PersistentVolumeClaimQueryForm extends UidEntity, PageForm {
 export interface PersistentVolumeClaimListVo extends UidEntity, Clustered, Namespaced, AuditEntity, DeletableEntity {
   /** PersistentVolumeClaim 名称 */
   name: string
-  /** 描述 */
+  /** PersistentVolumeClaim 描述 */
   description?: string
-  /** 状态 */
+  /** PersistentVolumeClaim 状态 */
   status: PersistentVolumeClaimPhase
-  /** 状态信息 */
+  /** PersistentVolumeClaim 状态信息 */
   statusMsg?: string
   /** 访问模式 */
   accessModes?: PersistentVolumeAccessMode[]
@@ -47,41 +50,51 @@ export interface PersistentVolumeClaimListVo extends UidEntity, Clustered, Names
   volumeName?: string
   /** 请求的存储大小 */
   requestStorage: Quantity
+  /** 实际分配的存储大小 */
   capacityStorage: Quantity
 }
 
+/**
+ * PersistentVolumeClaim 详情视图对象
+ */
 export interface PersistentVolumeClaimDetailVo
   extends UidEntity, Clustered, Namespaced, AuditEntity, DeletableEntity, ObjectMeta {
-  /** 描述 */
+  /** PersistentVolumeClaim 描述 */
   description?: string
-  /** 状态 */
+  /** PersistentVolumeClaim 状态 */
   status: PersistentVolumeClaimPhase
-  /** 状态信息 */
+  /** PersistentVolumeClaim 状态信息 */
   statusMsg?: string
+  /** PersistentVolumeClaim Spec */
   spec: PersistentVolumeClaimSpec
+  /** PersistentVolumeClaim Status */
   statusObj: PersistentVolumeClaimStatusObj
 }
 
-/** PersistentVolumeClaim YAML 响应对象 */
+/**
+ * PersistentVolumeClaim YAML 响应对象
+ */
 export interface PersistentVolumeClaimYamlVo {
   /** PersistentVolumeClaim 完整 YAML 文本 */
   yaml: string
 }
 
-/** PersistentVolumeClaim 创建请求对象 */
-export interface PersistentVolumeClaimCreateForm {
-  /** 描述 */
-  description?: string
-  /** 元数据（含名称、命名空间、标签等） */
-  metadata: ObjectMeta
+/**
+ * PersistentVolumeClaim 创建请求对象
+ */
+export interface PersistentVolumeClaimCreateForm extends ObjectMetaCreatableForm {
+  /** PersistentVolumeClaim 描述 */
+  description: string
+  /** PersistentVolumeClaim Spec */
   spec: PersistentVolumeClaimSpec
 }
 
-/** PersistentVolumeClaim 更新请求对象 */
-export interface PersistentVolumeClaimUpdateForm {
-  /** 描述 */
-  description?: string
-  /** 元数据（含名称、命名空间、标签等） */
-  metadata: ObjectMeta
+/**
+ * PersistentVolumeClaim 更新请求对象
+ */
+export interface PersistentVolumeClaimUpdateForm extends ObjectMetaEditableForm {
+  /** PersistentVolumeClaim 描述 */
+  description: string
+  /** PersistentVolumeClaim Spec */
   spec: PersistentVolumeClaimSpec
 }

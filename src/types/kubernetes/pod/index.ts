@@ -2,7 +2,7 @@
  * Pod 资源页面 ViewObject 及请求对象聚合
  * @module types/kubernetes/pod/index
  */
-import type { AuditEntity, DeletableEntity, PageForm, UidEntity } from '@/types/common'
+import type { AuditEntity, PageForm, UidEntity } from '@/types/common'
 import type { Clustered, Namespaced, ObjectMeta, Quantity } from '@/types/kubernetes/types'
 
 import type { ResourceName } from '@/config/kubernetes/core'
@@ -16,9 +16,12 @@ import type { PodSpec, PodStatusObj } from './types'
 export interface PodQueryForm extends UidEntity, PageForm {
   /** Pod 名称 */
   name: string
-  ip: string
+  /** Namespace 名称 */
+  namespace: string
   /** Pod 状态 */
   status: PodStatus
+  /** Pod IP */
+  ip: string
 }
 
 /**
@@ -27,17 +30,19 @@ export interface PodQueryForm extends UidEntity, PageForm {
 export interface PodListVo extends UidEntity, Clustered, Namespaced, AuditEntity {
   /** Pod 名称 */
   name: string
+  /** Pod 描述 */
+  description?: string
+  /** Pod 状态 */
+  status: PodStatus
+  /** Pod 状态信息 */
+  statusMsg?: string
   /** Pod IP */
   ip: string
-  /** 状态 */
-  status: PodStatus
-  /** 状态描述信息 */
-  statusMsg: string
   /** 重启次数 */
   restarts: number
-  /** 所属节点 IP */
+  /** 所属 Node IP */
   nodeIp: string
-  /** 所属节点名称 */
+  /** 所属 Node 名称 */
   nodeName: string
   /** 就绪容器数量 */
   readyContainerCount: number
@@ -51,16 +56,31 @@ export interface PodListVo extends UidEntity, Clustered, Namespaced, AuditEntity
   }
 }
 
-export interface PodDetailVo extends UidEntity, Clustered, Namespaced, AuditEntity, DeletableEntity, ObjectMeta {
+/**
+ * Pod 详情响应对象
+ */
+export interface PodDetailVo extends UidEntity, Clustered, Namespaced, AuditEntity, ObjectMeta {
+  /** Pod 描述 */
   description?: string
+  /** Pod 状态 */
   status: PodStatus
+  /** Pod 状态信息 */
   statusMsg?: string
+  /** Pod Spec */
   spec: PodSpec
+  /** Pod Status */
   statusObj: PodStatusObj
 }
 
-/** Pod YAML 响应对象 */
+/**
+ * Pod YAML 响应对象
+ */
 export interface PodYamlVo {
   /** Pod 完整 YAML 文本 */
   yaml: string
 }
+
+/**
+ * Pod 监控响应对象
+ */
+export interface PodMonitorVo {}

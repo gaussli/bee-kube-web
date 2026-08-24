@@ -8,6 +8,7 @@ import type { AuditEntity, DeletableEntity, PageForm, UidEntity } from '@/types/
 import type { ServiceType } from '@/config/kubernetes/network/service'
 import type { DeploymentStatus, DeploymentUpdateStrategyType } from '@/config/kubernetes/workload/deployment'
 
+import type { ObjectMetaCreatableForm, ObjectMetaEditableForm } from '../../common'
 import type { Clustered, Namespaced, ObjectMeta } from '../../types'
 import type { HistoryRevision } from '../types'
 
@@ -19,7 +20,7 @@ import type { DeploymentSpec, DeploymentStatusObj } from './types'
 export interface DeploymentQueryForm extends UidEntity, PageForm {
   /** Deployment 名称 */
   name: string
-  /** 命名空间名称 */
+  /** Namespace 名称 */
   namespace: string
   /** Deployment 状态 */
   status: DeploymentStatus
@@ -31,11 +32,11 @@ export interface DeploymentQueryForm extends UidEntity, PageForm {
 export interface DeploymentListVo extends UidEntity, Clustered, Namespaced, AuditEntity, DeletableEntity {
   /** Deployment 名称 */
   name: string
-  /** 描述 */
+  /** Deployment 描述 */
   description?: string
-  /** 状态 */
+  /** Deployment 状态 */
   status: DeploymentStatus
-  /** 状态信息 */
+  /** Deployment 状态信息 */
   statusMsg?: string
   /** 期望副本数 */
   replicas: number
@@ -49,21 +50,23 @@ export interface DeploymentListVo extends UidEntity, Clustered, Namespaced, Audi
  * Deployment 详情响应对象
  */
 export interface DeploymentDetailVo extends UidEntity, Clustered, Namespaced, AuditEntity, DeletableEntity, ObjectMeta {
-  /** 描述信息 */
+  /** Deployment 描述信息 */
   description?: string
-  /** 状态 */
+  /** Deployment 状态 */
   status: DeploymentStatus
-  /** 状态信息 */
+  /** Deployment 状态信息 */
   statusMsg?: string
-  /** Deployment 的规格定义 */
+  /** Deployment Spec */
   spec: DeploymentSpec
-  /** Deployment 的观测状态 */
+  /** Deployment Status */
   statusObj: DeploymentStatusObj
 }
 
-/** Deployment YAML 响应对象 */
+/**
+ * Deployment YAML 响应对象
+ */
 export interface DeploymentYamlVo {
-  /** Deployment 的完整 YAML 文本 */
+  /** Deployment 完整 YAML 文本 */
   yaml: string
 }
 
@@ -99,7 +102,7 @@ export interface DeploymentServiceListVo extends UidEntity, AuditEntity, Deletab
   /** Service 名称 */
   name: string
   /** Service 描述 */
-  description: string
+  description?: string
   /** Service 类型 */
   type: ServiceType
   /** 集群内部 IP */
@@ -117,9 +120,15 @@ export interface DeploymentIngressListVo extends UidEntity, AuditEntity, Deletab
   /** Ingress 名称 */
   name: string
   /** Ingress 描述 */
-  description: string
+  description?: string
   /** Ingress 类名 */
   ingressClassName?: string
+  /** 默认 Service */
+  defaultBackendService: string
+  /** 路由规则数量 */
+  ruleCount: number
+  /** TLS 配置数量 */
+  tlsCount: number
 }
 
 /**
@@ -130,24 +139,20 @@ export interface DeploymentMonitorVo {}
 /**
  * Deployment 创建请求对象
  */
-export interface DeploymentCreateForm {
+export interface DeploymentCreateForm extends ObjectMetaCreatableForm {
   /** Deployment 描述 */
-  description?: string
-  /** Deployment 的资源元数据 */
-  metadata: ObjectMeta
-  /** Deployment 的规格定义 */
+  description: string
+  /** Deployment Spec */
   spec: DeploymentSpec
 }
 
 /**
  * Deployment 更新请求对象
  */
-export interface DeploymentUpdateForm {
+export interface DeploymentUpdateForm extends ObjectMetaEditableForm {
   /** Deployment 描述 */
-  description?: string
-  /** Deployment 的资源元数据 */
-  metadata: ObjectMeta
-  /** Deployment 的规格定义 */
+  description: string
+  /** Deployment Spec */
   spec: DeploymentSpec
 }
 

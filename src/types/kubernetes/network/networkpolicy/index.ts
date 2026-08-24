@@ -7,6 +7,7 @@ import type { AuditEntity, DeletableEntity, PageForm, UidEntity } from '@/types/
 
 import type { PolicyType } from '@/config/kubernetes/network/networkpolicy'
 
+import type { ObjectMetaCreatableForm, ObjectMetaEditableForm } from '../../common'
 import type { Clustered, Namespaced, ObjectMeta } from '../../types'
 
 import type { NetworkPolicySpec } from './types'
@@ -15,8 +16,10 @@ import type { NetworkPolicySpec } from './types'
  * NetworkPolicy 查询条件请求对象
  */
 export interface NetworkPolicyQueryForm extends UidEntity, PageForm {
-  /** NetworkPolicy 名称（模糊匹配） */
-  name?: string
+  /** NetworkPolicy 名称 */
+  name: string
+  /** Namespace 名称 */
+  namespace: string
 }
 
 /**
@@ -25,43 +28,53 @@ export interface NetworkPolicyQueryForm extends UidEntity, PageForm {
 export interface NetworkPolicyListVo extends UidEntity, Clustered, Namespaced, AuditEntity, DeletableEntity {
   /** NetworkPolicy 名称 */
   name: string
-  /** 命名空间名称 */
-  namespace: string
-  /** Pod 数量 */
+  /** NetworkPolicy 描述 */
+  description?: string
+  /** 受策略影响的 Pod 数量 */
   podCount: number
-  /** 策略类型列表 */
+  /** 生效的策略类型 */
   policyTypes?: PolicyType[]
+  /** Ingress 规则数量 */
   ingressCount: number
+  /** Egress 规则数量 */
   egressCount: number
 }
 
+/**
+ * NetworkPolicy 详情视图对象
+ */
 export interface NetworkPolicyDetailVo
   extends UidEntity, Clustered, Namespaced, AuditEntity, DeletableEntity, ObjectMeta {
-  /** 描述信息 */
-  description: string
+  /** NetworkPolicy 描述 */
+  description?: string
+  /** NetworkPolicy Spec */
   spec: NetworkPolicySpec
 }
 
-/** NetworkPolicy YAML 响应对象 */
+/**
+ * NetworkPolicy YAML 响应对象
+ */
 export interface NetworkPolicyYamlVo {
   /** NetworkPolicy 完整 YAML 文本 */
   yaml: string
 }
 
-/** NetworkPolicy 创建请求对象 */
-export interface NetworkPolicyCreateForm {
-  /** 描述信息 */
-  description: string
-  /** 元数据（含名称、命名空间、标签等） */
-  metadata: ObjectMeta
+/**
+ * NetworkPolicy 创建请求对象
+ */
+export interface NetworkPolicyCreateForm extends ObjectMetaCreatableForm {
+  /** NetworkPolicy 描述 */
+  description?: string
+  /** NetworkPolicy Spec */
   spec: NetworkPolicySpec
 }
 
-/** NetworkPolicy 更新请求对象 */
-export interface NetworkPolicyUpdateForm {
-  /** 描述信息 */
-  description: string
-  /** 元数据（含名称、命名空间、标签等） */
-  metadata: ObjectMeta
+/**
+ * NetworkPolicy 更新请求对象
+ */
+export interface NetworkPolicyUpdateForm extends ObjectMetaEditableForm {
+  /** NetworkPolicy 描述 */
+  description?: string
+  /** NetworkPolicy Spec */
   spec: NetworkPolicySpec
 }

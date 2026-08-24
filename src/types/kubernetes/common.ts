@@ -3,6 +3,8 @@
  * @module types/kubernetes/common
  */
 
+import type { Metadata } from './types'
+
 /**
  * 元数据标签配置请求
  * @remarks 用于管理 Kubernetes 资源的 labels 元数据
@@ -24,3 +26,18 @@ export interface MetadataAnnotationForm {
   /** 操作类型：1 新增；2 移除；3 全量替换（传入的键值对将完全覆盖现有数据） */
   operation: number
 }
+
+/**
+ * 可创建的元数据对象
+ */
+export interface ObjectMetaCreatableForm extends Partial<Metadata> {
+  /** 资源名称 */
+  name: string
+  /** 命名空间，默认：default */
+  namespace: string
+}
+
+/**
+ * 可编辑的元数据对象
+ */
+export interface ObjectMetaEditableForm extends Partial<Metadata> {}

@@ -8,6 +8,7 @@ import type { AuditEntity, DeletableEntity, PageForm, UidEntity } from '@/types/
 import type { ServiceType } from '@/config/kubernetes/network/service'
 import type { StatefulSetStatus, StatefulSetUpdateStrategyType } from '@/config/kubernetes/workload/statefulset'
 
+import type { ObjectMetaCreatableForm, ObjectMetaEditableForm } from '../../common'
 import type { Clustered, Namespaced, ObjectMeta } from '../../types'
 import type { HistoryRevision } from '../types'
 
@@ -19,7 +20,7 @@ import type { StatefulSetSpec, StatefulSetStatusObj } from './types'
 export interface StatefulSetQueryForm extends UidEntity, PageForm {
   /** StatefulSet 名称 */
   name: string
-  /** 命名空间名称 */
+  /** Namespace 名称 */
   namespace: string
   /** StatefulSet 状态 */
   status: StatefulSetStatus
@@ -31,18 +32,16 @@ export interface StatefulSetQueryForm extends UidEntity, PageForm {
 export interface StatefulSetListVo extends UidEntity, Clustered, Namespaced, AuditEntity, DeletableEntity {
   /** StatefulSet 名称 */
   name: string
-  /** 描述 */
+  /** StatefulSet 描述 */
   description?: string
-  /** 状态 */
+  /** StatefulSet 状态 */
   status: StatefulSetStatus
-  /** 状态信息 */
+  /** StatefulSet 状态信息 */
   statusMsg?: string
   /** 期望副本数 */
   replicas: number
   /** 就绪副本数 */
   readyReplicas: number
-  /** 当前版本就绪副本数 */
-  currentReplicas: number
   /** 更新策略 */
   updateStrategyType: StatefulSetUpdateStrategyType
 }
@@ -52,21 +51,23 @@ export interface StatefulSetListVo extends UidEntity, Clustered, Namespaced, Aud
  */
 export interface StatefulSetDetailVo
   extends UidEntity, Clustered, Namespaced, AuditEntity, DeletableEntity, ObjectMeta {
-  /** 描述信息 */
+  /** StatefulSet 描述 */
   description?: string
-  /** 状态标签 */
+  /** StatefulSet 状态 */
   status: StatefulSetStatus
-  /** 状态信息 */
+  /** StatefulSet 状态信息 */
   statusMsg?: string
-  /** StatefulSet 的规格定义 */
+  /** StatefulSet Spec */
   spec: StatefulSetSpec
-  /** StatefulSet 的观测状态 */
+  /** StatefulSet Status */
   statusObj: StatefulSetStatusObj
 }
 
-/** StatefulSet YAML 响应对象 */
+/**
+ * StatefulSet YAML 响应对象
+ */
 export interface StatefulSetYamlVo {
-  /** StatefulSet 的完整 YAML 文本 */
+  /** StatefulSet 完整 YAML 文本 */
   yaml: string
 }
 
@@ -102,7 +103,7 @@ export interface StatefulSetServiceListVo extends UidEntity, AuditEntity {
   /** Service 名称 */
   name: string
   /** Service 描述 */
-  description: string
+  description?: string
   /** Service 类型 */
   type: ServiceType
   /** 集群内部 IP */
@@ -120,47 +121,61 @@ export interface StatefulSetIngressListVo extends UidEntity, AuditEntity {
   /** Ingress 名称 */
   name: string
   /** Ingress 描述 */
-  description: string
+  description?: string
   /** Ingress 类名 */
   ingressClassName?: string
+  /** 默认 Service */
+  defaultBackendService: string
+  /** 路由规则数量 */
+  ruleCount: number
+  /** TLS 配置数量 */
+  tlsCount: number
 }
 
-/** StatefulSet 监控响应对象 */
+/**
+ * StatefulSet 监控响应对象
+ */
 export interface StatefulSetMonitorVo {}
 
-/** StatefulSet 创建请求对象 */
-export interface StatefulSetCreateForm {
+/**
+ * StatefulSet 创建请求对象
+ */
+export interface StatefulSetCreateForm extends ObjectMetaCreatableForm {
   /** StatefulSet 描述 */
-  description?: string
-  /** StatefulSet 的资源元数据 */
-  metadata: ObjectMeta
-  /** StatefulSet 的规格定义 */
+  description: string
+  /** StatefulSet Spec */
   spec: StatefulSetSpec
 }
 
-/** StatefulSet 更新请求对象 */
-export interface StatefulSetUpdateForm {
+/**
+ * StatefulSet 更新请求对象
+ */
+export interface StatefulSetUpdateForm extends ObjectMetaEditableForm {
   /** StatefulSet 描述 */
-  description?: string
-  /** StatefulSet 的资源元数据 */
-  metadata: ObjectMeta
-  /** StatefulSet 的规格定义 */
+  description: string
+  /** StatefulSet Spec */
   spec: StatefulSetSpec
 }
 
-/** StatefulSet 扩缩容请求对象 */
+/**
+ * StatefulSet 扩缩容请求对象
+ */
 export interface StatefulSetScaleForm {
   /** 期望副本数 */
   replicas: number
 }
 
-/** StatefulSet 滚动更新分区请求对象 */
+/**
+ * StatefulSet 滚动更新分区请求对象
+ */
 export interface StatefulSetPartitionForm {
   /** 分区序号，序号大于等于该值的 Pod 才会被滚动更新 */
   partition: number
 }
 
-/** StatefulSet 回滚请求对象 */
+/**
+ * StatefulSet 回滚请求对象
+ */
 export interface StatefulSetRollbackForm {
   /** 目标历史版本号 */
   revision: number

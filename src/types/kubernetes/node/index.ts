@@ -13,82 +13,86 @@ import type { Clustered, ObjectMeta, Quantity } from '../types'
 import type { NodeSpec, NodeStatusObj, Taint } from './types'
 
 /**
- * 节点查询条件请求对象
+ * Node 查询条件请求对象
  */
 export interface NodeQueryForm extends UidEntity, PageForm {
-  /** 节点名称（模糊匹配） */
+  /** Node 名称 */
   name: string
+  /** Node 状态 */
+  status: NodeStatus
   /** IP 地址 */
   ip: string
-  /** 状态 */
-  status: NodeStatus
 }
 
 /**
- * 节点列表项响应对象
+ * Node 列表项响应对象
  */
 export interface NodeListVo extends UidEntity, Clustered, AuditEntity, DeletableEntity {
-  /** 节点名称 */
+  /** Node 名称 */
   name: string
-  /** 描述信息 */
+  /** Node 描述 */
   description?: string
-  /** 状态 */
+  /** Node 状态 */
   status: NodeStatus
-  /** 状态描述信息 */
+  /** Node 状态信息 */
   statusMsg?: string
   /** IP 地址 */
   ip: string
   /** 是否不可调度 */
   unschedulable: boolean
-  /** 节点资源 */
+  /** Node 资源 */
   resource: {
-    /** 物理容量（节点/集群的总硬件资源） */
+    /** 物理容量（Node 总硬件资源） */
     capacity: Record<ResourceName, Quantity>
     /** Kubernetes 可分配容量（物理容量减去操作系统等系统预留资源） */
     allocation: Record<ResourceName, Quantity>
     /** 资源已用量 */
     usage: Record<ResourceName, Quantity>
   }
-  /** 节点上运行的 Pod 数量 */
+  /** Node 的 Pod 数量 */
   podCount: number
   /** Kubelet 版本 */
   kubeletVersion: string
 }
 
 /**
- * 节点详情响应对象
+ * Node 详情响应对象
  */
-export interface NodeDetail extends UidEntity, Clustered, AuditEntity, DeletableEntity, ObjectMeta {
-  /** 描述信息 */
+export interface NodeDetailVo extends UidEntity, Clustered, AuditEntity, DeletableEntity, ObjectMeta {
+  /** Node 描述 */
   description?: string
-  /** 状态 */
+  /** Node 状态 */
   status: NodeStatus
-  /** 状态描述信息 */
+  /** Node 状态信息 */
   statusMsg?: string
+  /** Node Spec */
   spec: NodeSpec
+  /** Node Status */
   statusObj: NodeStatusObj
 }
 
-/** 节点 YAML 响应对象 */
+/**
+ * Node YAML 响应对象
+ */
 export interface NodeYamlVo {
-  /** 节点完整 YAML 文本 */
+  /** Node 完整 YAML 文本 */
   yaml: string
 }
 
 /**
- * 节点监控响应对象
+ * Node 监控响应对象
  */
 export interface NodeMonitorVo {}
 
 /**
- * 节点封锁请求对象
+ * Node 隔离请求对象
  */
 export interface NodeCordonForm {
   cordon: boolean
 }
 
 /**
- * 节点拓扑配置请求对象
+ * Node 拓扑配置请求对象
  */
 export interface NodeTopologiesForm {
   /** 拓扑键值对 */
@@ -98,7 +102,7 @@ export interface NodeTopologiesForm {
 }
 
 /**
- * 节点污点配置请求对象
+ * Node 污点配置请求对象
  */
 export interface NodeTaintsForm {
   /** 污点配置列表 */

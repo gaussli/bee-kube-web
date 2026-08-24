@@ -12,6 +12,7 @@ import type {
   PersistentVolumeReclaimPolicy,
 } from '@/config/kubernetes/storage/persistentvolume'
 
+import type { ObjectMetaCreatableForm, ObjectMetaEditableForm } from '../../common'
 import type { Clustered, ObjectMeta } from '../../types'
 
 import type { PersistentVolumeSpec, PersistentVolumeStatusObj } from './types'
@@ -20,12 +21,12 @@ import type { PersistentVolumeSpec, PersistentVolumeStatusObj } from './types'
  * PersistentVolume 查询条件请求对象
  */
 export interface PersistentVolumeQueryForm extends UidEntity, PageForm {
-  /** PersistentVolume 名称（模糊匹配） */
-  name?: string
-  /** 状态 */
-  status?: PersistentVolumePhase
+  /** PersistentVolume 名称 */
+  name: string
+  /** PersistentVolume 状态 */
+  status: PersistentVolumePhase
   /** 存储类名 */
-  storageClassName?: string
+  storageClassName: string
 }
 
 /**
@@ -34,11 +35,11 @@ export interface PersistentVolumeQueryForm extends UidEntity, PageForm {
 export interface PersistentVolumeListVo extends UidEntity, Clustered, AuditEntity, DeletableEntity {
   /** PersistentVolume 名称 */
   name: string
-  /** 描述 */
+  /** PersistentVolume 描述 */
   description?: string
-  /** 状态 */
+  /** PersistentVolume 状态 */
   status: PersistentVolumePhase
-  /** 状态信息 */
+  /** PersistentVolume 状态信息 */
   statusMsg?: string
   /** 访问模式 */
   accessModes?: PersistentVolumeAccessMode[]
@@ -54,18 +55,25 @@ export interface PersistentVolumeListVo extends UidEntity, Clustered, AuditEntit
   claimNamespace?: string
 }
 
+/**
+ * PersistentVolume 详情视图对象
+ */
 export interface PersistentVolumeDetailVo extends UidEntity, Clustered, AuditEntity, DeletableEntity, ObjectMeta {
-  /** 描述 */
+  /** PersistentVolume 描述 */
   description?: string
-  /** 状态 */
+  /** PersistentVolume 状态 */
   status: PersistentVolumePhase
-  /** 状态信息 */
+  /** PersistentVolume 状态信息 */
   statusMsg?: string
+  /** PersistentVolume Spec */
   spec: PersistentVolumeSpec
+  /** PersistentVolume Status */
   statusObj: PersistentVolumeStatusObj
 }
 
-/** PersistentVolume YAML 响应对象 */
+/**
+ * PersistentVolume YAML 响应对象
+ */
 export interface PersistentVolumeYamlVo {
   /** PersistentVolume 完整 YAML 文本 */
   yaml: string
@@ -74,23 +82,19 @@ export interface PersistentVolumeYamlVo {
 /**
  * PersistentVolume 创建请求对象
  */
-export interface PersistentVolumeCreateForm {
+export interface PersistentVolumeCreateForm extends ObjectMetaCreatableForm {
   /** PersistentVolume 描述 */
-  description?: string
-  /** PersistentVolume 的资源元数据 */
-  metadata: ObjectMeta
-  /** PersistentVolume 的规格定义 */
+  description: string
+  /** PersistentVolume Spec */
   spec: PersistentVolumeSpec
 }
 
 /**
  * PersistentVolume 更新请求对象
  */
-export interface PersistentVolumeUpdateForm {
+export interface PersistentVolumeUpdateForm extends ObjectMetaEditableForm {
   /** PersistentVolume 描述 */
-  description?: string
-  /** PersistentVolume 的资源元数据 */
-  metadata: ObjectMeta
-  /** PersistentVolume 的规格定义 */
+  description: string
+  /** PersistentVolume Spec */
   spec: PersistentVolumeSpec
 }

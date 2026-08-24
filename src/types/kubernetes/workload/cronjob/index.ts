@@ -8,6 +8,7 @@ import type { AuditEntity, DeletableEntity, PageForm, UidEntity } from '@/types/
 import type { CronJobStatus } from '@/config/kubernetes/workload/cronjob'
 import type { JobStatus } from '@/config/kubernetes/workload/job'
 
+import type { ObjectMetaCreatableForm, ObjectMetaEditableForm } from '../../common'
 import type { Clustered, Namespaced, ObjectMeta } from '../../types'
 
 import type { CronJobSpec, CronJobStatusObj } from './types'
@@ -18,7 +19,7 @@ import type { CronJobSpec, CronJobStatusObj } from './types'
 export interface CronJobQueryForm extends UidEntity, PageForm {
   /** CronJob 名称 */
   name: string
-  /** 命名空间名称 */
+  /** Namespace 名称 */
   namespace: string
   /** CronJob 状态 */
   status: CronJobStatus
@@ -30,11 +31,11 @@ export interface CronJobQueryForm extends UidEntity, PageForm {
 export interface CronJobListVo extends UidEntity, Clustered, Namespaced, AuditEntity, DeletableEntity {
   /** CronJob 名称 */
   name: string
-  /** 描述 */
+  /** CronJob 描述 */
   description?: string
-  /** 状态 */
+  /** CronJob 状态 */
   status: CronJobStatus
-  /** 状态信息 */
+  /** CronJob 状态信息 */
   statusMsg?: string
   /** Cron 调度表达式 */
   schedule: string
@@ -42,29 +43,29 @@ export interface CronJobListVo extends UidEntity, Clustered, Namespaced, AuditEn
   active: number
   /** 最近一次触发时间 */
   lastScheduleTime: string
-  /** 是否已暂停 */
-  suspend: boolean
 }
 
 /**
  * CronJob 详情响应对象
  */
 export interface CronJobDetailVo extends UidEntity, Clustered, Namespaced, AuditEntity, DeletableEntity, ObjectMeta {
-  /** 描述信息 */
+  /** CronJob 描述 */
   description?: string
-  /** 状态标签 */
+  /** CronJob 状态 */
   status: CronJobStatus
-  /** 状态信息 */
+  /** CronJob 状态信息 */
   statusMsg?: string
-  /** CronJob 的规格定义 */
+  /** CronJob Spec */
   spec: CronJobSpec
-  /** CronJob 的观测状态 */
+  /** CronJob Status */
   statusObj: CronJobStatusObj
 }
 
-/** CronJob YAML 响应对象 */
+/**
+ * CronJob YAML 响应对象
+ */
 export interface CronJobYamlVo {
-  /** CronJob 的完整 YAML 文本 */
+  /** CronJob 完整 YAML 文本 */
   yaml: string
 }
 
@@ -84,10 +85,12 @@ export interface CronJobJobQueryForm extends UidEntity, PageForm {
 export interface CronJobJobListVo extends UidEntity, AuditEntity {
   /** Job 名称 */
   name: string
+  /** Job 描述 */
+  description?: string
   /** Job 状态 */
   status: JobStatus
   /** Job 状态信息 */
-  statusMsg: string
+  statusMsg?: string
   /** 运行中的 Pod 数 */
   active: number
   /** 已成功完成的 Pod 数 */
@@ -100,25 +103,27 @@ export interface CronJobJobListVo extends UidEntity, AuditEntity {
   parallelism: number
 }
 
-/** CronJob 监控响应对象 */
+/**
+ * CronJob 监控响应对象
+ */
 export interface CronJobMonitorVo {}
 
-/** CronJob 创建请求对象 */
-export interface CronJobCreateForm {
+/**
+ * CronJob 创建请求对象
+ */
+export interface CronJobCreateForm extends ObjectMetaCreatableForm {
   /** CronJob 描述 */
-  description?: string
-  /** CronJob 的资源元数据 */
-  metadata: ObjectMeta
-  /** CronJob 的规格定义 */
+  description: string
+  /** CronJob Spec */
   spec: CronJobSpec
 }
 
-/** CronJob 更新请求对象 */
-export interface CronJobUpdateForm {
+/**
+ * CronJob 更新请求对象
+ */
+export interface CronJobUpdateForm extends ObjectMetaEditableForm {
   /** CronJob 描述 */
-  description?: string
-  /** CronJob 的资源元数据 */
-  metadata: ObjectMeta
-  /** CronJob 的规格定义 */
+  description: string
+  /** CronJob Spec */
   spec: CronJobSpec
 }

@@ -5,82 +5,90 @@
 
 import type { AuditEntity, DeletableEntity, PageForm, UidEntity } from '@/types/common'
 
+import type { NamespaceStatus } from '@/config/kubernetes/namespace'
+
+import type { ObjectMetaCreatableForm, ObjectMetaEditableForm } from '../common'
 import type { Clustered, ObjectMeta } from '../types'
 
 import type { NamespaceSpec, NamespaceStatusObj } from './types'
 
 /**
- * 命名空间查询条件请求对象
+ * Namespace 查询条件请求对象
  */
 export interface NamespaceQueryForm extends UidEntity, PageForm {
-  /** 命名空间名称（支持模糊搜索） */
+  /** Namespace 名称 */
   name: string
-  /** 状态 */
-  status: string
-  /** 是否仅返回简要列表 */
-  simple: boolean
+  /** Namespace 状态 */
+  status: NamespaceStatus
+  /** 查询模式 */
+  mode: 'Default' | 'Simple'
 }
 
 /**
- * 命名空间列表项响应对象
+ * Namespace 列表项响应对象
  */
 export interface NamespaceListVo extends UidEntity, Clustered, AuditEntity, DeletableEntity {
-  /** 命名空间名称 */
+  /** Namespace 名称 */
   name: string
-  /** 描述信息 */
+  /** Namespace 描述 */
   description?: string
-  /** 状态 */
-  status: string
-  /** 状态描述信息 */
+  /** Namespace 状态 */
+  status: NamespaceStatus
+  /** Namespace 状态信息 */
   statusMsg?: string
 }
 
 /**
- * 命名空间简要列表项响应对象
+ * Namespace 简要列表项响应对象
  */
 export interface NamespaceSimpleListVo extends UidEntity {
-  /** 命名空间名称 */
+  /** Namespace 名称 */
   name: string
-  /** 描述信息 */
+  /** Namespace 描述 */
   description?: string
 }
 
 /**
- * 命名空间详情响应对象
- * 组合多个子对象，提供完整详情信息
+ * Namespace 详情响应对象
  */
 export interface NamespaceDetailVo extends UidEntity, Clustered, AuditEntity, DeletableEntity, ObjectMeta {
-  /** 描述信息 */
+  /** Namespace 描述 */
   description?: string
-  /** 状态 */
+  /** Namespace 状态 */
   status: string
-  /** 状态描述信息 */
+  /** Namespace 状态信息 */
   statusMsg?: string
+  /** Namespace Spec */
   spec: NamespaceSpec
+  /** Namespace Status */
   statusObj: NamespaceStatusObj
 }
 
-/** 命名空间 YAML 响应对象 */
+/**
+ * Namespace YAML 响应对象
+ */
 export interface NamespaceYamlVo {
-  /** 命名空间的完整 YAML 文本 */
+  /** Namespace 完整 YAML 文本 */
   yaml: string
 }
 
 /**
- * 命名空间监控响应对象
+ * Namespace 监控响应对象
  */
 export interface NamespaceMonitorVo {}
 
-/** 命名空间创建请求对象 */
-export interface NamespaceCreateForm {
-  description?: string
-  /** 元数据（含名称、命名空间、标签等） */
-  metadata: ObjectMeta
+/**
+ * Namespace 创建请求对象
+ */
+export interface NamespaceCreateForm extends ObjectMetaCreatableForm {
+  /** Namespace 描述 */
+  description: string
 }
 
-/** 命名空间更新请求对象 */
-export interface NamespaceUpdateForm {
-  description?: string
-  /** 元数据（含名称、命名空间、标签等） */
-  metadata: ObjectMeta
+/**
+ * Namespace 更新请求对象
+ */
+export interface NamespaceUpdateForm extends ObjectMetaEditableForm {
+  /** Namespace 描述 */
+  description: string
 }

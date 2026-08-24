@@ -7,21 +7,40 @@ import type { AuditEntity, DeletableEntity, UidEntity } from '@/types/common'
 
 import type { LimitRangeSpec } from './types'
 
+/**
+ * Namespace LimitRange 详情视图对象
+ */
 export interface NamespaceLimitRangeDetailVo extends UidEntity, AuditEntity, DeletableEntity {
+  /** 描述信息 */
   description?: string
+  /** LimitRange 配置约束规格 */
   spec: LimitRangeSpec
 }
 
+/**
+ * Namespace LimitRange YAML 响应对象
+ */
 export interface NamespaceLimitRangeYamlVo {
+  /** LimitRange 完整 YAML 文本 */
   yaml: string
 }
 
+/**
+ * Namespace LimitRange 创建请求对象
+ */
 export interface NamespaceLimitRangeCreateForm {
-  description?: string
+  /** 描述信息 */
+  description: string
+  /** LimitRange 配置约束规格 */
   spec: LimitRangeSpec
 }
 
+/**
+ * Namespace LimitRange 更新请求对象
+ */
 export interface NamespaceLimitRangeUpdateForm {
-  description?: string
+  /** 描述信息 */
+  description: string
+  /** LimitRange 配置约束规格 */
   spec: LimitRangeSpec
 }
