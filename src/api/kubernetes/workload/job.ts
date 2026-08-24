@@ -8,13 +8,12 @@ import type { AxiosProgressEvent } from 'axios'
 import type { PageVo } from '@/types/common'
 import type { MetadataAnnotationForm, MetadataLabelForm } from '@/types/kubernetes/common'
 import type { EventListVo, EventQueryForm } from '@/types/kubernetes/event'
+import type { PodListVo, PodQueryForm } from '@/types/kubernetes/pod'
 import type {
   JobCreateForm,
   JobDetailVo,
   JobListVo,
   JobMonitorVo,
-  JobPodListVo,
-  JobPodQueryForm,
   JobQueryForm,
   JobUpdateForm,
   JobYamlVo,
@@ -62,8 +61,8 @@ export function getJobYaml(clusterUid: string, namespace: string, name: string) 
  * @param params Job 关联 Pod 查询条件请求对象（Pod 名称、Pod 状态）
  * @returns Job 关联 Pod 分页列表
  */
-export function getJobPodList(clusterUid: string, namespace: string, name: string, params: Partial<JobPodQueryForm>) {
-  return request.get<PageVo<JobPodListVo>>(
+export function getJobPodList(clusterUid: string, namespace: string, name: string, params: Partial<PodQueryForm>) {
+  return request.get<PageVo<PodListVo>>(
     `/kubernetes/clusters/${clusterUid}/namespaces/${namespace}/jobs/${name}/pods`,
     { params },
   )
@@ -112,7 +111,9 @@ export function createJob(clusterUid: string, data: Partial<JobCreateForm>) {
  * @returns void
  */
 export function createJobYaml(clusterUid: string, yaml: string) {
-  return request.post<void>(`/kubernetes/clusters/${clusterUid}/jobs/yaml`, yaml)
+  return request.post<void>(`/kubernetes/clusters/${clusterUid}/jobs/yaml`, yaml, {
+    headers: { 'Content-Type': 'application/yaml' },
+  })
 }
 
 /**
@@ -136,7 +137,9 @@ export function updateJob(clusterUid: string, namespace: string, name: string, d
  * @returns void
  */
 export function updateJobYaml(clusterUid: string, namespace: string, name: string, yaml: string) {
-  return request.put<void>(`/kubernetes/clusters/${clusterUid}/namespaces/${namespace}/jobs/${name}/yaml`, yaml)
+  return request.put<void>(`/kubernetes/clusters/${clusterUid}/namespaces/${namespace}/jobs/${name}/yaml`, yaml, {
+    headers: { 'Content-Type': 'application/yaml' },
+  })
 }
 
 /**

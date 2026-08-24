@@ -7,13 +7,12 @@ import type { AxiosProgressEvent } from 'axios'
 import type { PageVo } from '@/types/common'
 import type { MetadataAnnotationForm, MetadataLabelForm } from '@/types/kubernetes/common'
 import type { EventListVo, EventQueryForm } from '@/types/kubernetes/event'
+import type { PodListVo, PodQueryForm } from '@/types/kubernetes/pod'
 import type {
   JobCreateForm,
   JobDetailVo,
   JobListVo,
   JobMonitorVo,
-  JobPodListVo,
-  JobPodQueryForm,
   JobQueryForm,
   JobUpdateForm,
   JobYamlVo,
@@ -92,8 +91,8 @@ function getJobPodListMock(
   clusterUid: string,
   namespace: string,
   name: string,
-  query: Partial<JobPodQueryForm>,
-): PageVo<JobPodListVo> {
+  query: Partial<PodQueryForm>,
+): PageVo<PodListVo> {
   void clusterUid
   void namespace
   console.log('[Mock] getJobPodList', clusterUid, namespace, name, query)
@@ -121,7 +120,7 @@ function getJobEventListMock(
   console.log('[Mock] getJobEventList', clusterUid, namespace, name, query)
   const matched = jobMockEvents.filter(e => {
     if (query.type && e.type !== query.type) return false
-    if (query.reason && !e.reason.includes(query.reason as string)) return false
+    if (query.reason && !(e.reason ?? '').includes(query.reason as string)) return false
     if (query.note && !(e.note ?? '').includes(query.note as string)) return false
     if (query.regarding?.name && !(e.regarding?.name ?? '').includes(query.regarding.name as string)) return false
     return true
@@ -159,9 +158,9 @@ function createJobMock(clusterUid: string, data: Partial<JobCreateForm>): void {
     uid: generateId(),
     clusterUid,
     cluster: 'system-cluster',
-    namespaceUid: `ns-${data?.metadata?.namespace || 'default'}`,
-    namespace: data?.metadata?.namespace || 'default',
-    name: data?.metadata?.name || 'new-job',
+    namespaceUid: `ns-${data?.namespace || 'default'}`,
+    namespace: data?.namespace || 'default',
+    name: data?.name || 'new-job',
     description: data?.description,
     status: 'Active',
     statusMsg: '任务运行中',
@@ -359,7 +358,7 @@ export default [
   {
     method: 'get',
     url: '/kubernetes/clusters/:clusterUid/namespaces/:namespace/jobs/:name/pods',
-    handler: (ctx: { pathParams: Record<string, string>; params: Partial<JobPodQueryForm> }) =>
+    handler: (ctx: { pathParams: Record<string, string>; params: Partial<PodQueryForm> }) =>
       getJobPodListMock(ctx.pathParams.clusterUid, ctx.pathParams.namespace, ctx.pathParams.name, ctx.params),
   },
   {

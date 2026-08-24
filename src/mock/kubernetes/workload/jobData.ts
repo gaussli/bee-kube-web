@@ -3,7 +3,8 @@
  * @module mock/kubernetes/workload/jobData
  */
 import type { EventListVo } from '@/types/kubernetes/event'
-import type { JobDetailVo, JobListVo, JobPodListVo, JobYamlVo } from '@/types/kubernetes/workload/job'
+import type { PodListVo } from '@/types/kubernetes/pod'
+import type { JobDetailVo, JobListVo, JobYamlVo } from '@/types/kubernetes/workload/job'
 
 import { generateId } from '@/mock/utils'
 
@@ -129,18 +130,14 @@ export const jobMockDetail: JobDetailVo = {
   description: '数据备份任务',
   status: 'Succeeded',
   statusMsg: '任务已成功完成',
-  metadata: {
-    name: 'data-backup-job',
-    namespace: 'default',
-    uid: 'job-001',
-    resourceVersion: '1',
-    generation: 1,
-    deletionTimestamp: '',
-    ownerReferences: [],
-    finalizers: [],
-    labels: { 'app.kubernetes.io/name': 'data-backup-job' },
-    annotations: {},
-  },
+  name: 'data-backup-job',
+  resourceVersion: '1',
+  generation: 1,
+  deletionTimestamp: '',
+  ownerReferences: [],
+  finalizers: [],
+  labels: { 'app.kubernetes.io/name': 'data-backup-job' },
+  annotations: {},
   spec: {
     parallelism: 2,
     completions: 3,
@@ -196,9 +193,13 @@ spec:
  * Job 关联 Pod 模拟数据
  * @remarks 对应 JobPodListVo
  */
-export const jobMockPods: JobPodListVo[] = [
+export const jobMockPods: PodListVo[] = [
   {
     uid: generateId(),
+    clusterUid: 'cluster-001',
+    cluster: 'system-cluster',
+    namespaceUid: 'ns-default',
+    namespace: 'default',
     name: 'data-backup-job-pod-1',
     ip: '10.244.1.10',
     status: 'Succeeded',
@@ -208,6 +209,23 @@ export const jobMockPods: JobPodListVo[] = [
     nodeName: 'node-1',
     readyContainerCount: 1,
     containerCount: 1,
+    resource: {
+      request: {
+        cpu: { value: 500, unit: 'm' },
+        memory: { value: 512, unit: 'Mi' },
+      },
+      limit: {
+        cpu: { value: 1000, unit: 'm' },
+        memory: { value: 1, unit: 'Gi' },
+      },
+      usage: {
+        'cpu': { value: 450, unit: 'm' },
+        'memory': { value: 480, unit: 'Mi' },
+        'storage': { value: 0, unit: 'Mi' },
+        'ephemeral-storage': { value: 0, unit: 'Mi' },
+        'pods': { value: 1, unit: '' },
+      },
+    },
     createAt: '2024-01-15 10:30:00',
     createBy: 'system',
     updateAt: '2024-01-15 10:30:00',
@@ -215,6 +233,10 @@ export const jobMockPods: JobPodListVo[] = [
   },
   {
     uid: generateId(),
+    clusterUid: 'cluster-001',
+    cluster: 'system-cluster',
+    namespaceUid: 'ns-default',
+    namespace: 'default',
     name: 'data-backup-job-pod-2',
     ip: '10.244.2.11',
     status: 'Succeeded',
@@ -224,6 +246,23 @@ export const jobMockPods: JobPodListVo[] = [
     nodeName: 'node-2',
     readyContainerCount: 1,
     containerCount: 1,
+    resource: {
+      request: {
+        cpu: { value: 500, unit: 'm' },
+        memory: { value: 512, unit: 'Mi' },
+      },
+      limit: {
+        cpu: { value: 1000, unit: 'm' },
+        memory: { value: 1, unit: 'Gi' },
+      },
+      usage: {
+        'cpu': { value: 440, unit: 'm' },
+        'memory': { value: 470, unit: 'Mi' },
+        'storage': { value: 0, unit: 'Mi' },
+        'ephemeral-storage': { value: 0, unit: 'Mi' },
+        'pods': { value: 1, unit: '' },
+      },
+    },
     createAt: '2024-01-15 10:30:00',
     createBy: 'system',
     updateAt: '2024-01-15 10:30:00',
@@ -231,6 +270,10 @@ export const jobMockPods: JobPodListVo[] = [
   },
   {
     uid: generateId(),
+    clusterUid: 'cluster-001',
+    cluster: 'system-cluster',
+    namespaceUid: 'ns-default',
+    namespace: 'default',
     name: 'data-backup-job-pod-3',
     ip: '10.244.3.12',
     status: 'Succeeded',
@@ -240,6 +283,23 @@ export const jobMockPods: JobPodListVo[] = [
     nodeName: 'node-3',
     readyContainerCount: 1,
     containerCount: 1,
+    resource: {
+      request: {
+        cpu: { value: 500, unit: 'm' },
+        memory: { value: 512, unit: 'Mi' },
+      },
+      limit: {
+        cpu: { value: 1000, unit: 'm' },
+        memory: { value: 1, unit: 'Gi' },
+      },
+      usage: {
+        'cpu': { value: 430, unit: 'm' },
+        'memory': { value: 460, unit: 'Mi' },
+        'storage': { value: 0, unit: 'Mi' },
+        'ephemeral-storage': { value: 0, unit: 'Mi' },
+        'pods': { value: 1, unit: '' },
+      },
+    },
     createAt: '2024-01-15 10:30:00',
     createBy: 'system',
     updateAt: '2024-01-15 10:30:00',
