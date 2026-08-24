@@ -22,7 +22,7 @@ const _namespaceStatuses = [
 ] as const
 
 /** 命名空间状态类型 */
-export type NamespaceStatuses = (typeof _namespaceStatuses)[number]['value']
+export type NamespaceStatus = (typeof _namespaceStatuses)[number]['value']
 
 /** 命名空间状态配置选项（含"所有状态"） */
 export const NAMESPACE_STATUS_OPTIONS: Option[] = [
