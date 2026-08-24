@@ -15,13 +15,12 @@ import type {
   DaemonSetListVo,
   DaemonSetMonitorVo,
   DaemonSetNetworkVo,
-  DaemonSetPodListVo,
-  DaemonSetPodQueryForm,
   DaemonSetQueryForm,
   DaemonSetRollbackForm,
   DaemonSetUpdateForm,
   DaemonSetYamlVo,
 } from '@/types/kubernetes/workload/daemonset'
+import type { PodListVo, PodQueryForm } from '@/types/kubernetes/pod'
 
 import { generateId } from '@/mock/utils'
 
@@ -104,8 +103,8 @@ function getDaemonSetPodListMock(
   clusterUid: string,
   namespace: string,
   name: string,
-  query: Partial<DaemonSetPodQueryForm>,
-): PageVo<DaemonSetPodListVo> {
+  query: Partial<PodQueryForm>,
+): PageVo<PodListVo> {
   void clusterUid
   void namespace
   void name
@@ -180,7 +179,7 @@ function getDaemonSetEventListMock(
   console.log('[Mock] getDaemonSetEventList', clusterUid, namespace, name, query)
   const matched = daemonSetMockEvents.filter(e => {
     if (query.type && e.type !== query.type) return false
-    if (query.reason && !e.reason.includes(query.reason as string)) return false
+    if (query.reason && !(e.reason ?? '').includes(query.reason as string)) return false
     if (query.note && !(e.note ?? '').includes(query.note as string)) return false
     if (query.regarding?.name && !(e.regarding?.name ?? '').includes(query.regarding.name as string)) return false
     return true
@@ -218,9 +217,9 @@ function createDaemonSetMock(clusterUid: string, data: Partial<DaemonSetCreateFo
     uid: generateId(),
     clusterUid,
     cluster: 'system-cluster',
-    namespaceUid: `ns-${data?.metadata?.namespace || 'default'}`,
-    namespace: data?.metadata?.namespace || 'default',
-    name: data?.metadata?.name || 'new-daemonset',
+    namespaceUid: `ns-${data?.namespace || 'default'}`,
+    namespace: data?.namespace || 'default',
+    name: data?.name || 'new-daemonset',
     description: data?.description,
     status: 'Creating',
     statusMsg: '创建中',
@@ -435,7 +434,7 @@ export default [
   {
     method: 'get',
     url: '/kubernetes/clusters/:clusterUid/namespaces/:namespace/daemonsets/:name/pods',
-    handler: (ctx: { pathParams: Record<string, string>; params: Partial<DaemonSetPodQueryForm> }) =>
+    handler: (ctx: { pathParams: Record<string, string>; params: Partial<PodQueryForm> }) =>
       getDaemonSetPodListMock(ctx.pathParams.clusterUid, ctx.pathParams.namespace, ctx.pathParams.name, ctx.params),
   },
   {

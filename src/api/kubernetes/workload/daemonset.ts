@@ -16,13 +16,12 @@ import type {
   DaemonSetListVo,
   DaemonSetMonitorVo,
   DaemonSetNetworkVo,
-  DaemonSetPodListVo,
-  DaemonSetPodQueryForm,
   DaemonSetQueryForm,
   DaemonSetRollbackForm,
   DaemonSetUpdateForm,
   DaemonSetYamlVo,
 } from '@/types/kubernetes/workload/daemonset'
+import type { PodListVo, PodQueryForm } from '@/types/kubernetes/pod'
 
 import { request } from '@/utils'
 
@@ -72,9 +71,9 @@ export function getDaemonSetPodList(
   clusterUid: string,
   namespace: string,
   name: string,
-  params: Partial<DaemonSetPodQueryForm>,
+  params: Partial<PodQueryForm>,
 ) {
-  return request.get<PageVo<DaemonSetPodListVo>>(
+  return request.get<PageVo<PodListVo>>(
     `/kubernetes/clusters/${clusterUid}/namespaces/${namespace}/daemonsets/${name}/pods`,
     { params },
   )
@@ -163,7 +162,9 @@ export function createDaemonSet(clusterUid: string, data: Partial<DaemonSetCreat
  * @returns void
  */
 export function createDaemonSetYaml(clusterUid: string, yaml: string) {
-  return request.post<void>(`/kubernetes/clusters/${clusterUid}/daemonsets/yaml`, yaml)
+  return request.post<void>(`/kubernetes/clusters/${clusterUid}/daemonsets/yaml`, yaml, {
+    headers: { 'Content-Type': 'application/yaml' },
+  })
 }
 
 /**
@@ -192,7 +193,9 @@ export function updateDaemonSet(
  * @returns void
  */
 export function updateDaemonSetYaml(clusterUid: string, namespace: string, name: string, yaml: string) {
-  return request.put<void>(`/kubernetes/clusters/${clusterUid}/namespaces/${namespace}/daemonsets/${name}/yaml`, yaml)
+  return request.put<void>(`/kubernetes/clusters/${clusterUid}/namespaces/${namespace}/daemonsets/${name}/yaml`, yaml, {
+    headers: { 'Content-Type': 'application/yaml' },
+  })
 }
 
 /**

@@ -151,7 +151,7 @@ export interface DaemonSetCreateForm extends ObjectMetaCreatableForm {
  */
 export interface DaemonSetUpdateForm extends ObjectMetaEditableForm {
   /** DaemonSet 描述 */
-  descriptio: string
+  description: string
   /** DaemonSet Spec */
   spec: DaemonSetSpec
 }

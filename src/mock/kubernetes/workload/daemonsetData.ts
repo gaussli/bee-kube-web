@@ -8,9 +8,9 @@ import type {
   DaemonSetHistoryRevisionListVo,
   DaemonSetListVo,
   DaemonSetNetworkVo,
-  DaemonSetPodListVo,
   DaemonSetYamlVo,
 } from '@/types/kubernetes/workload/daemonset'
+import type { PodListVo } from '@/types/kubernetes/pod'
 
 import { generateId } from '@/mock/utils'
 
@@ -141,9 +141,13 @@ spec:
  * DaemonSet 关联 Pod 模拟数据
  * @remarks 对应 DaemonSetPodListVo，覆盖 Running、Pending 等状态
  */
-export const daemonSetMockPods: DaemonSetPodListVo[] = [
+export const daemonSetMockPods: PodListVo[] = [
   {
     uid: generateId(),
+    clusterUid: 'cluster-001',
+    cluster: 'system-cluster',
+    namespaceUid: 'ns-kube-system',
+    namespace: 'kube-system',
     name: 'fluentd-agent-pod-1',
     ip: '10.244.1.11',
     status: 'Running',
@@ -153,6 +157,23 @@ export const daemonSetMockPods: DaemonSetPodListVo[] = [
     nodeName: 'node-1',
     readyContainerCount: 2,
     containerCount: 2,
+    resource: {
+      request: {
+        cpu: { value: 200, unit: 'm' },
+        memory: { value: 256, unit: 'Mi' },
+      },
+      limit: {
+        cpu: { value: 500, unit: 'm' },
+        memory: { value: 512, unit: 'Mi' },
+      },
+      usage: {
+        'cpu': { value: 120, unit: 'm' },
+        'memory': { value: 180, unit: 'Mi' },
+        'storage': { value: 0, unit: 'Mi' },
+        'ephemeral-storage': { value: 0, unit: 'Mi' },
+        'pods': { value: 1, unit: '' },
+      },
+    },
     createAt: '2024-01-15 10:30:00',
     createBy: 'system',
     updateAt: '2024-01-15 10:30:00',
@@ -160,6 +181,10 @@ export const daemonSetMockPods: DaemonSetPodListVo[] = [
   },
   {
     uid: generateId(),
+    clusterUid: 'cluster-001',
+    cluster: 'system-cluster',
+    namespaceUid: 'ns-kube-system',
+    namespace: 'kube-system',
     name: 'fluentd-agent-pod-2',
     ip: '10.244.2.12',
     status: 'Running',
@@ -169,6 +194,23 @@ export const daemonSetMockPods: DaemonSetPodListVo[] = [
     nodeName: 'node-2',
     readyContainerCount: 2,
     containerCount: 2,
+    resource: {
+      request: {
+        cpu: { value: 200, unit: 'm' },
+        memory: { value: 256, unit: 'Mi' },
+      },
+      limit: {
+        cpu: { value: 500, unit: 'm' },
+        memory: { value: 512, unit: 'Mi' },
+      },
+      usage: {
+        'cpu': { value: 110, unit: 'm' },
+        'memory': { value: 170, unit: 'Mi' },
+        'storage': { value: 0, unit: 'Mi' },
+        'ephemeral-storage': { value: 0, unit: 'Mi' },
+        'pods': { value: 1, unit: '' },
+      },
+    },
     createAt: '2024-01-15 10:30:00',
     createBy: 'system',
     updateAt: '2024-01-15 10:30:00',
@@ -176,6 +218,10 @@ export const daemonSetMockPods: DaemonSetPodListVo[] = [
   },
   {
     uid: generateId(),
+    clusterUid: 'cluster-001',
+    cluster: 'system-cluster',
+    namespaceUid: 'ns-kube-system',
+    namespace: 'kube-system',
     name: 'fluentd-agent-pod-3',
     ip: '10.244.3.13',
     status: 'Pending',
@@ -185,6 +231,23 @@ export const daemonSetMockPods: DaemonSetPodListVo[] = [
     nodeName: 'node-3',
     readyContainerCount: 1,
     containerCount: 2,
+    resource: {
+      request: {
+        cpu: { value: 200, unit: 'm' },
+        memory: { value: 256, unit: 'Mi' },
+      },
+      limit: {
+        cpu: { value: 500, unit: 'm' },
+        memory: { value: 512, unit: 'Mi' },
+      },
+      usage: {
+        'cpu': { value: 0, unit: 'm' },
+        'memory': { value: 0, unit: 'Mi' },
+        'storage': { value: 0, unit: 'Mi' },
+        'ephemeral-storage': { value: 0, unit: 'Mi' },
+        'pods': { value: 1, unit: '' },
+      },
+    },
     createAt: '2024-01-15 10:30:00',
     createBy: 'system',
     updateAt: '2024-01-15 10:30:00',
@@ -255,6 +318,9 @@ export const daemonSetMockNetwork: DaemonSetNetworkVo = {
       name: 'fluentd-agent-ingress',
       description: 'DaemonSet 入口',
       ingressClassName: 'nginx',
+      defaultBackendService: 'fluentd-agent-service',
+      ruleCount: 1,
+      tlsCount: 0,
       createAt: '2024-01-15 10:30:00',
       createBy: 'admin',
       updateAt: '2024-01-15 10:30:00',
@@ -309,22 +375,24 @@ export const daemonSetMockDetail: DaemonSetDetailVo = {
   description: '日志采集守护应用',
   status: 'Running',
   statusMsg: '所有节点已调度',
-  metadata: {
-    name: 'fluentd-agent',
-    namespace: 'kube-system',
-    uid: 'ds-001',
-    resourceVersion: '1',
-    generation: 1,
-    deletionTimestamp: '',
-    ownerReferences: [],
-    finalizers: [],
-    labels: { 'app.kubernetes.io/name': 'fluentd-agent' },
-    annotations: {},
-  },
+  name: 'fluentd-agent',
+  resourceVersion: '1',
+  generation: 1,
+  deletionTimestamp: '',
+  ownerReferences: [],
+  finalizers: [],
+  labels: { 'app.kubernetes.io/name': 'fluentd-agent' },
+  annotations: {},
   spec: {
     selector: { matchLabels: { 'app.kubernetes.io/name': 'fluentd-agent' }, matchExpressions: [] },
     minReadySeconds: 0,
-    updateStrategy: { type: 'RollingUpdate', rollingUpdate: {} },
+    updateStrategy: {
+      type: 'RollingUpdate',
+      rollingUpdate: {
+        maxUnavailable: '1',
+        maxSurge: '1',
+      },
+    },
     template: {
       metadata: { labels: { 'app.kubernetes.io/name': 'fluentd-agent' }, annotations: {} },
       spec: {} as never,
