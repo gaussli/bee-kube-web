@@ -168,9 +168,9 @@ export interface Condition<T extends string = string> {
   type: T
   /** 条件状态，取值 True / False / Unknown */
   status: string
-  /** 最近探测时间（ISO 时间） */
+  /** 最近探测时间（空格分隔的时间格式，如 2024-03-20 14:22:18） */
   lastProbeTime?: string
-  /** 最近一次状态转移时间（ISO 时间） */
+  /** 最近一次状态转移时间（空格分隔的时间格式，如 2024-03-20 14:22:18） */
   lastTransitionTime?: string
   /** 状态转移原因（机器可读短字符串） */
   reason?: string

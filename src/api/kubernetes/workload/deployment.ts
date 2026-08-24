@@ -8,6 +8,7 @@ import type { AxiosProgressEvent } from 'axios'
 import type { PageVo } from '@/types/common'
 import type { MetadataAnnotationForm, MetadataLabelForm } from '@/types/kubernetes/common'
 import type { EventListVo, EventQueryForm } from '@/types/kubernetes/event'
+import type { PodListVo, PodQueryForm } from '@/types/kubernetes/pod'
 import type {
   DeploymentCreateForm,
   DeploymentDetailVo,
@@ -16,8 +17,6 @@ import type {
   DeploymentListVo,
   DeploymentMonitorVo,
   DeploymentNetworkVo,
-  DeploymentPodListVo,
-  DeploymentPodQueryForm,
   DeploymentQueryForm,
   DeploymentRollbackForm,
   DeploymentScaleForm,
@@ -75,9 +74,9 @@ export function getDeploymentPodList(
   clusterUid: string,
   namespace: string,
   name: string,
-  params: Partial<DeploymentPodQueryForm>,
+  params: Partial<PodQueryForm>,
 ) {
-  return request.get<PageVo<DeploymentPodListVo>>(
+  return request.get<PageVo<PodListVo>>(
     `/kubernetes/clusters/${clusterUid}/namespaces/${namespace}/deployments/${name}/pods`,
     { params },
   )
@@ -166,7 +165,9 @@ export function createDeployment(clusterUid: string, data: Partial<DeploymentCre
  * @returns void
  */
 export function createDeploymentYaml(clusterUid: string, yaml: string) {
-  return request.post<void>(`/kubernetes/clusters/${clusterUid}/deployments/yaml`, yaml)
+  return request.post<void>(`/kubernetes/clusters/${clusterUid}/deployments/yaml`, yaml, {
+    headers: { 'Content-Type': 'application/yaml' },
+  })
 }
 
 /**
@@ -195,7 +196,13 @@ export function updateDeployment(
  * @returns void
  */
 export function updateDeploymentYaml(clusterUid: string, namespace: string, name: string, yaml: string) {
-  return request.put<void>(`/kubernetes/clusters/${clusterUid}/namespaces/${namespace}/deployments/${name}/yaml`, yaml)
+  return request.put<void>(
+    `/kubernetes/clusters/${clusterUid}/namespaces/${namespace}/deployments/${name}/yaml`,
+    yaml,
+    {
+      headers: { 'Content-Type': 'application/yaml' },
+    },
+  )
 }
 
 /**

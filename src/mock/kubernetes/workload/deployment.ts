@@ -5,6 +5,7 @@
 import type { PageVo } from '@/types/common'
 import type { MetadataAnnotationForm, MetadataLabelForm } from '@/types/kubernetes/common'
 import type { EventListVo, EventQueryForm } from '@/types/kubernetes/event'
+import type { PodListVo, PodQueryForm } from '@/types/kubernetes/pod'
 import type {
   DeploymentCreateForm,
   DeploymentDetailVo,
@@ -13,8 +14,6 @@ import type {
   DeploymentListVo,
   DeploymentMonitorVo,
   DeploymentNetworkVo,
-  DeploymentPodListVo,
-  DeploymentPodQueryForm,
   DeploymentQueryForm,
   DeploymentRollbackForm,
   DeploymentScaleForm,
@@ -95,16 +94,19 @@ function getDeploymentPodListMock(
   _clusterUid: string,
   _namespace: string,
   _name: string,
-  query: Partial<DeploymentPodQueryForm>,
-): PageVo<DeploymentPodListVo> {
+  query: Partial<PodQueryForm>,
+): PageVo<PodListVo> {
   console.log('[Mock] getDeploymentPodList', _clusterUid, _namespace, _name, query)
-  const filtered = mockDeploymentPods.filter((p: DeploymentPodListVo) => {
+  const filtered = mockDeploymentPods.filter((p: PodListVo) => {
     if (query.status && p.status !== query.status) return false
+    if (query.namespace && p.namespace !== query.namespace) return false
     return true
   })
   const filteredUid = query.uid ? filtered.filter(p => p.uid === query.uid) : []
   const filteredName = query.name ? filtered.filter(p => p.name.includes(query.name as string)) : []
-  const matched = query.uid || query.name ? Array.from(new Set([...filteredUid, ...filteredName])) : filtered
+  const filterIp = query.ip ? filtered.filter(p => p.ip.includes(query.ip as string)) : []
+  const matched =
+    query.uid || query.name ? Array.from(new Set([...filteredUid, ...filteredName, ...filterIp])) : filtered
   const page = query.page || 1
   const pageSize = query.pageSize || 10
   return {
@@ -175,11 +177,18 @@ function getDeploymentEventListMock(
   query: Partial<EventQueryForm>,
 ): PageVo<EventListVo> {
   console.log('[Mock] getDeploymentEventList', _clusterUid, _namespace, _name, query)
+  const filtered = mockDeploymentEvents.filter((e: EventListVo) => {
+    if (query.type && e.type !== query.type) return false
+    return true
+  })
+  const filteredReason = query.reason ? filtered.filter(p => p.reason?.includes(query.reason as string)) : []
+  const filteredNote = query.note ? filtered.filter(p => p.note?.includes(query.note as string)) : []
+  const matched = query.reason || query.note ? Array.from(new Set([...filteredReason, ...filteredNote])) : filtered
   const page = query.page || 1
   const pageSize = query.pageSize || 10
   return {
-    list: mockDeploymentEvents.slice((page - 1) * pageSize, page * pageSize),
-    total: mockDeploymentEvents.length,
+    list: matched.slice((page - 1) * pageSize, page * pageSize),
+    total: matched.length,
     page,
     pageSize,
   }
@@ -405,7 +414,7 @@ export default [
   {
     method: 'get',
     url: '/kubernetes/clusters/:clusterUid/namespaces/:namespace/deployments/:name/pods',
-    handler: (ctx: { pathParams: Record<string, string>; params: Partial<DeploymentPodQueryForm> }) =>
+    handler: (ctx: { pathParams: Record<string, string>; params: Partial<PodQueryForm> }) =>
       getDeploymentPodListMock(ctx.pathParams.clusterUid, ctx.pathParams.namespace, ctx.pathParams.name, ctx.params),
   },
   {

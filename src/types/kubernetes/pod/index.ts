@@ -50,9 +50,9 @@ export interface PodListVo extends UidEntity, Clustered, Namespaced, AuditEntity
   containerCount: number
   /** Pod 资源 */
   resource: {
-    request: Record<ResourceName, Quantity>
-    limit: Record<ResourceName, Quantity>
-    usage: Record<ResourceName, Quantity>
+    request: Partial<Record<ResourceName, Quantity>>
+    limit: Partial<Record<ResourceName, Quantity>>
+    usage: Partial<Record<ResourceName, Quantity>>
   }
 }
 

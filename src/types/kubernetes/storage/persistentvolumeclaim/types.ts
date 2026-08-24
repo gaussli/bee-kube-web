@@ -43,9 +43,9 @@ export interface PersistentVolumeClaimSpec {
  */
 export interface VolumeResourceRequirements {
   /** 申请资源量，如 {storage: '10Gi'} */
-  requests?: Record<ResourceName, Quantity>
+  requests?: Partial<Record<ResourceName, Quantity>>
   /** 资源上限，如 {storage: '20Gi'} */
-  limits?: Record<ResourceName, Quantity>
+  limits?: Partial<Record<ResourceName, Quantity>>
 }
 
 /**
@@ -57,11 +57,11 @@ export interface PersistentVolumeClaimStatusObj {
   /** 实际绑定的访问模式 */
   accessModes?: PersistentVolumeAccessMode[]
   /** 实际绑定的容量（资源列表），如 {storage: '10Gi'} */
-  capacity?: Record<ResourceName, Quantity>
+  capacity?: Partial<Record<ResourceName, Quantity>>
   /** 状态条件列表 */
   conditions?: Condition<PersistentVolumeClaimConditionType>[]
   /** 已分配资源（资源列表），含容量；扩容中可大于实际容量 */
-  allocatedResources?: Record<ResourceName, Quantity>
+  allocatedResources?: Partial<Record<ResourceName, Quantity>>
   /** 各资源扩容状态，key 为资源名（如 storage） */
   allocatedResourceStatuses?: Record<ResourceName, ClaimResourceStatus>
   /** 当前生效的 VolumeAttributesClass 名称；为空表示未应用 */

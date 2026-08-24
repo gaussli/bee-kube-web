@@ -43,11 +43,11 @@ export interface NodeListVo extends UidEntity, Clustered, AuditEntity, Deletable
   /** Node 资源 */
   resource: {
     /** 物理容量（Node 总硬件资源） */
-    capacity: Record<ResourceName, Quantity>
+    capacity: Partial<Record<ResourceName, Quantity>>
     /** Kubernetes 可分配容量（物理容量减去操作系统等系统预留资源） */
-    allocation: Record<ResourceName, Quantity>
+    allocation: Partial<Record<ResourceName, Quantity>>
     /** 资源已用量 */
-    usage: Record<ResourceName, Quantity>
+    usage: Partial<Record<ResourceName, Quantity>>
   }
   /** Node 的 Pod 数量 */
   podCount: number

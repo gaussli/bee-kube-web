@@ -3,12 +3,12 @@
  * @module mock/kubernetes/workload/deploymentData
  */
 import type { EventListVo } from '@/types/kubernetes/event'
+import type { PodListVo } from '@/types/kubernetes/pod'
 import type {
   DeploymentDetailVo,
   DeploymentHistoryRevisionListVo,
   DeploymentIngressListVo,
   DeploymentListVo,
-  DeploymentPodListVo,
   DeploymentServiceListVo,
   DeploymentYamlVo,
 } from '@/types/kubernetes/workload/deployment'
@@ -459,30 +459,26 @@ export const mockDeploymentDetail: DeploymentDetailVo = {
     'Kubernetes Ingress 控制器，管理集群七层流量入口和路由规则。Kubernetes Ingress 控制器，管理集群七层流量入口和路由规则，Kubernetes Ingress 控制器，管理集群七层流量入口和路由规则。Kubernetes Ingress 控制器，管理集群七层流量入口和路由规则',
   status: 'Running',
   statusMsg: '',
-  metadata: {
-    labels: {
-      'app': 'nginx-ingress-controller',
-      'app.kubernetes.io/name': 'nginx-ingress-controller',
-      'app.kubernetes.io/instance': 'nginx-ingress-controller',
-      'app.kubernetes.io/component': 'kube-system',
-      'app.kubernetes.io/managed-by': 'bee-kube',
-    },
-    annotations: {
-      'description': 'Kubernetes Ingress 控制器，管理集群七层流量入口和路由规则',
-      'kubernetes.io/change-cause': 'kubectl apply',
-      'deployment.kubernetes.io/revision': '3',
-      'meta.helm.sh/release-name': 'nginx-ingress-controller',
-      'meta.helm.sh/release-namespace': 'kube-system',
-    },
-    name: 'nginx-ingress-controller',
-    namespace: 'kube-system',
-    uid: generateId(),
-    resourceVersion: '123456',
-    generation: 1,
-    deletionTimestamp: '',
-    ownerReferences: [],
-    finalizers: [],
+  labels: {
+    'app': 'nginx-ingress-controller',
+    'app.kubernetes.io/name': 'nginx-ingress-controller',
+    'app.kubernetes.io/instance': 'nginx-ingress-controller',
+    'app.kubernetes.io/component': 'kube-system',
+    'app.kubernetes.io/managed-by': 'bee-kube',
   },
+  annotations: {
+    'description': 'Kubernetes Ingress 控制器，管理集群七层流量入口和路由规则',
+    'kubernetes.io/change-cause': 'kubectl apply',
+    'deployment.kubernetes.io/revision': '3',
+    'meta.helm.sh/release-name': 'nginx-ingress-controller',
+    'meta.helm.sh/release-namespace': 'kube-system',
+  },
+  name: 'nginx-ingress-controller',
+  resourceVersion: '123456',
+  generation: 1,
+  deletionTimestamp: '',
+  ownerReferences: [],
+  finalizers: [],
   spec: {
     replicas: 3,
     selector: {
@@ -534,12 +530,12 @@ export const mockDeploymentDetail: DeploymentDetailVo = {
             ],
             resources: {
               request: {
-                cpu: '200m',
-                memory: '256Mi',
+                cpu: { value: 200, unit: 'm' },
+                memory: { value: 256, unit: 'Mi' },
               },
               limit: {
-                cpu: '1000m',
-                memory: '512Mi',
+                cpu: { value: 1000, unit: 'm' },
+                memory: { value: 512, unit: 'Mi' },
               },
             },
             volumeMounts: [],
@@ -572,7 +568,6 @@ export const mockDeploymentDetail: DeploymentDetailVo = {
         reason: 'MinimumReplicasAvailable',
         message: 'Deployment has minimum availability.',
         lastTransitionTime: '2024-03-20 14:22:18',
-        lastUpdateTime: '2024-03-20 14:22:18',
       },
       {
         type: 'Progressing',
@@ -580,7 +575,6 @@ export const mockDeploymentDetail: DeploymentDetailVo = {
         reason: 'NewReplicaSetAvailable',
         message: 'ReplicaSet "nginx-ingress-controller" has successfully progressed.',
         lastTransitionTime: '2024-01-15 10:30:25',
-        lastUpdateTime: '2024-03-20 14:22:18',
       },
     ],
     collisionCount: 0,
@@ -639,9 +633,13 @@ spec:
 }
 
 /** Deployment 关联 Pod 列表 mock 数据 */
-export const mockDeploymentPods: DeploymentPodListVo[] = [
+export const mockDeploymentPods: PodListVo[] = [
   {
     uid: generateId(),
+    clusterUid: 'cluster-1',
+    cluster: 'cluster-1',
+    namespaceUid: 'ns-default',
+    namespace: 'default',
     name: 'nginx-ingress-controller-7d9f8c6b4-2xq9k',
     ip: '10.244.1.23',
     status: 'Running',
@@ -651,9 +649,30 @@ export const mockDeploymentPods: DeploymentPodListVo[] = [
     nodeName: 'node-1',
     readyContainerCount: 1,
     containerCount: 1,
+    resource: {
+      request: {
+        cpu: { value: 200, unit: 'm' },
+        memory: { value: 256, unit: 'Mi' },
+      },
+      limit: {
+        cpu: { value: 1000, unit: 'm' },
+        memory: { value: 512, unit: 'Mi' },
+      },
+      usage: {
+        'cpu': { value: 150, unit: 'm' },
+        'memory': { value: 200, unit: 'Mi' },
+        'storage': { value: 0, unit: 'Mi' },
+        'ephemeral-storage': { value: 0, unit: 'Mi' },
+        'pods': { value: 1, unit: '' },
+      },
+    },
   },
   {
     uid: generateId(),
+    clusterUid: 'cluster-1',
+    cluster: 'cluster-1',
+    namespaceUid: 'ns-default',
+    namespace: 'default',
     name: 'nginx-ingress-controller-7d9f8c6b4-8m4pz',
     ip: '10.244.1.24',
     status: 'Running',
@@ -663,9 +682,30 @@ export const mockDeploymentPods: DeploymentPodListVo[] = [
     nodeName: 'node-2',
     readyContainerCount: 1,
     containerCount: 1,
+    resource: {
+      request: {
+        cpu: { value: 200, unit: 'm' },
+        memory: { value: 256, unit: 'Mi' },
+      },
+      limit: {
+        cpu: { value: 1000, unit: 'm' },
+        memory: { value: 512, unit: 'Mi' },
+      },
+      usage: {
+        'cpu': { value: 180, unit: 'm' },
+        'memory': { value: 240, unit: 'Mi' },
+        'storage': { value: 0, unit: 'Mi' },
+        'ephemeral-storage': { value: 0, unit: 'Mi' },
+        'pods': { value: 1, unit: '' },
+      },
+    },
   },
   {
     uid: generateId(),
+    clusterUid: 'cluster-1',
+    cluster: 'cluster-1',
+    namespaceUid: 'ns-default',
+    namespace: 'default',
     name: 'nginx-ingress-controller-7d9f8c6b4-v5r7t',
     ip: '10.244.2.31',
     status: 'Pending',
@@ -675,9 +715,30 @@ export const mockDeploymentPods: DeploymentPodListVo[] = [
     nodeName: 'node-3',
     readyContainerCount: 0,
     containerCount: 1,
+    resource: {
+      request: {
+        cpu: { value: 200, unit: 'm' },
+        memory: { value: 256, unit: 'Mi' },
+      },
+      limit: {
+        cpu: { value: 1000, unit: 'm' },
+        memory: { value: 512, unit: 'Mi' },
+      },
+      usage: {
+        'cpu': { value: 0, unit: 'm' },
+        'memory': { value: 0, unit: 'Mi' },
+        'storage': { value: 0, unit: 'Mi' },
+        'ephemeral-storage': { value: 0, unit: 'Mi' },
+        'pods': { value: 1, unit: '' },
+      },
+    },
   },
   {
     uid: generateId(),
+    clusterUid: 'cluster-1',
+    cluster: 'cluster-1',
+    namespaceUid: 'ns-default',
+    namespace: 'default',
     name: 'nginx-ingress-controller-7d9f8c6b4-k9w2n',
     ip: '10.244.2.32',
     status: 'Failed',
@@ -687,6 +748,23 @@ export const mockDeploymentPods: DeploymentPodListVo[] = [
     nodeName: 'node-3',
     readyContainerCount: 0,
     containerCount: 1,
+    resource: {
+      request: {
+        cpu: { value: 200, unit: 'm' },
+        memory: { value: 256, unit: 'Mi' },
+      },
+      limit: {
+        cpu: { value: 1000, unit: 'm' },
+        memory: { value: 512, unit: 'Mi' },
+      },
+      usage: {
+        'cpu': { value: 0, unit: 'm' },
+        'memory': { value: 0, unit: 'Mi' },
+        'storage': { value: 0, unit: 'Mi' },
+        'ephemeral-storage': { value: 0, unit: 'Mi' },
+        'pods': { value: 1, unit: '' },
+      },
+    },
   },
 ]
 
@@ -729,6 +807,7 @@ export const mockDeploymentServices: DeploymentServiceListVo[] = [
     clusterIp: '10.96.12.34',
     externalName: '',
     headless: false,
+    deletable: true,
     createAt: '2024-01-15 10:30:25',
     createBy: 'admin',
   },
@@ -740,6 +819,7 @@ export const mockDeploymentServices: DeploymentServiceListVo[] = [
     clusterIp: '10.96.45.67',
     externalName: '',
     headless: false,
+    deletable: true,
     createAt: '2024-02-15 10:10:00',
     createBy: 'developer',
   },
@@ -751,6 +831,7 @@ export const mockDeploymentServices: DeploymentServiceListVo[] = [
     clusterIp: '10.96.78.90',
     externalName: '',
     headless: false,
+    deletable: true,
     createAt: '2024-03-01 14:00:00',
     createBy: 'admin',
   },
@@ -762,6 +843,7 @@ export const mockDeploymentServices: DeploymentServiceListVo[] = [
     clusterIp: '',
     externalName: 'api.external-vendor.com',
     headless: false,
+    deletable: true,
     createAt: '2024-03-10 09:20:00',
     createBy: 'developer',
   },
@@ -773,6 +855,7 @@ export const mockDeploymentServices: DeploymentServiceListVo[] = [
     clusterIp: 'None',
     externalName: '',
     headless: true,
+    deletable: true,
     createAt: '2024-02-15 10:15:00',
     createBy: 'developer',
   },
@@ -788,6 +871,10 @@ export const mockDeploymentIngresses: DeploymentIngressListVo[] = [
     name: 'nginx-ingress',
     description: 'Nginx Ingress 路由规则，将外部流量转发至后端服务',
     ingressClassName: 'nginx',
+    defaultBackendService: 'nginx-ingress-controller',
+    ruleCount: 3,
+    tlsCount: 1,
+    deletable: true,
     createAt: '2024-01-15 10:35:00',
     createBy: 'admin',
   },
@@ -796,6 +883,10 @@ export const mockDeploymentIngresses: DeploymentIngressListVo[] = [
     name: 'api-gateway-ingress',
     description: 'API 网关 Ingress，统一接管 /api 前缀路由',
     ingressClassName: 'alb',
+    defaultBackendService: 'api-gateway-service',
+    ruleCount: 5,
+    tlsCount: 2,
+    deletable: true,
     createAt: '2024-03-01 14:10:00',
     createBy: 'developer',
   },
@@ -848,7 +939,7 @@ export const mockDeploymentEvents: EventListVo[] = [
     reportingInstance: 'kubelet',
     action: 'Unhealthy',
     reason: 'Unhealthy',
-    series: { count: 5, lastObservedTime: '2026-08-13T10:05:00Z', state: 'EventSeriesStateWindingDown' },
+    series: { count: 5, lastObservedTime: '2026-08-13T10:05:00Z' },
     regarding: {
       apiVersion: 'v1',
       kind: 'Pod',

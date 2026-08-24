@@ -17,13 +17,13 @@ export interface LimitRangeItem {
   /** 限制范围的类型 */
   type: NamespaceLimitRangeItemType
   /** 限制范围的资源限制列表 */
-  max?: Record<ResourceName, Quantity>
+  max?: Partial<Record<ResourceName, Quantity>>
   /** 限制范围的资源请求列表 */
-  min?: Record<ResourceName, Quantity>
+  min?: Partial<Record<ResourceName, Quantity>>
   /** 限制范围的默认资源限制列表 */
-  default?: Record<ResourceName, Quantity>
+  default?: Partial<Record<ResourceName, Quantity>>
   /** 限制范围的默认请求资源列表 */
-  defaultRequest?: Record<ResourceName, Quantity>
+  defaultRequest?: Partial<Record<ResourceName, Quantity>>
   /** 限制范围的最大使用率资源列表 */
-  maxLimitRequestRatio?: Record<ResourceName, Quantity>
+  maxLimitRequestRatio?: Partial<Record<ResourceName, Quantity>>
 }

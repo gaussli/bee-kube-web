@@ -19,7 +19,7 @@ import type { CSIPersistentVolumeSource, HostPathVolumeSource, LocalVolumeSource
  */
 export interface PersistentVolumeSpec extends PersistentVolumeSource {
   /** 存储容量，如 {storage: '20Gi'} */
-  capacity?: Record<ResourceName, Quantity>
+  capacity?: Partial<Record<ResourceName, Quantity>>
   /** 访问模式 */
   accessModes?: PersistentVolumeAccessMode[]
   /** 回收策略 */

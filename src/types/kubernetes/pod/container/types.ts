@@ -171,9 +171,9 @@ export interface SecretKeySelector {
  */
 export interface ResourceRequirements {
   /** 容器所需的最小计算资源量；未指定时默认等于 limit（若显式设置），否则由实现定义；request 不得超过 limit */
-  request?: Record<ResourceName, Quantity>
+  request?: Partial<Record<ResourceName, Quantity>>
   /** 容器允许使用的最大计算资源量；超过将被限制（如 CPU 限流或内存 OOM 终止） */
-  limit?: Record<ResourceName, Quantity>
+  limit?: Partial<Record<ResourceName, Quantity>>
 }
 
 /**

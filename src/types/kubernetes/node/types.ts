@@ -47,9 +47,9 @@ export interface Taint {
  */
 export interface NodeStatusObj {
   /** 节点总资源量 */
-  capacity?: Record<ResourceName, Quantity>
+  capacity?: Partial<Record<ResourceName, Quantity>>
   /** 节点可调度资源量，默认等于 capacity */
-  allocatable?: Record<ResourceName, Quantity>
+  allocatable?: Partial<Record<ResourceName, Quantity>>
   /** 节点最近观测到的生命周期阶段，已废弃且不再填充 */
   phase?: NodePhase
   /** 节点当前观测到的条件列表 */
