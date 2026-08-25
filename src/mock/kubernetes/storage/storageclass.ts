@@ -1,228 +1,289 @@
 /**
- * StorageClass Mock API
- * @module mock/kubernetes/storage/storageClass
+ * StorageClass 管理 Mock
+ * @module mock/kubernetes/storage/storageclass
  */
 import type { PageVo } from '@/types/common'
-import type { StorageClassResp, StorageClassQueryReq } from '@/types/kubernetes/storage/storageClass'
+import type { MetadataAnnotationForm, MetadataLabelForm } from '@/types/kubernetes/common'
+import type { EventListVo, EventQueryForm } from '@/types/kubernetes/event'
+import type {
+  StorageClassCreateForm,
+  StorageClassDetailVo,
+  StorageClassListVo,
+  StorageClassQueryForm,
+  StorageClassUpdateForm,
+  StorageClassYamlVo,
+} from '@/types/kubernetes/storage/storageclass'
 
-import { generateId } from '@/mock/utils'
+import {
+  mockStorageClassDetail,
+  mockStorageClassEvents,
+  mockStorageClasses,
+  mockStorageClassYaml,
+} from './storageclassData'
 
 /**
- * 获取 StorageClass 分页列表
- * @param clusterUid - 集群 UID
- * @param params - 查询参数
- * @returns 分页数据
+ * 查看 StorageClass 列表
+ * @param clusterUid 集群 UID
+ * @param query StorageClass 查询条件请求对象（名称、存储提供者、UID）
+ * @returns StorageClass 分页列表
  */
-function getStorageClassPage(clusterUid: string, params: Partial<StorageClassQueryReq>): PageVo<StorageClassResp> {
-  const { name, provisioner, page = 1, pageSize = 10 } = params || {}
-  let filtered = mockSCs.filter(s => s.clusterUid === clusterUid)
-  if (name) filtered = filtered.filter(s => s.name.toLowerCase().includes(name.toLowerCase()))
-  if (provisioner) filtered = filtered.filter(s => s.provisioner === provisioner)
-  const total = filtered.length
-  const start = (page - 1) * pageSize
-  const end = start + pageSize
-  const list = filtered.slice(start, end)
-  return { list, total, page, pageSize }
+function getStorageClassListMock(
+  clusterUid: string,
+  query: Partial<StorageClassQueryForm>,
+): PageVo<StorageClassListVo> {
+  console.log('[Mock] getStorageClassList', clusterUid, query)
+  const filtered = mockStorageClasses.filter((s: StorageClassListVo) => {
+    if (s.clusterUid !== clusterUid) return false
+    if (query.provisioner && s.provisioner !== query.provisioner) return false
+    return true
+  })
+  const filteredUid = query.uid ? filtered.filter(s => s.uid === query.uid) : []
+  const filteredName = query.name ? filtered.filter(s => s.name.includes(query.name as string)) : []
+  const matched = query.uid || query.name ? Array.from(new Set([...filteredUid, ...filteredName])) : filtered
+  const page = query.page || 1
+  const pageSize = query.pageSize || 10
+  return {
+    list: matched.slice((page - 1) * pageSize, page * pageSize),
+    total: matched.length,
+    page,
+    pageSize,
+  }
 }
 
 /**
- * 获取 StorageClass 详情
- * @param clusterUid - 集群 UID
- * @param name - StorageClass 名称
- * @returns StorageClass 详情
+ * 查看 StorageClass 详情
+ * @param clusterUid 集群 UID
+ * @param name StorageClass 名称
+ * @returns StorageClass 详情响应对象
  */
-function getStorageClassDetail(clusterUid: string, name: string): StorageClassResp | null {
-  return mockSCs.find(s => s.clusterUid === clusterUid && s.name === name) || null
+function getStorageClassDetailMock(clusterUid: string, name: string): StorageClassDetailVo {
+  console.log('[Mock] getStorageClassDetail', clusterUid, name)
+  return mockStorageClassDetail
+}
+
+/**
+ * 查看 StorageClass YAML
+ * @param clusterUid 集群 UID
+ * @param name StorageClass 名称
+ * @returns StorageClass YAML 响应对象（完整 YAML 文本）
+ */
+function getStorageClassYamlMock(clusterUid: string, name: string): StorageClassYamlVo {
+  console.log('[Mock] getStorageClassYaml', clusterUid, name)
+  return mockStorageClassYaml
+}
+
+/**
+ * 查看 StorageClass 关联事件列表
+ * @param clusterUid 集群 UID
+ * @param name StorageClass 名称
+ * @param query 事件查询条件
+ * @returns StorageClass 关联事件分页列表
+ */
+function getStorageClassEventListMock(
+  clusterUid: string,
+  name: string,
+  query: Partial<EventQueryForm>,
+): PageVo<EventListVo> {
+  console.log('[Mock] getStorageClassEventList', clusterUid, name, query)
+  const page = query.page || 1
+  const pageSize = query.pageSize || 10
+  const list = mockStorageClassEvents.slice((page - 1) * pageSize, page * pageSize)
+  return {
+    list,
+    total: mockStorageClassEvents.length,
+    page,
+    pageSize,
+  }
+}
+
+/**
+ * 创建 StorageClass
+ * @param clusterUid 集群 UID
+ * @param data 创建参数
+ * @returns void
+ */
+function createStorageClassMock(clusterUid: string, data: Partial<StorageClassCreateForm>): void {
+  console.log('[Mock] createStorageClass', clusterUid, data)
+}
+
+/**
+ * 通过 YAML 创建 StorageClass
+ * @param clusterUid 集群 UID
+ * @param yaml StorageClass YAML 文本
+ * @returns void
+ */
+function createStorageClassYamlMock(clusterUid: string, yaml: string): void {
+  console.log('[Mock] createStorageClassYaml', clusterUid, yaml)
+}
+
+/**
+ * 更新 StorageClass
+ * @param clusterUid 集群 UID
+ * @param name StorageClass 名称
+ * @param data 更新参数
+ * @returns void
+ */
+function updateStorageClassMock(clusterUid: string, name: string, data: Partial<StorageClassUpdateForm>): void {
+  console.log('[Mock] updateStorageClass', clusterUid, name, data)
+}
+
+/**
+ * 通过 YAML 更新 StorageClass
+ * @param clusterUid 集群 UID
+ * @param name StorageClass 名称
+ * @param yaml StorageClass YAML 文本
+ * @returns void
+ */
+function updateStorageClassYamlMock(clusterUid: string, name: string, yaml: string): void {
+  console.log('[Mock] updateStorageClassYaml', clusterUid, name, yaml)
 }
 
 /**
  * 更新 StorageClass 标签
- * @param clusterUid - 集群 UID
- * @param name - StorageClass 名称
- * @param labels - 标签键值对
- * @param operation - 操作类型
+ * @param clusterUid 集群 UID
+ * @param name StorageClass 名称
+ * @param data 标签更新参数
+ * @returns void
  */
-function manageStorageClassLabels(
-  clusterUid: string,
-  name: string,
-  labels: Record<string, string>,
-  operation: number,
-): void {
-  const index = mockSCs.findIndex(s => s.clusterUid === clusterUid && s.name === name)
-  if (index === -1) {
-    console.error('[Update StorageClass Labels] can not find sc:', name)
-    return
-  }
-  const currentLabels = mockSCs[index].labels || {}
-  if (operation === 1) {
-    mockSCs[index].labels = { ...currentLabels, ...labels }
-  } else if (operation === 2) {
-    const newLabels = { ...currentLabels }
-    Object.keys(labels).forEach(key => delete newLabels[key])
-    mockSCs[index].labels = newLabels
-  } else if (operation === 3) {
-    mockSCs[index].labels = labels
-  }
+function manageStorageClassLabelMock(clusterUid: string, name: string, data: MetadataLabelForm): void {
+  console.log('[Mock] manageStorageClassLabel', clusterUid, name, data)
 }
 
 /**
  * 更新 StorageClass 注解
- * @param clusterUid - 集群 UID
- * @param name - StorageClass 名称
- * @param annotations - 注解键值对
- * @param operation - 操作类型
+ * @param clusterUid 集群 UID
+ * @param name StorageClass 名称
+ * @param data 注解更新参数
+ * @returns void
  */
-function manageStorageClassAnnotations(
-  clusterUid: string,
-  name: string,
-  annotations: Record<string, string>,
-  operation: number,
-): void {
-  const index = mockSCs.findIndex(s => s.clusterUid === clusterUid && s.name === name)
-  if (index === -1) {
-    console.error('[Update StorageClass Annotations] can not find sc:', name)
-    return
-  }
-  const currentAnnotations = mockSCs[index].annotations || {}
-  if (operation === 1) {
-    mockSCs[index].annotations = { ...currentAnnotations, ...annotations }
-  } else if (operation === 2) {
-    const newAnnotations = { ...currentAnnotations }
-    Object.keys(annotations).forEach(key => delete newAnnotations[key])
-    mockSCs[index].annotations = newAnnotations
-  } else if (operation === 3) {
-    mockSCs[index].annotations = annotations
-  }
+function manageStorageClassAnnotationMock(clusterUid: string, name: string, data: MetadataAnnotationForm): void {
+  console.log('[Mock] manageStorageClassAnnotation', clusterUid, name, data)
 }
 
 /**
- * StorageClass 路由配置
- * @remarks
- * - GET /kubernetes/clusters/:clusterUid/storageclasses - 获取 StorageClass 分页列表
- * - GET /kubernetes/clusters/:clusterUid/storageclasses/:name - 获取 StorageClass 详情
- * - PUT /kubernetes/clusters/:clusterUid/storageclasses/:name/labels - 更新标签
- * - PUT /kubernetes/clusters/:clusterUid/storageclasses/:name/annotations - 更新注解
+ * 删除 StorageClass
+ * @param clusterUid 集群 UID
+ * @param name StorageClass 名称
+ * @returns void
  */
+function deleteStorageClassMock(clusterUid: string, name: string): void {
+  console.log('[Mock] deleteStorageClass', clusterUid, name)
+}
+
+/**
+ * 批量删除 StorageClass
+ * @param clusterUid 集群 UID
+ * @param uids StorageClass UID 列表
+ * @returns void
+ */
+function deleteStorageClassesMock(clusterUid: string, uids: string[]): void {
+  console.log('[Mock] deleteStorageClasses', clusterUid, uids)
+}
+
+/**
+ * 导入 StorageClass
+ * @param clusterUid 集群 UID
+ * @param formData 上传的文件
+ * @returns void
+ */
+function importStorageClassMock(clusterUid: string, formData: FormData): void {
+  void formData
+  console.log('[Mock] importStorageClass', clusterUid)
+}
+
+/**
+ * 导出 StorageClass
+ * @param clusterUid 集群 UID
+ * @param query StorageClass 查询条件请求对象（名称、存储提供者、UID）
+ * @returns void
+ */
+function exportStorageClassMock(clusterUid: string, query: Partial<StorageClassQueryForm>): void {
+  console.log('[Mock] exportStorageClass', clusterUid, query)
+}
+
 export default [
   {
     method: 'get',
     url: '/kubernetes/clusters/:clusterUid/storageclasses',
-    handler: ({ pathParams, params }: { pathParams: Record<string, string>; params: Partial<StorageClassQueryReq> }) =>
-      getStorageClassPage(pathParams.clusterUid, params),
+    handler: (ctx: { pathParams: Record<string, string>; params: Partial<StorageClassQueryForm> }) =>
+      getStorageClassListMock(ctx.pathParams.clusterUid, ctx.params),
   },
   {
     method: 'get',
     url: '/kubernetes/clusters/:clusterUid/storageclasses/:name',
-    handler: ({ pathParams }: { pathParams: Record<string, string> }) =>
-      getStorageClassDetail(pathParams.clusterUid, pathParams.name),
+    handler: (ctx: { pathParams: Record<string, string> }) =>
+      getStorageClassDetailMock(ctx.pathParams.clusterUid, ctx.pathParams.name),
+  },
+  {
+    method: 'get',
+    url: '/kubernetes/clusters/:clusterUid/storageclasses/:name/yaml',
+    handler: (ctx: { pathParams: Record<string, string> }) =>
+      getStorageClassYamlMock(ctx.pathParams.clusterUid, ctx.pathParams.name),
+  },
+  {
+    method: 'get',
+    url: '/kubernetes/clusters/:clusterUid/storageclasses/:name/events',
+    handler: (ctx: { pathParams: Record<string, string>; params: Partial<EventQueryForm> }) =>
+      getStorageClassEventListMock(ctx.pathParams.clusterUid, ctx.pathParams.name, ctx.params),
+  },
+  {
+    method: 'post',
+    url: '/kubernetes/clusters/:clusterUid/storageclasses',
+    handler: (ctx: { pathParams: Record<string, string>; data: Partial<StorageClassCreateForm> }) =>
+      createStorageClassMock(ctx.pathParams.clusterUid, ctx.data),
+  },
+  {
+    method: 'post',
+    url: '/kubernetes/clusters/:clusterUid/storageclasses/yaml',
+    handler: (ctx: { pathParams: Record<string, string>; data: string }) =>
+      createStorageClassYamlMock(ctx.pathParams.clusterUid, ctx.data),
   },
   {
     method: 'put',
+    url: '/kubernetes/clusters/:clusterUid/storageclasses/:name',
+    handler: (ctx: { pathParams: Record<string, string>; data: Partial<StorageClassUpdateForm> }) =>
+      updateStorageClassMock(ctx.pathParams.clusterUid, ctx.pathParams.name, ctx.data),
+  },
+  {
+    method: 'put',
+    url: '/kubernetes/clusters/:clusterUid/storageclasses/:name/yaml',
+    handler: (ctx: { pathParams: Record<string, string>; data: string }) =>
+      updateStorageClassYamlMock(ctx.pathParams.clusterUid, ctx.pathParams.name, ctx.data),
+  },
+  {
+    method: 'post',
     url: '/kubernetes/clusters/:clusterUid/storageclasses/:name/labels',
-    handler: ({
-      pathParams,
-      data,
-    }: {
-      pathParams: Record<string, string>
-      data: { labels: Record<string, string>; operation: number }
-    }) => manageStorageClassLabels(pathParams.clusterUid, pathParams.name, data.labels, data.operation),
+    handler: (ctx: { pathParams: Record<string, string>; data: MetadataLabelForm }) =>
+      manageStorageClassLabelMock(ctx.pathParams.clusterUid, ctx.pathParams.name, ctx.data),
   },
   {
-    method: 'put',
+    method: 'post',
     url: '/kubernetes/clusters/:clusterUid/storageclasses/:name/annotations',
-    handler: ({
-      pathParams,
-      data,
-    }: {
-      pathParams: Record<string, string>
-      data: { annotations: Record<string, string>; operation: number }
-    }) => manageStorageClassAnnotations(pathParams.clusterUid, pathParams.name, data.annotations, data.operation),
-  },
-]
-
-/**
- * StorageClass Mock 数据
- */
-const mockSCs: StorageClassResp[] = [
-  {
-    id: generateId(),
-    name: 'ssd-storage',
-    clusterUid: 'cluster-1',
-    clusterName: 'prod-cluster',
-    provisioner: 'kubernetes.io/gce-pd',
-    reclaimPolicy: 'Delete',
-    volumeBindingMode: 'WaitForFirstConsumer',
-    allowVolumeExpansion: true,
-    labels: { type: 'ssd' },
-    deletable: true,
-    createAt: '2024-01-15T10:00:00Z',
-    createBy: 'admin',
-    updateAt: '2024-03-15T14:00:00Z',
-    updateBy: 'admin',
+    handler: (ctx: { pathParams: Record<string, string>; data: MetadataAnnotationForm }) =>
+      manageStorageClassAnnotationMock(ctx.pathParams.clusterUid, ctx.pathParams.name, ctx.data),
   },
   {
-    id: generateId(),
-    name: 'standard-storage',
-    clusterUid: 'cluster-1',
-    clusterName: 'prod-cluster',
-    provisioner: 'kubernetes.io/gce-pd',
-    reclaimPolicy: 'Delete',
-    volumeBindingMode: 'Immediate',
-    allowVolumeExpansion: true,
-    labels: { type: 'standard' },
-    deletable: true,
-    createAt: '2024-01-15T10:05:00Z',
-    createBy: 'admin',
-    updateAt: '2024-03-10T11:00:00Z',
-    updateBy: 'admin',
+    method: 'delete',
+    url: '/kubernetes/clusters/:clusterUid/storageclasses/:name',
+    handler: (ctx: { pathParams: Record<string, string> }) =>
+      deleteStorageClassMock(ctx.pathParams.clusterUid, ctx.pathParams.name),
   },
   {
-    id: generateId(),
-    name: 'nfs-storage',
-    clusterUid: 'cluster-1',
-    clusterName: 'prod-cluster',
-    provisioner: 'nfs.io/provisioner',
-    reclaimPolicy: 'Retain',
-    mountOptions: ['nfsvers=4.1', 'soft=true'],
-    volumeBindingMode: 'Immediate',
-    allowVolumeExpansion: true,
-    labels: { type: 'nfs' },
-    deletable: true,
-    createAt: '2024-02-01T09:00:00Z',
-    createBy: 'admin',
-    updateAt: '2024-03-12T16:00:00Z',
-    updateBy: 'admin',
+    method: 'delete',
+    url: '/kubernetes/clusters/:clusterUid/storageclasses/batch',
+    handler: (ctx: { pathParams: Record<string, string>; data: string[] }) =>
+      deleteStorageClassesMock(ctx.pathParams.clusterUid, ctx.data),
   },
   {
-    id: generateId(),
-    name: 'local-storage',
-    clusterUid: 'cluster-1',
-    clusterName: 'prod-cluster',
-    provisioner: 'kubernetes.io/no-provisioner',
-    reclaimPolicy: 'Delete',
-    volumeBindingMode: 'WaitForFirstConsumer',
-    allowVolumeExpansion: false,
-    labels: { type: 'local' },
-    deletable: true,
-    createAt: '2024-02-15T14:00:00Z',
-    createBy: 'admin',
-    updateAt: '2024-03-01T10:00:00Z',
-    updateBy: 'admin',
+    method: 'post',
+    url: '/kubernetes/clusters/:clusterUid/storageclasses/import',
+    handler: (ctx: { pathParams: Record<string, string>; data: FormData }) =>
+      importStorageClassMock(ctx.pathParams.clusterUid, ctx.data),
   },
   {
-    id: generateId(),
-    name: 'ceph-rbd',
-    clusterUid: 'cluster-1',
-    clusterName: 'prod-cluster',
-    provisioner: 'ceph.com/rbd',
-    reclaimPolicy: 'Retain',
-    volumeBindingMode: 'WaitForFirstConsumer',
-    allowVolumeExpansion: true,
-    labels: { type: 'ceph' },
-    deletable: true,
-    createAt: '2024-03-01T10:00:00Z',
-    createBy: 'admin',
-    updateAt: '2024-03-19T08:00:00Z',
-    updateBy: 'admin',
+    method: 'get',
+    url: '/kubernetes/clusters/:clusterUid/storageclasses/export',
+    handler: (ctx: { pathParams: Record<string, string>; params: Partial<StorageClassQueryForm> }) =>
+      exportStorageClassMock(ctx.pathParams.clusterUid, ctx.params),
   },
 ]
