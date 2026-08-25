@@ -3,6 +3,7 @@
  * @module mock/kubernetes/workload/daemonsetData
  */
 import type { EventListVo } from '@/types/kubernetes/event'
+import type { PodListVo } from '@/types/kubernetes/pod'
 import type {
   DaemonSetDetailVo,
   DaemonSetHistoryRevisionListVo,
@@ -10,7 +11,6 @@ import type {
   DaemonSetNetworkVo,
   DaemonSetYamlVo,
 } from '@/types/kubernetes/workload/daemonset'
-import type { PodListVo } from '@/types/kubernetes/pod'
 
 import { generateId } from '@/mock/utils'
 

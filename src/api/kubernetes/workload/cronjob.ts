@@ -124,7 +124,9 @@ export function createCronJob(clusterUid: string, data: Partial<CronJobCreateFor
  * @returns void
  */
 export function createCronJobYaml(clusterUid: string, yaml: string) {
-  return request.post<void>(`/kubernetes/clusters/${clusterUid}/cronjobs/yaml`, yaml)
+  return request.post<void>(`/kubernetes/clusters/${clusterUid}/cronjobs/yaml`, yaml, {
+    headers: { 'Content-Type': 'application/yaml' },
+  })
 }
 
 /**
@@ -148,7 +150,9 @@ export function updateCronJob(clusterUid: string, namespace: string, name: strin
  * @returns void
  */
 export function updateCronJobYaml(clusterUid: string, namespace: string, name: string, yaml: string) {
-  return request.put<void>(`/kubernetes/clusters/${clusterUid}/namespaces/${namespace}/cronjobs/${name}/yaml`, yaml)
+  return request.put<void>(`/kubernetes/clusters/${clusterUid}/namespaces/${namespace}/cronjobs/${name}/yaml`, yaml, {
+    headers: { 'Content-Type': 'application/yaml' },
+  })
 }
 
 /**

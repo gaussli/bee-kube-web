@@ -7,6 +7,7 @@ import type { AxiosProgressEvent } from 'axios'
 import type { PageVo } from '@/types/common'
 import type { MetadataAnnotationForm, MetadataLabelForm } from '@/types/kubernetes/common'
 import type { EventListVo, EventQueryForm } from '@/types/kubernetes/event'
+import type { PodListVo, PodQueryForm } from '@/types/kubernetes/pod'
 import type {
   DaemonSetCreateForm,
   DaemonSetDetailVo,
@@ -20,9 +21,6 @@ import type {
   DaemonSetUpdateForm,
   DaemonSetYamlVo,
 } from '@/types/kubernetes/workload/daemonset'
-import type { PodListVo, PodQueryForm } from '@/types/kubernetes/pod'
-
-import { generateId } from '@/mock/utils'
 
 import {
   daemonSetMockData,
@@ -69,9 +67,6 @@ function getDaemonSetListMock(clusterUid: string, query: Partial<DaemonSetQueryF
  * @returns DaemonSet 详情响应对象
  */
 function getDaemonSetDetailMock(clusterUid: string, namespace: string, name: string): DaemonSetDetailVo {
-  void clusterUid
-  void namespace
-  void name
   console.log('[Mock] getDaemonSetDetail', clusterUid, namespace, name)
   return daemonSetMockDetail
 }
@@ -84,9 +79,6 @@ function getDaemonSetDetailMock(clusterUid: string, namespace: string, name: str
  * @returns DaemonSet YAML 响应对象（完整 YAML 文本）
  */
 function getDaemonSetYamlMock(clusterUid: string, namespace: string, name: string): DaemonSetYamlVo {
-  void clusterUid
-  void namespace
-  void name
   console.log('[Mock] getDaemonSetYaml', clusterUid, namespace, name)
   return daemonSetMockYaml
 }
@@ -105,9 +97,6 @@ function getDaemonSetPodListMock(
   name: string,
   query: Partial<PodQueryForm>,
 ): PageVo<PodListVo> {
-  void clusterUid
-  void namespace
-  void name
   console.log('[Mock] getDaemonSetPodList', clusterUid, namespace, name, query)
   const page = query.page || 1
   const pageSize = query.pageSize || 10
@@ -128,9 +117,6 @@ function getDaemonSetHistoryRevisionListMock(
   name: string,
   query: Partial<DaemonSetHistoryRevisionQueryForm>,
 ): PageVo<DaemonSetHistoryRevisionListVo> {
-  void clusterUid
-  void namespace
-  void name
   console.log('[Mock] getDaemonSetHistoryRevisionList', clusterUid, namespace, name, query)
   const matched = daemonSetMockHistoryRevisions.filter(r => {
     if (query.revision && r.revision !== query.revision) return false
@@ -152,9 +138,6 @@ function getDaemonSetHistoryRevisionListMock(
  * @returns DaemonSet 关联网络资源响应对象（关联的 Service 与 Ingress 列表）
  */
 function getDaemonSetNetworkMock(clusterUid: string, namespace: string, name: string): DaemonSetNetworkVo {
-  void clusterUid
-  void namespace
-  void name
   console.log('[Mock] getDaemonSetNetwork', clusterUid, namespace, name)
   return daemonSetMockNetwork
 }
@@ -173,9 +156,6 @@ function getDaemonSetEventListMock(
   name: string,
   query: Partial<EventQueryForm>,
 ): PageVo<EventListVo> {
-  void clusterUid
-  void namespace
-  void name
   console.log('[Mock] getDaemonSetEventList', clusterUid, namespace, name, query)
   const matched = daemonSetMockEvents.filter(e => {
     if (query.type && e.type !== query.type) return false
@@ -199,8 +179,6 @@ function getDaemonSetEventListMock(
  * @returns DaemonSet 监控响应对象
  */
 function getDaemonSetMonitorMock(clusterUid: string, namespace: string, name: string): DaemonSetMonitorVo {
-  void clusterUid
-  void namespace
   console.log('[Mock] getDaemonSetMonitor', clusterUid, namespace, name)
   return {}
 }
@@ -213,26 +191,6 @@ function getDaemonSetMonitorMock(clusterUid: string, namespace: string, name: st
  */
 function createDaemonSetMock(clusterUid: string, data: Partial<DaemonSetCreateForm>): void {
   console.log('[Mock] createDaemonSet', clusterUid, data)
-  const newItem: DaemonSetListVo = {
-    uid: generateId(),
-    clusterUid,
-    cluster: 'system-cluster',
-    namespaceUid: `ns-${data?.namespace || 'default'}`,
-    namespace: data?.namespace || 'default',
-    name: data?.name || 'new-daemonset',
-    description: data?.description,
-    status: 'Creating',
-    statusMsg: '创建中',
-    desiredNumberScheduled: 0,
-    numberReady: 0,
-    updateStrategyType: data?.spec?.updateStrategy?.type || 'RollingUpdate',
-    createAt: new Date().toISOString(),
-    createBy: 'admin',
-    updateAt: new Date().toISOString(),
-    updateBy: 'admin',
-    deletable: true,
-  }
-  daemonSetMockData.push(newItem)
 }
 
 /**
@@ -260,10 +218,6 @@ function updateDaemonSetMock(
   data: Partial<DaemonSetUpdateForm>,
 ): void {
   console.log('[Mock] updateDaemonSet', clusterUid, namespace, name, data)
-  const item = daemonSetMockData.find(d => d.clusterUid === clusterUid && d.namespace === namespace && d.name === name)
-  if (item && data.description !== undefined) {
-    item.description = data.description
-  }
 }
 
 /**
@@ -316,12 +270,6 @@ function manageDaemonSetAnnotationMock(
  */
 function deleteDaemonSetMock(clusterUid: string, namespace: string, name: string): void {
   console.log('[Mock] deleteDaemonSet', clusterUid, namespace, name)
-  const index = daemonSetMockData.findIndex(
-    d => d.clusterUid === clusterUid && d.namespace === namespace && d.name === name,
-  )
-  if (index > -1) {
-    daemonSetMockData.splice(index, 1)
-  }
 }
 
 /**
@@ -332,12 +280,6 @@ function deleteDaemonSetMock(clusterUid: string, namespace: string, name: string
  */
 function deleteDaemonSetsMock(clusterUid: string, uids: string[]): void {
   console.log('[Mock] deleteDaemonSets', clusterUid, uids)
-  for (const uid of uids) {
-    const index = daemonSetMockData.findIndex(d => d.clusterUid === clusterUid && d.uid === uid)
-    if (index > -1) {
-      daemonSetMockData.splice(index, 1)
-    }
-  }
 }
 
 /**

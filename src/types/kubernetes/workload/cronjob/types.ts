@@ -20,6 +20,8 @@ export interface CronJobSpec {
   startingDeadlineSeconds?: number
   /** 是否暂停 CronJob */
   suspend: boolean
+  /** 调度时区名称，如 'Asia/Shanghai'，为空时采用控制器进程时区 */
+  timeZone?: string
   /** 保留的成功 Job 历史数量上限，默认为 3 */
   successfulJobsHistoryLimit: number
   /** 保留的失败 Job 历史数量上限，默认为 1 */

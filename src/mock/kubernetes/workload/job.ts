@@ -18,8 +18,6 @@ import type {
   JobYamlVo,
 } from '@/types/kubernetes/workload/job'
 
-import { generateId } from '@/mock/utils'
-
 import { jobMockData, jobMockDetail, jobMockEvents, jobMockPods, jobMockYaml } from './jobData'
 
 /**
@@ -57,9 +55,6 @@ function getJobListMock(clusterUid: string, query: Partial<JobQueryForm>): PageV
  * @returns Job 详情响应对象
  */
 function getJobDetailMock(clusterUid: string, namespace: string, name: string): JobDetailVo {
-  void clusterUid
-  void namespace
-  void name
   console.log('[Mock] getJobDetail', clusterUid, namespace, name)
   return jobMockDetail
 }
@@ -72,9 +67,6 @@ function getJobDetailMock(clusterUid: string, namespace: string, name: string): 
  * @returns Job YAML 响应对象（完整 YAML 文本）
  */
 function getJobYamlMock(clusterUid: string, namespace: string, name: string): JobYamlVo {
-  void clusterUid
-  void namespace
-  void name
   console.log('[Mock] getJobYaml', clusterUid, namespace, name)
   return jobMockYaml
 }
@@ -93,8 +85,6 @@ function getJobPodListMock(
   name: string,
   query: Partial<PodQueryForm>,
 ): PageVo<PodListVo> {
-  void clusterUid
-  void namespace
   console.log('[Mock] getJobPodList', clusterUid, namespace, name, query)
   const page = query.page || 1
   const pageSize = query.pageSize || 10
@@ -115,8 +105,6 @@ function getJobEventListMock(
   name: string,
   query: Partial<EventQueryForm>,
 ): PageVo<EventListVo> {
-  void clusterUid
-  void namespace
   console.log('[Mock] getJobEventList', clusterUid, namespace, name, query)
   const matched = jobMockEvents.filter(e => {
     if (query.type && e.type !== query.type) return false
@@ -140,8 +128,6 @@ function getJobEventListMock(
  * @returns Job 监控响应对象
  */
 function getJobMonitorMock(clusterUid: string, namespace: string, name: string): JobMonitorVo {
-  void clusterUid
-  void namespace
   console.log('[Mock] getJobMonitor', clusterUid, namespace, name)
   return {}
 }
@@ -154,28 +140,6 @@ function getJobMonitorMock(clusterUid: string, namespace: string, name: string):
  */
 function createJobMock(clusterUid: string, data: Partial<JobCreateForm>): void {
   console.log('[Mock] createJob', clusterUid, data)
-  const newItem: JobListVo = {
-    uid: generateId(),
-    clusterUid,
-    cluster: 'system-cluster',
-    namespaceUid: `ns-${data?.namespace || 'default'}`,
-    namespace: data?.namespace || 'default',
-    name: data?.name || 'new-job',
-    description: data?.description,
-    status: 'Active',
-    statusMsg: '任务运行中',
-    active: 0,
-    succeeded: 0,
-    failed: 0,
-    completions: data?.spec?.completions || 1,
-    parallelism: data?.spec?.parallelism || 1,
-    createAt: new Date().toISOString(),
-    createBy: 'admin',
-    updateAt: new Date().toISOString(),
-    updateBy: 'admin',
-    deletable: true,
-  }
-  jobMockData.push(newItem)
 }
 
 /**
@@ -198,10 +162,6 @@ function createJobYamlMock(clusterUid: string, yaml: string): void {
  */
 function updateJobMock(clusterUid: string, namespace: string, name: string, data: Partial<JobUpdateForm>): void {
   console.log('[Mock] updateJob', clusterUid, namespace, name, data)
-  const item = jobMockData.find(d => d.clusterUid === clusterUid && d.namespace === namespace && d.name === name)
-  if (item && data.description !== undefined) {
-    item.description = data.description
-  }
 }
 
 /**
@@ -254,10 +214,6 @@ function manageJobAnnotationMock(
  */
 function deleteJobMock(clusterUid: string, namespace: string, name: string): void {
   console.log('[Mock] deleteJob', clusterUid, namespace, name)
-  const index = jobMockData.findIndex(d => d.clusterUid === clusterUid && d.namespace === namespace && d.name === name)
-  if (index > -1) {
-    jobMockData.splice(index, 1)
-  }
 }
 
 /**
@@ -268,12 +224,6 @@ function deleteJobMock(clusterUid: string, namespace: string, name: string): voi
  */
 function deleteJobsMock(clusterUid: string, uids: string[]): void {
   console.log('[Mock] deleteJobs', clusterUid, uids)
-  for (const uid of uids) {
-    const index = jobMockData.findIndex(d => d.clusterUid === clusterUid && d.uid === uid)
-    if (index > -1) {
-      jobMockData.splice(index, 1)
-    }
-  }
 }
 
 /**

@@ -60,43 +60,43 @@ function getDeploymentListMock(clusterUid: string, query: Partial<DeploymentQuer
 
 /**
  * 查看 Deployment 详情
- * @param _clusterUid 集群 UID
- * @param _namespace 命名空间名称
- * @param _name Deployment 名称
+ * @param clusterUid 集群 UID
+ * @param namespace 命名空间名称
+ * @param name Deployment 名称
  * @returns Deployment 详情响应对象
  */
-function getDeploymentDetailMock(_clusterUid: string, _namespace: string, _name: string): DeploymentDetailVo {
-  console.log('[Mock] getDeploymentDetail', _clusterUid, _namespace, _name)
+function getDeploymentDetailMock(clusterUid: string, namespace: string, name: string): DeploymentDetailVo {
+  console.log('[Mock] getDeploymentDetail', clusterUid, namespace, name)
   return mockDeploymentDetail
 }
 
 /**
  * 查看 Deployment YAML
- * @param _clusterUid 集群 UID
- * @param _namespace 命名空间名称
- * @param _name Deployment 名称
+ * @param clusterUid 集群 UID
+ * @param namespace 命名空间名称
+ * @param name Deployment 名称
  * @returns Deployment YAML 响应对象（完整 YAML 文本）
  */
-function getDeploymentYamlMock(_clusterUid: string, _namespace: string, _name: string): DeploymentYamlVo {
-  console.log('[Mock] getDeploymentYaml', _clusterUid, _namespace, _name)
+function getDeploymentYamlMock(clusterUid: string, namespace: string, name: string): DeploymentYamlVo {
+  console.log('[Mock] getDeploymentYaml', clusterUid, namespace, name)
   return mockDeploymentYaml
 }
 
 /**
  * 查看 Deployment 关联 Pod 列表
- * @param _clusterUid 集群 UID
- * @param _namespace 命名空间名称
- * @param _name Deployment 名称
+ * @param clusterUid 集群 UID
+ * @param namespace 命名空间名称
+ * @param name Deployment 名称
  * @param query Deployment 关联 Pod 查询条件请求对象（Pod 名称、Pod 状态、UID）
  * @returns Deployment 关联 Pod 分页列表
  */
 function getDeploymentPodListMock(
-  _clusterUid: string,
-  _namespace: string,
-  _name: string,
+  clusterUid: string,
+  namespace: string,
+  name: string,
   query: Partial<PodQueryForm>,
 ): PageVo<PodListVo> {
-  console.log('[Mock] getDeploymentPodList', _clusterUid, _namespace, _name, query)
+  console.log('[Mock] getDeploymentPodList', clusterUid, namespace, name, query)
   const filtered = mockDeploymentPods.filter((p: PodListVo) => {
     if (query.status && p.status !== query.status) return false
     if (query.namespace && p.namespace !== query.namespace) return false
@@ -119,19 +119,19 @@ function getDeploymentPodListMock(
 
 /**
  * 查看 Deployment 历史版本列表
- * @param _clusterUid 集群 UID
- * @param _namespace 命名空间名称
- * @param _name Deployment 名称
+ * @param clusterUid 集群 UID
+ * @param namespace 命名空间名称
+ * @param name Deployment 名称
  * @param query Deployment 历史版本查询条件请求对象（版本名称、变更原因）
  * @returns Deployment 历史版本分页列表
  */
 function getDeploymentHistoryRevisionListMock(
-  _clusterUid: string,
-  _namespace: string,
-  _name: string,
+  clusterUid: string,
+  namespace: string,
+  name: string,
   query: Partial<DeploymentHistoryRevisionQueryForm>,
 ): PageVo<DeploymentHistoryRevisionListVo> {
-  console.log('[Mock] getDeploymentHistoryRevisionList', _clusterUid, _namespace, _name, query)
+  console.log('[Mock] getDeploymentHistoryRevisionList', clusterUid, namespace, name, query)
   const filtered = mockDeploymentHistoryRevisions.filter((r: DeploymentHistoryRevisionListVo) => {
     if (query.revision && r.revision !== query.revision) return false
     if (query.changeCause && !r.changeCause.includes(query.changeCause)) return false
@@ -149,13 +149,13 @@ function getDeploymentHistoryRevisionListMock(
 
 /**
  * 查看 Deployment 关联网络资源
- * @param _clusterUid 集群 UID
- * @param _namespace 命名空间名称
- * @param _name Deployment 名称
+ * @param clusterUid 集群 UID
+ * @param namespace 命名空间名称
+ * @param name Deployment 名称
  * @returns Deployment 关联网络资源响应对象（关联的 Service 与 Ingress 列表）
  */
-function getDeploymentNetworkMock(_clusterUid: string, _namespace: string, _name: string): DeploymentNetworkVo {
-  console.log('[Mock] getDeploymentNetwork', _clusterUid, _namespace, _name)
+function getDeploymentNetworkMock(clusterUid: string, namespace: string, name: string): DeploymentNetworkVo {
+  console.log('[Mock] getDeploymentNetwork', clusterUid, namespace, name)
   return {
     services: mockDeploymentServices,
     ingresses: mockDeploymentIngresses,
@@ -164,19 +164,19 @@ function getDeploymentNetworkMock(_clusterUid: string, _namespace: string, _name
 
 /**
  * 查看 Deployment 事件列表
- * @param _clusterUid 集群 UID
- * @param _namespace 命名空间名称
- * @param _name Deployment 名称
+ * @param clusterUid 集群 UID
+ * @param namespace 命名空间名称
+ * @param name Deployment 名称
  * @param query 事件查询条件请求对象（事件类型、事件原因、事件描述、事件关联对象）
  * @returns Deployment 关联事件分页列表
  */
 function getDeploymentEventListMock(
-  _clusterUid: string,
-  _namespace: string,
-  _name: string,
+  clusterUid: string,
+  namespace: string,
+  name: string,
   query: Partial<EventQueryForm>,
 ): PageVo<EventListVo> {
-  console.log('[Mock] getDeploymentEventList', _clusterUid, _namespace, _name, query)
+  console.log('[Mock] getDeploymentEventList', clusterUid, namespace, name, query)
   const filtered = mockDeploymentEvents.filter((e: EventListVo) => {
     if (query.type && e.type !== query.type) return false
     return true
@@ -196,200 +196,201 @@ function getDeploymentEventListMock(
 
 /**
  * 查看 Deployment 监控数据
- * @param _clusterUid 集群 UID
- * @param _namespace 命名空间名称
- * @param _name Deployment 名称
+ * @param clusterUid 集群 UID
+ * @param namespace 命名空间名称
+ * @param name Deployment 名称
  * @returns Deployment 监控响应对象
  */
-function getDeploymentMonitorMock(_clusterUid: string, _namespace: string, _name: string): DeploymentMonitorVo {
-  console.log('[Mock] getDeploymentMonitor', _clusterUid, _namespace, _name)
+function getDeploymentMonitorMock(clusterUid: string, namespace: string, name: string): DeploymentMonitorVo {
+  console.log('[Mock] getDeploymentMonitor', clusterUid, namespace, name)
   return {}
 }
 
 /**
  * 创建 Deployment
- * @param _clusterUid 集群 UID
+ * @param clusterUid 集群 UID
  * @param data Deployment 创建请求对象（description / metadata / spec）
  * @returns void
  */
-function createDeploymentMock(_clusterUid: string, data: Partial<DeploymentCreateForm>): void {
-  console.log('[Mock] createDeployment', _clusterUid, data)
+function createDeploymentMock(clusterUid: string, data: Partial<DeploymentCreateForm>): void {
+  console.log('[Mock] createDeployment', clusterUid, data)
 }
 
 /**
  * YAML 创建 Deployment
- * @param _clusterUid 集群 UID
+ * @param clusterUid 集群 UID
  * @param yaml Deployment YAML 字符串
  * @returns void
  */
-function createDeploymentYamlMock(_clusterUid: string, yaml: string): void {
-  console.log('[Mock] createDeploymentYaml', _clusterUid, yaml)
+function createDeploymentYamlMock(clusterUid: string, yaml: string): void {
+  console.log('[Mock] createDeploymentYaml', clusterUid, yaml)
 }
 
 /**
  * 更新 Deployment
- * @param _clusterUid 集群 UID
- * @param _namespace 命名空间名称
- * @param _name Deployment 名称
+ * @param clusterUid 集群 UID
+ * @param namespace 命名空间名称
+ * @param name Deployment 名称
  * @param data Deployment 更新请求对象（description / metadata / spec）
  * @returns void
  */
 function updateDeploymentMock(
-  _clusterUid: string,
-  _namespace: string,
-  _name: string,
+  clusterUid: string,
+  namespace: string,
+  name: string,
   data: Partial<DeploymentUpdateForm>,
 ): void {
-  console.log('[Mock] updateDeployment', _clusterUid, _namespace, _name, data)
+  console.log('[Mock] updateDeployment', clusterUid, namespace, name, data)
 }
 
 /**
  * YAML 更新 Deployment
- * @param _clusterUid 集群 UID
- * @param _namespace 命名空间名称
- * @param _name Deployment 名称
+ * @param clusterUid 集群 UID
+ * @param namespace 命名空间名称
+ * @param name Deployment 名称
  * @param yaml Deployment YAML 字符串
  * @returns void
  */
-function updateDeploymentYamlMock(_clusterUid: string, _namespace: string, _name: string, yaml: string): void {
-  console.log('[Mock] updateDeploymentYaml', _clusterUid, _namespace, _name, yaml)
+function updateDeploymentYamlMock(clusterUid: string, namespace: string, name: string, yaml: string): void {
+  console.log('[Mock] updateDeploymentYaml', clusterUid, namespace, name, yaml)
 }
 
 /**
  * 管理 Deployment 标签
- * @param _clusterUid 集群 UID
- * @param _namespace 命名空间名称
- * @param _name Deployment 名称
- * @param _data 管理标签请求对象（labels 键值对、operation 操作类型）
+ * @param clusterUid 集群 UID
+ * @param namespace 命名空间名称
+ * @param name Deployment 名称
+ * @param data 管理标签请求对象（labels 键值对、operation 操作类型）
  * @returns void
  */
 function manageDeploymentLabelMock(
-  _clusterUid: string,
-  _namespace: string,
-  _name: string,
-  _data: MetadataLabelForm,
+  clusterUid: string,
+  namespace: string,
+  name: string,
+  data: MetadataLabelForm,
 ): void {
-  console.log('[Mock] manageDeploymentLabel', _clusterUid, _namespace, _name, _data)
+  console.log('[Mock] manageDeploymentLabel', clusterUid, namespace, name, data)
 }
 
 /**
  * 管理 Deployment 注解
- * @param _clusterUid 集群 UID
- * @param _namespace 命名空间名称
- * @param _name Deployment 名称
- * @param _data 管理注解请求对象（annotations 键值对、operation 操作类型）
+ * @param clusterUid 集群 UID
+ * @param namespace 命名空间名称
+ * @param name Deployment 名称
+ * @param data 管理注解请求对象（annotations 键值对、operation 操作类型）
  * @returns void
  */
 function manageDeploymentAnnotationMock(
-  _clusterUid: string,
-  _namespace: string,
-  _name: string,
-  _data: MetadataAnnotationForm,
+  clusterUid: string,
+  namespace: string,
+  name: string,
+  data: MetadataAnnotationForm,
 ): void {
-  console.log('[Mock] manageDeploymentAnnotation', _clusterUid, _namespace, _name, _data)
+  console.log('[Mock] manageDeploymentAnnotation', clusterUid, namespace, name, data)
 }
 
 /**
  * 删除 Deployment
- * @param _clusterUid 集群 UID
- * @param _namespace 命名空间名称
- * @param _name Deployment 名称
+ * @param clusterUid 集群 UID
+ * @param namespace 命名空间名称
+ * @param name Deployment 名称
  * @returns void
  */
-function deleteDeploymentMock(_clusterUid: string, _namespace: string, _name: string): void {
-  console.log('[Mock] deleteDeployment', _clusterUid, _namespace, _name)
+function deleteDeploymentMock(clusterUid: string, namespace: string, name: string): void {
+  console.log('[Mock] deleteDeployment', clusterUid, namespace, name)
 }
 
 /**
  * 批量删除 Deployment
- * @param _clusterUid 集群 UID
+ * @param clusterUid 集群 UID
  * @param uids Deployment UID 列表
  * @returns void
  */
-function deleteDeploymentsMock(_clusterUid: string, uids: string[]): void {
-  console.log('[Mock] deleteDeployments', _clusterUid, uids)
+function deleteDeploymentsMock(clusterUid: string, uids: string[]): void {
+  console.log('[Mock] deleteDeployments', clusterUid, uids)
 }
 
 /**
  * 导入 Deployment
- * @param _clusterUid 集群 UID
- * @param _formData 上传的文件
+ * @param clusterUid 集群 UID
+ * @param formData 上传的文件
  * @returns void
  */
-function importDeploymentMock(_clusterUid: string, _formData: FormData): void {
-  console.log('[Mock] importDeployment', _clusterUid)
+function importDeploymentMock(clusterUid: string, formData: FormData): void {
+  void formData
+  console.log('[Mock] importDeployment', clusterUid)
 }
 
 /**
  * 导出 Deployment
- * @param _clusterUid 集群 UID
+ * @param clusterUid 集群 UID
  * @param query Deployment 查询条件请求对象（名称、命名空间、状态、UID）
  * @returns void
  */
-function exportDeploymentMock(_clusterUid: string, query: Partial<DeploymentQueryForm>): void {
-  console.log('[Mock] exportDeployment', _clusterUid, query)
+function exportDeploymentMock(clusterUid: string, query: Partial<DeploymentQueryForm>): void {
+  console.log('[Mock] exportDeployment', clusterUid, query)
 }
 
 /**
  * 扩缩容 Deployment
- * @param _clusterUid 集群 UID
- * @param _namespace 命名空间名称
- * @param _name Deployment 名称
+ * @param clusterUid 集群 UID
+ * @param namespace 命名空间名称
+ * @param name Deployment 名称
  * @param data Deployment 扩缩容请求对象（期望副本数）
  * @returns void
  */
-function scaleDeploymentMock(_clusterUid: string, _namespace: string, _name: string, data: DeploymentScaleForm): void {
-  console.log('[Mock] scaleDeployment', _clusterUid, _namespace, _name, data)
+function scaleDeploymentMock(clusterUid: string, namespace: string, name: string, data: DeploymentScaleForm): void {
+  console.log('[Mock] scaleDeployment', clusterUid, namespace, name, data)
 }
 
 /**
  * 重启 Deployment
- * @param _clusterUid 集群 UID
- * @param _namespace 命名空间名称
- * @param _name Deployment 名称
+ * @param clusterUid 集群 UID
+ * @param namespace 命名空间名称
+ * @param name Deployment 名称
  * @returns void
  */
-function restartDeploymentMock(_clusterUid: string, _namespace: string, _name: string): void {
-  console.log('[Mock] restartDeployment', _clusterUid, _namespace, _name)
+function restartDeploymentMock(clusterUid: string, namespace: string, name: string): void {
+  console.log('[Mock] restartDeployment', clusterUid, namespace, name)
 }
 
 /**
  * 回滚 Deployment
- * @param _clusterUid 集群 UID
- * @param _namespace 命名空间名称
- * @param _name Deployment 名称
+ * @param clusterUid 集群 UID
+ * @param namespace 命名空间名称
+ * @param name Deployment 名称
  * @param data Deployment 回滚请求对象（目标历史版本号）
  * @returns void
  */
 function rollbackDeploymentMock(
-  _clusterUid: string,
-  _namespace: string,
-  _name: string,
+  clusterUid: string,
+  namespace: string,
+  name: string,
   data: DeploymentRollbackForm,
 ): void {
-  console.log('[Mock] rollbackDeployment', _clusterUid, _namespace, _name, data)
+  console.log('[Mock] rollbackDeployment', clusterUid, namespace, name, data)
 }
 
 /**
  * 暂停 Deployment 更新
- * @param _clusterUid 集群 UID
- * @param _namespace 命名空间名称
- * @param _name Deployment 名称
+ * @param clusterUid 集群 UID
+ * @param namespace 命名空间名称
+ * @param name Deployment 名称
  * @returns void
  */
-function pauseDeploymentMock(_clusterUid: string, _namespace: string, _name: string): void {
-  console.log('[Mock] pauseDeployment', _clusterUid, _namespace, _name)
+function pauseDeploymentMock(clusterUid: string, namespace: string, name: string): void {
+  console.log('[Mock] pauseDeployment', clusterUid, namespace, name)
 }
 
 /**
  * 恢复 Deployment 更新
- * @param _clusterUid 集群 UID
- * @param _namespace 命名空间名称
- * @param _name Deployment 名称
+ * @param clusterUid 集群 UID
+ * @param namespace 命名空间名称
+ * @param name Deployment 名称
  * @returns void
  */
-function resumeDeploymentMock(_clusterUid: string, _namespace: string, _name: string): void {
-  console.log('[Mock] resumeDeployment', _clusterUid, _namespace, _name)
+function resumeDeploymentMock(clusterUid: string, namespace: string, name: string): void {
+  console.log('[Mock] resumeDeployment', clusterUid, namespace, name)
 }
 
 export default [

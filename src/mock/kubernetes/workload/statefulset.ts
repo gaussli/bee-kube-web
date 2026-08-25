@@ -310,7 +310,9 @@ function importStatefulSetMock(
   formData: FormData,
   onProgress?: (progressEvent: AxiosProgressEvent) => void,
 ): void {
-  console.log('[Mock] importStatefulSet', clusterUid, formData, onProgress)
+  void formData
+  void onProgress
+  console.log('[Mock] importStatefulSet', clusterUid)
 }
 
 /**

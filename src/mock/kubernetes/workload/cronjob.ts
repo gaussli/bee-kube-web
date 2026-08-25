@@ -19,8 +19,6 @@ import type {
   CronJobYamlVo,
 } from '@/types/kubernetes/workload/cronjob'
 
-import { generateId } from '@/mock/utils'
-
 import { cronJobMockData, cronJobMockDetail, cronJobMockEvents, cronJobMockJobs, cronJobMockYaml } from './cronjobData'
 
 /**
@@ -58,9 +56,6 @@ function getCronJobListMock(clusterUid: string, query: Partial<CronJobQueryForm>
  * @returns CronJob 详情响应对象
  */
 function getCronJobDetailMock(clusterUid: string, namespace: string, name: string): CronJobDetailVo {
-  void clusterUid
-  void namespace
-  void name
   console.log('[Mock] getCronJobDetail', clusterUid, namespace, name)
   return cronJobMockDetail
 }
@@ -73,9 +68,6 @@ function getCronJobDetailMock(clusterUid: string, namespace: string, name: strin
  * @returns CronJob YAML 响应对象（完整 YAML 文本）
  */
 function getCronJobYamlMock(clusterUid: string, namespace: string, name: string): CronJobYamlVo {
-  void clusterUid
-  void namespace
-  void name
   console.log('[Mock] getCronJobYaml', clusterUid, namespace, name)
   return cronJobMockYaml
 }
@@ -94,8 +86,6 @@ function getCronJobJobListMock(
   name: string,
   query: Partial<CronJobJobQueryForm>,
 ): PageVo<CronJobJobListVo> {
-  void clusterUid
-  void namespace
   console.log('[Mock] getCronJobJobList', clusterUid, namespace, name, query)
   const page = query.page || 1
   const pageSize = query.pageSize || 10
@@ -116,12 +106,10 @@ function getCronJobEventListMock(
   name: string,
   query: Partial<EventQueryForm>,
 ): PageVo<EventListVo> {
-  void clusterUid
-  void namespace
   console.log('[Mock] getCronJobEventList', clusterUid, namespace, name, query)
   const matched = cronJobMockEvents.filter(e => {
     if (query.type && e.type !== query.type) return false
-    if (query.reason && !e.reason.includes(query.reason as string)) return false
+    if (query.reason && !(e.reason ?? '').includes(query.reason as string)) return false
     if (query.note && !(e.note ?? '').includes(query.note as string)) return false
     if (query.regarding?.name && !(e.regarding?.name ?? '').includes(query.regarding.name as string)) return false
     return true
@@ -141,8 +129,6 @@ function getCronJobEventListMock(
  * @returns CronJob 监控响应对象
  */
 function getCronJobMonitorMock(clusterUid: string, namespace: string, name: string): CronJobMonitorVo {
-  void clusterUid
-  void namespace
   console.log('[Mock] getCronJobMonitor', clusterUid, namespace, name)
   return {}
 }
@@ -155,27 +141,6 @@ function getCronJobMonitorMock(clusterUid: string, namespace: string, name: stri
  */
 function createCronJobMock(clusterUid: string, data: Partial<CronJobCreateForm>): void {
   console.log('[Mock] createCronJob', clusterUid, data)
-  const newItem: CronJobListVo = {
-    uid: generateId(),
-    clusterUid,
-    cluster: 'system-cluster',
-    namespaceUid: `ns-${data?.metadata?.namespace || 'default'}`,
-    namespace: data?.metadata?.namespace || 'default',
-    name: data?.metadata?.name || 'new-cronjob',
-    description: data?.description,
-    status: 'Active',
-    statusMsg: '调度正常',
-    schedule: data?.spec?.schedule || '*/5 * * * *',
-    active: 0,
-    lastScheduleTime: '',
-    suspend: data?.spec?.suspend || false,
-    createAt: new Date().toISOString(),
-    createBy: 'admin',
-    updateAt: new Date().toISOString(),
-    updateBy: 'admin',
-    deletable: true,
-  }
-  cronJobMockData.push(newItem)
 }
 
 /**
@@ -203,10 +168,6 @@ function updateCronJobMock(
   data: Partial<CronJobUpdateForm>,
 ): void {
   console.log('[Mock] updateCronJob', clusterUid, namespace, name, data)
-  const item = cronJobMockData.find(d => d.clusterUid === clusterUid && d.namespace === namespace && d.name === name)
-  if (item && data.description !== undefined) {
-    item.description = data.description
-  }
 }
 
 /**
@@ -259,12 +220,6 @@ function manageCronJobAnnotationMock(
  */
 function deleteCronJobMock(clusterUid: string, namespace: string, name: string): void {
   console.log('[Mock] deleteCronJob', clusterUid, namespace, name)
-  const index = cronJobMockData.findIndex(
-    d => d.clusterUid === clusterUid && d.namespace === namespace && d.name === name,
-  )
-  if (index > -1) {
-    cronJobMockData.splice(index, 1)
-  }
 }
 
 /**
@@ -275,12 +230,6 @@ function deleteCronJobMock(clusterUid: string, namespace: string, name: string):
  */
 function deleteCronJobsMock(clusterUid: string, uids: string[]): void {
   console.log('[Mock] deleteCronJobs', clusterUid, uids)
-  for (const uid of uids) {
-    const index = cronJobMockData.findIndex(d => d.clusterUid === clusterUid && d.uid === uid)
-    if (index > -1) {
-      cronJobMockData.splice(index, 1)
-    }
-  }
 }
 
 /**
