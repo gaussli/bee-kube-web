@@ -1,353 +1,332 @@
 /**
- * NetworkPolicy Mock API
- * @module mock/kubernetes/network/networkPolicy
+ * NetworkPolicy 管理 Mock
+ * @module mock/kubernetes/network/networkpolicy
  */
 import type { PageVo } from '@/types/common'
+import type { MetadataAnnotationForm, MetadataLabelForm } from '@/types/kubernetes/common'
+import type { EventListVo, EventQueryForm } from '@/types/kubernetes/event'
 import type {
-  NetworkPolicyResp,
-  NetworkPolicyQueryReq,
-  NetworkPolicyReq,
-} from '@/types/kubernetes/network/networkPolicy'
+  NetworkPolicyCreateForm,
+  NetworkPolicyDetailVo,
+  NetworkPolicyListVo,
+  NetworkPolicyQueryForm,
+  NetworkPolicyUpdateForm,
+  NetworkPolicyYamlVo,
+} from '@/types/kubernetes/network/networkpolicy'
 
-import { generateId } from '@/mock/utils'
+import {
+  mockNetworkPolicies,
+  mockNetworkPolicyDetail,
+  mockNetworkPolicyEvents,
+  mockNetworkPolicyYaml,
+} from './networkpolicyData'
 
 /**
- * 获取 NetworkPolicy 分页列表
- * @param clusterUid - 集群 UID
- * @param namespaceName - 命名空间名称
- * @param params - 查询参数
- * @returns 分页数据
+ * 查看 NetworkPolicy 列表
+ * @param clusterUid 集群 UID
+ * @param namespaceName 命名空间名称
+ * @param query NetworkPolicy 查询条件请求对象（名称、UID）
+ * @returns NetworkPolicy 分页列表
  */
-function getNetworkPolicyPage(
+function getNetworkPolicyListMock(
   clusterUid: string,
   namespaceName: string,
-  params: Partial<NetworkPolicyQueryReq>,
-): PageVo<NetworkPolicyResp> {
-  const { name, page = 1, pageSize = 10 } = params || {}
-  let filtered = mockNetworkPolicys.filter(n => n.clusterUid === clusterUid && n.namespace === namespaceName)
-  if (name) filtered = filtered.filter(n => n.name.toLowerCase().includes(name.toLowerCase()))
-  const total = filtered.length
-  const start = (page - 1) * pageSize
-  const end = start + pageSize
-  const list = filtered.slice(start, end)
-  return { list, total, page, pageSize }
+  query: Partial<NetworkPolicyQueryForm>,
+): PageVo<NetworkPolicyListVo> {
+  console.log('[Mock] getNetworkPolicyList', clusterUid, namespaceName, query)
+  const filtered = mockNetworkPolicies.filter((n: NetworkPolicyListVo) => {
+    if (n.clusterUid !== clusterUid) return false
+    if (namespaceName && n.namespace !== namespaceName) return false
+    return true
+  })
+  const filteredUid = query.uid ? filtered.filter(n => n.uid === query.uid) : []
+  const filteredName = query.name ? filtered.filter(n => n.name.includes(query.name as string)) : []
+  const matched = query.uid || query.name ? Array.from(new Set([...filteredUid, ...filteredName])) : filtered
+  const page = query.page || 1
+  const pageSize = query.pageSize || 10
+  return {
+    list: matched.slice((page - 1) * pageSize, page * pageSize),
+    total: matched.length,
+    page,
+    pageSize,
+  }
 }
 
 /**
- * 获取 NetworkPolicy 详情
- * @param clusterUid - 集群 UID
- * @param namespaceName - 命名空间名称
- * @param name - NetworkPolicy 名称
- * @returns NetworkPolicy 详情
+ * 查看 NetworkPolicy 详情
+ * @param clusterUid 集群 UID
+ * @param namespaceName 命名空间名称
+ * @param name NetworkPolicy 名称
+ * @returns NetworkPolicy 详情响应对象
  */
-function getNetworkPolicyDetail(clusterUid: string, namespaceName: string, name: string): NetworkPolicyResp | null {
-  return (
-    mockNetworkPolicys.find(n => n.clusterUid === clusterUid && n.namespace === namespaceName && n.name === name) ||
-    null
-  )
+function getNetworkPolicyDetailMock(clusterUid: string, namespaceName: string, name: string): NetworkPolicyDetailVo {
+  console.log('[Mock] getNetworkPolicyDetail', clusterUid, namespaceName, name)
+  return mockNetworkPolicyDetail
+}
+
+/**
+ * 查看 NetworkPolicy YAML
+ * @param clusterUid 集群 UID
+ * @param namespaceName 命名空间名称
+ * @param name NetworkPolicy 名称
+ * @returns NetworkPolicy YAML 响应对象（完整 YAML 文本）
+ */
+function getNetworkPolicyYamlMock(clusterUid: string, namespaceName: string, name: string): NetworkPolicyYamlVo {
+  console.log('[Mock] getNetworkPolicyYaml', clusterUid, namespaceName, name)
+  return mockNetworkPolicyYaml
+}
+
+/**
+ * 查看 NetworkPolicy 关联事件列表
+ * @param clusterUid 集群 UID
+ * @param namespaceName 命名空间名称
+ * @param name NetworkPolicy 名称
+ * @param query 事件查询条件
+ * @returns NetworkPolicy 关联事件分页列表
+ */
+function getNetworkPolicyEventListMock(
+  clusterUid: string,
+  namespaceName: string,
+  name: string,
+  query: Partial<EventQueryForm>,
+): PageVo<EventListVo> {
+  console.log('[Mock] getNetworkPolicyEventList', clusterUid, namespaceName, name, query)
+  const page = query.page || 1
+  const pageSize = query.pageSize || 10
+  const list = mockNetworkPolicyEvents.slice((page - 1) * pageSize, page * pageSize)
+  return {
+    list,
+    total: mockNetworkPolicyEvents.length,
+    page,
+    pageSize,
+  }
 }
 
 /**
  * 创建 NetworkPolicy
- * @param clusterUid - 集群 UID
- * @param data - 创建参数
+ * @param clusterUid 集群 UID
+ * @param namespaceName 命名空间名称
+ * @param data 创建参数
+ * @returns void
  */
-function createNetworkPolicy(clusterUid: string, data: Partial<NetworkPolicyReq>): void {
-  const created: NetworkPolicyResp = {
-    id: generateId(),
-    name: data.name || '',
-    namespace: data.namespace || '',
-    clusterUid,
-    clusterName: 'prod-cluster',
-    podSelector: data.podSelector || {},
-    ingress: data.ingress,
-    egress: data.egress,
-    policyTypes: data.policyTypes,
-    labels: data.labels,
-    annotations: data.annotations,
-    createAt: new Date().toLocaleString(),
-    createBy: 'admin',
-    updateAt: new Date().toLocaleString(),
-    updateBy: 'admin',
-  }
-  mockNetworkPolicys.push(created)
+function createNetworkPolicyMock(
+  clusterUid: string,
+  namespaceName: string,
+  data: Partial<NetworkPolicyCreateForm>,
+): void {
+  console.log('[Mock] createNetworkPolicy', clusterUid, namespaceName, data)
+}
+
+/**
+ * 通过 YAML 创建 NetworkPolicy
+ * @param clusterUid 集群 UID
+ * @param yaml NetworkPolicy YAML 文本
+ * @returns void
+ */
+function createNetworkPolicyYamlMock(clusterUid: string, yaml: string): void {
+  console.log('[Mock] createNetworkPolicyYaml', clusterUid, yaml)
 }
 
 /**
  * 更新 NetworkPolicy
- * @param clusterUid - 集群 UID
- * @param data - 更新参数
+ * @param clusterUid 集群 UID
+ * @param namespaceName 命名空间名称
+ * @param name NetworkPolicy 名称
+ * @param data 更新参数
+ * @returns void
  */
-function updateNetworkPolicy(clusterUid: string, data: Partial<NetworkPolicyReq>): void {
-  const index = mockNetworkPolicys.findIndex(
-    n => n.clusterUid === clusterUid && n.namespace === data.namespace && n.name === data.name,
-  )
-  if (index === -1) {
-    console.error('[Update NetworkPolicy] can not find networkpolicy:', data.name)
-    return
-  }
-  const updated = {
-    ...mockNetworkPolicys[index],
-    ...data,
-    updateBy: 'admin',
-    updateAt: new Date().toLocaleString(),
-  }
-  mockNetworkPolicys[index] = updated
+function updateNetworkPolicyMock(
+  clusterUid: string,
+  namespaceName: string,
+  name: string,
+  data: Partial<NetworkPolicyUpdateForm>,
+): void {
+  console.log('[Mock] updateNetworkPolicy', clusterUid, namespaceName, name, data)
+}
+
+/**
+ * 通过 YAML 更新 NetworkPolicy
+ * @param clusterUid 集群 UID
+ * @param namespaceName 命名空间名称
+ * @param name NetworkPolicy 名称
+ * @param yaml NetworkPolicy YAML 文本
+ * @returns void
+ */
+function updateNetworkPolicyYamlMock(clusterUid: string, namespaceName: string, name: string, yaml: string): void {
+  console.log('[Mock] updateNetworkPolicyYaml', clusterUid, namespaceName, name, yaml)
 }
 
 /**
  * 更新 NetworkPolicy 标签
- * @param clusterUid - 集群 UID
- * @param namespaceName - 命名空间名称
- * @param name - NetworkPolicy 名称
- * @param labels - 标签键值对
- * @param operation - 操作类型
+ * @param clusterUid 集群 UID
+ * @param namespaceName 命名空间名称
+ * @param name NetworkPolicy 名称
+ * @param data 标签更新参数
+ * @returns void
  */
-function manageNetworkPolicyLabels(
+function manageNetworkPolicyLabelMock(
   clusterUid: string,
   namespaceName: string,
   name: string,
-  labels: Record<string, string>,
-  operation: number,
+  data: MetadataLabelForm,
 ): void {
-  const index = mockNetworkPolicys.findIndex(
-    n => n.clusterUid === clusterUid && n.namespace === namespaceName && n.name === name,
-  )
-  if (index === -1) {
-    console.error('[Update NetworkPolicy Labels] can not find networkpolicy:', name)
-    return
-  }
-  const currentLabels = mockNetworkPolicys[index].labels || {}
-  if (operation === 1) {
-    mockNetworkPolicys[index].labels = { ...currentLabels, ...labels }
-  } else if (operation === 2) {
-    const newLabels = { ...currentLabels }
-    Object.keys(labels).forEach(key => delete newLabels[key])
-    mockNetworkPolicys[index].labels = newLabels
-  } else if (operation === 3) {
-    mockNetworkPolicys[index].labels = labels
-  }
+  console.log('[Mock] manageNetworkPolicyLabel', clusterUid, namespaceName, name, data)
 }
 
 /**
  * 更新 NetworkPolicy 注解
- * @param clusterUid - 集群 UID
- * @param namespaceName - 命名空间名称
- * @param name - NetworkPolicy 名称
- * @param annotations - 注解键值对
- * @param operation - 操作类型
+ * @param clusterUid 集群 UID
+ * @param namespaceName 命名空间名称
+ * @param name NetworkPolicy 名称
+ * @param data 注解更新参数
+ * @returns void
  */
-function manageNetworkPolicyAnnotations(
+function manageNetworkPolicyAnnotationMock(
   clusterUid: string,
   namespaceName: string,
   name: string,
-  annotations: Record<string, string>,
-  operation: number,
+  data: MetadataAnnotationForm,
 ): void {
-  const index = mockNetworkPolicys.findIndex(
-    n => n.clusterUid === clusterUid && n.namespace === namespaceName && n.name === name,
-  )
-  if (index === -1) {
-    console.error('[Update NetworkPolicy Annotations] can not find networkpolicy:', name)
-    return
-  }
-  const currentAnnotations = mockNetworkPolicys[index].annotations || {}
-  if (operation === 1) {
-    mockNetworkPolicys[index].annotations = { ...currentAnnotations, ...annotations }
-  } else if (operation === 2) {
-    const newAnnotations = { ...currentAnnotations }
-    Object.keys(annotations).forEach(key => delete newAnnotations[key])
-    mockNetworkPolicys[index].annotations = newAnnotations
-  } else if (operation === 3) {
-    mockNetworkPolicys[index].annotations = annotations
-  }
+  console.log('[Mock] manageNetworkPolicyAnnotation', clusterUid, namespaceName, name, data)
 }
 
 /**
  * 删除 NetworkPolicy
- * @param clusterUid - 集群 UID
- * @param namespaceName - 命名空间名称
- * @param name - NetworkPolicy 名称
+ * @param clusterUid 集群 UID
+ * @param namespaceName 命名空间名称
+ * @param name NetworkPolicy 名称
+ * @returns void
  */
-function deleteNetworkPolicy(clusterUid: string, namespaceName: string, name: string): void {
-  const index = mockNetworkPolicys.findIndex(
-    n => n.clusterUid === clusterUid && n.namespace === namespaceName && n.name === name,
-  )
-  if (index === -1) {
-    console.error('[Delete NetworkPolicy] can not find networkpolicy:', name)
-    return
-  }
-  mockNetworkPolicys.splice(index, 1)
+function deleteNetworkPolicyMock(clusterUid: string, namespaceName: string, name: string): void {
+  console.log('[Mock] deleteNetworkPolicy', clusterUid, namespaceName, name)
 }
 
 /**
  * 批量删除 NetworkPolicy
- * @param clusterUid - 集群 UID
- * @param namespaceName - 命名空间名称
- * @param names - 待删除的 NetworkPolicy 名称列表
+ * @param clusterUid 集群 UID
+ * @param namespaceName 命名空间名称
+ * @param uids NetworkPolicy UID 列表
+ * @returns void
  */
-function deleteNetworkPolicys(clusterUid: string, namespaceName: string, names: string[]): void {
-  names.forEach(name => {
-    const index = mockNetworkPolicys.findIndex(
-      n => n.clusterUid === clusterUid && n.namespace === namespaceName && n.name === name,
-    )
-    if (index === -1) {
-      console.error('[Delete NetworkPolicys] can not find networkpolicy:', name)
-    } else {
-      mockNetworkPolicys.splice(index, 1)
-    }
-  })
+function deleteNetworkPoliciesMock(clusterUid: string, namespaceName: string, uids: string[]): void {
+  console.log('[Mock] deleteNetworkPolicies', clusterUid, namespaceName, uids)
 }
 
 /**
- * NetworkPolicy 路由配置
- * @remarks
- * - GET /kubernetes/clusters/:clusterUid/namespaces/:namespaceName/networkpolicies - 获取 NetworkPolicy 分页列表
- * - GET /kubernetes/clusters/:clusterUid/namespaces/:namespaceName/networkpolicies/:name - 获取 NetworkPolicy 详情
- * - POST /kubernetes/clusters/:clusterUid/namespaces/:namespaceName/networkpolicies - 创建 NetworkPolicy
- * - PUT /kubernetes/clusters/:clusterUid/namespaces/:namespaceName/networkpolicies/:name - 更新 NetworkPolicy
- * - PUT /kubernetes/clusters/:clusterUid/namespaces/:namespaceName/networkpolicies/:name/labels - 更新标签
- * - PUT /kubernetes/clusters/:clusterUid/namespaces/:namespaceName/networkpolicies/:name/annotations - 更新注解
- * - DELETE /kubernetes/clusters/:clusterUid/namespaces/:namespaceName/networkpolicies/:name - 删除 NetworkPolicy
- * - DELETE /kubernetes/clusters/:clusterUid/namespaces/:namespaceName/networkpolicies - 批量删除 NetworkPolicy
+ * 导入 NetworkPolicy
+ * @param clusterUid 集群 UID
+ * @param formData 上传的文件
+ * @returns void
  */
+function importNetworkPolicyMock(clusterUid: string, formData: FormData): void {
+  void formData
+  console.log('[Mock] importNetworkPolicy', clusterUid)
+}
+
+/**
+ * 导出 NetworkPolicy
+ * @param clusterUid 集群 UID
+ * @param namespaceName 命名空间名称
+ * @param name NetworkPolicy 名称
+ * @returns void
+ */
+function exportNetworkPolicyMock(clusterUid: string, namespaceName: string, name: string): void {
+  console.log('[Mock] exportNetworkPolicy', clusterUid, namespaceName, name)
+}
+
 export default [
   {
     method: 'get',
-    url: '/kubernetes/clusters/:clusterUid/namespaces/:namespaceName/networkpolicies',
-    handler: ({ pathParams, params }: { pathParams: Record<string, string>; params: Partial<NetworkPolicyQueryReq> }) =>
-      getNetworkPolicyPage(pathParams.clusterUid, pathParams.namespaceName, params),
+    url: '/kubernetes/clusters/:clusterUid/namespaces/:namespace/networkpolicies',
+    handler: (ctx: { pathParams: Record<string, string>; params: Partial<NetworkPolicyQueryForm> }) =>
+      getNetworkPolicyListMock(ctx.pathParams.clusterUid, ctx.pathParams.namespace, ctx.params),
   },
   {
     method: 'get',
-    url: '/kubernetes/clusters/:clusterUid/namespaces/:namespaceName/networkpolicies/:name',
-    handler: ({ pathParams }: { pathParams: Record<string, string> }) =>
-      getNetworkPolicyDetail(pathParams.clusterUid, pathParams.namespaceName, pathParams.name),
+    url: '/kubernetes/clusters/:clusterUid/namespaces/:namespace/networkpolicies/:name',
+    handler: (ctx: { pathParams: Record<string, string> }) =>
+      getNetworkPolicyDetailMock(ctx.pathParams.clusterUid, ctx.pathParams.namespace, ctx.pathParams.name),
+  },
+  {
+    method: 'get',
+    url: '/kubernetes/clusters/:clusterUid/namespaces/:namespace/networkpolicies/:name/yaml',
+    handler: (ctx: { pathParams: Record<string, string> }) =>
+      getNetworkPolicyYamlMock(ctx.pathParams.clusterUid, ctx.pathParams.namespace, ctx.pathParams.name),
+  },
+  {
+    method: 'get',
+    url: '/kubernetes/clusters/:clusterUid/namespaces/:namespace/networkpolicies/:name/events',
+    handler: (ctx: { pathParams: Record<string, string>; params: Partial<EventQueryForm> }) =>
+      getNetworkPolicyEventListMock(
+        ctx.pathParams.clusterUid,
+        ctx.pathParams.namespace,
+        ctx.pathParams.name,
+        ctx.params,
+      ),
   },
   {
     method: 'post',
-    url: '/kubernetes/clusters/:clusterUid/namespaces/:namespaceName/networkpolicies',
-    handler: ({ pathParams, data }: { pathParams: Record<string, string>; data: Partial<NetworkPolicyReq> }) =>
-      createNetworkPolicy(pathParams.clusterUid, data),
+    url: '/kubernetes/clusters/:clusterUid/namespaces/:namespace/networkpolicies',
+    handler: (ctx: { pathParams: Record<string, string>; data: Partial<NetworkPolicyCreateForm> }) =>
+      createNetworkPolicyMock(ctx.pathParams.clusterUid, ctx.pathParams.namespace, ctx.data),
+  },
+  {
+    method: 'post',
+    url: '/kubernetes/clusters/:clusterUid/networkpolicies/yaml',
+    handler: (ctx: { pathParams: Record<string, string>; data: string }) =>
+      createNetworkPolicyYamlMock(ctx.pathParams.clusterUid, ctx.data),
   },
   {
     method: 'put',
-    url: '/kubernetes/clusters/:clusterUid/namespaces/:namespaceName/networkpolicies/:name',
-    handler: ({ pathParams, data }: { pathParams: Record<string, string>; data: Partial<NetworkPolicyReq> }) =>
-      updateNetworkPolicy(pathParams.clusterUid, data),
+    url: '/kubernetes/clusters/:clusterUid/namespaces/:namespace/networkpolicies/:name',
+    handler: (ctx: { pathParams: Record<string, string>; data: Partial<NetworkPolicyUpdateForm> }) =>
+      updateNetworkPolicyMock(ctx.pathParams.clusterUid, ctx.pathParams.namespace, ctx.pathParams.name, ctx.data),
   },
   {
     method: 'put',
-    url: '/kubernetes/clusters/:clusterUid/namespaces/:namespaceName/networkpolicies/:name/labels',
-    handler: ({
-      pathParams,
-      data,
-    }: {
-      pathParams: Record<string, string>
-      data: { labels: Record<string, string>; operation: number }
-    }) =>
-      manageNetworkPolicyLabels(
-        pathParams.clusterUid,
-        pathParams.namespaceName,
-        pathParams.name,
-        data.labels,
-        data.operation,
-      ),
+    url: '/kubernetes/clusters/:clusterUid/namespaces/:namespace/networkpolicies/:name/yaml',
+    handler: (ctx: { pathParams: Record<string, string>; data: string }) =>
+      updateNetworkPolicyYamlMock(ctx.pathParams.clusterUid, ctx.pathParams.namespace, ctx.pathParams.name, ctx.data),
   },
   {
-    method: 'put',
-    url: '/kubernetes/clusters/:clusterUid/namespaces/:namespaceName/networkpolicies/:name/annotations',
-    handler: ({
-      pathParams,
-      data,
-    }: {
-      pathParams: Record<string, string>
-      data: { annotations: Record<string, string>; operation: number }
-    }) =>
-      manageNetworkPolicyAnnotations(
-        pathParams.clusterUid,
-        pathParams.namespaceName,
-        pathParams.name,
-        data.annotations,
-        data.operation,
+    method: 'post',
+    url: '/kubernetes/clusters/:clusterUid/namespaces/:namespace/networkpolicies/:name/labels',
+    handler: (ctx: { pathParams: Record<string, string>; data: MetadataLabelForm }) =>
+      manageNetworkPolicyLabelMock(ctx.pathParams.clusterUid, ctx.pathParams.namespace, ctx.pathParams.name, ctx.data),
+  },
+  {
+    method: 'post',
+    url: '/kubernetes/clusters/:clusterUid/namespaces/:namespace/networkpolicies/:name/annotations',
+    handler: (ctx: { pathParams: Record<string, string>; data: MetadataAnnotationForm }) =>
+      manageNetworkPolicyAnnotationMock(
+        ctx.pathParams.clusterUid,
+        ctx.pathParams.namespace,
+        ctx.pathParams.name,
+        ctx.data,
       ),
   },
   {
     method: 'delete',
-    url: '/kubernetes/clusters/:clusterUid/namespaces/:namespaceName/networkpolicies/:name',
-    handler: ({ pathParams }: { pathParams: Record<string, string> }) =>
-      deleteNetworkPolicy(pathParams.clusterUid, pathParams.namespaceName, pathParams.name),
+    url: '/kubernetes/clusters/:clusterUid/namespaces/:namespace/networkpolicies/:name',
+    handler: (ctx: { pathParams: Record<string, string> }) =>
+      deleteNetworkPolicyMock(ctx.pathParams.clusterUid, ctx.pathParams.namespace, ctx.pathParams.name),
   },
   {
     method: 'delete',
-    url: '/kubernetes/clusters/:clusterUid/namespaces/:namespaceName/networkpolicies',
-    handler: ({ pathParams, data }: { pathParams: Record<string, string>; data: string[] }) =>
-      deleteNetworkPolicys(pathParams.clusterUid, pathParams.namespaceName, data),
-  },
-]
-
-/**
- * NetworkPolicy Mock 数据
- */
-const mockNetworkPolicys: NetworkPolicyResp[] = [
-  {
-    id: generateId(),
-    name: 'default-deny-all',
-    namespace: 'default',
-    clusterUid: 'cluster-1',
-    clusterName: 'prod-cluster',
-    podSelector: {},
-    policyTypes: ['Ingress', 'Egress'],
-    labels: { 'networking.gke.io/managed-policy': 'true' },
-    deletable: true,
-    createAt: '2024-03-01T10:00:00Z',
-    createBy: 'admin',
-    updateAt: '2024-03-01T10:00:00Z',
-    updateBy: 'admin',
+    url: '/kubernetes/clusters/:clusterUid/namespaces/:namespace/networkpolicies/batch',
+    handler: (ctx: { pathParams: Record<string, string>; data: string[] }) =>
+      deleteNetworkPoliciesMock(ctx.pathParams.clusterUid, ctx.pathParams.namespace, ctx.data),
   },
   {
-    id: generateId(),
-    name: 'allow-dns',
-    namespace: 'default',
-    clusterUid: 'cluster-1',
-    clusterName: 'prod-cluster',
-    podSelector: {},
-    egress: [
-      {
-        ports: [
-          { protocol: 'UDP', port: 53 },
-          { protocol: 'TCP', port: 53 },
-        ],
-        to: [{ kind: 'NamespaceSelector', namespaceSelector: { 'kubernetes.io/metadata.name': 'kube-system' } }],
-      },
-    ],
-    policyTypes: ['Egress'],
-    labels: { 'app.kubernetes.io/name': 'allow-dns' },
-    deletable: true,
-    createAt: '2024-03-05T09:00:00Z',
-    createBy: 'admin',
-    updateAt: '2024-03-05T09:00:00Z',
-    updateBy: 'admin',
+    method: 'post',
+    url: '/kubernetes/clusters/:clusterUid/networkpolicies/import',
+    handler: (ctx: { pathParams: Record<string, string>; data: FormData }) =>
+      importNetworkPolicyMock(ctx.pathParams.clusterUid, ctx.data),
   },
   {
-    id: generateId(),
-    name: 'frontend-network-policy',
-    namespace: 'default',
-    clusterUid: 'cluster-1',
-    clusterName: 'prod-cluster',
-    podSelector: { app: 'frontend' },
-    ingress: [
-      { ports: [{ protocol: 'TCP', port: 8080 }], from: [{ kind: 'PodSelector', podSelector: { app: 'nginx' } }] },
-    ],
-    egress: [
-      { ports: [{ protocol: 'TCP', port: 6379 }], to: [{ kind: 'PodSelector', podSelector: { app: 'redis' } }] },
-    ],
-    policyTypes: ['Ingress', 'Egress'],
-    labels: { 'app.kubernetes.io/name': 'frontend-network-policy' },
-    deletable: true,
-    createAt: '2024-03-10T14:00:00Z',
-    createBy: 'admin',
-    updateAt: '2024-03-10T14:00:00Z',
-    updateBy: 'admin',
+    method: 'get',
+    url: '/kubernetes/clusters/:clusterUid/namespaces/:namespace/networkpolicies/:name/export',
+    handler: (ctx: { pathParams: Record<string, string> }) =>
+      exportNetworkPolicyMock(ctx.pathParams.clusterUid, ctx.pathParams.namespace, ctx.pathParams.name),
   },
 ]

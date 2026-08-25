@@ -1,388 +1,314 @@
 /**
- * Ingress Mock API
+ * Ingress 管理 Mock
  * @module mock/kubernetes/network/ingress
  */
 import type { PageVo } from '@/types/common'
-import type { IngressListVo, IngressQueryReq, IngressReq } from '@/types/kubernetes/network/ingress'
+import type { MetadataAnnotationForm, MetadataLabelForm } from '@/types/kubernetes/common'
+import type { EventListVo, EventQueryForm } from '@/types/kubernetes/event'
+import type {
+  IngressCreateForm,
+  IngressDetailVo,
+  IngressListVo,
+  IngressQueryForm,
+  IngressUpdateForm,
+  IngressYamlVo,
+} from '@/types/kubernetes/network/ingress'
 
-import { generateId } from '@/mock/utils'
+import { mockIngressDetail, mockIngressEvents, mockIngresses, mockIngressYaml } from './ingressData'
 
 /**
- * 获取 Ingress 分页列表
- * @param clusterUid - 集群 UID
- * @param namespaceName - 命名空间名称
- * @param params - 查询参数
- * @returns 分页数据
+ * 查看 Ingress 列表
+ * @param clusterUid 集群 UID
+ * @param namespaceName 命名空间名称
+ * @param query Ingress 查询条件请求对象（名称、Ingress 类名、UID）
+ * @returns Ingress 分页列表
  */
-function getIngressPage(
+function getIngressListMock(
   clusterUid: string,
   namespaceName: string,
-  params: Partial<IngressQueryReq>,
+  query: Partial<IngressQueryForm>,
 ): PageVo<IngressListVo> {
-  const { name, ingressClassName, page = 1, pageSize = 10 } = params || {}
-  let filtered = mockIngresses.filter(i => i.clusterUid === clusterUid && i.namespace === namespaceName)
-  if (name) filtered = filtered.filter(i => i.name.toLowerCase().includes(name.toLowerCase()))
-  if (ingressClassName) filtered = filtered.filter(i => i.ingressClassName === ingressClassName)
-  const total = filtered.length
-  const start = (page - 1) * pageSize
-  const end = start + pageSize
-  const list = filtered.slice(start, end)
-  return { list, total, page, pageSize }
+  console.log('[Mock] getIngressList', clusterUid, namespaceName, query)
+  const filtered = mockIngresses.filter((i: IngressListVo) => {
+    if (i.clusterUid !== clusterUid) return false
+    if (namespaceName && i.namespace !== namespaceName) return false
+    if (query.ingressClassName && i.ingressClassName !== query.ingressClassName) return false
+    return true
+  })
+  const filteredUid = query.uid ? filtered.filter(i => i.uid === query.uid) : []
+  const filteredName = query.name ? filtered.filter(i => i.name.includes(query.name as string)) : []
+  const matched = query.uid || query.name ? Array.from(new Set([...filteredUid, ...filteredName])) : filtered
+  const page = query.page || 1
+  const pageSize = query.pageSize || 10
+  return {
+    list: matched.slice((page - 1) * pageSize, page * pageSize),
+    total: matched.length,
+    page,
+    pageSize,
+  }
 }
 
 /**
- * 获取 Ingress 详情
- * @param clusterUid - 集群 UID
- * @param namespaceName - 命名空间名称
- * @param name - Ingress 名称
- * @returns Ingress 详情
+ * 查看 Ingress 详情
+ * @param clusterUid 集群 UID
+ * @param namespaceName 命名空间名称
+ * @param name Ingress 名称
+ * @returns Ingress 详情响应对象
  */
-function getIngressDetail(clusterUid: string, namespaceName: string, name: string): IngressListVo | null {
-  return (
-    mockIngresses.find(i => i.clusterUid === clusterUid && i.namespace === namespaceName && i.name === name) || null
-  )
+function getIngressDetailMock(clusterUid: string, namespaceName: string, name: string): IngressDetailVo {
+  console.log('[Mock] getIngressDetail', clusterUid, namespaceName, name)
+  return mockIngressDetail
+}
+
+/**
+ * 查看 Ingress YAML
+ * @param clusterUid 集群 UID
+ * @param namespaceName 命名空间名称
+ * @param name Ingress 名称
+ * @returns Ingress YAML 响应对象（完整 YAML 文本）
+ */
+function getIngressYamlMock(clusterUid: string, namespaceName: string, name: string): IngressYamlVo {
+  console.log('[Mock] getIngressYaml', clusterUid, namespaceName, name)
+  return mockIngressYaml
+}
+
+/**
+ * 查看 Ingress 关联事件列表
+ * @param clusterUid 集群 UID
+ * @param namespaceName 命名空间名称
+ * @param name Ingress 名称
+ * @param query 事件查询条件
+ * @returns Ingress 关联事件分页列表
+ */
+function getIngressEventListMock(
+  clusterUid: string,
+  namespaceName: string,
+  name: string,
+  query: Partial<EventQueryForm>,
+): PageVo<EventListVo> {
+  console.log('[Mock] getIngressEventList', clusterUid, namespaceName, name, query)
+  const page = query.page || 1
+  const pageSize = query.pageSize || 10
+  const list = mockIngressEvents.slice((page - 1) * pageSize, page * pageSize)
+  return {
+    list,
+    total: mockIngressEvents.length,
+    page,
+    pageSize,
+  }
 }
 
 /**
  * 创建 Ingress
- * @param clusterUid - 集群 UID
- * @param data - 创建参数
+ * @param clusterUid 集群 UID
+ * @param namespaceName 命名空间名称
+ * @param data 创建参数
+ * @returns void
  */
-function createIngress(clusterUid: string, data: Partial<IngressReq>): void {
-  const created: IngressListVo = {
-    id: generateId(),
-    name: data.name || '',
-    namespace: data.namespace || '',
-    clusterUid,
-    clusterName: 'prod-cluster',
-    ingressClassName: data.ingressClassName,
-    rules: data.rules || [],
-    tls: data.tls,
-    labels: data.labels,
-    annotations: data.annotations,
-    createAt: new Date().toLocaleString(),
-    createBy: 'admin',
-    updateAt: new Date().toLocaleString(),
-    updateBy: 'admin',
-  }
-  mockIngresses.push(created)
+function createIngressMock(clusterUid: string, namespaceName: string, data: Partial<IngressCreateForm>): void {
+  console.log('[Mock] createIngress', clusterUid, namespaceName, data)
+}
+
+/**
+ * 通过 YAML 创建 Ingress
+ * @param clusterUid 集群 UID
+ * @param yaml Ingress YAML 文本
+ * @returns void
+ */
+function createIngressYamlMock(clusterUid: string, yaml: string): void {
+  console.log('[Mock] createIngressYaml', clusterUid, yaml)
 }
 
 /**
  * 更新 Ingress
- * @param clusterUid - 集群 UID
- * @param data - 更新参数
+ * @param clusterUid 集群 UID
+ * @param namespaceName 命名空间名称
+ * @param name Ingress 名称
+ * @param data 更新参数
+ * @returns void
  */
-function updateIngress(clusterUid: string, data: Partial<IngressReq>): void {
-  const index = mockIngresses.findIndex(
-    i => i.clusterUid === clusterUid && i.namespace === data.namespace && i.name === data.name,
-  )
-  if (index === -1) {
-    console.error('[Update Ingress] can not find ingress:', data.name)
-    return
-  }
-  const updated = {
-    ...mockIngresses[index],
-    ...data,
-    updateBy: 'admin',
-    updateAt: new Date().toLocaleString(),
-  }
-  mockIngresses[index] = updated
+function updateIngressMock(
+  clusterUid: string,
+  namespaceName: string,
+  name: string,
+  data: Partial<IngressUpdateForm>,
+): void {
+  console.log('[Mock] updateIngress', clusterUid, namespaceName, name, data)
+}
+
+/**
+ * 通过 YAML 更新 Ingress
+ * @param clusterUid 集群 UID
+ * @param namespaceName 命名空间名称
+ * @param name Ingress 名称
+ * @param yaml Ingress YAML 文本
+ * @returns void
+ */
+function updateIngressYamlMock(clusterUid: string, namespaceName: string, name: string, yaml: string): void {
+  console.log('[Mock] updateIngressYaml', clusterUid, namespaceName, name, yaml)
 }
 
 /**
  * 更新 Ingress 标签
- * @param clusterUid - 集群 UID
- * @param namespaceName - 命名空间名称
- * @param name - Ingress 名称
- * @param labels - 标签键值对
- * @param operation - 操作类型
+ * @param clusterUid 集群 UID
+ * @param namespaceName 命名空间名称
+ * @param name Ingress 名称
+ * @param data 标签更新参数
+ * @returns void
  */
-function manageIngressLabels(
+function manageIngressLabelMock(
   clusterUid: string,
   namespaceName: string,
   name: string,
-  labels: Record<string, string>,
-  operation: number,
+  data: MetadataLabelForm,
 ): void {
-  const index = mockIngresses.findIndex(
-    i => i.clusterUid === clusterUid && i.namespace === namespaceName && i.name === name,
-  )
-  if (index === -1) {
-    console.error('[Update Ingress Labels] can not find ingress:', name)
-    return
-  }
-  const currentLabels = mockIngresses[index].labels || {}
-  if (operation === 1) {
-    mockIngresses[index].labels = { ...currentLabels, ...labels }
-  } else if (operation === 2) {
-    const newLabels = { ...currentLabels }
-    Object.keys(labels).forEach(key => delete newLabels[key])
-    mockIngresses[index].labels = newLabels
-  } else if (operation === 3) {
-    mockIngresses[index].labels = labels
-  }
+  console.log('[Mock] manageIngressLabel', clusterUid, namespaceName, name, data)
 }
 
 /**
  * 更新 Ingress 注解
- * @param clusterUid - 集群 UID
- * @param namespaceName - 命名空间名称
- * @param name - Ingress 名称
- * @param annotations - 注解键值对
- * @param operation - 操作类型
+ * @param clusterUid 集群 UID
+ * @param namespaceName 命名空间名称
+ * @param name Ingress 名称
+ * @param data 注解更新参数
+ * @returns void
  */
-function manageIngressAnnotations(
+function manageIngressAnnotationMock(
   clusterUid: string,
   namespaceName: string,
   name: string,
-  annotations: Record<string, string>,
-  operation: number,
+  data: MetadataAnnotationForm,
 ): void {
-  const index = mockIngresses.findIndex(
-    i => i.clusterUid === clusterUid && i.namespace === namespaceName && i.name === name,
-  )
-  if (index === -1) {
-    console.error('[Update Ingress Annotations] can not find ingress:', name)
-    return
-  }
-  const currentAnnotations = mockIngresses[index].annotations || {}
-  if (operation === 1) {
-    mockIngresses[index].annotations = { ...currentAnnotations, ...annotations }
-  } else if (operation === 2) {
-    const newAnnotations = { ...currentAnnotations }
-    Object.keys(annotations).forEach(key => delete newAnnotations[key])
-    mockIngresses[index].annotations = newAnnotations
-  } else if (operation === 3) {
-    mockIngresses[index].annotations = annotations
-  }
+  console.log('[Mock] manageIngressAnnotation', clusterUid, namespaceName, name, data)
 }
 
 /**
  * 删除 Ingress
- * @param clusterUid - 集群 UID
- * @param namespaceName - 命名空间名称
- * @param name - Ingress 名称
+ * @param clusterUid 集群 UID
+ * @param namespaceName 命名空间名称
+ * @param name Ingress 名称
+ * @returns void
  */
-function deleteIngress(clusterUid: string, namespaceName: string, name: string): void {
-  const index = mockIngresses.findIndex(
-    i => i.clusterUid === clusterUid && i.namespace === namespaceName && i.name === name,
-  )
-  if (index === -1) {
-    console.error('[Delete Ingress] can not find ingress:', name)
-    return
-  }
-  mockIngresses.splice(index, 1)
+function deleteIngressMock(clusterUid: string, namespaceName: string, name: string): void {
+  console.log('[Mock] deleteIngress', clusterUid, namespaceName, name)
 }
 
 /**
  * 批量删除 Ingress
- * @param clusterUid - 集群 UID
- * @param namespaceName - 命名空间名称
- * @param names - 待删除的 Ingress 名称列表
+ * @param clusterUid 集群 UID
+ * @param namespaceName 命名空间名称
+ * @param uids Ingress UID 列表
+ * @returns void
  */
-function deleteIngresses(clusterUid: string, namespaceName: string, names: string[]): void {
-  names.forEach(name => {
-    const index = mockIngresses.findIndex(
-      i => i.clusterUid === clusterUid && i.namespace === namespaceName && i.name === name,
-    )
-    if (index === -1) {
-      console.error('[Delete Ingresses] can not find ingress:', name)
-    } else {
-      mockIngresses.splice(index, 1)
-    }
-  })
+function deleteIngressesMock(clusterUid: string, namespaceName: string, uids: string[]): void {
+  console.log('[Mock] deleteIngresses', clusterUid, namespaceName, uids)
 }
 
 /**
- * Ingress 路由配置
- * @remarks
- * - GET /kubernetes/clusters/:clusterUid/namespaces/:namespaceName/ingresses - 获取 Ingress 分页列表
- * - GET /kubernetes/clusters/:clusterUid/namespaces/:namespaceName/ingresses/:name - 获取 Ingress 详情
- * - POST /kubernetes/clusters/:clusterUid/namespaces/:namespaceName/ingresses - 创建 Ingress
- * - PUT /kubernetes/clusters/:clusterUid/namespaces/:namespaceName/ingresses/:name - 更新 Ingress
- * - PUT /kubernetes/clusters/:clusterUid/namespaces/:namespaceName/ingresses/:name/labels - 更新标签
- * - PUT /kubernetes/clusters/:clusterUid/namespaces/:namespaceName/ingresses/:name/annotations - 更新注解
- * - DELETE /kubernetes/clusters/:clusterUid/namespaces/:namespaceName/ingresses/:name - 删除 Ingress
- * - DELETE /kubernetes/clusters/:clusterUid/namespaces/:namespaceName/ingresses - 批量删除 Ingress
+ * 导入 Ingress
+ * @param clusterUid 集群 UID
+ * @param formData 上传的文件
+ * @returns void
  */
+function importIngressMock(clusterUid: string, formData: FormData): void {
+  void formData
+  console.log('[Mock] importIngress', clusterUid)
+}
+
+/**
+ * 导出 Ingress
+ * @param clusterUid 集群 UID
+ * @param namespaceName 命名空间名称
+ * @param name Ingress 名称
+ * @returns void
+ */
+function exportIngressMock(clusterUid: string, namespaceName: string, name: string): void {
+  console.log('[Mock] exportIngress', clusterUid, namespaceName, name)
+}
+
 export default [
   {
     method: 'get',
-    url: '/kubernetes/clusters/:clusterUid/namespaces/:namespaceName/ingresses',
-    handler: ({ pathParams, params }: { pathParams: Record<string, string>; params: Partial<IngressQueryReq> }) =>
-      getIngressPage(pathParams.clusterUid, pathParams.namespaceName, params),
+    url: '/kubernetes/clusters/:clusterUid/namespaces/:namespace/ingresses',
+    handler: (ctx: { pathParams: Record<string, string>; params: Partial<IngressQueryForm> }) =>
+      getIngressListMock(ctx.pathParams.clusterUid, ctx.pathParams.namespace, ctx.params),
   },
   {
     method: 'get',
-    url: '/kubernetes/clusters/:clusterUid/namespaces/:namespaceName/ingresses/:name',
-    handler: ({ pathParams }: { pathParams: Record<string, string> }) =>
-      getIngressDetail(pathParams.clusterUid, pathParams.namespaceName, pathParams.name),
+    url: '/kubernetes/clusters/:clusterUid/namespaces/:namespace/ingresses/:name',
+    handler: (ctx: { pathParams: Record<string, string> }) =>
+      getIngressDetailMock(ctx.pathParams.clusterUid, ctx.pathParams.namespace, ctx.pathParams.name),
+  },
+  {
+    method: 'get',
+    url: '/kubernetes/clusters/:clusterUid/namespaces/:namespace/ingresses/:name/yaml',
+    handler: (ctx: { pathParams: Record<string, string> }) =>
+      getIngressYamlMock(ctx.pathParams.clusterUid, ctx.pathParams.namespace, ctx.pathParams.name),
+  },
+  {
+    method: 'get',
+    url: '/kubernetes/clusters/:clusterUid/namespaces/:namespace/ingresses/:name/events',
+    handler: (ctx: { pathParams: Record<string, string>; params: Partial<EventQueryForm> }) =>
+      getIngressEventListMock(ctx.pathParams.clusterUid, ctx.pathParams.namespace, ctx.pathParams.name, ctx.params),
   },
   {
     method: 'post',
-    url: '/kubernetes/clusters/:clusterUid/namespaces/:namespaceName/ingresses',
-    handler: ({ pathParams, data }: { pathParams: Record<string, string>; data: Partial<IngressReq> }) =>
-      createIngress(pathParams.clusterUid, data),
+    url: '/kubernetes/clusters/:clusterUid/namespaces/:namespace/ingresses',
+    handler: (ctx: { pathParams: Record<string, string>; data: Partial<IngressCreateForm> }) =>
+      createIngressMock(ctx.pathParams.clusterUid, ctx.pathParams.namespace, ctx.data),
+  },
+  {
+    method: 'post',
+    url: '/kubernetes/clusters/:clusterUid/ingresses/yaml',
+    handler: (ctx: { pathParams: Record<string, string>; data: string }) =>
+      createIngressYamlMock(ctx.pathParams.clusterUid, ctx.data),
   },
   {
     method: 'put',
-    url: '/kubernetes/clusters/:clusterUid/namespaces/:namespaceName/ingresses/:name',
-    handler: ({ pathParams, data }: { pathParams: Record<string, string>; data: Partial<IngressReq> }) =>
-      updateIngress(pathParams.clusterUid, data),
+    url: '/kubernetes/clusters/:clusterUid/namespaces/:namespace/ingresses/:name',
+    handler: (ctx: { pathParams: Record<string, string>; data: Partial<IngressUpdateForm> }) =>
+      updateIngressMock(ctx.pathParams.clusterUid, ctx.pathParams.namespace, ctx.pathParams.name, ctx.data),
   },
   {
     method: 'put',
-    url: '/kubernetes/clusters/:clusterUid/namespaces/:namespaceName/ingresses/:name/labels',
-    handler: ({
-      pathParams,
-      data,
-    }: {
-      pathParams: Record<string, string>
-      data: { labels: Record<string, string>; operation: number }
-    }) =>
-      manageIngressLabels(
-        pathParams.clusterUid,
-        pathParams.namespaceName,
-        pathParams.name,
-        data.labels,
-        data.operation,
-      ),
+    url: '/kubernetes/clusters/:clusterUid/namespaces/:namespace/ingresses/:name/yaml',
+    handler: (ctx: { pathParams: Record<string, string>; data: string }) =>
+      updateIngressYamlMock(ctx.pathParams.clusterUid, ctx.pathParams.namespace, ctx.pathParams.name, ctx.data),
   },
   {
-    method: 'put',
-    url: '/kubernetes/clusters/:clusterUid/namespaces/:namespaceName/ingresses/:name/annotations',
-    handler: ({
-      pathParams,
-      data,
-    }: {
-      pathParams: Record<string, string>
-      data: { annotations: Record<string, string>; operation: number }
-    }) =>
-      manageIngressAnnotations(
-        pathParams.clusterUid,
-        pathParams.namespaceName,
-        pathParams.name,
-        data.annotations,
-        data.operation,
-      ),
+    method: 'post',
+    url: '/kubernetes/clusters/:clusterUid/namespaces/:namespace/ingresses/:name/labels',
+    handler: (ctx: { pathParams: Record<string, string>; data: MetadataLabelForm }) =>
+      manageIngressLabelMock(ctx.pathParams.clusterUid, ctx.pathParams.namespace, ctx.pathParams.name, ctx.data),
+  },
+  {
+    method: 'post',
+    url: '/kubernetes/clusters/:clusterUid/namespaces/:namespace/ingresses/:name/annotations',
+    handler: (ctx: { pathParams: Record<string, string>; data: MetadataAnnotationForm }) =>
+      manageIngressAnnotationMock(ctx.pathParams.clusterUid, ctx.pathParams.namespace, ctx.pathParams.name, ctx.data),
   },
   {
     method: 'delete',
-    url: '/kubernetes/clusters/:clusterUid/namespaces/:namespaceName/ingresses/:name',
-    handler: ({ pathParams }: { pathParams: Record<string, string> }) =>
-      deleteIngress(pathParams.clusterUid, pathParams.namespaceName, pathParams.name),
+    url: '/kubernetes/clusters/:clusterUid/namespaces/:namespace/ingresses/:name',
+    handler: (ctx: { pathParams: Record<string, string> }) =>
+      deleteIngressMock(ctx.pathParams.clusterUid, ctx.pathParams.namespace, ctx.pathParams.name),
   },
   {
     method: 'delete',
-    url: '/kubernetes/clusters/:clusterUid/namespaces/:namespaceName/ingresses',
-    handler: ({ pathParams, data }: { pathParams: Record<string, string>; data: string[] }) =>
-      deleteIngresses(pathParams.clusterUid, pathParams.namespaceName, data),
-  },
-]
-
-/**
- * Ingress Mock 数据
- */
-const mockIngresses: IngressListVo[] = [
-  {
-    id: generateId(),
-    name: 'api-ingress',
-    namespace: 'default',
-    clusterUid: 'cluster-1',
-    clusterName: 'prod-cluster',
-    ingressClassName: 'nginx',
-    rules: [
-      {
-        host: 'api.example.com',
-        paths: [{ path: '/', pathType: 'Prefix', serviceName: 'api-service', servicePort: 8080 }],
-      },
-    ],
-    tls: [{ hosts: ['api.example.com'], secretName: 'api-tls-secret' }],
-    loadBalancer: [
-      {
-        ip: '203.0.113.10',
-        hostname: 'api.example.com',
-        ports: [
-          { port: 80, protocol: 'TCP', name: 'http' },
-          { port: 443, protocol: 'TCP', name: 'https' },
-        ],
-      },
-    ],
-    labels: { 'app.kubernetes.io/name': 'api-ingress' },
-    annotations: {
-      'nginx.ingress.kubernetes.io/rewrite-target': '/',
-      'nginx.ingress.kubernetes.io/ssl-redirect': 'true',
-    },
-    deletable: true,
-    createAt: '2024-03-10T10:00:00Z',
-    createBy: 'admin',
-    updateAt: '2024-03-10T10:00:00Z',
-    updateBy: 'admin',
+    url: '/kubernetes/clusters/:clusterUid/namespaces/:namespace/ingresses/batch',
+    handler: (ctx: { pathParams: Record<string, string>; data: string[] }) =>
+      deleteIngressesMock(ctx.pathParams.clusterUid, ctx.pathParams.namespace, ctx.data),
   },
   {
-    id: generateId(),
-    name: 'web-ingress',
-    namespace: 'default',
-    clusterUid: 'cluster-1',
-    clusterName: 'prod-cluster',
-    ingressClassName: 'nginx',
-    rules: [
-      {
-        host: 'www.example.com',
-        paths: [{ path: '/', pathType: 'Prefix', serviceName: 'frontend-service', servicePort: 80 }],
-      },
-      {
-        host: 'app.example.com',
-        paths: [{ path: '/', pathType: 'Prefix', serviceName: 'frontend-service', servicePort: 80 }],
-      },
-    ],
-    tls: [{ hosts: ['www.example.com', 'app.example.com'], secretName: 'web-tls-secret' }],
-    loadBalancer: [
-      {
-        ip: '203.0.113.11',
-        ports: [
-          { port: 80, protocol: 'TCP', name: 'http' },
-          { port: 443, protocol: 'TCP', name: 'https' },
-        ],
-      },
-    ],
-    labels: { 'app.kubernetes.io/name': 'frontend-ingress' },
-    annotations: {
-      'nginx.ingress.kubernetes.io/proxy-body-size': '50m',
-      'nginx.ingress.kubernetes.io/proxy-connect-timeout': '30',
-    },
-    deletable: true,
-    createAt: '2024-03-15T09:30:00Z',
-    createBy: 'admin',
-    updateAt: '2024-03-15T09:30:00Z',
-    updateBy: 'admin',
+    method: 'post',
+    url: '/kubernetes/clusters/:clusterUid/ingresses/import',
+    handler: (ctx: { pathParams: Record<string, string>; data: FormData }) =>
+      importIngressMock(ctx.pathParams.clusterUid, ctx.data),
   },
   {
-    id: generateId(),
-    name: 'prometheus-ingress',
-    namespace: 'monitoring',
-    clusterUid: 'cluster-1',
-    clusterName: 'prod-cluster',
-    ingressClassName: 'nginx',
-    rules: [
-      {
-        host: 'prometheus.example.com',
-        paths: [{ path: '/', pathType: 'Prefix', serviceName: 'prometheus', servicePort: 9090 }],
-      },
-    ],
-    tls: [{ hosts: ['prometheus.example.com'], secretName: 'monitoring-tls-secret' }],
-    loadBalancer: [{ ip: '203.0.113.12', ports: [{ port: 443, protocol: 'TCP', name: 'https' }] }],
-    labels: { 'app.kubernetes.io/name': 'prometheus-ingress', 'app.kubernetes.io/component': 'monitoring' },
-    annotations: {
-      'nginx.ingress.kubernetes.io/auth-type': 'basic',
-      'nginx.ingress.kubernetes.io/auth-secret': 'basic-auth',
-      'nginx.ingress.kubernetes.io/auth-realm': 'Prometheus Monitoring',
-    },
-    deletable: true,
-    createAt: '2024-03-20T14:00:00Z',
-    createBy: 'admin',
-    updateAt: '2024-03-20T14:00:00Z',
-    updateBy: 'admin',
+    method: 'get',
+    url: '/kubernetes/clusters/:clusterUid/namespaces/:namespace/ingresses/:name/export',
+    handler: (ctx: { pathParams: Record<string, string> }) =>
+      exportIngressMock(ctx.pathParams.clusterUid, ctx.pathParams.namespace, ctx.pathParams.name),
   },
 ]

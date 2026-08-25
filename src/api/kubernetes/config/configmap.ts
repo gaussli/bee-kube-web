@@ -2,17 +2,19 @@
  * ConfigMap 资源管理 API
  * @module api/kubernetes/config/configmap
  */
+import type { AxiosProgressEvent } from 'axios'
+
 import type { PageVo } from '@/types/common'
+import type { MetadataAnnotationForm, MetadataLabelForm } from '@/types/kubernetes/common'
 import type {
-  ConfigMapAnnotationsReq,
-  ConfigMapDataReq,
-  ConfigMapDetailResp,
-  ConfigMapLabelsReq,
-  ConfigMapListResp,
-  ConfigMapQueryReq,
-  ConfigMapReq,
-  ConfigMapYamlReq,
+  ConfigMapCreateForm,
+  ConfigMapDetailVo,
+  ConfigMapListVo,
+  ConfigMapQueryForm,
+  ConfigMapUpdateForm,
+  ConfigMapYamlVo,
 } from '@/types/kubernetes/config/configmap'
+import type { EventListVo, EventQueryForm } from '@/types/kubernetes/event'
 
 import { request } from '@/utils'
 
@@ -24,9 +26,9 @@ import { request } from '@/utils'
  */
 export function getConfigMapList(
   clusterUid: string,
-  params: Partial<ConfigMapQueryReq>,
-): Promise<PageVo<ConfigMapListResp>> {
-  return request.get(`/kubernetes/clusters/${clusterUid}/configmaps`, { params })
+  params: Partial<ConfigMapQueryForm>,
+): Promise<PageVo<ConfigMapListVo>> {
+  return request.get<PageVo<ConfigMapListVo>>(`/kubernetes/clusters/${clusterUid}/configmaps`, { params })
 }
 
 /**
@@ -36,8 +38,8 @@ export function getConfigMapList(
  * @param name - ConfigMap 名称
  * @returns ConfigMap 详情
  */
-export function getConfigMapDetail(clusterUid: string, namespace: string, name: string): Promise<ConfigMapDetailResp> {
-  return request.get(`/kubernetes/clusters/${clusterUid}/namespaces/${namespace}/configmaps/${name}`)
+export function getConfigMapDetail(clusterUid: string, namespace: string, name: string): Promise<ConfigMapDetailVo> {
+  return request.get<ConfigMapDetailVo>(`/kubernetes/clusters/${clusterUid}/namespaces/${namespace}/configmaps/${name}`)
 }
 
 /**
@@ -47,8 +49,32 @@ export function getConfigMapDetail(clusterUid: string, namespace: string, name: 
  * @param name - ConfigMap 名称
  * @returns ConfigMap YAML 配置
  */
-export function getConfigMapYaml(clusterUid: string, namespace: string, name: string): Promise<string> {
-  return request.get<string>(`/kubernetes/clusters/${clusterUid}/namespaces/${namespace}/configmaps/${name}/yaml`)
+export function getConfigMapYaml(clusterUid: string, namespace: string, name: string): Promise<ConfigMapYamlVo> {
+  return request.get<ConfigMapYamlVo>(
+    `/kubernetes/clusters/${clusterUid}/namespaces/${namespace}/configmaps/${name}/yaml`,
+  )
+}
+
+/**
+ * 获取 ConfigMap 事件列表
+ * @param clusterUid - 集群 UID
+ * @param namespace - 命名空间名称
+ * @param name - ConfigMap 名称
+ * @param query - 事件查询条件
+ * @returns 分页后的事件列表
+ */
+export function getConfigMapEventList(
+  clusterUid: string,
+  namespace: string,
+  name: string,
+  query: Partial<EventQueryForm>,
+): Promise<PageVo<EventListVo>> {
+  return request.get<PageVo<EventListVo>>(
+    `/kubernetes/clusters/${clusterUid}/namespaces/${namespace}/configmaps/${name}/events`,
+    {
+      params: query,
+    },
+  )
 }
 
 /**
@@ -57,8 +83,23 @@ export function getConfigMapYaml(clusterUid: string, namespace: string, name: st
  * @param namespace - 命名空间名称
  * @param data - 创建参数
  */
-export function createConfigMap(clusterUid: string, namespace: string, data: ConfigMapReq): Promise<void> {
+export function createConfigMap(
+  clusterUid: string,
+  namespace: string,
+  data: Partial<ConfigMapCreateForm>,
+): Promise<void> {
   return request.post(`/kubernetes/clusters/${clusterUid}/namespaces/${namespace}/configmaps`, data)
+}
+
+/**
+ * 创建 ConfigMap（YAML 方式）
+ * @param clusterUid - 集群 UID
+ * @param yaml - ConfigMap YAML 文本
+ */
+export function createConfigMapYaml(clusterUid: string, yaml: string): Promise<void> {
+  return request.post(`/kubernetes/clusters/${clusterUid}/configmaps/yaml`, yaml, {
+    headers: { 'Content-Type': 'application/yaml' },
+  })
 }
 
 /**
@@ -72,9 +113,22 @@ export function updateConfigMap(
   clusterUid: string,
   namespace: string,
   name: string,
-  data: Partial<ConfigMapReq>,
+  data: Partial<ConfigMapUpdateForm>,
 ): Promise<void> {
   return request.put(`/kubernetes/clusters/${clusterUid}/namespaces/${namespace}/configmaps/${name}`, data)
+}
+
+/**
+ * 通过 YAML 更新 ConfigMap
+ * @param clusterUid - 集群 UID
+ * @param namespace - 命名空间名称
+ * @param name - ConfigMap 名称
+ * @param yaml - ConfigMap YAML 文本
+ */
+export function updateConfigMapYaml(clusterUid: string, namespace: string, name: string, yaml: string): Promise<void> {
+  return request.put(`/kubernetes/clusters/${clusterUid}/namespaces/${namespace}/configmaps/${name}/yaml`, yaml, {
+    headers: { 'Content-Type': 'application/yaml' },
+  })
 }
 
 /**
@@ -82,15 +136,15 @@ export function updateConfigMap(
  * @param clusterUid - 集群 UID
  * @param namespace - 命名空间名称
  * @param name - ConfigMap 名称
- * @param data - 标签数据
+ * @param data - 标签更新参数
  */
-export function manageConfigMapLabels(
+export function manageConfigMapLabel(
   clusterUid: string,
   namespace: string,
   name: string,
-  data: ConfigMapLabelsReq,
+  data: MetadataLabelForm,
 ): Promise<void> {
-  return request.put(`/kubernetes/clusters/${clusterUid}/namespaces/${namespace}/configmaps/${name}/labels`, data)
+  return request.post(`/kubernetes/clusters/${clusterUid}/namespaces/${namespace}/configmaps/${name}/labels`, data)
 }
 
 /**
@@ -100,13 +154,13 @@ export function manageConfigMapLabels(
  * @param name - ConfigMap 名称
  * @param data - 注解数据
  */
-export function manageConfigMapAnnotations(
+export function manageConfigMapAnnotation(
   clusterUid: string,
   namespace: string,
   name: string,
-  data: ConfigMapAnnotationsReq,
+  data: MetadataAnnotationForm,
 ): Promise<void> {
-  return request.put(`/kubernetes/clusters/${clusterUid}/namespaces/${namespace}/configmaps/${name}/annotations`, data)
+  return request.post(`/kubernetes/clusters/${clusterUid}/namespaces/${namespace}/configmaps/${name}/annotations`, data)
 }
 
 /**
@@ -123,10 +177,26 @@ export function deleteConfigMap(clusterUid: string, namespace: string, name: str
  * 批量删除 ConfigMap
  * @param clusterUid - 集群 UID
  * @param namespace - 命名空间名称
- * @param names - ConfigMap 名称数组
+ * @param uids - ConfigMap UID 数组
  */
-export function deleteConfigMaps(clusterUid: string, namespace: string, names: string[]): Promise<void> {
-  return request.delete(`/kubernetes/clusters/${clusterUid}/namespaces/${namespace}/configmaps/batch`, { data: names })
+export function deleteConfigMaps(clusterUid: string, namespace: string, uids: string[]): Promise<void> {
+  return request.delete(`/kubernetes/clusters/${clusterUid}/namespaces/${namespace}/configmaps/batch`, { data: uids })
+}
+
+/**
+ * 导入 ConfigMap
+ * @param clusterUid - 集群 UID
+ * @param formData - 上传的文件
+ * @param onProgress - 上传进度回调
+ */
+export function importConfigMap(
+  clusterUid: string,
+  formData: FormData,
+  onProgress?: (progressEvent: AxiosProgressEvent) => void,
+) {
+  return request.upload<void>(`/kubernetes/clusters/${clusterUid}/configmaps/import`, formData, {
+    onUploadProgress: onProgress,
+  })
 }
 
 /**
@@ -134,34 +204,6 @@ export function deleteConfigMaps(clusterUid: string, namespace: string, names: s
  * @param clusterUid - 集群 UID
  * @param params - 查询参数
  */
-export function exportConfigMap(clusterUid: string, params: Partial<ConfigMapQueryReq>): Promise<void> {
-  return request.get(`/kubernetes/clusters/${clusterUid}/configmaps/export`, {
-    params,
-    config: { responseType: 'blob' },
-  })
-}
-
-/**
- * 导入 ConfigMap
- * @param clusterUid - 集群 UID
- * @param data - YAML 配置
- */
-export function importConfigMap(clusterUid: string, data: ConfigMapYamlReq): Promise<void> {
-  return request.post(`/kubernetes/clusters/${clusterUid}/configmaps/import`, data)
-}
-
-/**
- * 更新 ConfigMap 数据
- * @param clusterUid - 集群 UID
- * @param namespace - 命名空间名称
- * @param name - ConfigMap 名称
- * @param data - 数据参数
- */
-export function manageConfigMapData(
-  clusterUid: string,
-  namespace: string,
-  name: string,
-  data: ConfigMapDataReq,
-): Promise<void> {
-  return request.put(`/kubernetes/clusters/${clusterUid}/namespaces/${namespace}/configmaps/${name}/data`, data)
+export function exportConfigMap(clusterUid: string, params: Partial<ConfigMapQueryForm>): Promise<void> {
+  return request.download(`/kubernetes/clusters/${clusterUid}/configmaps/export`, { params })
 }
