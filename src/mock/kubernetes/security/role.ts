@@ -1,365 +1,299 @@
 /**
- * Role Mock API
+ * Role 管理 Mock
  * @module mock/kubernetes/security/role
  */
 import type { PageVo } from '@/types/common'
-import type { RoleResp, RoleQueryReq, RoleReq } from '@/types/kubernetes/security/role'
+import type { MetadataAnnotationForm, MetadataLabelForm } from '@/types/kubernetes/common'
+import type { EventListVo, EventQueryForm } from '@/types/kubernetes/event'
+import type {
+  RoleCreateForm,
+  RoleDetailVo,
+  RoleListVo,
+  RoleQueryForm,
+  RoleUpdateForm,
+  RoleYamlVo,
+} from '@/types/kubernetes/security/role'
 
-import { generateId } from '@/mock/utils'
+import { mockRoleDetail, mockRoleEvents, mockRoles, mockRoleYaml } from './roleData'
 
 /**
- * 获取 Role 分页列表
- * @param clusterUid - 集群 UID
- * @param namespaceName - 命名空间名称
- * @param params - 查询参数
- * @returns 分页数据
+ * 查看 Role 列表
+ * @param clusterUid 集群 UID
+ * @param namespaceName 命名空间名称
+ * @param query Role 查询条件请求对象（名称、UID）
+ * @returns Role 分页列表
  */
-function getRolePage(clusterUid: string, namespaceName: string, params: Partial<RoleQueryReq>): PageVo<RoleResp> {
-  const { name, showSystem, page = 1, pageSize = 10 } = params || {}
-  let filtered = mockRoles.filter(r => r.clusterUid === clusterUid && r.namespace === namespaceName)
-  if (!showSystem) filtered = filtered.filter(r => !r.isSystem)
-  if (name) filtered = filtered.filter(r => r.name.toLowerCase().includes(name.toLowerCase()))
-  const total = filtered.length
-  const start = (page - 1) * pageSize
-  const end = start + pageSize
-  const list = filtered.slice(start, end)
-  return { list, total, page, pageSize }
+function getRoleListMock(clusterUid: string, namespaceName: string, query: Partial<RoleQueryForm>): PageVo<RoleListVo> {
+  console.log('[Mock] getRoleList', clusterUid, namespaceName, query)
+  const filtered = mockRoles.filter((r: RoleListVo) => {
+    if (r.clusterUid !== clusterUid) return false
+    if (namespaceName && r.namespace !== namespaceName) return false
+    return true
+  })
+  const filteredUid = query.uid ? filtered.filter(r => r.uid === query.uid) : []
+  const filteredName = query.name ? filtered.filter(r => r.name.includes(query.name as string)) : []
+  const matched = query.uid || query.name ? Array.from(new Set([...filteredUid, ...filteredName])) : filtered
+  const page = query.page || 1
+  const pageSize = query.pageSize || 10
+  return {
+    list: matched.slice((page - 1) * pageSize, page * pageSize),
+    total: matched.length,
+    page,
+    pageSize,
+  }
 }
 
 /**
- * 获取 Role 详情
- * @param clusterUid - 集群 UID
- * @param namespaceName - 命名空间名称
- * @param name - Role 名称
- * @returns Role 详情
+ * 查看 Role 详情
+ * @param clusterUid 集群 UID
+ * @param namespaceName 命名空间名称
+ * @param name Role 名称
+ * @returns Role 详情响应对象
  */
-function getRoleDetail(clusterUid: string, namespaceName: string, name: string): RoleResp | null {
-  return mockRoles.find(r => r.clusterUid === clusterUid && r.namespace === namespaceName && r.name === name) || null
+function getRoleDetailMock(clusterUid: string, namespaceName: string, name: string): RoleDetailVo {
+  console.log('[Mock] getRoleDetail', clusterUid, namespaceName, name)
+  return mockRoleDetail
+}
+
+/**
+ * 查看 Role YAML
+ * @param clusterUid 集群 UID
+ * @param namespaceName 命名空间名称
+ * @param name Role 名称
+ * @returns Role YAML 响应对象（完整 YAML 文本）
+ */
+function getRoleYamlMock(clusterUid: string, namespaceName: string, name: string): RoleYamlVo {
+  console.log('[Mock] getRoleYaml', clusterUid, namespaceName, name)
+  return mockRoleYaml
+}
+
+/**
+ * 查看 Role 关联事件列表
+ * @param clusterUid 集群 UID
+ * @param namespaceName 命名空间名称
+ * @param name Role 名称
+ * @param query 事件查询条件
+ * @returns Role 关联事件分页列表
+ */
+function getRoleEventListMock(
+  clusterUid: string,
+  namespaceName: string,
+  name: string,
+  query: Partial<EventQueryForm>,
+): PageVo<EventListVo> {
+  console.log('[Mock] getRoleEventList', clusterUid, namespaceName, name, query)
+  const page = query.page || 1
+  const pageSize = query.pageSize || 10
+  const list = mockRoleEvents.slice((page - 1) * pageSize, page * pageSize)
+  return {
+    list,
+    total: mockRoleEvents.length,
+    page,
+    pageSize,
+  }
 }
 
 /**
  * 创建 Role
- * @param clusterUid - 集群 UID
- * @param data - 创建参数
+ * @param clusterUid 集群 UID
+ * @param namespaceName 命名空间名称
+ * @param data 创建参数
+ * @returns void
  */
-function createRole(clusterUid: string, data: Partial<RoleReq>): void {
-  const created: RoleResp = {
-    id: generateId(),
-    name: data.name || '',
-    namespace: data.namespace || '',
-    clusterUid,
-    clusterName: 'prod-cluster',
-    isSystem: false,
-    rules: data.rules || [],
-    labels: data.labels,
-    annotations: data.annotations,
-    createAt: new Date().toLocaleString(),
-    createBy: 'admin',
-    updateAt: new Date().toLocaleString(),
-    updateBy: 'admin',
-  }
-  mockRoles.push(created)
+function createRoleMock(clusterUid: string, namespaceName: string, data: Partial<RoleCreateForm>): void {
+  console.log('[Mock] createRole', clusterUid, namespaceName, data)
+}
+
+/**
+ * 通过 YAML 创建 Role
+ * @param clusterUid 集群 UID
+ * @param yaml Role YAML 文本
+ * @returns void
+ */
+function createRoleYamlMock(clusterUid: string, yaml: string): void {
+  console.log('[Mock] createRoleYaml', clusterUid, yaml)
 }
 
 /**
  * 更新 Role
- * @param clusterUid - 集群 UID
- * @param data - 更新参数
+ * @param clusterUid 集群 UID
+ * @param namespaceName 命名空间名称
+ * @param name Role 名称
+ * @param data 更新参数
+ * @returns void
  */
-function updateRole(clusterUid: string, data: Partial<RoleReq>): void {
-  const index = mockRoles.findIndex(
-    r => r.clusterUid === clusterUid && r.namespace === data.namespace && r.name === data.name,
-  )
-  if (index === -1) {
-    console.error('[Update Role] can not find role:', data.name)
-    return
-  }
-  const updated = {
-    ...mockRoles[index],
-    ...data,
-    updateBy: 'admin',
-    updateAt: new Date().toLocaleString(),
-  }
-  mockRoles[index] = updated
+function updateRoleMock(clusterUid: string, namespaceName: string, name: string, data: Partial<RoleUpdateForm>): void {
+  console.log('[Mock] updateRole', clusterUid, namespaceName, name, data)
+}
+
+/**
+ * 通过 YAML 更新 Role
+ * @param clusterUid 集群 UID
+ * @param namespaceName 命名空间名称
+ * @param name Role 名称
+ * @param yaml Role YAML 文本
+ * @returns void
+ */
+function updateRoleYamlMock(clusterUid: string, namespaceName: string, name: string, yaml: string): void {
+  console.log('[Mock] updateRoleYaml', clusterUid, namespaceName, name, yaml)
 }
 
 /**
  * 更新 Role 标签
- * @param clusterUid - 集群 UID
- * @param namespaceName - 命名空间名称
- * @param name - Role 名称
- * @param labels - 标签键值对
- * @param operation - 操作类型
+ * @param clusterUid 集群 UID
+ * @param namespaceName 命名空间名称
+ * @param name Role 名称
+ * @param data 标签更新参数
+ * @returns void
  */
-function manageRoleLabels(
-  clusterUid: string,
-  namespaceName: string,
-  name: string,
-  labels: Record<string, string>,
-  operation: number,
-): void {
-  const index = mockRoles.findIndex(
-    r => r.clusterUid === clusterUid && r.namespace === namespaceName && r.name === name,
-  )
-  if (index === -1) {
-    console.error('[Update Role Labels] can not find role:', name)
-    return
-  }
-  const currentLabels = mockRoles[index].labels || {}
-  if (operation === 1) {
-    mockRoles[index].labels = { ...currentLabels, ...labels }
-  } else if (operation === 2) {
-    const newLabels = { ...currentLabels }
-    Object.keys(labels).forEach(key => delete newLabels[key])
-    mockRoles[index].labels = newLabels
-  } else if (operation === 3) {
-    mockRoles[index].labels = labels
-  }
+function manageRoleLabelMock(clusterUid: string, namespaceName: string, name: string, data: MetadataLabelForm): void {
+  console.log('[Mock] manageRoleLabel', clusterUid, namespaceName, name, data)
 }
 
 /**
  * 更新 Role 注解
- * @param clusterUid - 集群 UID
- * @param namespaceName - 命名空间名称
- * @param name - Role 名称
- * @param annotations - 注解键值对
- * @param operation - 操作类型
+ * @param clusterUid 集群 UID
+ * @param namespaceName 命名空间名称
+ * @param name Role 名称
+ * @param data 注解更新参数
+ * @returns void
  */
-function manageRoleAnnotations(
+function manageRoleAnnotationMock(
   clusterUid: string,
   namespaceName: string,
   name: string,
-  annotations: Record<string, string>,
-  operation: number,
+  data: MetadataAnnotationForm,
 ): void {
-  const index = mockRoles.findIndex(
-    r => r.clusterUid === clusterUid && r.namespace === namespaceName && r.name === name,
-  )
-  if (index === -1) {
-    console.error('[Update Role Annotations] can not find role:', name)
-    return
-  }
-  const currentAnnotations = mockRoles[index].annotations || {}
-  if (operation === 1) {
-    mockRoles[index].annotations = { ...currentAnnotations, ...annotations }
-  } else if (operation === 2) {
-    const newAnnotations = { ...currentAnnotations }
-    Object.keys(annotations).forEach(key => delete newAnnotations[key])
-    mockRoles[index].annotations = newAnnotations
-  } else if (operation === 3) {
-    mockRoles[index].annotations = annotations
-  }
-}
-
-/**
- * 更新 Role 规则
- * @param clusterUid - 集群 UID
- * @param namespaceName - 命名空间名称
- * @param name - Role 名称
- * @param rules - 策略规则列表
- */
-function updateRoleRules(clusterUid: string, namespaceName: string, name: string, rules: RoleReq['rules']): void {
-  const index = mockRoles.findIndex(
-    r => r.clusterUid === clusterUid && r.namespace === namespaceName && r.name === name,
-  )
-  if (index === -1) {
-    console.error('[Update Role Rules] can not find role:', name)
-    return
-  }
-  mockRoles[index].rules = rules
-  mockRoles[index].updateAt = new Date().toLocaleString()
-  mockRoles[index].updateBy = 'admin'
+  console.log('[Mock] manageRoleAnnotation', clusterUid, namespaceName, name, data)
 }
 
 /**
  * 删除 Role
- * @param clusterUid - 集群 UID
- * @param namespaceName - 命名空间名称
- * @param name - Role 名称
+ * @param clusterUid 集群 UID
+ * @param namespaceName 命名空间名称
+ * @param name Role 名称
+ * @returns void
  */
-function deleteRole(clusterUid: string, namespaceName: string, name: string): void {
-  const index = mockRoles.findIndex(
-    r => r.clusterUid === clusterUid && r.namespace === namespaceName && r.name === name,
-  )
-  if (index === -1) {
-    console.error('[Delete Role] can not find role:', name)
-    return
-  }
-  mockRoles.splice(index, 1)
+function deleteRoleMock(clusterUid: string, namespaceName: string, name: string): void {
+  console.log('[Mock] deleteRole', clusterUid, namespaceName, name)
 }
 
 /**
  * 批量删除 Role
- * @param clusterUid - 集群 UID
- * @param namespaceName - 命名空间名称
- * @param names - 待删除的 Role 名称列表
+ * @param clusterUid 集群 UID
+ * @param namespaceName 命名空间名称
+ * @param uids Role UID 列表
+ * @returns void
  */
-function deleteRoles(clusterUid: string, namespaceName: string, names: string[]): void {
-  names.forEach(name => {
-    const index = mockRoles.findIndex(
-      r => r.clusterUid === clusterUid && r.namespace === namespaceName && r.name === name,
-    )
-    if (index === -1) {
-      console.error('[Delete Roles] can not find role:', name)
-    } else {
-      mockRoles.splice(index, 1)
-    }
-  })
+function deleteRolesMock(clusterUid: string, namespaceName: string, uids: string[]): void {
+  console.log('[Mock] deleteRoles', clusterUid, namespaceName, uids)
 }
 
 /**
- * Role 路由配置
- * @remarks
- * - GET /kubernetes/clusters/:clusterUid/namespaces/:namespaceName/roles - 获取 Role 分页列表
- * - GET /kubernetes/clusters/:clusterUid/namespaces/:namespaceName/roles/:name - 获取 Role 详情
- * - POST /kubernetes/clusters/:clusterUid/namespaces/:namespaceName/roles - 创建 Role
- * - PUT /kubernetes/clusters/:clusterUid/namespaces/:namespaceName/roles/:name - 更新 Role
- * - PUT /kubernetes/clusters/:clusterUid/namespaces/:namespaceName/roles/:name/labels - 更新标签
- * - PUT /kubernetes/clusters/:clusterUid/namespaces/:namespaceName/roles/:name/annotations - 更新注解
- * - PUT /kubernetes/clusters/:clusterUid/namespaces/:namespaceName/roles/:name/rules - 更新规则
- * - DELETE /kubernetes/clusters/:clusterUid/namespaces/:namespaceName/roles/:name - 删除 Role
- * - DELETE /kubernetes/clusters/:clusterUid/namespaces/:namespaceName/roles - 批量删除 Role
+ * 导入 Role
+ * @param clusterUid 集群 UID
+ * @param formData 上传的文件
+ * @returns void
  */
+function importRoleMock(clusterUid: string, formData: FormData): void {
+  void formData
+  console.log('[Mock] importRole', clusterUid)
+}
+
+/**
+ * 导出 Role
+ * @param clusterUid 集群 UID
+ * @param namespaceName 命名空间名称
+ * @param query Role 查询条件请求对象（名称、UID）
+ * @returns void
+ */
+function exportRoleMock(clusterUid: string, namespaceName: string, query: Partial<RoleQueryForm>): void {
+  console.log('[Mock] exportRole', clusterUid, namespaceName, query)
+}
+
 export default [
   {
     method: 'get',
-    url: '/kubernetes/clusters/:clusterUid/namespaces/:namespaceName/roles',
-    handler: ({ pathParams, params }: { pathParams: Record<string, string>; params: Partial<RoleQueryReq> }) =>
-      getRolePage(pathParams.clusterUid, pathParams.namespaceName, params),
+    url: '/kubernetes/clusters/:clusterUid/namespaces/:namespace/roles',
+    handler: (ctx: { pathParams: Record<string, string>; params: Partial<RoleQueryForm> }) =>
+      getRoleListMock(ctx.pathParams.clusterUid, ctx.pathParams.namespace, ctx.params),
   },
   {
     method: 'get',
-    url: '/kubernetes/clusters/:clusterUid/namespaces/:namespaceName/roles/:name',
-    handler: ({ pathParams }: { pathParams: Record<string, string> }) =>
-      getRoleDetail(pathParams.clusterUid, pathParams.namespaceName, pathParams.name),
+    url: '/kubernetes/clusters/:clusterUid/namespaces/:namespace/roles/:name',
+    handler: (ctx: { pathParams: Record<string, string> }) =>
+      getRoleDetailMock(ctx.pathParams.clusterUid, ctx.pathParams.namespace, ctx.pathParams.name),
+  },
+  {
+    method: 'get',
+    url: '/kubernetes/clusters/:clusterUid/namespaces/:namespace/roles/:name/yaml',
+    handler: (ctx: { pathParams: Record<string, string> }) =>
+      getRoleYamlMock(ctx.pathParams.clusterUid, ctx.pathParams.namespace, ctx.pathParams.name),
+  },
+  {
+    method: 'get',
+    url: '/kubernetes/clusters/:clusterUid/namespaces/:namespace/roles/:name/events',
+    handler: (ctx: { pathParams: Record<string, string>; params: Partial<EventQueryForm> }) =>
+      getRoleEventListMock(ctx.pathParams.clusterUid, ctx.pathParams.namespace, ctx.pathParams.name, ctx.params),
   },
   {
     method: 'post',
-    url: '/kubernetes/clusters/:clusterUid/namespaces/:namespaceName/roles',
-    handler: ({ pathParams, data }: { pathParams: Record<string, string>; data: Partial<RoleReq> }) =>
-      createRole(pathParams.clusterUid, data),
+    url: '/kubernetes/clusters/:clusterUid/namespaces/:namespace/roles',
+    handler: (ctx: { pathParams: Record<string, string>; data: Partial<RoleCreateForm> }) =>
+      createRoleMock(ctx.pathParams.clusterUid, ctx.pathParams.namespace, ctx.data),
+  },
+  {
+    method: 'post',
+    url: '/kubernetes/clusters/:clusterUid/roles/yaml',
+    handler: (ctx: { pathParams: Record<string, string>; data: string }) =>
+      createRoleYamlMock(ctx.pathParams.clusterUid, ctx.data),
   },
   {
     method: 'put',
-    url: '/kubernetes/clusters/:clusterUid/namespaces/:namespaceName/roles/:name',
-    handler: ({ pathParams, data }: { pathParams: Record<string, string>; data: Partial<RoleReq> }) =>
-      updateRole(pathParams.clusterUid, data),
+    url: '/kubernetes/clusters/:clusterUid/namespaces/:namespace/roles/:name',
+    handler: (ctx: { pathParams: Record<string, string>; data: Partial<RoleUpdateForm> }) =>
+      updateRoleMock(ctx.pathParams.clusterUid, ctx.pathParams.namespace, ctx.pathParams.name, ctx.data),
   },
   {
     method: 'put',
-    url: '/kubernetes/clusters/:clusterUid/namespaces/:namespaceName/roles/:name/labels',
-    handler: ({
-      pathParams,
-      data,
-    }: {
-      pathParams: Record<string, string>
-      data: { labels: Record<string, string>; operation: number }
-    }) =>
-      manageRoleLabels(pathParams.clusterUid, pathParams.namespaceName, pathParams.name, data.labels, data.operation),
+    url: '/kubernetes/clusters/:clusterUid/namespaces/:namespace/roles/:name/yaml',
+    handler: (ctx: { pathParams: Record<string, string>; data: string }) =>
+      updateRoleYamlMock(ctx.pathParams.clusterUid, ctx.pathParams.namespace, ctx.pathParams.name, ctx.data),
   },
   {
-    method: 'put',
-    url: '/kubernetes/clusters/:clusterUid/namespaces/:namespaceName/roles/:name/annotations',
-    handler: ({
-      pathParams,
-      data,
-    }: {
-      pathParams: Record<string, string>
-      data: { annotations: Record<string, string>; operation: number }
-    }) =>
-      manageRoleAnnotations(
-        pathParams.clusterUid,
-        pathParams.namespaceName,
-        pathParams.name,
-        data.annotations,
-        data.operation,
-      ),
+    method: 'post',
+    url: '/kubernetes/clusters/:clusterUid/namespaces/:namespace/roles/:name/labels',
+    handler: (ctx: { pathParams: Record<string, string>; data: MetadataLabelForm }) =>
+      manageRoleLabelMock(ctx.pathParams.clusterUid, ctx.pathParams.namespace, ctx.pathParams.name, ctx.data),
   },
   {
-    method: 'put',
-    url: '/kubernetes/clusters/:clusterUid/namespaces/:namespaceName/roles/:name/rules',
-    handler: ({ pathParams, data }: { pathParams: Record<string, string>; data: { rules: RoleReq['rules'] } }) =>
-      updateRoleRules(pathParams.clusterUid, pathParams.namespaceName, pathParams.name, data.rules),
+    method: 'post',
+    url: '/kubernetes/clusters/:clusterUid/namespaces/:namespace/roles/:name/annotations',
+    handler: (ctx: { pathParams: Record<string, string>; data: MetadataAnnotationForm }) =>
+      manageRoleAnnotationMock(ctx.pathParams.clusterUid, ctx.pathParams.namespace, ctx.pathParams.name, ctx.data),
   },
   {
     method: 'delete',
-    url: '/kubernetes/clusters/:clusterUid/namespaces/:namespaceName/roles/:name',
-    handler: ({ pathParams }: { pathParams: Record<string, string> }) =>
-      deleteRole(pathParams.clusterUid, pathParams.namespaceName, pathParams.name),
+    url: '/kubernetes/clusters/:clusterUid/namespaces/:namespace/roles/:name',
+    handler: (ctx: { pathParams: Record<string, string> }) =>
+      deleteRoleMock(ctx.pathParams.clusterUid, ctx.pathParams.namespace, ctx.pathParams.name),
   },
   {
     method: 'delete',
-    url: '/kubernetes/clusters/:clusterUid/namespaces/:namespaceName/roles',
-    handler: ({ pathParams, data }: { pathParams: Record<string, string>; data: string[] }) =>
-      deleteRoles(pathParams.clusterUid, pathParams.namespaceName, data),
-  },
-]
-
-/**
- * Role Mock 数据
- */
-const mockRoles: RoleResp[] = [
-  {
-    id: generateId(),
-    name: 'system:controller:endpoint-controller',
-    namespace: 'kube-system',
-    clusterUid: 'cluster-1',
-    clusterName: 'prod-cluster',
-    isSystem: true,
-    rules: [
-      { apiGroups: [''], resources: ['endpoints'], verbs: ['get', 'list', 'watch', 'create', 'update', 'patch'] },
-    ],
-    labels: { 'kubernetes.io/bootstrapping': 'rbac-defaults' },
-    annotations: { 'rbac.authorization.kubernetes.io/autoupdate': 'true' },
-    deletable: false,
-    createAt: '2024-01-01T00:00:00Z',
-    createBy: 'system',
-    updateAt: '2024-01-01T00:00:00Z',
-    updateBy: 'system',
+    url: '/kubernetes/clusters/:clusterUid/namespaces/:namespace/roles/batch',
+    handler: (ctx: { pathParams: Record<string, string>; data: string[] }) =>
+      deleteRolesMock(ctx.pathParams.clusterUid, ctx.pathParams.namespace, ctx.data),
   },
   {
-    id: generateId(),
-    name: 'developer-role',
-    namespace: 'default',
-    clusterUid: 'cluster-1',
-    clusterName: 'prod-cluster',
-    isSystem: false,
-    rules: [
-      {
-        apiGroups: ['apps'],
-        resources: ['deployments', 'statefulsets'],
-        verbs: ['get', 'list', 'watch', 'create', 'update', 'patch', 'delete'],
-      },
-      {
-        apiGroups: [''],
-        resources: ['services', 'configmaps', 'secrets'],
-        verbs: ['get', 'list', 'watch', 'create', 'update', 'patch', 'delete'],
-      },
-    ],
-    labels: { 'app.kubernetes.io/name': 'developer-role' },
-    deletable: true,
-    createAt: '2024-03-10T09:00:00Z',
-    createBy: 'admin',
-    updateAt: '2024-03-10T09:00:00Z',
-    updateBy: 'admin',
+    method: 'post',
+    url: '/kubernetes/clusters/:clusterUid/roles/import',
+    handler: (ctx: { pathParams: Record<string, string>; data: FormData }) =>
+      importRoleMock(ctx.pathParams.clusterUid, ctx.data),
   },
   {
-    id: generateId(),
-    name: 'readonly-role',
-    namespace: 'default',
-    clusterUid: 'cluster-1',
-    clusterName: 'prod-cluster',
-    isSystem: false,
-    rules: [
-      { apiGroups: ['apps'], resources: ['deployments'], verbs: ['get', 'list', 'watch'] },
-      { apiGroups: [''], resources: ['services', 'configmaps'], verbs: ['get', 'list', 'watch'] },
-    ],
-    labels: { 'app.kubernetes.io/name': 'readonly-role' },
-    annotations: { description: 'Read-only access within namespace' },
-    deletable: true,
-    createAt: '2024-03-15T11:00:00Z',
-    createBy: 'admin',
-    updateAt: '2024-03-15T11:00:00Z',
-    updateBy: 'admin',
+    method: 'get',
+    url: '/kubernetes/clusters/:clusterUid/namespaces/:namespace/roles/export',
+    handler: (ctx: { pathParams: Record<string, string>; params: Partial<RoleQueryForm> }) =>
+      exportRoleMock(ctx.pathParams.clusterUid, ctx.pathParams.namespace, ctx.params),
   },
 ]

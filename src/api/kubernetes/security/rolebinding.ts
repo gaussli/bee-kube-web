@@ -1,32 +1,39 @@
 /**
  * RoleBinding 资源 API
- * @module api/kubernetes/roleBinding
+ * @module api/kubernetes/rolebinding
  */
+import type { AxiosProgressEvent } from 'axios'
+
 import type { PageVo } from '@/types/common'
+import type { MetadataAnnotationForm, MetadataLabelForm } from '@/types/kubernetes/common'
+import type { EventListVo, EventQueryForm } from '@/types/kubernetes/event'
 import type {
-  RoleBindingResp,
-  RoleBindingQueryReq,
-  RoleBindingReq,
-  RoleBindingLabelsReq,
-  RoleBindingAnnotationsReq,
-  RoleBindingSubjectsReq,
-} from '@/types/kubernetes/security/roleBinding'
+  RoleBindingCreateForm,
+  RoleBindingDetailVo,
+  RoleBindingListVo,
+  RoleBindingQueryForm,
+  RoleBindingUpdateForm,
+  RoleBindingYamlVo,
+} from '@/types/kubernetes/security/rolebinding'
 
 import { request } from '@/utils'
 
 /**
- * 获取 RoleBinding 分页列表
+ * 获取 RoleBinding 列表
  * @param clusterUid - 集群 UID
  * @param namespaceName - 命名空间名称
  * @param params - 查询参数
  * @returns 分页后的 RoleBinding 列表
  */
-export function getRoleBindingPage(
+export function getRoleBindingList(
   clusterUid: string,
   namespaceName: string,
-  params: Partial<RoleBindingQueryReq>,
-): Promise<PageVo<RoleBindingResp>> {
-  return request.get(`/kubernetes/clusters/${clusterUid}/namespaces/${namespaceName}/rolebindings`, { params })
+  params: Partial<RoleBindingQueryForm>,
+): Promise<PageVo<RoleBindingListVo>> {
+  return request.get<PageVo<RoleBindingListVo>>(
+    `/kubernetes/clusters/${clusterUid}/namespaces/${namespaceName}/rolebindings`,
+    { params },
+  )
 }
 
 /**
@@ -40,8 +47,49 @@ export function getRoleBindingDetail(
   clusterUid: string,
   namespaceName: string,
   name: string,
-): Promise<RoleBindingResp> {
-  return request.get(`/kubernetes/clusters/${clusterUid}/namespaces/${namespaceName}/rolebindings/${name}`)
+): Promise<RoleBindingDetailVo> {
+  return request.get<RoleBindingDetailVo>(
+    `/kubernetes/clusters/${clusterUid}/namespaces/${namespaceName}/rolebindings/${name}`,
+  )
+}
+
+/**
+ * 查看 RoleBinding YAML
+ * @param clusterUid - 集群 UID
+ * @param namespaceName - 命名空间名称
+ * @param name - RoleBinding 名称
+ * @returns RoleBinding 完整 YAML 文本
+ */
+export function getRoleBindingYaml(
+  clusterUid: string,
+  namespaceName: string,
+  name: string,
+): Promise<RoleBindingYamlVo> {
+  return request.get<RoleBindingYamlVo>(
+    `/kubernetes/clusters/${clusterUid}/namespaces/${namespaceName}/rolebindings/${name}/yaml`,
+  )
+}
+
+/**
+ * 获取 RoleBinding 事件列表
+ * @param clusterUid - 集群 UID
+ * @param namespaceName - 命名空间名称
+ * @param name - RoleBinding 名称
+ * @param query - 事件查询条件
+ * @returns 分页后的事件列表
+ */
+export function getRoleBindingEventList(
+  clusterUid: string,
+  namespaceName: string,
+  name: string,
+  query: Partial<EventQueryForm>,
+): Promise<PageVo<EventListVo>> {
+  return request.get<PageVo<EventListVo>>(
+    `/kubernetes/clusters/${clusterUid}/namespaces/${namespaceName}/rolebindings/${name}/events`,
+    {
+      params: query,
+    },
+  )
 }
 
 /**
@@ -50,19 +98,53 @@ export function getRoleBindingDetail(
  * @param data - 创建参数
  * @returns 创建的 RoleBinding ID
  */
-export function createRoleBinding(clusterUid: string, data: Partial<RoleBindingReq>): Promise<void> {
-  return request.post(`/kubernetes/clusters/${clusterUid}/namespaces/${data.namespace}/rolebindings`, { data })
+export function createRoleBinding(clusterUid: string, data: Partial<RoleBindingCreateForm>): Promise<void> {
+  return request.post(`/kubernetes/clusters/${clusterUid}/namespaces/${data.namespace}/rolebindings`, data)
+}
+
+/**
+ * 通过 YAML 创建 RoleBinding
+ * @param clusterUid - 集群 UID
+ * @param yaml - RoleBinding YAML 文本
+ */
+export function createRoleBindingYaml(clusterUid: string, yaml: string): Promise<void> {
+  return request.post(`/kubernetes/clusters/${clusterUid}/rolebindings/yaml`, yaml, {
+    headers: { 'Content-Type': 'application/yaml' },
+  })
 }
 
 /**
  * 更新 RoleBinding
  * @param clusterUid - 集群 UID
+ * @param namespaceName - 命名空间名称
+ * @param name - RoleBinding 名称
  * @param data - 更新参数
  * @returns 更新的 RoleBinding ID
  */
-export function updateRoleBinding(clusterUid: string, data: Partial<RoleBindingReq>): Promise<void> {
-  return request.put(`/kubernetes/clusters/${clusterUid}/namespaces/${data.namespace}/rolebindings/${data.name}`, {
-    data,
+export function updateRoleBinding(
+  clusterUid: string,
+  namespaceName: string,
+  name: string,
+  data: Partial<RoleBindingUpdateForm>,
+): Promise<void> {
+  return request.put(`/kubernetes/clusters/${clusterUid}/namespaces/${namespaceName}/rolebindings/${name}`, data)
+}
+
+/**
+ * 通过 YAML 更新 RoleBinding
+ * @param clusterUid - 集群 UID
+ * @param namespaceName - 命名空间名称
+ * @param name - RoleBinding 名称
+ * @param yaml - RoleBinding YAML 文本
+ */
+export function updateRoleBindingYaml(
+  clusterUid: string,
+  namespaceName: string,
+  name: string,
+  yaml: string,
+): Promise<void> {
+  return request.put(`/kubernetes/clusters/${clusterUid}/namespaces/${namespaceName}/rolebindings/${name}/yaml`, yaml, {
+    headers: { 'Content-Type': 'application/yaml' },
   })
 }
 
@@ -73,15 +155,16 @@ export function updateRoleBinding(clusterUid: string, data: Partial<RoleBindingR
  * @param name - RoleBinding 名称
  * @param data - 标签更新参数
  */
-export function manageRoleBindingLabels(
+export function manageRoleBindingLabel(
   clusterUid: string,
   namespaceName: string,
   name: string,
-  data: Partial<RoleBindingLabelsReq>,
+  data: MetadataLabelForm,
 ): Promise<void> {
-  return request.put(`/kubernetes/clusters/${clusterUid}/namespaces/${namespaceName}/rolebindings/${name}/labels`, {
+  return request.post(
+    `/kubernetes/clusters/${clusterUid}/namespaces/${namespaceName}/rolebindings/${name}/labels`,
     data,
-  })
+  )
 }
 
 /**
@@ -91,36 +174,16 @@ export function manageRoleBindingLabels(
  * @param name - RoleBinding 名称
  * @param data - 注解更新参数
  */
-export function manageRoleBindingAnnotations(
+export function manageRoleBindingAnnotation(
   clusterUid: string,
   namespaceName: string,
   name: string,
-  data: Partial<RoleBindingAnnotationsReq>,
+  data: MetadataAnnotationForm,
 ): Promise<void> {
-  return request.put(
+  return request.post(
     `/kubernetes/clusters/${clusterUid}/namespaces/${namespaceName}/rolebindings/${name}/annotations`,
-    {
-      data,
-    },
-  )
-}
-
-/**
- * 更新 RoleBinding 主体
- * @param clusterUid - 集群 UID
- * @param namespaceName - 命名空间名称
- * @param name - RoleBinding 名称
- * @param data - 主体更新参数
- */
-export function manageRoleBindingSubjects(
-  clusterUid: string,
-  namespaceName: string,
-  name: string,
-  data: Partial<RoleBindingSubjectsReq>,
-): Promise<void> {
-  return request.put(`/kubernetes/clusters/${clusterUid}/namespaces/${namespaceName}/rolebindings/${name}/subjects`, {
     data,
-  })
+  )
 }
 
 /**
@@ -137,8 +200,42 @@ export function deleteRoleBinding(clusterUid: string, namespaceName: string, nam
  * 批量删除 RoleBinding
  * @param clusterUid - 集群 UID
  * @param namespaceName - 命名空间名称
- * @param names - 待删除的 RoleBinding 名称列表
+ * @param uids - 待删除的 RoleBinding UID 列表
  */
-export function deleteRoleBindings(clusterUid: string, namespaceName: string, names: string[]): Promise<void> {
-  return request.delete(`/kubernetes/clusters/${clusterUid}/namespaces/${namespaceName}/rolebindings`, { data: names })
+export function deleteRoleBindings(clusterUid: string, namespaceName: string, uids: string[]): Promise<void> {
+  return request.delete(`/kubernetes/clusters/${clusterUid}/namespaces/${namespaceName}/rolebindings/batch`, {
+    data: uids,
+  })
+}
+
+/**
+ * 导入 RoleBinding
+ * @param clusterUid - 集群 UID
+ * @param formData - 上传的文件
+ * @param onProgress - 上传进度回调
+ */
+export function importRoleBinding(
+  clusterUid: string,
+  formData: FormData,
+  onProgress?: (progressEvent: AxiosProgressEvent) => void,
+) {
+  return request.upload<void>(`/kubernetes/clusters/${clusterUid}/rolebindings/import`, formData, {
+    onUploadProgress: onProgress,
+  })
+}
+
+/**
+ * 导出 RoleBinding
+ * @param clusterUid - 集群 UID
+ * @param namespaceName - 命名空间名称
+ * @param params - 查询参数
+ */
+export function exportRoleBinding(
+  clusterUid: string,
+  namespaceName: string,
+  params: Partial<RoleBindingQueryForm>,
+): Promise<void> {
+  return request.download(`/kubernetes/clusters/${clusterUid}/namespaces/${namespaceName}/rolebindings/export`, {
+    params,
+  })
 }
