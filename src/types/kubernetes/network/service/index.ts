@@ -3,7 +3,7 @@
  * @module types/kubernetes/network/service/index
  */
 
-import type { AuditEntity, DeletableEntity, PageForm, UidEntity } from '@/types/common'
+import type { AuditEntity, DeletableEntity, ExportQueryForm, PageForm, UidEntity } from '@/types/common'
 
 import type { ServiceType } from '@/config/kubernetes/network/service'
 
@@ -81,3 +81,8 @@ export interface ServiceUpdateForm extends ObjectMetaEditableForm {
   /** Service Spec */
   spec: ServiceSpec
 }
+
+/**
+ * Service 导出查询条件请求对象
+ */
+export interface ServiceExportQueryForm extends ExportQueryForm, ServiceQueryForm {}

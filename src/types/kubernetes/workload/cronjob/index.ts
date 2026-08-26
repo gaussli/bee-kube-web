@@ -3,7 +3,7 @@
  * @module types/kubernetes/workload/cronjob/index
  */
 
-import type { AuditEntity, DeletableEntity, PageForm, UidEntity } from '@/types/common'
+import type { AuditEntity, DeletableEntity, ExportQueryForm, PageForm, UidEntity } from '@/types/common'
 
 import type { CronJobStatus } from '@/config/kubernetes/workload/cronjob'
 import type { JobStatus } from '@/config/kubernetes/workload/job'
@@ -132,3 +132,8 @@ export interface CronJobUpdateForm extends ObjectMetaEditableForm {
   /** CronJob Spec */
   spec: CronJobSpec
 }
+
+/**
+ * CronJob 导出查询条件请求对象
+ */
+export interface CronJobExportQueryForm extends ExportQueryForm, CronJobQueryForm {}

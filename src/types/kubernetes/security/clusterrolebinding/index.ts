@@ -3,7 +3,7 @@
  * @module types/kubernetes/security/clusterrolebinding/index
  */
 
-import type { AuditEntity, DeletableEntity, PageForm, UidEntity } from '@/types/common'
+import type { AuditEntity, DeletableEntity, ExportQueryForm, PageForm, UidEntity } from '@/types/common'
 
 import type { ObjectMetaCreatableForm, ObjectMetaEditableForm } from '../../common'
 import type { Clustered, ObjectMeta } from '../../types'
@@ -66,3 +66,8 @@ export interface ClusterRoleBindingUpdateForm extends ObjectMetaEditableForm, Cl
   /** ClusterRoleBinding 描述 */
   description: string
 }
+
+/**
+ * ClusterRoleBinding 导出查询条件请求对象
+ */
+export interface ClusterRoleBindingExportQueryForm extends ExportQueryForm, ClusterRoleBindingQueryForm {}

@@ -3,7 +3,7 @@
  * @module types/kubernetes/workload/daemonset/index
  */
 
-import type { AuditEntity, DeletableEntity, PageForm, UidEntity } from '@/types/common'
+import type { AuditEntity, DeletableEntity, ExportQueryForm, PageForm, UidEntity } from '@/types/common'
 
 import type { ServiceType } from '@/config/kubernetes/network/service'
 import type { DaemonSetStatus, DaemonSetUpdateStrategyType } from '@/config/kubernetes/workload/daemonset'
@@ -160,6 +160,11 @@ export interface DaemonSetUpdateForm extends ObjectMetaEditableForm {
   /** DaemonSet Spec */
   spec: DaemonSetSpec
 }
+
+/**
+ * DaemonSet 导出查询条件请求对象
+ */
+export interface DaemonSetExportQueryForm extends ExportQueryForm, DaemonSetQueryForm {}
 
 /**
  * DaemonSet 回滚请求对象

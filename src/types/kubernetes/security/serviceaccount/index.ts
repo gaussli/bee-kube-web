@@ -3,7 +3,7 @@
  * @module types/kubernetes/security/serviceaccount/index
  */
 
-import type { AuditEntity, DeletableEntity, PageForm, UidEntity } from '@/types/common'
+import type { AuditEntity, DeletableEntity, ExportQueryForm, PageForm, UidEntity } from '@/types/common'
 
 import type { ObjectMetaCreatableForm, ObjectMetaEditableForm } from '../../common'
 import type { Clustered, Namespaced, ObjectMeta } from '../../types'
@@ -66,3 +66,8 @@ export interface ServiceAccountUpdateForm extends ObjectMetaEditableForm, Servic
   /** ServiceAccount 描述 */
   description: string
 }
+
+/**
+ * ServiceAccount 导出查询条件请求对象
+ */
+export interface ServiceAccountExportQueryForm extends ExportQueryForm, ServiceAccountQueryForm {}

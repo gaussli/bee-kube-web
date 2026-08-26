@@ -3,7 +3,7 @@
  * @module types/kubernetes/cluster/index
  */
 
-import type { AuditEntity, DeletableEntity, PageForm, UidEntity } from '@/types/common'
+import type { AuditEntity, DeletableEntity, ExportQueryForm, PageForm, UidEntity } from '@/types/common'
 
 import type { ClusterStatus } from '@/config/kubernetes/cluster'
 import type { ResourceName } from '@/config/kubernetes/core'
@@ -79,3 +79,8 @@ export interface ClusterUpdateForm {
   /** 集群描述 */
   description?: string
 }
+
+/**
+ * Cluster 导出请求对象
+ */
+export interface ClusterExportQueryForm extends ExportQueryForm, ClusterQueryForm {}

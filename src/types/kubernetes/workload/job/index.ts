@@ -3,7 +3,7 @@
  * @module types/kubernetes/workload/job/index
  */
 
-import type { AuditEntity, DeletableEntity, PageForm, UidEntity } from '@/types/common'
+import type { AuditEntity, DeletableEntity, ExportQueryForm, PageForm, UidEntity } from '@/types/common'
 
 import type { JobStatus } from '@/config/kubernetes/workload/job'
 
@@ -101,3 +101,8 @@ export interface JobUpdateForm extends ObjectMetaEditableForm {
   /** Job Spec */
   spec: JobSpec
 }
+
+/**
+ * Job 导出查询条件请求对象
+ */
+export interface JobExportQueryForm extends ExportQueryForm, JobQueryForm {}

@@ -3,7 +3,7 @@
  * @module types/kubernetes/storage/persistentvolume/index
  */
 
-import type { AuditEntity, DeletableEntity, PageForm, UidEntity } from '@/types/common'
+import type { AuditEntity, DeletableEntity, ExportQueryForm, PageForm, UidEntity } from '@/types/common'
 
 import type { PersistentVolumeAccessMode } from '@/config/kubernetes/core'
 import type {
@@ -98,3 +98,8 @@ export interface PersistentVolumeUpdateForm extends ObjectMetaEditableForm {
   /** PersistentVolume Spec */
   spec: PersistentVolumeSpec
 }
+
+/**
+ * PersistentVolume 导出查询条件请求对象
+ */
+export interface PersistentVolumeExportQueryForm extends ExportQueryForm, PersistentVolumeQueryForm {}

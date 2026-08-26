@@ -3,7 +3,7 @@
  * @module types/kubernetes/network/networkpolicy/index
  */
 
-import type { AuditEntity, DeletableEntity, PageForm, UidEntity } from '@/types/common'
+import type { AuditEntity, DeletableEntity, ExportQueryForm, PageForm, UidEntity } from '@/types/common'
 
 import type { PolicyType } from '@/config/kubernetes/network/networkpolicy'
 
@@ -78,3 +78,8 @@ export interface NetworkPolicyUpdateForm extends ObjectMetaEditableForm {
   /** NetworkPolicy Spec */
   spec: NetworkPolicySpec
 }
+
+/**
+ * NetworkPolicy 导出查询条件请求对象
+ */
+export interface NetworkPolicyExportQueryForm extends ExportQueryForm, NetworkPolicyQueryForm {}

@@ -4,7 +4,6 @@
  */
 
 import type { LabelSelector } from '../../types'
-
 import type { PolicyRule } from '../types'
 
 /**

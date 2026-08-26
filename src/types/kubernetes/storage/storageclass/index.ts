@@ -3,7 +3,7 @@
  * @module types/kubernetes/storage/storageclass/index
  */
 
-import type { AuditEntity, DeletableEntity, PageForm, UidEntity } from '@/types/common'
+import type { AuditEntity, DeletableEntity, ExportQueryForm, PageForm, UidEntity } from '@/types/common'
 
 import type { PersistentVolumeReclaimPolicy } from '@/config/kubernetes/storage/persistentvolume'
 import type { VolumeBindingMode } from '@/config/kubernetes/storage/storageclass'
@@ -71,3 +71,8 @@ export interface StorageClassUpdateForm extends ObjectMetaEditableForm, StorageC
   /** StorageClass 描述 */
   description: string
 }
+
+/**
+ * StorageClass 导出查询条件请求对象
+ */
+export interface StorageClassExportQueryForm extends ExportQueryForm, StorageClassQueryForm {}

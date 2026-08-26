@@ -3,7 +3,7 @@
  * @module types/kubernetes/workload/statefulset/index
  */
 
-import type { AuditEntity, DeletableEntity, PageForm, UidEntity } from '@/types/common'
+import type { AuditEntity, DeletableEntity, ExportQueryForm, PageForm, UidEntity } from '@/types/common'
 
 import type { ServiceType } from '@/config/kubernetes/network/service'
 import type { StatefulSetStatus, StatefulSetUpdateStrategyType } from '@/config/kubernetes/workload/statefulset'
@@ -161,6 +161,11 @@ export interface StatefulSetUpdateForm extends ObjectMetaEditableForm {
   /** StatefulSet Spec */
   spec: StatefulSetSpec
 }
+
+/**
+ * StatefulSet 导出查询条件请求对象
+ */
+export interface StatefulSetExportQueryForm extends ExportQueryForm, StatefulSetQueryForm {}
 
 /**
  * StatefulSet 扩缩容请求对象

@@ -3,7 +3,7 @@
  * @module types/kubernetes/security/role/index
  */
 
-import type { AuditEntity, DeletableEntity, PageForm, UidEntity } from '@/types/common'
+import type { AuditEntity, DeletableEntity, ExportQueryForm, PageForm, UidEntity } from '@/types/common'
 
 import type { ObjectMetaCreatableForm, ObjectMetaEditableForm } from '../../common'
 import type { Clustered, Namespaced, ObjectMeta } from '../../types'
@@ -63,3 +63,8 @@ export interface RoleUpdateForm extends ObjectMetaEditableForm, Role {
   /** Role 描述 */
   description: string
 }
+
+/**
+ * Role 导出查询条件请求对象
+ */
+export interface RoleExportQueryForm extends ExportQueryForm, RoleQueryForm {}

@@ -3,7 +3,7 @@
  * @module types/kubernetes/config/configmap/index
  */
 
-import type { AuditEntity, DeletableEntity, PageForm, UidEntity } from '@/types/common'
+import type { AuditEntity, DeletableEntity, ExportQueryForm, PageForm, UidEntity } from '@/types/common'
 
 import type { ObjectMetaCreatableForm, ObjectMetaEditableForm } from '../../common'
 import type { Clustered, Namespaced, ObjectMeta } from '../../types'
@@ -64,3 +64,8 @@ export interface ConfigMapUpdateForm extends ObjectMetaEditableForm, ConfigMap {
   /** ConfigMap 描述 */
   description: string
 }
+
+/**
+ * ConfigMap 导出查询条件请求对象
+ */
+export interface ConfigMapExportQueryForm extends ExportQueryForm, ConfigMapQueryForm {}

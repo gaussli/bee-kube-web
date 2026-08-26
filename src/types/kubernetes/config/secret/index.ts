@@ -3,7 +3,7 @@
  * @module types/kubernetes/config/secret/index
  */
 
-import type { AuditEntity, DeletableEntity, PageForm, UidEntity } from '@/types/common'
+import type { AuditEntity, DeletableEntity, ExportQueryForm, PageForm, UidEntity } from '@/types/common'
 
 import type { SecretType } from '@/config/kubernetes/config/secret'
 
@@ -70,3 +70,8 @@ export interface SecretUpdateForm extends ObjectMetaEditableForm, Secret {
   /** Secret 描述信息 */
   description: string
 }
+
+/**
+ * Secret 导出请求对象
+ */
+export interface SecretExportQueryForm extends ExportQueryForm, SecretQueryForm {}
