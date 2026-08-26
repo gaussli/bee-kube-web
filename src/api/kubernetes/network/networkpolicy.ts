@@ -51,11 +51,11 @@ export function getNetworkPolicyDetail(
 }
 
 /**
- * 查看 NetworkPolicy YAML
+ * 查看网络策略（NetworkPolicy）YAML
  * @param clusterUid - 集群 UID
  * @param namespace - 命名空间名称
- * @param name - NetworkPolicy 名称
- * @returns NetworkPolicy 完整 YAML 文本
+ * @param name - 网络策略名称
+ * @returns 网络策略 YAML
  */
 export function getNetworkPolicyYaml(
   clusterUid: string,

@@ -44,10 +44,10 @@ export function getClusterRoleBindingDetail(clusterUid: string, name: string): P
 }
 
 /**
- * 查看 ClusterRoleBinding YAML
+ * 查看集群角色绑定（ClusterRoleBinding）YAML
  * @param clusterUid - 集群 UID
- * @param name - ClusterRoleBinding 名称
- * @returns ClusterRoleBinding 完整 YAML 文本
+ * @param name - 集群角色绑定名称
+ * @returns 集群角色绑定 YAML
  */
 export function getClusterRoleBindingYaml(clusterUid: string, name: string): Promise<ClusterRoleBindingYamlVo> {
   return request.get<ClusterRoleBindingYamlVo>(`/kubernetes/clusters/${clusterUid}/clusterrolebindings/${name}/yaml`)

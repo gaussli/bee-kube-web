@@ -44,10 +44,10 @@ export function getPersistentVolumeDetail(clusterUid: string, name: string): Pro
 }
 
 /**
- * 查看 PersistentVolume YAML
+ * 查看持久卷（PersistentVolume）YAML
  * @param clusterUid - 集群 UID
- * @param name - PersistentVolume 名称
- * @returns PersistentVolume 完整 YAML 文本
+ * @param name - 持久卷名称
+ * @returns 持久卷 YAML
  */
 export function getPersistentVolumeYaml(clusterUid: string, name: string): Promise<PersistentVolumeYamlVo> {
   return request.get<PersistentVolumeYamlVo>(`/kubernetes/clusters/${clusterUid}/persistentvolumes/${name}/yaml`)

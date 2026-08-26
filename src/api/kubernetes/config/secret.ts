@@ -40,11 +40,11 @@ export function getSecretDetail(clusterUid: string, namespace: string, name: str
 }
 
 /**
- * 查看 Secret YAML
+ * 查看密钥（Secret）YAML
  * @param clusterUid - 集群 UID
  * @param namespace - 命名空间名称
- * @param name - Secret 名称
- * @returns Secret YAML 配置
+ * @param name - 密钥名称
+ * @returns 密钥 YAML
  */
 export function getSecretYaml(clusterUid: string, namespace: string, name: string): Promise<SecretYamlVo> {
   return request.get<SecretYamlVo>(`/kubernetes/clusters/${clusterUid}/namespaces/${namespace}/secrets/${name}/yaml`)

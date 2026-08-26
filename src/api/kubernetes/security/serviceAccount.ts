@@ -51,11 +51,11 @@ export function getServiceAccountDetail(
 }
 
 /**
- * 查看 ServiceAccount YAML
+ * 查看服务账号（ServiceAccount）YAML
  * @param clusterUid - 集群 UID
  * @param namespace - 命名空间名称
- * @param name - ServiceAccount 名称
- * @returns ServiceAccount 完整 YAML 文本
+ * @param name - 服务账号名称
+ * @returns 服务账号 YAML
  */
 export function getServiceAccountYaml(
   clusterUid: string,

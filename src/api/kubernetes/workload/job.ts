@@ -43,13 +43,17 @@ export function getJobDetail(clusterUid: string, namespace: string, name: string
 }
 
 /**
- * 查看 Job YAML
- * @param clusterUid 集群 UID
- * @param namespace 命名空间名称
- * @param name Job 名称
- * @returns Job YAML 响应对象（完整 YAML 文本）
+ * 查看任务（Job）YAML
+ * @param clusterUid - 集群 UID
+ * @param namespace - 命名空间名称
+ * @param name - 任务名称
+ * @returns 任务 YAML
  */
-export function getJobYaml(clusterUid: string, namespace: string, name: string) {
+export function getJobYaml(
+  clusterUid: string,
+  namespace: string,
+  name: string,
+): Promise<JobYamlVo> {
   return request.get<JobYamlVo>(`/kubernetes/clusters/${clusterUid}/namespaces/${namespace}/jobs/${name}/yaml`)
 }
 

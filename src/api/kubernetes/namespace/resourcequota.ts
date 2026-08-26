@@ -33,7 +33,7 @@ export function getNamespaceResourceQuotaDetail(
 }
 
 /**
- * 获取命名空间（Namespace）的资源配额（ResourceQuota）YAML
+ * 查看命名空间（Namespace）的资源配额（ResourceQuota）YAML
  * @param clusterUid - 集群 UID
  * @param namespace - 命名空间名称
  * @param name - 资源配额名称

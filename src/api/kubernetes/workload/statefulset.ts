@@ -58,13 +58,17 @@ export function getStatefulSetDetail(
 }
 
 /**
- * 查看 StatefulSet YAML
- * @param clusterUid 集群 UID
- * @param namespace 命名空间名称
- * @param name StatefulSet 名称
- * @returns StatefulSet YAML 响应对象（完整 YAML 文本）
+ * 查看无状态应用（StatefulSet）YAML
+ * @param clusterUid - 集群 UID
+ * @param namespace - 命名空间名称
+ * @param name - 无状态应用名称
+ * @returns 无状态应用 YAML
  */
-export function getStatefulSetYaml(clusterUid: string, namespace: string, name: string) {
+export function getStatefulSetYaml(
+  clusterUid: string,
+  namespace: string,
+  name: string,
+): Promise<StatefulSetYamlVo> {
   return request.get<StatefulSetYamlVo>(
     `/kubernetes/clusters/${clusterUid}/namespaces/${namespace}/statefulsets/${name}/yaml`,
   )

@@ -50,13 +50,17 @@ export function getDaemonSetDetail(clusterUid: string, namespace: string, name: 
 }
 
 /**
- * 查看 DaemonSet YAML
- * @param clusterUid 集群 UID
- * @param namespace 命名空间名称
- * @param name DaemonSet 名称
- * @returns DaemonSet YAML 响应对象（完整 YAML 文本）
+ * 查看守护进程集（DaemonSet）YAML
+ * @param clusterUid - 集群 UID
+ * @param namespace - 命名空间名称
+ * @param name - 守护进程集名称
+ * @returns 守护进程集 YAML
  */
-export function getDaemonSetYaml(clusterUid: string, namespace: string, name: string) {
+export function getDaemonSetYaml(
+  clusterUid: string,
+  namespace: string,
+  name: string,
+): Promise<DaemonSetYamlVo> {
   return request.get<DaemonSetYamlVo>(
     `/kubernetes/clusters/${clusterUid}/namespaces/${namespace}/daemonsets/${name}/yaml`,
   )

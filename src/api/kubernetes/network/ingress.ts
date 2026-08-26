@@ -42,11 +42,11 @@ export function getIngressDetail(clusterUid: string, namespace: string, name: st
 }
 
 /**
- * 查看 Ingress YAML
+ * 查看路由（Ingress）YAML
  * @param clusterUid - 集群 UID
  * @param namespace - 命名空间名称
- * @param name - Ingress 名称
- * @returns Ingress 完整 YAML 文本
+ * @param name - 路由名称
+ * @returns 路由 YAML
  */
 export function getIngressYaml(clusterUid: string, namespace: string, name: string): Promise<IngressYamlVo> {
   return request.get<IngressYamlVo>(`/kubernetes/clusters/${clusterUid}/namespaces/${namespace}/ingresses/${name}/yaml`)

@@ -38,11 +38,11 @@ export function getPodDetail(clusterUid: string, namespace: string, name: string
 }
 
 /**
- * 查看 Pod YAML
+ * 查看容器组（Pod）YAML
  * @param clusterUid - 集群 UID
  * @param namespace - 命名空间名称
- * @param name - Pod 名称
- * @returns Pod YAML
+ * @param name - 容器组名称
+ * @returns 容器组 YAML
  */
 export function getPodYaml(clusterUid: string, namespace: string, name: string): Promise<PodYamlVo> {
   return request.get<PodYamlVo>(`/kubernetes/clusters/${clusterUid}/namespaces/${namespace}/pods/${name}/yaml`)

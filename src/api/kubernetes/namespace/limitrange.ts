@@ -33,7 +33,7 @@ export function getNamespaceLimitRangeDetail(
 }
 
 /**
- * 获取命名空间（Namespace）的资源限制（LimitRange）YAML
+ * 查看命名空间（Namespace）的资源限制（LimitRange）YAML
  * @param clusterUid - 集群 UID
  * @param namespace - 命名空间名称
  * @param name - 资源限制名称

@@ -43,11 +43,11 @@ export function getConfigMapDetail(clusterUid: string, namespace: string, name: 
 }
 
 /**
- * 查看 ConfigMap YAML
+ * 查看配置（ConfigMap）YAML
  * @param clusterUid - 集群 UID
  * @param namespace - 命名空间名称
- * @param name - ConfigMap 名称
- * @returns ConfigMap YAML 配置
+ * @param name - 配置名称
+ * @returns 配置 YAML
  */
 export function getConfigMapYaml(clusterUid: string, namespace: string, name: string): Promise<ConfigMapYamlVo> {
   return request.get<ConfigMapYamlVo>(

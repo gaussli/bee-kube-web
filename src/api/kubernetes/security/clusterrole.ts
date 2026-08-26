@@ -42,10 +42,10 @@ export function getClusterRoleDetail(clusterUid: string, name: string): Promise<
 }
 
 /**
- * 查看 ClusterRole YAML
+ * 查看集群角色（ClusterRole）YAML
  * @param clusterUid - 集群 UID
- * @param name - ClusterRole 名称
- * @returns ClusterRole 完整 YAML 文本
+ * @param name - 集群角色名称
+ * @returns 集群角色 YAML
  */
 export function getClusterRoleYaml(clusterUid: string, name: string): Promise<ClusterRoleYamlVo> {
   return request.get<ClusterRoleYamlVo>(`/kubernetes/clusters/${clusterUid}/clusterroles/${name}/yaml`)

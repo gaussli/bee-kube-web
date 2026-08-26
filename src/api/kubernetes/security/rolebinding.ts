@@ -51,11 +51,11 @@ export function getRoleBindingDetail(
 }
 
 /**
- * 查看 RoleBinding YAML
+ * 查看角色绑定（RoleBinding）YAML
  * @param clusterUid - 集群 UID
  * @param namespace - 命名空间名称
- * @param name - RoleBinding 名称
- * @returns RoleBinding 完整 YAML 文本
+ * @param name - 角色绑定名称
+ * @returns 角色绑定 YAML
  */
 export function getRoleBindingYaml(clusterUid: string, namespace: string, name: string): Promise<RoleBindingYamlVo> {
   return request.get<RoleBindingYamlVo>(

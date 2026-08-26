@@ -44,13 +44,17 @@ export function getCronJobDetail(clusterUid: string, namespace: string, name: st
 }
 
 /**
- * 查看 CronJob YAML
- * @param clusterUid 集群 UID
- * @param namespace 命名空间名称
- * @param name CronJob 名称
- * @returns CronJob YAML 响应对象（完整 YAML 文本）
+ * 查看定时任务（CronJob）YAML
+ * @param clusterUid - 集群 UID
+ * @param namespace - 命名空间名称
+ * @param name - 定时任务名称
+ * @returns 定时任务 YAML
  */
-export function getCronJobYaml(clusterUid: string, namespace: string, name: string) {
+export function getCronJobYaml(
+  clusterUid: string,
+  namespace: string,
+  name: string,
+): Promise<CronJobYamlVo> {
   return request.get<CronJobYamlVo>(`/kubernetes/clusters/${clusterUid}/namespaces/${namespace}/cronjobs/${name}/yaml`)
 }
 

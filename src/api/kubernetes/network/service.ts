@@ -42,11 +42,11 @@ export function getServiceDetail(clusterUid: string, namespace: string, name: st
 }
 
 /**
- * 查看 Service YAML
+ * 查看服务（Service）YAML
  * @param clusterUid - 集群 UID
  * @param namespace - 命名空间名称
- * @param name - Service 名称
- * @returns Service 完整 YAML 文本
+ * @param name - 服务名称
+ * @returns 服务 YAML
  */
 export function getServiceYaml(clusterUid: string, namespace: string, name: string): Promise<ServiceYamlVo> {
   return request.get<ServiceYamlVo>(`/kubernetes/clusters/${clusterUid}/namespaces/${namespace}/services/${name}/yaml`)

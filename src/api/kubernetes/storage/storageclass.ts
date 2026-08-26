@@ -42,10 +42,10 @@ export function getStorageClassDetail(clusterUid: string, name: string): Promise
 }
 
 /**
- * 查看 StorageClass YAML
+ * 查看存储类（StorageClass）YAML
  * @param clusterUid - 集群 UID
- * @param name - StorageClass 名称
- * @returns StorageClass 完整 YAML 文本
+ * @param name - 存储类名称
+ * @returns 存储类 YAML
  */
 export function getStorageClassYaml(clusterUid: string, name: string): Promise<StorageClassYamlVo> {
   return request.get<StorageClassYamlVo>(`/kubernetes/clusters/${clusterUid}/storageclasses/${name}/yaml`)
