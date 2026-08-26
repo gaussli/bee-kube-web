@@ -1,10 +1,10 @@
 <template>
   <div class="daemonset-create">
     <div class="page-header">
-      <BeePageHeader :icon="Monitor" title="创建守护进程" description="创建一个新的 Kubernetes DaemonSet。" />
+      <BeePageHeader description="创建一个新的 Kubernetes DaemonSet。" :icon="Monitor" title="创建守护进程集" />
     </div>
     <div class="page-body">
-      <el-form ref="formRef" :model="formData" :rules="formRules" label-width="140px" class="create-form">
+      <el-form ref="formRef" class="create-form" label-width="140px" :model="formData" :rules="formRules">
         <el-form-item label="所属集群" prop="clusterUid">
           <el-select v-model="formData.clusterUid" placeholder="选择集群" style="width: 300px"
             ><el-option label="默认集群" value="default"
@@ -24,7 +24,7 @@
       <BeeButton @click="handleCancel"
         ><template #icon><Close /></template>取消</BeeButton
       >
-      <BeeButton type="primary" :loading="submitting" @click="handleSubmit"
+      <BeeButton :loading="submitting" type="primary" @click="handleSubmit"
         ><template #icon><Check /></template>创建</BeeButton
       >
     </div>
@@ -40,7 +40,7 @@ import { Monitor, Close, Check } from '@element-plus/icons-vue'
 
 import type { FormInstance } from 'element-plus'
 
-import type { DaemonSetResp } from '@/types/kubernetes/workload/daemonset'
+import type { DaemonSetResp } from '@/types/kubernetes/workload/types'
 
 import { createDaemonSet } from '@/api/kubernetes/workload/daemonset'
 

@@ -2,9 +2,9 @@
   <div class="daemonset-detail">
     <div class="page-header">
       <BeePageHeader
-        :icon="Monitor"
-        :title="`守护进程详情: ${daemonsetName}`"
         description="查看 DaemonSet 详细信息。"
+        :icon="Monitor"
+        :title="`守护进程集详情: ${daemonsetName}`"
       />
     </div>
     <div class="page-body">
@@ -76,7 +76,7 @@ import { useRoute, useRouter } from 'vue-router'
 
 import { Monitor, ArrowLeft, EditPen } from '@element-plus/icons-vue'
 
-import type { DaemonSetResp } from '@/types/kubernetes/workload/daemonset'
+import type { DaemonSetResp } from '@/types/kubernetes/workload/types'
 
 import { getDaemonSetDetail } from '@/api/kubernetes/workload/daemonset'
 

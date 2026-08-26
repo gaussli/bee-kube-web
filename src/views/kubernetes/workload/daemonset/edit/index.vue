@@ -1,10 +1,10 @@
 <template>
   <div class="daemonset-edit">
     <div class="page-header">
-      <BeePageHeader :icon="Monitor" :title="`编辑守护进程: ${daemonsetName}`" description="编辑 DaemonSet 配置。" />
+      <BeePageHeader description="编辑 DaemonSet 配置。" :icon="Monitor" :title="`编辑守护进程集: ${daemonsetName}`" />
     </div>
     <div class="page-body">
-      <el-form ref="formRef" :model="formData" label-width="140px" class="edit-form">
+      <el-form ref="formRef" class="edit-form" label-width="140px" :model="formData">
         <el-form-item label="标签">
           <div class="key-value-list">
             <div v-for="(item, index) in labelList" :key="index" class="key-value-item">
@@ -23,7 +23,7 @@
       <BeeButton @click="handleCancel"
         ><template #icon><Close /></template>取消</BeeButton
       >
-      <BeeButton type="primary" :loading="submitting" @click="handleSubmit"
+      <BeeButton :loading="submitting" type="primary" @click="handleSubmit"
         ><template #icon><Check /></template>保存</BeeButton
       >
     </div>
@@ -37,7 +37,7 @@ import { useRoute, useRouter } from 'vue-router'
 
 import { Monitor, Plus, Delete, Close, Check } from '@element-plus/icons-vue'
 
-import type { DaemonSetResp } from '@/types/kubernetes/workload/daemonset'
+import type { DaemonSetResp } from '@/types/kubernetes/workload/types'
 
 import { getDaemonSetDetail, updateDaemonSet } from '@/api/kubernetes/workload/daemonset'
 
