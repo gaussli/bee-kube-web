@@ -73,32 +73,31 @@ export function getSecretEventList(
 }
 
 /**
- * 创建 Secret
+ * 创建密钥（Secret）
  * @param clusterUid - 集群 UID
- * @param namespace - 命名空间名称
- * @param data - 创建参数
+ * @param data - 创建请求对象
  */
-export function createSecret(clusterUid: string, namespace: string, data: Partial<SecretCreateForm>): Promise<void> {
-  return request.post(`/kubernetes/clusters/${clusterUid}/namespaces/${namespace}/secrets`, data)
+export function createSecret(clusterUid: string, data: Partial<SecretCreateForm>): Promise<void> {
+  return request.post<void>(`/kubernetes/clusters/${clusterUid}/secrets`, data)
 }
 
 /**
- * 创建 Secret（YAML 方式）
+ * 创建密钥（Secret）（YAML）
  * @param clusterUid - 集群 UID
- * @param yaml - Secret YAML 文本
+ * @param yaml - 创建 YAML 文本
  */
 export function createSecretYaml(clusterUid: string, yaml: string): Promise<void> {
-  return request.post(`/kubernetes/clusters/${clusterUid}/secrets/yaml`, yaml, {
+  return request.post<void>(`/kubernetes/clusters/${clusterUid}/secrets/yaml`, yaml, {
     headers: { 'Content-Type': 'application/yaml' },
   })
 }
 
 /**
- * 更新 Secret
+ * 更新密钥（Secret）
  * @param clusterUid - 集群 UID
  * @param namespace - 命名空间名称
- * @param name - Secret 名称
- * @param data - 更新参数
+ * @param name - 密钥名称
+ * @param data - 更新请求对象
  */
 export function updateSecret(
   clusterUid: string,
@@ -106,18 +105,18 @@ export function updateSecret(
   name: string,
   data: Partial<SecretUpdateForm>,
 ): Promise<void> {
-  return request.put(`/kubernetes/clusters/${clusterUid}/namespaces/${namespace}/secrets/${name}`, data)
+  return request.put<void>(`/kubernetes/clusters/${clusterUid}/namespaces/${namespace}/secrets/${name}`, data)
 }
 
 /**
- * 通过 YAML 更新 Secret
+ * 更新密钥（Secret）（YAML）
  * @param clusterUid - 集群 UID
  * @param namespace - 命名空间名称
- * @param name - Secret 名称
- * @param yaml - Secret YAML 文本
+ * @param name - 密钥名称
+ * @param yaml - 更新 YAML 文本
  */
 export function updateSecretYaml(clusterUid: string, namespace: string, name: string, yaml: string): Promise<void> {
-  return request.put(`/kubernetes/clusters/${clusterUid}/namespaces/${namespace}/secrets/${name}/yaml`, yaml, {
+  return request.put<void>(`/kubernetes/clusters/${clusterUid}/namespaces/${namespace}/secrets/${name}/yaml`, yaml, {
     headers: { 'Content-Type': 'application/yaml' },
   })
 }
@@ -184,7 +183,7 @@ export function importSecret(
   clusterUid: string,
   formData: FormData,
   onProgress?: (progressEvent: AxiosProgressEvent) => void,
-) {
+): Promise<void> {
   return request.upload<void>(`/kubernetes/clusters/${clusterUid}/secrets/import`, formData, {
     onUploadProgress: onProgress,
   })

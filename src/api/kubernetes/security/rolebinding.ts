@@ -88,31 +88,29 @@ export function getRoleBindingEventList(
 /**
  * 创建 RoleBinding
  * @param clusterUid - 集群 UID
- * @param data - 创建参数
- * @returns 创建的 RoleBinding ID
+ * @param data - 创建请求对象
  */
 export function createRoleBinding(clusterUid: string, data: Partial<RoleBindingCreateForm>): Promise<void> {
-  return request.post(`/kubernetes/clusters/${clusterUid}/namespaces/${data.namespace}/rolebindings`, data)
+  return request.post<void>(`/kubernetes/clusters/${clusterUid}/rolebindings`, data)
 }
 
 /**
- * 通过 YAML 创建 RoleBinding
+ * 创建角色绑定（RoleBinding）（YAML）
  * @param clusterUid - 集群 UID
- * @param yaml - RoleBinding YAML 文本
+ * @param yaml - 创建 YAML 文本
  */
 export function createRoleBindingYaml(clusterUid: string, yaml: string): Promise<void> {
-  return request.post(`/kubernetes/clusters/${clusterUid}/rolebindings/yaml`, yaml, {
+  return request.post<void>(`/kubernetes/clusters/${clusterUid}/rolebindings/yaml`, yaml, {
     headers: { 'Content-Type': 'application/yaml' },
   })
 }
 
 /**
- * 更新 RoleBinding
+ * 更新角色绑定（RoleBinding）
  * @param clusterUid - 集群 UID
  * @param namespace - 命名空间名称
- * @param name - RoleBinding 名称
- * @param data - 更新参数
- * @returns 更新的 RoleBinding ID
+ * @param name - 角色绑定名称
+ * @param data - 更新请求对象
  */
 export function updateRoleBinding(
   clusterUid: string,
@@ -120,15 +118,15 @@ export function updateRoleBinding(
   name: string,
   data: Partial<RoleBindingUpdateForm>,
 ): Promise<void> {
-  return request.put(`/kubernetes/clusters/${clusterUid}/namespaces/${namespace}/rolebindings/${name}`, data)
+  return request.put<void>(`/kubernetes/clusters/${clusterUid}/namespaces/${namespace}/rolebindings/${name}`, data)
 }
 
 /**
- * 通过 YAML 更新 RoleBinding
+ * 更新角色绑定（RoleBinding）（YAML）
  * @param clusterUid - 集群 UID
  * @param namespace - 命名空间名称
- * @param name - RoleBinding 名称
- * @param yaml - RoleBinding YAML 文本
+ * @param name - 角色绑定名称
+ * @param yaml - 更新 YAML 文本
  */
 export function updateRoleBindingYaml(
   clusterUid: string,
@@ -136,9 +134,13 @@ export function updateRoleBindingYaml(
   name: string,
   yaml: string,
 ): Promise<void> {
-  return request.put(`/kubernetes/clusters/${clusterUid}/namespaces/${namespace}/rolebindings/${name}/yaml`, yaml, {
-    headers: { 'Content-Type': 'application/yaml' },
-  })
+  return request.put<void>(
+    `/kubernetes/clusters/${clusterUid}/namespaces/${namespace}/rolebindings/${name}/yaml`,
+    yaml,
+    {
+      headers: { 'Content-Type': 'application/yaml' },
+    },
+  )
 }
 
 /**

@@ -75,33 +75,31 @@ export function getRoleEventList(
 }
 
 /**
- * 创建 Role
+ * 创建角色（Role）
  * @param clusterUid - 集群 UID
- * @param data - 创建参数
- * @returns 创建的 Role ID
+ * @param data - 创建请求对象
  */
 export function createRole(clusterUid: string, data: Partial<RoleCreateForm>): Promise<void> {
-  return request.post(`/kubernetes/clusters/${clusterUid}/namespaces/${data.namespace}/roles`, data)
+  return request.post<void>(`/kubernetes/clusters/${clusterUid}/roles`, data)
 }
 
 /**
- * 通过 YAML 创建 Role
+ * 创建角色（Role）（YAML）
  * @param clusterUid - 集群 UID
- * @param yaml - Role YAML 文本
+ * @param yaml - 创建 YAML 文本
  */
 export function createRoleYaml(clusterUid: string, yaml: string): Promise<void> {
-  return request.post(`/kubernetes/clusters/${clusterUid}/roles/yaml`, yaml, {
+  return request.post<void>(`/kubernetes/clusters/${clusterUid}/roles/yaml`, yaml, {
     headers: { 'Content-Type': 'application/yaml' },
   })
 }
 
 /**
- * 更新 Role
+ * 更新角色（Role）
  * @param clusterUid - 集群 UID
  * @param namespace - 命名空间名称
- * @param name - Role 名称
- * @param data - 更新参数
- * @returns 更新的 Role ID
+ * @param name - 角色名称
+ * @param data - 更新请求对象
  */
 export function updateRole(
   clusterUid: string,
@@ -109,18 +107,18 @@ export function updateRole(
   name: string,
   data: Partial<RoleUpdateForm>,
 ): Promise<void> {
-  return request.put(`/kubernetes/clusters/${clusterUid}/namespaces/${namespace}/roles/${name}`, data)
+  return request.put<void>(`/kubernetes/clusters/${clusterUid}/namespaces/${namespace}/roles/${name}`, data)
 }
 
 /**
- * 通过 YAML 更新 Role
+ * 更新角色（Role）（YAML）
  * @param clusterUid - 集群 UID
  * @param namespace - 命名空间名称
- * @param name - Role 名称
- * @param yaml - Role YAML 文本
+ * @param name - 角色名称
+ * @param yaml - 更新 YAML 文本
  */
 export function updateRoleYaml(clusterUid: string, namespace: string, name: string, yaml: string): Promise<void> {
-  return request.put(`/kubernetes/clusters/${clusterUid}/namespaces/${namespace}/roles/${name}/yaml`, yaml, {
+  return request.put<void>(`/kubernetes/clusters/${clusterUid}/namespaces/${namespace}/roles/${name}/yaml`, yaml, {
     headers: { 'Content-Type': 'application/yaml' },
   })
 }

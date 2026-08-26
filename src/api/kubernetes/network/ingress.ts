@@ -1,5 +1,5 @@
 /**
- * 路由（Ingress）管理 API
+ * 入口（Ingress）管理 API
  * @module api/kubernetes/ingress
  */
 import type { AxiosProgressEvent } from 'axios'
@@ -19,7 +19,7 @@ import type {
 import { request } from '@/utils'
 
 /**
- * 获取路由（Ingress）列表
+ * 获取入口（Ingress）列表
  * @param clusterUid - 集群 UID
  * @param query - 查询条件
  * @returns 分页后的路由列表
@@ -31,7 +31,7 @@ export function getIngressList(clusterUid: string, query: Partial<IngressQueryFo
 }
 
 /**
- * 获取路由（Ingress）详情
+ * 获取入口（Ingress）详情
  * @param clusterUid - 集群 UID
  * @param namespace - 命名空间名称
  * @param name - 路由名称
@@ -42,7 +42,7 @@ export function getIngressDetail(clusterUid: string, namespace: string, name: st
 }
 
 /**
- * 查看路由（Ingress）YAML
+ * 查看入口（Ingress）YAML
  * @param clusterUid - 集群 UID
  * @param namespace - 命名空间名称
  * @param name - 路由名称
@@ -53,7 +53,7 @@ export function getIngressYaml(clusterUid: string, namespace: string, name: stri
 }
 
 /**
- * 获取路由（Ingress）事件列表
+ * 获取入口（Ingress）事件列表
  * @param clusterUid - 集群 UID
  * @param namespace - 命名空间名称
  * @param name - 路由名称
@@ -75,33 +75,31 @@ export function getIngressEventList(
 }
 
 /**
- * 创建 Ingress
+ * 创建入口（Ingress）
  * @param clusterUid - 集群 UID
- * @param data - 创建参数
- * @returns 创建的 Ingress ID
+ * @param data - 创建请求对象
  */
 export function createIngress(clusterUid: string, data: Partial<IngressCreateForm>): Promise<void> {
-  return request.post(`/kubernetes/clusters/${clusterUid}/namespaces/${data.namespace}/ingresses`, data)
+  return request.post<void>(`/kubernetes/clusters/${clusterUid}/ingresses`, data)
 }
 
 /**
- * 通过 YAML 创建 Ingress
+ * 创建入口（Ingress）（YAML）
  * @param clusterUid - 集群 UID
- * @param yaml - Ingress YAML 文本
+ * @param yaml - 创建 YAML 文本
  */
 export function createIngressYaml(clusterUid: string, yaml: string): Promise<void> {
-  return request.post(`/kubernetes/clusters/${clusterUid}/ingresses/yaml`, yaml, {
+  return request.post<void>(`/kubernetes/clusters/${clusterUid}/ingresses/yaml`, yaml, {
     headers: { 'Content-Type': 'application/yaml' },
   })
 }
 
 /**
- * 更新 Ingress
+ * 更新入口（Ingress）
  * @param clusterUid - 集群 UID
  * @param namespace - 命名空间名称
- * @param name - Ingress 名称
- * @param data - 更新参数
- * @returns 更新的 Ingress ID
+ * @param name - 入口名称
+ * @param data - 更新请求对象
  */
 export function updateIngress(
   clusterUid: string,
@@ -109,18 +107,18 @@ export function updateIngress(
   name: string,
   data: Partial<IngressUpdateForm>,
 ): Promise<void> {
-  return request.put(`/kubernetes/clusters/${clusterUid}/namespaces/${namespace}/ingresses/${name}`, data)
+  return request.put<void>(`/kubernetes/clusters/${clusterUid}/namespaces/${namespace}/ingresses/${name}`, data)
 }
 
 /**
- * 通过 YAML 更新 Ingress
+ * 更新入口（Ingress）（YAML）
  * @param clusterUid - 集群 UID
  * @param namespace - 命名空间名称
- * @param name - Ingress 名称
- * @param yaml - Ingress YAML 文本
+ * @param name - 入口名称
+ * @param yaml - 更新 YAML 文本
  */
 export function updateIngressYaml(clusterUid: string, namespace: string, name: string, yaml: string): Promise<void> {
-  return request.put(`/kubernetes/clusters/${clusterUid}/namespaces/${namespace}/ingresses/${name}/yaml`, yaml, {
+  return request.put<void>(`/kubernetes/clusters/${clusterUid}/namespaces/${namespace}/ingresses/${name}/yaml`, yaml, {
     headers: { 'Content-Type': 'application/yaml' },
   })
 }
@@ -189,7 +187,7 @@ export function importIngress(
   clusterUid: string,
   formData: FormData,
   onProgress?: (progressEvent: AxiosProgressEvent) => void,
-) {
+): Promise<void> {
   return request.upload<void>(`/kubernetes/clusters/${clusterUid}/ingresses/import`, formData, {
     onUploadProgress: onProgress,
   })

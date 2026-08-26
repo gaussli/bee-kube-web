@@ -109,44 +109,44 @@ export function getJobMonitor(
 }
 
 /**
- * 创建 Job
+ * 创建任务（Job）
  * @param clusterUid - 集群 UID
- * @param data - Job 创建请求对象（description / metadata / spec）
+ * @param data - 创建请求对象
  */
-export function createJob(clusterUid: string, data: Partial<JobCreateForm>) {
+export function createJob(clusterUid: string, data: Partial<JobCreateForm>): Promise<void> {
   return request.post<void>(`/kubernetes/clusters/${clusterUid}/jobs`, data)
 }
 
 /**
- * YAML 创建 Job
+ * 创建任务（Job）（YAML）
  * @param clusterUid - 集群 UID
- * @param yaml - Job YAML 字符串
+ * @param yaml - 创建 YAML 文本
  */
-export function createJobYaml(clusterUid: string, yaml: string) {
+export function createJobYaml(clusterUid: string, yaml: string): Promise<void> {
   return request.post<void>(`/kubernetes/clusters/${clusterUid}/jobs/yaml`, yaml, {
     headers: { 'Content-Type': 'application/yaml' },
   })
 }
 
 /**
- * 更新 Job
+ * 更新任务（Job）
  * @param clusterUid - 集群 UID
  * @param namespace - 命名空间名称
- * @param name - Job 名称
- * @param data - Job 更新请求对象（description / metadata / spec）
+ * @param name - 任务名称
+ * @param data - 更新请求对象
  */
-export function updateJob(clusterUid: string, namespace: string, name: string, data: Partial<JobUpdateForm>) {
+export function updateJob(clusterUid: string, namespace: string, name: string, data: Partial<JobUpdateForm>): Promise<void> {
   return request.put<void>(`/kubernetes/clusters/${clusterUid}/namespaces/${namespace}/jobs/${name}`, data)
 }
 
 /**
- * YAML 更新 Job
+ * 更新任务（Job）（YAML）
  * @param clusterUid - 集群 UID
  * @param namespace - 命名空间名称
- * @param name - Job 名称
- * @param yaml - Job YAML 字符串
+ * @param name - 任务名称
+ * @param yaml - 更新 YAML 文本
  */
-export function updateJobYaml(clusterUid: string, namespace: string, name: string, yaml: string) {
+export function updateJobYaml(clusterUid: string, namespace: string, name: string, yaml: string): Promise<void> {
   return request.put<void>(`/kubernetes/clusters/${clusterUid}/namespaces/${namespace}/jobs/${name}/yaml`, yaml, {
     headers: { 'Content-Type': 'application/yaml' },
   })

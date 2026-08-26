@@ -90,33 +90,31 @@ export function getNetworkPolicyEventList(
 }
 
 /**
- * 创建 NetworkPolicy
+ * 创建网络策略（NetworkPolicy）
  * @param clusterUid - 集群 UID
- * @param data - 创建参数
- * @returns 创建的 NetworkPolicy ID
+ * @param data - 创建请求对象
  */
 export function createNetworkPolicy(clusterUid: string, data: Partial<NetworkPolicyCreateForm>): Promise<void> {
-  return request.post(`/kubernetes/clusters/${clusterUid}/namespaces/${data.namespace}/networkpolicies`, data)
+  return request.post<void>(`/kubernetes/clusters/${clusterUid}/networkpolicies`, data)
 }
 
 /**
- * 通过 YAML 创建 NetworkPolicy
+ * 创建网络策略（NetworkPolicy）（YAML）
  * @param clusterUid - 集群 UID
- * @param yaml - NetworkPolicy YAML 文本
+ * @param yaml - 创建 YAML 文本
  */
 export function createNetworkPolicyYaml(clusterUid: string, yaml: string): Promise<void> {
-  return request.post(`/kubernetes/clusters/${clusterUid}/networkpolicies/yaml`, yaml, {
+  return request.post<void>(`/kubernetes/clusters/${clusterUid}/networkpolicies/yaml`, yaml, {
     headers: { 'Content-Type': 'application/yaml' },
   })
 }
 
 /**
- * 更新 NetworkPolicy
+ * 更新网络策略（NetworkPolicy）
  * @param clusterUid - 集群 UID
  * @param namespace - 命名空间名称
- * @param name - NetworkPolicy 名称
- * @param data - 更新参数
- * @returns 更新的 NetworkPolicy ID
+ * @param name - 网络策略名称
+ * @param data - 更新请求对象
  */
 export function updateNetworkPolicy(
   clusterUid: string,
@@ -124,15 +122,15 @@ export function updateNetworkPolicy(
   name: string,
   data: Partial<NetworkPolicyUpdateForm>,
 ): Promise<void> {
-  return request.put(`/kubernetes/clusters/${clusterUid}/namespaces/${namespace}/networkpolicies/${name}`, data)
+  return request.put<void>(`/kubernetes/clusters/${clusterUid}/namespaces/${namespace}/networkpolicies/${name}`, data)
 }
 
 /**
- * 通过 YAML 更新 NetworkPolicy
+ * 更新网络策略（NetworkPolicy）（YAML）
  * @param clusterUid - 集群 UID
  * @param namespace - 命名空间名称
- * @param name - NetworkPolicy 名称
- * @param yaml - NetworkPolicy YAML 文本
+ * @param name - 网络策略名称
+ * @param yaml - 更新 YAML 文本
  */
 export function updateNetworkPolicyYaml(
   clusterUid: string,
@@ -140,9 +138,13 @@ export function updateNetworkPolicyYaml(
   name: string,
   yaml: string,
 ): Promise<void> {
-  return request.put(`/kubernetes/clusters/${clusterUid}/namespaces/${namespace}/networkpolicies/${name}/yaml`, yaml, {
-    headers: { 'Content-Type': 'application/yaml' },
-  })
+  return request.put<void>(
+    `/kubernetes/clusters/${clusterUid}/namespaces/${namespace}/networkpolicies/${name}/yaml`,
+    yaml,
+    {
+      headers: { 'Content-Type': 'application/yaml' },
+    },
+  )
 }
 
 /**
@@ -212,7 +214,7 @@ export function importNetworkPolicy(
   clusterUid: string,
   formData: FormData,
   onProgress?: (progressEvent: AxiosProgressEvent) => void,
-) {
+): Promise<void> {
   return request.upload<void>(`/kubernetes/clusters/${clusterUid}/networkpolicies/import`, formData, {
     onUploadProgress: onProgress,
   })

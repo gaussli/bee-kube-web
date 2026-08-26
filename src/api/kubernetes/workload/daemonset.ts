@@ -159,49 +159,49 @@ export function getDaemonSetMonitor(
 }
 
 /**
- * 创建 DaemonSet
+ * 创建守护进程（DaemonSet）
  * @param clusterUid - 集群 UID
- * @param data - DaemonSet 创建请求对象（description / metadata / spec）
+ * @param data - 创建请求对象
  */
-export function createDaemonSet(clusterUid: string, data: Partial<DaemonSetCreateForm>) {
+export function createDaemonSet(clusterUid: string, data: Partial<DaemonSetCreateForm>): Promise<void> {
   return request.post<void>(`/kubernetes/clusters/${clusterUid}/daemonsets`, data)
 }
 
 /**
- * YAML 创建 DaemonSet
+ * 创建守护进程（DaemonSet）（YAML）
  * @param clusterUid - 集群 UID
- * @param yaml - DaemonSet YAML 字符串
+ * @param yaml - 创建 YAML 文本
  */
-export function createDaemonSetYaml(clusterUid: string, yaml: string) {
+export function createDaemonSetYaml(clusterUid: string, yaml: string): Promise<void> {
   return request.post<void>(`/kubernetes/clusters/${clusterUid}/daemonsets/yaml`, yaml, {
     headers: { 'Content-Type': 'application/yaml' },
   })
 }
 
 /**
- * 更新 DaemonSet
+ * 更新守护进程（DaemonSet）
  * @param clusterUid - 集群 UID
  * @param namespace - 命名空间名称
- * @param name - DaemonSet 名称
- * @param data - DaemonSet 更新请求对象（description / metadata / spec）
+ * @param name - 守护进程集名称
+ * @param data - 更新请求对象
  */
 export function updateDaemonSet(
   clusterUid: string,
   namespace: string,
   name: string,
   data: Partial<DaemonSetUpdateForm>,
-) {
+): Promise<void> {
   return request.put<void>(`/kubernetes/clusters/${clusterUid}/namespaces/${namespace}/daemonsets/${name}`, data)
 }
 
 /**
- * YAML 更新 DaemonSet
+ * 更新守护进程（DaemonSet）（YAML）
  * @param clusterUid - 集群 UID
  * @param namespace - 命名空间名称
- * @param name - DaemonSet 名称
- * @param yaml - DaemonSet YAML 字符串
+ * @param name - 守护进程集名称
+ * @param yaml - 更新 YAML 文本
  */
-export function updateDaemonSetYaml(clusterUid: string, namespace: string, name: string, yaml: string) {
+export function updateDaemonSetYaml(clusterUid: string, namespace: string, name: string, yaml: string): Promise<void> {
   return request.put<void>(`/kubernetes/clusters/${clusterUid}/namespaces/${namespace}/daemonsets/${name}/yaml`, yaml, {
     headers: { 'Content-Type': 'application/yaml' },
   })

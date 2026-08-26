@@ -90,36 +90,34 @@ export function getPersistentVolumeClaimEventList(
 }
 
 /**
- * 创建 PersistentVolumeClaim
+ * 创建持久卷声明（PersistentVolumeClaim）
  * @param clusterUid - 集群 UID
- * @param data - 创建参数
- * @returns 创建的 PersistentVolumeClaim ID
+ * @param data - 创建请求对象
  */
 export function createPersistentVolumeClaim(
   clusterUid: string,
   data: Partial<PersistentVolumeClaimCreateForm>,
 ): Promise<void> {
-  return request.post(`/kubernetes/clusters/${clusterUid}/namespaces/${data.namespace}/persistentvolumeclaims`, data)
+  return request.post<void>(`/kubernetes/clusters/${clusterUid}/persistentvolumeclaims`, data)
 }
 
 /**
- * 通过 YAML 创建 PersistentVolumeClaim
+ * 创建持久卷声明（PersistentVolumeClaim）（YAML）
  * @param clusterUid - 集群 UID
- * @param yaml - PersistentVolumeClaim YAML 文本
+ * @param yaml - 创建 YAML 文本
  */
 export function createPersistentVolumeClaimYaml(clusterUid: string, yaml: string): Promise<void> {
-  return request.post(`/kubernetes/clusters/${clusterUid}/persistentvolumeclaims/yaml`, yaml, {
+  return request.post<void>(`/kubernetes/clusters/${clusterUid}/persistentvolumeclaims/yaml`, yaml, {
     headers: { 'Content-Type': 'application/yaml' },
   })
 }
 
 /**
- * 更新 PersistentVolumeClaim
+ * 更新持久卷声明（PersistentVolumeClaim）
  * @param clusterUid - 集群 UID
  * @param namespace - 命名空间名称
- * @param name - PersistentVolumeClaim 名称
- * @param data - 更新参数
- * @returns 更新的 PersistentVolumeClaim ID
+ * @param name - 持久卷声明名称
+ * @param data - 更新请求对象
  */
 export function updatePersistentVolumeClaim(
   clusterUid: string,
@@ -127,15 +125,18 @@ export function updatePersistentVolumeClaim(
   name: string,
   data: Partial<PersistentVolumeClaimUpdateForm>,
 ): Promise<void> {
-  return request.put(`/kubernetes/clusters/${clusterUid}/namespaces/${namespace}/persistentvolumeclaims/${name}`, data)
+  return request.put<void>(
+    `/kubernetes/clusters/${clusterUid}/namespaces/${namespace}/persistentvolumeclaims/${name}`,
+    data,
+  )
 }
 
 /**
- * 通过 YAML 更新 PersistentVolumeClaim
+ * 更新持久卷声明（PersistentVolumeClaim）（YAML）
  * @param clusterUid - 集群 UID
  * @param namespace - 命名空间名称
- * @param name - PersistentVolumeClaim 名称
- * @param yaml - PersistentVolumeClaim YAML 文本
+ * @param name - 持久卷声明名称
+ * @param yaml - 更新 YAML 文本
  */
 export function updatePersistentVolumeClaimYaml(
   clusterUid: string,
@@ -143,7 +144,7 @@ export function updatePersistentVolumeClaimYaml(
   name: string,
   yaml: string,
 ): Promise<void> {
-  return request.put(
+  return request.put<void>(
     `/kubernetes/clusters/${clusterUid}/namespaces/${namespace}/persistentvolumeclaims/${name}/yaml`,
     yaml,
     {

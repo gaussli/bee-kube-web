@@ -92,31 +92,29 @@ export function getServiceAccountEventList(
 /**
  * 创建 ServiceAccount
  * @param clusterUid - 集群 UID
- * @param data - 创建参数
- * @returns 创建的 ServiceAccount ID
+ * @param data - 创建请求对象
  */
 export function createServiceAccount(clusterUid: string, data: Partial<ServiceAccountCreateForm>): Promise<void> {
-  return request.post(`/kubernetes/clusters/${clusterUid}/namespaces/${data.namespace}/serviceaccounts`, data)
+  return request.post<void>(`/kubernetes/clusters/${clusterUid}/serviceaccounts`, data)
 }
 
 /**
- * 通过 YAML 创建 ServiceAccount
+ * 创建服务账号（ServiceAccount）（YAML）
  * @param clusterUid - 集群 UID
- * @param yaml - ServiceAccount YAML 文本
+ * @param yaml - 创建 YAML 文本
  */
 export function createServiceAccountYaml(clusterUid: string, yaml: string): Promise<void> {
-  return request.post(`/kubernetes/clusters/${clusterUid}/serviceaccounts/yaml`, yaml, {
+  return request.post<void>(`/kubernetes/clusters/${clusterUid}/serviceaccounts/yaml`, yaml, {
     headers: { 'Content-Type': 'application/yaml' },
   })
 }
 
 /**
- * 更新 ServiceAccount
+ * 更新服务账号（ServiceAccount）
  * @param clusterUid - 集群 UID
  * @param namespace - 命名空间名称
- * @param name - ServiceAccount 名称
- * @param data - 更新参数
- * @returns 更新的 ServiceAccount ID
+ * @param name - 服务账号名称
+ * @param data - 更新请求对象
  */
 export function updateServiceAccount(
   clusterUid: string,
@@ -124,15 +122,15 @@ export function updateServiceAccount(
   name: string,
   data: Partial<ServiceAccountUpdateForm>,
 ): Promise<void> {
-  return request.put(`/kubernetes/clusters/${clusterUid}/namespaces/${namespace}/serviceaccounts/${name}`, data)
+  return request.put<void>(`/kubernetes/clusters/${clusterUid}/namespaces/${namespace}/serviceaccounts/${name}`, data)
 }
 
 /**
- * 通过 YAML 更新 ServiceAccount
+ * 更新服务账号（ServiceAccount）（YAML）
  * @param clusterUid - 集群 UID
  * @param namespace - 命名空间名称
- * @param name - ServiceAccount 名称
- * @param yaml - ServiceAccount YAML 文本
+ * @param name - 服务账号名称
+ * @param yaml - 更新 YAML 文本
  */
 export function updateServiceAccountYaml(
   clusterUid: string,
@@ -140,9 +138,13 @@ export function updateServiceAccountYaml(
   name: string,
   yaml: string,
 ): Promise<void> {
-  return request.put(`/kubernetes/clusters/${clusterUid}/namespaces/${namespace}/serviceaccounts/${name}/yaml`, yaml, {
-    headers: { 'Content-Type': 'application/yaml' },
-  })
+  return request.put<void>(
+    `/kubernetes/clusters/${clusterUid}/namespaces/${namespace}/serviceaccounts/${name}/yaml`,
+    yaml,
+    {
+      headers: { 'Content-Type': 'application/yaml' },
+    },
+  )
 }
 
 /**

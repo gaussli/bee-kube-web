@@ -203,7 +203,7 @@ export function updateDeployment(
 }
 
 /**
- * 更新有状态应用（Deployment）(YAML)
+ * 更新有状态应用（Deployment）（YAML）
  * @param clusterUid - 集群 UID
  * @param namespace - 命名空间名称
  * @param name - 有状态应用名称

@@ -69,48 +69,47 @@ export function getClusterRoleEventList(
 }
 
 /**
- * 创建 ClusterRole
+ * 创建集群角色（ClusterRole）
  * @param clusterUid - 集群 UID
- * @param data - 创建参数
- * @returns 创建的 ClusterRole ID
+ * @param data - 创建请求对象
  */
 export function createClusterRole(clusterUid: string, data: Partial<ClusterRoleCreateForm>): Promise<void> {
-  return request.post(`/kubernetes/clusters/${clusterUid}/clusterroles`, data)
+  return request.post<void>(`/kubernetes/clusters/${clusterUid}/clusterroles`, data)
 }
 
 /**
- * 通过 YAML 创建 ClusterRole
+ * 创建集群角色（ClusterRole）（YAML）
  * @param clusterUid - 集群 UID
- * @param yaml - ClusterRole YAML 文本
+ * @param yaml - 创建 YAML 文本
  */
 export function createClusterRoleYaml(clusterUid: string, yaml: string): Promise<void> {
-  return request.post(`/kubernetes/clusters/${clusterUid}/clusterroles/yaml`, yaml, {
+  return request.post<void>(`/kubernetes/clusters/${clusterUid}/clusterroles/yaml`, yaml, {
     headers: { 'Content-Type': 'application/yaml' },
   })
 }
 
 /**
- * 更新 ClusterRole
+ * 更新集群角色（ClusterRole）
  * @param clusterUid - 集群 UID
- * @param name - ClusterRole 名称
- * @param data - 更新参数
+ * @param name - 集群角色名称
+ * @param data - 更新请求对象
  */
 export function updateClusterRole(
   clusterUid: string,
   name: string,
   data: Partial<ClusterRoleUpdateForm>,
 ): Promise<void> {
-  return request.put(`/kubernetes/clusters/${clusterUid}/clusterroles/${name}`, data)
+  return request.put<void>(`/kubernetes/clusters/${clusterUid}/clusterroles/${name}`, data)
 }
 
 /**
- * 通过 YAML 更新 ClusterRole
+ * 更新集群角色（ClusterRole）（YAML）
  * @param clusterUid - 集群 UID
- * @param name - ClusterRole 名称
- * @param yaml - ClusterRole YAML 文本
+ * @param name - 集群角色名称
+ * @param yaml - 更新 YAML 文本
  */
 export function updateClusterRoleYaml(clusterUid: string, name: string, yaml: string): Promise<void> {
-  return request.put(`/kubernetes/clusters/${clusterUid}/clusterroles/${name}/yaml`, yaml, {
+  return request.put<void>(`/kubernetes/clusters/${clusterUid}/clusterroles/${name}/yaml`, yaml, {
     headers: { 'Content-Type': 'application/yaml' },
   })
 }

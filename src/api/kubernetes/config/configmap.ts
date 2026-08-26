@@ -1,5 +1,5 @@
 /**
- * 配置（ConfigMap）管理 API
+ * 配置映射（ConfigMap）管理 API
  * @module api/kubernetes/config/configmap
  */
 import type { AxiosProgressEvent } from 'axios'
@@ -19,7 +19,7 @@ import type { EventListVo, EventQueryForm } from '@/types/kubernetes/event'
 import { request } from '@/utils'
 
 /**
- * 获取配置（ConfigMap）列表
+ * 获取配置映射（ConfigMap）列表
  * @param clusterUid - 集群 UID
  * @param query - 查询条件
  * @returns 分页后的配置列表
@@ -32,7 +32,7 @@ export function getConfigMapList(
 }
 
 /**
- * 获取配置（ConfigMap）详情
+ * 获取配置映射（ConfigMap）详情
  * @param clusterUid - 集群 UID
  * @param namespace - 命名空间名称
  * @param name - 配置名称
@@ -43,7 +43,7 @@ export function getConfigMapDetail(clusterUid: string, namespace: string, name: 
 }
 
 /**
- * 查看配置（ConfigMap）YAML
+ * 查看配置映射（ConfigMap）YAML
  * @param clusterUid - 集群 UID
  * @param namespace - 命名空间名称
  * @param name - 配置名称
@@ -56,7 +56,7 @@ export function getConfigMapYaml(clusterUid: string, namespace: string, name: st
 }
 
 /**
- * 获取配置（ConfigMap）事件列表
+ * 获取配置映射（ConfigMap）事件列表
  * @param clusterUid - 集群 UID
  * @param namespace - 命名空间名称
  * @param name - 配置名称
@@ -78,31 +78,31 @@ export function getConfigMapEventList(
 }
 
 /**
- * 创建 ConfigMap
+ * 创建配置映射（ConfigMap）
  * @param clusterUid - 集群 UID
- * @param data - 创建参数
+ * @param data - 创建请求对象
  */
 export function createConfigMap(clusterUid: string, data: Partial<ConfigMapCreateForm>): Promise<void> {
-  return request.post(`/kubernetes/clusters/${clusterUid}/configmaps`, data)
+  return request.post<void>(`/kubernetes/clusters/${clusterUid}/configmaps`, data)
 }
 
 /**
- * 创建 ConfigMap（YAML 方式）
+ * 创建配置映射（ConfigMap）（YAML）
  * @param clusterUid - 集群 UID
- * @param yaml - ConfigMap YAML 文本
+ * @param yaml - 创建 YAML 文本
  */
 export function createConfigMapYaml(clusterUid: string, yaml: string): Promise<void> {
-  return request.post(`/kubernetes/clusters/${clusterUid}/configmaps/yaml`, yaml, {
+  return request.post<void>(`/kubernetes/clusters/${clusterUid}/configmaps/yaml`, yaml, {
     headers: { 'Content-Type': 'application/yaml' },
   })
 }
 
 /**
- * 更新 ConfigMap
+ * 更新配置映射（ConfigMap）
  * @param clusterUid - 集群 UID
  * @param namespace - 命名空间名称
- * @param name - ConfigMap 名称
- * @param data - 更新参数
+ * @param name - 配置映射名称
+ * @param data - 更新请求对象
  */
 export function updateConfigMap(
   clusterUid: string,
@@ -110,18 +110,18 @@ export function updateConfigMap(
   name: string,
   data: Partial<ConfigMapUpdateForm>,
 ): Promise<void> {
-  return request.put(`/kubernetes/clusters/${clusterUid}/namespaces/${namespace}/configmaps/${name}`, data)
+  return request.put<void>(`/kubernetes/clusters/${clusterUid}/namespaces/${namespace}/configmaps/${name}`, data)
 }
 
 /**
- * 通过 YAML 更新 ConfigMap
+ * 更新配置映射（ConfigMap）（YAML）
  * @param clusterUid - 集群 UID
  * @param namespace - 命名空间名称
- * @param name - ConfigMap 名称
- * @param yaml - ConfigMap YAML 文本
+ * @param name - 配置映射名称
+ * @param yaml - 更新 YAML 文本
  */
 export function updateConfigMapYaml(clusterUid: string, namespace: string, name: string, yaml: string): Promise<void> {
-  return request.put(`/kubernetes/clusters/${clusterUid}/namespaces/${namespace}/configmaps/${name}/yaml`, yaml, {
+  return request.put<void>(`/kubernetes/clusters/${clusterUid}/namespaces/${namespace}/configmaps/${name}/yaml`, yaml, {
     headers: { 'Content-Type': 'application/yaml' },
   })
 }
@@ -188,7 +188,7 @@ export function importConfigMap(
   clusterUid: string,
   formData: FormData,
   onProgress?: (progressEvent: AxiosProgressEvent) => void,
-) {
+): Promise<void> {
   return request.upload<void>(`/kubernetes/clusters/${clusterUid}/configmaps/import`, formData, {
     onUploadProgress: onProgress,
   })

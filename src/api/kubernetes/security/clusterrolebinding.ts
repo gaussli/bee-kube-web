@@ -71,52 +71,51 @@ export function getClusterRoleBindingEventList(
 }
 
 /**
- * 创建 ClusterRoleBinding
+ * 创建集群角色绑定（ClusterRoleBinding）
  * @param clusterUid - 集群 UID
- * @param data - 创建参数
- * @returns 创建的 ClusterRoleBinding ID
+ * @param data - 创建请求对象
  */
 export function createClusterRoleBinding(
   clusterUid: string,
   data: Partial<ClusterRoleBindingCreateForm>,
 ): Promise<void> {
-  return request.post(`/kubernetes/clusters/${clusterUid}/clusterrolebindings`, data)
+  return request.post<void>(`/kubernetes/clusters/${clusterUid}/clusterrolebindings`, data)
 }
 
 /**
- * 通过 YAML 创建 ClusterRoleBinding
+ * 创建集群角色绑定（ClusterRoleBinding）（YAML）
  * @param clusterUid - 集群 UID
- * @param yaml - ClusterRoleBinding YAML 文本
+ * @param yaml - 创建 YAML 文本
  */
 export function createClusterRoleBindingYaml(clusterUid: string, yaml: string): Promise<void> {
-  return request.post(`/kubernetes/clusters/${clusterUid}/clusterrolebindings/yaml`, yaml, {
+  return request.post<void>(`/kubernetes/clusters/${clusterUid}/clusterrolebindings/yaml`, yaml, {
     headers: { 'Content-Type': 'application/yaml' },
   })
 }
 
 /**
- * 更新 ClusterRoleBinding
+ * 更新集群角色绑定（ClusterRoleBinding）
  * @param clusterUid - 集群 UID
- * @param name - ClusterRoleBinding 名称
- * @param data - 更新参数
- * @returns 更新的 ClusterRoleBinding ID
+ * @param name - 集群角色绑定名称
+ * @param data - 更新请求对象
  */
 export function updateClusterRoleBinding(
   clusterUid: string,
   name: string,
   data: Partial<ClusterRoleBindingUpdateForm>,
 ): Promise<void> {
-  return request.put(`/kubernetes/clusters/${clusterUid}/clusterrolebindings/${name}`, data)
+  return request.put<void>(`/kubernetes/clusters/${clusterUid}/clusterrolebindings/${name}`, data)
 }
 
 /**
- * 通过 YAML 更新 ClusterRoleBinding
+/**
+ * 更新集群角色绑定（ClusterRoleBinding）（YAML）
  * @param clusterUid - 集群 UID
- * @param name - ClusterRoleBinding 名称
- * @param yaml - ClusterRoleBinding YAML 文本
+ * @param name - 集群角色绑定名称
+ * @param yaml - 更新 YAML 文本
  */
 export function updateClusterRoleBindingYaml(clusterUid: string, name: string, yaml: string): Promise<void> {
-  return request.put(`/kubernetes/clusters/${clusterUid}/clusterrolebindings/${name}/yaml`, yaml, {
+  return request.put<void>(`/kubernetes/clusters/${clusterUid}/clusterrolebindings/${name}/yaml`, yaml, {
     headers: { 'Content-Type': 'application/yaml' },
   })
 }

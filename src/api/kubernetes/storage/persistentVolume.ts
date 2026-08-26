@@ -71,49 +71,47 @@ export function getPersistentVolumeEventList(
 }
 
 /**
- * 创建 PersistentVolume
+ * 创建持久卷（PersistentVolume）
  * @param clusterUid - 集群 UID
- * @param data - 创建参数
- * @returns 创建的 PersistentVolume ID
+ * @param data - 创建请求对象
  */
 export function createPersistentVolume(clusterUid: string, data: Partial<PersistentVolumeCreateForm>): Promise<void> {
-  return request.post(`/kubernetes/clusters/${clusterUid}/persistentvolumes`, data)
+  return request.post<void>(`/kubernetes/clusters/${clusterUid}/persistentvolumes`, data)
 }
 
 /**
- * 通过 YAML 创建 PersistentVolume
+ * 创建持久卷（PersistentVolume）（YAML）
  * @param clusterUid - 集群 UID
- * @param yaml - PersistentVolume YAML 文本
+ * @param yaml - 创建 YAML 文本
  */
 export function createPersistentVolumeYaml(clusterUid: string, yaml: string): Promise<void> {
-  return request.post(`/kubernetes/clusters/${clusterUid}/persistentvolumes/yaml`, yaml, {
+  return request.post<void>(`/kubernetes/clusters/${clusterUid}/persistentvolumes/yaml`, yaml, {
     headers: { 'Content-Type': 'application/yaml' },
   })
 }
 
 /**
- * 更新 PersistentVolume
+ * 更新持久卷（PersistentVolume）
  * @param clusterUid - 集群 UID
- * @param name - PersistentVolume 名称
- * @param data - 更新参数
- * @returns 更新的 PersistentVolume ID
+ * @param name - 持久卷名称
+ * @param data - 更新请求对象
  */
 export function updatePersistentVolume(
   clusterUid: string,
   name: string,
   data: Partial<PersistentVolumeUpdateForm>,
 ): Promise<void> {
-  return request.put(`/kubernetes/clusters/${clusterUid}/persistentvolumes/${name}`, data)
+  return request.put<void>(`/kubernetes/clusters/${clusterUid}/persistentvolumes/${name}`, data)
 }
 
 /**
- * 通过 YAML 更新 PersistentVolume
+ * 更新持久卷（PersistentVolume）（YAML）
  * @param clusterUid - 集群 UID
- * @param name - PersistentVolume 名称
- * @param yaml - PersistentVolume YAML 文本
+ * @param name - 持久卷名称
+ * @param yaml - 更新 YAML 文本
  */
 export function updatePersistentVolumeYaml(clusterUid: string, name: string, yaml: string): Promise<void> {
-  return request.put(`/kubernetes/clusters/${clusterUid}/persistentvolumes/${name}/yaml`, yaml, {
+  return request.put<void>(`/kubernetes/clusters/${clusterUid}/persistentvolumes/${name}/yaml`, yaml, {
     headers: { 'Content-Type': 'application/yaml' },
   })
 }

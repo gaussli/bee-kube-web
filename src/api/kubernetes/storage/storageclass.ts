@@ -69,49 +69,47 @@ export function getStorageClassEventList(
 }
 
 /**
- * 创建 StorageClass
+ * 创建存储类（StorageClass）
  * @param clusterUid - 集群 UID
- * @param data - 创建参数
- * @returns 创建的 StorageClass ID
+ * @param data - 创建请求对象
  */
 export function createStorageClass(clusterUid: string, data: Partial<StorageClassCreateForm>): Promise<void> {
-  return request.post(`/kubernetes/clusters/${clusterUid}/storageclasses`, data)
+  return request.post<void>(`/kubernetes/clusters/${clusterUid}/storageclasses`, data)
 }
 
 /**
- * 通过 YAML 创建 StorageClass
+ * 创建存储类（StorageClass）（YAML）
  * @param clusterUid - 集群 UID
- * @param yaml - StorageClass YAML 文本
+ * @param yaml - 创建 YAML 文本
  */
 export function createStorageClassYaml(clusterUid: string, yaml: string): Promise<void> {
-  return request.post(`/kubernetes/clusters/${clusterUid}/storageclasses/yaml`, yaml, {
+  return request.post<void>(`/kubernetes/clusters/${clusterUid}/storageclasses/yaml`, yaml, {
     headers: { 'Content-Type': 'application/yaml' },
   })
 }
 
 /**
- * 更新 StorageClass
+ * 更新存储类（StorageClass）
  * @param clusterUid - 集群 UID
- * @param name - StorageClass 名称
- * @param data - 更新参数
- * @returns 更新的 StorageClass ID
+ * @param name - 存储类名称
+ * @param data - 更新请求对象
  */
 export function updateStorageClass(
   clusterUid: string,
   name: string,
   data: Partial<StorageClassUpdateForm>,
 ): Promise<void> {
-  return request.put(`/kubernetes/clusters/${clusterUid}/storageclasses/${name}`, data)
+  return request.put<void>(`/kubernetes/clusters/${clusterUid}/storageclasses/${name}`, data)
 }
 
 /**
- * 通过 YAML 更新 StorageClass
+ * 更新存储类（StorageClass）（YAML）
  * @param clusterUid - 集群 UID
- * @param name - StorageClass 名称
- * @param yaml - StorageClass YAML 文本
+ * @param name - 存储类名称
+ * @param yaml - 更新 YAML 文本
  */
 export function updateStorageClassYaml(clusterUid: string, name: string, yaml: string): Promise<void> {
-  return request.put(`/kubernetes/clusters/${clusterUid}/storageclasses/${name}/yaml`, yaml, {
+  return request.put<void>(`/kubernetes/clusters/${clusterUid}/storageclasses/${name}/yaml`, yaml, {
     headers: { 'Content-Type': 'application/yaml' },
   })
 }

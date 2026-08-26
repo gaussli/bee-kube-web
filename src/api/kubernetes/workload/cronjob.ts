@@ -118,44 +118,49 @@ export function getCronJobMonitor(
 }
 
 /**
- * 创建 CronJob
+ * 创建定时任务（CronJob）
  * @param clusterUid - 集群 UID
- * @param data - CronJob 创建请求对象（description / metadata / spec）
+ * @param data - 创建请求对象
  */
-export function createCronJob(clusterUid: string, data: Partial<CronJobCreateForm>) {
+export function createCronJob(clusterUid: string, data: Partial<CronJobCreateForm>): Promise<void> {
   return request.post<void>(`/kubernetes/clusters/${clusterUid}/cronjobs`, data)
 }
 
 /**
- * YAML 创建 CronJob
+ * 创建定时任务（CronJob）（YAML）
  * @param clusterUid - 集群 UID
- * @param yaml - CronJob YAML 字符串
+ * @param yaml - 创建 YAML 文本
  */
-export function createCronJobYaml(clusterUid: string, yaml: string) {
+export function createCronJobYaml(clusterUid: string, yaml: string): Promise<void> {
   return request.post<void>(`/kubernetes/clusters/${clusterUid}/cronjobs/yaml`, yaml, {
     headers: { 'Content-Type': 'application/yaml' },
   })
 }
 
 /**
- * 更新 CronJob
+ * 更新定时任务（CronJob）
  * @param clusterUid - 集群 UID
  * @param namespace - 命名空间名称
- * @param name - CronJob 名称
- * @param data - CronJob 更新请求对象（description / metadata / spec）
+ * @param name - 定时任务名称
+ * @param data - 更新请求对象
  */
-export function updateCronJob(clusterUid: string, namespace: string, name: string, data: Partial<CronJobUpdateForm>) {
+export function updateCronJob(
+  clusterUid: string,
+  namespace: string,
+  name: string,
+  data: Partial<CronJobUpdateForm>,
+): Promise<void> {
   return request.put<void>(`/kubernetes/clusters/${clusterUid}/namespaces/${namespace}/cronjobs/${name}`, data)
 }
 
 /**
- * YAML 更新 CronJob
+ * 更新定时任务（CronJob）（YAML）
  * @param clusterUid - 集群 UID
  * @param namespace - 命名空间名称
- * @param name - CronJob 名称
- * @param yaml - CronJob YAML 字符串
+ * @param name - 定时任务名称
+ * @param yaml - 更新 YAML 文本
  */
-export function updateCronJobYaml(clusterUid: string, namespace: string, name: string, yaml: string) {
+export function updateCronJobYaml(clusterUid: string, namespace: string, name: string, yaml: string): Promise<void> {
   return request.put<void>(`/kubernetes/clusters/${clusterUid}/namespaces/${namespace}/cronjobs/${name}/yaml`, yaml, {
     headers: { 'Content-Type': 'application/yaml' },
   })
