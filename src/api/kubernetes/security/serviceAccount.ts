@@ -21,17 +21,17 @@ import { request } from '@/utils'
 /**
  * 获取 ServiceAccount 列表
  * @param clusterUid - 集群 UID
- * @param namespaceName - 命名空间名称
+ * @param namespace - 命名空间名称
  * @param params - 查询参数
  * @returns 分页后的 ServiceAccount 列表
  */
 export function getServiceAccountList(
   clusterUid: string,
-  namespaceName: string,
+  namespace: string,
   params: Partial<ServiceAccountQueryForm>,
 ): Promise<PageVo<ServiceAccountListVo>> {
   return request.get<PageVo<ServiceAccountListVo>>(
-    `/kubernetes/clusters/${clusterUid}/namespaces/${namespaceName}/serviceaccounts`,
+    `/kubernetes/clusters/${clusterUid}/namespaces/${namespace}/serviceaccounts`,
     { params },
   )
 }
@@ -39,53 +39,53 @@ export function getServiceAccountList(
 /**
  * 获取 ServiceAccount 详情
  * @param clusterUid - 集群 UID
- * @param namespaceName - 命名空间名称
+ * @param namespace - 命名空间名称
  * @param name - ServiceAccount 名称
  * @returns ServiceAccount 详情
  */
 export function getServiceAccountDetail(
   clusterUid: string,
-  namespaceName: string,
+  namespace: string,
   name: string,
 ): Promise<ServiceAccountDetailVo> {
   return request.get<ServiceAccountDetailVo>(
-    `/kubernetes/clusters/${clusterUid}/namespaces/${namespaceName}/serviceaccounts/${name}`,
+    `/kubernetes/clusters/${clusterUid}/namespaces/${namespace}/serviceaccounts/${name}`,
   )
 }
 
 /**
  * 查看 ServiceAccount YAML
  * @param clusterUid - 集群 UID
- * @param namespaceName - 命名空间名称
+ * @param namespace - 命名空间名称
  * @param name - ServiceAccount 名称
  * @returns ServiceAccount 完整 YAML 文本
  */
 export function getServiceAccountYaml(
   clusterUid: string,
-  namespaceName: string,
+  namespace: string,
   name: string,
 ): Promise<ServiceAccountYamlVo> {
   return request.get<ServiceAccountYamlVo>(
-    `/kubernetes/clusters/${clusterUid}/namespaces/${namespaceName}/serviceaccounts/${name}/yaml`,
+    `/kubernetes/clusters/${clusterUid}/namespaces/${namespace}/serviceaccounts/${name}/yaml`,
   )
 }
 
 /**
  * 获取 ServiceAccount 事件列表
  * @param clusterUid - 集群 UID
- * @param namespaceName - 命名空间名称
+ * @param namespace - 命名空间名称
  * @param name - ServiceAccount 名称
  * @param query - 事件查询条件
  * @returns 分页后的事件列表
  */
 export function getServiceAccountEventList(
   clusterUid: string,
-  namespaceName: string,
+  namespace: string,
   name: string,
   query: Partial<EventQueryForm>,
 ): Promise<PageVo<EventListVo>> {
   return request.get<PageVo<EventListVo>>(
-    `/kubernetes/clusters/${clusterUid}/namespaces/${namespaceName}/serviceaccounts/${name}/events`,
+    `/kubernetes/clusters/${clusterUid}/namespaces/${namespace}/serviceaccounts/${name}/events`,
     {
       params: query,
     },
@@ -116,76 +116,69 @@ export function createServiceAccountYaml(clusterUid: string, yaml: string): Prom
 /**
  * 更新 ServiceAccount
  * @param clusterUid - 集群 UID
- * @param namespaceName - 命名空间名称
+ * @param namespace - 命名空间名称
  * @param name - ServiceAccount 名称
  * @param data - 更新参数
  * @returns 更新的 ServiceAccount ID
  */
 export function updateServiceAccount(
   clusterUid: string,
-  namespaceName: string,
+  namespace: string,
   name: string,
   data: Partial<ServiceAccountUpdateForm>,
 ): Promise<void> {
-  return request.put(`/kubernetes/clusters/${clusterUid}/namespaces/${namespaceName}/serviceaccounts/${name}`, data)
+  return request.put(`/kubernetes/clusters/${clusterUid}/namespaces/${namespace}/serviceaccounts/${name}`, data)
 }
 
 /**
  * 通过 YAML 更新 ServiceAccount
  * @param clusterUid - 集群 UID
- * @param namespaceName - 命名空间名称
+ * @param namespace - 命名空间名称
  * @param name - ServiceAccount 名称
  * @param yaml - ServiceAccount YAML 文本
  */
 export function updateServiceAccountYaml(
   clusterUid: string,
-  namespaceName: string,
+  namespace: string,
   name: string,
   yaml: string,
 ): Promise<void> {
-  return request.put(
-    `/kubernetes/clusters/${clusterUid}/namespaces/${namespaceName}/serviceaccounts/${name}/yaml`,
-    yaml,
-    {
-      headers: { 'Content-Type': 'application/yaml' },
-    },
-  )
+  return request.put(`/kubernetes/clusters/${clusterUid}/namespaces/${namespace}/serviceaccounts/${name}/yaml`, yaml, {
+    headers: { 'Content-Type': 'application/yaml' },
+  })
 }
 
 /**
  * 更新 ServiceAccount 标签
  * @param clusterUid - 集群 UID
- * @param namespaceName - 命名空间名称
+ * @param namespace - 命名空间名称
  * @param name - ServiceAccount 名称
  * @param data - 标签更新参数
  */
 export function manageServiceAccountLabel(
   clusterUid: string,
-  namespaceName: string,
+  namespace: string,
   name: string,
   data: MetadataLabelForm,
 ): Promise<void> {
-  return request.post(
-    `/kubernetes/clusters/${clusterUid}/namespaces/${namespaceName}/serviceaccounts/${name}/labels`,
-    data,
-  )
+  return request.post(`/kubernetes/clusters/${clusterUid}/namespaces/${namespace}/serviceaccounts/${name}/labels`, data)
 }
 
 /**
  * 更新 ServiceAccount 注解
  * @param clusterUid - 集群 UID
- * @param namespaceName - 命名空间名称
+ * @param namespace - 命名空间名称
  * @param name - ServiceAccount 名称
  * @param data - 注解更新参数
  */
 export function manageServiceAccountAnnotation(
   clusterUid: string,
-  namespaceName: string,
+  namespace: string,
   name: string,
   data: MetadataAnnotationForm,
 ): Promise<void> {
   return request.post(
-    `/kubernetes/clusters/${clusterUid}/namespaces/${namespaceName}/serviceaccounts/${name}/annotations`,
+    `/kubernetes/clusters/${clusterUid}/namespaces/${namespace}/serviceaccounts/${name}/annotations`,
     data,
   )
 }
@@ -193,21 +186,21 @@ export function manageServiceAccountAnnotation(
 /**
  * 删除 ServiceAccount
  * @param clusterUid - 集群 UID
- * @param namespaceName - 命名空间名称
+ * @param namespace - 命名空间名称
  * @param name - ServiceAccount 名称
  */
-export function deleteServiceAccount(clusterUid: string, namespaceName: string, name: string): Promise<void> {
-  return request.delete(`/kubernetes/clusters/${clusterUid}/namespaces/${namespaceName}/serviceaccounts/${name}`)
+export function deleteServiceAccount(clusterUid: string, namespace: string, name: string): Promise<void> {
+  return request.delete(`/kubernetes/clusters/${clusterUid}/namespaces/${namespace}/serviceaccounts/${name}`)
 }
 
 /**
  * 批量删除 ServiceAccount
  * @param clusterUid - 集群 UID
- * @param namespaceName - 命名空间名称
+ * @param namespace - 命名空间名称
  * @param uids - 待删除的 ServiceAccount UID 列表
  */
-export function deleteServiceAccounts(clusterUid: string, namespaceName: string, uids: string[]): Promise<void> {
-  return request.delete(`/kubernetes/clusters/${clusterUid}/namespaces/${namespaceName}/serviceaccounts/batch`, {
+export function deleteServiceAccounts(clusterUid: string, namespace: string, uids: string[]): Promise<void> {
+  return request.delete(`/kubernetes/clusters/${clusterUid}/namespaces/${namespace}/serviceaccounts`, {
     data: uids,
   })
 }
@@ -231,15 +224,15 @@ export function importServiceAccount(
 /**
  * 导出 ServiceAccount
  * @param clusterUid - 集群 UID
- * @param namespaceName - 命名空间名称
+ * @param namespace - 命名空间名称
  * @param params - 查询参数
  */
 export function exportServiceAccount(
   clusterUid: string,
-  namespaceName: string,
+  namespace: string,
   params: Partial<ServiceAccountQueryForm>,
 ): Promise<void> {
-  return request.download(`/kubernetes/clusters/${clusterUid}/namespaces/${namespaceName}/serviceaccounts/export`, {
+  return request.download(`/kubernetes/clusters/${clusterUid}/namespaces/${namespace}/serviceaccounts/export`, {
     params,
   })
 }

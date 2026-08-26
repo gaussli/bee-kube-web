@@ -155,7 +155,7 @@ export function deleteStorageClass(clusterUid: string, name: string): Promise<vo
  * @param uids - 待删除的 StorageClass UID 列表
  */
 export function deleteStorageClasses(clusterUid: string, uids: string[]): Promise<void> {
-  return request.delete(`/kubernetes/clusters/${clusterUid}/storageclasses/batch`, { data: uids })
+  return request.delete(`/kubernetes/clusters/${clusterUid}/storageclasses`, { data: uids })
 }
 
 /**

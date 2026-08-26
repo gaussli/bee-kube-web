@@ -21,17 +21,17 @@ import { request } from '@/utils'
 /**
  * 获取 PersistentVolumeClaim 列表
  * @param clusterUid - 集群 UID
- * @param namespaceName - 命名空间名称
+ * @param namespace - 命名空间名称
  * @param params - 查询参数
  * @returns 分页后的 PersistentVolumeClaim 列表
  */
 export function getPersistentVolumeClaimList(
   clusterUid: string,
-  namespaceName: string,
+  namespace: string,
   params: Partial<PersistentVolumeClaimQueryForm>,
 ): Promise<PageVo<PersistentVolumeClaimListVo>> {
   return request.get<PageVo<PersistentVolumeClaimListVo>>(
-    `/kubernetes/clusters/${clusterUid}/namespaces/${namespaceName}/persistentvolumeclaims`,
+    `/kubernetes/clusters/${clusterUid}/namespaces/${namespace}/persistentvolumeclaims`,
     { params },
   )
 }
@@ -39,53 +39,53 @@ export function getPersistentVolumeClaimList(
 /**
  * 获取 PersistentVolumeClaim 详情
  * @param clusterUid - 集群 UID
- * @param namespaceName - 命名空间名称
+ * @param namespace - 命名空间名称
  * @param name - PersistentVolumeClaim 名称
  * @returns PersistentVolumeClaim 详情
  */
 export function getPersistentVolumeClaimDetail(
   clusterUid: string,
-  namespaceName: string,
+  namespace: string,
   name: string,
 ): Promise<PersistentVolumeClaimDetailVo> {
   return request.get<PersistentVolumeClaimDetailVo>(
-    `/kubernetes/clusters/${clusterUid}/namespaces/${namespaceName}/persistentvolumeclaims/${name}`,
+    `/kubernetes/clusters/${clusterUid}/namespaces/${namespace}/persistentvolumeclaims/${name}`,
   )
 }
 
 /**
  * 查看 PersistentVolumeClaim YAML
  * @param clusterUid - 集群 UID
- * @param namespaceName - 命名空间名称
+ * @param namespace - 命名空间名称
  * @param name - PersistentVolumeClaim 名称
  * @returns PersistentVolumeClaim 完整 YAML 文本
  */
 export function getPersistentVolumeClaimYaml(
   clusterUid: string,
-  namespaceName: string,
+  namespace: string,
   name: string,
 ): Promise<PersistentVolumeClaimYamlVo> {
   return request.get<PersistentVolumeClaimYamlVo>(
-    `/kubernetes/clusters/${clusterUid}/namespaces/${namespaceName}/persistentvolumeclaims/${name}/yaml`,
+    `/kubernetes/clusters/${clusterUid}/namespaces/${namespace}/persistentvolumeclaims/${name}/yaml`,
   )
 }
 
 /**
  * 获取 PersistentVolumeClaim 事件列表
  * @param clusterUid - 集群 UID
- * @param namespaceName - 命名空间名称
+ * @param namespace - 命名空间名称
  * @param name - PersistentVolumeClaim 名称
  * @param query - 事件查询条件
  * @returns 分页后的事件列表
  */
 export function getPersistentVolumeClaimEventList(
   clusterUid: string,
-  namespaceName: string,
+  namespace: string,
   name: string,
   query: Partial<EventQueryForm>,
 ): Promise<PageVo<EventListVo>> {
   return request.get<PageVo<EventListVo>>(
-    `/kubernetes/clusters/${clusterUid}/namespaces/${namespaceName}/persistentvolumeclaims/${name}/events`,
+    `/kubernetes/clusters/${clusterUid}/namespaces/${namespace}/persistentvolumeclaims/${name}/events`,
     {
       params: query,
     },
@@ -119,38 +119,35 @@ export function createPersistentVolumeClaimYaml(clusterUid: string, yaml: string
 /**
  * 更新 PersistentVolumeClaim
  * @param clusterUid - 集群 UID
- * @param namespaceName - 命名空间名称
+ * @param namespace - 命名空间名称
  * @param name - PersistentVolumeClaim 名称
  * @param data - 更新参数
  * @returns 更新的 PersistentVolumeClaim ID
  */
 export function updatePersistentVolumeClaim(
   clusterUid: string,
-  namespaceName: string,
+  namespace: string,
   name: string,
   data: Partial<PersistentVolumeClaimUpdateForm>,
 ): Promise<void> {
-  return request.put(
-    `/kubernetes/clusters/${clusterUid}/namespaces/${namespaceName}/persistentvolumeclaims/${name}`,
-    data,
-  )
+  return request.put(`/kubernetes/clusters/${clusterUid}/namespaces/${namespace}/persistentvolumeclaims/${name}`, data)
 }
 
 /**
  * 通过 YAML 更新 PersistentVolumeClaim
  * @param clusterUid - 集群 UID
- * @param namespaceName - 命名空间名称
+ * @param namespace - 命名空间名称
  * @param name - PersistentVolumeClaim 名称
  * @param yaml - PersistentVolumeClaim YAML 文本
  */
 export function updatePersistentVolumeClaimYaml(
   clusterUid: string,
-  namespaceName: string,
+  namespace: string,
   name: string,
   yaml: string,
 ): Promise<void> {
   return request.put(
-    `/kubernetes/clusters/${clusterUid}/namespaces/${namespaceName}/persistentvolumeclaims/${name}/yaml`,
+    `/kubernetes/clusters/${clusterUid}/namespaces/${namespace}/persistentvolumeclaims/${name}/yaml`,
     yaml,
     {
       headers: { 'Content-Type': 'application/yaml' },
@@ -161,18 +158,18 @@ export function updatePersistentVolumeClaimYaml(
 /**
  * 更新 PersistentVolumeClaim 标签
  * @param clusterUid - 集群 UID
- * @param namespaceName - 命名空间名称
+ * @param namespace - 命名空间名称
  * @param name - PersistentVolumeClaim 名称
  * @param data - 标签更新参数
  */
 export function managePersistentVolumeClaimLabel(
   clusterUid: string,
-  namespaceName: string,
+  namespace: string,
   name: string,
   data: MetadataLabelForm,
 ): Promise<void> {
   return request.post(
-    `/kubernetes/clusters/${clusterUid}/namespaces/${namespaceName}/persistentvolumeclaims/${name}/labels`,
+    `/kubernetes/clusters/${clusterUid}/namespaces/${namespace}/persistentvolumeclaims/${name}/labels`,
     data,
   )
 }
@@ -180,18 +177,18 @@ export function managePersistentVolumeClaimLabel(
 /**
  * 更新 PersistentVolumeClaim 注解
  * @param clusterUid - 集群 UID
- * @param namespaceName - 命名空间名称
+ * @param namespace - 命名空间名称
  * @param name - PersistentVolumeClaim 名称
  * @param data - 注解更新参数
  */
 export function managePersistentVolumeClaimAnnotation(
   clusterUid: string,
-  namespaceName: string,
+  namespace: string,
   name: string,
   data: MetadataAnnotationForm,
 ): Promise<void> {
   return request.post(
-    `/kubernetes/clusters/${clusterUid}/namespaces/${namespaceName}/persistentvolumeclaims/${name}/annotations`,
+    `/kubernetes/clusters/${clusterUid}/namespaces/${namespace}/persistentvolumeclaims/${name}/annotations`,
     data,
   )
 }
@@ -199,21 +196,21 @@ export function managePersistentVolumeClaimAnnotation(
 /**
  * 删除 PersistentVolumeClaim
  * @param clusterUid - 集群 UID
- * @param namespaceName - 命名空间名称
+ * @param namespace - 命名空间名称
  * @param name - PersistentVolumeClaim 名称
  */
-export function deletePersistentVolumeClaim(clusterUid: string, namespaceName: string, name: string): Promise<void> {
-  return request.delete(`/kubernetes/clusters/${clusterUid}/namespaces/${namespaceName}/persistentvolumeclaims/${name}`)
+export function deletePersistentVolumeClaim(clusterUid: string, namespace: string, name: string): Promise<void> {
+  return request.delete(`/kubernetes/clusters/${clusterUid}/namespaces/${namespace}/persistentvolumeclaims/${name}`)
 }
 
 /**
  * 批量删除 PersistentVolumeClaim
  * @param clusterUid - 集群 UID
- * @param namespaceName - 命名空间名称
+ * @param namespace - 命名空间名称
  * @param uids - 待删除的 PersistentVolumeClaim UID 列表
  */
-export function deletePersistentVolumeClaims(clusterUid: string, namespaceName: string, uids: string[]): Promise<void> {
-  return request.delete(`/kubernetes/clusters/${clusterUid}/namespaces/${namespaceName}/persistentvolumeclaims/batch`, {
+export function deletePersistentVolumeClaims(clusterUid: string, namespace: string, uids: string[]): Promise<void> {
+  return request.delete(`/kubernetes/clusters/${clusterUid}/namespaces/${namespace}/persistentvolumeclaims`, {
     data: uids,
   })
 }
@@ -237,16 +234,15 @@ export function importPersistentVolumeClaim(
 /**
  * 导出 PersistentVolumeClaim
  * @param clusterUid - 集群 UID
- * @param namespaceName - 命名空间名称
+ * @param namespace - 命名空间名称
  * @param params - 查询参数
  */
 export function exportPersistentVolumeClaim(
   clusterUid: string,
-  namespaceName: string,
+  namespace: string,
   params: Partial<PersistentVolumeClaimQueryForm>,
 ): Promise<void> {
-  return request.download(
-    `/kubernetes/clusters/${clusterUid}/namespaces/${namespaceName}/persistentvolumeclaims/export`,
-    { params },
-  )
+  return request.download(`/kubernetes/clusters/${clusterUid}/namespaces/${namespace}/persistentvolumeclaims/export`, {
+    params,
+  })
 }

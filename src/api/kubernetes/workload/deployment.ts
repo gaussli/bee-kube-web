@@ -1,5 +1,5 @@
 /**
- * Deployment 管理 API
+ * 有状态应用（Deployment）管理 API
  * @module api/kubernetes/workload/deployment
  */
 
@@ -12,9 +12,11 @@ import type { PodListVo, PodQueryForm } from '@/types/kubernetes/pod'
 import type {
   DeploymentCreateForm,
   DeploymentDetailVo,
+  DeploymentExportQueryForm,
   DeploymentHistoryRevisionListVo,
   DeploymentHistoryRevisionQueryForm,
   DeploymentListVo,
+  DeploymentMonitorQueryForm,
   DeploymentMonitorVo,
   DeploymentNetworkVo,
   DeploymentQueryForm,
@@ -27,175 +29,187 @@ import type {
 import { request } from '@/utils'
 
 /**
- * 查看 Deployment 列表
+ * 获取有状态应用（Deployment）列表
  * @param clusterUid 集群 UID
- * @param params Deployment 查询条件请求对象（名称、命名空间、状态）
- * @returns Deployment 分页列表
+ * @param query 查询条件
+ * @returns 分页后的有状态应用列表
  */
-export function getDeploymentList(clusterUid: string, params: Partial<DeploymentQueryForm>) {
-  return request.get<PageVo<DeploymentListVo>>(`/kubernetes/clusters/${clusterUid}/deployments`, { params })
+export function getDeploymentList(
+  clusterUid: string,
+  query: Partial<DeploymentQueryForm>,
+): Promise<PageVo<DeploymentListVo>> {
+  return request.get<PageVo<DeploymentListVo>>(`/kubernetes/clusters/${clusterUid}/deployments`, { params: query })
 }
 
 /**
- * 查看 Deployment 详情
+ * 获取有状态应用（Deployment）详情
  * @param clusterUid 集群 UID
  * @param namespace 命名空间名称
- * @param name Deployment 名称
- * @returns Deployment 详情响应对象
+ * @param name 有状态应用名称
+ * @returns 有状态应用详情
  */
-export function getDeploymentDetail(clusterUid: string, namespace: string, name: string) {
+export function getDeploymentDetail(clusterUid: string, namespace: string, name: string): Promise<DeploymentDetailVo> {
   return request.get<DeploymentDetailVo>(
     `/kubernetes/clusters/${clusterUid}/namespaces/${namespace}/deployments/${name}`,
   )
 }
 
 /**
- * 查看 Deployment YAML
+ * 获取有状态应用（Deployment）YAML
  * @param clusterUid 集群 UID
  * @param namespace 命名空间名称
- * @param name Deployment 名称
- * @returns Deployment YAML 响应对象（完整 YAML 文本）
+ * @param name 有状态应用名称
+ * @returns 有状态应用 YAML
  */
-export function getDeploymentYaml(clusterUid: string, namespace: string, name: string) {
+export function getDeploymentYaml(clusterUid: string, namespace: string, name: string): Promise<DeploymentYamlVo> {
   return request.get<DeploymentYamlVo>(
     `/kubernetes/clusters/${clusterUid}/namespaces/${namespace}/deployments/${name}/yaml`,
   )
 }
 
 /**
- * 查看 Deployment 关联 Pod 列表
+ * 获取有状态应用（Deployment）关联 Pod 列表
  * @param clusterUid 集群 UID
  * @param namespace 命名空间名称
- * @param name Deployment 名称
- * @param params Deployment 关联 Pod 查询条件请求对象（Pod 名称、Pod 状态）
- * @returns Deployment 关联 Pod 分页列表
+ * @param name 有状态应用名称
+ * @param query Pod 查询条件
+ * @returns 分页后的 Pod 列表
  */
 export function getDeploymentPodList(
   clusterUid: string,
   namespace: string,
   name: string,
-  params: Partial<PodQueryForm>,
-) {
+  query: Partial<PodQueryForm>,
+): Promise<PageVo<PodListVo>> {
   return request.get<PageVo<PodListVo>>(
     `/kubernetes/clusters/${clusterUid}/namespaces/${namespace}/deployments/${name}/pods`,
-    { params },
+    { params: query },
   )
 }
 
 /**
- * 查看 Deployment 历史版本列表
+ * 获取有状态应用（Deployment）历史版本列表
  * @param clusterUid 集群 UID
  * @param namespace 命名空间名称
- * @param name Deployment 名称
- * @param params Deployment 历史版本查询条件请求对象（版本名称、变更原因）
- * @returns Deployment 历史版本分页列表
+ * @param name 有状态应用名称
+ * @param query 历史版本查询条件
+ * @returns 分页后的历史版本列表
  */
 export function getDeploymentHistoryRevisionList(
   clusterUid: string,
   namespace: string,
   name: string,
-  params: Partial<DeploymentHistoryRevisionQueryForm>,
-) {
+  query: Partial<DeploymentHistoryRevisionQueryForm>,
+): Promise<PageVo<DeploymentHistoryRevisionListVo>> {
   return request.get<PageVo<DeploymentHistoryRevisionListVo>>(
     `/kubernetes/clusters/${clusterUid}/namespaces/${namespace}/deployments/${name}/history`,
-    { params },
+    { params: query },
   )
 }
 
 /**
- * 查看 Deployment 关联网络资源
+ * 获取有状态应用（Deployment）关联网络资源
  * @param clusterUid 集群 UID
  * @param namespace 命名空间名称
- * @param name Deployment 名称
- * @returns Deployment 关联网络资源响应对象（关联的 Service 与 Ingress 列表）
+ * @param name 有状态应用名称
+ * @returns 关联网络资源数据
  */
-export function getDeploymentNetwork(clusterUid: string, namespace: string, name: string) {
+export function getDeploymentNetwork(
+  clusterUid: string,
+  namespace: string,
+  name: string,
+): Promise<DeploymentNetworkVo> {
   return request.get<DeploymentNetworkVo>(
     `/kubernetes/clusters/${clusterUid}/namespaces/${namespace}/deployments/${name}/network`,
   )
 }
 
 /**
- * 查看 Deployment 事件列表
+ * 获取有状态应用（Deployment）事件列表
  * @param clusterUid 集群 UID
  * @param namespace 命名空间名称
- * @param name Deployment 名称
- * @param params 事件查询条件请求对象
- * @returns Deployment 关联事件分页列表
+ * @param name 有状态应用名称
+ * @param query 事件查询条件
+ * @returns 分页后的事件列表
  */
 export function getDeploymentEventList(
   clusterUid: string,
   namespace: string,
   name: string,
-  params: Partial<EventQueryForm>,
-) {
+  query: Partial<EventQueryForm>,
+): Promise<PageVo<EventListVo>> {
   return request.get<PageVo<EventListVo>>(
     `/kubernetes/clusters/${clusterUid}/namespaces/${namespace}/deployments/${name}/events`,
-    { params },
+    { params: query },
   )
 }
 
 /**
- * 查看 Deployment 监控数据
+ * 获取有状态应用（Deployment）监控数据
  * @param clusterUid 集群 UID
  * @param namespace 命名空间名称
- * @param name Deployment 名称
- * @returns Deployment 监控响应对象
+ * @param name 有状态应用名称
+ * @param query 监控查询条件
+ * @returns 有状态应用监控数据
  */
-export function getDeploymentMonitor(clusterUid: string, namespace: string, name: string) {
+export function getDeploymentMonitor(
+  clusterUid: string,
+  namespace: string,
+  name: string,
+  query: Partial<DeploymentMonitorQueryForm>,
+): Promise<DeploymentMonitorVo> {
   return request.get<DeploymentMonitorVo>(
     `/kubernetes/clusters/${clusterUid}/namespaces/${namespace}/deployments/${name}/monitor`,
+    {
+      params: query,
+    },
   )
 }
 
 /**
- * 创建 Deployment
+ * 创建有状态应用（Deployment）
  * @param clusterUid 集群 UID
- * @param data Deployment 创建请求对象（description / metadata / spec）
- * @returns void
+ * @param data 创建请求对象
  */
-export function createDeployment(clusterUid: string, data: Partial<DeploymentCreateForm>) {
+export function createDeployment(clusterUid: string, data: Partial<DeploymentCreateForm>): Promise<void> {
   return request.post<void>(`/kubernetes/clusters/${clusterUid}/deployments`, data)
 }
 
 /**
- * YAML 创建 Deployment
+ * 创建有状态应用（Deployment）（YAML）
  * @param clusterUid 集群 UID
- * @param yaml Deployment YAML 字符串
- * @returns void
+ * @param yaml 创建 YAML 文本
  */
-export function createDeploymentYaml(clusterUid: string, yaml: string) {
+export function createDeploymentYaml(clusterUid: string, yaml: string): Promise<void> {
   return request.post<void>(`/kubernetes/clusters/${clusterUid}/deployments/yaml`, yaml, {
     headers: { 'Content-Type': 'application/yaml' },
   })
 }
 
 /**
- * 更新 Deployment
+ * 更新有状态应用（Deployment）
  * @param clusterUid 集群 UID
  * @param namespace 命名空间名称
- * @param name Deployment 名称
- * @param data Deployment 更新请求对象（description / metadata / spec）
- * @returns void
+ * @param name 有状态应用名称
+ * @param data 更新请求对象
  */
 export function updateDeployment(
   clusterUid: string,
   namespace: string,
   name: string,
   data: Partial<DeploymentUpdateForm>,
-) {
+): Promise<void> {
   return request.put<void>(`/kubernetes/clusters/${clusterUid}/namespaces/${namespace}/deployments/${name}`, data)
 }
 
 /**
- * YAML 更新 Deployment
+ * 更新有状态应用（Deployment）(YAML)
  * @param clusterUid 集群 UID
  * @param namespace 命名空间名称
- * @param name Deployment 名称
- * @param yaml Deployment YAML 字符串
- * @returns void
+ * @param name 有状态应用名称
+ * @param yaml 更新 YAML 文本
  */
-export function updateDeploymentYaml(clusterUid: string, namespace: string, name: string, yaml: string) {
+export function updateDeploymentYaml(clusterUid: string, namespace: string, name: string, yaml: string): Promise<void> {
   return request.put<void>(
     `/kubernetes/clusters/${clusterUid}/namespaces/${namespace}/deployments/${name}/yaml`,
     yaml,
@@ -206,14 +220,18 @@ export function updateDeploymentYaml(clusterUid: string, namespace: string, name
 }
 
 /**
- * 管理 Deployment 标签
+ * 配置有状态应用（Deployment）标签
  * @param clusterUid 集群 UID
  * @param namespace 命名空间名称
- * @param name Deployment 名称
- * @param data 管理标签请求对象（labels 键值对、operation 操作类型）
- * @returns void
+ * @param name 有状态应用名称
+ * @param data 标签配置请求对象
  */
-export function manageDeploymentLabel(clusterUid: string, namespace: string, name: string, data: MetadataLabelForm) {
+export function manageDeploymentLabel(
+  clusterUid: string,
+  namespace: string,
+  name: string,
+  data: MetadataLabelForm,
+): Promise<void> {
   return request.post<void>(
     `/kubernetes/clusters/${clusterUid}/namespaces/${namespace}/deployments/${name}/labels`,
     data,
@@ -221,19 +239,18 @@ export function manageDeploymentLabel(clusterUid: string, namespace: string, nam
 }
 
 /**
- * 管理 Deployment 注解
+ * 配置有状态应用（Deployment）注解
  * @param clusterUid 集群 UID
  * @param namespace 命名空间名称
- * @param name Deployment 名称
- * @param data 管理注解请求对象（annotations 键值对、operation 操作类型）
- * @returns void
+ * @param name 有状态应用名称
+ * @param data 注解配置请求对象
  */
 export function manageDeploymentAnnotation(
   clusterUid: string,
   namespace: string,
   name: string,
   data: MetadataAnnotationForm,
-) {
+): Promise<void> {
   return request.post<void>(
     `/kubernetes/clusters/${clusterUid}/namespaces/${namespace}/deployments/${name}/annotations`,
     data,
@@ -241,30 +258,28 @@ export function manageDeploymentAnnotation(
 }
 
 /**
- * 删除 Deployment
+ * 删除有状态应用（Deployment）
  * @param clusterUid 集群 UID
  * @param namespace 命名空间名称
- * @param name Deployment 名称
- * @returns void
+ * @param name 有状态应用名称
  */
-export function deleteDeployment(clusterUid: string, namespace: string, name: string) {
+export function deleteDeployment(clusterUid: string, namespace: string, name: string): Promise<void> {
   return request.delete<void>(`/kubernetes/clusters/${clusterUid}/namespaces/${namespace}/deployments/${name}`)
 }
 
 /**
- * 批量删除 Deployment
- * @param clusterUid 集群 UID
- * @param uids Deployment UID 列表
- * @returns void
+ * 批量删除有状态应用（Deployment）
+ * @param clusterUid - 集群 UID
+ * @param uids - 有状态应用 UID 数组
  */
-export function deleteDeployments(clusterUid: string, uids: string[]) {
-  return request.delete<void>(`/kubernetes/clusters/${clusterUid}/deployments/batch`, { data: uids })
+export function deleteDeployments(clusterUid: string, uids: string[]): Promise<void> {
+  return request.delete<void>(`/kubernetes/clusters/${clusterUid}/deployments`, { data: uids })
 }
 
 /**
- * 导入 Deployment
+ * 导入有状态应用（Deployment）
  * @param clusterUid 集群 UID
- * @param formData 上传的文件
+ * @param formData 文件数据
  * @param onProgress 上传进度回调
  * @returns void
  */
@@ -272,31 +287,35 @@ export function importDeployment(
   clusterUid: string,
   formData: FormData,
   onProgress?: (progressEvent: AxiosProgressEvent) => void,
-) {
+): Promise<void> {
   return request.upload<void>(`/kubernetes/clusters/${clusterUid}/deployments/import`, formData, {
     onUploadProgress: onProgress,
   })
 }
 
 /**
- * 导出 Deployment
+ * 导出有状态应用（Deployment）
  * @param clusterUid 集群 UID
- * @param params Deployment 查询条件请求对象（名称、命名空间、状态）
+ * @param query 导出查询条件
  * @returns void
  */
-export function exportDeployment(clusterUid: string, params: Partial<DeploymentQueryForm>) {
-  return request.download(`/kubernetes/clusters/${clusterUid}/deployments/export`, { params })
+export function exportDeployment(clusterUid: string, query: Partial<DeploymentExportQueryForm>): Promise<void> {
+  return request.download<void>(`/kubernetes/clusters/${clusterUid}/deployments/export`, { params: query })
 }
 
 /**
- * 扩缩容 Deployment
+ * 扩容/缩容有状态应用（Deployment）
  * @param clusterUid 集群 UID
  * @param namespace 命名空间名称
- * @param name Deployment 名称
- * @param data Deployment 扩缩容请求对象（期望副本数）
- * @returns void
+ * @param name 有状态应用名称
+ * @param data 扩容/缩容请求对象
  */
-export function scaleDeployment(clusterUid: string, namespace: string, name: string, data: DeploymentScaleForm) {
+export function scaleDeployment(
+  clusterUid: string,
+  namespace: string,
+  name: string,
+  data: DeploymentScaleForm,
+): Promise<void> {
   return request.post<void>(
     `/kubernetes/clusters/${clusterUid}/namespaces/${namespace}/deployments/${name}/scale`,
     data,
@@ -304,25 +323,28 @@ export function scaleDeployment(clusterUid: string, namespace: string, name: str
 }
 
 /**
- * 重启 Deployment
+ * 重启有状态应用（Deployment）
  * @param clusterUid 集群 UID
  * @param namespace 命名空间名称
- * @param name Deployment 名称
- * @returns void
+ * @param name 有状态应用名称
  */
-export function restartDeployment(clusterUid: string, namespace: string, name: string) {
+export function restartDeployment(clusterUid: string, namespace: string, name: string): Promise<void> {
   return request.post<void>(`/kubernetes/clusters/${clusterUid}/namespaces/${namespace}/deployments/${name}/restart`)
 }
 
 /**
- * 回滚 Deployment
+ * 回滚有状态应用（Deployment）
  * @param clusterUid 集群 UID
  * @param namespace 命名空间名称
- * @param name Deployment 名称
- * @param data Deployment 回滚请求对象（目标历史版本号）
- * @returns void
+ * @param name 有状态应用名称
+ * @param data 回滚请求对象
  */
-export function rollbackDeployment(clusterUid: string, namespace: string, name: string, data: DeploymentRollbackForm) {
+export function rollbackDeployment(
+  clusterUid: string,
+  namespace: string,
+  name: string,
+  data: DeploymentRollbackForm,
+): Promise<void> {
   return request.post<void>(
     `/kubernetes/clusters/${clusterUid}/namespaces/${namespace}/deployments/${name}/rollback`,
     data,
@@ -330,23 +352,21 @@ export function rollbackDeployment(clusterUid: string, namespace: string, name: 
 }
 
 /**
- * 暂停 Deployment 更新
+ * 暂停有状态应用（Deployment）更新
  * @param clusterUid 集群 UID
  * @param namespace 命名空间名称
- * @param name Deployment 名称
- * @returns void
+ * @param name 有状态应用名称
  */
-export function pauseDeployment(clusterUid: string, namespace: string, name: string) {
+export function pauseDeployment(clusterUid: string, namespace: string, name: string): Promise<void> {
   return request.post<void>(`/kubernetes/clusters/${clusterUid}/namespaces/${namespace}/deployments/${name}/pause`)
 }
 
 /**
- * 恢复 Deployment 更新
+ * 恢复有状态应用（Deployment）更新
  * @param clusterUid 集群 UID
  * @param namespace 命名空间名称
- * @param name Deployment 名称
- * @returns void
+ * @param name 有状态应用名称
  */
-export function resumeDeployment(clusterUid: string, namespace: string, name: string) {
+export function resumeDeployment(clusterUid: string, namespace: string, name: string): Promise<void> {
   return request.post<void>(`/kubernetes/clusters/${clusterUid}/namespaces/${namespace}/deployments/${name}/resume`)
 }

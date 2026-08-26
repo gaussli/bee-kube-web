@@ -259,7 +259,7 @@ export function deleteStatefulSet(clusterUid: string, namespace: string, name: s
  * @returns void
  */
 export function deleteStatefulSets(clusterUid: string, uids: string[]) {
-  return request.delete<void>(`/kubernetes/clusters/${clusterUid}/statefulsets/batch`, { data: uids })
+  return request.delete<void>(`/kubernetes/clusters/${clusterUid}/statefulsets`, { data: uids })
 }
 
 /**

@@ -94,7 +94,6 @@ export function createClusterRoleYaml(clusterUid: string, yaml: string): Promise
  * @param clusterUid - 集群 UID
  * @param name - ClusterRole 名称
  * @param data - 更新参数
- * @returns 更新的 ClusterRole ID
  */
 export function updateClusterRole(
   clusterUid: string,
@@ -155,7 +154,7 @@ export function deleteClusterRole(clusterUid: string, name: string): Promise<voi
  * @param uids - 待删除的 ClusterRole UID 列表
  */
 export function deleteClusterRoles(clusterUid: string, uids: string[]): Promise<void> {
-  return request.delete(`/kubernetes/clusters/${clusterUid}/clusterroles/batch`, { data: uids })
+  return request.delete(`/kubernetes/clusters/${clusterUid}/clusterroles`, { data: uids })
 }
 
 /**
@@ -169,7 +168,7 @@ export function importClusterRole(
   formData: FormData,
   onProgress?: (progressEvent: AxiosProgressEvent) => void,
 ) {
-  return request.upload<void>(`/kubernetes/clusters/${clusterUid}/clusterroles/import`, formData, {
+  return request.upload(`/kubernetes/clusters/${clusterUid}/clusterroles/import`, formData, {
     onUploadProgress: onProgress,
   })
 }

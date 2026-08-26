@@ -157,7 +157,7 @@ export function deletePersistentVolume(clusterUid: string, name: string): Promis
  * @param uids - 待删除的 PersistentVolume UID 列表
  */
 export function deletePersistentVolumes(clusterUid: string, uids: string[]): Promise<void> {
-  return request.delete(`/kubernetes/clusters/${clusterUid}/persistentvolumes/batch`, { data: uids })
+  return request.delete(`/kubernetes/clusters/${clusterUid}/persistentvolumes`, { data: uids })
 }
 
 /**

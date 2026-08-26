@@ -21,63 +21,58 @@ import { request } from '@/utils'
 /**
  * 获取 Ingress 列表
  * @param clusterUid - 集群 UID
- * @param namespaceName - 命名空间名称
+ * @param namespace - 命名空间名称
  * @param params - 查询参数
  * @returns 分页后的 Ingress 列表
  */
 export function getIngressList(
   clusterUid: string,
-  namespaceName: string,
+  namespace: string,
   params: Partial<IngressQueryForm>,
 ): Promise<PageVo<IngressListVo>> {
-  return request.get<PageVo<IngressListVo>>(
-    `/kubernetes/clusters/${clusterUid}/namespaces/${namespaceName}/ingresses`,
-    { params },
-  )
+  return request.get<PageVo<IngressListVo>>(`/kubernetes/clusters/${clusterUid}/namespaces/${namespace}/ingresses`, {
+    params,
+  })
 }
 
 /**
  * 获取 Ingress 详情
  * @param clusterUid - 集群 UID
- * @param namespaceName - 命名空间名称
+ * @param namespace - 命名空间名称
  * @param name - Ingress 名称
  * @returns Ingress 详情
  */
-export function getIngressDetail(clusterUid: string, namespaceName: string, name: string): Promise<IngressDetailVo> {
-  return request.get<IngressDetailVo>(
-    `/kubernetes/clusters/${clusterUid}/namespaces/${namespaceName}/ingresses/${name}`,
-  )
+export function getIngressDetail(clusterUid: string, namespace: string, name: string): Promise<IngressDetailVo> {
+  return request.get<IngressDetailVo>(`/kubernetes/clusters/${clusterUid}/namespaces/${namespace}/ingresses/${name}`)
 }
 
 /**
  * 查看 Ingress YAML
  * @param clusterUid - 集群 UID
- * @param namespaceName - 命名空间名称
+ * @param namespace - 命名空间名称
  * @param name - Ingress 名称
  * @returns Ingress 完整 YAML 文本
  */
-export function getIngressYaml(clusterUid: string, namespaceName: string, name: string): Promise<IngressYamlVo> {
-  return request.get<IngressYamlVo>(
-    `/kubernetes/clusters/${clusterUid}/namespaces/${namespaceName}/ingresses/${name}/yaml`,
-  )
+export function getIngressYaml(clusterUid: string, namespace: string, name: string): Promise<IngressYamlVo> {
+  return request.get<IngressYamlVo>(`/kubernetes/clusters/${clusterUid}/namespaces/${namespace}/ingresses/${name}/yaml`)
 }
 
 /**
  * 获取 Ingress 事件列表
  * @param clusterUid - 集群 UID
- * @param namespaceName - 命名空间名称
+ * @param namespace - 命名空间名称
  * @param name - Ingress 名称
  * @param query - 事件查询条件
  * @returns 分页后的事件列表
  */
 export function getIngressEventList(
   clusterUid: string,
-  namespaceName: string,
+  namespace: string,
   name: string,
   query: Partial<EventQueryForm>,
 ): Promise<PageVo<EventListVo>> {
   return request.get<PageVo<EventListVo>>(
-    `/kubernetes/clusters/${clusterUid}/namespaces/${namespaceName}/ingresses/${name}/events`,
+    `/kubernetes/clusters/${clusterUid}/namespaces/${namespace}/ingresses/${name}/events`,
     {
       params: query,
     },
@@ -108,34 +103,29 @@ export function createIngressYaml(clusterUid: string, yaml: string): Promise<voi
 /**
  * 更新 Ingress
  * @param clusterUid - 集群 UID
- * @param namespaceName - 命名空间名称
+ * @param namespace - 命名空间名称
  * @param name - Ingress 名称
  * @param data - 更新参数
  * @returns 更新的 Ingress ID
  */
 export function updateIngress(
   clusterUid: string,
-  namespaceName: string,
+  namespace: string,
   name: string,
   data: Partial<IngressUpdateForm>,
 ): Promise<void> {
-  return request.put(`/kubernetes/clusters/${clusterUid}/namespaces/${namespaceName}/ingresses/${name}`, data)
+  return request.put(`/kubernetes/clusters/${clusterUid}/namespaces/${namespace}/ingresses/${name}`, data)
 }
 
 /**
  * 通过 YAML 更新 Ingress
  * @param clusterUid - 集群 UID
- * @param namespaceName - 命名空间名称
+ * @param namespace - 命名空间名称
  * @param name - Ingress 名称
  * @param yaml - Ingress YAML 文本
  */
-export function updateIngressYaml(
-  clusterUid: string,
-  namespaceName: string,
-  name: string,
-  yaml: string,
-): Promise<void> {
-  return request.put(`/kubernetes/clusters/${clusterUid}/namespaces/${namespaceName}/ingresses/${name}/yaml`, yaml, {
+export function updateIngressYaml(clusterUid: string, namespace: string, name: string, yaml: string): Promise<void> {
+  return request.put(`/kubernetes/clusters/${clusterUid}/namespaces/${namespace}/ingresses/${name}/yaml`, yaml, {
     headers: { 'Content-Type': 'application/yaml' },
   })
 }
@@ -143,56 +133,53 @@ export function updateIngressYaml(
 /**
  * 更新 Ingress 标签
  * @param clusterUid - 集群 UID
- * @param namespaceName - 命名空间名称
+ * @param namespace - 命名空间名称
  * @param name - Ingress 名称
  * @param data - 标签更新参数
  */
 export function manageIngressLabel(
   clusterUid: string,
-  namespaceName: string,
+  namespace: string,
   name: string,
   data: MetadataLabelForm,
 ): Promise<void> {
-  return request.post(`/kubernetes/clusters/${clusterUid}/namespaces/${namespaceName}/ingresses/${name}/labels`, data)
+  return request.post(`/kubernetes/clusters/${clusterUid}/namespaces/${namespace}/ingresses/${name}/labels`, data)
 }
 
 /**
  * 更新 Ingress 注解
  * @param clusterUid - 集群 UID
- * @param namespaceName - 命名空间名称
+ * @param namespace - 命名空间名称
  * @param name - Ingress 名称
  * @param data - 注解更新参数
  */
 export function manageIngressAnnotation(
   clusterUid: string,
-  namespaceName: string,
+  namespace: string,
   name: string,
   data: MetadataAnnotationForm,
 ): Promise<void> {
-  return request.post(
-    `/kubernetes/clusters/${clusterUid}/namespaces/${namespaceName}/ingresses/${name}/annotations`,
-    data,
-  )
+  return request.post(`/kubernetes/clusters/${clusterUid}/namespaces/${namespace}/ingresses/${name}/annotations`, data)
 }
 
 /**
  * 删除 Ingress
  * @param clusterUid - 集群 UID
- * @param namespaceName - 命名空间名称
+ * @param namespace - 命名空间名称
  * @param name - Ingress 名称
  */
-export function deleteIngress(clusterUid: string, namespaceName: string, name: string): Promise<void> {
-  return request.delete(`/kubernetes/clusters/${clusterUid}/namespaces/${namespaceName}/ingresses/${name}`)
+export function deleteIngress(clusterUid: string, namespace: string, name: string): Promise<void> {
+  return request.delete(`/kubernetes/clusters/${clusterUid}/namespaces/${namespace}/ingresses/${name}`)
 }
 
 /**
  * 批量删除 Ingress
  * @param clusterUid - 集群 UID
- * @param namespaceName - 命名空间名称
+ * @param namespace - 命名空间名称
  * @param uids - 待删除的 Ingress UID 列表
  */
-export function deleteIngresses(clusterUid: string, namespaceName: string, uids: string[]): Promise<void> {
-  return request.delete(`/kubernetes/clusters/${clusterUid}/namespaces/${namespaceName}/ingresses/batch`, {
+export function deleteIngresses(clusterUid: string, namespace: string, uids: string[]): Promise<void> {
+  return request.delete(`/kubernetes/clusters/${clusterUid}/namespaces/${namespace}/ingresses`, {
     data: uids,
   })
 }
@@ -216,9 +203,9 @@ export function importIngress(
 /**
  * 导出 Ingress
  * @param clusterUid - 集群 UID
- * @param namespaceName - 命名空间名称
+ * @param namespace - 命名空间名称
  * @param name - Ingress 名称
  */
-export function exportIngress(clusterUid: string, namespaceName: string, name: string): Promise<void> {
-  return request.download(`/kubernetes/clusters/${clusterUid}/namespaces/${namespaceName}/ingresses/${name}/export`)
+export function exportIngress(clusterUid: string, namespace: string, name: string): Promise<void> {
+  return request.download(`/kubernetes/clusters/${clusterUid}/namespaces/${namespace}/ingresses/${name}/export`)
 }

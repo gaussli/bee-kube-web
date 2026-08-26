@@ -205,7 +205,7 @@ export function deleteCronJob(clusterUid: string, namespace: string, name: strin
  * @returns void
  */
 export function deleteCronJobs(clusterUid: string, uids: string[]) {
-  return request.delete<void>(`/kubernetes/clusters/${clusterUid}/cronjobs/batch`, { data: uids })
+  return request.delete<void>(`/kubernetes/clusters/${clusterUid}/cronjobs`, { data: uids })
 }
 
 /**

@@ -21,7 +21,7 @@ import { request } from '@/utils'
 /**
  * 获取 ConfigMap 分页列表
  * @param clusterUid - 集群 UID
- * @param params - 查询参数（含 namespace 筛选）
+ * @param params - 查询参数
  * @returns 分页后的 ConfigMap 列表
  */
 export function getConfigMapList(
@@ -83,12 +83,8 @@ export function getConfigMapEventList(
  * @param namespace - 命名空间名称
  * @param data - 创建参数
  */
-export function createConfigMap(
-  clusterUid: string,
-  namespace: string,
-  data: Partial<ConfigMapCreateForm>,
-): Promise<void> {
-  return request.post(`/kubernetes/clusters/${clusterUid}/namespaces/${namespace}/configmaps`, data)
+export function createConfigMap(clusterUid: string, data: Partial<ConfigMapCreateForm>): Promise<void> {
+  return request.post(`/kubernetes/clusters/${clusterUid}/configmaps`, data)
 }
 
 /**
@@ -180,7 +176,7 @@ export function deleteConfigMap(clusterUid: string, namespace: string, name: str
  * @param uids - ConfigMap UID 数组
  */
 export function deleteConfigMaps(clusterUid: string, namespace: string, uids: string[]): Promise<void> {
-  return request.delete(`/kubernetes/clusters/${clusterUid}/namespaces/${namespace}/configmaps/batch`, { data: uids })
+  return request.delete(`/kubernetes/clusters/${clusterUid}/namespaces/${namespace}/configmaps`, { data: uids })
 }
 
 /**

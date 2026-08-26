@@ -1,143 +1,163 @@
 /**
- * 节点管理 API
+ * 节点（Node）资源 API
  * @module api/kubernetes/node
  */
 import type { PageVo } from '@/types/common'
+import type { MetadataAnnotationForm, MetadataLabelForm } from '@/types/kubernetes/common'
+import type { EventListVo, EventQueryForm } from '@/types/kubernetes/event'
 import type {
   NodeQueryForm,
-  NodeListResp,
-  NodeReq,
-  NodeCordonReq,
-  NodeLabelsReq,
-  NodeAnnotationsReq,
-  NodeTaintsReq,
+  NodeListVo,
+  NodeTopNQueryForm,
+  NodeYamlVo,
+  NodeTopologiesForm,
+  NodeDetailVo,
+  NodeCordonForm,
+  NodeTaintsForm,
+  NodeMonitorVo,
+  NodeMonitorQueryForm,
+  NodeExportQueryForm,
 } from '@/types/kubernetes/node'
 
 import { request } from '@/utils'
 
 /**
- * 获取节点 TopN 排行列表
+ * 获取节点（Node）TopN 列表
  * @param clusterUid - 集群 UID
- * @param params - 查询参数（metric 排序指标、count 返回数量）
- * @returns TopN 节点列表
+ * @param query - 查询条件
+ * @returns 节点 TopN 列表
  */
-export function getNodeTopN(
-  clusterUid: string,
-  params: Partial<{ metric: string; count: number }>,
-): Promise<NodeListResp[]> {
-  return request.get<NodeListResp[]>(`/kubernetes/clusters/${clusterUid}/nodes/topn`, { params })
+export function getNodeTopN(clusterUid: string, query: Partial<NodeTopNQueryForm>): Promise<NodeListVo[]> {
+  return request.get<NodeListVo[]>(`/kubernetes/clusters/${clusterUid}/nodes/topn`, { params: query })
 }
 
 /**
- * 获取节点列表
+ * 获取节点（Node）列表
  * @param clusterUid - 集群 UID
- * @param params - 查询参数
+ * @param query - 查询条件
  * @returns 分页后的节点列表
  */
-export function getNodeList(clusterUid: string, params: Partial<NodeQueryForm>): Promise<PageVo<NodeListResp>> {
-  return request.get<PageVo<NodeListResp>>(`/kubernetes/clusters/${clusterUid}/nodes`, { params })
+export function getNodeList(clusterUid: string, query: Partial<NodeQueryForm>): Promise<PageVo<NodeListVo>> {
+  return request.get<PageVo<NodeListVo>>(`/kubernetes/clusters/${clusterUid}/nodes`, { params: query })
 }
 
 /**
- * 获取节点详情
+ * 获取节点（Node）详情
  * @param clusterUid - 集群 UID
- * @param uid - 节点 UID
- * @returns 节点详情
+ * @param name - 节点名称
+ * @returns  节点详情
  */
-export function getNodeDetail(clusterUid: string, uid: string): Promise<NodeListResp> {
-  return request.get<NodeListResp>(`/kubernetes/clusters/${clusterUid}/nodes/${uid}`)
+export function getNodeDetail(clusterUid: string, name: string): Promise<NodeDetailVo> {
+  return request.get<NodeDetailVo>(`/kubernetes/clusters/${clusterUid}/nodes/${name}`)
 }
 
 /**
- * 获取节点 YAML
+ * 获取节点（Node）YAML
  * @param clusterUid - 集群 UID
- * @param uid - 节点 UID
- * @returns 节点 YAML 配置字符串
+ * @param name - 节点名称
+ * @returns 节点 YAML
  */
-export function getNodeYaml(clusterUid: string, uid: string): Promise<string> {
-  return request.get<string>(`/kubernetes/clusters/${clusterUid}/nodes/${uid}/yaml`)
+export function getNodeYaml(clusterUid: string, name: string): Promise<NodeYamlVo> {
+  return request.get<NodeYamlVo>(`/kubernetes/clusters/${clusterUid}/nodes/${name}/yaml`)
 }
 
 /**
- * 更新节点信息
+ * 获取节点（Node）事件列表
  * @param clusterUid - 集群 UID
- * @param uid - 节点 UID
- * @param data - 更新数据
- * @returns 更新后的节点信息
+ * @param name - 节点名称
+ * @param query - 事件查询条件
+ * @returns 分页后的事件列表
  */
-export function updateNode(clusterUid: string, uid: string, data: Partial<NodeReq>): Promise<string> {
-  return request.put<string>(`/kubernetes/clusters/${clusterUid}/nodes/${uid}`, data)
-}
-
-/**
- * 更新节点（YAML）
- * @param clusterUid - 集群 UID
- * @param uid - 节点 UID
- * @param data - YAML 配置字符串
- */
-export function updateNodeYaml(clusterUid: string, uid: string, data: string): Promise<void> {
-  return request.put(`/kubernetes/clusters/${clusterUid}/nodes/${uid}/yaml`, data)
-}
-
-/**
- * 更新节点标签
- * @param clusterUid - 集群 UID
- * @param uid - 节点 UID
- * @param data - 标签配置
- */
-export function manageNodeLabel(clusterUid: string, uid: string, data: Partial<NodeLabelsReq>): Promise<void> {
-  return request.post(`/kubernetes/clusters/${clusterUid}/nodes/${uid}/labels`, data)
-}
-
-/**
- * 更新节点注解
- * @param clusterUid - 集群 UID
- * @param uid - 节点 UID
- * @param data - 注解配置
- */
-export function manageNodeAnnotation(
+export function getNodeEventList(
   clusterUid: string,
-  uid: string,
-  data: Partial<NodeAnnotationsReq>,
-): Promise<void> {
-  return request.post(`/kubernetes/clusters/${clusterUid}/nodes/${uid}/annotations`, data)
+  name: string,
+  query: Partial<EventQueryForm>,
+): Promise<PageVo<EventListVo>> {
+  return request.get<PageVo<EventListVo>>(`/kubernetes/clusters/${clusterUid}/nodes/${name}/events`, {
+    params: query,
+  })
 }
 
 /**
- * 导出节点列表
+ * 获取节点（Node）监控数据
  * @param clusterUid - 集群 UID
- * @param params - 查询参数
- * @returns 节点 YAML 配置字符串
+ * @param name - 节点名称
+ * @param query - 监控查询条件
  */
-export function exportNode(clusterUid: string, params: Partial<NodeQueryForm>): Promise<void> {
-  return request.download(`/kubernetes/clusters/${clusterUid}/nodes/export`, { params })
+export function getNodeMonitor(
+  clusterUid: string,
+  name: string,
+  query: Partial<NodeMonitorQueryForm>,
+): Promise<NodeMonitorVo> {
+  return request.get<NodeMonitorVo>(`/kubernetes/clusters/${clusterUid}/nodes/${name}/monitor`, {
+    params: query,
+  })
 }
 
 /**
- * 更新节点污点
+ * 配置节点（Node）标签
  * @param clusterUid - 集群 UID
- * @param uid - 节点 UID
- * @param data - 污点配置
+ * @param name - 节点名称
+ * @param data - 标签配置请求对象
  */
-export function manageNodeTaint(clusterUid: string, uid: string, data: Partial<NodeTaintsReq>): Promise<void> {
-  return request.post(`/kubernetes/clusters/${clusterUid}/nodes/${uid}/taint`, data)
+export function manageNodeLabels(clusterUid: string, name: string, data: MetadataLabelForm): Promise<void> {
+  return request.post<void>(`/kubernetes/clusters/${clusterUid}/nodes/${name}/labels`, data)
 }
 
 /**
- * 驱逐节点
+ * 配置节点（Node）注解
  * @param clusterUid - 集群 UID
- * @param uid - 节点 UID
+ * @param name - 节点名称
+ * @param data - 注解配置请求对象
  */
-export function drainNode(clusterUid: string, uid: string): Promise<void> {
-  return request.post(`/kubernetes/clusters/${clusterUid}/nodes/${uid}/drain`)
+export function manageNodeAnnotations(clusterUid: string, name: string, data: MetadataAnnotationForm): Promise<void> {
+  return request.post<void>(`/kubernetes/clusters/${clusterUid}/nodes/${name}/annotations`, data)
 }
 
 /**
- * 设置节点可调度/不可调度
+ * 导出节点（Node）
  * @param clusterUid - 集群 UID
- * @param uid - 节点 UID
- * @param data - 调度配置
+ * @param query - 导出查询条件
  */
-export function cordonNode(clusterUid: string, uid: string, data: NodeCordonReq): Promise<void> {
-  return request.post(`/kubernetes/clusters/${clusterUid}/nodes/${uid}/cordon`, data)
+export function exportNode(clusterUid: string, query: Partial<NodeExportQueryForm>): Promise<void> {
+  return request.download<void>(`/kubernetes/clusters/${clusterUid}/nodes/export`, { params: query })
+}
+
+/**
+ * 配置节点（Node）污点
+ * @param clusterUid - 集群 UID
+ * @param name - 节点名称
+ * @param data - 污点配置请求对象
+ */
+export function manageNodeTaint(clusterUid: string, name: string, data: NodeTaintsForm): Promise<void> {
+  return request.post<void>(`/kubernetes/clusters/${clusterUid}/nodes/${name}/taint`, data)
+}
+
+/**
+ * 配置节点（Node）拓扑
+ * @param clusterUid 集群 UID
+ * @param name - 节点名称
+ * @param data - 拓扑配置请求对象
+ */
+export function manageNodeTopology(clusterUid: string, name: string, data: NodeTopologiesForm): Promise<void> {
+  return request.post<void>(`/kubernetes/clusters/${clusterUid}/nodes/${name}/topology`, data)
+}
+
+/**
+ * 封锁/解封节点（Node）
+ * @param clusterUid - 集群 UID
+ * @param name - 节点名称
+ * @param data - 封锁/解封配置请求对象
+ */
+export function cordonNode(clusterUid: string, name: string, data: NodeCordonForm): Promise<void> {
+  return request.post<void>(`/kubernetes/clusters/${clusterUid}/nodes/${name}/cordon`, data)
+}
+
+/**
+ * 排空节点（Node）
+ * @param clusterUid - 集群 UID
+ * @param name - 节点名称
+ */
+export function drainNode(clusterUid: string, name: string): Promise<void> {
+  return request.post<void>(`/kubernetes/clusters/${clusterUid}/nodes/${name}/drain`)
 }

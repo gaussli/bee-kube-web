@@ -164,7 +164,7 @@ export function deleteClusterRoleBinding(clusterUid: string, name: string): Prom
  * @param uids - 待删除的 ClusterRoleBinding UID 列表
  */
 export function deleteClusterRoleBindings(clusterUid: string, uids: string[]): Promise<void> {
-  return request.delete(`/kubernetes/clusters/${clusterUid}/clusterrolebindings/batch`, { data: uids })
+  return request.delete(`/kubernetes/clusters/${clusterUid}/clusterrolebindings`, { data: uids })
 }
 
 /**

@@ -21,17 +21,17 @@ import { request } from '@/utils'
 /**
  * 获取 NetworkPolicy 列表
  * @param clusterUid - 集群 UID
- * @param namespaceName - 命名空间名称
+ * @param namespace - 命名空间名称
  * @param params - 查询参数
  * @returns 分页后的 NetworkPolicy 列表
  */
 export function getNetworkPolicyList(
   clusterUid: string,
-  namespaceName: string,
+  namespace: string,
   params: Partial<NetworkPolicyQueryForm>,
 ): Promise<PageVo<NetworkPolicyListVo>> {
   return request.get<PageVo<NetworkPolicyListVo>>(
-    `/kubernetes/clusters/${clusterUid}/namespaces/${namespaceName}/networkpolicies`,
+    `/kubernetes/clusters/${clusterUid}/namespaces/${namespace}/networkpolicies`,
     { params },
   )
 }
@@ -39,53 +39,53 @@ export function getNetworkPolicyList(
 /**
  * 获取 NetworkPolicy 详情
  * @param clusterUid - 集群 UID
- * @param namespaceName - 命名空间名称
+ * @param namespace - 命名空间名称
  * @param name - NetworkPolicy 名称
  * @returns NetworkPolicy 详情
  */
 export function getNetworkPolicyDetail(
   clusterUid: string,
-  namespaceName: string,
+  namespace: string,
   name: string,
 ): Promise<NetworkPolicyDetailVo> {
   return request.get<NetworkPolicyDetailVo>(
-    `/kubernetes/clusters/${clusterUid}/namespaces/${namespaceName}/networkpolicies/${name}`,
+    `/kubernetes/clusters/${clusterUid}/namespaces/${namespace}/networkpolicies/${name}`,
   )
 }
 
 /**
  * 查看 NetworkPolicy YAML
  * @param clusterUid - 集群 UID
- * @param namespaceName - 命名空间名称
+ * @param namespace - 命名空间名称
  * @param name - NetworkPolicy 名称
  * @returns NetworkPolicy 完整 YAML 文本
  */
 export function getNetworkPolicyYaml(
   clusterUid: string,
-  namespaceName: string,
+  namespace: string,
   name: string,
 ): Promise<NetworkPolicyYamlVo> {
   return request.get<NetworkPolicyYamlVo>(
-    `/kubernetes/clusters/${clusterUid}/namespaces/${namespaceName}/networkpolicies/${name}/yaml`,
+    `/kubernetes/clusters/${clusterUid}/namespaces/${namespace}/networkpolicies/${name}/yaml`,
   )
 }
 
 /**
  * 获取 NetworkPolicy 事件列表
  * @param clusterUid - 集群 UID
- * @param namespaceName - 命名空间名称
+ * @param namespace - 命名空间名称
  * @param name - NetworkPolicy 名称
  * @param query - 事件查询条件
  * @returns 分页后的事件列表
  */
 export function getNetworkPolicyEventList(
   clusterUid: string,
-  namespaceName: string,
+  namespace: string,
   name: string,
   query: Partial<EventQueryForm>,
 ): Promise<PageVo<EventListVo>> {
   return request.get<PageVo<EventListVo>>(
-    `/kubernetes/clusters/${clusterUid}/namespaces/${namespaceName}/networkpolicies/${name}/events`,
+    `/kubernetes/clusters/${clusterUid}/namespaces/${namespace}/networkpolicies/${name}/events`,
     {
       params: query,
     },
@@ -116,76 +116,69 @@ export function createNetworkPolicyYaml(clusterUid: string, yaml: string): Promi
 /**
  * 更新 NetworkPolicy
  * @param clusterUid - 集群 UID
- * @param namespaceName - 命名空间名称
+ * @param namespace - 命名空间名称
  * @param name - NetworkPolicy 名称
  * @param data - 更新参数
  * @returns 更新的 NetworkPolicy ID
  */
 export function updateNetworkPolicy(
   clusterUid: string,
-  namespaceName: string,
+  namespace: string,
   name: string,
   data: Partial<NetworkPolicyUpdateForm>,
 ): Promise<void> {
-  return request.put(`/kubernetes/clusters/${clusterUid}/namespaces/${namespaceName}/networkpolicies/${name}`, data)
+  return request.put(`/kubernetes/clusters/${clusterUid}/namespaces/${namespace}/networkpolicies/${name}`, data)
 }
 
 /**
  * 通过 YAML 更新 NetworkPolicy
  * @param clusterUid - 集群 UID
- * @param namespaceName - 命名空间名称
+ * @param namespace - 命名空间名称
  * @param name - NetworkPolicy 名称
  * @param yaml - NetworkPolicy YAML 文本
  */
 export function updateNetworkPolicyYaml(
   clusterUid: string,
-  namespaceName: string,
+  namespace: string,
   name: string,
   yaml: string,
 ): Promise<void> {
-  return request.put(
-    `/kubernetes/clusters/${clusterUid}/namespaces/${namespaceName}/networkpolicies/${name}/yaml`,
-    yaml,
-    {
-      headers: { 'Content-Type': 'application/yaml' },
-    },
-  )
+  return request.put(`/kubernetes/clusters/${clusterUid}/namespaces/${namespace}/networkpolicies/${name}/yaml`, yaml, {
+    headers: { 'Content-Type': 'application/yaml' },
+  })
 }
 
 /**
  * 更新 NetworkPolicy 标签
  * @param clusterUid - 集群 UID
- * @param namespaceName - 命名空间名称
+ * @param namespace - 命名空间名称
  * @param name - NetworkPolicy 名称
  * @param data - 标签更新参数
  */
 export function manageNetworkPolicyLabel(
   clusterUid: string,
-  namespaceName: string,
+  namespace: string,
   name: string,
   data: MetadataLabelForm,
 ): Promise<void> {
-  return request.post(
-    `/kubernetes/clusters/${clusterUid}/namespaces/${namespaceName}/networkpolicies/${name}/labels`,
-    data,
-  )
+  return request.post(`/kubernetes/clusters/${clusterUid}/namespaces/${namespace}/networkpolicies/${name}/labels`, data)
 }
 
 /**
  * 更新 NetworkPolicy 注解
  * @param clusterUid - 集群 UID
- * @param namespaceName - 命名空间名称
+ * @param namespace - 命名空间名称
  * @param name - NetworkPolicy 名称
  * @param data - 注解更新参数
  */
 export function manageNetworkPolicyAnnotation(
   clusterUid: string,
-  namespaceName: string,
+  namespace: string,
   name: string,
   data: MetadataAnnotationForm,
 ): Promise<void> {
   return request.post(
-    `/kubernetes/clusters/${clusterUid}/namespaces/${namespaceName}/networkpolicies/${name}/annotations`,
+    `/kubernetes/clusters/${clusterUid}/namespaces/${namespace}/networkpolicies/${name}/annotations`,
     data,
   )
 }
@@ -193,21 +186,21 @@ export function manageNetworkPolicyAnnotation(
 /**
  * 删除 NetworkPolicy
  * @param clusterUid - 集群 UID
- * @param namespaceName - 命名空间名称
+ * @param namespace - 命名空间名称
  * @param name - NetworkPolicy 名称
  */
-export function deleteNetworkPolicy(clusterUid: string, namespaceName: string, name: string): Promise<void> {
-  return request.delete(`/kubernetes/clusters/${clusterUid}/namespaces/${namespaceName}/networkpolicies/${name}`)
+export function deleteNetworkPolicy(clusterUid: string, namespace: string, name: string): Promise<void> {
+  return request.delete(`/kubernetes/clusters/${clusterUid}/namespaces/${namespace}/networkpolicies/${name}`)
 }
 
 /**
  * 批量删除 NetworkPolicy
  * @param clusterUid - 集群 UID
- * @param namespaceName - 命名空间名称
+ * @param namespace - 命名空间名称
  * @param uids - 待删除的 NetworkPolicy UID 列表
  */
-export function deleteNetworkPolicies(clusterUid: string, namespaceName: string, uids: string[]): Promise<void> {
-  return request.delete(`/kubernetes/clusters/${clusterUid}/namespaces/${namespaceName}/networkpolicies/batch`, {
+export function deleteNetworkPolicies(clusterUid: string, namespace: string, uids: string[]): Promise<void> {
+  return request.delete(`/kubernetes/clusters/${clusterUid}/namespaces/${namespace}/networkpolicies`, {
     data: uids,
   })
 }
@@ -231,11 +224,9 @@ export function importNetworkPolicy(
 /**
  * 导出 NetworkPolicy
  * @param clusterUid - 集群 UID
- * @param namespaceName - 命名空间名称
+ * @param namespace - 命名空间名称
  * @param name - NetworkPolicy 名称
  */
-export function exportNetworkPolicy(clusterUid: string, namespaceName: string, name: string): Promise<void> {
-  return request.download(
-    `/kubernetes/clusters/${clusterUid}/namespaces/${namespaceName}/networkpolicies/${name}/export`,
-  )
+export function exportNetworkPolicy(clusterUid: string, namespace: string, name: string): Promise<void> {
+  return request.download(`/kubernetes/clusters/${clusterUid}/namespaces/${namespace}/networkpolicies/${name}/export`)
 }

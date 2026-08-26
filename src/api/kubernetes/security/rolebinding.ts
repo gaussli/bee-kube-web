@@ -21,17 +21,17 @@ import { request } from '@/utils'
 /**
  * 获取 RoleBinding 列表
  * @param clusterUid - 集群 UID
- * @param namespaceName - 命名空间名称
+ * @param namespace - 命名空间名称
  * @param params - 查询参数
  * @returns 分页后的 RoleBinding 列表
  */
 export function getRoleBindingList(
   clusterUid: string,
-  namespaceName: string,
+  namespace: string,
   params: Partial<RoleBindingQueryForm>,
 ): Promise<PageVo<RoleBindingListVo>> {
   return request.get<PageVo<RoleBindingListVo>>(
-    `/kubernetes/clusters/${clusterUid}/namespaces/${namespaceName}/rolebindings`,
+    `/kubernetes/clusters/${clusterUid}/namespaces/${namespace}/rolebindings`,
     { params },
   )
 }
@@ -39,53 +39,49 @@ export function getRoleBindingList(
 /**
  * 获取 RoleBinding 详情
  * @param clusterUid - 集群 UID
- * @param namespaceName - 命名空间名称
+ * @param namespace - 命名空间名称
  * @param name - RoleBinding 名称
  * @returns RoleBinding 详情
  */
 export function getRoleBindingDetail(
   clusterUid: string,
-  namespaceName: string,
+  namespace: string,
   name: string,
 ): Promise<RoleBindingDetailVo> {
   return request.get<RoleBindingDetailVo>(
-    `/kubernetes/clusters/${clusterUid}/namespaces/${namespaceName}/rolebindings/${name}`,
+    `/kubernetes/clusters/${clusterUid}/namespaces/${namespace}/rolebindings/${name}`,
   )
 }
 
 /**
  * 查看 RoleBinding YAML
  * @param clusterUid - 集群 UID
- * @param namespaceName - 命名空间名称
+ * @param namespace - 命名空间名称
  * @param name - RoleBinding 名称
  * @returns RoleBinding 完整 YAML 文本
  */
-export function getRoleBindingYaml(
-  clusterUid: string,
-  namespaceName: string,
-  name: string,
-): Promise<RoleBindingYamlVo> {
+export function getRoleBindingYaml(clusterUid: string, namespace: string, name: string): Promise<RoleBindingYamlVo> {
   return request.get<RoleBindingYamlVo>(
-    `/kubernetes/clusters/${clusterUid}/namespaces/${namespaceName}/rolebindings/${name}/yaml`,
+    `/kubernetes/clusters/${clusterUid}/namespaces/${namespace}/rolebindings/${name}/yaml`,
   )
 }
 
 /**
  * 获取 RoleBinding 事件列表
  * @param clusterUid - 集群 UID
- * @param namespaceName - 命名空间名称
+ * @param namespace - 命名空间名称
  * @param name - RoleBinding 名称
  * @param query - 事件查询条件
  * @returns 分页后的事件列表
  */
 export function getRoleBindingEventList(
   clusterUid: string,
-  namespaceName: string,
+  namespace: string,
   name: string,
   query: Partial<EventQueryForm>,
 ): Promise<PageVo<EventListVo>> {
   return request.get<PageVo<EventListVo>>(
-    `/kubernetes/clusters/${clusterUid}/namespaces/${namespaceName}/rolebindings/${name}/events`,
+    `/kubernetes/clusters/${clusterUid}/namespaces/${namespace}/rolebindings/${name}/events`,
     {
       params: query,
     },
@@ -116,34 +112,34 @@ export function createRoleBindingYaml(clusterUid: string, yaml: string): Promise
 /**
  * 更新 RoleBinding
  * @param clusterUid - 集群 UID
- * @param namespaceName - 命名空间名称
+ * @param namespace - 命名空间名称
  * @param name - RoleBinding 名称
  * @param data - 更新参数
  * @returns 更新的 RoleBinding ID
  */
 export function updateRoleBinding(
   clusterUid: string,
-  namespaceName: string,
+  namespace: string,
   name: string,
   data: Partial<RoleBindingUpdateForm>,
 ): Promise<void> {
-  return request.put(`/kubernetes/clusters/${clusterUid}/namespaces/${namespaceName}/rolebindings/${name}`, data)
+  return request.put(`/kubernetes/clusters/${clusterUid}/namespaces/${namespace}/rolebindings/${name}`, data)
 }
 
 /**
  * 通过 YAML 更新 RoleBinding
  * @param clusterUid - 集群 UID
- * @param namespaceName - 命名空间名称
+ * @param namespace - 命名空间名称
  * @param name - RoleBinding 名称
  * @param yaml - RoleBinding YAML 文本
  */
 export function updateRoleBindingYaml(
   clusterUid: string,
-  namespaceName: string,
+  namespace: string,
   name: string,
   yaml: string,
 ): Promise<void> {
-  return request.put(`/kubernetes/clusters/${clusterUid}/namespaces/${namespaceName}/rolebindings/${name}/yaml`, yaml, {
+  return request.put(`/kubernetes/clusters/${clusterUid}/namespaces/${namespace}/rolebindings/${name}/yaml`, yaml, {
     headers: { 'Content-Type': 'application/yaml' },
   })
 }
@@ -151,37 +147,34 @@ export function updateRoleBindingYaml(
 /**
  * 更新 RoleBinding 标签
  * @param clusterUid - 集群 UID
- * @param namespaceName - 命名空间名称
+ * @param namespace - 命名空间名称
  * @param name - RoleBinding 名称
  * @param data - 标签更新参数
  */
 export function manageRoleBindingLabel(
   clusterUid: string,
-  namespaceName: string,
+  namespace: string,
   name: string,
   data: MetadataLabelForm,
 ): Promise<void> {
-  return request.post(
-    `/kubernetes/clusters/${clusterUid}/namespaces/${namespaceName}/rolebindings/${name}/labels`,
-    data,
-  )
+  return request.post(`/kubernetes/clusters/${clusterUid}/namespaces/${namespace}/rolebindings/${name}/labels`, data)
 }
 
 /**
  * 更新 RoleBinding 注解
  * @param clusterUid - 集群 UID
- * @param namespaceName - 命名空间名称
+ * @param namespace - 命名空间名称
  * @param name - RoleBinding 名称
  * @param data - 注解更新参数
  */
 export function manageRoleBindingAnnotation(
   clusterUid: string,
-  namespaceName: string,
+  namespace: string,
   name: string,
   data: MetadataAnnotationForm,
 ): Promise<void> {
   return request.post(
-    `/kubernetes/clusters/${clusterUid}/namespaces/${namespaceName}/rolebindings/${name}/annotations`,
+    `/kubernetes/clusters/${clusterUid}/namespaces/${namespace}/rolebindings/${name}/annotations`,
     data,
   )
 }
@@ -189,21 +182,21 @@ export function manageRoleBindingAnnotation(
 /**
  * 删除 RoleBinding
  * @param clusterUid - 集群 UID
- * @param namespaceName - 命名空间名称
+ * @param namespace - 命名空间名称
  * @param name - RoleBinding 名称
  */
-export function deleteRoleBinding(clusterUid: string, namespaceName: string, name: string): Promise<void> {
-  return request.delete(`/kubernetes/clusters/${clusterUid}/namespaces/${namespaceName}/rolebindings/${name}`)
+export function deleteRoleBinding(clusterUid: string, namespace: string, name: string): Promise<void> {
+  return request.delete(`/kubernetes/clusters/${clusterUid}/namespaces/${namespace}/rolebindings/${name}`)
 }
 
 /**
  * 批量删除 RoleBinding
  * @param clusterUid - 集群 UID
- * @param namespaceName - 命名空间名称
+ * @param namespace - 命名空间名称
  * @param uids - 待删除的 RoleBinding UID 列表
  */
-export function deleteRoleBindings(clusterUid: string, namespaceName: string, uids: string[]): Promise<void> {
-  return request.delete(`/kubernetes/clusters/${clusterUid}/namespaces/${namespaceName}/rolebindings/batch`, {
+export function deleteRoleBindings(clusterUid: string, namespace: string, uids: string[]): Promise<void> {
+  return request.delete(`/kubernetes/clusters/${clusterUid}/namespaces/${namespace}/rolebindings`, {
     data: uids,
   })
 }
@@ -227,15 +220,15 @@ export function importRoleBinding(
 /**
  * 导出 RoleBinding
  * @param clusterUid - 集群 UID
- * @param namespaceName - 命名空间名称
+ * @param namespace - 命名空间名称
  * @param params - 查询参数
  */
 export function exportRoleBinding(
   clusterUid: string,
-  namespaceName: string,
+  namespace: string,
   params: Partial<RoleBindingQueryForm>,
 ): Promise<void> {
-  return request.download(`/kubernetes/clusters/${clusterUid}/namespaces/${namespaceName}/rolebindings/export`, {
+  return request.download(`/kubernetes/clusters/${clusterUid}/namespaces/${namespace}/rolebindings/export`, {
     params,
   })
 }

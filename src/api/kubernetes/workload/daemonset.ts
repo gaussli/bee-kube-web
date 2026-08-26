@@ -8,6 +8,7 @@ import type { AxiosProgressEvent } from 'axios'
 import type { PageVo } from '@/types/common'
 import type { MetadataAnnotationForm, MetadataLabelForm } from '@/types/kubernetes/common'
 import type { EventListVo, EventQueryForm } from '@/types/kubernetes/event'
+import type { PodListVo, PodQueryForm } from '@/types/kubernetes/pod'
 import type {
   DaemonSetCreateForm,
   DaemonSetDetailVo,
@@ -21,7 +22,6 @@ import type {
   DaemonSetUpdateForm,
   DaemonSetYamlVo,
 } from '@/types/kubernetes/workload/daemonset'
-import type { PodListVo, PodQueryForm } from '@/types/kubernetes/pod'
 
 import { request } from '@/utils'
 
@@ -251,7 +251,7 @@ export function deleteDaemonSet(clusterUid: string, namespace: string, name: str
  * @returns void
  */
 export function deleteDaemonSets(clusterUid: string, uids: string[]) {
-  return request.delete<void>(`/kubernetes/clusters/${clusterUid}/daemonsets/batch`, { data: uids })
+  return request.delete<void>(`/kubernetes/clusters/${clusterUid}/daemonsets`, { data: uids })
 }
 
 /**

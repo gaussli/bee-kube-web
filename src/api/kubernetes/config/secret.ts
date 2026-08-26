@@ -171,7 +171,7 @@ export function deleteSecret(clusterUid: string, namespace: string, name: string
  * @param uids - Secret UID 数组
  */
 export function deleteSecrets(clusterUid: string, namespace: string, uids: string[]): Promise<void> {
-  return request.delete(`/kubernetes/clusters/${clusterUid}/namespaces/${namespace}/secrets/batch`, { data: uids })
+  return request.delete(`/kubernetes/clusters/${clusterUid}/namespaces/${namespace}/secrets`, { data: uids })
 }
 
 /**

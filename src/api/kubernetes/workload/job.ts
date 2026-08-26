@@ -184,7 +184,7 @@ export function deleteJob(clusterUid: string, namespace: string, name: string) {
  * @returns void
  */
 export function deleteJobs(clusterUid: string, uids: string[]) {
-  return request.delete<void>(`/kubernetes/clusters/${clusterUid}/jobs/batch`, { data: uids })
+  return request.delete<void>(`/kubernetes/clusters/${clusterUid}/jobs`, { data: uids })
 }
 
 /**
