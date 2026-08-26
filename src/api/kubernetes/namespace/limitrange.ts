@@ -1,3 +1,8 @@
+/**
+ * 资源限制（LimitRange）管理 API
+ * @module api/kubernetes/namespace/limitrange
+ */
+
 import type { PageVo } from '@/types/common'
 import type { MetadataAnnotationForm, MetadataLabelForm } from '@/types/kubernetes/common'
 import type { EventListVo, EventQueryForm } from '@/types/kubernetes/event'
@@ -11,11 +16,11 @@ import type {
 import { request } from '@/utils'
 
 /**
- * 获取命名空间（Namespace）的限制范围（LimitRange）详情
+ * 获取命名空间（Namespace）的资源限制（LimitRange）详情
  * @param clusterUid - 集群 UID
  * @param namespace - 命名空间名称
- * @param name - 限制范围名称
- * @returns 命名空间限制范围详情
+ * @param name - 资源限制名称
+ * @returns 命名空间资源限制详情
  */
 export function getNamespaceLimitRangeDetail(
   clusterUid: string,
@@ -28,11 +33,11 @@ export function getNamespaceLimitRangeDetail(
 }
 
 /**
- * 获取命名空间（Namespace）的限制范围（LimitRange）YAML
+ * 获取命名空间（Namespace）的资源限制（LimitRange）YAML
  * @param clusterUid - 集群 UID
  * @param namespace - 命名空间名称
- * @param name - 限制范围名称
- * @returns 命名空间限制范围 YAML
+ * @param name - 资源限制名称
+ * @returns 命名空间资源限制 YAML
  */
 export function getNamespaceLimitRangeYaml(
   clusterUid: string,
@@ -45,10 +50,10 @@ export function getNamespaceLimitRangeYaml(
 }
 
 /**
- * 获取命名空间（Namespace）的限制范围（LimitRange）事件列表
+ * 获取命名空间（Namespace）的资源限制（LimitRange）事件列表
  * @param clusterUid - 集群 UID
  * @param namespace - 命名空间名称
- * @param name - 限制范围名称
+ * @param name - 资源限制名称
  * @param query - 事件查询条件
  * @returns 分页后的事件列表
  */
@@ -67,7 +72,7 @@ export function getNamespaceLimitRangeEventList(
 }
 
 /**
- * 创建命名空间（Namespace）的限制范围（LimitRange）
+ * 创建命名空间（Namespace）的资源限制（LimitRange）
  * @param clusterUid - 集群 UID
  * @param namespace - 命名空间名称
  * @param data - 创建请求对象
@@ -81,7 +86,7 @@ export function createNamespaceLimitRange(
 }
 
 /**
- * 创建命名空间（Namespace）的限制范围（LimitRange）（YAML）
+ * 创建命名空间（Namespace）的资源限制（LimitRange）（YAML）
  * @param clusterUid - 集群 UID
  * @param namespace - 命名空间名称
  * @param yaml - 创建 YAML 文本
@@ -93,10 +98,10 @@ export function createNamespaceLimitRangeYaml(clusterUid: string, namespace: str
 }
 
 /**
- * 更新命名空间（Namespace）的限制范围（LimitRange）
+ * 更新命名空间（Namespace）的资源限制（LimitRange）
  * @param clusterUid - 集群 UID
  * @param namespace - 命名空间名称
- * @param name - 限制范围名称
+ * @param name - 资源限制名称
  * @param data - 更新请求对象
  */
 export function updateNamespaceLimitRange(
@@ -109,10 +114,10 @@ export function updateNamespaceLimitRange(
 }
 
 /**
- * 更新命名空间（Namespace）的限制范围（LimitRange）（YAML）
+ * 更新命名空间（Namespace）的资源限制（LimitRange）（YAML）
  * @param clusterUid - 集群 UID
  * @param namespace - 命名空间名称
- * @param name - 限制范围名称
+ * @param name - 资源限制名称
  * @param yaml - 更新 YAML 文本
  */
 export function updateNamespaceLimitRangeYaml(
@@ -131,10 +136,10 @@ export function updateNamespaceLimitRangeYaml(
 }
 
 /**
- * 配置命名空间（Namespace）的限制范围（LimitRange）标签
+ * 配置命名空间（Namespace）的资源限制（LimitRange）标签
  * @param clusterUid - 集群 UID
  * @param namespace - 命名空间名称
- * @param name - 限制范围名称
+ * @param name - 资源限制名称
  * @param data - 标签配置请求对象
  */
 export function manageNamespaceLimitRangeLabels(
@@ -150,10 +155,10 @@ export function manageNamespaceLimitRangeLabels(
 }
 
 /**
- * 配置命名空间（Namespace）的限制范围（LimitRange）注解
+ * 配置命名空间（Namespace）的资源限制（LimitRange）注解
  * @param clusterUid - 集群 UID
  * @param namespace - 命名空间名称
- * @param name - 限制范围名称
+ * @param name - 资源限制名称
  * @param data - 注解配置请求对象
  */
 export function manageNamespaceLimitRangeAnnotations(
@@ -169,10 +174,10 @@ export function manageNamespaceLimitRangeAnnotations(
 }
 
 /**
- * 删除命名空间（Namespace）的限制范围（LimitRange）
+ * 删除命名空间（Namespace）的资源限制（LimitRange）
  * @param clusterUid - 集群 UID
  * @param namespace - 命名空间名称
- * @param name - 限制范围名称
+ * @param name - 资源限制名称
  */
 export function deleteNamespaceLimitRange(clusterUid: string, namespace: string, name: string): Promise<void> {
   return request.delete<void>(`/kubernetes/clusters/${clusterUid}/namespaces/${namespace}/limitranges/${name}`)

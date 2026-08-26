@@ -1,5 +1,5 @@
 /**
- * Secret 资源管理 API
+ * 密钥（Secret）管理 API
  * @module api/kubernetes/config/secret
  */
 import type { AxiosProgressEvent } from 'axios'
@@ -19,13 +19,13 @@ import type { EventListVo, EventQueryForm } from '@/types/kubernetes/event'
 import { request } from '@/utils'
 
 /**
- * 获取 Secret 分页列表
+ * 获取密钥（Secret）列表
  * @param clusterUid - 集群 UID
- * @param params - 查询参数（含 namespace 筛选）
- * @returns 分页后的 Secret 列表
+ * @param query - 查询条件
+ * @returns 分页后的密钥列表
  */
-export function getSecretList(clusterUid: string, params: Partial<SecretQueryForm>): Promise<PageVo<SecretListVo>> {
-  return request.get<PageVo<SecretListVo>>(`/kubernetes/clusters/${clusterUid}/secrets`, { params })
+export function getSecretList(clusterUid: string, query: Partial<SecretQueryForm>): Promise<PageVo<SecretListVo>> {
+  return request.get<PageVo<SecretListVo>>(`/kubernetes/clusters/${clusterUid}/secrets`, { params: query })
 }
 
 /**

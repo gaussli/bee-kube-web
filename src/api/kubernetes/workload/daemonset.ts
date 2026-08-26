@@ -1,5 +1,5 @@
 /**
- * DaemonSet 管理 API
+ * 守护进程集（DaemonSet）管理 API
  * @module api/kubernetes/workload/daemonset
  */
 
@@ -26,13 +26,16 @@ import type {
 import { request } from '@/utils'
 
 /**
- * 查看 DaemonSet 列表
- * @param clusterUid 集群 UID
- * @param params DaemonSet 查询条件请求对象（名称、命名空间、状态）
- * @returns DaemonSet 分页列表
+ * 获取守护进程集（DaemonSet）列表
+ * @param clusterUid - 集群 UID
+ * @param query - 查询条件
+ * @returns 分页后的守护进程集列表
  */
-export function getDaemonSetList(clusterUid: string, params: Partial<DaemonSetQueryForm>) {
-  return request.get<PageVo<DaemonSetListVo>>(`/kubernetes/clusters/${clusterUid}/daemonsets`, { params })
+export function getDaemonSetList(
+  clusterUid: string,
+  query: Partial<DaemonSetQueryForm>,
+): Promise<PageVo<DaemonSetListVo>> {
+  return request.get<PageVo<DaemonSetListVo>>(`/kubernetes/clusters/${clusterUid}/daemonsets`, { params: query })
 }
 
 /**

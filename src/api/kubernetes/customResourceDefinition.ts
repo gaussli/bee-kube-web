@@ -1,5 +1,5 @@
 /**
- * CRD 资源相关 API
+ * 自定义资源定义（CustomResourceDefinition）管理 API
  * @module api/kubernetes/customResourceDefinition
  */
 import type { PageVo } from '@/types/common'

@@ -1,5 +1,5 @@
 /**
- * Service 资源 API
+ * 服务（Service）管理 API
  * @module api/kubernetes/service
  */
 import type { AxiosProgressEvent } from 'axios'
@@ -18,19 +18,14 @@ import type {
 import { request } from '@/utils'
 
 /**
- * 获取 Service 列表
+ * 获取服务（Service）列表
  * @param clusterUid - 集群 UID
- * @param namespace - 命名空间名称
- * @param params - 查询参数
- * @returns 分页后的 Service 列表
+ * @param query - 查询条件
+ * @returns 分页后的服务列表
  */
-export function getServiceList(
-  clusterUid: string,
-  namespace: string,
-  params: Partial<ServiceQueryForm>,
-): Promise<PageVo<ServiceListVo>> {
-  return request.get<PageVo<ServiceListVo>>(`/kubernetes/clusters/${clusterUid}/namespaces/${namespace}/services`, {
-    params,
+export function getServiceList(clusterUid: string, query: Partial<ServiceQueryForm>): Promise<PageVo<ServiceListVo>> {
+  return request.get<PageVo<ServiceListVo>>(`/kubernetes/clusters/${clusterUid}/services`, {
+    params: query,
   })
 }
 

@@ -1,5 +1,5 @@
 /**
- * Ingress 资源 API
+ * 路由（Ingress）管理 API
  * @module api/kubernetes/ingress
  */
 import type { AxiosProgressEvent } from 'axios'
@@ -19,19 +19,14 @@ import type {
 import { request } from '@/utils'
 
 /**
- * 获取 Ingress 列表
+ * 获取路由（Ingress）列表
  * @param clusterUid - 集群 UID
- * @param namespace - 命名空间名称
- * @param params - 查询参数
- * @returns 分页后的 Ingress 列表
+ * @param query - 查询条件
+ * @returns 分页后的路由列表
  */
-export function getIngressList(
-  clusterUid: string,
-  namespace: string,
-  params: Partial<IngressQueryForm>,
-): Promise<PageVo<IngressListVo>> {
-  return request.get<PageVo<IngressListVo>>(`/kubernetes/clusters/${clusterUid}/namespaces/${namespace}/ingresses`, {
-    params,
+export function getIngressList(clusterUid: string, query: Partial<IngressQueryForm>): Promise<PageVo<IngressListVo>> {
+  return request.get<PageVo<IngressListVo>>(`/kubernetes/clusters/${clusterUid}/ingresses`, {
+    params: query,
   })
 }
 

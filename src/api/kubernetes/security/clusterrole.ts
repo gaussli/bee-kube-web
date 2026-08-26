@@ -1,5 +1,5 @@
 /**
- * ClusterRole 资源 API
+ * 集群角色（ClusterRole）管理 API
  * @module api/kubernetes/clusterrole
  */
 import type { AxiosProgressEvent } from 'axios'
@@ -19,16 +19,16 @@ import type {
 import { request } from '@/utils'
 
 /**
- * 获取 ClusterRole 列表
+ * 获取集群角色（ClusterRole）列表
  * @param clusterUid - 集群 UID
- * @param params - 查询参数
- * @returns 分页后的 ClusterRole 列表
+ * @param query - 查询条件
+ * @returns 分页后的集群角色列表
  */
 export function getClusterRoleList(
   clusterUid: string,
-  params: Partial<ClusterRoleQueryForm>,
+  query: Partial<ClusterRoleQueryForm>,
 ): Promise<PageVo<ClusterRoleListVo>> {
-  return request.get<PageVo<ClusterRoleListVo>>(`/kubernetes/clusters/${clusterUid}/clusterroles`, { params })
+  return request.get<PageVo<ClusterRoleListVo>>(`/kubernetes/clusters/${clusterUid}/clusterroles`, { params: query })
 }
 
 /**

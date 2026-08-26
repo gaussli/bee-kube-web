@@ -1,5 +1,5 @@
 /**
- * StorageClass 资源 API
+ * 存储类（StorageClass）管理 API
  * @module api/kubernetes/storageclass
  */
 import type { AxiosProgressEvent } from 'axios'
@@ -19,16 +19,16 @@ import type {
 import { request } from '@/utils'
 
 /**
- * 获取 StorageClass 列表
+ * 获取存储类（StorageClass）列表
  * @param clusterUid - 集群 UID
- * @param params - 查询参数
- * @returns 分页后的 StorageClass 列表
+ * @param query - 查询条件
+ * @returns 分页后的存储类列表
  */
 export function getStorageClassList(
   clusterUid: string,
-  params: Partial<StorageClassQueryForm>,
+  query: Partial<StorageClassQueryForm>,
 ): Promise<PageVo<StorageClassListVo>> {
-  return request.get<PageVo<StorageClassListVo>>(`/kubernetes/clusters/${clusterUid}/storageclasses`, { params })
+  return request.get<PageVo<StorageClassListVo>>(`/kubernetes/clusters/${clusterUid}/storageclasses`, { params: query })
 }
 
 /**

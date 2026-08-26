@@ -1,5 +1,5 @@
 /**
- * 节点（Node）资源 API
+ * 节点（Node）管理 API
  * @module api/kubernetes/node
  */
 import type { PageVo } from '@/types/common'

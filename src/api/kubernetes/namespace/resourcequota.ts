@@ -1,3 +1,8 @@
+/**
+ * 资源配额（ResourceQuota）管理 API
+ * @module api/kubernetes/namespace/resourcequota
+ */
+
 import type { PageVo } from '@/types/common'
 import type { MetadataAnnotationForm, MetadataLabelForm } from '@/types/kubernetes/common'
 import type { EventListVo, EventQueryForm } from '@/types/kubernetes/event'

@@ -1,5 +1,5 @@
 /**
- * NetworkPolicy 资源 API
+ * 网络策略（NetworkPolicy）管理 API
  * @module api/kubernetes/networkpolicy
  */
 import type { AxiosProgressEvent } from 'axios'
@@ -19,21 +19,18 @@ import type {
 import { request } from '@/utils'
 
 /**
- * 获取 NetworkPolicy 列表
+ * 获取网络策略（NetworkPolicy）列表
  * @param clusterUid - 集群 UID
- * @param namespace - 命名空间名称
- * @param params - 查询参数
- * @returns 分页后的 NetworkPolicy 列表
+ * @param query - 查询条件
+ * @returns 分页后的网络策略列表
  */
 export function getNetworkPolicyList(
   clusterUid: string,
-  namespace: string,
-  params: Partial<NetworkPolicyQueryForm>,
+  query: Partial<NetworkPolicyQueryForm>,
 ): Promise<PageVo<NetworkPolicyListVo>> {
-  return request.get<PageVo<NetworkPolicyListVo>>(
-    `/kubernetes/clusters/${clusterUid}/namespaces/${namespace}/networkpolicies`,
-    { params },
-  )
+  return request.get<PageVo<NetworkPolicyListVo>>(`/kubernetes/clusters/${clusterUid}/networkpolicies`, {
+    params: query,
+  })
 }
 
 /**

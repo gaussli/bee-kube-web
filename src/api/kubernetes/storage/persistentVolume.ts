@@ -1,5 +1,5 @@
 /**
- * PersistentVolume 资源 API
+ * 持久卷（PersistentVolume）管理 API
  * @module api/kubernetes/persistentVolume
  */
 import type { AxiosProgressEvent } from 'axios'
@@ -19,17 +19,17 @@ import type {
 import { request } from '@/utils'
 
 /**
- * 获取 PersistentVolume 列表
+ * 获取持久卷（PersistentVolume）列表
  * @param clusterUid - 集群 UID
- * @param params - 查询参数
- * @returns 分页后的 PersistentVolume 列表
+ * @param query - 查询条件
+ * @returns 分页后的持久卷列表
  */
 export function getPersistentVolumeList(
   clusterUid: string,
-  params: Partial<PersistentVolumeQueryForm>,
+  query: Partial<PersistentVolumeQueryForm>,
 ): Promise<PageVo<PersistentVolumeListVo>> {
   return request.get<PageVo<PersistentVolumeListVo>>(`/kubernetes/clusters/${clusterUid}/persistentvolumes`, {
-    params,
+    params: query,
   })
 }
 

@@ -1,5 +1,5 @@
 /**
- * ConfigMap 资源管理 API
+ * 配置（ConfigMap）管理 API
  * @module api/kubernetes/config/configmap
  */
 import type { AxiosProgressEvent } from 'axios'
@@ -19,16 +19,16 @@ import type { EventListVo, EventQueryForm } from '@/types/kubernetes/event'
 import { request } from '@/utils'
 
 /**
- * 获取 ConfigMap 分页列表
+ * 获取配置（ConfigMap）列表
  * @param clusterUid - 集群 UID
- * @param params - 查询参数
- * @returns 分页后的 ConfigMap 列表
+ * @param query - 查询条件
+ * @returns 分页后的配置列表
  */
 export function getConfigMapList(
   clusterUid: string,
-  params: Partial<ConfigMapQueryForm>,
+  query: Partial<ConfigMapQueryForm>,
 ): Promise<PageVo<ConfigMapListVo>> {
-  return request.get<PageVo<ConfigMapListVo>>(`/kubernetes/clusters/${clusterUid}/configmaps`, { params })
+  return request.get<PageVo<ConfigMapListVo>>(`/kubernetes/clusters/${clusterUid}/configmaps`, { params: query })
 }
 
 /**

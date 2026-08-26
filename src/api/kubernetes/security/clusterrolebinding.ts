@@ -1,5 +1,5 @@
 /**
- * ClusterRoleBinding 资源 API
+ * 集群角色绑定（ClusterRoleBinding）管理 API
  * @module api/kubernetes/clusterrolebinding
  */
 import type { AxiosProgressEvent } from 'axios'
@@ -19,17 +19,17 @@ import type {
 import { request } from '@/utils'
 
 /**
- * 获取 ClusterRoleBinding 列表
+ * 获取集群角色绑定（ClusterRoleBinding）列表
  * @param clusterUid - 集群 UID
- * @param params - 查询参数
- * @returns 分页后的 ClusterRoleBinding 列表
+ * @param query - 查询条件
+ * @returns 分页后的集群角色绑定列表
  */
 export function getClusterRoleBindingList(
   clusterUid: string,
-  params: Partial<ClusterRoleBindingQueryForm>,
+  query: Partial<ClusterRoleBindingQueryForm>,
 ): Promise<PageVo<ClusterRoleBindingListVo>> {
   return request.get<PageVo<ClusterRoleBindingListVo>>(`/kubernetes/clusters/${clusterUid}/clusterrolebindings`, {
-    params,
+    params: query,
   })
 }
 

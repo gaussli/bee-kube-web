@@ -1,5 +1,5 @@
 /**
- * Pod 管理 API
+ * 容器组（Pod）管理 API
  * @module api/kubernetes/pod
  */
 import type { PageVo } from '@/types/common'
@@ -17,10 +17,10 @@ import type {
 import { request } from '@/utils'
 
 /**
- * 获取 Pod 列表
+ * 获取容器组（Pod）列表
  * @param clusterUid - 集群 UID
  * @param query - 查询条件
- * @returns 分页后的 Pod 列表
+ * @returns 分页后的容器组列表
  */
 export function getPodList(clusterUid: string, query: Partial<PodQueryForm>): Promise<PageVo<PodListVo>> {
   return request.get<PageVo<PodListVo>>(`/kubernetes/clusters/${clusterUid}/pods`, { params: query })

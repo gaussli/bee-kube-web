@@ -1,5 +1,5 @@
 /**
- * CronJob 管理 API
+ * 定时任务（CronJob）管理 API
  * @module api/kubernetes/workload/cronjob
  */
 
@@ -23,13 +23,13 @@ import type {
 import { request } from '@/utils'
 
 /**
- * 查看 CronJob 列表
- * @param clusterUid 集群 UID
- * @param params CronJob 查询条件请求对象（名称、命名空间、状态）
- * @returns CronJob 分页列表
+ * 获取定时任务（CronJob）列表
+ * @param clusterUid - 集群 UID
+ * @param query - 查询条件
+ * @returns 分页后的定时任务列表
  */
-export function getCronJobList(clusterUid: string, params: Partial<CronJobQueryForm>) {
-  return request.get<PageVo<CronJobListVo>>(`/kubernetes/clusters/${clusterUid}/cronjobs`, { params })
+export function getCronJobList(clusterUid: string, query: Partial<CronJobQueryForm>): Promise<PageVo<CronJobListVo>> {
+  return request.get<PageVo<CronJobListVo>>(`/kubernetes/clusters/${clusterUid}/cronjobs`, { params: query })
 }
 
 /**

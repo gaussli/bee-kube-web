@@ -1,5 +1,5 @@
 /**
- * PersistentVolumeClaim 资源 API
+ * 持久卷声明（PersistentVolumeClaim）管理 API
  * @module api/kubernetes/persistentVolumeClaim
  */
 import type { AxiosProgressEvent } from 'axios'
@@ -19,21 +19,18 @@ import type {
 import { request } from '@/utils'
 
 /**
- * 获取 PersistentVolumeClaim 列表
+ * 获取持久卷声明（PersistentVolumeClaim）列表
  * @param clusterUid - 集群 UID
- * @param namespace - 命名空间名称
- * @param params - 查询参数
- * @returns 分页后的 PersistentVolumeClaim 列表
+ * @param query - 查询条件
+ * @returns 分页后的持久卷声明列表
  */
 export function getPersistentVolumeClaimList(
   clusterUid: string,
-  namespace: string,
-  params: Partial<PersistentVolumeClaimQueryForm>,
+  query: Partial<PersistentVolumeClaimQueryForm>,
 ): Promise<PageVo<PersistentVolumeClaimListVo>> {
-  return request.get<PageVo<PersistentVolumeClaimListVo>>(
-    `/kubernetes/clusters/${clusterUid}/namespaces/${namespace}/persistentvolumeclaims`,
-    { params },
-  )
+  return request.get<PageVo<PersistentVolumeClaimListVo>>(`/kubernetes/clusters/${clusterUid}/persistentvolumeclaims`, {
+    params: query,
+  })
 }
 
 /**

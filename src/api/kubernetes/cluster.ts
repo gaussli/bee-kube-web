@@ -16,7 +16,7 @@ import { request } from '@/utils'
 
 /**
  * 获取集群（Cluster）列表
- * @param query - 查询参数
+ * @param query - 查询条件
  * @returns 分页后的集群列表
  */
 export function getClusterList(query: Partial<ClusterQueryForm>): Promise<PageVo<ClusterListVo>> {

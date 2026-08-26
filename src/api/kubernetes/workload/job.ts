@@ -1,5 +1,5 @@
 /**
- * Job 管理 API
+ * 任务（Job）管理 API
  * @module api/kubernetes/workload/job
  */
 
@@ -22,13 +22,13 @@ import type {
 import { request } from '@/utils'
 
 /**
- * 查看 Job 列表
- * @param clusterUid 集群 UID
- * @param params Job 查询条件请求对象（名称、命名空间、状态）
- * @returns Job 分页列表
+ * 获取任务（Job）列表
+ * @param clusterUid - 集群 UID
+ * @param query - 查询条件
+ * @returns 分页后的任务列表
  */
-export function getJobList(clusterUid: string, params: Partial<JobQueryForm>) {
-  return request.get<PageVo<JobListVo>>(`/kubernetes/clusters/${clusterUid}/jobs`, { params })
+export function getJobList(clusterUid: string, query: Partial<JobQueryForm>): Promise<PageVo<JobListVo>> {
+  return request.get<PageVo<JobListVo>>(`/kubernetes/clusters/${clusterUid}/jobs`, { params: query })
 }
 
 /**

@@ -1,5 +1,5 @@
 /**
- * Role 资源 API
+ * 角色（Role）管理 API
  * @module api/kubernetes/role
  */
 import type { AxiosProgressEvent } from 'axios'
@@ -19,19 +19,14 @@ import type {
 import { request } from '@/utils'
 
 /**
- * 获取 Role 列表
+ * 获取角色（Role）列表
  * @param clusterUid - 集群 UID
- * @param namespace - 命名空间名称
- * @param params - 查询参数
- * @returns 分页后的 Role 列表
+ * @param query - 查询条件
+ * @returns 分页后的角色列表
  */
-export function getRoleList(
-  clusterUid: string,
-  namespace: string,
-  params: Partial<RoleQueryForm>,
-): Promise<PageVo<RoleListVo>> {
-  return request.get<PageVo<RoleListVo>>(`/kubernetes/clusters/${clusterUid}/namespaces/${namespace}/roles`, {
-    params,
+export function getRoleList(clusterUid: string, query: Partial<RoleQueryForm>): Promise<PageVo<RoleListVo>> {
+  return request.get<PageVo<RoleListVo>>(`/kubernetes/clusters/${clusterUid}/roles`, {
+    params: query,
   })
 }
 

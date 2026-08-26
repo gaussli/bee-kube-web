@@ -1,5 +1,5 @@
 /**
- * StatefulSet 管理 API
+ * 无状态应用（StatefulSet）管理 API
  * @module api/kubernetes/workload/statefulset
  */
 
@@ -28,13 +28,16 @@ import type {
 import { request } from '@/utils'
 
 /**
- * 查看 StatefulSet 列表
- * @param clusterUid 集群 UID
- * @param params StatefulSet 查询条件请求对象（名称、命名空间、状态）
- * @returns StatefulSet 分页列表
+ * 获取无状态应用（StatefulSet）列表
+ * @param clusterUid - 集群 UID
+ * @param query - 查询条件
+ * @returns 分页后的无状态应用列表
  */
-export function getStatefulSetList(clusterUid: string, params: Partial<StatefulSetQueryForm>) {
-  return request.get<PageVo<StatefulSetListVo>>(`/kubernetes/clusters/${clusterUid}/statefulsets`, { params })
+export function getStatefulSetList(
+  clusterUid: string,
+  query: Partial<StatefulSetQueryForm>,
+): Promise<PageVo<StatefulSetListVo>> {
+  return request.get<PageVo<StatefulSetListVo>>(`/kubernetes/clusters/${clusterUid}/statefulsets`, { params: query })
 }
 
 /**

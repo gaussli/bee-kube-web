@@ -1,5 +1,5 @@
 /**
- * ServiceAccount 资源 API
+ * 服务账号（ServiceAccount）管理 API
  * @module api/kubernetes/serviceAccount
  */
 import type { AxiosProgressEvent } from 'axios'
@@ -19,21 +19,18 @@ import type {
 import { request } from '@/utils'
 
 /**
- * 获取 ServiceAccount 列表
+ * 获取服务账号（ServiceAccount）列表
  * @param clusterUid - 集群 UID
- * @param namespace - 命名空间名称
- * @param params - 查询参数
- * @returns 分页后的 ServiceAccount 列表
+ * @param query - 查询条件
+ * @returns 分页后的服务账号列表
  */
 export function getServiceAccountList(
   clusterUid: string,
-  namespace: string,
-  params: Partial<ServiceAccountQueryForm>,
+  query: Partial<ServiceAccountQueryForm>,
 ): Promise<PageVo<ServiceAccountListVo>> {
-  return request.get<PageVo<ServiceAccountListVo>>(
-    `/kubernetes/clusters/${clusterUid}/namespaces/${namespace}/serviceaccounts`,
-    { params },
-  )
+  return request.get<PageVo<ServiceAccountListVo>>(`/kubernetes/clusters/${clusterUid}/serviceaccounts`, {
+    params: query,
+  })
 }
 
 /**
