@@ -3,7 +3,7 @@
  * @module types/kubernetes/node/index
  */
 
-import type { AuditEntity, DeletableEntity, PageForm, UidEntity } from '@/types/common'
+import type { AuditEntity, DeletableEntity, ExportQueryForm, PageForm, UidEntity } from '@/types/common'
 
 import type { ResourceName } from '@/config/kubernetes/core'
 import type { NodeStatus } from '@/config/kubernetes/node'
@@ -11,6 +11,16 @@ import type { NodeStatus } from '@/config/kubernetes/node'
 import type { Clustered, ObjectMeta, Quantity } from '../types'
 
 import type { NodeSpec, NodeStatusObj, Taint } from './types'
+
+/**
+ * Node TopN 查询条件请求对象
+ */
+export interface NodeTopNQueryForm {
+  /** 排序方式 */
+  sorted: 'createAt' | 'cpuUsage' | 'memoryUsage'
+  /** n 个 Node */
+  n: number
+}
 
 /**
  * Node 查询条件请求对象
@@ -49,8 +59,6 @@ export interface NodeListVo extends UidEntity, Clustered, AuditEntity, Deletable
     /** 资源已用量 */
     usage: Partial<Record<ResourceName, Quantity>>
   }
-  /** Node 的 Pod 数量 */
-  podCount: number
   /** Kubelet 版本 */
   kubeletVersion: string
 }
@@ -80,15 +88,28 @@ export interface NodeYamlVo {
 }
 
 /**
+ * 节点（Node）监控查询请求对象
+ */
+export interface NodeMonitorQueryForm {}
+
+/**
  * Node 监控响应对象
  */
 export interface NodeMonitorVo {}
 
 /**
- * Node 隔离请求对象
+ * Node 导出请求对象
  */
-export interface NodeCordonForm {
-  cordon: boolean
+export interface NodeExportQueryForm extends ExportQueryForm, NodeQueryForm {}
+
+/**
+ * Node 污点配置请求对象
+ */
+export interface NodeTaintsForm {
+  /** 污点配置列表 */
+  taints: Taint[]
+  /** 操作（1: 新增；2: 移除：3: 全量替换） */
+  operation: number
 }
 
 /**
@@ -102,11 +123,8 @@ export interface NodeTopologiesForm {
 }
 
 /**
- * Node 污点配置请求对象
+ * Node 封锁/解封请求对象
  */
-export interface NodeTaintsForm {
-  /** 污点配置列表 */
-  taints: Taint[]
-  /** 操作（1: 新增；2: 移除：3: 全量替换） */
-  operation: number
+export interface NodeCordonForm {
+  cordon: boolean
 }

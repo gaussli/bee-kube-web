@@ -83,6 +83,7 @@ export function getNodeEventList(
  * @param clusterUid - 集群 UID
  * @param name - 节点名称
  * @param query - 监控查询条件
+ * @returns 节点监控数据
  */
 export function getNodeMonitor(
   clusterUid: string,

@@ -15,6 +15,7 @@ import type {
   DaemonSetHistoryRevisionListVo,
   DaemonSetHistoryRevisionQueryForm,
   DaemonSetListVo,
+  DaemonSetMonitorQueryForm,
   DaemonSetMonitorVo,
   DaemonSetNetworkVo,
   DaemonSetQueryForm,
@@ -136,15 +137,24 @@ export function getDaemonSetEventList(
 }
 
 /**
- * 查看 DaemonSet 监控数据
+ * 获取守护进程集（DaemonSet）监控数据
  * @param clusterUid - 集群 UID
  * @param namespace - 命名空间名称
- * @param name - DaemonSet 名称
- * @returns DaemonSet 监控响应对象
+ * @param name - 守护进程集名称
+ * @param query - 监控查询条件
+ * @returns 守护进程集监控数据
  */
-export function getDaemonSetMonitor(clusterUid: string, namespace: string, name: string) {
+export function getDaemonSetMonitor(
+  clusterUid: string,
+  namespace: string,
+  name: string,
+  query: Partial<DaemonSetMonitorQueryForm>,
+): Promise<DaemonSetMonitorVo> {
   return request.get<DaemonSetMonitorVo>(
     `/kubernetes/clusters/${clusterUid}/namespaces/${namespace}/daemonsets/${name}/monitor`,
+    {
+      params: query,
+    },
   )
 }
 

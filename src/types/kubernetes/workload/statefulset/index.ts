@@ -133,6 +133,11 @@ export interface StatefulSetIngressListVo extends UidEntity, AuditEntity {
 }
 
 /**
+ * StatefulSet 监控查询请求对象
+ */
+export interface StatefulSetMonitorQueryForm {}
+
+/**
  * StatefulSet 监控响应对象
  */
 export interface StatefulSetMonitorVo {}

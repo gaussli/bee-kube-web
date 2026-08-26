@@ -14,6 +14,7 @@ import type {
   CronJobJobListVo,
   CronJobJobQueryForm,
   CronJobListVo,
+  CronJobMonitorQueryForm,
   CronJobMonitorVo,
   CronJobQueryForm,
   CronJobUpdateForm,
@@ -95,15 +96,24 @@ export function getCronJobEventList(
 }
 
 /**
- * 查看 CronJob 监控数据
+ * 获取定时任务（CronJob）监控数据
  * @param clusterUid - 集群 UID
  * @param namespace - 命名空间名称
- * @param name - CronJob 名称
- * @returns CronJob 监控响应对象
+ * @param name - 定时任务名称
+ * @param query - 监控查询条件
+ * @returns 定时任务监控数据
  */
-export function getCronJobMonitor(clusterUid: string, namespace: string, name: string) {
+export function getCronJobMonitor(
+  clusterUid: string,
+  namespace: string,
+  name: string,
+  query: Partial<CronJobMonitorQueryForm>,
+): Promise<CronJobMonitorVo> {
   return request.get<CronJobMonitorVo>(
     `/kubernetes/clusters/${clusterUid}/namespaces/${namespace}/cronjobs/${name}/monitor`,
+    {
+      params: query,
+    },
   )
 }
 

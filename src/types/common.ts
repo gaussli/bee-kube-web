@@ -3,6 +3,8 @@
  * @module types/common
  */
 
+import type { ExportType } from '@/config'
+
 /**
  * 通用 API 响应结构
  * @template T - 响应数据类型
@@ -83,4 +85,8 @@ export interface AuditEntity {
 export interface DeletableEntity {
   /** 是否可删除 */
   deletable: boolean
+}
+
+export interface ExportQueryForm {
+  exportType?: ExportType
 }

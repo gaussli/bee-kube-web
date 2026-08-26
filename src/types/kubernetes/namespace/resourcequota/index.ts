@@ -5,6 +5,8 @@
 
 import type { AuditEntity, DeletableEntity, UidEntity } from '@/types/common'
 
+import type { ObjectMetaCreatableForm, ObjectMetaEditableForm } from '../../common'
+
 import type { ResourceQuotaSpec, ResourceQuotaStatusObj } from './types'
 
 /**
@@ -30,7 +32,7 @@ export interface NamespaceResourceQuotaYamlVo {
 /**
  * Namespace ResourceQuota 创建请求对象
  */
-export interface NamespaceResourceQuotaCreateForm {
+export interface NamespaceResourceQuotaCreateForm extends ObjectMetaCreatableForm {
   /** 描述信息 */
   description: string
   /** ResourceQuota 资源配额规格 */
@@ -40,7 +42,7 @@ export interface NamespaceResourceQuotaCreateForm {
 /**
  * Namespace ResourceQuota 更新请求对象
  */
-export interface NamespaceResourceQuotaUpdateForm {
+export interface NamespaceResourceQuotaUpdateForm extends ObjectMetaEditableForm {
   /** 描述信息 */
   description: string
   /** ResourceQuota 资源配额规格 */

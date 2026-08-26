@@ -73,6 +73,11 @@ export interface JobYamlVo {
 }
 
 /**
+ * Job 监控查询请求对象
+ */
+export interface JobMonitorQueryForm {}
+
+/**
  * Job 监控响应对象
  */
 export interface JobMonitorVo {}

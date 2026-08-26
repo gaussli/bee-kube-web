@@ -15,6 +15,7 @@ import type {
   StatefulSetHistoryRevisionListVo,
   StatefulSetHistoryRevisionQueryForm,
   StatefulSetListVo,
+  StatefulSetMonitorQueryForm,
   StatefulSetMonitorVo,
   StatefulSetNetworkVo,
   StatefulSetPartitionForm,
@@ -144,15 +145,24 @@ export function getStatefulSetEventList(
 }
 
 /**
- * 查看 StatefulSet 监控数据
+ * 获取无状态应用（StatefulSet）监控数据
  * @param clusterUid - 集群 UID
  * @param namespace - 命名空间名称
- * @param name - StatefulSet 名称
- * @returns StatefulSet 监控响应对象
+ * @param name - 无状态应用名称
+ * @param query - 监控查询条件
+ * @returns 无状态应用监控数据
  */
-export function getStatefulSetMonitor(clusterUid: string, namespace: string, name: string) {
+export function getStatefulSetMonitor(
+  clusterUid: string,
+  namespace: string,
+  name: string,
+  query: Partial<StatefulSetMonitorQueryForm>,
+): Promise<StatefulSetMonitorVo> {
   return request.get<StatefulSetMonitorVo>(
     `/kubernetes/clusters/${clusterUid}/namespaces/${namespace}/statefulsets/${name}/monitor`,
+    {
+      params: query,
+    },
   )
 }
 

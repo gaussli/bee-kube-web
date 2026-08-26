@@ -2,7 +2,7 @@
  * Pod 资源页面 ViewObject 及请求对象聚合
  * @module types/kubernetes/pod/index
  */
-import type { AuditEntity, PageForm, UidEntity } from '@/types/common'
+import type { AuditEntity, ExportQueryForm, PageForm, UidEntity } from '@/types/common'
 import type { Clustered, Namespaced, ObjectMeta, Quantity } from '@/types/kubernetes/types'
 
 import type { ResourceName } from '@/config/kubernetes/core'
@@ -81,6 +81,16 @@ export interface PodYamlVo {
 }
 
 /**
+ * Pod 监控查询请求对象
+ */
+export interface PodMonitorQueryForm {}
+
+/**
  * Pod 监控响应对象
  */
 export interface PodMonitorVo {}
+
+/**
+ * Pod 导出请求对象
+ */
+export interface PodExportQueryForm extends ExportQueryForm, PodQueryForm {}

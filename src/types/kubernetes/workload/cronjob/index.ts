@@ -104,6 +104,11 @@ export interface CronJobJobListVo extends UidEntity, AuditEntity {
 }
 
 /**
+ * CronJob 监控查询请求对象
+ */
+export interface CronJobMonitorQueryForm {}
+
+/**
  * CronJob 监控响应对象
  */
 export interface CronJobMonitorVo {}

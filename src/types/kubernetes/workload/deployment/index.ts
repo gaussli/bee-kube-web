@@ -3,7 +3,7 @@
  * @module types/kubernetes/workload/deployment/index
  */
 
-import type { AuditEntity, DeletableEntity, PageForm, UidEntity } from '@/types/common'
+import type { AuditEntity, DeletableEntity, ExportQueryForm, PageForm, UidEntity } from '@/types/common'
 
 import type { ServiceType } from '@/config/kubernetes/network/service'
 import type { DeploymentStatus, DeploymentUpdateStrategyType } from '@/config/kubernetes/workload/deployment'
@@ -132,6 +132,11 @@ export interface DeploymentIngressListVo extends UidEntity, AuditEntity, Deletab
 }
 
 /**
+ * Deployment 监控查询请求对象
+ */
+export interface DeploymentMonitorQueryForm {}
+
+/**
  * Deployment 监控响应对象
  */
 export interface DeploymentMonitorVo {}
@@ -155,6 +160,11 @@ export interface DeploymentUpdateForm extends ObjectMetaEditableForm {
   /** Deployment Spec */
   spec: DeploymentSpec
 }
+
+/**
+ * Deployment 导出请求对象
+ */
+export interface DeploymentExportQueryForm extends ExportQueryForm, DeploymentQueryForm {}
 
 /**
  * Deployment 扩缩容请求对象

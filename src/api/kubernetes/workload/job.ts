@@ -13,6 +13,7 @@ import type {
   JobCreateForm,
   JobDetailVo,
   JobListVo,
+  JobMonitorQueryForm,
   JobMonitorVo,
   JobQueryForm,
   JobUpdateForm,
@@ -89,14 +90,22 @@ export function getJobEventList(
 }
 
 /**
- * 查看 Job 监控数据
+ * 获取任务（Job）监控数据
  * @param clusterUid - 集群 UID
  * @param namespace - 命名空间名称
- * @param name - Job 名称
- * @returns Job 监控响应对象
+ * @param name - 任务名称
+ * @param query - 监控查询条件
+ * @returns 任务监控数据
  */
-export function getJobMonitor(clusterUid: string, namespace: string, name: string) {
-  return request.get<JobMonitorVo>(`/kubernetes/clusters/${clusterUid}/namespaces/${namespace}/jobs/${name}/monitor`)
+export function getJobMonitor(
+  clusterUid: string,
+  namespace: string,
+  name: string,
+  query: Partial<JobMonitorQueryForm>,
+): Promise<JobMonitorVo> {
+  return request.get<JobMonitorVo>(`/kubernetes/clusters/${clusterUid}/namespaces/${namespace}/jobs/${name}/monitor`, {
+    params: query,
+  })
 }
 
 /**

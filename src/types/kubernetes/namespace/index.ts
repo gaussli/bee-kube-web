@@ -3,7 +3,7 @@
  * @module types/kubernetes/namespace/index
  */
 
-import type { AuditEntity, DeletableEntity, PageForm, UidEntity } from '@/types/common'
+import type { AuditEntity, DeletableEntity, ExportQueryForm, PageForm, UidEntity } from '@/types/common'
 
 import type { NamespaceStatus } from '@/config/kubernetes/namespace'
 
@@ -73,6 +73,11 @@ export interface NamespaceYamlVo {
 }
 
 /**
+ * Namespace 监控查询请求对象
+ */
+export interface NamespaceMonitorQueryForm {}
+
+/**
  * Namespace 监控响应对象
  */
 export interface NamespaceMonitorVo {}
@@ -92,3 +97,8 @@ export interface NamespaceUpdateForm extends ObjectMetaEditableForm {
   /** Namespace 描述 */
   description: string
 }
+
+/**
+ * 命名空间（Namespace）导出请求对象
+ */
+export interface NamespaceExportQueryForm extends ExportQueryForm, NamespaceQueryForm {}
