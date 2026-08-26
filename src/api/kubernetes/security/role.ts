@@ -31,11 +31,11 @@ export function getRoleList(clusterUid: string, query: Partial<RoleQueryForm>): 
 }
 
 /**
- * 获取 Role 详情
+ * 获取角色（Role）详情
  * @param clusterUid - 集群 UID
  * @param namespace - 命名空间名称
- * @param name - Role 名称
- * @returns Role 详情
+ * @param name - 角色名称
+ * @returns 角色详情
  */
 export function getRoleDetail(clusterUid: string, namespace: string, name: string): Promise<RoleDetailVo> {
   return request.get<RoleDetailVo>(`/kubernetes/clusters/${clusterUid}/namespaces/${namespace}/roles/${name}`)

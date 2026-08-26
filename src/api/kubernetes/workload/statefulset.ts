@@ -41,13 +41,17 @@ export function getStatefulSetList(
 }
 
 /**
- * 查看 StatefulSet 详情
- * @param clusterUid 集群 UID
- * @param namespace 命名空间名称
- * @param name StatefulSet 名称
- * @returns StatefulSet 详情响应对象
+ * 获取无状态应用（StatefulSet）详情
+ * @param clusterUid - 集群 UID
+ * @param namespace - 命名空间名称
+ * @param name - 无状态应用名称
+ * @returns 无状态应用详情
  */
-export function getStatefulSetDetail(clusterUid: string, namespace: string, name: string) {
+export function getStatefulSetDetail(
+  clusterUid: string,
+  namespace: string,
+  name: string,
+): Promise<StatefulSetDetailVo> {
   return request.get<StatefulSetDetailVo>(
     `/kubernetes/clusters/${clusterUid}/namespaces/${namespace}/statefulsets/${name}`,
   )

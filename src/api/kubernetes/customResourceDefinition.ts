@@ -1,6 +1,6 @@
 /**
  * 自定义资源定义（CustomResourceDefinition）管理 API
- * @module api/kubernetes/customResourceDefinition
+ * @module api/kubernetes/customresourcedefinition
  */
 import type { AxiosProgressEvent } from 'axios'
 

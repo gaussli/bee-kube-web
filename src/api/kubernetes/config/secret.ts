@@ -29,11 +29,11 @@ export function getSecretList(clusterUid: string, query: Partial<SecretQueryForm
 }
 
 /**
- * 获取 Secret 详情
+ * 获取密钥（Secret）详情
  * @param clusterUid - 集群 UID
  * @param namespace - 命名空间名称
- * @param name - Secret 名称
- * @returns Secret 详情
+ * @param name - 密钥名称
+ * @returns 密钥详情
  */
 export function getSecretDetail(clusterUid: string, namespace: string, name: string): Promise<SecretDetailVo> {
   return request.get<SecretDetailVo>(`/kubernetes/clusters/${clusterUid}/namespaces/${namespace}/secrets/${name}`)

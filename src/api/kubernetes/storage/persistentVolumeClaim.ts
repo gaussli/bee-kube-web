@@ -34,11 +34,11 @@ export function getPersistentVolumeClaimList(
 }
 
 /**
- * 获取 PersistentVolumeClaim 详情
+ * 获取持久卷声明（PersistentVolumeClaim）详情
  * @param clusterUid - 集群 UID
  * @param namespace - 命名空间名称
- * @param name - PersistentVolumeClaim 名称
- * @returns PersistentVolumeClaim 详情
+ * @param name - 持久卷声明名称
+ * @returns 持久卷声明详情
  */
 export function getPersistentVolumeClaimDetail(
   clusterUid: string,

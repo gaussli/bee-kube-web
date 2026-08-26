@@ -34,10 +34,10 @@ export function getClusterRoleBindingList(
 }
 
 /**
- * 获取 ClusterRoleBinding 详情
+ * 获取集群角色绑定（ClusterRoleBinding）详情
  * @param clusterUid - 集群 UID
- * @param name - ClusterRoleBinding 名称
- * @returns ClusterRoleBinding 详情
+ * @param name - 集群角色绑定名称
+ * @returns 集群角色绑定详情
  */
 export function getClusterRoleBindingDetail(clusterUid: string, name: string): Promise<ClusterRoleBindingDetailVo> {
   return request.get<ClusterRoleBindingDetailVo>(`/kubernetes/clusters/${clusterUid}/clusterrolebindings/${name}`)

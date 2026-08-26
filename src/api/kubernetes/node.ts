@@ -45,7 +45,7 @@ export function getNodeList(clusterUid: string, query: Partial<NodeQueryForm>): 
  * 获取节点（Node）详情
  * @param clusterUid - 集群 UID
  * @param name - 节点名称
- * @returns  节点详情
+ * @returns 节点详情
  */
 export function getNodeDetail(clusterUid: string, name: string): Promise<NodeDetailVo> {
   return request.get<NodeDetailVo>(`/kubernetes/clusters/${clusterUid}/nodes/${name}`)

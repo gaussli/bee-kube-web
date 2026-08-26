@@ -31,11 +31,11 @@ export function getIngressList(clusterUid: string, query: Partial<IngressQueryFo
 }
 
 /**
- * 获取 Ingress 详情
+ * 获取路由（Ingress）详情
  * @param clusterUid - 集群 UID
  * @param namespace - 命名空间名称
- * @param name - Ingress 名称
- * @returns Ingress 详情
+ * @param name - 路由名称
+ * @returns 路由详情
  */
 export function getIngressDetail(clusterUid: string, namespace: string, name: string): Promise<IngressDetailVo> {
   return request.get<IngressDetailVo>(`/kubernetes/clusters/${clusterUid}/namespaces/${namespace}/ingresses/${name}`)

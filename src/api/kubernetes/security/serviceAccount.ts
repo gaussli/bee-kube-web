@@ -34,11 +34,11 @@ export function getServiceAccountList(
 }
 
 /**
- * 获取 ServiceAccount 详情
+ * 获取服务账号（ServiceAccount）详情
  * @param clusterUid - 集群 UID
  * @param namespace - 命名空间名称
- * @param name - ServiceAccount 名称
- * @returns ServiceAccount 详情
+ * @param name - 服务账号名称
+ * @returns 服务账号详情
  */
 export function getServiceAccountDetail(
   clusterUid: string,

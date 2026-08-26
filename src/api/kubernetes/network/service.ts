@@ -9,6 +9,7 @@ import type { MetadataAnnotationForm, MetadataLabelForm } from '@/types/kubernet
 import type { EventListVo, EventQueryForm } from '@/types/kubernetes/event'
 import type {
   ServiceCreateForm,
+  ServiceDetailVo,
   ServiceListVo,
   ServiceQueryForm,
   ServiceUpdateForm,
@@ -30,14 +31,14 @@ export function getServiceList(clusterUid: string, query: Partial<ServiceQueryFo
 }
 
 /**
- * 获取 Service 详情
+ * 获取服务（Service）详情
  * @param clusterUid - 集群 UID
  * @param namespace - 命名空间名称
- * @param name - Service 名称
- * @returns Service 详情
+ * @param name - 服务名称
+ * @returns 服务详情
  */
-export function getServiceDetail(clusterUid: string, namespace: string, name: string): Promise<ServiceListVo> {
-  return request.get<ServiceListVo>(`/kubernetes/clusters/${clusterUid}/namespaces/${namespace}/services/${name}`)
+export function getServiceDetail(clusterUid: string, namespace: string, name: string): Promise<ServiceDetailVo> {
+  return request.get<ServiceDetailVo>(`/kubernetes/clusters/${clusterUid}/namespaces/${namespace}/services/${name}`)
 }
 
 /**

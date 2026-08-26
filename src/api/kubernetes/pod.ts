@@ -27,11 +27,11 @@ export function getPodList(clusterUid: string, query: Partial<PodQueryForm>): Pr
 }
 
 /**
- * 获取 Pod 详情
+ * 获取容器组（Pod）详情
  * @param clusterUid - 集群 UID
  * @param namespace - 命名空间名称
- * @param name - Pod 名称
- * @returns Pod 详情
+ * @param name - 容器组名称
+ * @returns 容器组详情
  */
 export function getPodDetail(clusterUid: string, namespace: string, name: string): Promise<PodDetailVo> {
   return request.get<PodDetailVo>(`/kubernetes/clusters/${clusterUid}/namespaces/${namespace}/pods/${name}`)

@@ -32,13 +32,13 @@ export function getJobList(clusterUid: string, query: Partial<JobQueryForm>): Pr
 }
 
 /**
- * 查看 Job 详情
- * @param clusterUid 集群 UID
- * @param namespace 命名空间名称
- * @param name Job 名称
- * @returns Job 详情响应对象
+ * 获取任务（Job）详情
+ * @param clusterUid - 集群 UID
+ * @param namespace - 命名空间名称
+ * @param name - 任务名称
+ * @returns 任务详情
  */
-export function getJobDetail(clusterUid: string, namespace: string, name: string) {
+export function getJobDetail(clusterUid: string, namespace: string, name: string): Promise<JobDetailVo> {
   return request.get<JobDetailVo>(`/kubernetes/clusters/${clusterUid}/namespaces/${namespace}/jobs/${name}`)
 }
 

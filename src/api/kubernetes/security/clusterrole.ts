@@ -32,10 +32,10 @@ export function getClusterRoleList(
 }
 
 /**
- * 获取 ClusterRole 详情
+ * 获取集群角色（ClusterRole）详情
  * @param clusterUid - 集群 UID
- * @param name - ClusterRole 名称
- * @returns ClusterRole 详情
+ * @param name - 集群角色名称
+ * @returns 集群角色详情
  */
 export function getClusterRoleDetail(clusterUid: string, name: string): Promise<ClusterRoleDetailVo> {
   return request.get<ClusterRoleDetailVo>(`/kubernetes/clusters/${clusterUid}/clusterroles/${name}`)

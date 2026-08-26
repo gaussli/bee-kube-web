@@ -32,11 +32,11 @@ export function getConfigMapList(
 }
 
 /**
- * 获取 ConfigMap 详情
+ * 获取配置（ConfigMap）详情
  * @param clusterUid - 集群 UID
  * @param namespace - 命名空间名称
- * @param name - ConfigMap 名称
- * @returns ConfigMap 详情
+ * @param name - 配置名称
+ * @returns 配置详情
  */
 export function getConfigMapDetail(clusterUid: string, namespace: string, name: string): Promise<ConfigMapDetailVo> {
   return request.get<ConfigMapDetailVo>(`/kubernetes/clusters/${clusterUid}/namespaces/${namespace}/configmaps/${name}`)

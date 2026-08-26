@@ -34,10 +34,10 @@ export function getPersistentVolumeList(
 }
 
 /**
- * 获取 PersistentVolume 详情
+ * 获取持久卷（PersistentVolume）详情
  * @param clusterUid - 集群 UID
- * @param name - PersistentVolume 名称
- * @returns PersistentVolume 详情
+ * @param name - 持久卷名称
+ * @returns 持久卷详情
  */
 export function getPersistentVolumeDetail(clusterUid: string, name: string): Promise<PersistentVolumeDetailVo> {
   return request.get<PersistentVolumeDetailVo>(`/kubernetes/clusters/${clusterUid}/persistentvolumes/${name}`)

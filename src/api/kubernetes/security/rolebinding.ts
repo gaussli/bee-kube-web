@@ -34,11 +34,11 @@ export function getRoleBindingList(
 }
 
 /**
- * 获取 RoleBinding 详情
+ * 获取角色绑定（RoleBinding）详情
  * @param clusterUid - 集群 UID
  * @param namespace - 命名空间名称
- * @param name - RoleBinding 名称
- * @returns RoleBinding 详情
+ * @param name - 角色绑定名称
+ * @returns 角色绑定详情
  */
 export function getRoleBindingDetail(
   clusterUid: string,

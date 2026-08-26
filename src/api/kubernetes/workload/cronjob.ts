@@ -33,13 +33,13 @@ export function getCronJobList(clusterUid: string, query: Partial<CronJobQueryFo
 }
 
 /**
- * 查看 CronJob 详情
- * @param clusterUid 集群 UID
- * @param namespace 命名空间名称
- * @param name CronJob 名称
- * @returns CronJob 详情响应对象
+ * 获取定时任务（CronJob）详情
+ * @param clusterUid - 集群 UID
+ * @param namespace - 命名空间名称
+ * @param name - 定时任务名称
+ * @returns 定时任务详情
  */
-export function getCronJobDetail(clusterUid: string, namespace: string, name: string) {
+export function getCronJobDetail(clusterUid: string, namespace: string, name: string): Promise<CronJobDetailVo> {
   return request.get<CronJobDetailVo>(`/kubernetes/clusters/${clusterUid}/namespaces/${namespace}/cronjobs/${name}`)
 }
 

@@ -30,8 +30,8 @@ import { request } from '@/utils'
 
 /**
  * 获取有状态应用（Deployment）列表
- * @param clusterUid 集群 UID
- * @param query 查询条件
+ * @param clusterUid - 集群 UID
+ * @param query - 查询条件
  * @returns 分页后的有状态应用列表
  */
 export function getDeploymentList(
@@ -43,9 +43,9 @@ export function getDeploymentList(
 
 /**
  * 获取有状态应用（Deployment）详情
- * @param clusterUid 集群 UID
- * @param namespace 命名空间名称
- * @param name 有状态应用名称
+ * @param clusterUid - 集群 UID
+ * @param namespace - 命名空间名称
+ * @param name - 有状态应用名称
  * @returns 有状态应用详情
  */
 export function getDeploymentDetail(clusterUid: string, namespace: string, name: string): Promise<DeploymentDetailVo> {
