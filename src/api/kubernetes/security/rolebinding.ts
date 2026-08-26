@@ -64,10 +64,10 @@ export function getRoleBindingYaml(clusterUid: string, namespace: string, name: 
 }
 
 /**
- * 获取 RoleBinding 事件列表
+ * 获取角色绑定（RoleBinding）事件列表
  * @param clusterUid - 集群 UID
  * @param namespace - 命名空间名称
- * @param name - RoleBinding 名称
+ * @param name - 角色绑定名称
  * @param query - 事件查询条件
  * @returns 分页后的事件列表
  */

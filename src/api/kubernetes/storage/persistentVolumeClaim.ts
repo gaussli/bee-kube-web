@@ -68,10 +68,10 @@ export function getPersistentVolumeClaimYaml(
 }
 
 /**
- * 获取 PersistentVolumeClaim 事件列表
+ * 获取持久卷声明（PersistentVolumeClaim）事件列表
  * @param clusterUid - 集群 UID
  * @param namespace - 命名空间名称
- * @param name - PersistentVolumeClaim 名称
+ * @param name - 持久卷声明名称
  * @param query - 事件查询条件
  * @returns 分页后的事件列表
  */

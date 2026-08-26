@@ -54,9 +54,9 @@ export function getClusterRoleBindingYaml(clusterUid: string, name: string): Pro
 }
 
 /**
- * 获取 ClusterRoleBinding 事件列表
+ * 获取集群角色绑定（ClusterRoleBinding）事件列表
  * @param clusterUid - 集群 UID
- * @param name - ClusterRoleBinding 名称
+ * @param name - 集群角色绑定名称
  * @param query - 事件查询条件
  * @returns 分页后的事件列表
  */

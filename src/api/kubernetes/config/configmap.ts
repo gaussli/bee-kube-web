@@ -56,10 +56,10 @@ export function getConfigMapYaml(clusterUid: string, namespace: string, name: st
 }
 
 /**
- * 获取 ConfigMap 事件列表
+ * 获取配置（ConfigMap）事件列表
  * @param clusterUid - 集群 UID
  * @param namespace - 命名空间名称
- * @param name - ConfigMap 名称
+ * @param name - 配置名称
  * @param query - 事件查询条件
  * @returns 分页后的事件列表
  */
@@ -80,7 +80,6 @@ export function getConfigMapEventList(
 /**
  * 创建 ConfigMap
  * @param clusterUid - 集群 UID
- * @param namespace - 命名空间名称
  * @param data - 创建参数
  */
 export function createConfigMap(clusterUid: string, data: Partial<ConfigMapCreateForm>): Promise<void> {

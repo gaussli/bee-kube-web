@@ -53,10 +53,10 @@ export function getIngressYaml(clusterUid: string, namespace: string, name: stri
 }
 
 /**
- * 获取 Ingress 事件列表
+ * 获取路由（Ingress）事件列表
  * @param clusterUid - 集群 UID
  * @param namespace - 命名空间名称
- * @param name - Ingress 名称
+ * @param name - 路由名称
  * @param query - 事件查询条件
  * @returns 分页后的事件列表
  */

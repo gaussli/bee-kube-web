@@ -53,10 +53,10 @@ export function getServiceYaml(clusterUid: string, namespace: string, name: stri
 }
 
 /**
- * 获取 Service 事件列表
+ * 获取服务（Service）事件列表
  * @param clusterUid - 集群 UID
  * @param namespace - 命名空间名称
- * @param name - Service 名称
+ * @param name - 服务名称
  * @param query - 事件查询条件
  * @returns 分页后的事件列表
  */

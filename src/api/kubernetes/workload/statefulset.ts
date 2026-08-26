@@ -64,11 +64,7 @@ export function getStatefulSetDetail(
  * @param name - 无状态应用名称
  * @returns 无状态应用 YAML
  */
-export function getStatefulSetYaml(
-  clusterUid: string,
-  namespace: string,
-  name: string,
-): Promise<StatefulSetYamlVo> {
+export function getStatefulSetYaml(clusterUid: string, namespace: string, name: string): Promise<StatefulSetYamlVo> {
   return request.get<StatefulSetYamlVo>(
     `/kubernetes/clusters/${clusterUid}/namespaces/${namespace}/statefulsets/${name}/yaml`,
   )
@@ -76,10 +72,10 @@ export function getStatefulSetYaml(
 
 /**
  * 查看 StatefulSet 关联 Pod 列表
- * @param clusterUid 集群 UID
- * @param namespace 命名空间名称
- * @param name StatefulSet 名称
- * @param params StatefulSet 关联 Pod 查询条件请求对象（Pod 名称、Pod 状态）
+ * @param clusterUid - 集群 UID
+ * @param namespace - 命名空间名称
+ * @param name - StatefulSet 名称
+ * @param params - StatefulSet 关联 Pod 查询条件请求对象（Pod 名称、Pod 状态）
  * @returns StatefulSet 关联 Pod 分页列表
  */
 export function getStatefulSetPodList(
@@ -96,10 +92,10 @@ export function getStatefulSetPodList(
 
 /**
  * 查看 StatefulSet 历史版本列表
- * @param clusterUid 集群 UID
- * @param namespace 命名空间名称
- * @param name StatefulSet 名称
- * @param params StatefulSet 历史版本查询条件请求对象（版本名称、变更原因）
+ * @param clusterUid - 集群 UID
+ * @param namespace - 命名空间名称
+ * @param name - StatefulSet 名称
+ * @param params - StatefulSet 历史版本查询条件请求对象（版本名称、变更原因）
  * @returns StatefulSet 历史版本分页列表
  */
 export function getStatefulSetHistoryRevisionList(
@@ -116,9 +112,9 @@ export function getStatefulSetHistoryRevisionList(
 
 /**
  * 查看 StatefulSet 关联网络资源
- * @param clusterUid 集群 UID
- * @param namespace 命名空间名称
- * @param name StatefulSet 名称
+ * @param clusterUid - 集群 UID
+ * @param namespace - 命名空间名称
+ * @param name - StatefulSet 名称
  * @returns StatefulSet 关联网络资源响应对象（关联的 Service 与 Ingress 列表）
  */
 export function getStatefulSetNetwork(clusterUid: string, namespace: string, name: string) {
@@ -128,30 +124,30 @@ export function getStatefulSetNetwork(clusterUid: string, namespace: string, nam
 }
 
 /**
- * 查看 StatefulSet 事件列表
- * @param clusterUid 集群 UID
- * @param namespace 命名空间名称
- * @param name StatefulSet 名称
- * @param params 事件查询条件请求对象
- * @returns StatefulSet 关联事件分页列表
+ * 获取无状态应用（StatefulSet）事件列表
+ * @param clusterUid - 集群 UID
+ * @param namespace - 命名空间名称
+ * @param name - 无状态应用名称
+ * @param query - 事件查询条件
+ * @returns 分页后的事件列表
  */
 export function getStatefulSetEventList(
   clusterUid: string,
   namespace: string,
   name: string,
-  params: Partial<EventQueryForm>,
-) {
+  query: Partial<EventQueryForm>,
+): Promise<PageVo<EventListVo>> {
   return request.get<PageVo<EventListVo>>(
     `/kubernetes/clusters/${clusterUid}/namespaces/${namespace}/statefulsets/${name}/events`,
-    { params },
+    { params: query },
   )
 }
 
 /**
  * 查看 StatefulSet 监控数据
- * @param clusterUid 集群 UID
- * @param namespace 命名空间名称
- * @param name StatefulSet 名称
+ * @param clusterUid - 集群 UID
+ * @param namespace - 命名空间名称
+ * @param name - StatefulSet 名称
  * @returns StatefulSet 监控响应对象
  */
 export function getStatefulSetMonitor(clusterUid: string, namespace: string, name: string) {
@@ -162,8 +158,8 @@ export function getStatefulSetMonitor(clusterUid: string, namespace: string, nam
 
 /**
  * 创建 StatefulSet
- * @param clusterUid 集群 UID
- * @param data StatefulSet 创建请求对象（description / metadata / spec）
+ * @param clusterUid - 集群 UID
+ * @param data - StatefulSet 创建请求对象（description / metadata / spec）
  */
 export function createStatefulSet(clusterUid: string, data: Partial<StatefulSetCreateForm>) {
   return request.post<void>(`/kubernetes/clusters/${clusterUid}/statefulsets`, data)
@@ -171,8 +167,8 @@ export function createStatefulSet(clusterUid: string, data: Partial<StatefulSetC
 
 /**
  * YAML 创建 StatefulSet
- * @param clusterUid 集群 UID
- * @param yaml StatefulSet YAML 字符串
+ * @param clusterUid - 集群 UID
+ * @param yaml - StatefulSet YAML 字符串
  */
 export function createStatefulSetYaml(clusterUid: string, yaml: string) {
   return request.post<void>(`/kubernetes/clusters/${clusterUid}/statefulsets/yaml`, yaml, {
@@ -182,10 +178,10 @@ export function createStatefulSetYaml(clusterUid: string, yaml: string) {
 
 /**
  * 更新 StatefulSet
- * @param clusterUid 集群 UID
- * @param namespace 命名空间名称
- * @param name StatefulSet 名称
- * @param data StatefulSet 更新请求对象（description / metadata / spec）
+ * @param clusterUid - 集群 UID
+ * @param namespace - 命名空间名称
+ * @param name - StatefulSet 名称
+ * @param data - StatefulSet 更新请求对象（description / metadata / spec）
  */
 export function updateStatefulSet(
   clusterUid: string,
@@ -198,10 +194,10 @@ export function updateStatefulSet(
 
 /**
  * YAML 更新 StatefulSet
- * @param clusterUid 集群 UID
- * @param namespace 命名空间名称
- * @param name StatefulSet 名称
- * @param yaml StatefulSet YAML 字符串
+ * @param clusterUid - 集群 UID
+ * @param namespace - 命名空间名称
+ * @param name - StatefulSet 名称
+ * @param yaml - StatefulSet YAML 字符串
  */
 export function updateStatefulSetYaml(clusterUid: string, namespace: string, name: string, yaml: string) {
   return request.put<void>(
@@ -215,10 +211,10 @@ export function updateStatefulSetYaml(clusterUid: string, namespace: string, nam
 
 /**
  * 管理 StatefulSet 标签
- * @param clusterUid 集群 UID
- * @param namespace 命名空间名称
- * @param name StatefulSet 名称
- * @param data 管理标签请求对象（labels 键值对、operation 操作类型）
+ * @param clusterUid - 集群 UID
+ * @param namespace - 命名空间名称
+ * @param name - StatefulSet 名称
+ * @param data - 管理标签请求对象（labels 键值对、operation 操作类型）
  */
 export function manageStatefulSetLabel(clusterUid: string, namespace: string, name: string, data: MetadataLabelForm) {
   return request.post<void>(
@@ -229,10 +225,10 @@ export function manageStatefulSetLabel(clusterUid: string, namespace: string, na
 
 /**
  * 管理 StatefulSet 注解
- * @param clusterUid 集群 UID
- * @param namespace 命名空间名称
- * @param name StatefulSet 名称
- * @param data 管理注解请求对象（annotations 键值对、operation 操作类型）
+ * @param clusterUid - 集群 UID
+ * @param namespace - 命名空间名称
+ * @param name - StatefulSet 名称
+ * @param data - 管理注解请求对象（annotations 键值对、operation 操作类型）
  */
 export function manageStatefulSetAnnotation(
   clusterUid: string,
@@ -248,9 +244,9 @@ export function manageStatefulSetAnnotation(
 
 /**
  * 删除 StatefulSet
- * @param clusterUid 集群 UID
- * @param namespace 命名空间名称
- * @param name StatefulSet 名称
+ * @param clusterUid - 集群 UID
+ * @param namespace - 命名空间名称
+ * @param name - StatefulSet 名称
  */
 export function deleteStatefulSet(clusterUid: string, namespace: string, name: string) {
   return request.delete<void>(`/kubernetes/clusters/${clusterUid}/namespaces/${namespace}/statefulsets/${name}`)
@@ -258,8 +254,8 @@ export function deleteStatefulSet(clusterUid: string, namespace: string, name: s
 
 /**
  * 批量删除 StatefulSet
- * @param clusterUid 集群 UID
- * @param uids StatefulSet UID 列表
+ * @param clusterUid - 集群 UID
+ * @param uids - StatefulSet UID 列表
  */
 export function deleteStatefulSets(clusterUid: string, uids: string[]) {
   return request.delete<void>(`/kubernetes/clusters/${clusterUid}/statefulsets`, { data: uids })
@@ -267,9 +263,9 @@ export function deleteStatefulSets(clusterUid: string, uids: string[]) {
 
 /**
  * 导入 StatefulSet
- * @param clusterUid 集群 UID
- * @param formData 上传的文件
- * @param onProgress 上传进度回调
+ * @param clusterUid - 集群 UID
+ * @param formData - 上传的文件
+ * @param onProgress - 上传进度回调
  */
 export function importStatefulSet(
   clusterUid: string,
@@ -283,8 +279,8 @@ export function importStatefulSet(
 
 /**
  * 导出 StatefulSet
- * @param clusterUid 集群 UID
- * @param params StatefulSet 查询条件请求对象（名称、命名空间、状态）
+ * @param clusterUid - 集群 UID
+ * @param params - StatefulSet 查询条件请求对象（名称、命名空间、状态）
  */
 export function exportStatefulSet(clusterUid: string, params: Partial<StatefulSetQueryForm>) {
   return request.download(`/kubernetes/clusters/${clusterUid}/statefulsets/export`, { params })
@@ -292,10 +288,10 @@ export function exportStatefulSet(clusterUid: string, params: Partial<StatefulSe
 
 /**
  * 扩缩容 StatefulSet
- * @param clusterUid 集群 UID
- * @param namespace 命名空间名称
- * @param name StatefulSet 名称
- * @param data StatefulSet 扩缩容请求对象（期望副本数）
+ * @param clusterUid - 集群 UID
+ * @param namespace - 命名空间名称
+ * @param name - StatefulSet 名称
+ * @param data - StatefulSet 扩缩容请求对象（期望副本数）
  */
 export function scaleStatefulSet(clusterUid: string, namespace: string, name: string, data: StatefulSetScaleForm) {
   return request.post<void>(
@@ -306,10 +302,10 @@ export function scaleStatefulSet(clusterUid: string, namespace: string, name: st
 
 /**
  * 滚动更新分区 StatefulSet
- * @param clusterUid 集群 UID
- * @param namespace 命名空间名称
- * @param name StatefulSet 名称
- * @param data StatefulSet 滚动更新分区请求对象（分区序号）
+ * @param clusterUid - 集群 UID
+ * @param namespace - 命名空间名称
+ * @param name - StatefulSet 名称
+ * @param data - StatefulSet 滚动更新分区请求对象（分区序号）
  */
 export function partitionStatefulSet(
   clusterUid: string,
@@ -325,9 +321,9 @@ export function partitionStatefulSet(
 
 /**
  * 重启 StatefulSet
- * @param clusterUid 集群 UID
- * @param namespace 命名空间名称
- * @param name StatefulSet 名称
+ * @param clusterUid - 集群 UID
+ * @param namespace - 命名空间名称
+ * @param name - StatefulSet 名称
  */
 export function restartStatefulSet(clusterUid: string, namespace: string, name: string) {
   return request.post<void>(`/kubernetes/clusters/${clusterUid}/namespaces/${namespace}/statefulsets/${name}/restart`)
@@ -335,10 +331,10 @@ export function restartStatefulSet(clusterUid: string, namespace: string, name: 
 
 /**
  * 回滚 StatefulSet
- * @param clusterUid 集群 UID
- * @param namespace 命名空间名称
- * @param name StatefulSet 名称
- * @param data StatefulSet 回滚请求对象（目标历史版本号）
+ * @param clusterUid - 集群 UID
+ * @param namespace - 命名空间名称
+ * @param name - StatefulSet 名称
+ * @param data - StatefulSet 回滚请求对象（目标历史版本号）
  */
 export function rollbackStatefulSet(
   clusterUid: string,
@@ -354,9 +350,9 @@ export function rollbackStatefulSet(
 
 /**
  * 暂停 StatefulSet 更新
- * @param clusterUid 集群 UID
- * @param namespace 命名空间名称
- * @param name StatefulSet 名称
+ * @param clusterUid - 集群 UID
+ * @param namespace - 命名空间名称
+ * @param name - StatefulSet 名称
  */
 export function pauseStatefulSet(clusterUid: string, namespace: string, name: string) {
   return request.post<void>(`/kubernetes/clusters/${clusterUid}/namespaces/${namespace}/statefulsets/${name}/pause`)
@@ -364,9 +360,9 @@ export function pauseStatefulSet(clusterUid: string, namespace: string, name: st
 
 /**
  * 恢复 StatefulSet 更新
- * @param clusterUid 集群 UID
- * @param namespace 命名空间名称
- * @param name StatefulSet 名称
+ * @param clusterUid - 集群 UID
+ * @param namespace - 命名空间名称
+ * @param name - StatefulSet 名称
  */
 export function resumeStatefulSet(clusterUid: string, namespace: string, name: string) {
   return request.post<void>(`/kubernetes/clusters/${clusterUid}/namespaces/${namespace}/statefulsets/${name}/resume`)

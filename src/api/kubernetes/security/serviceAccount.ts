@@ -68,10 +68,10 @@ export function getServiceAccountYaml(
 }
 
 /**
- * 获取 ServiceAccount 事件列表
+ * 获取服务账号（ServiceAccount）事件列表
  * @param clusterUid - 集群 UID
  * @param namespace - 命名空间名称
- * @param name - ServiceAccount 名称
+ * @param name - 服务账号名称
  * @param query - 事件查询条件
  * @returns 分页后的事件列表
  */

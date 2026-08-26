@@ -54,9 +54,9 @@ export function getPersistentVolumeYaml(clusterUid: string, name: string): Promi
 }
 
 /**
- * 获取 PersistentVolume 事件列表
+ * 获取持久卷（PersistentVolume）事件列表
  * @param clusterUid - 集群 UID
- * @param name - PersistentVolume 名称
+ * @param name - 持久卷名称
  * @param query - 事件查询条件
  * @returns 分页后的事件列表
  */

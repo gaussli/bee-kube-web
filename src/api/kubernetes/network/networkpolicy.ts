@@ -68,10 +68,10 @@ export function getNetworkPolicyYaml(
 }
 
 /**
- * 获取 NetworkPolicy 事件列表
+ * 获取网络策略（NetworkPolicy）事件列表
  * @param clusterUid - 集群 UID
  * @param namespace - 命名空间名称
- * @param name - NetworkPolicy 名称
+ * @param name - 网络策略名称
  * @param query - 事件查询条件
  * @returns 分页后的事件列表
  */

@@ -52,9 +52,9 @@ export function getClusterRoleYaml(clusterUid: string, name: string): Promise<Cl
 }
 
 /**
- * 获取 ClusterRole 事件列表
+ * 获取集群角色（ClusterRole）事件列表
  * @param clusterUid - 集群 UID
- * @param name - ClusterRole 名称
+ * @param name - 集群角色名称
  * @param query - 事件查询条件
  * @returns 分页后的事件列表
  */

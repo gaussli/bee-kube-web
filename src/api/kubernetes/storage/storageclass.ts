@@ -52,9 +52,9 @@ export function getStorageClassYaml(clusterUid: string, name: string): Promise<S
 }
 
 /**
- * 获取 StorageClass 事件列表
+ * 获取存储类（StorageClass）事件列表
  * @param clusterUid - 集群 UID
- * @param name - StorageClass 名称
+ * @param name - 存储类名称
  * @param query - 事件查询条件
  * @returns 分页后的事件列表
  */
