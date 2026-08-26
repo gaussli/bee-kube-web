@@ -1,5 +1,5 @@
 /**
- * Job 工作负载页面 ViewObject 及请求对象聚合
+ * 任务（Job）资源页面 ViewObject 及请求对象聚合
  * @module types/kubernetes/workload/job/index
  */
 
@@ -13,28 +13,28 @@ import type { Clustered, Namespaced, ObjectMeta } from '../../types'
 import type { JobSpec, JobStatusObj } from './types'
 
 /**
- * Job 查询条件请求对象
+ * 查询条件请求对象
  */
 export interface JobQueryForm extends UidEntity, PageForm {
-  /** Job 名称 */
+  /** 名称 */
   name: string
   /** Namespace 名称 */
   namespace: string
-  /** Job 状态 */
+  /** 状态 */
   status: JobStatus
 }
 
 /**
- * Job 列表项响应对象
+ * 列表项响应对象
  */
 export interface JobListVo extends UidEntity, Clustered, Namespaced, AuditEntity, DeletableEntity {
-  /** Job 名称 */
+  /** 名称 */
   name: string
-  /** Job 描述 */
+  /** 描述 */
   description?: string
-  /** Job 状态 */
+  /** 状态 */
   status: JobStatus
-  /** Job 状态信息 */
+  /** 状态信息 */
   statusMsg?: string
   /** 运行中的 Pod 数 */
   active: number
@@ -49,60 +49,60 @@ export interface JobListVo extends UidEntity, Clustered, Namespaced, AuditEntity
 }
 
 /**
- * Job 详情响应对象
+ * 详情响应对象
  */
 export interface JobDetailVo extends UidEntity, Clustered, Namespaced, AuditEntity, DeletableEntity, ObjectMeta {
-  /** Job 描述 */
+  /** 描述 */
   description?: string
-  /** Job 状态 */
+  /** 状态 */
   status: JobStatus
-  /** Job 状态信息 */
+  /** 状态信息 */
   statusMsg?: string
-  /** Job Spec */
+  /** Spec */
   spec: JobSpec
-  /** Job Status */
+  /** Status */
   statusObj: JobStatusObj
 }
 
 /**
- * Job YAML 响应对象
+ * YAML 响应对象
  */
 export interface JobYamlVo {
-  /** Job 完整 YAML 文本 */
+  /** YAML 文本 */
   yaml: string
 }
 
 /**
- * Job 监控查询请求对象
+ * 监控查询请求对象
  */
 export interface JobMonitorQueryForm {}
 
 /**
- * Job 监控响应对象
+ * 监控响应对象
  */
 export interface JobMonitorVo {}
 
 /**
- * Job 创建请求对象
+ * 创建请求对象
  */
 export interface JobCreateForm extends ObjectMetaCreatableForm {
-  /** Job 描述 */
-  description: string
-  /** Job Spec */
+  /** 描述 */
+  description?: string
+  /** Spec */
   spec: JobSpec
 }
 
 /**
- * Job 更新请求对象
+ * 更新请求对象
  */
 export interface JobUpdateForm extends ObjectMetaEditableForm {
-  /** Job 描述 */
-  description: string
-  /** Job Spec */
+  /** 描述 */
+  description?: string
+  /** Spec */
   spec: JobSpec
 }
 
 /**
- * Job 导出查询条件请求对象
+ * 导出查询条件请求对象
  */
 export interface JobExportQueryForm extends ExportQueryForm, JobQueryForm {}

@@ -11,26 +11,26 @@ import type { ResourceName } from '@/config/kubernetes/core'
 import type { Quantity } from '../types'
 
 /**
- * 集群（Cluster）查询请求参数
+ * 查询条件请求对象
  */
 export interface ClusterQueryForm extends UidEntity, PageForm {
-  /** 集群名称 */
+  /** 名称 */
   name: string
-  /** 集群状态 */
+  /** 状态 */
   status: ClusterStatus
 }
 
 /**
- * 集群（Cluster）列表对象响应数据
+ * 列表项响应对象
  */
 export interface ClusterListVo extends UidEntity, AuditEntity, DeletableEntity {
-  /** 集群名称 */
+  /** 名称 */
   name: string
-  /** 集群描述 */
+  /** 描述 */
   description?: string
-  /** 集群状态 */
+  /** 状态 */
   status: ClusterStatus
-  /** 集群状态信息 */
+  /** 状态信息 */
   statusMsg?: string
   /** API Server 地址 */
   apiServer: string
@@ -39,16 +39,16 @@ export interface ClusterListVo extends UidEntity, AuditEntity, DeletableEntity {
 }
 
 /**
- * 集群（Cluster）详情对象响应数据
+ * 详情响应对象
  */
 export interface ClusterDetailVo extends UidEntity, AuditEntity, DeletableEntity {
-  /** 集群名称 */
+  /** 名称 */
   name: string
-  /** 集群描述 */
+  /** 描述 */
   description?: string
-  /** 集群状态 */
+  /** 状态 */
   status: ClusterStatus
-  /** 集群状态信息 */
+  /** 状态信息 */
   statusMsg?: string
   /** API Server 地址 */
   apiServer: string
@@ -68,19 +68,19 @@ export interface ClusterDetailVo extends UidEntity, AuditEntity, DeletableEntity
 }
 
 /**
- * 集群（Cluster）纳管请求对象
+ * 纳管请求对象
  */
 export interface ClusterRegisterForm {}
 
 /**
- * 集群（Cluster）更新请求对象
+ * 更新请求对象
  */
 export interface ClusterUpdateForm {
-  /** 集群描述 */
+  /** 描述 */
   description?: string
 }
 
 /**
- * Cluster 导出请求对象
+ * 导出查询条件请求对象
  */
 export interface ClusterExportQueryForm extends ExportQueryForm, ClusterQueryForm {}

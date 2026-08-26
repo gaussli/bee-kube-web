@@ -1,5 +1,5 @@
 /**
- * Service 资源页面 ViewObject 及请求对象聚合
+ * 服务（Service）资源页面 ViewObject 及请求对象聚合
  * @module types/kubernetes/network/service/index
  */
 
@@ -13,10 +13,10 @@ import type { Clustered, Namespaced, ObjectMeta } from '../../types'
 import type { ServiceSpec, ServiceStatusObj } from './types'
 
 /**
- * Service 查询条件请求对象
+ * 查询条件请求对象
  */
 export interface ServiceQueryForm extends UidEntity, PageForm {
-  /** Service 名称 */
+  /** 名称 */
   name: string
   /** Namespace 名称 */
   namespace: string
@@ -25,12 +25,12 @@ export interface ServiceQueryForm extends UidEntity, PageForm {
 }
 
 /**
- * Service 列表项响应对象
+ * 列表项响应对象
  */
 export interface ServiceListVo extends UidEntity, Clustered, Namespaced, AuditEntity, DeletableEntity {
-  /** Service 名称 */
+  /** 名称 */
   name: string
-  /** Service 描述 */
+  /** 描述 */
   description?: string
   /** Service 类型 */
   type: ServiceType
@@ -43,46 +43,46 @@ export interface ServiceListVo extends UidEntity, Clustered, Namespaced, AuditEn
 }
 
 /**
- * Service 详情视图对象
+ * 详情响应对象
  */
 export interface ServiceDetailVo extends UidEntity, Clustered, Namespaced, AuditEntity, DeletableEntity, ObjectMeta {
-  /** Service 描述 */
+  /** 描述 */
   description?: string
-  /** Service Spec */
+  /** Spec */
   spec: ServiceSpec
-  /** Service Status */
+  /** Status */
   statusObj: ServiceStatusObj
 }
 
 /**
- * Service YAML 响应对象
+ * YAML 响应对象
  */
 export interface ServiceYamlVo {
-  /** Service 完整 YAML 文本 */
+  /** YAML 文本 */
   yaml: string
 }
 
 /**
- * Service 创建请求对象
+ * 创建请求对象
  */
 export interface ServiceCreateForm extends ObjectMetaCreatableForm {
-  /** Service 描述 */
-  description: string
-  /** Service Spec */
+  /** 描述 */
+  description?: string
+  /** Spec */
   spec: ServiceSpec
 }
 
 /**
- * Service 更新请求对象
+ * 更新请求对象
  */
 export interface ServiceUpdateForm extends ObjectMetaEditableForm {
-  /** Service 描述 */
-  description: string
-  /** Service Spec */
+  /** 描述 */
+  description?: string
+  /** Spec */
   spec: ServiceSpec
 }
 
 /**
- * Service 导出查询条件请求对象
+ * 导出查询条件请求对象
  */
 export interface ServiceExportQueryForm extends ExportQueryForm, ServiceQueryForm {}

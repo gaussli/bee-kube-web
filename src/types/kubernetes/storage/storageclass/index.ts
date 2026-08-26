@@ -1,5 +1,5 @@
 /**
- * StorageClass 资源页面 ViewObject 及请求对象聚合
+ * 存储类（StorageClass）资源页面 ViewObject 及请求对象聚合
  * @module types/kubernetes/storage/storageclass/index
  */
 
@@ -14,22 +14,22 @@ import type { Clustered, ObjectMeta } from '../../types'
 import type { StorageClass } from './types'
 
 /**
- * StorageClass 查询条件请求对象
+ * 查询条件请求对象
  */
 export interface StorageClassQueryForm extends UidEntity, PageForm {
-  /** StorageClass 名称 */
+  /** 名称 */
   name: string
   /** 存储提供者 */
   provisioner: string
 }
 
 /**
- * StorageClass 列表项响应对象
+ * 列表项响应对象
  */
 export interface StorageClassListVo extends UidEntity, Clustered, AuditEntity, DeletableEntity {
-  /** StorageClass 名称 */
+  /** 名称 */
   name: string
-  /** StorageClass 描述 */
+  /** 描述 */
   description?: string
   /** 存储提供者 */
   provisioner: string
@@ -40,39 +40,39 @@ export interface StorageClassListVo extends UidEntity, Clustered, AuditEntity, D
 }
 
 /**
- * StorageClass 详情视图对象
+ * 详情响应对象
  */
 export interface StorageClassDetailVo
   extends UidEntity, Clustered, AuditEntity, DeletableEntity, ObjectMeta, StorageClass {
-  /** StorageClass 描述 */
+  /** 描述 */
   description?: string
 }
 
 /**
- * StorageClass YAML 响应对象
+ * YAML 响应对象
  */
 export interface StorageClassYamlVo {
-  /** StorageClass 完整 YAML 文本 */
+  /** YAML 文本 */
   yaml: string
 }
 
 /**
- * StorageClass 创建请求对象
+ * 创建请求对象
  */
 export interface StorageClassCreateForm extends ObjectMetaCreatableForm, StorageClass {
-  /** StorageClass 描述 */
-  description: string
+  /** 描述 */
+  description?: string
 }
 
 /**
- * StorageClass 更新请求对象
+ * 更新请求对象
  */
 export interface StorageClassUpdateForm extends ObjectMetaEditableForm, StorageClass {
-  /** StorageClass 描述 */
-  description: string
+  /** 描述 */
+  description?: string
 }
 
 /**
- * StorageClass 导出查询条件请求对象
+ * 导出查询条件请求对象
  */
 export interface StorageClassExportQueryForm extends ExportQueryForm, StorageClassQueryForm {}

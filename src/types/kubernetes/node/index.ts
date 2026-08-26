@@ -1,5 +1,5 @@
 /**
- * Node 资源页面 ViewObject 及请求对象聚合
+ * 节点（Node）资源页面 ViewObject 及请求对象聚合
  * @module types/kubernetes/node/index
  */
 
@@ -13,7 +13,7 @@ import type { Clustered, ObjectMeta, Quantity } from '../types'
 import type { NodeSpec, NodeStatusObj, Taint } from './types'
 
 /**
- * Node TopN 查询条件请求对象
+ * TopN 查询条件请求对象
  */
 export interface NodeTopNQueryForm {
   /** 排序方式 */
@@ -23,28 +23,28 @@ export interface NodeTopNQueryForm {
 }
 
 /**
- * Node 查询条件请求对象
+ * 查询条件请求对象
  */
 export interface NodeQueryForm extends UidEntity, PageForm {
-  /** Node 名称 */
+  /** 名称 */
   name: string
-  /** Node 状态 */
+  /** 状态 */
   status: NodeStatus
   /** IP 地址 */
   ip: string
 }
 
 /**
- * Node 列表项响应对象
+ * 列表项响应对象
  */
 export interface NodeListVo extends UidEntity, Clustered, AuditEntity, DeletableEntity {
-  /** Node 名称 */
+  /** 名称 */
   name: string
-  /** Node 描述 */
+  /** 描述 */
   description?: string
-  /** Node 状态 */
+  /** 状态 */
   status: NodeStatus
-  /** Node 状态信息 */
+  /** 状态信息 */
   statusMsg?: string
   /** IP 地址 */
   ip: string
@@ -64,46 +64,46 @@ export interface NodeListVo extends UidEntity, Clustered, AuditEntity, Deletable
 }
 
 /**
- * Node 详情响应对象
+ * 详情响应对象
  */
 export interface NodeDetailVo extends UidEntity, Clustered, AuditEntity, DeletableEntity, ObjectMeta {
-  /** Node 描述 */
+  /** 描述 */
   description?: string
-  /** Node 状态 */
+  /** 状态 */
   status: NodeStatus
-  /** Node 状态信息 */
+  /** 状态信息 */
   statusMsg?: string
-  /** Node Spec */
+  /** Spec */
   spec: NodeSpec
-  /** Node Status */
+  /** Status */
   statusObj: NodeStatusObj
 }
 
 /**
- * Node YAML 响应对象
+ * YAML 响应对象
  */
 export interface NodeYamlVo {
-  /** Node 完整 YAML 文本 */
+  /** YAML 文本 */
   yaml: string
 }
 
 /**
- * 节点（Node）监控查询请求对象
+ * 监控查询请求对象
  */
 export interface NodeMonitorQueryForm {}
 
 /**
- * Node 监控响应对象
+ * 监控响应对象
  */
 export interface NodeMonitorVo {}
 
 /**
- * Node 导出请求对象
+ * 导出查询条件请求对象
  */
 export interface NodeExportQueryForm extends ExportQueryForm, NodeQueryForm {}
 
 /**
- * Node 污点配置请求对象
+ * 污点配置请求对象
  */
 export interface NodeTaintsForm {
   /** 污点配置列表 */
@@ -113,7 +113,7 @@ export interface NodeTaintsForm {
 }
 
 /**
- * Node 拓扑配置请求对象
+ * 拓扑配置请求对象
  */
 export interface NodeTopologiesForm {
   /** 拓扑键值对 */
@@ -123,7 +123,7 @@ export interface NodeTopologiesForm {
 }
 
 /**
- * Node 封锁/解封请求对象
+ * 封锁/解封请求对象
  */
 export interface NodeCordonForm {
   cordon: boolean

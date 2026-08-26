@@ -1,5 +1,5 @@
 /**
- * PersistentVolume 资源页面 ViewObject 及请求对象聚合
+ * 持久卷（PersistentVolume）资源页面 ViewObject 及请求对象聚合
  * @module types/kubernetes/storage/persistentvolume/index
  */
 
@@ -18,28 +18,28 @@ import type { Clustered, ObjectMeta } from '../../types'
 import type { PersistentVolumeSpec, PersistentVolumeStatusObj } from './types'
 
 /**
- * PersistentVolume 查询条件请求对象
+ * 查询条件请求对象
  */
 export interface PersistentVolumeQueryForm extends UidEntity, PageForm {
-  /** PersistentVolume 名称 */
+  /** 名称 */
   name: string
-  /** PersistentVolume 状态 */
+  /** 状态 */
   status: PersistentVolumePhase
   /** 存储类名 */
   storageClassName: string
 }
 
 /**
- * PersistentVolume 列表项响应对象
+ * 列表项响应对象
  */
 export interface PersistentVolumeListVo extends UidEntity, Clustered, AuditEntity, DeletableEntity {
-  /** PersistentVolume 名称 */
+  /** 名称 */
   name: string
-  /** PersistentVolume 描述 */
+  /** 描述 */
   description?: string
-  /** PersistentVolume 状态 */
+  /** 状态 */
   status: PersistentVolumePhase
-  /** PersistentVolume 状态信息 */
+  /** 状态信息 */
   statusMsg?: string
   /** 访问模式 */
   accessModes?: PersistentVolumeAccessMode[]
@@ -56,50 +56,50 @@ export interface PersistentVolumeListVo extends UidEntity, Clustered, AuditEntit
 }
 
 /**
- * PersistentVolume 详情视图对象
+ * 详情响应对象
  */
 export interface PersistentVolumeDetailVo extends UidEntity, Clustered, AuditEntity, DeletableEntity, ObjectMeta {
-  /** PersistentVolume 描述 */
+  /** 描述 */
   description?: string
-  /** PersistentVolume 状态 */
+  /** 状态 */
   status: PersistentVolumePhase
-  /** PersistentVolume 状态信息 */
+  /** 状态信息 */
   statusMsg?: string
-  /** PersistentVolume Spec */
+  /** Spec */
   spec: PersistentVolumeSpec
-  /** PersistentVolume Status */
+  /** Status */
   statusObj: PersistentVolumeStatusObj
 }
 
 /**
- * PersistentVolume YAML 响应对象
+ * YAML 响应对象
  */
 export interface PersistentVolumeYamlVo {
-  /** PersistentVolume 完整 YAML 文本 */
+  /** YAML 文本 */
   yaml: string
 }
 
 /**
- * PersistentVolume 创建请求对象
+ * 创建请求对象
  */
 export interface PersistentVolumeCreateForm extends ObjectMetaCreatableForm {
-  /** PersistentVolume 描述 */
-  description: string
-  /** PersistentVolume Spec */
+  /** 描述 */
+  description?: string
+  /** Spec */
   spec: PersistentVolumeSpec
 }
 
 /**
- * PersistentVolume 更新请求对象
+ * 更新请求对象
  */
 export interface PersistentVolumeUpdateForm extends ObjectMetaEditableForm {
-  /** PersistentVolume 描述 */
-  description: string
-  /** PersistentVolume Spec */
+  /** 描述 */
+  description?: string
+  /** Spec */
   spec: PersistentVolumeSpec
 }
 
 /**
- * PersistentVolume 导出查询条件请求对象
+ * 导出查询条件请求对象
  */
 export interface PersistentVolumeExportQueryForm extends ExportQueryForm, PersistentVolumeQueryForm {}

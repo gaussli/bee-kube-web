@@ -1,5 +1,5 @@
 /**
- * StatefulSet 工作负载页面 ViewObject 及请求对象聚合
+ * 有状态应用（StatefulSet）资源页面 ViewObject 及请求对象聚合
  * @module types/kubernetes/workload/statefulset/index
  */
 
@@ -15,28 +15,28 @@ import type { HistoryRevision } from '../types'
 import type { StatefulSetSpec, StatefulSetStatusObj } from './types'
 
 /**
- * StatefulSet 查询条件请求对象
+ * 查询条件请求对象
  */
 export interface StatefulSetQueryForm extends UidEntity, PageForm {
-  /** StatefulSet 名称 */
+  /** 名称 */
   name: string
   /** Namespace 名称 */
   namespace: string
-  /** StatefulSet 状态 */
+  /** 状态 */
   status: StatefulSetStatus
 }
 
 /**
- * StatefulSet 列表项响应对象
+ * 列表项响应对象
  */
 export interface StatefulSetListVo extends UidEntity, Clustered, Namespaced, AuditEntity, DeletableEntity {
-  /** StatefulSet 名称 */
+  /** 名称 */
   name: string
-  /** StatefulSet 描述 */
+  /** 描述 */
   description?: string
-  /** StatefulSet 状态 */
+  /** 状态 */
   status: StatefulSetStatus
-  /** StatefulSet 状态信息 */
+  /** 状态信息 */
   statusMsg?: string
   /** 期望副本数 */
   replicas: number
@@ -47,32 +47,32 @@ export interface StatefulSetListVo extends UidEntity, Clustered, Namespaced, Aud
 }
 
 /**
- * StatefulSet 详情响应对象
+ * 详情响应对象
  */
 export interface StatefulSetDetailVo
   extends UidEntity, Clustered, Namespaced, AuditEntity, DeletableEntity, ObjectMeta {
-  /** StatefulSet 描述 */
+  /** 描述 */
   description?: string
-  /** StatefulSet 状态 */
+  /** 状态 */
   status: StatefulSetStatus
-  /** StatefulSet 状态信息 */
+  /** 状态信息 */
   statusMsg?: string
-  /** StatefulSet Spec */
+  /** Spec */
   spec: StatefulSetSpec
-  /** StatefulSet Status */
+  /** Status */
   statusObj: StatefulSetStatusObj
 }
 
 /**
- * StatefulSet YAML 响应对象
+ * YAML 响应对象
  */
 export interface StatefulSetYamlVo {
-  /** StatefulSet 完整 YAML 文本 */
+  /** YAML 文本 */
   yaml: string
 }
 
 /**
- * StatefulSet 历史版本查询条件请求对象
+ * 历史版本查询条件请求对象
  */
 export interface StatefulSetHistoryRevisionQueryForm extends PageForm {
   /** 修订版本号 */
@@ -82,12 +82,12 @@ export interface StatefulSetHistoryRevisionQueryForm extends PageForm {
 }
 
 /**
- * StatefulSet 历史版本列表项响应对象
+ * 历史版本列表项响应对象
  */
 export interface StatefulSetHistoryRevisionListVo extends HistoryRevision {}
 
 /**
- * StatefulSet 关联网络资源响应对象
+ * 关联网络资源响应对象
  */
 export interface StatefulSetNetworkVo {
   /** 关联的 Service 列表 */
@@ -97,7 +97,7 @@ export interface StatefulSetNetworkVo {
 }
 
 /**
- * StatefulSet 关联 Service 列表项响应对象
+ * 关联服务（Service）列表项响应对象
  */
 export interface StatefulSetServiceListVo extends UidEntity, AuditEntity {
   /** Service 名称 */
@@ -115,7 +115,7 @@ export interface StatefulSetServiceListVo extends UidEntity, AuditEntity {
 }
 
 /**
- * StatefulSet 关联 Ingress 列表项响应对象
+ * 关联入口（Ingress）列表项响应对象
  */
 export interface StatefulSetIngressListVo extends UidEntity, AuditEntity {
   /** Ingress 名称 */
@@ -133,42 +133,42 @@ export interface StatefulSetIngressListVo extends UidEntity, AuditEntity {
 }
 
 /**
- * StatefulSet 监控查询请求对象
+ * 监控查询请求对象
  */
 export interface StatefulSetMonitorQueryForm {}
 
 /**
- * StatefulSet 监控响应对象
+ * 监控响应对象
  */
 export interface StatefulSetMonitorVo {}
 
 /**
- * StatefulSet 创建请求对象
+ * 创建请求对象
  */
 export interface StatefulSetCreateForm extends ObjectMetaCreatableForm {
-  /** StatefulSet 描述 */
-  description: string
-  /** StatefulSet Spec */
+  /** 描述 */
+  description?: string
+  /** Spec */
   spec: StatefulSetSpec
 }
 
 /**
- * StatefulSet 更新请求对象
+ * 更新请求对象
  */
 export interface StatefulSetUpdateForm extends ObjectMetaEditableForm {
-  /** StatefulSet 描述 */
-  description: string
-  /** StatefulSet Spec */
+  /** 描述 */
+  description?: string
+  /** Spec */
   spec: StatefulSetSpec
 }
 
 /**
- * StatefulSet 导出查询条件请求对象
+ * 导出查询条件请求对象
  */
 export interface StatefulSetExportQueryForm extends ExportQueryForm, StatefulSetQueryForm {}
 
 /**
- * StatefulSet 扩缩容请求对象
+ * 扩缩容请求对象
  */
 export interface StatefulSetScaleForm {
   /** 期望副本数 */
@@ -176,7 +176,7 @@ export interface StatefulSetScaleForm {
 }
 
 /**
- * StatefulSet 滚动更新分区请求对象
+ * 滚动更新分区请求对象
  */
 export interface StatefulSetPartitionForm {
   /** 分区序号，序号大于等于该值的 Pod 才会被滚动更新 */
@@ -184,7 +184,7 @@ export interface StatefulSetPartitionForm {
 }
 
 /**
- * StatefulSet 回滚请求对象
+ * 回滚请求对象
  */
 export interface StatefulSetRollbackForm {
   /** 目标历史版本号 */

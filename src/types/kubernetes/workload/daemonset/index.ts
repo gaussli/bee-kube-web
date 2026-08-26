@@ -1,5 +1,5 @@
 /**
- * DaemonSet 工作负载页面 ViewObject 及请求对象聚合
+ * 守护进程集（DaemonSet）资源页面 ViewObject 及请求对象聚合
  * @module types/kubernetes/workload/daemonset/index
  */
 
@@ -15,28 +15,28 @@ import type { HistoryRevision } from '../types'
 import type { DaemonSetSpec, DaemonSetStatusObj } from './types'
 
 /**
- * DaemonSet 查询条件请求对象
+ * 查询条件请求对象
  */
 export interface DaemonSetQueryForm extends UidEntity, PageForm {
-  /** DaemonSet 名称 */
+  /** 名称 */
   name: string
   /** Namespace 名称 */
   namespace: string
-  /** DaemonSet 状态 */
+  /** 状态 */
   status: DaemonSetStatus
 }
 
 /**
- * DaemonSet 列表项响应对象
+ * 列表项响应对象
  */
 export interface DaemonSetListVo extends UidEntity, Clustered, Namespaced, AuditEntity, DeletableEntity {
-  /** DaemonSet 名称 */
+  /** 名称 */
   name: string
-  /** DaemonSet 描述 */
+  /** 描述 */
   description?: string
-  /** DaemonSet 状态 */
+  /** 状态 */
   status: DaemonSetStatus
-  /** DaemonSet 状态信息 */
+  /** 状态信息 */
   statusMsg?: string
   /** 目标调度副本总数 */
   desiredNumberScheduled: number
@@ -47,31 +47,31 @@ export interface DaemonSetListVo extends UidEntity, Clustered, Namespaced, Audit
 }
 
 /**
- * DaemonSet 详情响应对象
+ * 详情响应对象
  */
 export interface DaemonSetDetailVo extends UidEntity, Clustered, Namespaced, AuditEntity, DeletableEntity, ObjectMeta {
-  /** DaemonSet 描述 */
+  /** 描述 */
   description?: string
-  /** DaemonSet 状态 */
+  /** 状态 */
   status: DaemonSetStatus
-  /** DaemonSet 状态信息 */
+  /** 状态信息 */
   statusMsg?: string
-  /** DaemonSet Spec */
+  /** Spec */
   spec: DaemonSetSpec
-  /** DaemonSet Status */
+  /** Status */
   statusObj: DaemonSetStatusObj
 }
 
 /**
- * DaemonSet YAML 响应对象
+ * YAML 响应对象
  */
 export interface DaemonSetYamlVo {
-  /** DaemonSet 完整 YAML 文本 */
+  /** YAML 文本 */
   yaml: string
 }
 
 /**
- * DaemonSet 历史版本查询条件请求对象
+ * 历史版本查询条件请求对象
  */
 export interface DaemonSetHistoryRevisionQueryForm extends PageForm {
   /** 修订版本号 */
@@ -81,12 +81,12 @@ export interface DaemonSetHistoryRevisionQueryForm extends PageForm {
 }
 
 /**
- * DaemonSet 历史版本列表项响应对象
+ * 历史版本列表项响应对象
  */
 export interface DaemonSetHistoryRevisionListVo extends HistoryRevision {}
 
 /**
- * DaemonSet 关联网络资源响应对象
+ * 关联网络资源响应对象
  */
 export interface DaemonSetNetworkVo {
   /** 关联的 Service 列表 */
@@ -96,7 +96,7 @@ export interface DaemonSetNetworkVo {
 }
 
 /**
- * DaemonSet 关联 Service 列表项响应对象
+ * 关联服务（Service）列表项响应对象
  */
 export interface DaemonSetServiceListVo extends UidEntity, AuditEntity {
   /** Service 名称 */
@@ -114,7 +114,7 @@ export interface DaemonSetServiceListVo extends UidEntity, AuditEntity {
 }
 
 /**
- * DaemonSet 关联 Ingress 列表项响应对象
+ * 关联入口（Ingress）列表项响应对象
  */
 export interface DaemonSetIngressListVo extends UidEntity, AuditEntity {
   /** Ingress 名称 */
@@ -132,42 +132,42 @@ export interface DaemonSetIngressListVo extends UidEntity, AuditEntity {
 }
 
 /**
- * DaemonSet 监控查询请求对象
+ * 监控查询请求对象
  */
 export interface DaemonSetMonitorQueryForm {}
 
 /**
- * DaemonSet 监控响应对象
+ * 监控响应对象
  */
 export interface DaemonSetMonitorVo {}
 
 /**
- * DaemonSet 创建请求对象
+ * 创建请求对象
  */
 export interface DaemonSetCreateForm extends ObjectMetaCreatableForm {
-  /** DaemonSet 描述 */
-  description: string
-  /** DaemonSet Spec */
+  /** 描述 */
+  description?: string
+  /** Spec */
   spec: DaemonSetSpec
 }
 
 /**
- * DaemonSet 更新请求对象
+ * 更新请求对象
  */
 export interface DaemonSetUpdateForm extends ObjectMetaEditableForm {
-  /** DaemonSet 描述 */
-  description: string
-  /** DaemonSet Spec */
+  /** 描述 */
+  description?: string
+  /** Spec */
   spec: DaemonSetSpec
 }
 
 /**
- * DaemonSet 导出查询条件请求对象
+ * 导出查询条件请求对象
  */
 export interface DaemonSetExportQueryForm extends ExportQueryForm, DaemonSetQueryForm {}
 
 /**
- * DaemonSet 回滚请求对象
+ * 回滚请求对象
  */
 export interface DaemonSetRollbackForm {
   /** 目标历史版本号 */

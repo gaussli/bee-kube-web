@@ -1,5 +1,5 @@
 /**
- * Deployment 工作负载页面 ViewObject 及请求对象聚合
+ * 无状态应用（Deployment）资源页面 ViewObject 及请求对象聚合
  * @module types/kubernetes/workload/deployment/index
  */
 
@@ -15,28 +15,28 @@ import type { HistoryRevision } from '../types'
 import type { DeploymentSpec, DeploymentStatusObj } from './types'
 
 /**
- * Deployment 查询条件请求对象
+ * 查询条件请求对象
  */
 export interface DeploymentQueryForm extends UidEntity, PageForm {
-  /** Deployment 名称 */
+  /** 名称 */
   name: string
   /** Namespace 名称 */
   namespace: string
-  /** Deployment 状态 */
+  /** 状态 */
   status: DeploymentStatus
 }
 
 /**
- * Deployment 列表项响应对象
+ * 列表项响应对象
  */
 export interface DeploymentListVo extends UidEntity, Clustered, Namespaced, AuditEntity, DeletableEntity {
-  /** Deployment 名称 */
+  /** 名称 */
   name: string
-  /** Deployment 描述 */
+  /** 描述 */
   description?: string
-  /** Deployment 状态 */
+  /** 状态 */
   status: DeploymentStatus
-  /** Deployment 状态信息 */
+  /** 状态信息 */
   statusMsg?: string
   /** 期望副本数 */
   replicas: number
@@ -47,31 +47,31 @@ export interface DeploymentListVo extends UidEntity, Clustered, Namespaced, Audi
 }
 
 /**
- * Deployment 详情响应对象
+ * 详情响应对象
  */
 export interface DeploymentDetailVo extends UidEntity, Clustered, Namespaced, AuditEntity, DeletableEntity, ObjectMeta {
-  /** Deployment 描述信息 */
+  /** 描述 */
   description?: string
-  /** Deployment 状态 */
+  /** 状态 */
   status: DeploymentStatus
-  /** Deployment 状态信息 */
+  /** 状态信息 */
   statusMsg?: string
-  /** Deployment Spec */
+  /** Spec */
   spec: DeploymentSpec
-  /** Deployment Status */
+  /** Status */
   statusObj: DeploymentStatusObj
 }
 
 /**
- * Deployment YAML 响应对象
+ * YAML 响应对象
  */
 export interface DeploymentYamlVo {
-  /** Deployment 完整 YAML 文本 */
+  /** YAML 文本 */
   yaml: string
 }
 
 /**
- * Deployment 历史版本查询条件请求对象
+ * 历史版本查询条件请求对象
  */
 export interface DeploymentHistoryRevisionQueryForm extends PageForm {
   /** 修订版本号 */
@@ -81,12 +81,12 @@ export interface DeploymentHistoryRevisionQueryForm extends PageForm {
 }
 
 /**
- * Deployment 历史版本列表项响应对象
+ * 历史版本列表项响应对象
  */
 export interface DeploymentHistoryRevisionListVo extends HistoryRevision {}
 
 /**
- * Deployment 关联网络资源响应对象
+ * 关联网络资源响应对象
  */
 export interface DeploymentNetworkVo {
   /** 关联的 Service 列表 */
@@ -96,7 +96,7 @@ export interface DeploymentNetworkVo {
 }
 
 /**
- * Deployment 关联 Service 列表项响应对象
+ * 关联服务（Service）列表项响应对象
  */
 export interface DeploymentServiceListVo extends UidEntity, AuditEntity, DeletableEntity {
   /** Service 名称 */
@@ -114,7 +114,7 @@ export interface DeploymentServiceListVo extends UidEntity, AuditEntity, Deletab
 }
 
 /**
- * Deployment 关联 Ingress 列表项响应对象
+ * 关联入口（Ingress）列表项响应对象
  */
 export interface DeploymentIngressListVo extends UidEntity, AuditEntity, DeletableEntity {
   /** Ingress 名称 */
@@ -132,42 +132,42 @@ export interface DeploymentIngressListVo extends UidEntity, AuditEntity, Deletab
 }
 
 /**
- * Deployment 监控查询请求对象
+ * 监控查询请求对象
  */
 export interface DeploymentMonitorQueryForm {}
 
 /**
- * Deployment 监控响应对象
+ * 监控响应对象
  */
 export interface DeploymentMonitorVo {}
 
 /**
- * Deployment 创建请求对象
+ * 创建请求对象
  */
 export interface DeploymentCreateForm extends ObjectMetaCreatableForm {
-  /** Deployment 描述 */
-  description: string
-  /** Deployment Spec */
+  /** 描述 */
+  description?: string
+  /** Spec */
   spec: DeploymentSpec
 }
 
 /**
- * Deployment 更新请求对象
+ * 更新请求对象
  */
 export interface DeploymentUpdateForm extends ObjectMetaEditableForm {
-  /** Deployment 描述 */
-  description: string
-  /** Deployment Spec */
+  /** 描述 */
+  description?: string
+  /** Spec */
   spec: DeploymentSpec
 }
 
 /**
- * Deployment 导出请求对象
+ * 导出查询条件请求对象
  */
 export interface DeploymentExportQueryForm extends ExportQueryForm, DeploymentQueryForm {}
 
 /**
- * Deployment 扩缩容请求对象
+ * 扩缩容请求对象
  */
 export interface DeploymentScaleForm {
   /** 期望副本数 */
@@ -175,7 +175,7 @@ export interface DeploymentScaleForm {
 }
 
 /**
- * Deployment 回滚请求对象
+ * 回滚请求对象
  */
 export interface DeploymentRollbackForm {
   /** 目标历史版本号 */

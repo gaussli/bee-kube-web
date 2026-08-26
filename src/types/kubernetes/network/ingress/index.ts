@@ -1,5 +1,5 @@
 /**
- * Ingress 资源页面 ViewObject 及请求对象聚合
+ * 入口（Ingress）资源页面 ViewObject 及请求对象聚合
  * @module types/kubernetes/network/ingress/index
  */
 
@@ -11,10 +11,10 @@ import type { Clustered, Namespaced, ObjectMeta } from '../../types'
 import type { IngressSpec, IngressStatusObj } from './types'
 
 /**
- * Ingress 查询条件请求对象
+ * 查询条件请求对象
  */
 export interface IngressQueryForm extends UidEntity, PageForm {
-  /** Ingress 名称 */
+  /** 名称 */
   name: string
   /** Namespace 名称 */
   namespace: string
@@ -23,12 +23,12 @@ export interface IngressQueryForm extends UidEntity, PageForm {
 }
 
 /**
- * Ingress 列表项响应对象
+ * 列表项响应对象
  */
 export interface IngressListVo extends UidEntity, Clustered, Namespaced, AuditEntity, DeletableEntity {
-  /** Ingress 名称 */
+  /** 名称 */
   name: string
-  /** Ingress 描述 */
+  /** 描述 */
   description?: string
   /** Ingress 类名 */
   ingressClassName?: string
@@ -41,46 +41,46 @@ export interface IngressListVo extends UidEntity, Clustered, Namespaced, AuditEn
 }
 
 /**
- * Ingress 详情视图对象
+ * 详情响应对象
  */
 export interface IngressDetailVo extends UidEntity, Clustered, Namespaced, AuditEntity, DeletableEntity, ObjectMeta {
-  /** Ingress 描述 */
+  /** 描述 */
   description?: string
-  /** Ingress Spec */
+  /** Spec */
   spec: IngressSpec
-  /** Ingress Status */
+  /** Status */
   statusObj: IngressStatusObj
 }
 
 /**
- * Ingress YAML 响应对象
+ * YAML 响应对象
  */
 export interface IngressYamlVo {
-  /** Ingress 完整 YAML 文本 */
+  /** YAML 文本 */
   yaml: string
 }
 
 /**
- * Ingress 创建请求对象
+ * 创建请求对象
  */
 export interface IngressCreateForm extends ObjectMetaCreatableForm {
-  /** Ingress 描述 */
-  description: string
-  /** Ingress Spec */
+  /** 描述 */
+  description?: string
+  /** Spec */
   spec: IngressSpec
 }
 
 /**
- * Ingress 更新请求对象
+ * 更新请求对象
  */
 export interface IngressUpdateForm extends ObjectMetaEditableForm {
-  /** Ingress 描述 */
-  description: string
-  /** Ingress Spec */
+  /** 描述 */
+  description?: string
+  /** Spec */
   spec: IngressSpec
 }
 
 /**
- * Ingress 导出查询条件请求对象
+ * 导出查询条件请求对象
  */
 export interface IngressExportQueryForm extends ExportQueryForm, IngressQueryForm {}

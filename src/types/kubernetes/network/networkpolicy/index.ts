@@ -1,5 +1,5 @@
 /**
- * NetworkPolicy 资源页面 ViewObject 及请求对象聚合
+ * 网络策略（NetworkPolicy）资源页面 ViewObject 及请求对象聚合
  * @module types/kubernetes/network/networkpolicy/index
  */
 
@@ -13,22 +13,22 @@ import type { Clustered, Namespaced, ObjectMeta } from '../../types'
 import type { NetworkPolicySpec } from './types'
 
 /**
- * NetworkPolicy 查询条件请求对象
+ * 查询条件请求对象
  */
 export interface NetworkPolicyQueryForm extends UidEntity, PageForm {
-  /** NetworkPolicy 名称 */
+  /** 名称 */
   name: string
   /** Namespace 名称 */
   namespace: string
 }
 
 /**
- * NetworkPolicy 列表项响应对象
+ * 列表项响应对象
  */
 export interface NetworkPolicyListVo extends UidEntity, Clustered, Namespaced, AuditEntity, DeletableEntity {
-  /** NetworkPolicy 名称 */
+  /** 名称 */
   name: string
-  /** NetworkPolicy 描述 */
+  /** 描述 */
   description?: string
   /** 受策略影响的 Pod 数量 */
   podCount: number
@@ -41,45 +41,45 @@ export interface NetworkPolicyListVo extends UidEntity, Clustered, Namespaced, A
 }
 
 /**
- * NetworkPolicy 详情视图对象
+ * 详情响应对象
  */
 export interface NetworkPolicyDetailVo
   extends UidEntity, Clustered, Namespaced, AuditEntity, DeletableEntity, ObjectMeta {
-  /** NetworkPolicy 描述 */
+  /** 描述 */
   description?: string
-  /** NetworkPolicy Spec */
+  /** Spec */
   spec: NetworkPolicySpec
 }
 
 /**
- * NetworkPolicy YAML 响应对象
+ * YAML 响应对象
  */
 export interface NetworkPolicyYamlVo {
-  /** NetworkPolicy 完整 YAML 文本 */
+  /** YAML 文本 */
   yaml: string
 }
 
 /**
- * NetworkPolicy 创建请求对象
+ * 创建请求对象
  */
 export interface NetworkPolicyCreateForm extends ObjectMetaCreatableForm {
-  /** NetworkPolicy 描述 */
+  /** 描述 */
   description?: string
-  /** NetworkPolicy Spec */
+  /** Spec */
   spec: NetworkPolicySpec
 }
 
 /**
- * NetworkPolicy 更新请求对象
+ * 更新请求对象
  */
 export interface NetworkPolicyUpdateForm extends ObjectMetaEditableForm {
-  /** NetworkPolicy 描述 */
+  /** 描述 */
   description?: string
-  /** NetworkPolicy Spec */
+  /** Spec */
   spec: NetworkPolicySpec
 }
 
 /**
- * NetworkPolicy 导出查询条件请求对象
+ * 导出查询条件请求对象
  */
 export interface NetworkPolicyExportQueryForm extends ExportQueryForm, NetworkPolicyQueryForm {}

@@ -1,5 +1,5 @@
 /**
- * ClusterRoleBinding 页面 ViewObject 及请求对象聚合
+ * 集群角色绑定（ClusterRoleBinding）资源页面 ViewObject 及请求对象聚合
  * @module types/kubernetes/security/clusterrolebinding/index
  */
 
@@ -11,20 +11,20 @@ import type { Clustered, ObjectMeta } from '../../types'
 import type { ClusterRoleBinding } from './types'
 
 /**
- * ClusterRoleBinding 查询条件请求对象
+ * 查询条件请求对象
  */
 export interface ClusterRoleBindingQueryForm extends UidEntity, PageForm {
-  /** ClusterRoleBinding 名称 */
+  /** 名称 */
   name: string
 }
 
 /**
- * ClusterRoleBinding 列表项响应对象
+ * 列表项响应对象
  */
 export interface ClusterRoleBindingListVo extends UidEntity, Clustered, AuditEntity, DeletableEntity {
-  /** ClusterRoleBinding 名称 */
+  /** 名称 */
   name: string
-  /** ClusterRoleBinding 描述 */
+  /** 描述 */
   description?: string
   /** 绑定的角色名称 */
   roleName: string
@@ -35,39 +35,39 @@ export interface ClusterRoleBindingListVo extends UidEntity, Clustered, AuditEnt
 }
 
 /**
- * ClusterRoleBinding 详情响应对象
+ * 详情响应对象
  */
 export interface ClusterRoleBindingDetailVo
   extends UidEntity, Clustered, AuditEntity, DeletableEntity, ObjectMeta, ClusterRoleBinding {
-  /** ClusterRoleBinding 描述 */
+  /** 描述 */
   description?: string
 }
 
 /**
- * ClusterRoleBinding YAML 响应对象
+ * YAML 响应对象
  */
 export interface ClusterRoleBindingYamlVo {
-  /** ClusterRoleBinding 完整 YAML 文本 */
+  /** YAML 文本 */
   yaml: string
 }
 
 /**
- * ClusterRoleBinding 创建请求对象
+ * 创建请求对象
  */
 export interface ClusterRoleBindingCreateForm extends ObjectMetaCreatableForm, ClusterRoleBinding {
-  /** ClusterRoleBinding 描述 */
-  description: string
+  /** 描述 */
+  description?: string
 }
 
 /**
- * ClusterRoleBinding 更新请求对象
+ * 更新请求对象
  */
 export interface ClusterRoleBindingUpdateForm extends ObjectMetaEditableForm, ClusterRoleBinding {
-  /** ClusterRoleBinding 描述 */
-  description: string
+  /** 描述 */
+  description?: string
 }
 
 /**
- * ClusterRoleBinding 导出查询条件请求对象
+ * 导出查询条件请求对象
  */
 export interface ClusterRoleBindingExportQueryForm extends ExportQueryForm, ClusterRoleBindingQueryForm {}
