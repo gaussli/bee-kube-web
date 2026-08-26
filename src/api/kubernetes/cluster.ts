@@ -9,6 +9,7 @@ import type {
   ClusterQueryForm,
   ClusterRegisterForm,
   ClusterUpdateForm,
+  ClusterExportQueryForm,
 } from '@/types/kubernetes/cluster'
 import type { EventListVo, EventQueryForm } from '@/types/kubernetes/event'
 
@@ -33,7 +34,7 @@ export function getClusterDetail(uid: string): Promise<ClusterDetailVo> {
 }
 
 /**
- * 获取集群（Cluster）事件列表
+ * 获取集群（Cluster）事件（Event）列表
  * @param uid - 集群 UID
  * @param query - 事件查询条件
  * @returns 分页后的事件列表
@@ -53,7 +54,7 @@ export function registerCluster(data: Partial<ClusterRegisterForm>): Promise<voi
 }
 
 /**
- * 更新集群
+ * 更新集群（Cluster）
  * @param uid - 集群 UID
  * @param data - 更新请求对象
  */
@@ -70,9 +71,17 @@ export function deleteCluster(uid: string): Promise<void> {
 }
 
 /**
- * 批量删除集群
+ * 批量删除集群（Cluster）
  * @param uids - 集群 UID 数组
  */
 export function deleteClusters(uids: string[]): Promise<void> {
   return request.delete<void>('/kubernetes/clusters', { data: uids })
+}
+
+/**
+ * 导出集群（Cluster）
+ * @param query - 导出查询条件
+ */
+export function exportCluster(query: Partial<ClusterExportQueryForm>): Promise<void> {
+  return request.download<void>(`/kubernetes/clusters/export`, { params: query })
 }

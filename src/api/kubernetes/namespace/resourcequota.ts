@@ -33,7 +33,7 @@ export function getNamespaceResourceQuotaDetail(
 }
 
 /**
- * 查看命名空间（Namespace）的资源配额（ResourceQuota）YAML
+ * 获取命名空间（Namespace）的资源配额（ResourceQuota）YAML
  * @param clusterUid - 集群 UID
  * @param namespace - 命名空间名称
  * @param name - 资源配额名称
@@ -50,7 +50,7 @@ export function getNamespaceResourceQuotaYaml(
 }
 
 /**
- * 获取命名空间（Namespace）的资源配额（ResourceQuota）事件列表
+ * 获取命名空间（Namespace）的资源配额（ResourceQuota）事件（Event）列表
  * @param clusterUid - 集群 UID
  * @param namespace - 命名空间名称
  * @param name - 资源配额名称

@@ -53,7 +53,7 @@ export function getCustomResourceDefinitionDetail(
 }
 
 /**
- * 查看自定义资源定义（CustomResourceDefinition）YAML
+ * 获取自定义资源定义（CustomResourceDefinition）YAML
  * @param clusterUid - 集群 UID
  * @param name - 自定义资源定义名称
  * @returns 自定义资源定义 YAML
@@ -68,7 +68,7 @@ export function getCustomResourceDefinitionYaml(
 }
 
 /**
- * 获取自定义资源定义（CustomResourceDefinition）事件列表
+ * 获取自定义资源定义（CustomResourceDefinition）事件（Event）列表
  * @param clusterUid - 集群 UID
  * @param name - 自定义资源定义名称
  * @param query - 事件查询条件

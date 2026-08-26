@@ -38,7 +38,7 @@ export function getPodDetail(clusterUid: string, namespace: string, name: string
 }
 
 /**
- * 查看容器组（Pod）YAML
+ * 获取容器组（Pod）YAML
  * @param clusterUid - 集群 UID
  * @param namespace - 命名空间名称
  * @param name - 容器组名称
@@ -49,7 +49,7 @@ export function getPodYaml(clusterUid: string, namespace: string, name: string):
 }
 
 /**
- * 获取容器组（Pod）事件列表
+ * 获取容器组（Pod）事件（Event）列表
  * @param clusterUid - 集群 UID
  * @param namespace - 命名空间名称
  * @param name - 容器组名称
@@ -71,11 +71,12 @@ export function getPodEventList(
 }
 
 /**
- * 获取 Pod 监控数据
+ * 获取容器组（Pod）监控数据
  * @param clusterUid - 集群 UID
  * @param namespace - 命名空间名称
- * @param name - Pod 名称
+ * @param name - 容器组名称
  * @param query - 监控查询条件
+ * @returns 容器组监控数据
  */
 export function getPodMonitor(
   clusterUid: string,
@@ -89,20 +90,20 @@ export function getPodMonitor(
 }
 
 /**
- * 删除/重启 Pod
+ * 删除/重启容器组（Pod）
  * @param clusterUid - 集群 UID
  * @param namespace - 命名空间名称
- * @param name - Pod 名称
+ * @param name - 容器组名称
  */
 export function deletePod(clusterUid: string, namespace: string, name: string): Promise<void> {
   return request.delete<void>(`/kubernetes/clusters/${clusterUid}/namespaces/${namespace}/pods/${name}`)
 }
 
 /**
- * 批量删除/重启 Pod
+ * 批量删除/重启容器组（Pod）
  * @param clusterUid - 集群 UID
  * @param namespace - 命名空间名称
- * @param uids - Pod UID 列表
+ * @param uids - 容器组 UID 数组
  */
 export function deletePods(clusterUid: string, namespace: string, uids: string[]): Promise<void> {
   return request.delete<void>(`/kubernetes/clusters/${clusterUid}/namespaces/${namespace}/pods`, {
@@ -111,7 +112,7 @@ export function deletePods(clusterUid: string, namespace: string, uids: string[]
 }
 
 /**
- * 导出 Pod
+ * 导出容器组（pod）
  * @param clusterUid - 集群 UID
  * @param namespace - 命名空间名称
  * @param query - 导出查询条件

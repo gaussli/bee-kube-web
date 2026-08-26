@@ -10,6 +10,7 @@ import type { EventListVo, EventQueryForm } from '@/types/kubernetes/event'
 import type {
   IngressCreateForm,
   IngressDetailVo,
+  IngressExportQueryForm,
   IngressListVo,
   IngressQueryForm,
   IngressUpdateForm,
@@ -22,7 +23,7 @@ import { request } from '@/utils'
  * 获取入口（Ingress）列表
  * @param clusterUid - 集群 UID
  * @param query - 查询条件
- * @returns 分页后的路由列表
+ * @returns 分页后的入口列表
  */
 export function getIngressList(clusterUid: string, query: Partial<IngressQueryForm>): Promise<PageVo<IngressListVo>> {
   return request.get<PageVo<IngressListVo>>(`/kubernetes/clusters/${clusterUid}/ingresses`, {
@@ -34,29 +35,29 @@ export function getIngressList(clusterUid: string, query: Partial<IngressQueryFo
  * 获取入口（Ingress）详情
  * @param clusterUid - 集群 UID
  * @param namespace - 命名空间名称
- * @param name - 路由名称
- * @returns 路由详情
+ * @param name - 入口名称
+ * @returns 入口详情
  */
 export function getIngressDetail(clusterUid: string, namespace: string, name: string): Promise<IngressDetailVo> {
   return request.get<IngressDetailVo>(`/kubernetes/clusters/${clusterUid}/namespaces/${namespace}/ingresses/${name}`)
 }
 
 /**
- * 查看入口（Ingress）YAML
+ * 获取入口（Ingress）YAML
  * @param clusterUid - 集群 UID
  * @param namespace - 命名空间名称
- * @param name - 路由名称
- * @returns 路由 YAML
+ * @param name - 入口名称
+ * @returns 入口 YAML
  */
 export function getIngressYaml(clusterUid: string, namespace: string, name: string): Promise<IngressYamlVo> {
   return request.get<IngressYamlVo>(`/kubernetes/clusters/${clusterUid}/namespaces/${namespace}/ingresses/${name}/yaml`)
 }
 
 /**
- * 获取入口（Ingress）事件列表
+ * 获取入口（Ingress）事件（Event）列表
  * @param clusterUid - 集群 UID
  * @param namespace - 命名空间名称
- * @param name - 路由名称
+ * @param name - 入口名称
  * @param query - 事件查询条件
  * @returns 分页后的事件列表
  */
@@ -124,13 +125,13 @@ export function updateIngressYaml(clusterUid: string, namespace: string, name: s
 }
 
 /**
- * 更新 Ingress 标签
+ * 配置入口（Ingress）标签
  * @param clusterUid - 集群 UID
  * @param namespace - 命名空间名称
- * @param name - Ingress 名称
- * @param data - 标签更新参数
+ * @param name - 入口名称
+ * @param data - 标签配置请求对象
  */
-export function manageIngressLabel(
+export function manageIngressLabels(
   clusterUid: string,
   namespace: string,
   name: string,
@@ -140,13 +141,13 @@ export function manageIngressLabel(
 }
 
 /**
- * 更新 Ingress 注解
+ * 配置入口（ingress）注解
  * @param clusterUid - 集群 UID
  * @param namespace - 命名空间名称
- * @param name - Ingress 名称
- * @param data - 注解更新参数
+ * @param name - 入口名称
+ * @param data - 注解配置请求对象
  */
-export function manageIngressAnnotation(
+export function manageIngressAnnotations(
   clusterUid: string,
   namespace: string,
   name: string,
@@ -156,20 +157,20 @@ export function manageIngressAnnotation(
 }
 
 /**
- * 删除 Ingress
+ * 删除入口（ingress）
  * @param clusterUid - 集群 UID
  * @param namespace - 命名空间名称
- * @param name - Ingress 名称
+ * @param name - 入口名称
  */
 export function deleteIngress(clusterUid: string, namespace: string, name: string): Promise<void> {
   return request.delete(`/kubernetes/clusters/${clusterUid}/namespaces/${namespace}/ingresses/${name}`)
 }
 
 /**
- * 批量删除 Ingress
+ * 批量删除入口（ingress）
  * @param clusterUid - 集群 UID
  * @param namespace - 命名空间名称
- * @param uids - 待删除的 Ingress UID 列表
+ * @param uids - 入口 UID 数组
  */
 export function deleteIngresses(clusterUid: string, namespace: string, uids: string[]): Promise<void> {
   return request.delete(`/kubernetes/clusters/${clusterUid}/namespaces/${namespace}/ingresses`, {
@@ -178,9 +179,9 @@ export function deleteIngresses(clusterUid: string, namespace: string, uids: str
 }
 
 /**
- * 导入 Ingress
+ * 导入入口（Ingress）
  * @param clusterUid - 集群 UID
- * @param formData - 上传的文件
+ * @param formData - 文件数据
  * @param onProgress - 上传进度回调
  */
 export function importIngress(
@@ -194,11 +195,10 @@ export function importIngress(
 }
 
 /**
- * 导出 Ingress
+ * 导出入口（Ingress）
  * @param clusterUid - 集群 UID
- * @param namespace - 命名空间名称
- * @param name - Ingress 名称
+ * @param query - 导出查询条件
  */
-export function exportIngress(clusterUid: string, namespace: string, name: string): Promise<void> {
-  return request.download(`/kubernetes/clusters/${clusterUid}/namespaces/${namespace}/ingresses/${name}/export`)
+export function exportIngress(clusterUid: string, query: Partial<IngressExportQueryForm>): Promise<void> {
+  return request.download(`/kubernetes/clusters/${clusterUid}/ingresss/export`, { params: query })
 }

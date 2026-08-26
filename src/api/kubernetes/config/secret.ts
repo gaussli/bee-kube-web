@@ -9,6 +9,7 @@ import type { MetadataAnnotationForm, MetadataLabelForm } from '@/types/kubernet
 import type {
   SecretCreateForm,
   SecretDetailVo,
+  SecretExportQueryForm,
   SecretListVo,
   SecretQueryForm,
   SecretUpdateForm,
@@ -40,7 +41,7 @@ export function getSecretDetail(clusterUid: string, namespace: string, name: str
 }
 
 /**
- * 查看密钥（Secret）YAML
+ * 获取密钥（Secret）YAML
  * @param clusterUid - 集群 UID
  * @param namespace - 命名空间名称
  * @param name - 密钥名称
@@ -51,7 +52,7 @@ export function getSecretYaml(clusterUid: string, namespace: string, name: strin
 }
 
 /**
- * 获取密钥（Secret）事件列表
+ * 获取密钥（Secret）事件（Event）列表
  * @param clusterUid - 集群 UID
  * @param namespace - 命名空间名称
  * @param name - 密钥名称
@@ -122,13 +123,13 @@ export function updateSecretYaml(clusterUid: string, namespace: string, name: st
 }
 
 /**
- * 更新 Secret 标签
+ * 配置密钥（Secret）标签
  * @param clusterUid - 集群 UID
  * @param namespace - 命名空间名称
- * @param name - Secret 名称
- * @param data - 标签更新参数
+ * @param name - 密钥名称
+ * @param data - 标签配置请求对象
  */
-export function manageSecretLabel(
+export function manageSecretLabels(
   clusterUid: string,
   namespace: string,
   name: string,
@@ -138,13 +139,13 @@ export function manageSecretLabel(
 }
 
 /**
- * 更新 Secret 注解
+ * 配置密钥（secret）注解
  * @param clusterUid - 集群 UID
  * @param namespace - 命名空间名称
- * @param name - Secret 名称
- * @param data - 注解更新参数
+ * @param name - 密钥名称
+ * @param data - 注解配置请求对象
  */
-export function manageSecretAnnotation(
+export function manageSecretAnnotations(
   clusterUid: string,
   namespace: string,
   name: string,
@@ -154,29 +155,29 @@ export function manageSecretAnnotation(
 }
 
 /**
- * 删除 Secret
+ * 删除密钥（secret）
  * @param clusterUid - 集群 UID
  * @param namespace - 命名空间名称
- * @param name - Secret 名称
+ * @param name - 密钥名称
  */
 export function deleteSecret(clusterUid: string, namespace: string, name: string): Promise<void> {
   return request.delete(`/kubernetes/clusters/${clusterUid}/namespaces/${namespace}/secrets/${name}`)
 }
 
 /**
- * 批量删除 Secret
+ * 批量删除密钥（secret）
  * @param clusterUid - 集群 UID
  * @param namespace - 命名空间名称
- * @param uids - Secret UID 数组
+ * @param uids - 密钥 UID 数组
  */
 export function deleteSecrets(clusterUid: string, namespace: string, uids: string[]): Promise<void> {
   return request.delete(`/kubernetes/clusters/${clusterUid}/namespaces/${namespace}/secrets`, { data: uids })
 }
 
 /**
- * 导入 Secret
+ * 导入密钥（Secret）
  * @param clusterUid - 集群 UID
- * @param formData - 上传的文件
+ * @param formData - 文件数据
  * @param onProgress - 上传进度回调
  */
 export function importSecret(
@@ -190,10 +191,10 @@ export function importSecret(
 }
 
 /**
- * 导出 Secret CSV
+ * 导出密钥（secret）
  * @param clusterUid - 集群 UID
- * @param params - 查询参数
+ * @param query - 导出查询条件
  */
-export function exportSecret(clusterUid: string, params: Partial<SecretQueryForm>): Promise<void> {
-  return request.download(`/kubernetes/clusters/${clusterUid}/secrets/export`, { params })
+export function exportSecret(clusterUid: string, query: Partial<SecretExportQueryForm>): Promise<void> {
+  return request.download(`/kubernetes/clusters/${clusterUid}/secrets/export`, { params: query })
 }

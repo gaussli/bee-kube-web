@@ -52,7 +52,7 @@ export function getNodeDetail(clusterUid: string, name: string): Promise<NodeDet
 }
 
 /**
- * 查看节点（Node）YAML
+ * 获取节点（Node）YAML
  * @param clusterUid - 集群 UID
  * @param name - 节点名称
  * @returns 节点 YAML
@@ -62,7 +62,7 @@ export function getNodeYaml(clusterUid: string, name: string): Promise<NodeYamlV
 }
 
 /**
- * 获取节点（Node）事件列表
+ * 获取节点（Node）事件（Event）列表
  * @param clusterUid - 集群 UID
  * @param name - 节点名称
  * @param query - 事件查询条件

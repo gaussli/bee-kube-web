@@ -10,6 +10,7 @@ import type { EventListVo, EventQueryForm } from '@/types/kubernetes/event'
 import type {
   NetworkPolicyCreateForm,
   NetworkPolicyDetailVo,
+  NetworkPolicyExportQueryForm,
   NetworkPolicyListVo,
   NetworkPolicyQueryForm,
   NetworkPolicyUpdateForm,
@@ -51,7 +52,7 @@ export function getNetworkPolicyDetail(
 }
 
 /**
- * 查看网络策略（NetworkPolicy）YAML
+ * 获取网络策略（NetworkPolicy）YAML
  * @param clusterUid - 集群 UID
  * @param namespace - 命名空间名称
  * @param name - 网络策略名称
@@ -68,7 +69,7 @@ export function getNetworkPolicyYaml(
 }
 
 /**
- * 获取网络策略（NetworkPolicy）事件列表
+ * 获取网络策略（NetworkPolicy）事件（Event）列表
  * @param clusterUid - 集群 UID
  * @param namespace - 命名空间名称
  * @param name - 网络策略名称
@@ -148,13 +149,13 @@ export function updateNetworkPolicyYaml(
 }
 
 /**
- * 更新 NetworkPolicy 标签
+ * 配置网络策略（NetworkPolicy）标签
  * @param clusterUid - 集群 UID
  * @param namespace - 命名空间名称
- * @param name - NetworkPolicy 名称
- * @param data - 标签更新参数
+ * @param name - 网络策略名称
+ * @param data - 标签配置请求对象
  */
-export function manageNetworkPolicyLabel(
+export function manageNetworkPolicyLabels(
   clusterUid: string,
   namespace: string,
   name: string,
@@ -164,13 +165,13 @@ export function manageNetworkPolicyLabel(
 }
 
 /**
- * 更新 NetworkPolicy 注解
+ * 配置网络策略（NetworkPolicy）注解
  * @param clusterUid - 集群 UID
  * @param namespace - 命名空间名称
- * @param name - NetworkPolicy 名称
- * @param data - 注解更新参数
+ * @param name - 网络策略名称
+ * @param data - 注解配置请求对象
  */
-export function manageNetworkPolicyAnnotation(
+export function manageNetworkPolicyAnnotations(
   clusterUid: string,
   namespace: string,
   name: string,
@@ -183,20 +184,20 @@ export function manageNetworkPolicyAnnotation(
 }
 
 /**
- * 删除 NetworkPolicy
+ * 删除网络策略（NetworkPolicy）
  * @param clusterUid - 集群 UID
  * @param namespace - 命名空间名称
- * @param name - NetworkPolicy 名称
+ * @param name - 网络策略名称
  */
 export function deleteNetworkPolicy(clusterUid: string, namespace: string, name: string): Promise<void> {
   return request.delete(`/kubernetes/clusters/${clusterUid}/namespaces/${namespace}/networkpolicies/${name}`)
 }
 
 /**
- * 批量删除 NetworkPolicy
+ * 批量删除网络策略（NetworkPolicy）
  * @param clusterUid - 集群 UID
  * @param namespace - 命名空间名称
- * @param uids - 待删除的 NetworkPolicy UID 列表
+ * @param uids - 网络策略 UID 数组
  */
 export function deleteNetworkPolicies(clusterUid: string, namespace: string, uids: string[]): Promise<void> {
   return request.delete(`/kubernetes/clusters/${clusterUid}/namespaces/${namespace}/networkpolicies`, {
@@ -205,9 +206,9 @@ export function deleteNetworkPolicies(clusterUid: string, namespace: string, uid
 }
 
 /**
- * 导入 NetworkPolicy
+ * 导入网络策略（NetworkPolicy）
  * @param clusterUid - 集群 UID
- * @param formData - 上传的文件
+ * @param formData - 文件数据
  * @param onProgress - 上传进度回调
  */
 export function importNetworkPolicy(
@@ -221,11 +222,10 @@ export function importNetworkPolicy(
 }
 
 /**
- * 导出 NetworkPolicy
+ * 导出网络策略（NetworkPolicy）
  * @param clusterUid - 集群 UID
- * @param namespace - 命名空间名称
- * @param name - NetworkPolicy 名称
+ * @param query - 导出查询条件
  */
-export function exportNetworkPolicy(clusterUid: string, namespace: string, name: string): Promise<void> {
-  return request.download(`/kubernetes/clusters/${clusterUid}/namespaces/${namespace}/networkpolicies/${name}/export`)
+export function exportNetworkPolicy(clusterUid: string, query: Partial<NetworkPolicyExportQueryForm>): Promise<void> {
+  return request.download(`/kubernetes/clusters/${clusterUid}/networkpolicies/export`, { params: query })
 }

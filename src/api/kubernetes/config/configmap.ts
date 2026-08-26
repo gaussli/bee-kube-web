@@ -9,6 +9,7 @@ import type { MetadataAnnotationForm, MetadataLabelForm } from '@/types/kubernet
 import type {
   ConfigMapCreateForm,
   ConfigMapDetailVo,
+  ConfigMapExportQueryForm,
   ConfigMapListVo,
   ConfigMapQueryForm,
   ConfigMapUpdateForm,
@@ -22,7 +23,7 @@ import { request } from '@/utils'
  * 获取配置映射（ConfigMap）列表
  * @param clusterUid - 集群 UID
  * @param query - 查询条件
- * @returns 分页后的配置列表
+ * @returns 分页后的配置映射列表
  */
 export function getConfigMapList(
   clusterUid: string,
@@ -35,19 +36,19 @@ export function getConfigMapList(
  * 获取配置映射（ConfigMap）详情
  * @param clusterUid - 集群 UID
  * @param namespace - 命名空间名称
- * @param name - 配置名称
- * @returns 配置详情
+ * @param name - 配置映射名称
+ * @returns 配置映射详情
  */
 export function getConfigMapDetail(clusterUid: string, namespace: string, name: string): Promise<ConfigMapDetailVo> {
   return request.get<ConfigMapDetailVo>(`/kubernetes/clusters/${clusterUid}/namespaces/${namespace}/configmaps/${name}`)
 }
 
 /**
- * 查看配置映射（ConfigMap）YAML
+ * 获取配置映射（ConfigMap）YAML
  * @param clusterUid - 集群 UID
  * @param namespace - 命名空间名称
- * @param name - 配置名称
- * @returns 配置 YAML
+ * @param name - 配置映射名称
+ * @returns 配置映射 YAML
  */
 export function getConfigMapYaml(clusterUid: string, namespace: string, name: string): Promise<ConfigMapYamlVo> {
   return request.get<ConfigMapYamlVo>(
@@ -56,10 +57,10 @@ export function getConfigMapYaml(clusterUid: string, namespace: string, name: st
 }
 
 /**
- * 获取配置映射（ConfigMap）事件列表
+ * 获取配置映射（ConfigMap）事件（Event）列表
  * @param clusterUid - 集群 UID
  * @param namespace - 命名空间名称
- * @param name - 配置名称
+ * @param name - 配置映射名称
  * @param query - 事件查询条件
  * @returns 分页后的事件列表
  */
@@ -127,13 +128,13 @@ export function updateConfigMapYaml(clusterUid: string, namespace: string, name:
 }
 
 /**
- * 更新 ConfigMap 标签
+ * 配置配置映射（ConfigMap）标签
  * @param clusterUid - 集群 UID
  * @param namespace - 命名空间名称
- * @param name - ConfigMap 名称
- * @param data - 标签更新参数
+ * @param name - 配置映射名称
+ * @param data - 标签配置请求对象
  */
-export function manageConfigMapLabel(
+export function manageConfigMapLabels(
   clusterUid: string,
   namespace: string,
   name: string,
@@ -143,13 +144,13 @@ export function manageConfigMapLabel(
 }
 
 /**
- * 更新 ConfigMap 注解
+ * 配置配置映射（ConfigMap）注解
  * @param clusterUid - 集群 UID
  * @param namespace - 命名空间名称
- * @param name - ConfigMap 名称
- * @param data - 注解数据
+ * @param name - 配置映射名称
+ * @param data - 注解配置请求对象
  */
-export function manageConfigMapAnnotation(
+export function manageConfigMapAnnotations(
   clusterUid: string,
   namespace: string,
   name: string,
@@ -159,29 +160,29 @@ export function manageConfigMapAnnotation(
 }
 
 /**
- * 删除 ConfigMap
+ * 删除配置映射（ConfigMap）
  * @param clusterUid - 集群 UID
  * @param namespace - 命名空间名称
- * @param name - ConfigMap 名称
+ * @param name - 配置映射名称
  */
 export function deleteConfigMap(clusterUid: string, namespace: string, name: string): Promise<void> {
   return request.delete(`/kubernetes/clusters/${clusterUid}/namespaces/${namespace}/configmaps/${name}`)
 }
 
 /**
- * 批量删除 ConfigMap
+ * 批量删除配置映射（ConfigMap）
  * @param clusterUid - 集群 UID
  * @param namespace - 命名空间名称
- * @param uids - ConfigMap UID 数组
+ * @param uids - 配置映射 UID 数组
  */
 export function deleteConfigMaps(clusterUid: string, namespace: string, uids: string[]): Promise<void> {
   return request.delete(`/kubernetes/clusters/${clusterUid}/namespaces/${namespace}/configmaps`, { data: uids })
 }
 
 /**
- * 导入 ConfigMap
+ * 导入配置映射（ConfigMap）
  * @param clusterUid - 集群 UID
- * @param formData - 上传的文件
+ * @param formData - 文件数据
  * @param onProgress - 上传进度回调
  */
 export function importConfigMap(
@@ -195,10 +196,10 @@ export function importConfigMap(
 }
 
 /**
- * 导出 ConfigMap CSV
+ * 导出配置映射（ConfigMap）
  * @param clusterUid - 集群 UID
- * @param params - 查询参数
+ * @param query - 导出查询条件
  */
-export function exportConfigMap(clusterUid: string, params: Partial<ConfigMapQueryForm>): Promise<void> {
-  return request.download(`/kubernetes/clusters/${clusterUid}/configmaps/export`, { params })
+export function exportConfigMap(clusterUid: string, query: Partial<ConfigMapExportQueryForm>): Promise<void> {
+  return request.download(`/kubernetes/clusters/${clusterUid}/configmaps/export`, { params: query })
 }

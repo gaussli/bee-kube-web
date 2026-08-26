@@ -10,6 +10,7 @@ import type { EventListVo, EventQueryForm } from '@/types/kubernetes/event'
 import type {
   ClusterRoleCreateForm,
   ClusterRoleDetailVo,
+  ClusterRoleExportQueryForm,
   ClusterRoleListVo,
   ClusterRoleQueryForm,
   ClusterRoleUpdateForm,
@@ -42,7 +43,7 @@ export function getClusterRoleDetail(clusterUid: string, name: string): Promise<
 }
 
 /**
- * 查看集群角色（ClusterRole）YAML
+ * 获取集群角色（ClusterRole）YAML
  * @param clusterUid - 集群 UID
  * @param name - 集群角色名称
  * @returns 集群角色 YAML
@@ -52,7 +53,7 @@ export function getClusterRoleYaml(clusterUid: string, name: string): Promise<Cl
 }
 
 /**
- * 获取集群角色（ClusterRole）事件列表
+ * 获取集群角色（ClusterRole）事件（Event）列表
  * @param clusterUid - 集群 UID
  * @param name - 集群角色名称
  * @param query - 事件查询条件
@@ -115,22 +116,22 @@ export function updateClusterRoleYaml(clusterUid: string, name: string, yaml: st
 }
 
 /**
- * 更新 ClusterRole 标签
+ * 配置集群角色（clusterrole）标签
  * @param clusterUid - 集群 UID
- * @param name - ClusterRole 名称
- * @param data - 标签更新参数
+ * @param name - 集群角色名称
+ * @param data - 标签配置请求对象
  */
-export function manageClusterRoleLabel(clusterUid: string, name: string, data: MetadataLabelForm): Promise<void> {
+export function manageClusterRoleLabels(clusterUid: string, name: string, data: MetadataLabelForm): Promise<void> {
   return request.post(`/kubernetes/clusters/${clusterUid}/clusterroles/${name}/labels`, data)
 }
 
 /**
- * 更新 ClusterRole 注解
+ * 配置集群角色（clusterrole）注解
  * @param clusterUid - 集群 UID
- * @param name - ClusterRole 名称
- * @param data - 注解更新参数
+ * @param name - 集群角色名称
+ * @param data - 注解配置请求对象
  */
-export function manageClusterRoleAnnotation(
+export function manageClusterRoleAnnotations(
   clusterUid: string,
   name: string,
   data: MetadataAnnotationForm,
@@ -139,27 +140,27 @@ export function manageClusterRoleAnnotation(
 }
 
 /**
- * 删除 ClusterRole
+ * 删除集群角色（clusterrole）
  * @param clusterUid - 集群 UID
- * @param name - ClusterRole 名称
+ * @param name - 集群角色名称
  */
 export function deleteClusterRole(clusterUid: string, name: string): Promise<void> {
   return request.delete(`/kubernetes/clusters/${clusterUid}/clusterroles/${name}`)
 }
 
 /**
- * 批量删除 ClusterRole
+ * 批量删除集群角色（clusterrole）
  * @param clusterUid - 集群 UID
- * @param uids - 待删除的 ClusterRole UID 列表
+ * @param uids - 集群角色 UID 数组
  */
 export function deleteClusterRoles(clusterUid: string, uids: string[]): Promise<void> {
   return request.delete(`/kubernetes/clusters/${clusterUid}/clusterroles`, { data: uids })
 }
 
 /**
- * 导入 ClusterRole
+ * 导入集群角色（ClusterRole）
  * @param clusterUid - 集群 UID
- * @param formData - 上传的文件
+ * @param formData - 文件数据
  * @param onProgress - 上传进度回调
  */
 export function importClusterRole(
@@ -173,10 +174,10 @@ export function importClusterRole(
 }
 
 /**
- * 导出 ClusterRole
+ * 导出集群角色（clusterrole）
  * @param clusterUid - 集群 UID
- * @param params - 查询参数
+ * @param query - 导出查询条件
  */
-export function exportClusterRole(clusterUid: string, params: Partial<ClusterRoleQueryForm>): Promise<void> {
-  return request.download(`/kubernetes/clusters/${clusterUid}/clusterroles/export`, { params })
+export function exportClusterRole(clusterUid: string, query: Partial<ClusterRoleExportQueryForm>): Promise<void> {
+  return request.download(`/kubernetes/clusters/${clusterUid}/clusterroles/export`, { params: query })
 }

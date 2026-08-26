@@ -10,6 +10,7 @@ import type { EventListVo, EventQueryForm } from '@/types/kubernetes/event'
 import type {
   ClusterRoleBindingCreateForm,
   ClusterRoleBindingDetailVo,
+  ClusterRoleBindingExportQueryForm,
   ClusterRoleBindingListVo,
   ClusterRoleBindingQueryForm,
   ClusterRoleBindingUpdateForm,
@@ -44,7 +45,7 @@ export function getClusterRoleBindingDetail(clusterUid: string, name: string): P
 }
 
 /**
- * 查看集群角色绑定（ClusterRoleBinding）YAML
+ * 获取集群角色绑定（ClusterRoleBinding）YAML
  * @param clusterUid - 集群 UID
  * @param name - 集群角色绑定名称
  * @returns 集群角色绑定 YAML
@@ -54,7 +55,7 @@ export function getClusterRoleBindingYaml(clusterUid: string, name: string): Pro
 }
 
 /**
- * 获取集群角色绑定（ClusterRoleBinding）事件列表
+ * 获取集群角色绑定（ClusterRoleBinding）事件（Event）列表
  * @param clusterUid - 集群 UID
  * @param name - 集群角色绑定名称
  * @param query - 事件查询条件
@@ -121,12 +122,12 @@ export function updateClusterRoleBindingYaml(clusterUid: string, name: string, y
 }
 
 /**
- * 更新 ClusterRoleBinding 标签
+ * 配置集群角色绑定（ClusterRoleBinding）标签
  * @param clusterUid - 集群 UID
- * @param name - ClusterRoleBinding 名称
- * @param data - 标签更新参数
+ * @param name - 集群角色绑定名称
+ * @param data - 标签配置请求对象
  */
-export function manageClusterRoleBindingLabel(
+export function manageClusterRoleBindingLabels(
   clusterUid: string,
   name: string,
   data: MetadataLabelForm,
@@ -135,12 +136,12 @@ export function manageClusterRoleBindingLabel(
 }
 
 /**
- * 更新 ClusterRoleBinding 注解
+ * 配置集群角色绑定（clusterrolebinding）注解
  * @param clusterUid - 集群 UID
- * @param name - ClusterRoleBinding 名称
- * @param data - 注解更新参数
+ * @param name - 集群角色绑定名称
+ * @param data - 注解配置请求对象
  */
-export function manageClusterRoleBindingAnnotation(
+export function manageClusterRoleBindingAnnotations(
   clusterUid: string,
   name: string,
   data: MetadataAnnotationForm,
@@ -149,27 +150,27 @@ export function manageClusterRoleBindingAnnotation(
 }
 
 /**
- * 删除 ClusterRoleBinding
+ * 删除集群角色绑定（clusterrolebinding）
  * @param clusterUid - 集群 UID
- * @param name - ClusterRoleBinding 名称
+ * @param name - 集群角色绑定名称
  */
 export function deleteClusterRoleBinding(clusterUid: string, name: string): Promise<void> {
   return request.delete(`/kubernetes/clusters/${clusterUid}/clusterrolebindings/${name}`)
 }
 
 /**
- * 批量删除 ClusterRoleBinding
+ * 批量删除集群角色绑定（clusterrolebinding）
  * @param clusterUid - 集群 UID
- * @param uids - 待删除的 ClusterRoleBinding UID 列表
+ * @param uids - 集群角色绑定 UID 数组
  */
 export function deleteClusterRoleBindings(clusterUid: string, uids: string[]): Promise<void> {
   return request.delete(`/kubernetes/clusters/${clusterUid}/clusterrolebindings`, { data: uids })
 }
 
 /**
- * 导入 ClusterRoleBinding
+ * 导入集群角色绑定（ClusterRoleBinding）
  * @param clusterUid - 集群 UID
- * @param formData - 上传的文件
+ * @param formData - 文件数据
  * @param onProgress - 上传进度回调
  */
 export function importClusterRoleBinding(
@@ -183,13 +184,13 @@ export function importClusterRoleBinding(
 }
 
 /**
- * 导出 ClusterRoleBinding
+ * 导出集群角色绑定（clusterrolebinding）
  * @param clusterUid - 集群 UID
- * @param params - 查询参数
+ * @param query - 导出查询条件
  */
 export function exportClusterRoleBinding(
   clusterUid: string,
-  params: Partial<ClusterRoleBindingQueryForm>,
+  query: Partial<ClusterRoleBindingExportQueryForm>,
 ): Promise<void> {
-  return request.download(`/kubernetes/clusters/${clusterUid}/clusterrolebindings/export`, { params })
+  return request.download(`/kubernetes/clusters/${clusterUid}/clusterrolebindings/export`, { params: query })
 }

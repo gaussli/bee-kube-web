@@ -10,6 +10,7 @@ import type { EventListVo, EventQueryForm } from '@/types/kubernetes/event'
 import type {
   PersistentVolumeCreateForm,
   PersistentVolumeDetailVo,
+  PersistentVolumeExportQueryForm,
   PersistentVolumeListVo,
   PersistentVolumeQueryForm,
   PersistentVolumeUpdateForm,
@@ -44,7 +45,7 @@ export function getPersistentVolumeDetail(clusterUid: string, name: string): Pro
 }
 
 /**
- * 查看持久卷（PersistentVolume）YAML
+ * 获取持久卷（PersistentVolume）YAML
  * @param clusterUid - 集群 UID
  * @param name - 持久卷名称
  * @returns 持久卷 YAML
@@ -54,7 +55,7 @@ export function getPersistentVolumeYaml(clusterUid: string, name: string): Promi
 }
 
 /**
- * 获取持久卷（PersistentVolume）事件列表
+ * 获取持久卷（PersistentVolume）事件（Event）列表
  * @param clusterUid - 集群 UID
  * @param name - 持久卷名称
  * @param query - 事件查询条件
@@ -117,22 +118,22 @@ export function updatePersistentVolumeYaml(clusterUid: string, name: string, yam
 }
 
 /**
- * 更新 PersistentVolume 标签
+ * 配置持久卷（PersistentVolume）标签
  * @param clusterUid - 集群 UID
- * @param name - PersistentVolume 名称
- * @param data - 标签更新参数
+ * @param name - 持久卷名称
+ * @param data - 标签配置请求对象
  */
-export function managePersistentVolumeLabel(clusterUid: string, name: string, data: MetadataLabelForm): Promise<void> {
+export function managePersistentVolumeLabels(clusterUid: string, name: string, data: MetadataLabelForm): Promise<void> {
   return request.post(`/kubernetes/clusters/${clusterUid}/persistentvolumes/${name}/labels`, data)
 }
 
 /**
- * 更新 PersistentVolume 注解
+ * 配置持久卷（persistentvolume）注解
  * @param clusterUid - 集群 UID
- * @param name - PersistentVolume 名称
- * @param data - 注解更新参数
+ * @param name - 持久卷名称
+ * @param data - 注解配置请求对象
  */
-export function managePersistentVolumeAnnotation(
+export function managePersistentVolumeAnnotations(
   clusterUid: string,
   name: string,
   data: MetadataAnnotationForm,
@@ -141,27 +142,27 @@ export function managePersistentVolumeAnnotation(
 }
 
 /**
- * 删除 PersistentVolume
+ * 删除持久卷（persistentvolume）
  * @param clusterUid - 集群 UID
- * @param name - PersistentVolume 名称
+ * @param name - 持久卷名称
  */
 export function deletePersistentVolume(clusterUid: string, name: string): Promise<void> {
   return request.delete(`/kubernetes/clusters/${clusterUid}/persistentvolumes/${name}`)
 }
 
 /**
- * 批量删除 PersistentVolume
+ * 批量删除持久卷（persistentvolume）
  * @param clusterUid - 集群 UID
- * @param uids - 待删除的 PersistentVolume UID 列表
+ * @param uids - 持久卷 UID 数组
  */
 export function deletePersistentVolumes(clusterUid: string, uids: string[]): Promise<void> {
   return request.delete(`/kubernetes/clusters/${clusterUid}/persistentvolumes`, { data: uids })
 }
 
 /**
- * 导入 PersistentVolume
+ * 导入持久卷（PersistentVolume）
  * @param clusterUid - 集群 UID
- * @param formData - 上传的文件
+ * @param formData - 文件数据
  * @param onProgress - 上传进度回调
  */
 export function importPersistentVolume(
@@ -175,10 +176,13 @@ export function importPersistentVolume(
 }
 
 /**
- * 导出 PersistentVolume
+ * 导出持久卷（persistentvolume）
  * @param clusterUid - 集群 UID
- * @param params - 查询参数
+ * @param query - 导出查询条件
  */
-export function exportPersistentVolume(clusterUid: string, params: Partial<PersistentVolumeQueryForm>): Promise<void> {
-  return request.download(`/kubernetes/clusters/${clusterUid}/persistentvolumes/export`, { params })
+export function exportPersistentVolume(
+  clusterUid: string,
+  query: Partial<PersistentVolumeExportQueryForm>,
+): Promise<void> {
+  return request.download(`/kubernetes/clusters/${clusterUid}/persistentvolumes/export`, { params: query })
 }

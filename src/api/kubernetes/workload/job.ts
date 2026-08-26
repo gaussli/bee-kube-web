@@ -12,6 +12,7 @@ import type { PodListVo, PodQueryForm } from '@/types/kubernetes/pod'
 import type {
   JobCreateForm,
   JobDetailVo,
+  JobExportQueryForm,
   JobListVo,
   JobMonitorQueryForm,
   JobMonitorVo,
@@ -44,7 +45,7 @@ export function getJobDetail(clusterUid: string, namespace: string, name: string
 }
 
 /**
- * 查看任务（Job）YAML
+ * 获取任务（Job）YAML
  * @param clusterUid - 集群 UID
  * @param namespace - 命名空间名称
  * @param name - 任务名称
@@ -55,22 +56,27 @@ export function getJobYaml(clusterUid: string, namespace: string, name: string):
 }
 
 /**
- * 查看 Job 关联 Pod 列表
+ * 获取任务（Job）关联 Pod 列表
  * @param clusterUid - 集群 UID
  * @param namespace - 命名空间名称
- * @param name - Job 名称
- * @param params - Job 关联 Pod 查询条件请求对象（Pod 名称、Pod 状态）
- * @returns Job 关联 Pod 分页列表
+ * @param name - 任务名称
+ * @param query - 关联 Pod 查询条件
+ * @returns 分页的容器组（Pod）列表
  */
-export function getJobPodList(clusterUid: string, namespace: string, name: string, params: Partial<PodQueryForm>) {
+export function getJobPodList(
+  clusterUid: string,
+  namespace: string,
+  name: string,
+  query: Partial<PodQueryForm>,
+): Promise<PageVo<PodListVo>> {
   return request.get<PageVo<PodListVo>>(
     `/kubernetes/clusters/${clusterUid}/namespaces/${namespace}/jobs/${name}/pods`,
-    { params },
+    { params: query },
   )
 }
 
 /**
- * 获取任务（Job）事件列表
+ * 获取任务（Job）事件（Event）列表
  * @param clusterUid - 集群 UID
  * @param namespace - 命名空间名称
  * @param name - 任务名称
@@ -135,7 +141,12 @@ export function createJobYaml(clusterUid: string, yaml: string): Promise<void> {
  * @param name - 任务名称
  * @param data - 更新请求对象
  */
-export function updateJob(clusterUid: string, namespace: string, name: string, data: Partial<JobUpdateForm>): Promise<void> {
+export function updateJob(
+  clusterUid: string,
+  namespace: string,
+  name: string,
+  data: Partial<JobUpdateForm>,
+): Promise<void> {
   return request.put<void>(`/kubernetes/clusters/${clusterUid}/namespaces/${namespace}/jobs/${name}`, data)
 }
 
@@ -153,50 +164,60 @@ export function updateJobYaml(clusterUid: string, namespace: string, name: strin
 }
 
 /**
- * 管理 Job 标签
+ * 配置任务（Job）标签
  * @param clusterUid - 集群 UID
  * @param namespace - 命名空间名称
- * @param name - Job 名称
- * @param data - 管理标签请求对象（labels 键值对、operation 操作类型）
+ * @param name - 任务名称
+ * @param data - 标签配置请求对象
  */
-export function manageJobLabel(clusterUid: string, namespace: string, name: string, data: MetadataLabelForm) {
+export function manageJobLabels(
+  clusterUid: string,
+  namespace: string,
+  name: string,
+  data: MetadataLabelForm,
+): Promise<void> {
   return request.post<void>(`/kubernetes/clusters/${clusterUid}/namespaces/${namespace}/jobs/${name}/labels`, data)
 }
 
 /**
- * 管理 Job 注解
+ * 配置任务（job）注解
  * @param clusterUid - 集群 UID
  * @param namespace - 命名空间名称
- * @param name - Job 名称
- * @param data - 管理注解请求对象（annotations 键值对、operation 操作类型）
+ * @param name - 任务名称
+ * @param data - 注解配置请求对象
  */
-export function manageJobAnnotation(clusterUid: string, namespace: string, name: string, data: MetadataAnnotationForm) {
+export function manageJobAnnotations(
+  clusterUid: string,
+  namespace: string,
+  name: string,
+  data: MetadataAnnotationForm,
+) {
   return request.post<void>(`/kubernetes/clusters/${clusterUid}/namespaces/${namespace}/jobs/${name}/annotations`, data)
 }
 
 /**
- * 删除 Job
+ * 删除任务（job）
  * @param clusterUid - 集群 UID
  * @param namespace - 命名空间名称
- * @param name - Job 名称
+ * @param name - 任务名称
  */
-export function deleteJob(clusterUid: string, namespace: string, name: string) {
+export function deleteJob(clusterUid: string, namespace: string, name: string): Promise<void> {
   return request.delete<void>(`/kubernetes/clusters/${clusterUid}/namespaces/${namespace}/jobs/${name}`)
 }
 
 /**
- * 批量删除 Job
+ * 批量删除任务（job）
  * @param clusterUid - 集群 UID
- * @param uids - Job UID 列表
+ * @param uids - 任务 UID 数组
  */
-export function deleteJobs(clusterUid: string, uids: string[]) {
+export function deleteJobs(clusterUid: string, uids: string[]): Promise<void> {
   return request.delete<void>(`/kubernetes/clusters/${clusterUid}/jobs`, { data: uids })
 }
 
 /**
- * 导入 Job
+ * 导入任务（Job）
  * @param clusterUid - 集群 UID
- * @param formData - 上传的文件
+ * @param formData - 文件数据
  * @param onProgress - 上传进度回调
  */
 export function importJob(
@@ -210,40 +231,40 @@ export function importJob(
 }
 
 /**
- * 导出 Job
+ * 导出任务（job）
  * @param clusterUid - 集群 UID
- * @param params - Job 查询条件请求对象（名称、命名空间、状态）
+ * @param query - 导出查询条件
  */
-export function exportJob(clusterUid: string, params: Partial<JobQueryForm>) {
-  return request.download(`/kubernetes/clusters/${clusterUid}/jobs/export`, { params })
+export function exportJob(clusterUid: string, query: Partial<JobExportQueryForm>): Promise<void> {
+  return request.download(`/kubernetes/clusters/${clusterUid}/jobs/export`, { params: query })
 }
 
 /**
- * 手动重跑 Job
+ * 手动重跑任务（Job）
  * @param clusterUid - 集群 UID
  * @param namespace - 命名空间名称
- * @param name - Job 名称
+ * @param name - 任务名称
  */
-export function rerunJob(clusterUid: string, namespace: string, name: string) {
+export function rerunJob(clusterUid: string, namespace: string, name: string): Promise<void> {
   return request.post<void>(`/kubernetes/clusters/${clusterUid}/namespaces/${namespace}/jobs/${name}/rerun`)
 }
 
 /**
- * 暂停更新 Job
+ * 暂停任务（Job）更新
  * @param clusterUid - 集群 UID
  * @param namespace - 命名空间名称
- * @param name - Job 名称
+ * @param name - 任务名称
  */
-export function pauseJob(clusterUid: string, namespace: string, name: string) {
+export function pauseJob(clusterUid: string, namespace: string, name: string): Promise<void> {
   return request.post<void>(`/kubernetes/clusters/${clusterUid}/namespaces/${namespace}/jobs/${name}/pause`)
 }
 
 /**
- * 恢复更新 Job
+ * 恢复任务（Job）更新
  * @param clusterUid - 集群 UID
  * @param namespace - 命名空间名称
- * @param name - Job 名称
+ * @param name - 任务名称
  */
-export function resumeJob(clusterUid: string, namespace: string, name: string) {
+export function resumeJob(clusterUid: string, namespace: string, name: string): Promise<void> {
   return request.post<void>(`/kubernetes/clusters/${clusterUid}/namespaces/${namespace}/jobs/${name}/resume`)
 }

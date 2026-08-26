@@ -12,6 +12,7 @@ import type { PodListVo, PodQueryForm } from '@/types/kubernetes/pod'
 import type {
   DaemonSetCreateForm,
   DaemonSetDetailVo,
+  DaemonSetExportQueryForm,
   DaemonSetHistoryRevisionListVo,
   DaemonSetHistoryRevisionQueryForm,
   DaemonSetListVo,
@@ -51,7 +52,7 @@ export function getDaemonSetDetail(clusterUid: string, namespace: string, name: 
 }
 
 /**
- * 查看守护进程集（DaemonSet）YAML
+ * 获取守护进程集（DaemonSet）YAML
  * @param clusterUid - 集群 UID
  * @param namespace - 命名空间名称
  * @param name - 守护进程集名称
@@ -64,60 +65,60 @@ export function getDaemonSetYaml(clusterUid: string, namespace: string, name: st
 }
 
 /**
- * 查看 DaemonSet 关联 Pod 列表
+ * 获取守护进程集（DaemonSet）关联 Pod 列表
  * @param clusterUid - 集群 UID
  * @param namespace - 命名空间名称
- * @param name - DaemonSet 名称
- * @param params - DaemonSet 关联 Pod 查询条件请求对象（Pod 名称、Pod 状态）
- * @returns DaemonSet 关联 Pod 分页列表
+ * @param name - 守护进程集名称
+ * @param query - 关联 Pod 查询条件
+ * @returns 分页后的容器组（Pod）列表
  */
 export function getDaemonSetPodList(
   clusterUid: string,
   namespace: string,
   name: string,
-  params: Partial<PodQueryForm>,
-) {
+  query: Partial<PodQueryForm>,
+): Promise<PageVo<PodListVo>> {
   return request.get<PageVo<PodListVo>>(
     `/kubernetes/clusters/${clusterUid}/namespaces/${namespace}/daemonsets/${name}/pods`,
-    { params },
+    { params: query },
   )
 }
 
 /**
- * 查看 DaemonSet 历史版本列表
+ * 获取守护进程集（DaemonSet）历史版本列表
  * @param clusterUid - 集群 UID
  * @param namespace - 命名空间名称
- * @param name - DaemonSet 名称
- * @param params - DaemonSet 历史版本查询条件请求对象（版本名称、变更原因）
- * @returns DaemonSet 历史版本分页列表
+ * @param name - 守护进程集名称
+ * @param query - 历史版本查询条件
+ * @returns 分页后的历史版本（History）列表
  */
 export function getDaemonSetHistoryRevisionList(
   clusterUid: string,
   namespace: string,
   name: string,
-  params: Partial<DaemonSetHistoryRevisionQueryForm>,
+  query: Partial<DaemonSetHistoryRevisionQueryForm>,
 ) {
   return request.get<PageVo<DaemonSetHistoryRevisionListVo>>(
     `/kubernetes/clusters/${clusterUid}/namespaces/${namespace}/daemonsets/${name}/history`,
-    { params },
+    { params: query },
   )
 }
 
 /**
- * 查看 DaemonSet 关联网络资源
+ * 获取守护进程集（DaemonSet）关联网络资源
  * @param clusterUid - 集群 UID
  * @param namespace - 命名空间名称
- * @param name - DaemonSet 名称
- * @returns DaemonSet 关联网络资源响应对象（关联的 Service 与 Ingress 列表）
+ * @param name - 守护进程集名称
+ * @returns 关联网络资源数据
  */
-export function getDaemonSetNetwork(clusterUid: string, namespace: string, name: string) {
+export function getDaemonSetNetwork(clusterUid: string, namespace: string, name: string): Promise<DaemonSetNetworkVo> {
   return request.get<DaemonSetNetworkVo>(
     `/kubernetes/clusters/${clusterUid}/namespaces/${namespace}/daemonsets/${name}/network`,
   )
 }
 
 /**
- * 获取守护进程集（DaemonSet）事件列表
+ * 获取守护进程集（DaemonSet）事件（Event）列表
  * @param clusterUid - 集群 UID
  * @param namespace - 命名空间名称
  * @param name - 守护进程集名称
@@ -159,7 +160,7 @@ export function getDaemonSetMonitor(
 }
 
 /**
- * 创建守护进程（DaemonSet）
+ * 创建守护进程集（DaemonSet）
  * @param clusterUid - 集群 UID
  * @param data - 创建请求对象
  */
@@ -168,7 +169,7 @@ export function createDaemonSet(clusterUid: string, data: Partial<DaemonSetCreat
 }
 
 /**
- * 创建守护进程（DaemonSet）（YAML）
+ * 创建守护进程集（DaemonSet）（YAML）
  * @param clusterUid - 集群 UID
  * @param yaml - 创建 YAML 文本
  */
@@ -179,7 +180,7 @@ export function createDaemonSetYaml(clusterUid: string, yaml: string): Promise<v
 }
 
 /**
- * 更新守护进程（DaemonSet）
+ * 更新守护进程集（DaemonSet）
  * @param clusterUid - 集群 UID
  * @param namespace - 命名空间名称
  * @param name - 守护进程集名称
@@ -195,7 +196,7 @@ export function updateDaemonSet(
 }
 
 /**
- * 更新守护进程（DaemonSet）（YAML）
+ * 更新守护进程集（DaemonSet）（YAML）
  * @param clusterUid - 集群 UID
  * @param namespace - 命名空间名称
  * @param name - 守护进程集名称
@@ -208,13 +209,18 @@ export function updateDaemonSetYaml(clusterUid: string, namespace: string, name:
 }
 
 /**
- * 管理 DaemonSet 标签
+ * 配置守护进程集（DaemonSet）标签
  * @param clusterUid - 集群 UID
  * @param namespace - 命名空间名称
- * @param name - DaemonSet 名称
- * @param data - 管理标签请求对象（labels 键值对、operation 操作类型）
+ * @param name - 守护进程集名称
+ * @param data - 标签配置请求对象
  */
-export function manageDaemonSetLabel(clusterUid: string, namespace: string, name: string, data: MetadataLabelForm) {
+export function manageDaemonSetLabels(
+  clusterUid: string,
+  namespace: string,
+  name: string,
+  data: MetadataLabelForm,
+): Promise<void> {
   return request.post<void>(
     `/kubernetes/clusters/${clusterUid}/namespaces/${namespace}/daemonsets/${name}/labels`,
     data,
@@ -222,13 +228,13 @@ export function manageDaemonSetLabel(clusterUid: string, namespace: string, name
 }
 
 /**
- * 管理 DaemonSet 注解
+ * 配置守护进程集（daemonset）注解
  * @param clusterUid - 集群 UID
  * @param namespace - 命名空间名称
- * @param name - DaemonSet 名称
- * @param data - 管理注解请求对象（annotations 键值对、operation 操作类型）
+ * @param name - 守护进程集名称
+ * @param data - 注解配置请求对象
  */
-export function manageDaemonSetAnnotation(
+export function manageDaemonSetAnnotations(
   clusterUid: string,
   namespace: string,
   name: string,
@@ -241,28 +247,28 @@ export function manageDaemonSetAnnotation(
 }
 
 /**
- * 删除 DaemonSet
+ * 删除守护进程集（daemonset）
  * @param clusterUid - 集群 UID
  * @param namespace - 命名空间名称
- * @param name - DaemonSet 名称
+ * @param name - 守护进程集名称
  */
-export function deleteDaemonSet(clusterUid: string, namespace: string, name: string) {
+export function deleteDaemonSet(clusterUid: string, namespace: string, name: string): Promise<void> {
   return request.delete<void>(`/kubernetes/clusters/${clusterUid}/namespaces/${namespace}/daemonsets/${name}`)
 }
 
 /**
- * 批量删除 DaemonSet
+ * 批量删除守护进程集（daemonset）
  * @param clusterUid - 集群 UID
- * @param uids - DaemonSet UID 列表
+ * @param uids - 守护进程集 UID 数组
  */
-export function deleteDaemonSets(clusterUid: string, uids: string[]) {
+export function deleteDaemonSets(clusterUid: string, uids: string[]): Promise<void> {
   return request.delete<void>(`/kubernetes/clusters/${clusterUid}/daemonsets`, { data: uids })
 }
 
 /**
- * 导入 DaemonSet
+ * 导入守护进程集（DaemonSet）
  * @param clusterUid - 集群 UID
- * @param formData - 上传的文件
+ * @param formData - 文件数据
  * @param onProgress - 上传进度回调
  */
 export function importDaemonSet(
@@ -276,32 +282,37 @@ export function importDaemonSet(
 }
 
 /**
- * 导出 DaemonSet
+ * 导出守护进程集（daemonset）
  * @param clusterUid - 集群 UID
- * @param params - DaemonSet 查询条件请求对象（名称、命名空间、状态）
+ * @param query - 导出查询条件
  */
-export function exportDaemonSet(clusterUid: string, params: Partial<DaemonSetQueryForm>) {
-  return request.download(`/kubernetes/clusters/${clusterUid}/daemonsets/export`, { params })
+export function exportDaemonSet(clusterUid: string, query: Partial<DaemonSetExportQueryForm>): Promise<void> {
+  return request.download(`/kubernetes/clusters/${clusterUid}/daemonsets/export`, { params: query })
 }
 
 /**
- * 重启 DaemonSet
+ * 重启守护进程集（DaemonSet）
  * @param clusterUid - 集群 UID
  * @param namespace - 命名空间名称
- * @param name - DaemonSet 名称
+ * @param name - 守护进程集名称
  */
-export function restartDaemonSet(clusterUid: string, namespace: string, name: string) {
+export function restartDaemonSet(clusterUid: string, namespace: string, name: string): Promise<void> {
   return request.post<void>(`/kubernetes/clusters/${clusterUid}/namespaces/${namespace}/daemonsets/${name}/restart`)
 }
 
 /**
- * 回滚 DaemonSet
+ * 回滚守护进程集（DaemonSet）
  * @param clusterUid - 集群 UID
  * @param namespace - 命名空间名称
- * @param name - DaemonSet 名称
- * @param data - DaemonSet 回滚请求对象（目标历史版本号）
+ * @param name - 守护进程集名称
+ * @param data - 回滚请求对象
  */
-export function rollbackDaemonSet(clusterUid: string, namespace: string, name: string, data: DaemonSetRollbackForm) {
+export function rollbackDaemonSet(
+  clusterUid: string,
+  namespace: string,
+  name: string,
+  data: DaemonSetRollbackForm,
+): Promise<void> {
   return request.post<void>(
     `/kubernetes/clusters/${clusterUid}/namespaces/${namespace}/daemonsets/${name}/rollback`,
     data,
@@ -309,21 +320,21 @@ export function rollbackDaemonSet(clusterUid: string, namespace: string, name: s
 }
 
 /**
- * 暂停 DaemonSet 更新
+ * 暂停守护进程集（DaemonSet）更新
  * @param clusterUid - 集群 UID
  * @param namespace - 命名空间名称
- * @param name - DaemonSet 名称
+ * @param name - 守护进程集名称
  */
-export function pauseDaemonSet(clusterUid: string, namespace: string, name: string) {
+export function pauseDaemonSet(clusterUid: string, namespace: string, name: string): Promise<void> {
   return request.post<void>(`/kubernetes/clusters/${clusterUid}/namespaces/${namespace}/daemonsets/${name}/pause`)
 }
 
 /**
- * 恢复 DaemonSet 更新
+ * 恢复守护进程集（DaemonSet）更新
  * @param clusterUid - 集群 UID
  * @param namespace - 命名空间名称
- * @param name - DaemonSet 名称
+ * @param name - 守护进程集名称
  */
-export function resumeDaemonSet(clusterUid: string, namespace: string, name: string) {
+export function resumeDaemonSet(clusterUid: string, namespace: string, name: string): Promise<void> {
   return request.post<void>(`/kubernetes/clusters/${clusterUid}/namespaces/${namespace}/daemonsets/${name}/resume`)
 }

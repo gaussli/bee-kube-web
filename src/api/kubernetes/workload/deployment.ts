@@ -72,8 +72,8 @@ export function getDeploymentYaml(clusterUid: string, namespace: string, name: s
  * @param clusterUid - 集群 UID
  * @param namespace - 命名空间名称
  * @param name - 有状态应用名称
- * @param query - Pod 查询条件
- * @returns 分页后的 Pod 列表
+ * @param query - 关联 Pod 查询条件
+ * @returns 分页后的容器组（Pod）列表
  */
 export function getDeploymentPodList(
   clusterUid: string,
@@ -93,7 +93,7 @@ export function getDeploymentPodList(
  * @param namespace - 命名空间名称
  * @param name - 有状态应用名称
  * @param query - 历史版本查询条件
- * @returns 分页后的历史版本列表
+ * @returns 分页后的历史版本（History）列表
  */
 export function getDeploymentHistoryRevisionList(
   clusterUid: string,
@@ -125,7 +125,7 @@ export function getDeploymentNetwork(
 }
 
 /**
- * 获取有状态应用（Deployment）事件列表
+ * 获取有状态应用（Deployment）事件（Event）列表
  * @param clusterUid - 集群 UID
  * @param namespace - 命名空间名称
  * @param name - 有状态应用名称
@@ -226,7 +226,7 @@ export function updateDeploymentYaml(clusterUid: string, namespace: string, name
  * @param name - 有状态应用名称
  * @param data - 标签配置请求对象
  */
-export function manageDeploymentLabel(
+export function manageDeploymentLabels(
   clusterUid: string,
   namespace: string,
   name: string,
@@ -245,7 +245,7 @@ export function manageDeploymentLabel(
  * @param name - 有状态应用名称
  * @param data - 注解配置请求对象
  */
-export function manageDeploymentAnnotation(
+export function manageDeploymentAnnotations(
   clusterUid: string,
   namespace: string,
   name: string,
@@ -302,11 +302,11 @@ export function exportDeployment(clusterUid: string, query: Partial<DeploymentEx
 }
 
 /**
- * 扩容/缩容有状态应用（Deployment）
+ * 扩缩容有状态应用（Deployment）
  * @param clusterUid - 集群 UID
  * @param namespace - 命名空间名称
  * @param name - 有状态应用名称
- * @param data - 扩容/缩容请求对象
+ * @param data - 扩缩容请求对象
  */
 export function scaleDeployment(
   clusterUid: string,

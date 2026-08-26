@@ -10,6 +10,7 @@ import type { EventListVo, EventQueryForm } from '@/types/kubernetes/event'
 import type {
   RoleCreateForm,
   RoleDetailVo,
+  RoleExportQueryForm,
   RoleListVo,
   RoleQueryForm,
   RoleUpdateForm,
@@ -42,7 +43,7 @@ export function getRoleDetail(clusterUid: string, namespace: string, name: strin
 }
 
 /**
- * 查看角色（Role）YAML
+ * 获取角色（Role）YAML
  * @param clusterUid - 集群 UID
  * @param namespace - 命名空间名称
  * @param name - 角色名称
@@ -53,7 +54,7 @@ export function getRoleYaml(clusterUid: string, namespace: string, name: string)
 }
 
 /**
- * 获取角色（Role）事件列表
+ * 获取角色（Role）事件（Event）列表
  * @param clusterUid - 集群 UID
  * @param namespace - 命名空间名称
  * @param name - 角色名称
@@ -124,13 +125,13 @@ export function updateRoleYaml(clusterUid: string, namespace: string, name: stri
 }
 
 /**
- * 更新 Role 标签
+ * 配置角色（Role）标签
  * @param clusterUid - 集群 UID
  * @param namespace - 命名空间名称
- * @param name - Role 名称
- * @param data - 标签更新参数
+ * @param name - 角色名称
+ * @param data - 标签配置请求对象
  */
-export function manageRoleLabel(
+export function manageRoleLabels(
   clusterUid: string,
   namespace: string,
   name: string,
@@ -140,13 +141,13 @@ export function manageRoleLabel(
 }
 
 /**
- * 更新 Role 注解
+ * 配置角色（role）注解
  * @param clusterUid - 集群 UID
  * @param namespace - 命名空间名称
- * @param name - Role 名称
- * @param data - 注解更新参数
+ * @param name - 角色名称
+ * @param data - 注解配置请求对象
  */
-export function manageRoleAnnotation(
+export function manageRoleAnnotations(
   clusterUid: string,
   namespace: string,
   name: string,
@@ -156,29 +157,29 @@ export function manageRoleAnnotation(
 }
 
 /**
- * 删除 Role
+ * 删除角色（role）
  * @param clusterUid - 集群 UID
  * @param namespace - 命名空间名称
- * @param name - Role 名称
+ * @param name - 角色名称
  */
 export function deleteRole(clusterUid: string, namespace: string, name: string): Promise<void> {
   return request.delete(`/kubernetes/clusters/${clusterUid}/namespaces/${namespace}/roles/${name}`)
 }
 
 /**
- * 批量删除 Role
+ * 批量删除角色（role）
  * @param clusterUid - 集群 UID
  * @param namespace - 命名空间名称
- * @param uids - 待删除的 Role UID 列表
+ * @param uids - 角色 UID 数组
  */
 export function deleteRoles(clusterUid: string, namespace: string, uids: string[]): Promise<void> {
   return request.delete(`/kubernetes/clusters/${clusterUid}/namespaces/${namespace}/roles`, { data: uids })
 }
 
 /**
- * 导入 Role
+ * 导入角色（Role）
  * @param clusterUid - 集群 UID
- * @param formData - 上传的文件
+ * @param formData - 文件数据
  * @param onProgress - 上传进度回调
  */
 export function importRole(
@@ -192,11 +193,11 @@ export function importRole(
 }
 
 /**
- * 导出 Role
+ * 导出角色（role）
  * @param clusterUid - 集群 UID
  * @param namespace - 命名空间名称
- * @param params - 查询参数
+ * @param query - 导出查询条件
  */
-export function exportRole(clusterUid: string, namespace: string, params: Partial<RoleQueryForm>): Promise<void> {
-  return request.download(`/kubernetes/clusters/${clusterUid}/namespaces/${namespace}/roles/export`, { params })
+export function exportRole(clusterUid: string, namespace: string, query: Partial<RoleExportQueryForm>): Promise<void> {
+  return request.download(`/kubernetes/clusters/${clusterUid}/namespaces/${namespace}/roles/export`, { params: query })
 }

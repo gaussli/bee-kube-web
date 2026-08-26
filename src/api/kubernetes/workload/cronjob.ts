@@ -11,6 +11,7 @@ import type { EventListVo, EventQueryForm } from '@/types/kubernetes/event'
 import type {
   CronJobCreateForm,
   CronJobDetailVo,
+  CronJobExportQueryForm,
   CronJobJobListVo,
   CronJobJobQueryForm,
   CronJobListVo,
@@ -45,7 +46,7 @@ export function getCronJobDetail(clusterUid: string, namespace: string, name: st
 }
 
 /**
- * 查看定时任务（CronJob）YAML
+ * 获取定时任务（CronJob）YAML
  * @param clusterUid - 集群 UID
  * @param namespace - 命名空间名称
  * @param name - 定时任务名称
@@ -56,27 +57,27 @@ export function getCronJobYaml(clusterUid: string, namespace: string, name: stri
 }
 
 /**
- * 查看 CronJob 关联 Job 列表
+ * 获取定时任务（CronJob）关联 Job 列表
  * @param clusterUid - 集群 UID
  * @param namespace - 命名空间名称
- * @param name - CronJob 名称
- * @param params - CronJob 关联 Job 查询条件请求对象（Job 名称、Job 状态）
- * @returns CronJob 关联 Job 分页列表
+ * @param name - 定时任务名称
+ * @param query - 关联任务（Job）查询条件
+ * @returns 分页后的任务（Job）列表
  */
 export function getCronJobJobList(
   clusterUid: string,
   namespace: string,
   name: string,
-  params: Partial<CronJobJobQueryForm>,
+  query: Partial<CronJobJobQueryForm>,
 ) {
   return request.get<PageVo<CronJobJobListVo>>(
     `/kubernetes/clusters/${clusterUid}/namespaces/${namespace}/cronjobs/${name}/jobs`,
-    { params },
+    { params: query },
   )
 }
 
 /**
- * 获取定时任务（CronJob）事件列表
+ * 获取定时任务（CronJob）事件（Event）列表
  * @param clusterUid - 集群 UID
  * @param namespace - 命名空间名称
  * @param name - 定时任务名称
@@ -167,24 +168,29 @@ export function updateCronJobYaml(clusterUid: string, namespace: string, name: s
 }
 
 /**
- * 管理 CronJob 标签
+ * 配置定时任务（CronJob）标签
  * @param clusterUid - 集群 UID
  * @param namespace - 命名空间名称
- * @param name - CronJob 名称
- * @param data - 管理标签请求对象（labels 键值对、operation 操作类型）
+ * @param name - 定时任务名称
+ * @param data - 标签配置请求对象
  */
-export function manageCronJobLabel(clusterUid: string, namespace: string, name: string, data: MetadataLabelForm) {
+export function manageCronJobLabels(
+  clusterUid: string,
+  namespace: string,
+  name: string,
+  data: MetadataLabelForm,
+): Promise<void> {
   return request.post<void>(`/kubernetes/clusters/${clusterUid}/namespaces/${namespace}/cronjobs/${name}/labels`, data)
 }
 
 /**
- * 管理 CronJob 注解
+ * 配置定时任务（cronjob）注解
  * @param clusterUid - 集群 UID
  * @param namespace - 命名空间名称
- * @param name - CronJob 名称
- * @param data - 管理注解请求对象（annotations 键值对、operation 操作类型）
+ * @param name - 定时任务名称
+ * @param data - 注解配置请求对象
  */
-export function manageCronJobAnnotation(
+export function manageCronJobAnnotations(
   clusterUid: string,
   namespace: string,
   name: string,
@@ -197,28 +203,28 @@ export function manageCronJobAnnotation(
 }
 
 /**
- * 删除 CronJob
+ * 删除定时任务（cronjob）
  * @param clusterUid - 集群 UID
  * @param namespace - 命名空间名称
- * @param name - CronJob 名称
+ * @param name - 定时任务名称
  */
-export function deleteCronJob(clusterUid: string, namespace: string, name: string) {
+export function deleteCronJob(clusterUid: string, namespace: string, name: string): Promise<void> {
   return request.delete<void>(`/kubernetes/clusters/${clusterUid}/namespaces/${namespace}/cronjobs/${name}`)
 }
 
 /**
- * 批量删除 CronJob
+ * 批量删除定时任务（cronjob）
  * @param clusterUid - 集群 UID
- * @param uids - CronJob UID 列表
+ * @param uids - 定时任务 UID 数组
  */
-export function deleteCronJobs(clusterUid: string, uids: string[]) {
+export function deleteCronJobs(clusterUid: string, uids: string[]): Promise<void> {
   return request.delete<void>(`/kubernetes/clusters/${clusterUid}/cronjobs`, { data: uids })
 }
 
 /**
- * 导入 CronJob
+ * 导入定时任务（CronJob）
  * @param clusterUid - 集群 UID
- * @param formData - 上传的文件
+ * @param formData - 文件数据
  * @param onProgress - 上传进度回调
  */
 export function importCronJob(
@@ -232,40 +238,40 @@ export function importCronJob(
 }
 
 /**
- * 导出 CronJob
+ * 导出定时任务（cronjob）
  * @param clusterUid - 集群 UID
- * @param params - CronJob 查询条件请求对象（名称、命名空间、状态）
+ * @param query - 导出查询条件
  */
-export function exportCronJob(clusterUid: string, params: Partial<CronJobQueryForm>) {
-  return request.download(`/kubernetes/clusters/${clusterUid}/cronjobs/export`, { params })
+export function exportCronJob(clusterUid: string, query: Partial<CronJobExportQueryForm>): Promise<void> {
+  return request.download(`/kubernetes/clusters/${clusterUid}/cronjobs/export`, { params: query })
 }
 
 /**
- * 立即触发 CronJob
+ * 立即触发定时任务（CronJob）
  * @param clusterUid - 集群 UID
  * @param namespace - 命名空间名称
- * @param name - CronJob 名称
+ * @param name - 定时任务名称
  */
-export function triggerCronJob(clusterUid: string, namespace: string, name: string) {
+export function triggerCronJob(clusterUid: string, namespace: string, name: string): Promise<void> {
   return request.post<void>(`/kubernetes/clusters/${clusterUid}/namespaces/${namespace}/cronjobs/${name}/trigger`)
 }
 
 /**
- * 暂停更新 CronJob
+ * 暂停更新定时任务（CronJob）
  * @param clusterUid - 集群 UID
  * @param namespace - 命名空间名称
- * @param name - CronJob 名称
+ * @param name - 定时任务名称
  */
-export function pauseCronJob(clusterUid: string, namespace: string, name: string) {
+export function pauseCronJob(clusterUid: string, namespace: string, name: string): Promise<void> {
   return request.post<void>(`/kubernetes/clusters/${clusterUid}/namespaces/${namespace}/cronjobs/${name}/pause`)
 }
 
 /**
- * 恢复更新 CronJob
+ * 恢复更新定时任务（CronJob）
  * @param clusterUid - 集群 UID
  * @param namespace - 命名空间名称
- * @param name - CronJob 名称
+ * @param name - 定时任务名称
  */
-export function resumeCronJob(clusterUid: string, namespace: string, name: string) {
+export function resumeCronJob(clusterUid: string, namespace: string, name: string): Promise<void> {
   return request.post<void>(`/kubernetes/clusters/${clusterUid}/namespaces/${namespace}/cronjobs/${name}/resume`)
 }

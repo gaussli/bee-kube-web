@@ -48,7 +48,7 @@ export function getNamespaceDetail(clusterUid: string, name: string): Promise<Na
 }
 
 /**
- * 查看命名空间（Namespace）YAML
+ * 获取命名空间（Namespace）YAML
  * @param clusterUid - 集群 UID
  * @param name - 命名空间名称
  * @returns 命名空间 YAML
@@ -58,7 +58,7 @@ export function getNamespaceYaml(clusterUid: string, name: string): Promise<Name
 }
 
 /**
- * 获取命名空间（Namespace）事件列表
+ * 获取命名空间（Namespace）事件（Event）列表
  * @param clusterUid - 集群 UID
  * @param name - 命名空间名称
  * @param query - 事件查询条件

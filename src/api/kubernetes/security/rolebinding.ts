@@ -10,6 +10,7 @@ import type { EventListVo, EventQueryForm } from '@/types/kubernetes/event'
 import type {
   RoleBindingCreateForm,
   RoleBindingDetailVo,
+  RoleBindingExportQueryForm,
   RoleBindingListVo,
   RoleBindingQueryForm,
   RoleBindingUpdateForm,
@@ -51,7 +52,7 @@ export function getRoleBindingDetail(
 }
 
 /**
- * 查看角色绑定（RoleBinding）YAML
+ * 获取角色绑定（RoleBinding）YAML
  * @param clusterUid - 集群 UID
  * @param namespace - 命名空间名称
  * @param name - 角色绑定名称
@@ -64,7 +65,7 @@ export function getRoleBindingYaml(clusterUid: string, namespace: string, name: 
 }
 
 /**
- * 获取角色绑定（RoleBinding）事件列表
+ * 获取角色绑定（RoleBinding）事件（Event）列表
  * @param clusterUid - 集群 UID
  * @param namespace - 命名空间名称
  * @param name - 角色绑定名称
@@ -86,7 +87,7 @@ export function getRoleBindingEventList(
 }
 
 /**
- * 创建 RoleBinding
+ * 创建角色绑定（RoleBinding）
  * @param clusterUid - 集群 UID
  * @param data - 创建请求对象
  */
@@ -144,13 +145,13 @@ export function updateRoleBindingYaml(
 }
 
 /**
- * 更新 RoleBinding 标签
+ * 配置角色绑定（RoleBinding）标签
  * @param clusterUid - 集群 UID
  * @param namespace - 命名空间名称
- * @param name - RoleBinding 名称
- * @param data - 标签更新参数
+ * @param name - 角色绑定名称
+ * @param data - 标签配置请求对象
  */
-export function manageRoleBindingLabel(
+export function manageRoleBindingLabels(
   clusterUid: string,
   namespace: string,
   name: string,
@@ -160,13 +161,13 @@ export function manageRoleBindingLabel(
 }
 
 /**
- * 更新 RoleBinding 注解
+ * 配置角色绑定（rolebinding）注解
  * @param clusterUid - 集群 UID
  * @param namespace - 命名空间名称
- * @param name - RoleBinding 名称
- * @param data - 注解更新参数
+ * @param name - 角色绑定名称
+ * @param data - 注解配置请求对象
  */
-export function manageRoleBindingAnnotation(
+export function manageRoleBindingAnnotations(
   clusterUid: string,
   namespace: string,
   name: string,
@@ -179,20 +180,20 @@ export function manageRoleBindingAnnotation(
 }
 
 /**
- * 删除 RoleBinding
+ * 删除角色绑定（rolebinding）
  * @param clusterUid - 集群 UID
  * @param namespace - 命名空间名称
- * @param name - RoleBinding 名称
+ * @param name - 角色绑定名称
  */
 export function deleteRoleBinding(clusterUid: string, namespace: string, name: string): Promise<void> {
   return request.delete(`/kubernetes/clusters/${clusterUid}/namespaces/${namespace}/rolebindings/${name}`)
 }
 
 /**
- * 批量删除 RoleBinding
+ * 批量删除角色绑定（rolebinding）
  * @param clusterUid - 集群 UID
  * @param namespace - 命名空间名称
- * @param uids - 待删除的 RoleBinding UID 列表
+ * @param uids - 角色绑定 UID 数组
  */
 export function deleteRoleBindings(clusterUid: string, namespace: string, uids: string[]): Promise<void> {
   return request.delete(`/kubernetes/clusters/${clusterUid}/namespaces/${namespace}/rolebindings`, {
@@ -201,9 +202,9 @@ export function deleteRoleBindings(clusterUid: string, namespace: string, uids: 
 }
 
 /**
- * 导入 RoleBinding
+ * 导入角色绑定（RoleBinding）
  * @param clusterUid - 集群 UID
- * @param formData - 上传的文件
+ * @param formData - 文件数据
  * @param onProgress - 上传进度回调
  */
 export function importRoleBinding(
@@ -217,17 +218,17 @@ export function importRoleBinding(
 }
 
 /**
- * 导出 RoleBinding
+ * 导出角色绑定（rolebinding）
  * @param clusterUid - 集群 UID
  * @param namespace - 命名空间名称
- * @param params - 查询参数
+ * @param query - 导出查询条件
  */
 export function exportRoleBinding(
   clusterUid: string,
   namespace: string,
-  params: Partial<RoleBindingQueryForm>,
+  query: Partial<RoleBindingExportQueryForm>,
 ): Promise<void> {
   return request.download(`/kubernetes/clusters/${clusterUid}/namespaces/${namespace}/rolebindings/export`, {
-    params,
+    params: query,
   })
 }

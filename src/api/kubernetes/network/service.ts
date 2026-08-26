@@ -10,6 +10,7 @@ import type { EventListVo, EventQueryForm } from '@/types/kubernetes/event'
 import type {
   ServiceCreateForm,
   ServiceDetailVo,
+  ServiceExportQueryForm,
   ServiceListVo,
   ServiceQueryForm,
   ServiceUpdateForm,
@@ -42,7 +43,7 @@ export function getServiceDetail(clusterUid: string, namespace: string, name: st
 }
 
 /**
- * 查看服务（Service）YAML
+ * 获取服务（Service）YAML
  * @param clusterUid - 集群 UID
  * @param namespace - 命名空间名称
  * @param name - 服务名称
@@ -53,7 +54,7 @@ export function getServiceYaml(clusterUid: string, namespace: string, name: stri
 }
 
 /**
- * 获取服务（Service）事件列表
+ * 获取服务（Service）事件（Event）列表
  * @param clusterUid - 集群 UID
  * @param namespace - 命名空间名称
  * @param name - 服务名称
@@ -124,13 +125,13 @@ export function updateServiceYaml(clusterUid: string, namespace: string, name: s
 }
 
 /**
- * 更新 Service 标签
+ * 配置服务（Service）标签
  * @param clusterUid - 集群 UID
  * @param namespace - 命名空间名称
- * @param name - Service 名称
- * @param data - 标签更新参数
+ * @param name - 服务名称
+ * @param data - 标签配置请求对象
  */
-export function manageServiceLabel(
+export function manageServiceLabels(
   clusterUid: string,
   namespace: string,
   name: string,
@@ -140,13 +141,13 @@ export function manageServiceLabel(
 }
 
 /**
- * 更新 Service 注解
+ * 配置服务（Service）注解
  * @param clusterUid - 集群 UID
  * @param namespace - 命名空间名称
- * @param name - Service 名称
- * @param data - 注解更新参数
+ * @param name - 服务名称
+ * @param data - 注解配置请求对象
  */
-export function manageServiceAnnotation(
+export function manageServiceAnnotations(
   clusterUid: string,
   namespace: string,
   name: string,
@@ -156,20 +157,20 @@ export function manageServiceAnnotation(
 }
 
 /**
- * 删除 Service
+ * 删除服务（Service）
  * @param clusterUid - 集群 UID
  * @param namespace - 命名空间名称
- * @param name - Service 名称
+ * @param name - 服务名称
  */
 export function deleteService(clusterUid: string, namespace: string, name: string): Promise<void> {
   return request.delete(`/kubernetes/clusters/${clusterUid}/namespaces/${namespace}/services/${name}`)
 }
 
 /**
- * 批量删除 Service
+ * 批量删除服务（Service）
  * @param clusterUid - 集群 UID
  * @param namespace - 命名空间名称
- * @param uids - 待删除的 Service UID 列表
+ * @param uids - 服务 UID 数组
  */
 export function deleteServices(clusterUid: string, namespace: string, uids: string[]): Promise<void> {
   return request.delete(`/kubernetes/clusters/${clusterUid}/namespaces/${namespace}/services`, {
@@ -178,9 +179,9 @@ export function deleteServices(clusterUid: string, namespace: string, uids: stri
 }
 
 /**
- * 导入 Service
+ * 导入服务（Service）
  * @param clusterUid - 集群 UID
- * @param formData - 上传的文件
+ * @param formData - 文件数据
  * @param onProgress - 上传进度回调
  */
 export function importService(
@@ -194,11 +195,10 @@ export function importService(
 }
 
 /**
- * 导出 Service
+ * 导出服务（Service）
  * @param clusterUid - 集群 UID
- * @param namespace - 命名空间名称
- * @param name - Service 名称
+ * @param query - 导出查询条件
  */
-export function exportService(clusterUid: string, namespace: string, name: string): Promise<void> {
-  return request.download(`/kubernetes/clusters/${clusterUid}/namespaces/${namespace}/services/${name}/export`)
+export function exportService(clusterUid: string, query: Partial<ServiceExportQueryForm>): Promise<void> {
+  return request.download(`/kubernetes/clusters/${clusterUid}/services/${name}/export`, { params: query })
 }

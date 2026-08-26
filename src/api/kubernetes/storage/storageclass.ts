@@ -10,6 +10,7 @@ import type { EventListVo, EventQueryForm } from '@/types/kubernetes/event'
 import type {
   StorageClassCreateForm,
   StorageClassDetailVo,
+  StorageClassExportQueryForm,
   StorageClassListVo,
   StorageClassQueryForm,
   StorageClassUpdateForm,
@@ -42,7 +43,7 @@ export function getStorageClassDetail(clusterUid: string, name: string): Promise
 }
 
 /**
- * 查看存储类（StorageClass）YAML
+ * 获取存储类（StorageClass）YAML
  * @param clusterUid - 集群 UID
  * @param name - 存储类名称
  * @returns 存储类 YAML
@@ -52,7 +53,7 @@ export function getStorageClassYaml(clusterUid: string, name: string): Promise<S
 }
 
 /**
- * 获取存储类（StorageClass）事件列表
+ * 获取存储类（StorageClass）事件（Event）列表
  * @param clusterUid - 集群 UID
  * @param name - 存储类名称
  * @param query - 事件查询条件
@@ -115,22 +116,22 @@ export function updateStorageClassYaml(clusterUid: string, name: string, yaml: s
 }
 
 /**
- * 更新 StorageClass 标签
+ * 配置存储类（StorageClass）标签
  * @param clusterUid - 集群 UID
- * @param name - StorageClass 名称
- * @param data - 标签更新参数
+ * @param name - 存储类名称
+ * @param data - 标签配置请求对象
  */
-export function manageStorageClassLabel(clusterUid: string, name: string, data: MetadataLabelForm): Promise<void> {
+export function manageStorageClassLabels(clusterUid: string, name: string, data: MetadataLabelForm): Promise<void> {
   return request.post(`/kubernetes/clusters/${clusterUid}/storageclasses/${name}/labels`, data)
 }
 
 /**
- * 更新 StorageClass 注解
+ * 配置存储类（storageclass）注解
  * @param clusterUid - 集群 UID
- * @param name - StorageClass 名称
- * @param data - 注解更新参数
+ * @param name - 存储类名称
+ * @param data - 注解配置请求对象
  */
-export function manageStorageClassAnnotation(
+export function manageStorageClassAnnotations(
   clusterUid: string,
   name: string,
   data: MetadataAnnotationForm,
@@ -139,27 +140,27 @@ export function manageStorageClassAnnotation(
 }
 
 /**
- * 删除 StorageClass
+ * 删除存储类（storageclass）
  * @param clusterUid - 集群 UID
- * @param name - StorageClass 名称
+ * @param name - 存储类名称
  */
 export function deleteStorageClass(clusterUid: string, name: string): Promise<void> {
   return request.delete(`/kubernetes/clusters/${clusterUid}/storageclasses/${name}`)
 }
 
 /**
- * 批量删除 StorageClass
+ * 批量删除存储类（storageclass）
  * @param clusterUid - 集群 UID
- * @param uids - 待删除的 StorageClass UID 列表
+ * @param uids - 存储类 UID 数组
  */
 export function deleteStorageClasses(clusterUid: string, uids: string[]): Promise<void> {
   return request.delete(`/kubernetes/clusters/${clusterUid}/storageclasses`, { data: uids })
 }
 
 /**
- * 导入 StorageClass
+ * 导入存储类（StorageClass）
  * @param clusterUid - 集群 UID
- * @param formData - 上传的文件
+ * @param formData - 文件数据
  * @param onProgress - 上传进度回调
  */
 export function importStorageClass(
@@ -173,10 +174,10 @@ export function importStorageClass(
 }
 
 /**
- * 导出 StorageClass
+ * 导出存储类（storageclass）
  * @param clusterUid - 集群 UID
- * @param params - 查询参数
+ * @param query - 导出查询条件
  */
-export function exportStorageClass(clusterUid: string, params: Partial<StorageClassQueryForm>): Promise<void> {
-  return request.download(`/kubernetes/clusters/${clusterUid}/storageclasses/export`, { params })
+export function exportStorageClass(clusterUid: string, query: Partial<StorageClassExportQueryForm>): Promise<void> {
+  return request.download(`/kubernetes/clusters/${clusterUid}/storageclasses/export`, { params: query })
 }
