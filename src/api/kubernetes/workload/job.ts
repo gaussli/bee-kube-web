@@ -98,7 +98,6 @@ export function getJobMonitor(clusterUid: string, namespace: string, name: strin
  * 创建 Job
  * @param clusterUid 集群 UID
  * @param data Job 创建请求对象（description / metadata / spec）
- * @returns void
  */
 export function createJob(clusterUid: string, data: Partial<JobCreateForm>) {
   return request.post<void>(`/kubernetes/clusters/${clusterUid}/jobs`, data)
@@ -108,7 +107,6 @@ export function createJob(clusterUid: string, data: Partial<JobCreateForm>) {
  * YAML 创建 Job
  * @param clusterUid 集群 UID
  * @param yaml Job YAML 字符串
- * @returns void
  */
 export function createJobYaml(clusterUid: string, yaml: string) {
   return request.post<void>(`/kubernetes/clusters/${clusterUid}/jobs/yaml`, yaml, {
@@ -122,7 +120,6 @@ export function createJobYaml(clusterUid: string, yaml: string) {
  * @param namespace 命名空间名称
  * @param name Job 名称
  * @param data Job 更新请求对象（description / metadata / spec）
- * @returns void
  */
 export function updateJob(clusterUid: string, namespace: string, name: string, data: Partial<JobUpdateForm>) {
   return request.put<void>(`/kubernetes/clusters/${clusterUid}/namespaces/${namespace}/jobs/${name}`, data)
@@ -134,7 +131,6 @@ export function updateJob(clusterUid: string, namespace: string, name: string, d
  * @param namespace 命名空间名称
  * @param name Job 名称
  * @param yaml Job YAML 字符串
- * @returns void
  */
 export function updateJobYaml(clusterUid: string, namespace: string, name: string, yaml: string) {
   return request.put<void>(`/kubernetes/clusters/${clusterUid}/namespaces/${namespace}/jobs/${name}/yaml`, yaml, {
@@ -148,7 +144,6 @@ export function updateJobYaml(clusterUid: string, namespace: string, name: strin
  * @param namespace 命名空间名称
  * @param name Job 名称
  * @param data 管理标签请求对象（labels 键值对、operation 操作类型）
- * @returns void
  */
 export function manageJobLabel(clusterUid: string, namespace: string, name: string, data: MetadataLabelForm) {
   return request.post<void>(`/kubernetes/clusters/${clusterUid}/namespaces/${namespace}/jobs/${name}/labels`, data)
@@ -160,7 +155,6 @@ export function manageJobLabel(clusterUid: string, namespace: string, name: stri
  * @param namespace 命名空间名称
  * @param name Job 名称
  * @param data 管理注解请求对象（annotations 键值对、operation 操作类型）
- * @returns void
  */
 export function manageJobAnnotation(clusterUid: string, namespace: string, name: string, data: MetadataAnnotationForm) {
   return request.post<void>(`/kubernetes/clusters/${clusterUid}/namespaces/${namespace}/jobs/${name}/annotations`, data)
@@ -171,7 +165,6 @@ export function manageJobAnnotation(clusterUid: string, namespace: string, name:
  * @param clusterUid 集群 UID
  * @param namespace 命名空间名称
  * @param name Job 名称
- * @returns void
  */
 export function deleteJob(clusterUid: string, namespace: string, name: string) {
   return request.delete<void>(`/kubernetes/clusters/${clusterUid}/namespaces/${namespace}/jobs/${name}`)
@@ -181,7 +174,6 @@ export function deleteJob(clusterUid: string, namespace: string, name: string) {
  * 批量删除 Job
  * @param clusterUid 集群 UID
  * @param uids Job UID 列表
- * @returns void
  */
 export function deleteJobs(clusterUid: string, uids: string[]) {
   return request.delete<void>(`/kubernetes/clusters/${clusterUid}/jobs`, { data: uids })
@@ -192,7 +184,6 @@ export function deleteJobs(clusterUid: string, uids: string[]) {
  * @param clusterUid 集群 UID
  * @param formData 上传的文件
  * @param onProgress 上传进度回调
- * @returns void
  */
 export function importJob(
   clusterUid: string,
@@ -208,7 +199,6 @@ export function importJob(
  * 导出 Job
  * @param clusterUid 集群 UID
  * @param params Job 查询条件请求对象（名称、命名空间、状态）
- * @returns void
  */
 export function exportJob(clusterUid: string, params: Partial<JobQueryForm>) {
   return request.download(`/kubernetes/clusters/${clusterUid}/jobs/export`, { params })
@@ -219,7 +209,6 @@ export function exportJob(clusterUid: string, params: Partial<JobQueryForm>) {
  * @param clusterUid 集群 UID
  * @param namespace 命名空间名称
  * @param name Job 名称
- * @returns void
  */
 export function rerunJob(clusterUid: string, namespace: string, name: string) {
   return request.post<void>(`/kubernetes/clusters/${clusterUid}/namespaces/${namespace}/jobs/${name}/rerun`)
@@ -230,7 +219,6 @@ export function rerunJob(clusterUid: string, namespace: string, name: string) {
  * @param clusterUid 集群 UID
  * @param namespace 命名空间名称
  * @param name Job 名称
- * @returns void
  */
 export function pauseJob(clusterUid: string, namespace: string, name: string) {
   return request.post<void>(`/kubernetes/clusters/${clusterUid}/namespaces/${namespace}/jobs/${name}/pause`)
@@ -241,7 +229,6 @@ export function pauseJob(clusterUid: string, namespace: string, name: string) {
  * @param clusterUid 集群 UID
  * @param namespace 命名空间名称
  * @param name Job 名称
- * @returns void
  */
 export function resumeJob(clusterUid: string, namespace: string, name: string) {
   return request.post<void>(`/kubernetes/clusters/${clusterUid}/namespaces/${namespace}/jobs/${name}/resume`)

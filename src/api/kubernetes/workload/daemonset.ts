@@ -152,7 +152,6 @@ export function getDaemonSetMonitor(clusterUid: string, namespace: string, name:
  * 创建 DaemonSet
  * @param clusterUid 集群 UID
  * @param data DaemonSet 创建请求对象（description / metadata / spec）
- * @returns void
  */
 export function createDaemonSet(clusterUid: string, data: Partial<DaemonSetCreateForm>) {
   return request.post<void>(`/kubernetes/clusters/${clusterUid}/daemonsets`, data)
@@ -162,7 +161,6 @@ export function createDaemonSet(clusterUid: string, data: Partial<DaemonSetCreat
  * YAML 创建 DaemonSet
  * @param clusterUid 集群 UID
  * @param yaml DaemonSet YAML 字符串
- * @returns void
  */
 export function createDaemonSetYaml(clusterUid: string, yaml: string) {
   return request.post<void>(`/kubernetes/clusters/${clusterUid}/daemonsets/yaml`, yaml, {
@@ -176,7 +174,6 @@ export function createDaemonSetYaml(clusterUid: string, yaml: string) {
  * @param namespace 命名空间名称
  * @param name DaemonSet 名称
  * @param data DaemonSet 更新请求对象（description / metadata / spec）
- * @returns void
  */
 export function updateDaemonSet(
   clusterUid: string,
@@ -193,7 +190,6 @@ export function updateDaemonSet(
  * @param namespace 命名空间名称
  * @param name DaemonSet 名称
  * @param yaml DaemonSet YAML 字符串
- * @returns void
  */
 export function updateDaemonSetYaml(clusterUid: string, namespace: string, name: string, yaml: string) {
   return request.put<void>(`/kubernetes/clusters/${clusterUid}/namespaces/${namespace}/daemonsets/${name}/yaml`, yaml, {
@@ -207,7 +203,6 @@ export function updateDaemonSetYaml(clusterUid: string, namespace: string, name:
  * @param namespace 命名空间名称
  * @param name DaemonSet 名称
  * @param data 管理标签请求对象（labels 键值对、operation 操作类型）
- * @returns void
  */
 export function manageDaemonSetLabel(clusterUid: string, namespace: string, name: string, data: MetadataLabelForm) {
   return request.post<void>(
@@ -222,7 +217,6 @@ export function manageDaemonSetLabel(clusterUid: string, namespace: string, name
  * @param namespace 命名空间名称
  * @param name DaemonSet 名称
  * @param data 管理注解请求对象（annotations 键值对、operation 操作类型）
- * @returns void
  */
 export function manageDaemonSetAnnotation(
   clusterUid: string,
@@ -241,7 +235,6 @@ export function manageDaemonSetAnnotation(
  * @param clusterUid 集群 UID
  * @param namespace 命名空间名称
  * @param name DaemonSet 名称
- * @returns void
  */
 export function deleteDaemonSet(clusterUid: string, namespace: string, name: string) {
   return request.delete<void>(`/kubernetes/clusters/${clusterUid}/namespaces/${namespace}/daemonsets/${name}`)
@@ -251,7 +244,6 @@ export function deleteDaemonSet(clusterUid: string, namespace: string, name: str
  * 批量删除 DaemonSet
  * @param clusterUid 集群 UID
  * @param uids DaemonSet UID 列表
- * @returns void
  */
 export function deleteDaemonSets(clusterUid: string, uids: string[]) {
   return request.delete<void>(`/kubernetes/clusters/${clusterUid}/daemonsets`, { data: uids })
@@ -262,7 +254,6 @@ export function deleteDaemonSets(clusterUid: string, uids: string[]) {
  * @param clusterUid 集群 UID
  * @param formData 上传的文件
  * @param onProgress 上传进度回调
- * @returns void
  */
 export function importDaemonSet(
   clusterUid: string,
@@ -278,7 +269,6 @@ export function importDaemonSet(
  * 导出 DaemonSet
  * @param clusterUid 集群 UID
  * @param params DaemonSet 查询条件请求对象（名称、命名空间、状态）
- * @returns void
  */
 export function exportDaemonSet(clusterUid: string, params: Partial<DaemonSetQueryForm>) {
   return request.download(`/kubernetes/clusters/${clusterUid}/daemonsets/export`, { params })
@@ -289,7 +279,6 @@ export function exportDaemonSet(clusterUid: string, params: Partial<DaemonSetQue
  * @param clusterUid 集群 UID
  * @param namespace 命名空间名称
  * @param name DaemonSet 名称
- * @returns void
  */
 export function restartDaemonSet(clusterUid: string, namespace: string, name: string) {
   return request.post<void>(`/kubernetes/clusters/${clusterUid}/namespaces/${namespace}/daemonsets/${name}/restart`)
@@ -301,7 +290,6 @@ export function restartDaemonSet(clusterUid: string, namespace: string, name: st
  * @param namespace 命名空间名称
  * @param name DaemonSet 名称
  * @param data DaemonSet 回滚请求对象（目标历史版本号）
- * @returns void
  */
 export function rollbackDaemonSet(clusterUid: string, namespace: string, name: string, data: DaemonSetRollbackForm) {
   return request.post<void>(
@@ -315,7 +303,6 @@ export function rollbackDaemonSet(clusterUid: string, namespace: string, name: s
  * @param clusterUid 集群 UID
  * @param namespace 命名空间名称
  * @param name DaemonSet 名称
- * @returns void
  */
 export function pauseDaemonSet(clusterUid: string, namespace: string, name: string) {
   return request.post<void>(`/kubernetes/clusters/${clusterUid}/namespaces/${namespace}/daemonsets/${name}/pause`)
@@ -326,7 +313,6 @@ export function pauseDaemonSet(clusterUid: string, namespace: string, name: stri
  * @param clusterUid 集群 UID
  * @param namespace 命名空间名称
  * @param name DaemonSet 名称
- * @returns void
  */
 export function resumeDaemonSet(clusterUid: string, namespace: string, name: string) {
   return request.post<void>(`/kubernetes/clusters/${clusterUid}/namespaces/${namespace}/daemonsets/${name}/resume`)

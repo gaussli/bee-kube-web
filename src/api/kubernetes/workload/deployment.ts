@@ -281,7 +281,6 @@ export function deleteDeployments(clusterUid: string, uids: string[]): Promise<v
  * @param clusterUid 集群 UID
  * @param formData 文件数据
  * @param onProgress 上传进度回调
- * @returns void
  */
 export function importDeployment(
   clusterUid: string,
@@ -297,7 +296,6 @@ export function importDeployment(
  * 导出有状态应用（Deployment）
  * @param clusterUid 集群 UID
  * @param query 导出查询条件
- * @returns void
  */
 export function exportDeployment(clusterUid: string, query: Partial<DeploymentExportQueryForm>): Promise<void> {
   return request.download<void>(`/kubernetes/clusters/${clusterUid}/deployments/export`, { params: query })
