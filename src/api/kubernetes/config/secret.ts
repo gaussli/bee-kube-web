@@ -135,7 +135,7 @@ export function manageSecretLabels(
   name: string,
   data: MetadataLabelForm,
 ): Promise<void> {
-  return request.post(`/kubernetes/clusters/${clusterUid}/namespaces/${namespace}/secrets/${name}/labels`, data)
+  return request.post<void>(`/kubernetes/clusters/${clusterUid}/namespaces/${namespace}/secrets/${name}/labels`, data)
 }
 
 /**
@@ -151,7 +151,10 @@ export function manageSecretAnnotations(
   name: string,
   data: MetadataAnnotationForm,
 ): Promise<void> {
-  return request.post(`/kubernetes/clusters/${clusterUid}/namespaces/${namespace}/secrets/${name}/annotations`, data)
+  return request.post<void>(
+    `/kubernetes/clusters/${clusterUid}/namespaces/${namespace}/secrets/${name}/annotations`,
+    data,
+  )
 }
 
 /**
@@ -161,17 +164,16 @@ export function manageSecretAnnotations(
  * @param name - 密钥名称
  */
 export function deleteSecret(clusterUid: string, namespace: string, name: string): Promise<void> {
-  return request.delete(`/kubernetes/clusters/${clusterUid}/namespaces/${namespace}/secrets/${name}`)
+  return request.delete<void>(`/kubernetes/clusters/${clusterUid}/namespaces/${namespace}/secrets/${name}`)
 }
 
 /**
  * 批量删除密钥（secret）
  * @param clusterUid - 集群 UID
- * @param namespace - 命名空间名称
  * @param uids - 密钥 UID 数组
  */
-export function deleteSecrets(clusterUid: string, namespace: string, uids: string[]): Promise<void> {
-  return request.delete(`/kubernetes/clusters/${clusterUid}/namespaces/${namespace}/secrets`, { data: uids })
+export function deleteSecrets(clusterUid: string, uids: string[]): Promise<void> {
+  return request.delete<void>(`/kubernetes/clusters/${clusterUid}/secrets`, { data: uids })
 }
 
 /**
@@ -196,5 +198,5 @@ export function importSecret(
  * @param query - 导出查询条件
  */
 export function exportSecret(clusterUid: string, query: Partial<SecretExportQueryForm>): Promise<void> {
-  return request.download(`/kubernetes/clusters/${clusterUid}/secrets/export`, { params: query })
+  return request.download<void>(`/kubernetes/clusters/${clusterUid}/secrets/export`, { params: query })
 }

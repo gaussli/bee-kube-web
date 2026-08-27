@@ -167,7 +167,7 @@ export function managePersistentVolumeClaimLabels(
   name: string,
   data: MetadataLabelForm,
 ): Promise<void> {
-  return request.post(
+  return request.post<void>(
     `/kubernetes/clusters/${clusterUid}/namespaces/${namespace}/persistentvolumeclaims/${name}/labels`,
     data,
   )
@@ -186,7 +186,7 @@ export function managePersistentVolumeClaimAnnotations(
   name: string,
   data: MetadataAnnotationForm,
 ): Promise<void> {
-  return request.post(
+  return request.post<void>(
     `/kubernetes/clusters/${clusterUid}/namespaces/${namespace}/persistentvolumeclaims/${name}/annotations`,
     data,
   )
@@ -199,17 +199,18 @@ export function managePersistentVolumeClaimAnnotations(
  * @param name - 持久卷声明名称
  */
 export function deletePersistentVolumeClaim(clusterUid: string, namespace: string, name: string): Promise<void> {
-  return request.delete(`/kubernetes/clusters/${clusterUid}/namespaces/${namespace}/persistentvolumeclaims/${name}`)
+  return request.delete<void>(
+    `/kubernetes/clusters/${clusterUid}/namespaces/${namespace}/persistentvolumeclaims/${name}`,
+  )
 }
 
 /**
  * 批量删除持久卷声明（persistentvolumeclaim）
  * @param clusterUid - 集群 UID
- * @param namespace - 命名空间名称
  * @param uids - 持久卷声明 UID 数组
  */
-export function deletePersistentVolumeClaims(clusterUid: string, namespace: string, uids: string[]): Promise<void> {
-  return request.delete(`/kubernetes/clusters/${clusterUid}/namespaces/${namespace}/persistentvolumeclaims`, {
+export function deletePersistentVolumeClaims(clusterUid: string, uids: string[]): Promise<void> {
+  return request.delete<void>(`/kubernetes/clusters/${clusterUid}/persistentvolumeclaims`, {
     data: uids,
   })
 }
@@ -241,7 +242,10 @@ export function exportPersistentVolumeClaim(
   namespace: string,
   query: Partial<PersistentVolumeClaimExportQueryForm>,
 ): Promise<void> {
-  return request.download(`/kubernetes/clusters/${clusterUid}/namespaces/${namespace}/persistentvolumeclaims/export`, {
-    params: query,
-  })
+  return request.download<void>(
+    `/kubernetes/clusters/${clusterUid}/namespaces/${namespace}/persistentvolumeclaims/export`,
+    {
+      params: query,
+    },
+  )
 }

@@ -137,7 +137,7 @@ export function manageServiceLabels(
   name: string,
   data: MetadataLabelForm,
 ): Promise<void> {
-  return request.post(`/kubernetes/clusters/${clusterUid}/namespaces/${namespace}/services/${name}/labels`, data)
+  return request.post<void>(`/kubernetes/clusters/${clusterUid}/namespaces/${namespace}/services/${name}/labels`, data)
 }
 
 /**
@@ -153,7 +153,10 @@ export function manageServiceAnnotations(
   name: string,
   data: MetadataAnnotationForm,
 ): Promise<void> {
-  return request.post(`/kubernetes/clusters/${clusterUid}/namespaces/${namespace}/services/${name}/annotations`, data)
+  return request.post<void>(
+    `/kubernetes/clusters/${clusterUid}/namespaces/${namespace}/services/${name}/annotations`,
+    data,
+  )
 }
 
 /**
@@ -163,17 +166,16 @@ export function manageServiceAnnotations(
  * @param name - 服务名称
  */
 export function deleteService(clusterUid: string, namespace: string, name: string): Promise<void> {
-  return request.delete(`/kubernetes/clusters/${clusterUid}/namespaces/${namespace}/services/${name}`)
+  return request.delete<void>(`/kubernetes/clusters/${clusterUid}/namespaces/${namespace}/services/${name}`)
 }
 
 /**
  * 批量删除服务（Service）
  * @param clusterUid - 集群 UID
- * @param namespace - 命名空间名称
  * @param uids - 服务 UID 数组
  */
-export function deleteServices(clusterUid: string, namespace: string, uids: string[]): Promise<void> {
-  return request.delete(`/kubernetes/clusters/${clusterUid}/namespaces/${namespace}/services`, {
+export function deleteServices(clusterUid: string, uids: string[]): Promise<void> {
+  return request.delete<void>(`/kubernetes/clusters/${clusterUid}/services`, {
     data: uids,
   })
 }
@@ -200,5 +202,5 @@ export function importService(
  * @param query - 导出查询条件
  */
 export function exportService(clusterUid: string, query: Partial<ServiceExportQueryForm>): Promise<void> {
-  return request.download(`/kubernetes/clusters/${clusterUid}/services/${name}/export`, { params: query })
+  return request.download<void>(`/kubernetes/clusters/${clusterUid}/services/${name}/export`, { params: query })
 }

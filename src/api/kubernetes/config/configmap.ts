@@ -140,7 +140,10 @@ export function manageConfigMapLabels(
   name: string,
   data: MetadataLabelForm,
 ): Promise<void> {
-  return request.post(`/kubernetes/clusters/${clusterUid}/namespaces/${namespace}/configmaps/${name}/labels`, data)
+  return request.post<void>(
+    `/kubernetes/clusters/${clusterUid}/namespaces/${namespace}/configmaps/${name}/labels`,
+    data,
+  )
 }
 
 /**
@@ -156,7 +159,10 @@ export function manageConfigMapAnnotations(
   name: string,
   data: MetadataAnnotationForm,
 ): Promise<void> {
-  return request.post(`/kubernetes/clusters/${clusterUid}/namespaces/${namespace}/configmaps/${name}/annotations`, data)
+  return request.post<void>(
+    `/kubernetes/clusters/${clusterUid}/namespaces/${namespace}/configmaps/${name}/annotations`,
+    data,
+  )
 }
 
 /**
@@ -166,17 +172,16 @@ export function manageConfigMapAnnotations(
  * @param name - 配置映射名称
  */
 export function deleteConfigMap(clusterUid: string, namespace: string, name: string): Promise<void> {
-  return request.delete(`/kubernetes/clusters/${clusterUid}/namespaces/${namespace}/configmaps/${name}`)
+  return request.delete<void>(`/kubernetes/clusters/${clusterUid}/namespaces/${namespace}/configmaps/${name}`)
 }
 
 /**
  * 批量删除配置映射（ConfigMap）
  * @param clusterUid - 集群 UID
- * @param namespace - 命名空间名称
  * @param uids - 配置映射 UID 数组
  */
-export function deleteConfigMaps(clusterUid: string, namespace: string, uids: string[]): Promise<void> {
-  return request.delete(`/kubernetes/clusters/${clusterUid}/namespaces/${namespace}/configmaps`, { data: uids })
+export function deleteConfigMaps(clusterUid: string, uids: string[]): Promise<void> {
+  return request.delete<void>(`/kubernetes/clusters/${clusterUid}/configmaps`, { data: uids })
 }
 
 /**
@@ -201,5 +206,5 @@ export function importConfigMap(
  * @param query - 导出查询条件
  */
 export function exportConfigMap(clusterUid: string, query: Partial<ConfigMapExportQueryForm>): Promise<void> {
-  return request.download(`/kubernetes/clusters/${clusterUid}/configmaps/export`, { params: query })
+  return request.download<void>(`/kubernetes/clusters/${clusterUid}/configmaps/export`, { params: query })
 }

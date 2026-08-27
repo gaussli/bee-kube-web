@@ -132,7 +132,7 @@ export function manageClusterRoleBindingLabels(
   name: string,
   data: MetadataLabelForm,
 ): Promise<void> {
-  return request.post(`/kubernetes/clusters/${clusterUid}/clusterrolebindings/${name}/labels`, data)
+  return request.post<void>(`/kubernetes/clusters/${clusterUid}/clusterrolebindings/${name}/labels`, data)
 }
 
 /**
@@ -146,7 +146,7 @@ export function manageClusterRoleBindingAnnotations(
   name: string,
   data: MetadataAnnotationForm,
 ): Promise<void> {
-  return request.post(`/kubernetes/clusters/${clusterUid}/clusterrolebindings/${name}/annotations`, data)
+  return request.post<void>(`/kubernetes/clusters/${clusterUid}/clusterrolebindings/${name}/annotations`, data)
 }
 
 /**
@@ -155,7 +155,7 @@ export function manageClusterRoleBindingAnnotations(
  * @param name - 集群角色绑定名称
  */
 export function deleteClusterRoleBinding(clusterUid: string, name: string): Promise<void> {
-  return request.delete(`/kubernetes/clusters/${clusterUid}/clusterrolebindings/${name}`)
+  return request.delete<void>(`/kubernetes/clusters/${clusterUid}/clusterrolebindings/${name}`)
 }
 
 /**
@@ -164,7 +164,7 @@ export function deleteClusterRoleBinding(clusterUid: string, name: string): Prom
  * @param uids - 集群角色绑定 UID 数组
  */
 export function deleteClusterRoleBindings(clusterUid: string, uids: string[]): Promise<void> {
-  return request.delete(`/kubernetes/clusters/${clusterUid}/clusterrolebindings`, { data: uids })
+  return request.delete<void>(`/kubernetes/clusters/${clusterUid}/clusterrolebindings`, { data: uids })
 }
 
 /**
@@ -192,5 +192,5 @@ export function exportClusterRoleBinding(
   clusterUid: string,
   query: Partial<ClusterRoleBindingExportQueryForm>,
 ): Promise<void> {
-  return request.download(`/kubernetes/clusters/${clusterUid}/clusterrolebindings/export`, { params: query })
+  return request.download<void>(`/kubernetes/clusters/${clusterUid}/clusterrolebindings/export`, { params: query })
 }

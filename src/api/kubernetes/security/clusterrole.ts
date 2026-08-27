@@ -122,7 +122,7 @@ export function updateClusterRoleYaml(clusterUid: string, name: string, yaml: st
  * @param data - 标签配置请求对象
  */
 export function manageClusterRoleLabels(clusterUid: string, name: string, data: MetadataLabelForm): Promise<void> {
-  return request.post(`/kubernetes/clusters/${clusterUid}/clusterroles/${name}/labels`, data)
+  return request.post<void>(`/kubernetes/clusters/${clusterUid}/clusterroles/${name}/labels`, data)
 }
 
 /**
@@ -136,7 +136,7 @@ export function manageClusterRoleAnnotations(
   name: string,
   data: MetadataAnnotationForm,
 ): Promise<void> {
-  return request.post(`/kubernetes/clusters/${clusterUid}/clusterroles/${name}/annotations`, data)
+  return request.post<void>(`/kubernetes/clusters/${clusterUid}/clusterroles/${name}/annotations`, data)
 }
 
 /**
@@ -145,7 +145,7 @@ export function manageClusterRoleAnnotations(
  * @param name - 集群角色名称
  */
 export function deleteClusterRole(clusterUid: string, name: string): Promise<void> {
-  return request.delete(`/kubernetes/clusters/${clusterUid}/clusterroles/${name}`)
+  return request.delete<void>(`/kubernetes/clusters/${clusterUid}/clusterroles/${name}`)
 }
 
 /**
@@ -154,7 +154,7 @@ export function deleteClusterRole(clusterUid: string, name: string): Promise<voi
  * @param uids - 集群角色 UID 数组
  */
 export function deleteClusterRoles(clusterUid: string, uids: string[]): Promise<void> {
-  return request.delete(`/kubernetes/clusters/${clusterUid}/clusterroles`, { data: uids })
+  return request.delete<void>(`/kubernetes/clusters/${clusterUid}/clusterroles`, { data: uids })
 }
 
 /**
@@ -168,7 +168,7 @@ export function importClusterRole(
   formData: FormData,
   onProgress?: (progressEvent: AxiosProgressEvent) => void,
 ) {
-  return request.upload(`/kubernetes/clusters/${clusterUid}/clusterroles/import`, formData, {
+  return request.upload<void>(`/kubernetes/clusters/${clusterUid}/clusterroles/import`, formData, {
     onUploadProgress: onProgress,
   })
 }
@@ -179,5 +179,5 @@ export function importClusterRole(
  * @param query - 导出查询条件
  */
 export function exportClusterRole(clusterUid: string, query: Partial<ClusterRoleExportQueryForm>): Promise<void> {
-  return request.download(`/kubernetes/clusters/${clusterUid}/clusterroles/export`, { params: query })
+  return request.download<void>(`/kubernetes/clusters/${clusterUid}/clusterroles/export`, { params: query })
 }

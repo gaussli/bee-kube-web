@@ -137,7 +137,7 @@ export function manageRoleLabels(
   name: string,
   data: MetadataLabelForm,
 ): Promise<void> {
-  return request.post(`/kubernetes/clusters/${clusterUid}/namespaces/${namespace}/roles/${name}/labels`, data)
+  return request.post<void>(`/kubernetes/clusters/${clusterUid}/namespaces/${namespace}/roles/${name}/labels`, data)
 }
 
 /**
@@ -153,7 +153,10 @@ export function manageRoleAnnotations(
   name: string,
   data: MetadataAnnotationForm,
 ): Promise<void> {
-  return request.post(`/kubernetes/clusters/${clusterUid}/namespaces/${namespace}/roles/${name}/annotations`, data)
+  return request.post<void>(
+    `/kubernetes/clusters/${clusterUid}/namespaces/${namespace}/roles/${name}/annotations`,
+    data,
+  )
 }
 
 /**
@@ -163,17 +166,16 @@ export function manageRoleAnnotations(
  * @param name - 角色名称
  */
 export function deleteRole(clusterUid: string, namespace: string, name: string): Promise<void> {
-  return request.delete(`/kubernetes/clusters/${clusterUid}/namespaces/${namespace}/roles/${name}`)
+  return request.delete<void>(`/kubernetes/clusters/${clusterUid}/namespaces/${namespace}/roles/${name}`)
 }
 
 /**
  * 批量删除角色（role）
  * @param clusterUid - 集群 UID
- * @param namespace - 命名空间名称
  * @param uids - 角色 UID 数组
  */
-export function deleteRoles(clusterUid: string, namespace: string, uids: string[]): Promise<void> {
-  return request.delete(`/kubernetes/clusters/${clusterUid}/namespaces/${namespace}/roles`, { data: uids })
+export function deleteRoles(clusterUid: string, uids: string[]): Promise<void> {
+  return request.delete<void>(`/kubernetes/clusters/${clusterUid}/roles`, { data: uids })
 }
 
 /**
@@ -199,5 +201,7 @@ export function importRole(
  * @param query - 导出查询条件
  */
 export function exportRole(clusterUid: string, namespace: string, query: Partial<RoleExportQueryForm>): Promise<void> {
-  return request.download(`/kubernetes/clusters/${clusterUid}/namespaces/${namespace}/roles/export`, { params: query })
+  return request.download<void>(`/kubernetes/clusters/${clusterUid}/namespaces/${namespace}/roles/export`, {
+    params: query,
+  })
 }

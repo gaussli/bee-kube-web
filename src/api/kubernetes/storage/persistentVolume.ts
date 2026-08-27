@@ -124,7 +124,7 @@ export function updatePersistentVolumeYaml(clusterUid: string, name: string, yam
  * @param data - 标签配置请求对象
  */
 export function managePersistentVolumeLabels(clusterUid: string, name: string, data: MetadataLabelForm): Promise<void> {
-  return request.post(`/kubernetes/clusters/${clusterUid}/persistentvolumes/${name}/labels`, data)
+  return request.post<void>(`/kubernetes/clusters/${clusterUid}/persistentvolumes/${name}/labels`, data)
 }
 
 /**
@@ -138,7 +138,7 @@ export function managePersistentVolumeAnnotations(
   name: string,
   data: MetadataAnnotationForm,
 ): Promise<void> {
-  return request.post(`/kubernetes/clusters/${clusterUid}/persistentvolumes/${name}/annotations`, data)
+  return request.post<void>(`/kubernetes/clusters/${clusterUid}/persistentvolumes/${name}/annotations`, data)
 }
 
 /**
@@ -147,7 +147,7 @@ export function managePersistentVolumeAnnotations(
  * @param name - 持久卷名称
  */
 export function deletePersistentVolume(clusterUid: string, name: string): Promise<void> {
-  return request.delete(`/kubernetes/clusters/${clusterUid}/persistentvolumes/${name}`)
+  return request.delete<void>(`/kubernetes/clusters/${clusterUid}/persistentvolumes/${name}`)
 }
 
 /**
@@ -156,7 +156,7 @@ export function deletePersistentVolume(clusterUid: string, name: string): Promis
  * @param uids - 持久卷 UID 数组
  */
 export function deletePersistentVolumes(clusterUid: string, uids: string[]): Promise<void> {
-  return request.delete(`/kubernetes/clusters/${clusterUid}/persistentvolumes`, { data: uids })
+  return request.delete<void>(`/kubernetes/clusters/${clusterUid}/persistentvolumes`, { data: uids })
 }
 
 /**
@@ -184,5 +184,5 @@ export function exportPersistentVolume(
   clusterUid: string,
   query: Partial<PersistentVolumeExportQueryForm>,
 ): Promise<void> {
-  return request.download(`/kubernetes/clusters/${clusterUid}/persistentvolumes/export`, { params: query })
+  return request.download<void>(`/kubernetes/clusters/${clusterUid}/persistentvolumes/export`, { params: query })
 }

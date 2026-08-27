@@ -122,7 +122,7 @@ export function updateStorageClassYaml(clusterUid: string, name: string, yaml: s
  * @param data - 标签配置请求对象
  */
 export function manageStorageClassLabels(clusterUid: string, name: string, data: MetadataLabelForm): Promise<void> {
-  return request.post(`/kubernetes/clusters/${clusterUid}/storageclasses/${name}/labels`, data)
+  return request.post<void>(`/kubernetes/clusters/${clusterUid}/storageclasses/${name}/labels`, data)
 }
 
 /**
@@ -136,7 +136,7 @@ export function manageStorageClassAnnotations(
   name: string,
   data: MetadataAnnotationForm,
 ): Promise<void> {
-  return request.post(`/kubernetes/clusters/${clusterUid}/storageclasses/${name}/annotations`, data)
+  return request.post<void>(`/kubernetes/clusters/${clusterUid}/storageclasses/${name}/annotations`, data)
 }
 
 /**
@@ -145,7 +145,7 @@ export function manageStorageClassAnnotations(
  * @param name - 存储类名称
  */
 export function deleteStorageClass(clusterUid: string, name: string): Promise<void> {
-  return request.delete(`/kubernetes/clusters/${clusterUid}/storageclasses/${name}`)
+  return request.delete<void>(`/kubernetes/clusters/${clusterUid}/storageclasses/${name}`)
 }
 
 /**
@@ -154,7 +154,7 @@ export function deleteStorageClass(clusterUid: string, name: string): Promise<vo
  * @param uids - 存储类 UID 数组
  */
 export function deleteStorageClasses(clusterUid: string, uids: string[]): Promise<void> {
-  return request.delete(`/kubernetes/clusters/${clusterUid}/storageclasses`, { data: uids })
+  return request.delete<void>(`/kubernetes/clusters/${clusterUid}/storageclasses`, { data: uids })
 }
 
 /**
@@ -179,5 +179,5 @@ export function importStorageClass(
  * @param query - 导出查询条件
  */
 export function exportStorageClass(clusterUid: string, query: Partial<StorageClassExportQueryForm>): Promise<void> {
-  return request.download(`/kubernetes/clusters/${clusterUid}/storageclasses/export`, { params: query })
+  return request.download<void>(`/kubernetes/clusters/${clusterUid}/storageclasses/export`, { params: query })
 }

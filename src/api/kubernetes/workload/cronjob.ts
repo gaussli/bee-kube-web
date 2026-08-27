@@ -243,7 +243,7 @@ export function importCronJob(
  * @param query - 导出查询条件
  */
 export function exportCronJob(clusterUid: string, query: Partial<CronJobExportQueryForm>): Promise<void> {
-  return request.download(`/kubernetes/clusters/${clusterUid}/cronjobs/export`, { params: query })
+  return request.download<void>(`/kubernetes/clusters/${clusterUid}/cronjobs/export`, { params: query })
 }
 
 /**

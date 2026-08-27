@@ -236,7 +236,7 @@ export function importJob(
  * @param query - 导出查询条件
  */
 export function exportJob(clusterUid: string, query: Partial<JobExportQueryForm>): Promise<void> {
-  return request.download(`/kubernetes/clusters/${clusterUid}/jobs/export`, { params: query })
+  return request.download<void>(`/kubernetes/clusters/${clusterUid}/jobs/export`, { params: query })
 }
 
 /**

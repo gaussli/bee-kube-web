@@ -287,7 +287,7 @@ export function importDaemonSet(
  * @param query - 导出查询条件
  */
 export function exportDaemonSet(clusterUid: string, query: Partial<DaemonSetExportQueryForm>): Promise<void> {
-  return request.download(`/kubernetes/clusters/${clusterUid}/daemonsets/export`, { params: query })
+  return request.download<void>(`/kubernetes/clusters/${clusterUid}/daemonsets/export`, { params: query })
 }
 
 /**

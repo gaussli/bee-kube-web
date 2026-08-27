@@ -157,7 +157,10 @@ export function manageRoleBindingLabels(
   name: string,
   data: MetadataLabelForm,
 ): Promise<void> {
-  return request.post(`/kubernetes/clusters/${clusterUid}/namespaces/${namespace}/rolebindings/${name}/labels`, data)
+  return request.post<void>(
+    `/kubernetes/clusters/${clusterUid}/namespaces/${namespace}/rolebindings/${name}/labels`,
+    data,
+  )
 }
 
 /**
@@ -173,7 +176,7 @@ export function manageRoleBindingAnnotations(
   name: string,
   data: MetadataAnnotationForm,
 ): Promise<void> {
-  return request.post(
+  return request.post<void>(
     `/kubernetes/clusters/${clusterUid}/namespaces/${namespace}/rolebindings/${name}/annotations`,
     data,
   )
@@ -186,17 +189,16 @@ export function manageRoleBindingAnnotations(
  * @param name - 角色绑定名称
  */
 export function deleteRoleBinding(clusterUid: string, namespace: string, name: string): Promise<void> {
-  return request.delete(`/kubernetes/clusters/${clusterUid}/namespaces/${namespace}/rolebindings/${name}`)
+  return request.delete<void>(`/kubernetes/clusters/${clusterUid}/namespaces/${namespace}/rolebindings/${name}`)
 }
 
 /**
  * 批量删除角色绑定（rolebinding）
  * @param clusterUid - 集群 UID
- * @param namespace - 命名空间名称
  * @param uids - 角色绑定 UID 数组
  */
-export function deleteRoleBindings(clusterUid: string, namespace: string, uids: string[]): Promise<void> {
-  return request.delete(`/kubernetes/clusters/${clusterUid}/namespaces/${namespace}/rolebindings`, {
+export function deleteRoleBindings(clusterUid: string, uids: string[]): Promise<void> {
+  return request.delete<void>(`/kubernetes/clusters/${clusterUid}/rolebindings`, {
     data: uids,
   })
 }
@@ -228,7 +230,7 @@ export function exportRoleBinding(
   namespace: string,
   query: Partial<RoleBindingExportQueryForm>,
 ): Promise<void> {
-  return request.download(`/kubernetes/clusters/${clusterUid}/namespaces/${namespace}/rolebindings/export`, {
+  return request.download<void>(`/kubernetes/clusters/${clusterUid}/namespaces/${namespace}/rolebindings/export`, {
     params: query,
   })
 }

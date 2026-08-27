@@ -263,12 +263,7 @@ function updateDeploymentYamlMock(clusterUid: string, namespace: string, name: s
  * @param data 管理标签请求对象（labels 键值对、operation 操作类型）
  * @returns void
  */
-function manageDeploymentLabelMock(
-  clusterUid: string,
-  namespace: string,
-  name: string,
-  data: MetadataLabelForm,
-): void {
+function manageDeploymentLabelMock(clusterUid: string, namespace: string, name: string, data: MetadataLabelForm): void {
   console.log('[Mock] manageDeploymentLabel', clusterUid, namespace, name, data)
 }
 

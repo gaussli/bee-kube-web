@@ -161,7 +161,10 @@ export function manageNetworkPolicyLabels(
   name: string,
   data: MetadataLabelForm,
 ): Promise<void> {
-  return request.post(`/kubernetes/clusters/${clusterUid}/namespaces/${namespace}/networkpolicies/${name}/labels`, data)
+  return request.post<void>(
+    `/kubernetes/clusters/${clusterUid}/namespaces/${namespace}/networkpolicies/${name}/labels`,
+    data,
+  )
 }
 
 /**
@@ -177,7 +180,7 @@ export function manageNetworkPolicyAnnotations(
   name: string,
   data: MetadataAnnotationForm,
 ): Promise<void> {
-  return request.post(
+  return request.post<void>(
     `/kubernetes/clusters/${clusterUid}/namespaces/${namespace}/networkpolicies/${name}/annotations`,
     data,
   )
@@ -190,17 +193,16 @@ export function manageNetworkPolicyAnnotations(
  * @param name - 网络策略名称
  */
 export function deleteNetworkPolicy(clusterUid: string, namespace: string, name: string): Promise<void> {
-  return request.delete(`/kubernetes/clusters/${clusterUid}/namespaces/${namespace}/networkpolicies/${name}`)
+  return request.delete<void>(`/kubernetes/clusters/${clusterUid}/namespaces/${namespace}/networkpolicies/${name}`)
 }
 
 /**
  * 批量删除网络策略（NetworkPolicy）
  * @param clusterUid - 集群 UID
- * @param namespace - 命名空间名称
  * @param uids - 网络策略 UID 数组
  */
-export function deleteNetworkPolicies(clusterUid: string, namespace: string, uids: string[]): Promise<void> {
-  return request.delete(`/kubernetes/clusters/${clusterUid}/namespaces/${namespace}/networkpolicies`, {
+export function deleteNetworkPolicies(clusterUid: string, uids: string[]): Promise<void> {
+  return request.delete<void>(`/kubernetes/clusters/${clusterUid}/networkpolicies`, {
     data: uids,
   })
 }
@@ -227,5 +229,5 @@ export function importNetworkPolicy(
  * @param query - 导出查询条件
  */
 export function exportNetworkPolicy(clusterUid: string, query: Partial<NetworkPolicyExportQueryForm>): Promise<void> {
-  return request.download(`/kubernetes/clusters/${clusterUid}/networkpolicies/export`, { params: query })
+  return request.download<void>(`/kubernetes/clusters/${clusterUid}/networkpolicies/export`, { params: query })
 }

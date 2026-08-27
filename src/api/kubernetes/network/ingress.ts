@@ -137,7 +137,7 @@ export function manageIngressLabels(
   name: string,
   data: MetadataLabelForm,
 ): Promise<void> {
-  return request.post(`/kubernetes/clusters/${clusterUid}/namespaces/${namespace}/ingresses/${name}/labels`, data)
+  return request.post<void>(`/kubernetes/clusters/${clusterUid}/namespaces/${namespace}/ingresses/${name}/labels`, data)
 }
 
 /**
@@ -153,7 +153,10 @@ export function manageIngressAnnotations(
   name: string,
   data: MetadataAnnotationForm,
 ): Promise<void> {
-  return request.post(`/kubernetes/clusters/${clusterUid}/namespaces/${namespace}/ingresses/${name}/annotations`, data)
+  return request.post<void>(
+    `/kubernetes/clusters/${clusterUid}/namespaces/${namespace}/ingresses/${name}/annotations`,
+    data,
+  )
 }
 
 /**
@@ -163,17 +166,16 @@ export function manageIngressAnnotations(
  * @param name - 入口名称
  */
 export function deleteIngress(clusterUid: string, namespace: string, name: string): Promise<void> {
-  return request.delete(`/kubernetes/clusters/${clusterUid}/namespaces/${namespace}/ingresses/${name}`)
+  return request.delete<void>(`/kubernetes/clusters/${clusterUid}/namespaces/${namespace}/ingresses/${name}`)
 }
 
 /**
  * 批量删除入口（ingress）
  * @param clusterUid - 集群 UID
- * @param namespace - 命名空间名称
  * @param uids - 入口 UID 数组
  */
-export function deleteIngresses(clusterUid: string, namespace: string, uids: string[]): Promise<void> {
-  return request.delete(`/kubernetes/clusters/${clusterUid}/namespaces/${namespace}/ingresses`, {
+export function deleteIngresses(clusterUid: string, uids: string[]): Promise<void> {
+  return request.delete<void>(`/kubernetes/clusters/${clusterUid}/ingresses`, {
     data: uids,
   })
 }
@@ -200,5 +202,5 @@ export function importIngress(
  * @param query - 导出查询条件
  */
 export function exportIngress(clusterUid: string, query: Partial<IngressExportQueryForm>): Promise<void> {
-  return request.download(`/kubernetes/clusters/${clusterUid}/ingresss/export`, { params: query })
+  return request.download<void>(`/kubernetes/clusters/${clusterUid}/ingresss/export`, { params: query })
 }

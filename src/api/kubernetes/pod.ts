@@ -102,11 +102,10 @@ export function deletePod(clusterUid: string, namespace: string, name: string): 
 /**
  * 批量删除/重启容器组（Pod）
  * @param clusterUid - 集群 UID
- * @param namespace - 命名空间名称
  * @param uids - 容器组 UID 数组
  */
-export function deletePods(clusterUid: string, namespace: string, uids: string[]): Promise<void> {
-  return request.delete<void>(`/kubernetes/clusters/${clusterUid}/namespaces/${namespace}/pods`, {
+export function deletePods(clusterUid: string, uids: string[]): Promise<void> {
+  return request.delete<void>(`/kubernetes/clusters/${clusterUid}/pods`, {
     data: uids,
   })
 }
