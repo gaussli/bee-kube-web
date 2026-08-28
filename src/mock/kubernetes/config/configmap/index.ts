@@ -15,8 +15,28 @@ import type {
 } from '@/types/kubernetes/config/configmap'
 import type { EventListVo, EventQueryForm } from '@/types/kubernetes/event'
 
+import { handleEventList } from '@/mock/utils'
+
 import { mockConfigMapDetail, mockConfigMapEventList, mockConfigMapList, mockConfigMapYaml } from './data'
 
+/**
+ * 配置映射路由配置
+ * @remarks
+ * - GET    /kubernetes/clusters/:clusterUid/configmaps                                         - 获取配置映射列表
+ * - GET    /kubernetes/clusters/:clusterUid/namespaces/:namespace/configmaps/:name             - 获取配置映射详情
+ * - GET    /kubernetes/clusters/:clusterUid/namespaces/:namespace/configmaps/:name/yaml        - 获取配置映射 YAML
+ * - GET    /kubernetes/clusters/:clusterUid/namespaces/:namespace/configmaps/:name/events      - 获取配置映射事件列表
+ * - POST   /kubernetes/clusters/:clusterUid/configmaps                                         - 创建配置映射
+ * - POST   /kubernetes/clusters/:clusterUid/configmaps/yaml                                    - 创建配置映射（YAML）
+ * - PUT    /kubernetes/clusters/:clusterUid/namespaces/:namespace/configmaps/:name             - 更新配置映射
+ * - PUT    /kubernetes/clusters/:clusterUid/namespaces/:namespace/configmaps/:name/yaml        - 更新配置映射（YAML）
+ * - POST   /kubernetes/clusters/:clusterUid/namespaces/:namespace/configmaps/:name/labels      - 配置配置映射标签
+ * - POST   /kubernetes/clusters/:clusterUid/namespaces/:namespace/configmaps/:name/annotations - 配置配置映射注解
+ * - DELETE /kubernetes/clusters/:clusterUid/namespaces/:namespace/configmaps/:name             - 删除配置映射
+ * - DELETE /kubernetes/clusters/:clusterUid/configmaps                                         - 批量删除配置映射
+ * - POST   /kubernetes/clusters/:clusterUid/configmaps/import                                  - 导入配置映射
+ * - GET    /kubernetes/clusters/:clusterUid/configmaps/export                                  - 导出配置映射
+ */
 export default [
   {
     method: 'get',
@@ -167,22 +187,8 @@ function getConfigMapEventList(
   name: string,
   query: Partial<EventQueryForm>,
 ): PageVo<EventListVo> {
-  console.log('[Mock] getConfigMapEventList', clusterUid, namespace, name)
-  const filtered = mockConfigMapEventList.filter((e: EventListVo) => {
-    if (query.type && e.type !== query.type) return false
-    return true
-  })
-  const filteredReason = query.reason ? filtered.filter(p => p.reason?.includes(query.reason as string)) : []
-  const filteredNote = query.note ? filtered.filter(p => p.note?.includes(query.note as string)) : []
-  const matched = query.reason || query.note ? Array.from(new Set([...filteredReason, ...filteredNote])) : filtered
-  const page = query.page || 1
-  const pageSize = query.pageSize || 10
-  return {
-    list: matched.slice((page - 1) * pageSize, page * pageSize),
-    total: matched.length,
-    page,
-    pageSize,
-  }
+  console.log('[Mock] getConfigMapEventList', clusterUid, namespace, name, query)
+  return handleEventList(query, mockConfigMapEventList)
 }
 
 /**
@@ -280,7 +286,6 @@ function deleteConfigMaps(clusterUid: string, uids: string[]): void {
  * 导入配置映射（ConfigMap）
  * @param clusterUid - 集群 UID
  * @param formData - 文件数据
- * @param onProgress - 上传进度回调
  */
 function importConfigMap(clusterUid: string, formData: FormData): void {
   void formData

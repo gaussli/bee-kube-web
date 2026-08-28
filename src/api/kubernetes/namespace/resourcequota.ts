@@ -74,25 +74,22 @@ export function getNamespaceResourceQuotaEventList(
 /**
  * 创建命名空间（Namespace）的资源配额（ResourceQuota）
  * @param clusterUid - 集群 UID
- * @param namespace - 命名空间名称
  * @param data - 创建请求对象
  */
 export function createNamespaceResourceQuota(
   clusterUid: string,
-  namespace: string,
   data: Partial<NamespaceResourceQuotaCreateForm>,
 ): Promise<void> {
-  return request.post<void>(`/kubernetes/clusters/${clusterUid}/namespaces/${namespace}/resourcequotas`, data)
+  return request.post<void>(`/kubernetes/clusters/${clusterUid}/resourcequotas`, data)
 }
 
 /**
  * 创建命名空间（Namespace）的资源配额（ResourceQuota）（YAML）
  * @param clusterUid - 集群 UID
- * @param namespace - 命名空间名称
  * @param yaml - 创建 YAML 文本
  */
-export function createNamespaceResourceQuotaYaml(clusterUid: string, namespace: string, yaml: string): Promise<void> {
-  return request.post<void>(`/kubernetes/clusters/${clusterUid}/namespaces/${namespace}/resourcequotas/yaml`, yaml, {
+export function createNamespaceResourceQuotaYaml(clusterUid: string, yaml: string): Promise<void> {
+  return request.post<void>(`/kubernetes/clusters/${clusterUid}/resourcequotas/yaml`, yaml, {
     headers: { 'Content-Type': 'application/yaml' },
   })
 }

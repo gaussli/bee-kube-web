@@ -202,5 +202,5 @@ export function importIngress(
  * @param query - 导出查询条件
  */
 export function exportIngress(clusterUid: string, query: Partial<IngressExportQueryForm>): Promise<void> {
-  return request.download<void>(`/kubernetes/clusters/${clusterUid}/ingresss/export`, { params: query })
+  return request.download<void>(`/kubernetes/clusters/${clusterUid}/ingresses/export`, { params: query })
 }

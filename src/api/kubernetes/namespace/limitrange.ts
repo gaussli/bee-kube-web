@@ -74,25 +74,22 @@ export function getNamespaceLimitRangeEventList(
 /**
  * 创建命名空间（Namespace）的资源限制（LimitRange）
  * @param clusterUid - 集群 UID
- * @param namespace - 命名空间名称
  * @param data - 创建请求对象
  */
 export function createNamespaceLimitRange(
   clusterUid: string,
-  namespace: string,
   data: Partial<NamespaceLimitRangeCreateForm>,
 ): Promise<void> {
-  return request.post<void>(`/kubernetes/clusters/${clusterUid}/namespaces/${namespace}/limitranges`, data)
+  return request.post<void>(`/kubernetes/clusters/${clusterUid}/limitranges`, data)
 }
 
 /**
  * 创建命名空间（Namespace）的资源限制（LimitRange）（YAML）
  * @param clusterUid - 集群 UID
- * @param namespace - 命名空间名称
  * @param yaml - 创建 YAML 文本
  */
-export function createNamespaceLimitRangeYaml(clusterUid: string, namespace: string, yaml: string): Promise<void> {
-  return request.post<void>(`/kubernetes/clusters/${clusterUid}/namespaces/${namespace}/limitranges/yaml`, yaml, {
+export function createNamespaceLimitRangeYaml(clusterUid: string, yaml: string): Promise<void> {
+  return request.post<void>(`/kubernetes/clusters/${clusterUid}/limitranges/yaml`, yaml, {
     headers: { 'Content-Type': 'application/yaml' },
   })
 }

@@ -15,8 +15,28 @@ import type {
 } from '@/types/kubernetes/config/secret'
 import type { EventListVo, EventQueryForm } from '@/types/kubernetes/event'
 
+import { handleEventList } from '@/mock/utils'
+
 import { mockSecretDetail, mockSecretEventList, mockSecretList, mockSecretYaml } from './data'
 
+/**
+ * 密钥路由配置
+ * @remarks
+ * - GET    /kubernetes/clusters/:clusterUid/secrets                                         - 获取密钥列表
+ * - GET    /kubernetes/clusters/:clusterUid/namespaces/:namespace/secrets/:name             - 获取密钥详情
+ * - GET    /kubernetes/clusters/:clusterUid/namespaces/:namespace/secrets/:name/yaml        - 获取密钥 YAML
+ * - GET    /kubernetes/clusters/:clusterUid/namespaces/:namespace/secrets/:name/events      - 获取密钥事件列表
+ * - POST   /kubernetes/clusters/:clusterUid/secrets                                         - 创建密钥
+ * - POST   /kubernetes/clusters/:clusterUid/secrets/yaml                                    - 创建密钥（YAML）
+ * - PUT    /kubernetes/clusters/:clusterUid/namespaces/:namespace/secrets/:name             - 更新密钥
+ * - PUT    /kubernetes/clusters/:clusterUid/namespaces/:namespace/secrets/:name/yaml        - 更新密钥（YAML）
+ * - POST   /kubernetes/clusters/:clusterUid/namespaces/:namespace/secrets/:name/labels      - 配置密钥标签
+ * - POST   /kubernetes/clusters/:clusterUid/namespaces/:namespace/secrets/:name/annotations - 配置密钥注解
+ * - DELETE /kubernetes/clusters/:clusterUid/namespaces/:namespace/secrets/:name             - 删除密钥
+ * - DELETE /kubernetes/clusters/:clusterUid/secrets                                         - 批量删除密钥
+ * - POST   /kubernetes/clusters/:clusterUid/secrets/import                                  - 导入密钥
+ * - GET    /kubernetes/clusters/:clusterUid/secrets/export                                  - 导出密钥
+ */
 export default [
   {
     method: 'get',
@@ -169,21 +189,7 @@ function getSecretEventList(
   query: Partial<EventQueryForm>,
 ): PageVo<EventListVo> {
   console.log('[Mock] getSecretEventList', clusterUid, namespace, name, query)
-  const filtered = mockSecretEventList.filter((e: EventListVo) => {
-    if (query.type && e.type !== query.type) return false
-    return true
-  })
-  const filteredReason = query.reason ? filtered.filter(p => p.reason?.includes(query.reason as string)) : []
-  const filteredNote = query.note ? filtered.filter(p => p.note?.includes(query.note as string)) : []
-  const matched = query.reason || query.note ? Array.from(new Set([...filteredReason, ...filteredNote])) : filtered
-  const page = query.page || 1
-  const pageSize = query.pageSize || 10
-  return {
-    list: matched.slice((page - 1) * pageSize, page * pageSize),
-    total: matched.length,
-    page,
-    pageSize,
-  }
+  return handleEventList(query, mockSecretEventList)
 }
 
 /**
