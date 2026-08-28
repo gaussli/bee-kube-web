@@ -9,7 +9,7 @@ import type { PersistentVolumeReclaimPolicy } from '@/config/kubernetes/storage/
 import type { VolumeBindingMode } from '@/config/kubernetes/storage/storageclass'
 
 import type { ObjectMetaCreatableForm, ObjectMetaEditableForm } from '../../common'
-import type { Clustered, ObjectMeta } from '../../types'
+import type { Clustered, NonNamespaceObjectMeta } from '../../types'
 
 import type { StorageClass } from './types'
 
@@ -43,7 +43,7 @@ export interface StorageClassListVo extends UidEntity, Clustered, AuditEntity, D
  * 详情响应对象
  */
 export interface StorageClassDetailVo
-  extends UidEntity, Clustered, AuditEntity, DeletableEntity, ObjectMeta, StorageClass {
+  extends UidEntity, Clustered, AuditEntity, DeletableEntity, NonNamespaceObjectMeta, StorageClass {
   /** 描述 */
   description?: string
 }

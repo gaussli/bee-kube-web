@@ -9,6 +9,10 @@ import type {
   StatefulSetUpdateStrategyType,
 } from '@/config/kubernetes/workload/statefulset'
 
+import type {
+  PersistentVolumeClaimSpec,
+  PersistentVolumeClaimStatusObj,
+} from '../../storage/persistentvolumeclaim/types'
 import type { Condition, LabelSelector, ObjectMeta } from '../../types'
 import type { PodTemplateSpec } from '../types'
 
@@ -59,9 +63,9 @@ export interface StatefulSetRollingUpdate {
 /**
  * StatefulSet 持久卷声明模板
  */
-export interface StatefulSetVolumeClaimTemplate {
-  metadata: ObjectMeta
-  // todo
+export interface StatefulSetVolumeClaimTemplate extends ObjectMeta {
+  spec: PersistentVolumeClaimSpec
+  statusObj: PersistentVolumeClaimStatusObj
 }
 
 /**

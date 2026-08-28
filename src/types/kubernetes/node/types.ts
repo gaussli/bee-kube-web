@@ -4,7 +4,7 @@
  */
 
 import type { ResourceName, TaintEffect } from '@/config/kubernetes/core'
-import type { NodeAddressType, NodeConditionType, NodePhase } from '@/config/kubernetes/node'
+import type { NodeAddressType, NodeConditionType } from '@/config/kubernetes/node'
 
 import type { Condition, Quantity } from '../types'
 
@@ -50,8 +50,6 @@ export interface NodeStatusObj {
   capacity?: Partial<Record<ResourceName, Quantity>>
   /** 节点可调度资源量，默认等于 capacity */
   allocatable?: Partial<Record<ResourceName, Quantity>>
-  /** 节点最近观测到的生命周期阶段，已废弃且不再填充 */
-  phase?: NodePhase
   /** 节点当前观测到的条件列表 */
   conditions?: Condition<NodeConditionType>[]
   /** 节点可达地址列表 */

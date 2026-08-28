@@ -8,7 +8,7 @@ import type { AuditEntity, DeletableEntity, ExportQueryForm, PageForm, UidEntity
 import type { ResourceName } from '@/config/kubernetes/core'
 import type { NodeStatus } from '@/config/kubernetes/node'
 
-import type { Clustered, ObjectMeta, Quantity } from '../types'
+import type { Clustered, NonNamespaceObjectMeta, Quantity } from '../types'
 
 import type { NodeSpec, NodeStatusObj, Taint } from './types'
 
@@ -66,7 +66,7 @@ export interface NodeListVo extends UidEntity, Clustered, AuditEntity, Deletable
 /**
  * 详情响应对象
  */
-export interface NodeDetailVo extends UidEntity, Clustered, AuditEntity, DeletableEntity, ObjectMeta {
+export interface NodeDetailVo extends UidEntity, Clustered, AuditEntity, DeletableEntity, NonNamespaceObjectMeta {
   /** 描述 */
   description?: string
   /** 状态 */

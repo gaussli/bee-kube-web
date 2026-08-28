@@ -12,6 +12,8 @@ import type { Clustered, ObjectMeta } from '../types'
 
 import type { NamespaceSpec, NamespaceStatusObj } from './types'
 
+export type NamespaceQueryMode = 'Default' | 'Simple'
+
 /**
  * 查询条件请求对象
  */
@@ -21,7 +23,7 @@ export interface NamespaceQueryForm extends UidEntity, PageForm {
   /** 状态 */
   status: NamespaceStatus
   /** 查询模式 */
-  mode: 'Default' | 'Simple'
+  mode: NamespaceQueryMode
 }
 
 /**

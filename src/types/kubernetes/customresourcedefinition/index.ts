@@ -6,7 +6,7 @@
 import type { AuditEntity, DeletableEntity, ExportQueryForm, PageForm, UidEntity } from '@/types/common'
 
 import type { ObjectMetaCreatableForm, ObjectMetaEditableForm } from '../common'
-import type { Clustered, ObjectMeta } from '../types'
+import type { Clustered, NonNamespaceObjectMeta } from '../types'
 
 /**
  * 查询条件请求对象
@@ -30,7 +30,7 @@ export interface CustomResourceDefinitionListVo extends UidEntity, Clustered, Au
  * 详情响应对象
  */
 export interface CustomResourceDefinitionDetailVo
-  extends UidEntity, Clustered, AuditEntity, DeletableEntity, ObjectMeta {
+  extends UidEntity, Clustered, AuditEntity, DeletableEntity, NonNamespaceObjectMeta {
   /** 描述 */
   description?: string
 }

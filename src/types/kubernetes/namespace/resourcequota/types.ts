@@ -13,7 +13,7 @@ import type { Quantity } from '../../types'
 
 export interface ResourceQuotaSpec {
   /** 资源配额的硬限制列表 */
-  hard?: Record<NamespaceResourceQuotaResourceType, Quantity>
+  hard?: Partial<Record<NamespaceResourceQuotaResourceType, Quantity>>
   scopes?: NamespaceResourceQuotaScopeType[]
   /** 资源配额的作用范围选择器 */
   scopeSelector?: ResourceQuotaScopeSelector
@@ -35,7 +35,7 @@ export interface ResourceQuotaScopeSelectorRequirement {
 
 export interface ResourceQuotaStatusObj {
   /** 资源配额的硬限制列表 */
-  hard?: Record<NamespaceResourceQuotaResourceType, Quantity>
+  hard?: Partial<Record<NamespaceResourceQuotaResourceType, Quantity>>
   /** 资源配额的当前使用量列表 */
-  used?: Record<NamespaceResourceQuotaResourceType, Quantity>
+  used?: Partial<Record<NamespaceResourceQuotaResourceType, Quantity>>
 }

@@ -63,7 +63,7 @@ export interface PersistentVolumeClaimStatusObj {
   /** 已分配资源（资源列表），含容量；扩容中可大于实际容量 */
   allocatedResources?: Partial<Record<ResourceName, Quantity>>
   /** 各资源扩容状态，key 为资源名（如 storage） */
-  allocatedResourceStatuses?: Record<ResourceName, ClaimResourceStatus>
+  allocatedResourceStatuses?: Partial<Record<ResourceName, ClaimResourceStatus>>
   /** 当前生效的 VolumeAttributesClass 名称；为空表示未应用 */
   currentVolumeAttributesClassName?: string
   /** 卷属性变更操作状态 */

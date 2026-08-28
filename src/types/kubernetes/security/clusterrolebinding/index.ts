@@ -6,7 +6,7 @@
 import type { AuditEntity, DeletableEntity, ExportQueryForm, PageForm, UidEntity } from '@/types/common'
 
 import type { ObjectMetaCreatableForm, ObjectMetaEditableForm } from '../../common'
-import type { Clustered, ObjectMeta } from '../../types'
+import type { Clustered, NonNamespaceObjectMeta } from '../../types'
 
 import type { ClusterRoleBinding } from './types'
 
@@ -38,7 +38,7 @@ export interface ClusterRoleBindingListVo extends UidEntity, Clustered, AuditEnt
  * 详情响应对象
  */
 export interface ClusterRoleBindingDetailVo
-  extends UidEntity, Clustered, AuditEntity, DeletableEntity, ObjectMeta, ClusterRoleBinding {
+  extends UidEntity, Clustered, AuditEntity, DeletableEntity, NonNamespaceObjectMeta, ClusterRoleBinding {
   /** 描述 */
   description?: string
 }

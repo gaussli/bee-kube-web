@@ -13,7 +13,7 @@ import type {
 } from '@/config/kubernetes/storage/persistentvolume'
 
 import type { ObjectMetaCreatableForm, ObjectMetaEditableForm } from '../../common'
-import type { Clustered, ObjectMeta } from '../../types'
+import type { Clustered, NonNamespaceObjectMeta } from '../../types'
 
 import type { PersistentVolumeSpec, PersistentVolumeStatusObj } from './types'
 
@@ -58,7 +58,8 @@ export interface PersistentVolumeListVo extends UidEntity, Clustered, AuditEntit
 /**
  * 详情响应对象
  */
-export interface PersistentVolumeDetailVo extends UidEntity, Clustered, AuditEntity, DeletableEntity, ObjectMeta {
+export interface PersistentVolumeDetailVo
+  extends UidEntity, Clustered, AuditEntity, DeletableEntity, NonNamespaceObjectMeta {
   /** 描述 */
   description?: string
   /** 状态 */

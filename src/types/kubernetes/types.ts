@@ -46,14 +46,12 @@ export interface Metadata {
 }
 
 /**
- * 资源元数据
+ * 集群级别资源元数据
  * @extends Metadata 继承基础原数据（labels、annotations）
  */
-export interface ObjectMeta extends Metadata {
+export interface NonNamespaceObjectMeta extends Metadata {
   /** 资源名称，命名空间内唯一，创建后不可更新 */
   name: string
-  /** 命名空间，名称在该空间内唯一，未指定时等效于 default */
-  namespace: string
   /** 资源唯一标识，由服务端生成且不可变更 */
   uid: string
   /** 资源内部版本号，用于乐观并发与变更检测 */
@@ -66,6 +64,14 @@ export interface ObjectMeta extends Metadata {
   ownerReferences: string[]
   /** 终结器列表，阻止资源被删除直至处理完成 */
   finalizers: string[]
+}
+
+/**
+ * 命名空间级别资源元数据
+ */
+export interface ObjectMeta extends NonNamespaceObjectMeta {
+  /** 命名空间，名称在该空间内唯一，未指定时等效于 default */
+  namespace: string
 }
 
 /**
