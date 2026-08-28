@@ -31,16 +31,6 @@ export const NODE_STATUS_OPTIONS: Option[] = [
   ..._nodeStatuses,
 ]
 
-/** 节点生命周期阶段原始数据（用于派生类型） */
-const _nodePhases = [
-  { value: 'Pending', label: '待配置' },
-  { value: 'Running', label: '运行中' },
-  { value: 'Terminated', label: '已终止' },
-] as const
-
-/** 节点生命周期阶段 */
-export type NodePhase = (typeof _nodePhases)[number]['value']
-
 /** 节点地址类型原始数据（用于派生类型） */
 const _nodeAddressTypes = [
   { value: 'Hostname', label: '主机名' },
