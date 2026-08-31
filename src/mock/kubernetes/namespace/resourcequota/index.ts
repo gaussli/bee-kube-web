@@ -120,7 +120,7 @@ export default [
  * @param name - 资源配额名称
  * @returns 命名空间资源配额详情
  */
-export function getNamespaceResourceQuotaDetail(
+function getNamespaceResourceQuotaDetail(
   clusterUid: string,
   namespace: string,
   name: string,
@@ -136,7 +136,7 @@ export function getNamespaceResourceQuotaDetail(
  * @param name - 资源配额名称
  * @returns 命名空间资源配额 YAML
  */
-export function getNamespaceResourceQuotaYaml(
+function getNamespaceResourceQuotaYaml(
   clusterUid: string,
   namespace: string,
   name: string,
@@ -153,7 +153,7 @@ export function getNamespaceResourceQuotaYaml(
  * @param query - 事件查询条件
  * @returns 分页后的事件列表
  */
-export function getNamespaceResourceQuotaEventList(
+function getNamespaceResourceQuotaEventList(
   clusterUid: string,
   namespace: string,
   name: string,
@@ -168,20 +168,16 @@ export function getNamespaceResourceQuotaEventList(
  * @param clusterUid - 集群 UID
  * @param data - 创建请求对象
  */
-export function createNamespaceResourceQuota(
-  clusterUid: string,
-  data: Partial<NamespaceResourceQuotaCreateForm>,
-): void {
+function createNamespaceResourceQuota(clusterUid: string, data: Partial<NamespaceResourceQuotaCreateForm>): void {
   console.log('[Mock] createNamespaceResourceQuota', clusterUid, data)
 }
 
 /**
  * 创建命名空间（Namespace）的资源配额（ResourceQuota）（YAML）
  * @param clusterUid - 集群 UID
- * @param namespace
  * @param yaml - 创建 YAML 文本
  */
-export function createNamespaceResourceQuotaYaml(clusterUid: string, yaml: string): void {
+function createNamespaceResourceQuotaYaml(clusterUid: string, yaml: string): void {
   console.log('[Mock] createNamespaceResourceQuotaYaml', clusterUid, yaml)
 }
 
@@ -192,7 +188,7 @@ export function createNamespaceResourceQuotaYaml(clusterUid: string, yaml: strin
  * @param name - 资源配额名称
  * @param data - 更新请求对象
  */
-export function updateNamespaceResourceQuota(
+function updateNamespaceResourceQuota(
   clusterUid: string,
   namespace: string,
   name: string,
@@ -208,12 +204,7 @@ export function updateNamespaceResourceQuota(
  * @param name - 资源配额名称
  * @param yaml - 更新 YAML 文本
  */
-export function updateNamespaceResourceQuotaYaml(
-  clusterUid: string,
-  namespace: string,
-  name: string,
-  yaml: string,
-): void {
+function updateNamespaceResourceQuotaYaml(clusterUid: string, namespace: string, name: string, yaml: string): void {
   console.log('[Mock] updateNamespaceResourceQuotaYaml', clusterUid, namespace, name, yaml)
 }
 
@@ -224,7 +215,7 @@ export function updateNamespaceResourceQuotaYaml(
  * @param name - 资源配额名称
  * @param data - 标签配置请求对象
  */
-export function manageNamespaceResourceQuotaLabels(
+function manageNamespaceResourceQuotaLabels(
   clusterUid: string,
   namespace: string,
   name: string,
@@ -240,7 +231,7 @@ export function manageNamespaceResourceQuotaLabels(
  * @param name - 资源配额名称
  * @param data - 注解配置请求对象
  */
-export function manageNamespaceResourceQuotaAnnotations(
+function manageNamespaceResourceQuotaAnnotations(
   clusterUid: string,
   namespace: string,
   name: string,
@@ -255,6 +246,6 @@ export function manageNamespaceResourceQuotaAnnotations(
  * @param namespace - 命名空间名称
  * @param name - 资源配额名称
  */
-export function deleteNamespaceResourceQuota(clusterUid: string, namespace: string, name: string): void {
+function deleteNamespaceResourceQuota(clusterUid: string, namespace: string, name: string): void {
   console.log('[Mock] deleteNamespaceResourceQuota', clusterUid, namespace, name)
 }

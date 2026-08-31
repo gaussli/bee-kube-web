@@ -116,7 +116,7 @@ export function updateClusterRoleYaml(clusterUid: string, name: string, yaml: st
 }
 
 /**
- * 配置集群角色（clusterrole）标签
+ * 配置集群角色（ClusterRole）标签
  * @param clusterUid - 集群 UID
  * @param name - 集群角色名称
  * @param data - 标签配置请求对象
@@ -126,7 +126,7 @@ export function manageClusterRoleLabels(clusterUid: string, name: string, data: 
 }
 
 /**
- * 配置集群角色（clusterrole）注解
+ * 配置集群角色（ClusterRole）注解
  * @param clusterUid - 集群 UID
  * @param name - 集群角色名称
  * @param data - 注解配置请求对象
@@ -140,7 +140,7 @@ export function manageClusterRoleAnnotations(
 }
 
 /**
- * 删除集群角色（clusterrole）
+ * 删除集群角色（ClusterRole）
  * @param clusterUid - 集群 UID
  * @param name - 集群角色名称
  */
@@ -149,7 +149,7 @@ export function deleteClusterRole(clusterUid: string, name: string): Promise<voi
 }
 
 /**
- * 批量删除集群角色（clusterrole）
+ * 批量删除集群角色（ClusterRole）
  * @param clusterUid - 集群 UID
  * @param uids - 集群角色 UID 数组
  */
@@ -167,14 +167,14 @@ export function importClusterRole(
   clusterUid: string,
   formData: FormData,
   onProgress?: (progressEvent: AxiosProgressEvent) => void,
-) {
+): Promise<void> {
   return request.upload<void>(`/kubernetes/clusters/${clusterUid}/clusterroles/import`, formData, {
     onUploadProgress: onProgress,
   })
 }
 
 /**
- * 导出集群角色（clusterrole）
+ * 导出集群角色（ClusterRole）
  * @param clusterUid - 集群 UID
  * @param query - 导出查询条件
  */

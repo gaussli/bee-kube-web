@@ -85,7 +85,7 @@ export function getStatefulSetPodList(
   namespace: string,
   name: string,
   query: Partial<PodQueryForm>,
-) {
+): Promise<PageVo<PodListVo>> {
   return request.get<PageVo<PodListVo>>(
     `/kubernetes/clusters/${clusterUid}/namespaces/${namespace}/statefulsets/${name}/pods`,
     { params: query },
@@ -105,7 +105,7 @@ export function getStatefulSetHistoryRevisionList(
   namespace: string,
   name: string,
   query: Partial<StatefulSetHistoryRevisionQueryForm>,
-) {
+): Promise<PageVo<StatefulSetHistoryRevisionListVo>> {
   return request.get<PageVo<StatefulSetHistoryRevisionListVo>>(
     `/kubernetes/clusters/${clusterUid}/namespaces/${namespace}/statefulsets/${name}/history`,
     { params: query },
@@ -249,7 +249,7 @@ export function manageStatefulSetLabels(
 }
 
 /**
- * 配置有状态应用（statefulset）注解
+ * 配置有状态应用（StatefulSet）注解
  * @param clusterUid - 集群 UID
  * @param namespace - 命名空间名称
  * @param name - 有状态应用名称
@@ -260,7 +260,7 @@ export function manageStatefulSetAnnotations(
   namespace: string,
   name: string,
   data: MetadataAnnotationForm,
-) {
+): Promise<void> {
   return request.post<void>(
     `/kubernetes/clusters/${clusterUid}/namespaces/${namespace}/statefulsets/${name}/annotations`,
     data,
@@ -268,7 +268,7 @@ export function manageStatefulSetAnnotations(
 }
 
 /**
- * 删除有状态应用（statefulset）
+ * 删除有状态应用（StatefulSet）
  * @param clusterUid - 集群 UID
  * @param namespace - 命名空间名称
  * @param name - 有状态应用名称
@@ -278,7 +278,7 @@ export function deleteStatefulSet(clusterUid: string, namespace: string, name: s
 }
 
 /**
- * 批量删除有状态应用（statefulset）
+ * 批量删除有状态应用（StatefulSet）
  * @param clusterUid - 集群 UID
  * @param uids - 有状态应用 UID 数组
  */
@@ -296,14 +296,14 @@ export function importStatefulSet(
   clusterUid: string,
   formData: FormData,
   onProgress?: (progressEvent: AxiosProgressEvent) => void,
-) {
+): Promise<void> {
   return request.upload<void>(`/kubernetes/clusters/${clusterUid}/statefulsets/import`, formData, {
     onUploadProgress: onProgress,
   })
 }
 
 /**
- * 导出有状态应用（statefulset）
+ * 导出有状态应用（StatefulSet）
  * @param clusterUid - 集群 UID
  * @param query - 导出查询条件
  */
@@ -342,7 +342,7 @@ export function partitionStatefulSet(
   namespace: string,
   name: string,
   data: StatefulSetPartitionForm,
-) {
+): Promise<void> {
   return request.post<void>(
     `/kubernetes/clusters/${clusterUid}/namespaces/${namespace}/statefulsets/${name}/partition`,
     data,
@@ -371,7 +371,7 @@ export function rollbackStatefulSet(
   namespace: string,
   name: string,
   data: StatefulSetRollbackForm,
-) {
+): Promise<void> {
   return request.post<void>(
     `/kubernetes/clusters/${clusterUid}/namespaces/${namespace}/statefulsets/${name}/rollback`,
     data,

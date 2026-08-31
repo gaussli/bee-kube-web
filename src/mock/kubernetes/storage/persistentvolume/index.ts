@@ -8,39 +8,151 @@ import type { EventListVo, EventQueryForm } from '@/types/kubernetes/event'
 import type {
   PersistentVolumeCreateForm,
   PersistentVolumeDetailVo,
+  PersistentVolumeExportQueryForm,
   PersistentVolumeListVo,
   PersistentVolumeQueryForm,
   PersistentVolumeUpdateForm,
   PersistentVolumeYamlVo,
 } from '@/types/kubernetes/storage/persistentvolume'
 
+import { handleEventList } from '@/mock/utils'
+
 import {
   mockPersistentVolumeDetail,
-  mockPersistentVolumeEvents,
-  mockPersistentVolumes,
+  mockPersistentVolumeEventList,
+  mockPersistentVolumeList,
   mockPersistentVolumeYaml,
 } from './data'
 
 /**
- * 查看 PersistentVolume 列表
- * @param clusterUid 集群 UID
- * @param query PersistentVolume 查询条件请求对象（名称、状态、存储类名、UID）
- * @returns PersistentVolume 分页列表
+ * 持久卷路由配置
+ * @remarks
+ * - GET    /kubernetes/clusters/:clusterUid/persistentvolumes                   - 获取持久卷列表
+ * - GET    /kubernetes/clusters/:clusterUid/persistentvolumes/:name             - 获取持久卷详情
+ * - GET    /kubernetes/clusters/:clusterUid/persistentvolumes/:name/yaml        - 获取持久卷 YAML
+ * - GET    /kubernetes/clusters/:clusterUid/persistentvolumes/:name/events      - 获取持久卷事件列表
+ * - POST   /kubernetes/clusters/:clusterUid/persistentvolumes                   - 创建持久卷
+ * - POST   /kubernetes/clusters/:clusterUid/persistentvolumes/yaml              - 创建持久卷（YAML）
+ * - PUT    /kubernetes/clusters/:clusterUid/persistentvolumes/:name             - 更新持久卷
+ * - PUT    /kubernetes/clusters/:clusterUid/persistentvolumes/:name/yaml        - 更新持久卷（YAML）
+ * - POST   /kubernetes/clusters/:clusterUid/persistentvolumes/:name/labels      - 配置持久卷标签
+ * - POST   /kubernetes/clusters/:clusterUid/persistentvolumes/:name/annotations - 配置持久卷注解
+ * - DELETE /kubernetes/clusters/:clusterUid/persistentvolumes/:name             - 删除持久卷
+ * - DELETE /kubernetes/clusters/:clusterUid/persistentvolumes                   - 批量删除持久卷
+ * - POST   /kubernetes/clusters/:clusterUid/persistentvolumes/import            - 导入持久卷
+ * - GET    /kubernetes/clusters/:clusterUid/persistentvolumes/export            - 导出持久卷
  */
-function getPersistentVolumeListMock(
+export default [
+  {
+    method: 'get',
+    url: '/kubernetes/clusters/:clusterUid/persistentvolumes',
+    handler: (ctx: { pathParams: Record<string, string>; params: Partial<PersistentVolumeQueryForm> }) =>
+      getPersistentVolumeList(ctx.pathParams.clusterUid, ctx.params),
+  },
+  {
+    method: 'get',
+    url: '/kubernetes/clusters/:clusterUid/persistentvolumes/:name',
+    handler: (ctx: { pathParams: Record<string, string> }) =>
+      getPersistentVolumeDetail(ctx.pathParams.clusterUid, ctx.pathParams.name),
+  },
+  {
+    method: 'get',
+    url: '/kubernetes/clusters/:clusterUid/persistentvolumes/:name/yaml',
+    handler: (ctx: { pathParams: Record<string, string> }) =>
+      getPersistentVolumeYaml(ctx.pathParams.clusterUid, ctx.pathParams.name),
+  },
+  {
+    method: 'get',
+    url: '/kubernetes/clusters/:clusterUid/persistentvolumes/:name/events',
+    handler: (ctx: { pathParams: Record<string, string>; params: Partial<EventQueryForm> }) =>
+      getPersistentVolumeEventList(ctx.pathParams.clusterUid, ctx.pathParams.name, ctx.params),
+  },
+  {
+    method: 'post',
+    url: '/kubernetes/clusters/:clusterUid/persistentvolumes',
+    handler: (ctx: { pathParams: Record<string, string>; data: Partial<PersistentVolumeCreateForm> }) =>
+      createPersistentVolume(ctx.pathParams.clusterUid, ctx.data),
+  },
+  {
+    method: 'post',
+    url: '/kubernetes/clusters/:clusterUid/persistentvolumes/yaml',
+    handler: (ctx: { pathParams: Record<string, string>; data: string }) =>
+      createPersistentVolumeYaml(ctx.pathParams.clusterUid, ctx.data),
+  },
+  {
+    method: 'put',
+    url: '/kubernetes/clusters/:clusterUid/persistentvolumes/:name',
+    handler: (ctx: { pathParams: Record<string, string>; data: Partial<PersistentVolumeUpdateForm> }) =>
+      updatePersistentVolume(ctx.pathParams.clusterUid, ctx.pathParams.name, ctx.data),
+  },
+  {
+    method: 'put',
+    url: '/kubernetes/clusters/:clusterUid/persistentvolumes/:name/yaml',
+    handler: (ctx: { pathParams: Record<string, string>; data: string }) =>
+      updatePersistentVolumeYaml(ctx.pathParams.clusterUid, ctx.pathParams.name, ctx.data),
+  },
+  {
+    method: 'post',
+    url: '/kubernetes/clusters/:clusterUid/persistentvolumes/:name/labels',
+    handler: (ctx: { pathParams: Record<string, string>; data: MetadataLabelForm }) =>
+      managePersistentVolumeLabels(ctx.pathParams.clusterUid, ctx.pathParams.name, ctx.data),
+  },
+  {
+    method: 'post',
+    url: '/kubernetes/clusters/:clusterUid/persistentvolumes/:name/annotations',
+    handler: (ctx: { pathParams: Record<string, string>; data: MetadataAnnotationForm }) =>
+      managePersistentVolumeAnnotations(ctx.pathParams.clusterUid, ctx.pathParams.name, ctx.data),
+  },
+  {
+    method: 'delete',
+    url: '/kubernetes/clusters/:clusterUid/persistentvolumes/:name',
+    handler: (ctx: { pathParams: Record<string, string> }) =>
+      deletePersistentVolume(ctx.pathParams.clusterUid, ctx.pathParams.name),
+  },
+  {
+    method: 'delete',
+    url: '/kubernetes/clusters/:clusterUid/persistentvolumes',
+    handler: (ctx: { pathParams: Record<string, string>; data: string[] }) =>
+      deletePersistentVolumes(ctx.pathParams.clusterUid, ctx.data),
+  },
+  {
+    method: 'post',
+    url: '/kubernetes/clusters/:clusterUid/persistentvolumes/import',
+    handler: (ctx: { pathParams: Record<string, string>; data: FormData }) =>
+      importPersistentVolume(ctx.pathParams.clusterUid, ctx.data),
+  },
+  {
+    method: 'get',
+    url: '/kubernetes/clusters/:clusterUid/persistentvolumes/export',
+    handler: (ctx: { pathParams: Record<string, string>; params: Partial<PersistentVolumeExportQueryForm> }) =>
+      exportPersistentVolume(ctx.pathParams.clusterUid, ctx.params),
+  },
+]
+
+/**
+ * 获取持久卷（PersistentVolume）列表
+ * @param clusterUid - 集群 UID
+ * @param query - 查询条件
+ * @returns 分页后的持久卷列表
+ */
+function getPersistentVolumeList(
   clusterUid: string,
   query: Partial<PersistentVolumeQueryForm>,
 ): PageVo<PersistentVolumeListVo> {
   console.log('[Mock] getPersistentVolumeList', clusterUid, query)
-  const filtered = mockPersistentVolumes.filter((p: PersistentVolumeListVo) => {
-    if (p.clusterUid !== clusterUid) return false
-    if (query.status && p.status !== query.status) return false
-    if (query.storageClassName && p.storageClassName !== query.storageClassName) return false
+  const filtered = mockPersistentVolumeList.filter((d: PersistentVolumeListVo) => {
+    if (query.status && d.status !== query.status) return false
     return true
   })
-  const filteredUid = query.uid ? filtered.filter(p => p.uid === query.uid) : []
-  const filteredName = query.name ? filtered.filter(p => p.name.includes(query.name as string)) : []
-  const matched = query.uid || query.name ? Array.from(new Set([...filteredUid, ...filteredName])) : filtered
+  const filteredUid = query.uid ? filtered.filter(d => d.uid === query.uid) : []
+  const filteredName = query.name ? filtered.filter(d => d.name.includes(query.name as string)) : []
+  const filteredStorageClassName = query.storageClassName
+    ? filtered.filter(d => d.storageClassName?.includes(query.storageClassName as string))
+    : []
+  const matched =
+    query.uid || query.name || query.storageClassName
+      ? Array.from(new Set([...filteredUid, ...filteredName, ...filteredStorageClassName]))
+      : filtered
   const page = query.page || 1
   const pageSize = query.pageSize || 10
   return {
@@ -52,239 +164,134 @@ function getPersistentVolumeListMock(
 }
 
 /**
- * 查看 PersistentVolume 详情
- * @param clusterUid 集群 UID
- * @param name PersistentVolume 名称
- * @returns PersistentVolume 详情响应对象
+ * 获取持久卷（PersistentVolume）详情
+ * @param clusterUid - 集群 UID
+ * @param name - 持久卷名称
+ * @returns 持久卷详情
  */
-function getPersistentVolumeDetailMock(clusterUid: string, name: string): PersistentVolumeDetailVo {
+function getPersistentVolumeDetail(clusterUid: string, name: string): PersistentVolumeDetailVo {
   console.log('[Mock] getPersistentVolumeDetail', clusterUid, name)
   return mockPersistentVolumeDetail
 }
 
 /**
- * 查看 PersistentVolume YAML
- * @param clusterUid 集群 UID
- * @param name PersistentVolume 名称
- * @returns PersistentVolume YAML 响应对象（完整 YAML 文本）
+ * 获取持久卷（PersistentVolume）YAML
+ * @param clusterUid - 集群 UID
+ * @param name - 持久卷名称
+ * @returns 持久卷 YAML
  */
-function getPersistentVolumeYamlMock(clusterUid: string, name: string): PersistentVolumeYamlVo {
+function getPersistentVolumeYaml(clusterUid: string, name: string): PersistentVolumeYamlVo {
   console.log('[Mock] getPersistentVolumeYaml', clusterUid, name)
-  return mockPersistentVolumeYaml
+  return { yaml: mockPersistentVolumeYaml }
 }
 
 /**
- * 查看 PersistentVolume 关联事件列表
- * @param clusterUid 集群 UID
- * @param name PersistentVolume 名称
- * @param query 事件查询条件
- * @returns PersistentVolume 关联事件分页列表
+ * 获取持久卷（PersistentVolume）事件（Event）列表
+ * @param clusterUid - 集群 UID
+ * @param name - 持久卷名称
+ * @param query - 事件查询条件
+ * @returns 分页后的事件列表
  */
-function getPersistentVolumeEventListMock(
+function getPersistentVolumeEventList(
   clusterUid: string,
   name: string,
   query: Partial<EventQueryForm>,
 ): PageVo<EventListVo> {
   console.log('[Mock] getPersistentVolumeEventList', clusterUid, name, query)
-  const page = query.page || 1
-  const pageSize = query.pageSize || 10
-  const list = mockPersistentVolumeEvents.slice((page - 1) * pageSize, page * pageSize)
-  return {
-    list,
-    total: mockPersistentVolumeEvents.length,
-    page,
-    pageSize,
-  }
+  return handleEventList(query, mockPersistentVolumeEventList)
 }
 
 /**
- * 创建 PersistentVolume
- * @param clusterUid 集群 UID
- * @param data 创建参数
- * @returns void
+ * 创建持久卷（PersistentVolume）
+ * @param clusterUid - 集群 UID
+ * @param data - 创建请求对象
  */
-function createPersistentVolumeMock(clusterUid: string, data: Partial<PersistentVolumeCreateForm>): void {
+function createPersistentVolume(clusterUid: string, data: Partial<PersistentVolumeCreateForm>): void {
   console.log('[Mock] createPersistentVolume', clusterUid, data)
 }
 
 /**
- * 通过 YAML 创建 PersistentVolume
- * @param clusterUid 集群 UID
- * @param yaml PersistentVolume YAML 文本
- * @returns void
+ * 创建持久卷（PersistentVolume）（YAML）
+ * @param clusterUid - 集群 UID
+ * @param yaml - 创建 YAML 文本
  */
-function createPersistentVolumeYamlMock(clusterUid: string, yaml: string): void {
+function createPersistentVolumeYaml(clusterUid: string, yaml: string): void {
   console.log('[Mock] createPersistentVolumeYaml', clusterUid, yaml)
 }
 
 /**
- * 更新 PersistentVolume
- * @param clusterUid 集群 UID
- * @param name PersistentVolume 名称
- * @param data 更新参数
- * @returns void
+ * 更新持久卷（PersistentVolume）
+ * @param clusterUid - 集群 UID
+ * @param name - 持久卷名称
+ * @param data - 更新请求对象
  */
-function updatePersistentVolumeMock(clusterUid: string, name: string, data: Partial<PersistentVolumeUpdateForm>): void {
+function updatePersistentVolume(clusterUid: string, name: string, data: Partial<PersistentVolumeUpdateForm>): void {
   console.log('[Mock] updatePersistentVolume', clusterUid, name, data)
 }
 
 /**
- * 通过 YAML 更新 PersistentVolume
- * @param clusterUid 集群 UID
- * @param name PersistentVolume 名称
- * @param yaml PersistentVolume YAML 文本
- * @returns void
+ * 更新持久卷（PersistentVolume）（YAML）
+ * @param clusterUid - 集群 UID
+ * @param name - 持久卷名称
+ * @param yaml - 更新 YAML 文本
  */
-function updatePersistentVolumeYamlMock(clusterUid: string, name: string, yaml: string): void {
+function updatePersistentVolumeYaml(clusterUid: string, name: string, yaml: string): void {
   console.log('[Mock] updatePersistentVolumeYaml', clusterUid, name, yaml)
 }
 
 /**
- * 更新 PersistentVolume 标签
- * @param clusterUid 集群 UID
- * @param name PersistentVolume 名称
- * @param data 标签更新参数
- * @returns void
+ * 配置持久卷（PersistentVolume）标签
+ * @param clusterUid - 集群 UID
+ * @param name - 持久卷名称
+ * @param data - 标签配置请求对象
  */
-function managePersistentVolumeLabelMock(clusterUid: string, name: string, data: MetadataLabelForm): void {
-  console.log('[Mock] managePersistentVolumeLabel', clusterUid, name, data)
+function managePersistentVolumeLabels(clusterUid: string, name: string, data: MetadataLabelForm): void {
+  console.log('[Mock] managePersistentVolumeLabels', clusterUid, name, data)
 }
 
 /**
- * 更新 PersistentVolume 注解
- * @param clusterUid 集群 UID
- * @param name PersistentVolume 名称
- * @param data 注解更新参数
- * @returns void
+ * 配置持久卷（PersistentVolume）注解
+ * @param clusterUid - 集群 UID
+ * @param name - 持久卷名称
+ * @param data - 注解配置请求对象
  */
-function managePersistentVolumeAnnotationMock(clusterUid: string, name: string, data: MetadataAnnotationForm): void {
-  console.log('[Mock] managePersistentVolumeAnnotation', clusterUid, name, data)
+function managePersistentVolumeAnnotations(clusterUid: string, name: string, data: MetadataAnnotationForm): void {
+  console.log('[Mock] managePersistentVolumeAnnotations', clusterUid, name, data)
 }
 
 /**
- * 删除 PersistentVolume
- * @param clusterUid 集群 UID
- * @param name PersistentVolume 名称
- * @returns void
+ * 删除持久卷（PersistentVolume）
+ * @param clusterUid - 集群 UID
+ * @param name - 持久卷名称
  */
-function deletePersistentVolumeMock(clusterUid: string, name: string): void {
+function deletePersistentVolume(clusterUid: string, name: string): void {
   console.log('[Mock] deletePersistentVolume', clusterUid, name)
 }
 
 /**
- * 批量删除 PersistentVolume
- * @param clusterUid 集群 UID
- * @param uids PersistentVolume UID 列表
- * @returns void
+ * 批量删除持久卷（PersistentVolume）
+ * @param clusterUid - 集群 UID
+ * @param uids - 持久卷 UID 数组
  */
-function deletePersistentVolumesMock(clusterUid: string, uids: string[]): void {
+function deletePersistentVolumes(clusterUid: string, uids: string[]): void {
   console.log('[Mock] deletePersistentVolumes', clusterUid, uids)
 }
 
 /**
- * 导入 PersistentVolume
- * @param clusterUid 集群 UID
- * @param formData 上传的文件
- * @returns void
+ * 导入持久卷（PersistentVolume）
+ * @param clusterUid - 集群 UID
+ * @param formData - 文件数据
  */
-function importPersistentVolumeMock(clusterUid: string, formData: FormData): void {
+function importPersistentVolume(clusterUid: string, formData: FormData): void {
   void formData
   console.log('[Mock] importPersistentVolume', clusterUid)
 }
 
 /**
- * 导出 PersistentVolume
- * @param clusterUid 集群 UID
- * @param query PersistentVolume 查询条件请求对象（名称、状态、存储类名、UID）
- * @returns void
+ * 导出持久卷（PersistentVolume）
+ * @param clusterUid - 集群 UID
+ * @param query - 导出查询条件
  */
-function exportPersistentVolumeMock(clusterUid: string, query: Partial<PersistentVolumeQueryForm>): void {
+function exportPersistentVolume(clusterUid: string, query: Partial<PersistentVolumeExportQueryForm>): void {
   console.log('[Mock] exportPersistentVolume', clusterUid, query)
 }
-
-export default [
-  {
-    method: 'get',
-    url: '/kubernetes/clusters/:clusterUid/persistentvolumes',
-    handler: (ctx: { pathParams: Record<string, string>; params: Partial<PersistentVolumeQueryForm> }) =>
-      getPersistentVolumeListMock(ctx.pathParams.clusterUid, ctx.params),
-  },
-  {
-    method: 'get',
-    url: '/kubernetes/clusters/:clusterUid/persistentvolumes/:name',
-    handler: (ctx: { pathParams: Record<string, string> }) =>
-      getPersistentVolumeDetailMock(ctx.pathParams.clusterUid, ctx.pathParams.name),
-  },
-  {
-    method: 'get',
-    url: '/kubernetes/clusters/:clusterUid/persistentvolumes/:name/yaml',
-    handler: (ctx: { pathParams: Record<string, string> }) =>
-      getPersistentVolumeYamlMock(ctx.pathParams.clusterUid, ctx.pathParams.name),
-  },
-  {
-    method: 'get',
-    url: '/kubernetes/clusters/:clusterUid/persistentvolumes/:name/events',
-    handler: (ctx: { pathParams: Record<string, string>; params: Partial<EventQueryForm> }) =>
-      getPersistentVolumeEventListMock(ctx.pathParams.clusterUid, ctx.pathParams.name, ctx.params),
-  },
-  {
-    method: 'post',
-    url: '/kubernetes/clusters/:clusterUid/persistentvolumes',
-    handler: (ctx: { pathParams: Record<string, string>; data: Partial<PersistentVolumeCreateForm> }) =>
-      createPersistentVolumeMock(ctx.pathParams.clusterUid, ctx.data),
-  },
-  {
-    method: 'post',
-    url: '/kubernetes/clusters/:clusterUid/persistentvolumes/yaml',
-    handler: (ctx: { pathParams: Record<string, string>; data: string }) =>
-      createPersistentVolumeYamlMock(ctx.pathParams.clusterUid, ctx.data),
-  },
-  {
-    method: 'put',
-    url: '/kubernetes/clusters/:clusterUid/persistentvolumes/:name',
-    handler: (ctx: { pathParams: Record<string, string>; data: Partial<PersistentVolumeUpdateForm> }) =>
-      updatePersistentVolumeMock(ctx.pathParams.clusterUid, ctx.pathParams.name, ctx.data),
-  },
-  {
-    method: 'put',
-    url: '/kubernetes/clusters/:clusterUid/persistentvolumes/:name/yaml',
-    handler: (ctx: { pathParams: Record<string, string>; data: string }) =>
-      updatePersistentVolumeYamlMock(ctx.pathParams.clusterUid, ctx.pathParams.name, ctx.data),
-  },
-  {
-    method: 'post',
-    url: '/kubernetes/clusters/:clusterUid/persistentvolumes/:name/labels',
-    handler: (ctx: { pathParams: Record<string, string>; data: MetadataLabelForm }) =>
-      managePersistentVolumeLabelMock(ctx.pathParams.clusterUid, ctx.pathParams.name, ctx.data),
-  },
-  {
-    method: 'post',
-    url: '/kubernetes/clusters/:clusterUid/persistentvolumes/:name/annotations',
-    handler: (ctx: { pathParams: Record<string, string>; data: MetadataAnnotationForm }) =>
-      managePersistentVolumeAnnotationMock(ctx.pathParams.clusterUid, ctx.pathParams.name, ctx.data),
-  },
-  {
-    method: 'delete',
-    url: '/kubernetes/clusters/:clusterUid/persistentvolumes/:name',
-    handler: (ctx: { pathParams: Record<string, string> }) =>
-      deletePersistentVolumeMock(ctx.pathParams.clusterUid, ctx.pathParams.name),
-  },
-  {
-    method: 'delete',
-    url: '/kubernetes/clusters/:clusterUid/persistentvolumes/batch',
-    handler: (ctx: { pathParams: Record<string, string>; data: string[] }) =>
-      deletePersistentVolumesMock(ctx.pathParams.clusterUid, ctx.data),
-  },
-  {
-    method: 'post',
-    url: '/kubernetes/clusters/:clusterUid/persistentvolumes/import',
-    handler: (ctx: { pathParams: Record<string, string>; data: FormData }) =>
-      importPersistentVolumeMock(ctx.pathParams.clusterUid, ctx.data),
-  },
-  {
-    method: 'get',
-    url: '/kubernetes/clusters/:clusterUid/persistentvolumes/export',
-    handler: (ctx: { pathParams: Record<string, string>; params: Partial<PersistentVolumeQueryForm> }) =>
-      exportPersistentVolumeMock(ctx.pathParams.clusterUid, ctx.params),
-  },
-]

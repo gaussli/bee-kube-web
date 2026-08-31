@@ -141,7 +141,7 @@ export function manageRoleLabels(
 }
 
 /**
- * 配置角色（role）注解
+ * 配置角色（Role）注解
  * @param clusterUid - 集群 UID
  * @param namespace - 命名空间名称
  * @param name - 角色名称
@@ -160,7 +160,7 @@ export function manageRoleAnnotations(
 }
 
 /**
- * 删除角色（role）
+ * 删除角色（Role）
  * @param clusterUid - 集群 UID
  * @param namespace - 命名空间名称
  * @param name - 角色名称
@@ -170,7 +170,7 @@ export function deleteRole(clusterUid: string, namespace: string, name: string):
 }
 
 /**
- * 批量删除角色（role）
+ * 批量删除角色（Role）
  * @param clusterUid - 集群 UID
  * @param uids - 角色 UID 数组
  */
@@ -188,20 +188,17 @@ export function importRole(
   clusterUid: string,
   formData: FormData,
   onProgress?: (progressEvent: AxiosProgressEvent) => void,
-) {
+): Promise<void> {
   return request.upload<void>(`/kubernetes/clusters/${clusterUid}/roles/import`, formData, {
     onUploadProgress: onProgress,
   })
 }
 
 /**
- * 导出角色（role）
+ * 导出角色（Role）
  * @param clusterUid - 集群 UID
- * @param namespace - 命名空间名称
  * @param query - 导出查询条件
  */
-export function exportRole(clusterUid: string, namespace: string, query: Partial<RoleExportQueryForm>): Promise<void> {
-  return request.download<void>(`/kubernetes/clusters/${clusterUid}/namespaces/${namespace}/roles/export`, {
-    params: query,
-  })
+export function exportRole(clusterUid: string, query: Partial<RoleExportQueryForm>): Promise<void> {
+  return request.download<void>(`/kubernetes/clusters/${clusterUid}/roles/export`, { params: query })
 }

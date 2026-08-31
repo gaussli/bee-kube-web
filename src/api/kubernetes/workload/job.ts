@@ -180,7 +180,7 @@ export function manageJobLabels(
 }
 
 /**
- * 配置任务（job）注解
+ * 配置任务（Job）注解
  * @param clusterUid - 集群 UID
  * @param namespace - 命名空间名称
  * @param name - 任务名称
@@ -191,12 +191,12 @@ export function manageJobAnnotations(
   namespace: string,
   name: string,
   data: MetadataAnnotationForm,
-) {
+): Promise<void> {
   return request.post<void>(`/kubernetes/clusters/${clusterUid}/namespaces/${namespace}/jobs/${name}/annotations`, data)
 }
 
 /**
- * 删除任务（job）
+ * 删除任务（Job）
  * @param clusterUid - 集群 UID
  * @param namespace - 命名空间名称
  * @param name - 任务名称
@@ -206,7 +206,7 @@ export function deleteJob(clusterUid: string, namespace: string, name: string): 
 }
 
 /**
- * 批量删除任务（job）
+ * 批量删除任务（Job）
  * @param clusterUid - 集群 UID
  * @param uids - 任务 UID 数组
  */
@@ -224,14 +224,14 @@ export function importJob(
   clusterUid: string,
   formData: FormData,
   onProgress?: (progressEvent: AxiosProgressEvent) => void,
-) {
+): Promise<void> {
   return request.upload<void>(`/kubernetes/clusters/${clusterUid}/jobs/import`, formData, {
     onUploadProgress: onProgress,
   })
 }
 
 /**
- * 导出任务（job）
+ * 导出任务（Job）
  * @param clusterUid - 集群 UID
  * @param query - 导出查询条件
  */

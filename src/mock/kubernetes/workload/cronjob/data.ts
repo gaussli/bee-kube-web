@@ -8,6 +8,8 @@ import type {
 
 import { generateId } from '@/mock/utils'
 
+import { mockJobSpec } from '../job/data'
+
 export const mockCronJobList: CronJobListVo[] = [
   // ==================== Active (20个) ====================
   {

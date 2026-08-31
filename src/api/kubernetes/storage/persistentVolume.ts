@@ -128,7 +128,7 @@ export function managePersistentVolumeLabels(clusterUid: string, name: string, d
 }
 
 /**
- * 配置持久卷（persistentvolume）注解
+ * 配置持久卷（PersistentVolume）注解
  * @param clusterUid - 集群 UID
  * @param name - 持久卷名称
  * @param data - 注解配置请求对象
@@ -142,7 +142,7 @@ export function managePersistentVolumeAnnotations(
 }
 
 /**
- * 删除持久卷（persistentvolume）
+ * 删除持久卷（PersistentVolume）
  * @param clusterUid - 集群 UID
  * @param name - 持久卷名称
  */
@@ -151,7 +151,7 @@ export function deletePersistentVolume(clusterUid: string, name: string): Promis
 }
 
 /**
- * 批量删除持久卷（persistentvolume）
+ * 批量删除持久卷（PersistentVolume）
  * @param clusterUid - 集群 UID
  * @param uids - 持久卷 UID 数组
  */
@@ -169,14 +169,14 @@ export function importPersistentVolume(
   clusterUid: string,
   formData: FormData,
   onProgress?: (progressEvent: AxiosProgressEvent) => void,
-) {
+): Promise<void> {
   return request.upload<void>(`/kubernetes/clusters/${clusterUid}/persistentvolumes/import`, formData, {
     onUploadProgress: onProgress,
   })
 }
 
 /**
- * 导出持久卷（persistentvolume）
+ * 导出持久卷（PersistentVolume）
  * @param clusterUid - 集群 UID
  * @param query - 导出查询条件
  */

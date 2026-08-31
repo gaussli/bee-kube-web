@@ -244,7 +244,7 @@ function manageSecretLabels(clusterUid: string, namespace: string, name: string,
 }
 
 /**
- * 配置密钥（secret）注解
+ * 配置密钥（Secret）注解
  * @param clusterUid - 集群 UID
  * @param namespace - 命名空间名称
  * @param name - 密钥名称
@@ -260,7 +260,7 @@ function manageSecretAnnotations(
 }
 
 /**
- * 删除密钥（secret）
+ * 删除密钥（Secret）
  * @param clusterUid - 集群 UID
  * @param namespace - 命名空间名称
  * @param name - 密钥名称
@@ -270,7 +270,7 @@ function deleteSecret(clusterUid: string, namespace: string, name: string): void
 }
 
 /**
- * 批量删除密钥（secret）
+ * 批量删除密钥（Secret）
  * @param clusterUid - 集群 UID
  * @param uids - 密钥 UID 数组
  */
@@ -282,7 +282,6 @@ function deleteSecrets(clusterUid: string, uids: string[]): void {
  * 导入密钥（Secret）
  * @param clusterUid - 集群 UID
  * @param formData - 文件数据
- * @param onProgress - 上传进度回调
  */
 function importSecret(clusterUid: string, formData: FormData): void {
   void formData
@@ -290,7 +289,7 @@ function importSecret(clusterUid: string, formData: FormData): void {
 }
 
 /**
- * 导出密钥（secret）
+ * 导出密钥（Secret）
  * @param clusterUid - 集群 UID
  * @param query - 导出查询条件
  */

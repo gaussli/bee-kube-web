@@ -168,7 +168,7 @@ export function manageServiceAccountLabels(
 }
 
 /**
- * 配置服务账号（serviceaccount）注解
+ * 配置服务账号（ServiceAccount）注解
  * @param clusterUid - 集群 UID
  * @param namespace - 命名空间名称
  * @param name - 服务帐号名称
@@ -187,7 +187,7 @@ export function manageServiceAccountAnnotations(
 }
 
 /**
- * 删除服务账号（serviceaccount）
+ * 删除服务账号（ServiceAccount）
  * @param clusterUid - 集群 UID
  * @param namespace - 命名空间名称
  * @param name - 服务帐号名称
@@ -197,7 +197,7 @@ export function deleteServiceAccount(clusterUid: string, namespace: string, name
 }
 
 /**
- * 批量删除服务账号（serviceaccount）
+ * 批量删除服务账号（ServiceAccount）
  * @param clusterUid - 集群 UID
  * @param uids - 服务帐号 UID 数组
  */
@@ -217,24 +217,19 @@ export function importServiceAccount(
   clusterUid: string,
   formData: FormData,
   onProgress?: (progressEvent: AxiosProgressEvent) => void,
-) {
+): Promise<void> {
   return request.upload<void>(`/kubernetes/clusters/${clusterUid}/serviceaccounts/import`, formData, {
     onUploadProgress: onProgress,
   })
 }
 
 /**
- * 导出服务账号（serviceaccount）
+ * 导出服务账号（ServiceAccount）
  * @param clusterUid - 集群 UID
- * @param namespace - 命名空间名称
  * @param query - 导出查询条件
  */
-export function exportServiceAccount(
-  clusterUid: string,
-  namespace: string,
-  query: Partial<ServiceAccountExportQueryForm>,
-): Promise<void> {
-  return request.download<void>(`/kubernetes/clusters/${clusterUid}/namespaces/${namespace}/serviceaccounts/export`, {
+export function exportServiceAccount(clusterUid: string, query: Partial<ServiceAccountExportQueryForm>): Promise<void> {
+  return request.download<void>(`/kubernetes/clusters/${clusterUid}/serviceaccounts/export`, {
     params: query,
   })
 }

@@ -111,13 +111,12 @@ export function deletePods(clusterUid: string, uids: string[]): Promise<void> {
 }
 
 /**
- * 导出容器组（pod）
+ * 导出容器组（Pod）
  * @param clusterUid - 集群 UID
- * @param namespace - 命名空间名称
  * @param query - 导出查询条件
  */
-export function exportPod(clusterUid: string, namespace: string, query: Partial<PodExportQueryForm>): Promise<void> {
-  return request.download<void>(`/kubernetes/clusters/${clusterUid}/namespaces/${namespace}/pods/export`, {
+export function exportPod(clusterUid: string, query: Partial<PodExportQueryForm>): Promise<void> {
+  return request.download<void>(`/kubernetes/clusters/${clusterUid}/pods/export`, {
     params: query,
   })
 }

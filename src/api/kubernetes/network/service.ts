@@ -202,5 +202,5 @@ export function importService(
  * @param query - 导出查询条件
  */
 export function exportService(clusterUid: string, query: Partial<ServiceExportQueryForm>): Promise<void> {
-  return request.download<void>(`/kubernetes/clusters/${clusterUid}/services/${name}/export`, { params: query })
+  return request.download<void>(`/kubernetes/clusters/${clusterUid}/services/export`, { params: query })
 }

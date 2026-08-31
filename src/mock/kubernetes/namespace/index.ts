@@ -309,7 +309,6 @@ function deleteNamespaces(clusterUid: string, uids: string[]): void {
  * 导入命名空间（Namespace）
  * @param clusterUid - 集群 UID
  * @param formData - 文件数据
- * @param onProgress - 上传进度回调
  */
 function importNamespace(clusterUid: string, formData: FormData): void {
   void formData

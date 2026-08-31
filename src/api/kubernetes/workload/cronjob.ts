@@ -69,7 +69,7 @@ export function getCronJobJobList(
   namespace: string,
   name: string,
   query: Partial<CronJobJobQueryForm>,
-) {
+): Promise<PageVo<CronJobJobListVo>> {
   return request.get<PageVo<CronJobJobListVo>>(
     `/kubernetes/clusters/${clusterUid}/namespaces/${namespace}/cronjobs/${name}/jobs`,
     { params: query },
@@ -184,7 +184,7 @@ export function manageCronJobLabels(
 }
 
 /**
- * 配置定时任务（cronjob）注解
+ * 配置定时任务（CronJob）注解
  * @param clusterUid - 集群 UID
  * @param namespace - 命名空间名称
  * @param name - 定时任务名称
@@ -195,7 +195,7 @@ export function manageCronJobAnnotations(
   namespace: string,
   name: string,
   data: MetadataAnnotationForm,
-) {
+): Promise<void> {
   return request.post<void>(
     `/kubernetes/clusters/${clusterUid}/namespaces/${namespace}/cronjobs/${name}/annotations`,
     data,
@@ -203,7 +203,7 @@ export function manageCronJobAnnotations(
 }
 
 /**
- * 删除定时任务（cronjob）
+ * 删除定时任务（CronJob）
  * @param clusterUid - 集群 UID
  * @param namespace - 命名空间名称
  * @param name - 定时任务名称
@@ -213,7 +213,7 @@ export function deleteCronJob(clusterUid: string, namespace: string, name: strin
 }
 
 /**
- * 批量删除定时任务（cronjob）
+ * 批量删除定时任务（CronJob）
  * @param clusterUid - 集群 UID
  * @param uids - 定时任务 UID 数组
  */
@@ -231,14 +231,14 @@ export function importCronJob(
   clusterUid: string,
   formData: FormData,
   onProgress?: (progressEvent: AxiosProgressEvent) => void,
-) {
+): Promise<void> {
   return request.upload<void>(`/kubernetes/clusters/${clusterUid}/cronjobs/import`, formData, {
     onUploadProgress: onProgress,
   })
 }
 
 /**
- * 导出定时任务（cronjob）
+ * 导出定时任务（CronJob）
  * @param clusterUid - 集群 UID
  * @param query - 导出查询条件
  */

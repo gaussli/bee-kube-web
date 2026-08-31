@@ -126,7 +126,7 @@ export function manageStorageClassLabels(clusterUid: string, name: string, data:
 }
 
 /**
- * 配置存储类（storageclass）注解
+ * 配置存储类（StorageClass）注解
  * @param clusterUid - 集群 UID
  * @param name - 存储类名称
  * @param data - 注解配置请求对象
@@ -140,7 +140,7 @@ export function manageStorageClassAnnotations(
 }
 
 /**
- * 删除存储类（storageclass）
+ * 删除存储类（StorageClass）
  * @param clusterUid - 集群 UID
  * @param name - 存储类名称
  */
@@ -149,7 +149,7 @@ export function deleteStorageClass(clusterUid: string, name: string): Promise<vo
 }
 
 /**
- * 批量删除存储类（storageclass）
+ * 批量删除存储类（StorageClass）
  * @param clusterUid - 集群 UID
  * @param uids - 存储类 UID 数组
  */
@@ -167,14 +167,14 @@ export function importStorageClass(
   clusterUid: string,
   formData: FormData,
   onProgress?: (progressEvent: AxiosProgressEvent) => void,
-) {
+): Promise<void> {
   return request.upload<void>(`/kubernetes/clusters/${clusterUid}/storageclasses/import`, formData, {
     onUploadProgress: onProgress,
   })
 }
 
 /**
- * 导出存储类（storageclass）
+ * 导出存储类（StorageClass）
  * @param clusterUid - 集群 UID
  * @param query - 导出查询条件
  */

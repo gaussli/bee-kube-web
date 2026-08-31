@@ -8,34 +8,31 @@ import type { EventListVo, EventQueryForm } from '@/types/kubernetes/event'
 import type {
   RoleBindingCreateForm,
   RoleBindingDetailVo,
+  RoleBindingExportQueryForm,
   RoleBindingListVo,
   RoleBindingQueryForm,
   RoleBindingUpdateForm,
   RoleBindingYamlVo,
 } from '@/types/kubernetes/security/rolebinding'
 
-import { mockRoleBindingDetail, mockRoleBindingEvents, mockRoleBindings, mockRoleBindingYaml } from './data'
+import { handleEventList } from '@/mock/utils'
+
+import { mockRoleBindingDetail, mockRoleBindingEventList, mockRoleBindingList, mockRoleBindingYaml } from './data'
 
 /**
- * 查看 RoleBinding 列表
- * @param clusterUid 集群 UID
- * @param namespaceName 命名空间名称
- * @param query RoleBinding 查询条件请求对象（名称、角色名、UID）
- * @returns RoleBinding 分页列表
+ * 获取角色绑定（RoleBinding）列表
+ * @param clusterUid - 集群 UID
+ * @param query - 查询条件
+ * @returns 分页后的角色绑定列表
  */
-function getRoleBindingListMock(
-  clusterUid: string,
-  namespaceName: string,
-  query: Partial<RoleBindingQueryForm>,
-): PageVo<RoleBindingListVo> {
-  console.log('[Mock] getRoleBindingList', clusterUid, namespaceName, query)
-  const filtered = mockRoleBindings.filter((r: RoleBindingListVo) => {
-    if (r.clusterUid !== clusterUid) return false
-    if (namespaceName && r.namespace !== namespaceName) return false
+function getRoleBindingList(clusterUid: string, query: Partial<RoleBindingQueryForm>): PageVo<RoleBindingListVo> {
+  console.log('[Mock] getRoleBindingList', clusterUid, query)
+  const filtered = mockRoleBindingList.filter((d: RoleBindingListVo) => {
+    if (query.namespace && d.namespace !== query.namespace) return false
     return true
   })
-  const filteredUid = query.uid ? filtered.filter(r => r.uid === query.uid) : []
-  const filteredName = query.name ? filtered.filter(r => r.name.includes(query.name as string)) : []
+  const filteredUid = query.uid ? filtered.filter(d => d.uid === query.uid) : []
+  const filteredName = query.name ? filtered.filter(d => d.name.includes(query.name as string)) : []
   const matched = query.uid || query.name ? Array.from(new Set([...filteredUid, ...filteredName])) : filtered
   const page = query.page || 1
   const pageSize = query.pageSize || 10
@@ -48,271 +45,259 @@ function getRoleBindingListMock(
 }
 
 /**
- * 查看 RoleBinding 详情
- * @param clusterUid 集群 UID
- * @param namespaceName 命名空间名称
- * @param name RoleBinding 名称
- * @returns RoleBinding 详情响应对象
+ * 获取角色绑定（RoleBinding）详情
+ * @param clusterUid - 集群 UID
+ * @param namespace - 命名空间名称
+ * @param name - 角色绑定名称
+ * @returns 角色绑定详情
  */
-function getRoleBindingDetailMock(clusterUid: string, namespaceName: string, name: string): RoleBindingDetailVo {
-  console.log('[Mock] getRoleBindingDetail', clusterUid, namespaceName, name)
+function getRoleBindingDetail(clusterUid: string, namespace: string, name: string): RoleBindingDetailVo {
+  console.log('[Mock] getRoleBindingDetail', clusterUid, namespace, name)
   return mockRoleBindingDetail
 }
 
 /**
- * 查看 RoleBinding YAML
- * @param clusterUid 集群 UID
- * @param namespaceName 命名空间名称
- * @param name RoleBinding 名称
- * @returns RoleBinding YAML 响应对象（完整 YAML 文本）
+ * 获取角色绑定（RoleBinding）YAML
+ * @param clusterUid - 集群 UID
+ * @param namespace - 命名空间名称
+ * @param name - 角色绑定名称
+ * @returns 角色绑定 YAML
  */
-function getRoleBindingYamlMock(clusterUid: string, namespaceName: string, name: string): RoleBindingYamlVo {
-  console.log('[Mock] getRoleBindingYaml', clusterUid, namespaceName, name)
-  return mockRoleBindingYaml
+function getRoleBindingYaml(clusterUid: string, namespace: string, name: string): RoleBindingYamlVo {
+  console.log('[Mock] getRoleBindingYaml', clusterUid, namespace, name)
+  return { yaml: mockRoleBindingYaml }
 }
 
 /**
- * 查看 RoleBinding 关联事件列表
- * @param clusterUid 集群 UID
- * @param namespaceName 命名空间名称
- * @param name RoleBinding 名称
- * @param query 事件查询条件
- * @returns RoleBinding 关联事件分页列表
+ * 获取角色绑定（RoleBinding）事件（Event）列表
+ * @param clusterUid - 集群 UID
+ * @param namespace - 命名空间名称
+ * @param name - 角色绑定名称
+ * @param query - 事件查询条件
+ * @returns 分页后的事件列表
  */
-function getRoleBindingEventListMock(
+function getRoleBindingEventList(
   clusterUid: string,
-  namespaceName: string,
+  namespace: string,
   name: string,
   query: Partial<EventQueryForm>,
 ): PageVo<EventListVo> {
-  console.log('[Mock] getRoleBindingEventList', clusterUid, namespaceName, name, query)
-  const page = query.page || 1
-  const pageSize = query.pageSize || 10
-  const list = mockRoleBindingEvents.slice((page - 1) * pageSize, page * pageSize)
-  return {
-    list,
-    total: mockRoleBindingEvents.length,
-    page,
-    pageSize,
-  }
+  console.log('[Mock] getRoleBindingEventList', clusterUid, namespace, name, query)
+  return handleEventList(query, mockRoleBindingEventList)
 }
 
 /**
- * 创建 RoleBinding
- * @param clusterUid 集群 UID
- * @param namespaceName 命名空间名称
- * @param data 创建参数
- * @returns void
+ * 创建角色绑定（RoleBinding）
+ * @param clusterUid - 集群 UID
+ * @param data - 创建请求对象
  */
-function createRoleBindingMock(clusterUid: string, namespaceName: string, data: Partial<RoleBindingCreateForm>): void {
-  console.log('[Mock] createRoleBinding', clusterUid, namespaceName, data)
+function createRoleBinding(clusterUid: string, data: Partial<RoleBindingCreateForm>): void {
+  console.log('[Mock] createRoleBinding', clusterUid, data)
 }
 
 /**
- * 通过 YAML 创建 RoleBinding
- * @param clusterUid 集群 UID
- * @param yaml RoleBinding YAML 文本
- * @returns void
+ * 创建角色绑定（RoleBinding）（YAML）
+ * @param clusterUid - 集群 UID
+ * @param yaml - 创建 YAML 文本
  */
-function createRoleBindingYamlMock(clusterUid: string, yaml: string): void {
+function createRoleBindingYaml(clusterUid: string, yaml: string): void {
   console.log('[Mock] createRoleBindingYaml', clusterUid, yaml)
 }
 
 /**
- * 更新 RoleBinding
- * @param clusterUid 集群 UID
- * @param namespaceName 命名空间名称
- * @param name RoleBinding 名称
- * @param data 更新参数
- * @returns void
+ * 更新角色绑定（RoleBinding）
+ * @param clusterUid - 集群 UID
+ * @param namespace - 命名空间名称
+ * @param name - 角色绑定名称
+ * @param data - 更新请求对象
  */
-function updateRoleBindingMock(
+function updateRoleBinding(
   clusterUid: string,
-  namespaceName: string,
+  namespace: string,
   name: string,
   data: Partial<RoleBindingUpdateForm>,
 ): void {
-  console.log('[Mock] updateRoleBinding', clusterUid, namespaceName, name, data)
+  console.log('[Mock] updateRoleBinding', clusterUid, namespace, name, data)
 }
 
 /**
- * 通过 YAML 更新 RoleBinding
- * @param clusterUid 集群 UID
- * @param namespaceName 命名空间名称
- * @param name RoleBinding 名称
- * @param yaml RoleBinding YAML 文本
- * @returns void
+ * 更新角色绑定（RoleBinding）（YAML）
+ * @param clusterUid - 集群 UID
+ * @param namespace - 命名空间名称
+ * @param name - 角色绑定名称
+ * @param yaml - 更新 YAML 文本
  */
-function updateRoleBindingYamlMock(clusterUid: string, namespaceName: string, name: string, yaml: string): void {
-  console.log('[Mock] updateRoleBindingYaml', clusterUid, namespaceName, name, yaml)
+function updateRoleBindingYaml(clusterUid: string, namespace: string, name: string, yaml: string): void {
+  console.log('[Mock] updateRoleBindingYaml', clusterUid, namespace, name, yaml)
 }
 
 /**
- * 更新 RoleBinding 标签
- * @param clusterUid 集群 UID
- * @param namespaceName 命名空间名称
- * @param name RoleBinding 名称
- * @param data 标签更新参数
- * @returns void
+ * 配置角色绑定（RoleBinding）标签
+ * @param clusterUid - 集群 UID
+ * @param namespace - 命名空间名称
+ * @param name - 角色绑定名称
+ * @param data - 标签配置请求对象
  */
-function manageRoleBindingLabelMock(
+function manageRoleBindingLabels(clusterUid: string, namespace: string, name: string, data: MetadataLabelForm): void {
+  console.log('[Mock] manageRoleBindingLabels', clusterUid, namespace, name, data)
+}
+
+/**
+ * 配置角色绑定（RoleBinding）注解
+ * @param clusterUid - 集群 UID
+ * @param namespace - 命名空间名称
+ * @param name - 角色绑定名称
+ * @param data - 注解配置请求对象
+ */
+function manageRoleBindingAnnotations(
   clusterUid: string,
-  namespaceName: string,
-  name: string,
-  data: MetadataLabelForm,
-): void {
-  console.log('[Mock] manageRoleBindingLabel', clusterUid, namespaceName, name, data)
-}
-
-/**
- * 更新 RoleBinding 注解
- * @param clusterUid 集群 UID
- * @param namespaceName 命名空间名称
- * @param name RoleBinding 名称
- * @param data 注解更新参数
- * @returns void
- */
-function manageRoleBindingAnnotationMock(
-  clusterUid: string,
-  namespaceName: string,
+  namespace: string,
   name: string,
   data: MetadataAnnotationForm,
 ): void {
-  console.log('[Mock] manageRoleBindingAnnotation', clusterUid, namespaceName, name, data)
+  console.log('[Mock] manageRoleBindingAnnotations', clusterUid, namespace, name, data)
 }
 
 /**
- * 删除 RoleBinding
- * @param clusterUid 集群 UID
- * @param namespaceName 命名空间名称
- * @param name RoleBinding 名称
- * @returns void
+ * 删除角色绑定（RoleBinding）
+ * @param clusterUid - 集群 UID
+ * @param namespace - 命名空间名称
+ * @param name - 角色绑定名称
  */
-function deleteRoleBindingMock(clusterUid: string, namespaceName: string, name: string): void {
-  console.log('[Mock] deleteRoleBinding', clusterUid, namespaceName, name)
+function deleteRoleBinding(clusterUid: string, namespace: string, name: string): void {
+  console.log('[Mock] deleteRoleBinding', clusterUid, namespace, name)
 }
 
 /**
- * 批量删除 RoleBinding
- * @param clusterUid 集群 UID
- * @param namespaceName 命名空间名称
- * @param uids RoleBinding UID 列表
- * @returns void
+ * 批量删除角色绑定（RoleBinding）
+ * @param clusterUid - 集群 UID
+ * @param uids - 角色绑定 UID 数组
  */
-function deleteRoleBindingsMock(clusterUid: string, namespaceName: string, uids: string[]): void {
-  console.log('[Mock] deleteRoleBindings', clusterUid, namespaceName, uids)
+function deleteRoleBindings(clusterUid: string, uids: string[]): void {
+  console.log('[Mock] deleteRoleBindings', clusterUid, uids)
 }
 
 /**
- * 导入 RoleBinding
- * @param clusterUid 集群 UID
- * @param formData 上传的文件
- * @returns void
+ * 导入角色绑定（RoleBinding）
+ * @param clusterUid - 集群 UID
+ * @param formData - 文件数据
  */
-function importRoleBindingMock(clusterUid: string, formData: FormData): void {
+function importRoleBinding(clusterUid: string, formData: FormData): void {
   void formData
   console.log('[Mock] importRoleBinding', clusterUid)
 }
 
 /**
- * 导出 RoleBinding
- * @param clusterUid 集群 UID
- * @param namespaceName 命名空间名称
- * @param query RoleBinding 查询条件请求对象（名称、角色名、UID）
- * @returns void
+ * 导出角色绑定（RoleBinding）
+ * @param clusterUid - 集群 UID
+ * @param namespace - 命名空间名称
+ * @param query - 导出查询条件
  */
-function exportRoleBindingMock(clusterUid: string, namespaceName: string, query: Partial<RoleBindingQueryForm>): void {
-  console.log('[Mock] exportRoleBinding', clusterUid, namespaceName, query)
+function exportRoleBinding(clusterUid: string, namespace: string, query: Partial<RoleBindingExportQueryForm>): void {
+  console.log('[Mock] exportRoleBinding', clusterUid, namespace, query)
 }
 
+/**
+ * 角色绑定路由配置
+ * @remarks
+ * - GET    /kubernetes/clusters/:clusterUid/rolebindings                                         - 获取角色绑定列表
+ * - GET    /kubernetes/clusters/:clusterUid/namespaces/:namespace/rolebindings/:name             - 获取角色绑定详情
+ * - GET    /kubernetes/clusters/:clusterUid/namespaces/:namespace/rolebindings/:name/yaml        - 获取角色绑定 YAML
+ * - GET    /kubernetes/clusters/:clusterUid/namespaces/:namespace/rolebindings/:name/events      - 获取角色绑定事件列表
+ * - POST   /kubernetes/clusters/:clusterUid/rolebindings                                         - 创建角色绑定
+ * - POST   /kubernetes/clusters/:clusterUid/rolebindings/yaml                                    - 创建角色绑定（YAML）
+ * - PUT    /kubernetes/clusters/:clusterUid/namespaces/:namespace/rolebindings/:name             - 更新角色绑定
+ * - PUT    /kubernetes/clusters/:clusterUid/namespaces/:namespace/rolebindings/:name/yaml        - 更新角色绑定（YAML）
+ * - POST   /kubernetes/clusters/:clusterUid/namespaces/:namespace/rolebindings/:name/labels      - 配置角色绑定标签
+ * - POST   /kubernetes/clusters/:clusterUid/namespaces/:namespace/rolebindings/:name/annotations - 配置角色绑定注解
+ * - DELETE /kubernetes/clusters/:clusterUid/namespaces/:namespace/rolebindings/:name             - 删除角色绑定
+ * - DELETE /kubernetes/clusters/:clusterUid/rolebindings                                         - 批量删除角色绑定
+ * - POST   /kubernetes/clusters/:clusterUid/rolebindings/import                                  - 导入角色绑定
+ * - GET    /kubernetes/clusters/:clusterUid/rolebindings/export                                  - 导出角色绑定
+ */
 export default [
   {
     method: 'get',
-    url: '/kubernetes/clusters/:clusterUid/namespaces/:namespace/rolebindings',
+    url: '/kubernetes/clusters/:clusterUid/rolebindings',
     handler: (ctx: { pathParams: Record<string, string>; params: Partial<RoleBindingQueryForm> }) =>
-      getRoleBindingListMock(ctx.pathParams.clusterUid, ctx.pathParams.namespace, ctx.params),
+      getRoleBindingList(ctx.pathParams.clusterUid, ctx.params),
   },
   {
     method: 'get',
     url: '/kubernetes/clusters/:clusterUid/namespaces/:namespace/rolebindings/:name',
     handler: (ctx: { pathParams: Record<string, string> }) =>
-      getRoleBindingDetailMock(ctx.pathParams.clusterUid, ctx.pathParams.namespace, ctx.pathParams.name),
+      getRoleBindingDetail(ctx.pathParams.clusterUid, ctx.pathParams.namespace, ctx.pathParams.name),
   },
   {
     method: 'get',
     url: '/kubernetes/clusters/:clusterUid/namespaces/:namespace/rolebindings/:name/yaml',
     handler: (ctx: { pathParams: Record<string, string> }) =>
-      getRoleBindingYamlMock(ctx.pathParams.clusterUid, ctx.pathParams.namespace, ctx.pathParams.name),
+      getRoleBindingYaml(ctx.pathParams.clusterUid, ctx.pathParams.namespace, ctx.pathParams.name),
   },
   {
     method: 'get',
     url: '/kubernetes/clusters/:clusterUid/namespaces/:namespace/rolebindings/:name/events',
     handler: (ctx: { pathParams: Record<string, string>; params: Partial<EventQueryForm> }) =>
-      getRoleBindingEventListMock(ctx.pathParams.clusterUid, ctx.pathParams.namespace, ctx.pathParams.name, ctx.params),
+      getRoleBindingEventList(ctx.pathParams.clusterUid, ctx.pathParams.namespace, ctx.pathParams.name, ctx.params),
   },
   {
     method: 'post',
-    url: '/kubernetes/clusters/:clusterUid/namespaces/:namespace/rolebindings',
+    url: '/kubernetes/clusters/:clusterUid/rolebindings',
     handler: (ctx: { pathParams: Record<string, string>; data: Partial<RoleBindingCreateForm> }) =>
-      createRoleBindingMock(ctx.pathParams.clusterUid, ctx.pathParams.namespace, ctx.data),
+      createRoleBinding(ctx.pathParams.clusterUid, ctx.data),
   },
   {
     method: 'post',
     url: '/kubernetes/clusters/:clusterUid/rolebindings/yaml',
     handler: (ctx: { pathParams: Record<string, string>; data: string }) =>
-      createRoleBindingYamlMock(ctx.pathParams.clusterUid, ctx.data),
+      createRoleBindingYaml(ctx.pathParams.clusterUid, ctx.data),
   },
   {
     method: 'put',
     url: '/kubernetes/clusters/:clusterUid/namespaces/:namespace/rolebindings/:name',
     handler: (ctx: { pathParams: Record<string, string>; data: Partial<RoleBindingUpdateForm> }) =>
-      updateRoleBindingMock(ctx.pathParams.clusterUid, ctx.pathParams.namespace, ctx.pathParams.name, ctx.data),
+      updateRoleBinding(ctx.pathParams.clusterUid, ctx.pathParams.namespace, ctx.pathParams.name, ctx.data),
   },
   {
     method: 'put',
     url: '/kubernetes/clusters/:clusterUid/namespaces/:namespace/rolebindings/:name/yaml',
     handler: (ctx: { pathParams: Record<string, string>; data: string }) =>
-      updateRoleBindingYamlMock(ctx.pathParams.clusterUid, ctx.pathParams.namespace, ctx.pathParams.name, ctx.data),
+      updateRoleBindingYaml(ctx.pathParams.clusterUid, ctx.pathParams.namespace, ctx.pathParams.name, ctx.data),
   },
   {
     method: 'post',
     url: '/kubernetes/clusters/:clusterUid/namespaces/:namespace/rolebindings/:name/labels',
     handler: (ctx: { pathParams: Record<string, string>; data: MetadataLabelForm }) =>
-      manageRoleBindingLabelMock(ctx.pathParams.clusterUid, ctx.pathParams.namespace, ctx.pathParams.name, ctx.data),
+      manageRoleBindingLabels(ctx.pathParams.clusterUid, ctx.pathParams.namespace, ctx.pathParams.name, ctx.data),
   },
   {
     method: 'post',
     url: '/kubernetes/clusters/:clusterUid/namespaces/:namespace/rolebindings/:name/annotations',
     handler: (ctx: { pathParams: Record<string, string>; data: MetadataAnnotationForm }) =>
-      manageRoleBindingAnnotationMock(
-        ctx.pathParams.clusterUid,
-        ctx.pathParams.namespace,
-        ctx.pathParams.name,
-        ctx.data,
-      ),
+      manageRoleBindingAnnotations(ctx.pathParams.clusterUid, ctx.pathParams.namespace, ctx.pathParams.name, ctx.data),
   },
   {
     method: 'delete',
     url: '/kubernetes/clusters/:clusterUid/namespaces/:namespace/rolebindings/:name',
     handler: (ctx: { pathParams: Record<string, string> }) =>
-      deleteRoleBindingMock(ctx.pathParams.clusterUid, ctx.pathParams.namespace, ctx.pathParams.name),
+      deleteRoleBinding(ctx.pathParams.clusterUid, ctx.pathParams.namespace, ctx.pathParams.name),
   },
   {
     method: 'delete',
-    url: '/kubernetes/clusters/:clusterUid/namespaces/:namespace/rolebindings/batch',
+    url: '/kubernetes/clusters/:clusterUid/rolebindings',
     handler: (ctx: { pathParams: Record<string, string>; data: string[] }) =>
-      deleteRoleBindingsMock(ctx.pathParams.clusterUid, ctx.pathParams.namespace, ctx.data),
+      deleteRoleBindings(ctx.pathParams.clusterUid, ctx.data),
   },
   {
     method: 'post',
     url: '/kubernetes/clusters/:clusterUid/rolebindings/import',
     handler: (ctx: { pathParams: Record<string, string>; data: FormData }) =>
-      importRoleBindingMock(ctx.pathParams.clusterUid, ctx.data),
+      importRoleBinding(ctx.pathParams.clusterUid, ctx.data),
   },
   {
     method: 'get',
-    url: '/kubernetes/clusters/:clusterUid/namespaces/:namespace/rolebindings/export',
-    handler: (ctx: { pathParams: Record<string, string>; params: Partial<RoleBindingQueryForm> }) =>
-      exportRoleBindingMock(ctx.pathParams.clusterUid, ctx.pathParams.namespace, ctx.params),
+    url: '/kubernetes/clusters/:clusterUid/rolebindings/export',
+    handler: (ctx: { pathParams: Record<string, string>; params: Partial<RoleBindingExportQueryForm> }) =>
+      exportRoleBinding(ctx.pathParams.clusterUid, ctx.pathParams.namespace, ctx.params),
   },
 ]

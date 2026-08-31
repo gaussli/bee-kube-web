@@ -141,7 +141,7 @@ export function manageIngressLabels(
 }
 
 /**
- * 配置入口（ingress）注解
+ * 配置入口（Ingress）注解
  * @param clusterUid - 集群 UID
  * @param namespace - 命名空间名称
  * @param name - 入口名称
@@ -160,7 +160,7 @@ export function manageIngressAnnotations(
 }
 
 /**
- * 删除入口（ingress）
+ * 删除入口（Ingress）
  * @param clusterUid - 集群 UID
  * @param namespace - 命名空间名称
  * @param name - 入口名称
@@ -170,7 +170,7 @@ export function deleteIngress(clusterUid: string, namespace: string, name: strin
 }
 
 /**
- * 批量删除入口（ingress）
+ * 批量删除入口（Ingress）
  * @param clusterUid - 集群 UID
  * @param uids - 入口 UID 数组
  */

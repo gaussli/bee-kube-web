@@ -8,34 +8,149 @@ import type { EventListVo, EventQueryForm } from '@/types/kubernetes/event'
 import type {
   ServiceAccountCreateForm,
   ServiceAccountDetailVo,
+  ServiceAccountExportQueryForm,
   ServiceAccountListVo,
   ServiceAccountQueryForm,
   ServiceAccountUpdateForm,
   ServiceAccountYamlVo,
 } from '@/types/kubernetes/security/serviceaccount'
 
-import { mockServiceAccountDetail, mockServiceAccountEvents, mockServiceAccounts, mockServiceAccountYaml } from './data'
+import { handleEventList } from '@/mock/utils'
+
+import {
+  mockServiceAccountDetail,
+  mockServiceAccountEventList,
+  mockServiceAccountList,
+  mockServiceAccountYaml,
+} from './data'
 
 /**
- * 查看 ServiceAccount 列表
- * @param clusterUid 集群 UID
- * @param namespaceName 命名空间名称
- * @param query ServiceAccount 查询条件请求对象（名称、UID）
- * @returns ServiceAccount 分页列表
+ * 服务账号路由配置
+ * @remarks
+ * - GET    /kubernetes/clusters/:clusterUid/serviceaccounts                                         - 获取服务账号列表
+ * - GET    /kubernetes/clusters/:clusterUid/namespaces/:namespace/serviceaccounts/:name             - 获取服务账号详情
+ * - GET    /kubernetes/clusters/:clusterUid/namespaces/:namespace/serviceaccounts/:name/yaml        - 获取服务账号 YAML
+ * - GET    /kubernetes/clusters/:clusterUid/namespaces/:namespace/serviceaccounts/:name/events      - 获取服务账号事件列表
+ * - POST   /kubernetes/clusters/:clusterUid/serviceaccounts                                         - 创建服务账号
+ * - POST   /kubernetes/clusters/:clusterUid/serviceaccounts/yaml                                    - 创建服务账号（YAML）
+ * - PUT    /kubernetes/clusters/:clusterUid/namespaces/:namespace/serviceaccounts/:name             - 更新服务账号
+ * - PUT    /kubernetes/clusters/:clusterUid/namespaces/:namespace/serviceaccounts/:name/yaml        - 更新服务账号（YAML）
+ * - POST   /kubernetes/clusters/:clusterUid/namespaces/:namespace/serviceaccounts/:name/labels      - 配置服务账号标签
+ * - POST   /kubernetes/clusters/:clusterUid/namespaces/:namespace/serviceaccounts/:name/annotations - 配置服务账号注解
+ * - DELETE /kubernetes/clusters/:clusterUid/namespaces/:namespace/serviceaccounts/:name             - 删除服务账号
+ * - DELETE /kubernetes/clusters/:clusterUid/serviceaccounts                                         - 批量删除服务账号
+ * - POST   /kubernetes/clusters/:clusterUid/serviceaccounts/import                                  - 导入服务账号
+ * - GET    /kubernetes/clusters/:clusterUid/serviceaccounts/export                                  - 导出服务账号
  */
-function getServiceAccountListMock(
+export default [
+  {
+    method: 'get',
+    url: '/kubernetes/clusters/:clusterUid/serviceaccounts',
+    handler: (ctx: { pathParams: Record<string, string>; params: Partial<ServiceAccountQueryForm> }) =>
+      getServiceAccountList(ctx.pathParams.clusterUid, ctx.params),
+  },
+  {
+    method: 'get',
+    url: '/kubernetes/clusters/:clusterUid/namespaces/:namespace/serviceaccounts/:name',
+    handler: (ctx: { pathParams: Record<string, string> }) =>
+      getServiceAccountDetail(ctx.pathParams.clusterUid, ctx.pathParams.namespace, ctx.pathParams.name),
+  },
+  {
+    method: 'get',
+    url: '/kubernetes/clusters/:clusterUid/namespaces/:namespace/serviceaccounts/:name/yaml',
+    handler: (ctx: { pathParams: Record<string, string> }) =>
+      getServiceAccountYaml(ctx.pathParams.clusterUid, ctx.pathParams.namespace, ctx.pathParams.name),
+  },
+  {
+    method: 'get',
+    url: '/kubernetes/clusters/:clusterUid/namespaces/:namespace/serviceaccounts/:name/events',
+    handler: (ctx: { pathParams: Record<string, string>; params: Partial<EventQueryForm> }) =>
+      getServiceAccountEventList(ctx.pathParams.clusterUid, ctx.pathParams.namespace, ctx.pathParams.name, ctx.params),
+  },
+  {
+    method: 'post',
+    url: '/kubernetes/clusters/:clusterUid/serviceaccounts',
+    handler: (ctx: { pathParams: Record<string, string>; data: Partial<ServiceAccountCreateForm> }) =>
+      createServiceAccount(ctx.pathParams.clusterUid, ctx.data),
+  },
+  {
+    method: 'post',
+    url: '/kubernetes/clusters/:clusterUid/serviceaccounts/yaml',
+    handler: (ctx: { pathParams: Record<string, string>; data: string }) =>
+      createServiceAccountYaml(ctx.pathParams.clusterUid, ctx.data),
+  },
+  {
+    method: 'put',
+    url: '/kubernetes/clusters/:clusterUid/namespaces/:namespace/serviceaccounts/:name',
+    handler: (ctx: { pathParams: Record<string, string>; data: Partial<ServiceAccountUpdateForm> }) =>
+      updateServiceAccount(ctx.pathParams.clusterUid, ctx.pathParams.namespace, ctx.pathParams.name, ctx.data),
+  },
+  {
+    method: 'put',
+    url: '/kubernetes/clusters/:clusterUid/namespaces/:namespace/serviceaccounts/:name/yaml',
+    handler: (ctx: { pathParams: Record<string, string>; data: string }) =>
+      updateServiceAccountYaml(ctx.pathParams.clusterUid, ctx.pathParams.namespace, ctx.pathParams.name, ctx.data),
+  },
+  {
+    method: 'post',
+    url: '/kubernetes/clusters/:clusterUid/namespaces/:namespace/serviceaccounts/:name/labels',
+    handler: (ctx: { pathParams: Record<string, string>; data: MetadataLabelForm }) =>
+      manageServiceAccountLabels(ctx.pathParams.clusterUid, ctx.pathParams.namespace, ctx.pathParams.name, ctx.data),
+  },
+  {
+    method: 'post',
+    url: '/kubernetes/clusters/:clusterUid/namespaces/:namespace/serviceaccounts/:name/annotations',
+    handler: (ctx: { pathParams: Record<string, string>; data: MetadataAnnotationForm }) =>
+      manageServiceAccountAnnotations(
+        ctx.pathParams.clusterUid,
+        ctx.pathParams.namespace,
+        ctx.pathParams.name,
+        ctx.data,
+      ),
+  },
+  {
+    method: 'delete',
+    url: '/kubernetes/clusters/:clusterUid/namespaces/:namespace/serviceaccounts/:name',
+    handler: (ctx: { pathParams: Record<string, string> }) =>
+      deleteServiceAccount(ctx.pathParams.clusterUid, ctx.pathParams.namespace, ctx.pathParams.name),
+  },
+  {
+    method: 'delete',
+    url: '/kubernetes/clusters/:clusterUid/serviceaccounts',
+    handler: (ctx: { pathParams: Record<string, string>; data: string[] }) =>
+      deleteServiceAccounts(ctx.pathParams.clusterUid, ctx.data),
+  },
+  {
+    method: 'post',
+    url: '/kubernetes/clusters/:clusterUid/serviceaccounts/import',
+    handler: (ctx: { pathParams: Record<string, string>; data: FormData }) =>
+      importServiceAccount(ctx.pathParams.clusterUid, ctx.data),
+  },
+  {
+    method: 'get',
+    url: '/kubernetes/clusters/:clusterUid/serviceaccounts/export',
+    handler: (ctx: { pathParams: Record<string, string>; params: Partial<ServiceAccountExportQueryForm> }) =>
+      exportServiceAccount(ctx.pathParams.clusterUid, ctx.params),
+  },
+]
+
+/**
+ * 获取服务账号（ServiceAccount）列表
+ * @param clusterUid - 集群 UID
+ * @param query - 查询条件
+ * @returns 分页后的服务账号列表
+ */
+function getServiceAccountList(
   clusterUid: string,
-  namespaceName: string,
   query: Partial<ServiceAccountQueryForm>,
 ): PageVo<ServiceAccountListVo> {
-  console.log('[Mock] getServiceAccountList', clusterUid, namespaceName, query)
-  const filtered = mockServiceAccounts.filter((s: ServiceAccountListVo) => {
-    if (s.clusterUid !== clusterUid) return false
-    if (namespaceName && s.namespace !== namespaceName) return false
+  console.log('[Mock] getServiceAccountList', clusterUid, query)
+  const filtered = mockServiceAccountList.filter((d: ServiceAccountListVo) => {
+    if (query.namespace && d.namespace !== query.namespace) return false
     return true
   })
-  const filteredUid = query.uid ? filtered.filter(s => s.uid === query.uid) : []
-  const filteredName = query.name ? filtered.filter(s => s.name.includes(query.name as string)) : []
+  const filteredUid = query.uid ? filtered.filter(d => d.uid === query.uid) : []
+  const filteredName = query.name ? filtered.filter(d => d.name.includes(query.name as string)) : []
   const matched = query.uid || query.name ? Array.from(new Set([...filteredUid, ...filteredName])) : filtered
   const page = query.page || 1
   const pageSize = query.pageSize || 10
@@ -48,284 +163,158 @@ function getServiceAccountListMock(
 }
 
 /**
- * 查看 ServiceAccount 详情
- * @param clusterUid 集群 UID
- * @param namespaceName 命名空间名称
- * @param name ServiceAccount 名称
- * @returns ServiceAccount 详情响应对象
+ * 获取服务账号（ServiceAccount）详情
+ * @param clusterUid - 集群 UID
+ * @param namespace - 命名空间名称
+ * @param name - 服务账号名称
+ * @returns 服务账号详情
  */
-function getServiceAccountDetailMock(clusterUid: string, namespaceName: string, name: string): ServiceAccountDetailVo {
-  console.log('[Mock] getServiceAccountDetail', clusterUid, namespaceName, name)
+function getServiceAccountDetail(clusterUid: string, namespace: string, name: string): ServiceAccountDetailVo {
+  console.log('[Mock] getServiceAccountDetail', clusterUid, namespace, name)
   return mockServiceAccountDetail
 }
 
 /**
- * 查看 ServiceAccount YAML
- * @param clusterUid 集群 UID
- * @param namespaceName 命名空间名称
- * @param name ServiceAccount 名称
- * @returns ServiceAccount YAML 响应对象（完整 YAML 文本）
+ * 获取服务账号（ServiceAccount）YAML
+ * @param clusterUid - 集群 UID
+ * @param namespace - 命名空间名称
+ * @param name - 服务账号名称
+ * @returns 服务账号 YAML
  */
-function getServiceAccountYamlMock(clusterUid: string, namespaceName: string, name: string): ServiceAccountYamlVo {
-  console.log('[Mock] getServiceAccountYaml', clusterUid, namespaceName, name)
-  return mockServiceAccountYaml
+function getServiceAccountYaml(clusterUid: string, namespace: string, name: string): ServiceAccountYamlVo {
+  console.log('[Mock] getServiceAccountYaml', clusterUid, namespace, name)
+  return { yaml: mockServiceAccountYaml }
 }
 
 /**
- * 查看 ServiceAccount 关联事件列表
- * @param clusterUid 集群 UID
- * @param namespaceName 命名空间名称
- * @param name ServiceAccount 名称
- * @param query 事件查询条件
- * @returns ServiceAccount 关联事件分页列表
+ * 获取服务账号（ServiceAccount）事件（Event）列表
+ * @param clusterUid - 集群 UID
+ * @param namespace - 命名空间名称
+ * @param name - 服务账号名称
+ * @param query - 事件查询条件
+ * @returns 分页后的事件列表
  */
-function getServiceAccountEventListMock(
+function getServiceAccountEventList(
   clusterUid: string,
-  namespaceName: string,
+  namespace: string,
   name: string,
   query: Partial<EventQueryForm>,
 ): PageVo<EventListVo> {
-  console.log('[Mock] getServiceAccountEventList', clusterUid, namespaceName, name, query)
-  const page = query.page || 1
-  const pageSize = query.pageSize || 10
-  const list = mockServiceAccountEvents.slice((page - 1) * pageSize, page * pageSize)
-  return {
-    list,
-    total: mockServiceAccountEvents.length,
-    page,
-    pageSize,
-  }
+  console.log('[Mock] getServiceAccountEventList', clusterUid, namespace, name, query)
+  return handleEventList(query, mockServiceAccountEventList)
 }
 
 /**
- * 创建 ServiceAccount
- * @param clusterUid 集群 UID
- * @param namespaceName 命名空间名称
- * @param data 创建参数
- * @returns void
+ * 创建服务账号（ServiceAccount）
+ * @param clusterUid - 集群 UID
+ * @param data - 创建请求对象
  */
-function createServiceAccountMock(
-  clusterUid: string,
-  namespaceName: string,
-  data: Partial<ServiceAccountCreateForm>,
-): void {
-  console.log('[Mock] createServiceAccount', clusterUid, namespaceName, data)
+function createServiceAccount(clusterUid: string, data: Partial<ServiceAccountCreateForm>): void {
+  console.log('[Mock] createServiceAccount', clusterUid, data)
 }
 
 /**
- * 通过 YAML 创建 ServiceAccount
- * @param clusterUid 集群 UID
- * @param yaml ServiceAccount YAML 文本
- * @returns void
+ * 创建服务账号（ServiceAccount）（YAML）
+ * @param clusterUid - 集群 UID
+ * @param yaml - 创建 YAML 文本
  */
-function createServiceAccountYamlMock(clusterUid: string, yaml: string): void {
+function createServiceAccountYaml(clusterUid: string, yaml: string): void {
   console.log('[Mock] createServiceAccountYaml', clusterUid, yaml)
 }
 
 /**
- * 更新 ServiceAccount
- * @param clusterUid 集群 UID
- * @param namespaceName 命名空间名称
- * @param name ServiceAccount 名称
- * @param data 更新参数
- * @returns void
+ * 更新服务账号（ServiceAccount）
+ * @param clusterUid - 集群 UID
+ * @param namespace - 命名空间名称
+ * @param name - 服务账号名称
+ * @param data - 更新请求对象
  */
-function updateServiceAccountMock(
+function updateServiceAccount(
   clusterUid: string,
-  namespaceName: string,
+  namespace: string,
   name: string,
   data: Partial<ServiceAccountUpdateForm>,
 ): void {
-  console.log('[Mock] updateServiceAccount', clusterUid, namespaceName, name, data)
+  console.log('[Mock] updateServiceAccount', clusterUid, namespace, name, data)
 }
 
 /**
- * 通过 YAML 更新 ServiceAccount
- * @param clusterUid 集群 UID
- * @param namespaceName 命名空间名称
- * @param name ServiceAccount 名称
- * @param yaml ServiceAccount YAML 文本
- * @returns void
+ * 更新服务账号（ServiceAccount）（YAML）
+ * @param clusterUid - 集群 UID
+ * @param namespace - 命名空间名称
+ * @param name - 服务账号名称
+ * @param yaml - 更新 YAML 文本
  */
-function updateServiceAccountYamlMock(clusterUid: string, namespaceName: string, name: string, yaml: string): void {
-  console.log('[Mock] updateServiceAccountYaml', clusterUid, namespaceName, name, yaml)
+function updateServiceAccountYaml(clusterUid: string, namespace: string, name: string, yaml: string): void {
+  console.log('[Mock] updateServiceAccountYaml', clusterUid, namespace, name, yaml)
 }
 
 /**
- * 更新 ServiceAccount 标签
- * @param clusterUid 集群 UID
- * @param namespaceName 命名空间名称
- * @param name ServiceAccount 名称
- * @param data 标签更新参数
- * @returns void
+ * 配置服务账号（ServiceAccount）标签
+ * @param clusterUid - 集群 UID
+ * @param namespace - 命名空间名称
+ * @param name - 服务帐号名称
+ * @param data - 标签配置请求对象
  */
-function manageServiceAccountLabelMock(
+function manageServiceAccountLabels(
   clusterUid: string,
-  namespaceName: string,
+  namespace: string,
   name: string,
   data: MetadataLabelForm,
 ): void {
-  console.log('[Mock] manageServiceAccountLabel', clusterUid, namespaceName, name, data)
+  console.log('[Mock] manageServiceAccountLabels', clusterUid, namespace, name, data)
 }
 
 /**
- * 更新 ServiceAccount 注解
- * @param clusterUid 集群 UID
- * @param namespaceName 命名空间名称
- * @param name ServiceAccount 名称
- * @param data 注解更新参数
- * @returns void
+ * 配置服务账号（ServiceAccount）注解
+ * @param clusterUid - 集群 UID
+ * @param namespace - 命名空间名称
+ * @param name - 服务帐号名称
+ * @param data - 注解配置请求对象
  */
-function manageServiceAccountAnnotationMock(
+function manageServiceAccountAnnotations(
   clusterUid: string,
-  namespaceName: string,
+  namespace: string,
   name: string,
   data: MetadataAnnotationForm,
 ): void {
-  console.log('[Mock] manageServiceAccountAnnotation', clusterUid, namespaceName, name, data)
+  console.log('[Mock] manageServiceAccountAnnotations', clusterUid, namespace, name, data)
 }
 
 /**
- * 删除 ServiceAccount
- * @param clusterUid 集群 UID
- * @param namespaceName 命名空间名称
- * @param name ServiceAccount 名称
- * @returns void
+ * 删除服务账号（ServiceAccount）
+ * @param clusterUid - 集群 UID
+ * @param namespace - 命名空间名称
+ * @param name - 服务帐号名称
  */
-function deleteServiceAccountMock(clusterUid: string, namespaceName: string, name: string): void {
-  console.log('[Mock] deleteServiceAccount', clusterUid, namespaceName, name)
+function deleteServiceAccount(clusterUid: string, namespace: string, name: string): void {
+  console.log('[Mock] deleteServiceAccount', clusterUid, namespace, name)
 }
 
 /**
- * 批量删除 ServiceAccount
- * @param clusterUid 集群 UID
- * @param namespaceName 命名空间名称
- * @param uids ServiceAccount UID 列表
- * @returns void
+ * 批量删除服务账号（ServiceAccount）
+ * @param clusterUid - 集群 UID
+ * @param uids - 服务帐号 UID 数组
  */
-function deleteServiceAccountsMock(clusterUid: string, namespaceName: string, uids: string[]): void {
-  console.log('[Mock] deleteServiceAccounts', clusterUid, namespaceName, uids)
+function deleteServiceAccounts(clusterUid: string, uids: string[]): void {
+  console.log('[Mock] deleteServiceAccounts', clusterUid, uids)
 }
 
 /**
- * 导入 ServiceAccount
- * @param clusterUid 集群 UID
- * @param formData 上传的文件
- * @returns void
+ * 导入服务账号（ServiceAccount）
+ * @param clusterUid - 集群 UID
+ * @param formData - 文件数据
  */
-function importServiceAccountMock(clusterUid: string, formData: FormData): void {
+function importServiceAccount(clusterUid: string, formData: FormData): void {
   void formData
   console.log('[Mock] importServiceAccount', clusterUid)
 }
 
 /**
- * 导出 ServiceAccount
- * @param clusterUid 集群 UID
- * @param namespaceName 命名空间名称
- * @param query ServiceAccount 查询条件请求对象（名称、UID）
- * @returns void
+ * 导出服务账号（ServiceAccount）
+ * @param clusterUid - 集群 UID
+ * @param query - 导出查询条件
  */
-function exportServiceAccountMock(
-  clusterUid: string,
-  namespaceName: string,
-  query: Partial<ServiceAccountQueryForm>,
-): void {
-  console.log('[Mock] exportServiceAccount', clusterUid, namespaceName, query)
+function exportServiceAccount(clusterUid: string, query: Partial<ServiceAccountExportQueryForm>): void {
+  console.log('[Mock] exportServiceAccount', clusterUid, query)
 }
-
-export default [
-  {
-    method: 'get',
-    url: '/kubernetes/clusters/:clusterUid/namespaces/:namespace/serviceaccounts',
-    handler: (ctx: { pathParams: Record<string, string>; params: Partial<ServiceAccountQueryForm> }) =>
-      getServiceAccountListMock(ctx.pathParams.clusterUid, ctx.pathParams.namespace, ctx.params),
-  },
-  {
-    method: 'get',
-    url: '/kubernetes/clusters/:clusterUid/namespaces/:namespace/serviceaccounts/:name',
-    handler: (ctx: { pathParams: Record<string, string> }) =>
-      getServiceAccountDetailMock(ctx.pathParams.clusterUid, ctx.pathParams.namespace, ctx.pathParams.name),
-  },
-  {
-    method: 'get',
-    url: '/kubernetes/clusters/:clusterUid/namespaces/:namespace/serviceaccounts/:name/yaml',
-    handler: (ctx: { pathParams: Record<string, string> }) =>
-      getServiceAccountYamlMock(ctx.pathParams.clusterUid, ctx.pathParams.namespace, ctx.pathParams.name),
-  },
-  {
-    method: 'get',
-    url: '/kubernetes/clusters/:clusterUid/namespaces/:namespace/serviceaccounts/:name/events',
-    handler: (ctx: { pathParams: Record<string, string>; params: Partial<EventQueryForm> }) =>
-      getServiceAccountEventListMock(
-        ctx.pathParams.clusterUid,
-        ctx.pathParams.namespace,
-        ctx.pathParams.name,
-        ctx.params,
-      ),
-  },
-  {
-    method: 'post',
-    url: '/kubernetes/clusters/:clusterUid/namespaces/:namespace/serviceaccounts',
-    handler: (ctx: { pathParams: Record<string, string>; data: Partial<ServiceAccountCreateForm> }) =>
-      createServiceAccountMock(ctx.pathParams.clusterUid, ctx.pathParams.namespace, ctx.data),
-  },
-  {
-    method: 'post',
-    url: '/kubernetes/clusters/:clusterUid/serviceaccounts/yaml',
-    handler: (ctx: { pathParams: Record<string, string>; data: string }) =>
-      createServiceAccountYamlMock(ctx.pathParams.clusterUid, ctx.data),
-  },
-  {
-    method: 'put',
-    url: '/kubernetes/clusters/:clusterUid/namespaces/:namespace/serviceaccounts/:name',
-    handler: (ctx: { pathParams: Record<string, string>; data: Partial<ServiceAccountUpdateForm> }) =>
-      updateServiceAccountMock(ctx.pathParams.clusterUid, ctx.pathParams.namespace, ctx.pathParams.name, ctx.data),
-  },
-  {
-    method: 'put',
-    url: '/kubernetes/clusters/:clusterUid/namespaces/:namespace/serviceaccounts/:name/yaml',
-    handler: (ctx: { pathParams: Record<string, string>; data: string }) =>
-      updateServiceAccountYamlMock(ctx.pathParams.clusterUid, ctx.pathParams.namespace, ctx.pathParams.name, ctx.data),
-  },
-  {
-    method: 'post',
-    url: '/kubernetes/clusters/:clusterUid/namespaces/:namespace/serviceaccounts/:name/labels',
-    handler: (ctx: { pathParams: Record<string, string>; data: MetadataLabelForm }) =>
-      manageServiceAccountLabelMock(ctx.pathParams.clusterUid, ctx.pathParams.namespace, ctx.pathParams.name, ctx.data),
-  },
-  {
-    method: 'post',
-    url: '/kubernetes/clusters/:clusterUid/namespaces/:namespace/serviceaccounts/:name/annotations',
-    handler: (ctx: { pathParams: Record<string, string>; data: MetadataAnnotationForm }) =>
-      manageServiceAccountAnnotationMock(
-        ctx.pathParams.clusterUid,
-        ctx.pathParams.namespace,
-        ctx.pathParams.name,
-        ctx.data,
-      ),
-  },
-  {
-    method: 'delete',
-    url: '/kubernetes/clusters/:clusterUid/namespaces/:namespace/serviceaccounts/:name',
-    handler: (ctx: { pathParams: Record<string, string> }) =>
-      deleteServiceAccountMock(ctx.pathParams.clusterUid, ctx.pathParams.namespace, ctx.pathParams.name),
-  },
-  {
-    method: 'delete',
-    url: '/kubernetes/clusters/:clusterUid/namespaces/:namespace/serviceaccounts/batch',
-    handler: (ctx: { pathParams: Record<string, string>; data: string[] }) =>
-      deleteServiceAccountsMock(ctx.pathParams.clusterUid, ctx.pathParams.namespace, ctx.data),
-  },
-  {
-    method: 'post',
-    url: '/kubernetes/clusters/:clusterUid/serviceaccounts/import',
-    handler: (ctx: { pathParams: Record<string, string>; data: FormData }) =>
-      importServiceAccountMock(ctx.pathParams.clusterUid, ctx.data),
-  },
-  {
-    method: 'get',
-    url: '/kubernetes/clusters/:clusterUid/namespaces/:namespace/serviceaccounts/export',
-    handler: (ctx: { pathParams: Record<string, string>; params: Partial<ServiceAccountQueryForm> }) =>
-      exportServiceAccountMock(ctx.pathParams.clusterUid, ctx.pathParams.namespace, ctx.params),
-  },
-]

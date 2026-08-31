@@ -109,7 +109,6 @@ export function updateClusterRoleBinding(
 }
 
 /**
-/**
  * 更新集群角色绑定（ClusterRoleBinding）（YAML）
  * @param clusterUid - 集群 UID
  * @param name - 集群角色绑定名称
@@ -136,7 +135,7 @@ export function manageClusterRoleBindingLabels(
 }
 
 /**
- * 配置集群角色绑定（clusterrolebinding）注解
+ * 配置集群角色绑定（ClusterRoleBinding）注解
  * @param clusterUid - 集群 UID
  * @param name - 集群角色绑定名称
  * @param data - 注解配置请求对象
@@ -150,7 +149,7 @@ export function manageClusterRoleBindingAnnotations(
 }
 
 /**
- * 删除集群角色绑定（clusterrolebinding）
+ * 删除集群角色绑定（ClusterRoleBinding）
  * @param clusterUid - 集群 UID
  * @param name - 集群角色绑定名称
  */
@@ -159,7 +158,7 @@ export function deleteClusterRoleBinding(clusterUid: string, name: string): Prom
 }
 
 /**
- * 批量删除集群角色绑定（clusterrolebinding）
+ * 批量删除集群角色绑定（ClusterRoleBinding）
  * @param clusterUid - 集群 UID
  * @param uids - 集群角色绑定 UID 数组
  */
@@ -177,14 +176,14 @@ export function importClusterRoleBinding(
   clusterUid: string,
   formData: FormData,
   onProgress?: (progressEvent: AxiosProgressEvent) => void,
-) {
+): Promise<void> {
   return request.upload<void>(`/kubernetes/clusters/${clusterUid}/clusterrolebindings/import`, formData, {
     onUploadProgress: onProgress,
   })
 }
 
 /**
- * 导出集群角色绑定（clusterrolebinding）
+ * 导出集群角色绑定（ClusterRoleBinding）
  * @param clusterUid - 集群 UID
  * @param query - 导出查询条件
  */

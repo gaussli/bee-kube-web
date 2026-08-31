@@ -276,7 +276,6 @@ function deleteCustomResourceDefinitions(clusterUid: string, uids: string[]): vo
  * 导入自定义资源定义（CustomResourceDefinition）
  * @param clusterUid - 集群 UID
  * @param formData - 文件数据
- * @param onProgress - 上传进度回调
  */
 function importCustomResourceDefinition(clusterUid: string, formData: FormData): void {
   void formData

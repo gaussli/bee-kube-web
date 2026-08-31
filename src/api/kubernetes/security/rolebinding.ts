@@ -164,7 +164,7 @@ export function manageRoleBindingLabels(
 }
 
 /**
- * 配置角色绑定（rolebinding）注解
+ * 配置角色绑定（RoleBinding）注解
  * @param clusterUid - 集群 UID
  * @param namespace - 命名空间名称
  * @param name - 角色绑定名称
@@ -183,7 +183,7 @@ export function manageRoleBindingAnnotations(
 }
 
 /**
- * 删除角色绑定（rolebinding）
+ * 删除角色绑定（RoleBinding）
  * @param clusterUid - 集群 UID
  * @param namespace - 命名空间名称
  * @param name - 角色绑定名称
@@ -193,7 +193,7 @@ export function deleteRoleBinding(clusterUid: string, namespace: string, name: s
 }
 
 /**
- * 批量删除角色绑定（rolebinding）
+ * 批量删除角色绑定（RoleBinding）
  * @param clusterUid - 集群 UID
  * @param uids - 角色绑定 UID 数组
  */
@@ -213,24 +213,19 @@ export function importRoleBinding(
   clusterUid: string,
   formData: FormData,
   onProgress?: (progressEvent: AxiosProgressEvent) => void,
-) {
+): Promise<void> {
   return request.upload<void>(`/kubernetes/clusters/${clusterUid}/rolebindings/import`, formData, {
     onUploadProgress: onProgress,
   })
 }
 
 /**
- * 导出角色绑定（rolebinding）
+ * 导出角色绑定（RoleBinding）
  * @param clusterUid - 集群 UID
- * @param namespace - 命名空间名称
  * @param query - 导出查询条件
  */
-export function exportRoleBinding(
-  clusterUid: string,
-  namespace: string,
-  query: Partial<RoleBindingExportQueryForm>,
-): Promise<void> {
-  return request.download<void>(`/kubernetes/clusters/${clusterUid}/namespaces/${namespace}/rolebindings/export`, {
+export function exportRoleBinding(clusterUid: string, query: Partial<RoleBindingExportQueryForm>): Promise<void> {
+  return request.download<void>(`/kubernetes/clusters/${clusterUid}/rolebindings/export`, {
     params: query,
   })
 }

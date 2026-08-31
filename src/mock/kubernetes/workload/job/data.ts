@@ -1,6 +1,7 @@
 import type { EventListVo } from '@/types/kubernetes/event'
 import type { PodListVo } from '@/types/kubernetes/pod'
 import type { JobDetailVo, JobListVo, JobMonitorVo } from '@/types/kubernetes/workload/job'
+import type { JobSpec, JobStatusObj } from '@/types/kubernetes/workload/job/types'
 
 import { generateId } from '@/mock/utils'
 
@@ -646,6 +647,45 @@ export const mockJobList: JobListVo[] = [
   },
 ]
 
+export const mockJobSpec: JobSpec = {
+  parallelism: 1,
+  completions: 1,
+  backoffLimit: 6,
+  activeDeadlineSeconds: 3600,
+  ttlSecondsAfterFinished: 3600,
+  suspend: false,
+  template: {
+    metadata: {
+      labels: {
+        'app': 'pi-calc',
+        'job-name': 'pi-job-28374601',
+      },
+      annotations: {
+        'kubernetes.io/description': 'Pi calculation pod',
+      },
+    },
+    spec: mockPodSpec,
+  },
+}
+
+export const mockJobStatusObj: JobStatusObj = {
+  active: 0,
+  succeeded: 1,
+  failed: 0,
+  startTime: '2026-08-28T06:00:00Z',
+  completionTime: '2026-08-28T07:00:00Z',
+  conditions: [
+    {
+      type: 'Complete',
+      status: 'True',
+      lastProbeTime: '2026-08-28T07:00:00Z',
+      lastTransitionTime: '2026-08-28T07:00:00Z',
+      reason: 'JobCompleted',
+      message: 'Job completed successfully',
+    },
+  ],
+}
+
 export const mockJobDetail: JobDetailVo = {
   uid: generateId(),
   name: 'pi-job-28374601',
@@ -669,43 +709,8 @@ export const mockJobDetail: JobDetailVo = {
   },
   status: 'Succeeded',
   statusMsg: '任务完成，结果已输出',
-  spec: {
-    parallelism: 1,
-    completions: 1,
-    backoffLimit: 6,
-    activeDeadlineSeconds: 3600,
-    ttlSecondsAfterFinished: 3600,
-    suspend: false,
-    template: {
-      metadata: {
-        labels: {
-          'app': 'pi-calc',
-          'job-name': 'pi-job-28374601',
-        },
-        annotations: {
-          'kubernetes.io/description': 'Pi calculation pod',
-        },
-      },
-      spec: mockPodSpec,
-    },
-  },
-  statusObj: {
-    active: 0,
-    succeeded: 1,
-    failed: 0,
-    startTime: '2026-08-28T06:00:00Z',
-    completionTime: '2026-08-28T07:00:00Z',
-    conditions: [
-      {
-        type: 'Complete',
-        status: 'True',
-        lastProbeTime: '2026-08-28T07:00:00Z',
-        lastTransitionTime: '2026-08-28T07:00:00Z',
-        reason: 'JobCompleted',
-        message: 'Job completed successfully',
-      },
-    ],
-  },
+  spec: mockJobSpec,
+  statusObj: mockJobStatusObj,
   createAt: '2026-08-28T06:00:00Z',
   createBy: 'admin',
   updateAt: '2026-08-28T07:00:00Z',

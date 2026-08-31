@@ -174,7 +174,7 @@ export function managePersistentVolumeClaimLabels(
 }
 
 /**
- * 配置持久卷声明（persistentvolumeclaim）注解
+ * 配置持久卷声明（PersistentVolumeClaim）注解
  * @param clusterUid - 集群 UID
  * @param namespace - 命名空间名称
  * @param name - 持久卷声明名称
@@ -193,7 +193,7 @@ export function managePersistentVolumeClaimAnnotations(
 }
 
 /**
- * 删除持久卷声明（persistentvolumeclaim）
+ * 删除持久卷声明（PersistentVolumeClaim）
  * @param clusterUid - 集群 UID
  * @param namespace - 命名空间名称
  * @param name - 持久卷声明名称
@@ -205,7 +205,7 @@ export function deletePersistentVolumeClaim(clusterUid: string, namespace: strin
 }
 
 /**
- * 批量删除持久卷声明（persistentvolumeclaim）
+ * 批量删除持久卷声明（PersistentVolumeClaim）
  * @param clusterUid - 集群 UID
  * @param uids - 持久卷声明 UID 数组
  */
@@ -225,27 +225,22 @@ export function importPersistentVolumeClaim(
   clusterUid: string,
   formData: FormData,
   onProgress?: (progressEvent: AxiosProgressEvent) => void,
-) {
+): Promise<void> {
   return request.upload<void>(`/kubernetes/clusters/${clusterUid}/persistentvolumeclaims/import`, formData, {
     onUploadProgress: onProgress,
   })
 }
 
 /**
- * 导出持久卷声明（persistentvolumeclaim）
+ * 导出持久卷声明（PersistentVolumeClaim）
  * @param clusterUid - 集群 UID
- * @param namespace - 命名空间名称
  * @param query - 导出查询条件
  */
 export function exportPersistentVolumeClaim(
   clusterUid: string,
-  namespace: string,
   query: Partial<PersistentVolumeClaimExportQueryForm>,
 ): Promise<void> {
-  return request.download<void>(
-    `/kubernetes/clusters/${clusterUid}/namespaces/${namespace}/persistentvolumeclaims/export`,
-    {
-      params: query,
-    },
-  )
+  return request.download<void>(`/kubernetes/clusters/${clusterUid}/persistentvolumeclaims/export`, {
+    params: query,
+  })
 }

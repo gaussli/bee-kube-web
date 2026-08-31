@@ -8,41 +8,165 @@ import type { EventListVo, EventQueryForm } from '@/types/kubernetes/event'
 import type {
   PersistentVolumeClaimCreateForm,
   PersistentVolumeClaimDetailVo,
+  PersistentVolumeClaimExportQueryForm,
   PersistentVolumeClaimListVo,
   PersistentVolumeClaimQueryForm,
   PersistentVolumeClaimUpdateForm,
   PersistentVolumeClaimYamlVo,
 } from '@/types/kubernetes/storage/persistentvolumeclaim'
 
+import { handleEventList } from '@/mock/utils'
+
 import {
   mockPersistentVolumeClaimDetail,
-  mockPersistentVolumeClaimEvents,
-  mockPersistentVolumeClaims,
+  mockPersistentVolumeClaimEventList,
+  mockPersistentVolumeClaimList,
   mockPersistentVolumeClaimYaml,
 } from './data'
 
 /**
- * 查看 PersistentVolumeClaim 列表
- * @param clusterUid 集群 UID
- * @param namespaceName 命名空间名称
- * @param query PersistentVolumeClaim 查询条件请求对象（名称、状态、存储类名、UID）
- * @returns PersistentVolumeClaim 分页列表
+ * 持久卷声明路由配置
+ * @remarks
+ * - GET    /kubernetes/clusters/:clusterUid/persistentvolumeclaims                                         - 获取持久卷声明列表
+ * - GET    /kubernetes/clusters/:clusterUid/namespaces/:namespace/persistentvolumeclaims/:name             - 获取持久卷声明详情
+ * - GET    /kubernetes/clusters/:clusterUid/namespaces/:namespace/persistentvolumeclaims/:name/yaml        - 获取持久卷声明 YAML
+ * - GET    /kubernetes/clusters/:clusterUid/namespaces/:namespace/persistentvolumeclaims/:name/events      - 获取持久卷声明事件列表
+ * - POST   /kubernetes/clusters/:clusterUid/persistentvolumeclaims                                         - 创建持久卷声明
+ * - POST   /kubernetes/clusters/:clusterUid/persistentvolumeclaims/yaml                                    - 创建持久卷声明（YAML）
+ * - PUT    /kubernetes/clusters/:clusterUid/namespaces/:namespace/persistentvolumeclaims/:name             - 更新持久卷声明
+ * - PUT    /kubernetes/clusters/:clusterUid/namespaces/:namespace/persistentvolumeclaims/:name/yaml        - 更新持久卷声明（YAML）
+ * - POST   /kubernetes/clusters/:clusterUid/namespaces/:namespace/persistentvolumeclaims/:name/labels      - 配置持久卷声明标签
+ * - POST   /kubernetes/clusters/:clusterUid/namespaces/:namespace/persistentvolumeclaims/:name/annotations - 配置持久卷声明注解
+ * - DELETE /kubernetes/clusters/:clusterUid/namespaces/:namespace/persistentvolumeclaims/:name             - 删除持久卷声明
+ * - DELETE /kubernetes/clusters/:clusterUid/persistentvolumeclaims                                         - 批量删除持久卷声明
+ * - POST   /kubernetes/clusters/:clusterUid/persistentvolumeclaims/import                                  - 导入持久卷声明
+ * - GET    /kubernetes/clusters/:clusterUid/persistentvolumeclaims/export                                  - 导出持久卷声明
  */
-function getPersistentVolumeClaimListMock(
+export default [
+  {
+    method: 'get',
+    url: '/kubernetes/clusters/:clusterUid/persistentvolumeclaims',
+    handler: (ctx: { pathParams: Record<string, string>; params: Partial<PersistentVolumeClaimQueryForm> }) =>
+      getPersistentVolumeClaimList(ctx.pathParams.clusterUid, ctx.params),
+  },
+  {
+    method: 'get',
+    url: '/kubernetes/clusters/:clusterUid/namespaces/:namespace/persistentvolumeclaims/:name',
+    handler: (ctx: { pathParams: Record<string, string> }) =>
+      getPersistentVolumeClaimDetail(ctx.pathParams.clusterUid, ctx.pathParams.namespace, ctx.pathParams.name),
+  },
+  {
+    method: 'get',
+    url: '/kubernetes/clusters/:clusterUid/namespaces/:namespace/persistentvolumeclaims/:name/yaml',
+    handler: (ctx: { pathParams: Record<string, string> }) =>
+      getPersistentVolumeClaimYaml(ctx.pathParams.clusterUid, ctx.pathParams.namespace, ctx.pathParams.name),
+  },
+  {
+    method: 'get',
+    url: '/kubernetes/clusters/:clusterUid/namespaces/:namespace/persistentvolumeclaims/:name/events',
+    handler: (ctx: { pathParams: Record<string, string>; params: Partial<EventQueryForm> }) =>
+      getPersistentVolumeClaimEventList(
+        ctx.pathParams.clusterUid,
+        ctx.pathParams.namespace,
+        ctx.pathParams.name,
+        ctx.params,
+      ),
+  },
+  {
+    method: 'post',
+    url: '/kubernetes/clusters/:clusterUid/persistentvolumeclaims',
+    handler: (ctx: { pathParams: Record<string, string>; data: Partial<PersistentVolumeClaimCreateForm> }) =>
+      createPersistentVolumeClaim(ctx.pathParams.clusterUid, ctx.data),
+  },
+  {
+    method: 'post',
+    url: '/kubernetes/clusters/:clusterUid/persistentvolumeclaims/yaml',
+    handler: (ctx: { pathParams: Record<string, string>; data: string }) =>
+      createPersistentVolumeClaimYaml(ctx.pathParams.clusterUid, ctx.data),
+  },
+  {
+    method: 'put',
+    url: '/kubernetes/clusters/:clusterUid/namespaces/:namespace/persistentvolumeclaims/:name',
+    handler: (ctx: { pathParams: Record<string, string>; data: Partial<PersistentVolumeClaimUpdateForm> }) =>
+      updatePersistentVolumeClaim(ctx.pathParams.clusterUid, ctx.pathParams.namespace, ctx.pathParams.name, ctx.data),
+  },
+  {
+    method: 'put',
+    url: '/kubernetes/clusters/:clusterUid/namespaces/:namespace/persistentvolumeclaims/:name/yaml',
+    handler: (ctx: { pathParams: Record<string, string>; data: string }) =>
+      updatePersistentVolumeClaimYaml(
+        ctx.pathParams.clusterUid,
+        ctx.pathParams.namespace,
+        ctx.pathParams.name,
+        ctx.data,
+      ),
+  },
+  {
+    method: 'post',
+    url: '/kubernetes/clusters/:clusterUid/namespaces/:namespace/persistentvolumeclaims/:name/labels',
+    handler: (ctx: { pathParams: Record<string, string>; data: MetadataLabelForm }) =>
+      managePersistentVolumeClaimLabels(
+        ctx.pathParams.clusterUid,
+        ctx.pathParams.namespace,
+        ctx.pathParams.name,
+        ctx.data,
+      ),
+  },
+  {
+    method: 'post',
+    url: '/kubernetes/clusters/:clusterUid/namespaces/:namespace/persistentvolumeclaims/:name/annotations',
+    handler: (ctx: { pathParams: Record<string, string>; data: MetadataAnnotationForm }) =>
+      managePersistentVolumeClaimAnnotations(
+        ctx.pathParams.clusterUid,
+        ctx.pathParams.namespace,
+        ctx.pathParams.name,
+        ctx.data,
+      ),
+  },
+  {
+    method: 'delete',
+    url: '/kubernetes/clusters/:clusterUid/namespaces/:namespace/persistentvolumeclaims/:name',
+    handler: (ctx: { pathParams: Record<string, string> }) =>
+      deletePersistentVolumeClaim(ctx.pathParams.clusterUid, ctx.pathParams.namespace, ctx.pathParams.name),
+  },
+  {
+    method: 'delete',
+    url: '/kubernetes/clusters/:clusterUid/persistentvolumeclaims',
+    handler: (ctx: { pathParams: Record<string, string>; data: string[] }) =>
+      deletePersistentVolumeClaims(ctx.pathParams.clusterUid, ctx.data),
+  },
+  {
+    method: 'post',
+    url: '/kubernetes/clusters/:clusterUid/persistentvolumeclaims/import',
+    handler: (ctx: { pathParams: Record<string, string>; data: FormData }) =>
+      importPersistentVolumeClaim(ctx.pathParams.clusterUid, ctx.data),
+  },
+  {
+    method: 'get',
+    url: '/kubernetes/clusters/:clusterUid/persistentvolumeclaims/export',
+    handler: (ctx: { pathParams: Record<string, string>; params: Partial<PersistentVolumeClaimExportQueryForm> }) =>
+      exportPersistentVolumeClaim(ctx.pathParams.clusterUid, ctx.params),
+  },
+]
+
+/**
+ * 获取持久卷声明（PersistentVolumeClaim）列表
+ * @param clusterUid - 集群 UID
+ * @param query - 查询条件
+ * @returns 分页后的持久卷声明列表
+ */
+function getPersistentVolumeClaimList(
   clusterUid: string,
-  namespaceName: string,
   query: Partial<PersistentVolumeClaimQueryForm>,
 ): PageVo<PersistentVolumeClaimListVo> {
-  console.log('[Mock] getPersistentVolumeClaimList', clusterUid, namespaceName, query)
-  const filtered = mockPersistentVolumeClaims.filter((p: PersistentVolumeClaimListVo) => {
-    if (p.clusterUid !== clusterUid) return false
-    if (namespaceName && p.namespace !== namespaceName) return false
-    if (query.status && p.status !== query.status) return false
-    if (query.storageClassName && p.storageClassName !== query.storageClassName) return false
+  console.log('[Mock] getPersistentVolumeClaimList', clusterUid, query)
+  const filtered = mockPersistentVolumeClaimList.filter((d: PersistentVolumeClaimListVo) => {
+    if (query.namespace && d.namespace !== query.namespace) return false
+    if (query.status && d.status !== query.status) return false
     return true
   })
-  const filteredUid = query.uid ? filtered.filter(p => p.uid === query.uid) : []
-  const filteredName = query.name ? filtered.filter(p => p.name.includes(query.name as string)) : []
+  const filteredUid = query.uid ? filtered.filter(d => d.uid === query.uid) : []
+  const filteredName = query.name ? filtered.filter(d => d.name.includes(query.name as string)) : []
   const matched = query.uid || query.name ? Array.from(new Set([...filteredUid, ...filteredName])) : filtered
   const page = query.page || 1
   const pageSize = query.pageSize || 10
@@ -55,312 +179,166 @@ function getPersistentVolumeClaimListMock(
 }
 
 /**
- * 查看 PersistentVolumeClaim 详情
- * @param clusterUid 集群 UID
- * @param namespaceName 命名空间名称
- * @param name PersistentVolumeClaim 名称
- * @returns PersistentVolumeClaim 详情响应对象
+ * 获取持久卷声明（PersistentVolumeClaim）详情
+ * @param clusterUid - 集群 UID
+ * @param namespace - 命名空间名称
+ * @param name - 持久卷声明名称
+ * @returns 持久卷声明详情
  */
-function getPersistentVolumeClaimDetailMock(
+function getPersistentVolumeClaimDetail(
   clusterUid: string,
-  namespaceName: string,
+  namespace: string,
   name: string,
 ): PersistentVolumeClaimDetailVo {
-  console.log('[Mock] getPersistentVolumeClaimDetail', clusterUid, namespaceName, name)
+  console.log('[Mock] getPersistentVolumeClaimDetail', clusterUid, namespace, name)
   return mockPersistentVolumeClaimDetail
 }
 
 /**
- * 查看 PersistentVolumeClaim YAML
- * @param clusterUid 集群 UID
- * @param namespaceName 命名空间名称
- * @param name PersistentVolumeClaim 名称
- * @returns PersistentVolumeClaim YAML 响应对象（完整 YAML 文本）
+ * 获取持久卷声明（PersistentVolumeClaim）YAML
+ * @param clusterUid - 集群 UID
+ * @param namespace - 命名空间名称
+ * @param name - 持久卷声明名称
+ * @returns 持久卷声明 YAML
  */
-function getPersistentVolumeClaimYamlMock(
+function getPersistentVolumeClaimYaml(
   clusterUid: string,
-  namespaceName: string,
+  namespace: string,
   name: string,
 ): PersistentVolumeClaimYamlVo {
-  console.log('[Mock] getPersistentVolumeClaimYaml', clusterUid, namespaceName, name)
-  return mockPersistentVolumeClaimYaml
+  console.log('[Mock] getPersistentVolumeClaimYaml', clusterUid, namespace, name)
+  return { yaml: mockPersistentVolumeClaimYaml }
 }
 
 /**
- * 查看 PersistentVolumeClaim 关联事件列表
- * @param clusterUid 集群 UID
- * @param namespaceName 命名空间名称
- * @param name PersistentVolumeClaim 名称
- * @param query 事件查询条件
- * @returns PersistentVolumeClaim 关联事件分页列表
+ * 获取持久卷声明（PersistentVolumeClaim）事件（Event）列表
+ * @param clusterUid - 集群 UID
+ * @param namespace - 命名空间名称
+ * @param name - 持久卷声明名称
+ * @param query - 事件查询条件
+ * @returns 分页后的事件列表
  */
-function getPersistentVolumeClaimEventListMock(
+function getPersistentVolumeClaimEventList(
   clusterUid: string,
-  namespaceName: string,
+  namespace: string,
   name: string,
   query: Partial<EventQueryForm>,
 ): PageVo<EventListVo> {
-  console.log('[Mock] getPersistentVolumeClaimEventList', clusterUid, namespaceName, name, query)
-  const page = query.page || 1
-  const pageSize = query.pageSize || 10
-  const list = mockPersistentVolumeClaimEvents.slice((page - 1) * pageSize, page * pageSize)
-  return {
-    list,
-    total: mockPersistentVolumeClaimEvents.length,
-    page,
-    pageSize,
-  }
+  console.log('[Mock] getPersistentVolumeClaimEventList', clusterUid, namespace, name, query)
+  return handleEventList(query, mockPersistentVolumeClaimEventList)
 }
 
 /**
- * 创建 PersistentVolumeClaim
- * @param clusterUid 集群 UID
- * @param namespaceName 命名空间名称
- * @param data 创建参数
- * @returns void
+ * 创建持久卷声明（PersistentVolumeClaim）
+ * @param clusterUid - 集群 UID
+ * @param data - 创建请求对象
  */
-function createPersistentVolumeClaimMock(
-  clusterUid: string,
-  namespaceName: string,
-  data: Partial<PersistentVolumeClaimCreateForm>,
-): void {
-  console.log('[Mock] createPersistentVolumeClaim', clusterUid, namespaceName, data)
+function createPersistentVolumeClaim(clusterUid: string, data: Partial<PersistentVolumeClaimCreateForm>): void {
+  console.log('[Mock] createPersistentVolumeClaim', clusterUid, data)
 }
 
 /**
- * 通过 YAML 创建 PersistentVolumeClaim
- * @param clusterUid 集群 UID
- * @param yaml PersistentVolumeClaim YAML 文本
- * @returns void
+ * 创建持久卷声明（PersistentVolumeClaim）（YAML）
+ * @param clusterUid - 集群 UID
+ * @param yaml - 创建 YAML 文本
  */
-function createPersistentVolumeClaimYamlMock(clusterUid: string, yaml: string): void {
+function createPersistentVolumeClaimYaml(clusterUid: string, yaml: string): void {
   console.log('[Mock] createPersistentVolumeClaimYaml', clusterUid, yaml)
 }
 
 /**
- * 更新 PersistentVolumeClaim
- * @param clusterUid 集群 UID
- * @param namespaceName 命名空间名称
- * @param name PersistentVolumeClaim 名称
- * @param data 更新参数
- * @returns void
+ * 更新持久卷声明（PersistentVolumeClaim）
+ * @param clusterUid - 集群 UID
+ * @param namespace - 命名空间名称
+ * @param name - 持久卷声明名称
+ * @param data - 更新请求对象
  */
-function updatePersistentVolumeClaimMock(
+function updatePersistentVolumeClaim(
   clusterUid: string,
-  namespaceName: string,
+  namespace: string,
   name: string,
   data: Partial<PersistentVolumeClaimUpdateForm>,
 ): void {
-  console.log('[Mock] updatePersistentVolumeClaim', clusterUid, namespaceName, name, data)
+  console.log('[Mock] updatePersistentVolumeClaim', clusterUid, namespace, name, data)
 }
 
 /**
- * 通过 YAML 更新 PersistentVolumeClaim
- * @param clusterUid 集群 UID
- * @param namespaceName 命名空间名称
- * @param name PersistentVolumeClaim 名称
- * @param yaml PersistentVolumeClaim YAML 文本
- * @returns void
+ * 更新持久卷声明（PersistentVolumeClaim）（YAML）
+ * @param clusterUid - 集群 UID
+ * @param namespace - 命名空间名称
+ * @param name - 持久卷声明名称
+ * @param yaml - 更新 YAML 文本
  */
-function updatePersistentVolumeClaimYamlMock(
-  clusterUid: string,
-  namespaceName: string,
-  name: string,
-  yaml: string,
-): void {
-  console.log('[Mock] updatePersistentVolumeClaimYaml', clusterUid, namespaceName, name, yaml)
+function updatePersistentVolumeClaimYaml(clusterUid: string, namespace: string, name: string, yaml: string): void {
+  console.log('[Mock] updatePersistentVolumeClaimYaml', clusterUid, namespace, name, yaml)
 }
 
 /**
- * 更新 PersistentVolumeClaim 标签
- * @param clusterUid 集群 UID
- * @param namespaceName 命名空间名称
- * @param name PersistentVolumeClaim 名称
- * @param data 标签更新参数
- * @returns void
+ * 配置持久卷声明（PersistentVolumeClaim）标签
+ * @param clusterUid - 集群 UID
+ * @param namespace - 命名空间名称
+ * @param name - 持久卷声明名称
+ * @param data - 标签配置请求对象
  */
-function managePersistentVolumeClaimLabelMock(
+function managePersistentVolumeClaimLabels(
   clusterUid: string,
-  namespaceName: string,
+  namespace: string,
   name: string,
   data: MetadataLabelForm,
 ): void {
-  console.log('[Mock] managePersistentVolumeClaimLabel', clusterUid, namespaceName, name, data)
+  console.log('[Mock] managePersistentVolumeClaimLabels', clusterUid, namespace, name, data)
 }
 
 /**
- * 更新 PersistentVolumeClaim 注解
- * @param clusterUid 集群 UID
- * @param namespaceName 命名空间名称
- * @param name PersistentVolumeClaim 名称
- * @param data 注解更新参数
- * @returns void
+ * 配置持久卷声明（PersistentVolumeClaim）注解
+ * @param clusterUid - 集群 UID
+ * @param namespace - 命名空间名称
+ * @param name - 持久卷声明名称
+ * @param data - 注解配置请求对象
  */
-function managePersistentVolumeClaimAnnotationMock(
+function managePersistentVolumeClaimAnnotations(
   clusterUid: string,
-  namespaceName: string,
+  namespace: string,
   name: string,
   data: MetadataAnnotationForm,
 ): void {
-  console.log('[Mock] managePersistentVolumeClaimAnnotation', clusterUid, namespaceName, name, data)
+  console.log('[Mock] managePersistentVolumeClaimAnnotations', clusterUid, namespace, name, data)
 }
 
 /**
- * 删除 PersistentVolumeClaim
- * @param clusterUid 集群 UID
- * @param namespaceName 命名空间名称
- * @param name PersistentVolumeClaim 名称
- * @returns void
+ * 删除持久卷声明（PersistentVolumeClaim）
+ * @param clusterUid - 集群 UID
+ * @param namespace - 命名空间名称
+ * @param name - 持久卷声明名称
  */
-function deletePersistentVolumeClaimMock(clusterUid: string, namespaceName: string, name: string): void {
-  console.log('[Mock] deletePersistentVolumeClaim', clusterUid, namespaceName, name)
+function deletePersistentVolumeClaim(clusterUid: string, namespace: string, name: string): void {
+  console.log('[Mock] deletePersistentVolumeClaim', clusterUid, namespace, name)
 }
 
 /**
- * 批量删除 PersistentVolumeClaim
- * @param clusterUid 集群 UID
- * @param namespaceName 命名空间名称
- * @param uids PersistentVolumeClaim UID 列表
- * @returns void
+ * 批量删除持久卷声明（PersistentVolumeClaim）
+ * @param clusterUid - 集群 UID
+ * @param uids - 持久卷声明 UID 数组
  */
-function deletePersistentVolumeClaimsMock(clusterUid: string, namespaceName: string, uids: string[]): void {
-  console.log('[Mock] deletePersistentVolumeClaims', clusterUid, namespaceName, uids)
+function deletePersistentVolumeClaims(clusterUid: string, uids: string[]): void {
+  console.log('[Mock] deletePersistentVolumeClaims', clusterUid, uids)
 }
 
 /**
- * 导入 PersistentVolumeClaim
- * @param clusterUid 集群 UID
- * @param formData 上传的文件
- * @returns void
+ * 导入持久卷声明（PersistentVolumeClaim）
+ * @param clusterUid - 集群 UID
+ * @param formData - 文件数据
  */
-function importPersistentVolumeClaimMock(clusterUid: string, formData: FormData): void {
+function importPersistentVolumeClaim(clusterUid: string, formData: FormData): void {
   void formData
   console.log('[Mock] importPersistentVolumeClaim', clusterUid)
 }
 
 /**
- * 导出 PersistentVolumeClaim
- * @param clusterUid 集群 UID
- * @param namespaceName 命名空间名称
- * @param query PersistentVolumeClaim 查询条件请求对象（名称、状态、存储类名、UID）
- * @returns void
+ * 导出持久卷声明（PersistentVolumeClaim）
+ * @param clusterUid - 集群 UID
+ * @param query - 导出查询条件
  */
-function exportPersistentVolumeClaimMock(
-  clusterUid: string,
-  namespaceName: string,
-  query: Partial<PersistentVolumeClaimQueryForm>,
-): void {
-  console.log('[Mock] exportPersistentVolumeClaim', clusterUid, namespaceName, query)
+function exportPersistentVolumeClaim(clusterUid: string, query: Partial<PersistentVolumeClaimExportQueryForm>): void {
+  console.log('[Mock] exportPersistentVolumeClaim', clusterUid, query)
 }
-
-export default [
-  {
-    method: 'get',
-    url: '/kubernetes/clusters/:clusterUid/namespaces/:namespace/persistentvolumeclaims',
-    handler: (ctx: { pathParams: Record<string, string>; params: Partial<PersistentVolumeClaimQueryForm> }) =>
-      getPersistentVolumeClaimListMock(ctx.pathParams.clusterUid, ctx.pathParams.namespace, ctx.params),
-  },
-  {
-    method: 'get',
-    url: '/kubernetes/clusters/:clusterUid/namespaces/:namespace/persistentvolumeclaims/:name',
-    handler: (ctx: { pathParams: Record<string, string> }) =>
-      getPersistentVolumeClaimDetailMock(ctx.pathParams.clusterUid, ctx.pathParams.namespace, ctx.pathParams.name),
-  },
-  {
-    method: 'get',
-    url: '/kubernetes/clusters/:clusterUid/namespaces/:namespace/persistentvolumeclaims/:name/yaml',
-    handler: (ctx: { pathParams: Record<string, string> }) =>
-      getPersistentVolumeClaimYamlMock(ctx.pathParams.clusterUid, ctx.pathParams.namespace, ctx.pathParams.name),
-  },
-  {
-    method: 'get',
-    url: '/kubernetes/clusters/:clusterUid/namespaces/:namespace/persistentvolumeclaims/:name/events',
-    handler: (ctx: { pathParams: Record<string, string>; params: Partial<EventQueryForm> }) =>
-      getPersistentVolumeClaimEventListMock(
-        ctx.pathParams.clusterUid,
-        ctx.pathParams.namespace,
-        ctx.pathParams.name,
-        ctx.params,
-      ),
-  },
-  {
-    method: 'post',
-    url: '/kubernetes/clusters/:clusterUid/namespaces/:namespace/persistentvolumeclaims',
-    handler: (ctx: { pathParams: Record<string, string>; data: Partial<PersistentVolumeClaimCreateForm> }) =>
-      createPersistentVolumeClaimMock(ctx.pathParams.clusterUid, ctx.pathParams.namespace, ctx.data),
-  },
-  {
-    method: 'post',
-    url: '/kubernetes/clusters/:clusterUid/persistentvolumeclaims/yaml',
-    handler: (ctx: { pathParams: Record<string, string>; data: string }) =>
-      createPersistentVolumeClaimYamlMock(ctx.pathParams.clusterUid, ctx.data),
-  },
-  {
-    method: 'put',
-    url: '/kubernetes/clusters/:clusterUid/namespaces/:namespace/persistentvolumeclaims/:name',
-    handler: (ctx: { pathParams: Record<string, string>; data: Partial<PersistentVolumeClaimUpdateForm> }) =>
-      updatePersistentVolumeClaimMock(
-        ctx.pathParams.clusterUid,
-        ctx.pathParams.namespace,
-        ctx.pathParams.name,
-        ctx.data,
-      ),
-  },
-  {
-    method: 'put',
-    url: '/kubernetes/clusters/:clusterUid/namespaces/:namespace/persistentvolumeclaims/:name/yaml',
-    handler: (ctx: { pathParams: Record<string, string>; data: string }) =>
-      updatePersistentVolumeClaimYamlMock(
-        ctx.pathParams.clusterUid,
-        ctx.pathParams.namespace,
-        ctx.pathParams.name,
-        ctx.data,
-      ),
-  },
-  {
-    method: 'post',
-    url: '/kubernetes/clusters/:clusterUid/namespaces/:namespace/persistentvolumeclaims/:name/labels',
-    handler: (ctx: { pathParams: Record<string, string>; data: MetadataLabelForm }) =>
-      managePersistentVolumeClaimLabelMock(
-        ctx.pathParams.clusterUid,
-        ctx.pathParams.namespace,
-        ctx.pathParams.name,
-        ctx.data,
-      ),
-  },
-  {
-    method: 'post',
-    url: '/kubernetes/clusters/:clusterUid/namespaces/:namespace/persistentvolumeclaims/:name/annotations',
-    handler: (ctx: { pathParams: Record<string, string>; data: MetadataAnnotationForm }) =>
-      managePersistentVolumeClaimAnnotationMock(
-        ctx.pathParams.clusterUid,
-        ctx.pathParams.namespace,
-        ctx.pathParams.name,
-        ctx.data,
-      ),
-  },
-  {
-    method: 'delete',
-    url: '/kubernetes/clusters/:clusterUid/namespaces/:namespace/persistentvolumeclaims/:name',
-    handler: (ctx: { pathParams: Record<string, string> }) =>
-      deletePersistentVolumeClaimMock(ctx.pathParams.clusterUid, ctx.pathParams.namespace, ctx.pathParams.name),
-  },
-  {
-    method: 'delete',
-    url: '/kubernetes/clusters/:clusterUid/namespaces/:namespace/persistentvolumeclaims/batch',
-    handler: (ctx: { pathParams: Record<string, string>; data: string[] }) =>
-      deletePersistentVolumeClaimsMock(ctx.pathParams.clusterUid, ctx.pathParams.namespace, ctx.data),
-  },
-  {
-    method: 'post',
-    url: '/kubernetes/clusters/:clusterUid/persistentvolumeclaims/import',
-    handler: (ctx: { pathParams: Record<string, string>; data: FormData }) =>
-      importPersistentVolumeClaimMock(ctx.pathParams.clusterUid, ctx.data),
-  },
-  {
-    method: 'get',
-    url: '/kubernetes/clusters/:clusterUid/namespaces/:namespace/persistentvolumeclaims/export',
-    handler: (ctx: { pathParams: Record<string, string>; params: Partial<PersistentVolumeClaimQueryForm> }) =>
-      exportPersistentVolumeClaimMock(ctx.pathParams.clusterUid, ctx.pathParams.namespace, ctx.params),
-  },
-]

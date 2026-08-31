@@ -97,7 +97,7 @@ export function getDaemonSetHistoryRevisionList(
   namespace: string,
   name: string,
   query: Partial<DaemonSetHistoryRevisionQueryForm>,
-) {
+): Promise<PageVo<DaemonSetHistoryRevisionListVo>> {
   return request.get<PageVo<DaemonSetHistoryRevisionListVo>>(
     `/kubernetes/clusters/${clusterUid}/namespaces/${namespace}/daemonsets/${name}/history`,
     { params: query },
@@ -228,7 +228,7 @@ export function manageDaemonSetLabels(
 }
 
 /**
- * 配置守护进程集（daemonset）注解
+ * 配置守护进程集（DaemonSet）注解
  * @param clusterUid - 集群 UID
  * @param namespace - 命名空间名称
  * @param name - 守护进程集名称
@@ -239,7 +239,7 @@ export function manageDaemonSetAnnotations(
   namespace: string,
   name: string,
   data: MetadataAnnotationForm,
-) {
+): Promise<void> {
   return request.post<void>(
     `/kubernetes/clusters/${clusterUid}/namespaces/${namespace}/daemonsets/${name}/annotations`,
     data,
@@ -247,7 +247,7 @@ export function manageDaemonSetAnnotations(
 }
 
 /**
- * 删除守护进程集（daemonset）
+ * 删除守护进程集（DaemonSet）
  * @param clusterUid - 集群 UID
  * @param namespace - 命名空间名称
  * @param name - 守护进程集名称
@@ -257,7 +257,7 @@ export function deleteDaemonSet(clusterUid: string, namespace: string, name: str
 }
 
 /**
- * 批量删除守护进程集（daemonset）
+ * 批量删除守护进程集（DaemonSet）
  * @param clusterUid - 集群 UID
  * @param uids - 守护进程集 UID 数组
  */
@@ -275,14 +275,14 @@ export function importDaemonSet(
   clusterUid: string,
   formData: FormData,
   onProgress?: (progressEvent: AxiosProgressEvent) => void,
-) {
+): Promise<void> {
   return request.upload<void>(`/kubernetes/clusters/${clusterUid}/daemonsets/import`, formData, {
     onUploadProgress: onProgress,
   })
 }
 
 /**
- * 导出守护进程集（daemonset）
+ * 导出守护进程集（DaemonSet）
  * @param clusterUid - 集群 UID
  * @param query - 导出查询条件
  */

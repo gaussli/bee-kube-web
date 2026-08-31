@@ -19,6 +19,24 @@ import { handleEventList } from '@/mock/utils'
 
 import { mockIngressDetail, mockIngressEventList, mockIngressList, mockIngressYaml } from './data'
 
+/**
+ * 入口路由配置
+ * @remarks
+ * - GET    /kubernetes/clusters/:clusterUid/ingresses                                         - 获取入口列表
+ * - GET    /kubernetes/clusters/:clusterUid/namespaces/:namespace/ingresses/:name             - 获取入口详情
+ * - GET    /kubernetes/clusters/:clusterUid/namespaces/:namespace/ingresses/:name/yaml        - 获取入口 YAML
+ * - GET    /kubernetes/clusters/:clusterUid/namespaces/:namespace/ingresses/:name/events      - 获取入口事件列表
+ * - POST   /kubernetes/clusters/:clusterUid/ingresses                                         - 创建入口
+ * - POST   /kubernetes/clusters/:clusterUid/ingresses/yaml                                    - 创建入口（YAML）
+ * - PUT    /kubernetes/clusters/:clusterUid/namespaces/:namespace/ingresses/:name             - 更新入口
+ * - PUT    /kubernetes/clusters/:clusterUid/namespaces/:namespace/ingresses/:name/yaml        - 更新入口（YAML）
+ * - POST   /kubernetes/clusters/:clusterUid/namespaces/:namespace/ingresses/:name/labels      - 配置入口标签
+ * - POST   /kubernetes/clusters/:clusterUid/namespaces/:namespace/ingresses/:name/annotations - 配置入口注解
+ * - DELETE /kubernetes/clusters/:clusterUid/namespaces/:namespace/ingresses/:name             - 删除入口
+ * - DELETE /kubernetes/clusters/:clusterUid/ingresses                                         - 批量删除入口
+ * - POST   /kubernetes/clusters/:clusterUid/ingresses/import                                  - 导入入口
+ * - GET    /kubernetes/clusters/:clusterUid/ingresses/export                                  - 导出入口
+ */
 export default [
   {
     method: 'get',
@@ -88,7 +106,7 @@ export default [
   },
   {
     method: 'delete',
-    url: '/kubernetes/clusters/:clusterUid/ingresses/batch',
+    url: '/kubernetes/clusters/:clusterUid/ingresses',
     handler: (ctx: { pathParams: Record<string, string>; data: string[] }) =>
       deleteIngresses(ctx.pathParams.clusterUid, ctx.data),
   },
@@ -112,7 +130,7 @@ export default [
  * @param query - 查询条件
  * @returns 分页后的入口列表
  */
-export function getIngressList(clusterUid: string, query: Partial<IngressQueryForm>): PageVo<IngressListVo> {
+function getIngressList(clusterUid: string, query: Partial<IngressQueryForm>): PageVo<IngressListVo> {
   console.log('[Mock] getIngressList', clusterUid, query)
   const filtered = mockIngressList.filter((d: IngressListVo) => {
     if (query.namespace && d.namespace !== query.namespace) return false
@@ -138,7 +156,7 @@ export function getIngressList(clusterUid: string, query: Partial<IngressQueryFo
  * @param name - 入口名称
  * @returns 入口详情
  */
-export function getIngressDetail(clusterUid: string, namespace: string, name: string): IngressDetailVo {
+function getIngressDetail(clusterUid: string, namespace: string, name: string): IngressDetailVo {
   console.log('[Mock] getIngressDetail', clusterUid, namespace, name)
   return mockIngressDetail
 }
@@ -150,7 +168,7 @@ export function getIngressDetail(clusterUid: string, namespace: string, name: st
  * @param name - 入口名称
  * @returns 入口 YAML
  */
-export function getIngressYaml(clusterUid: string, namespace: string, name: string): IngressYamlVo {
+function getIngressYaml(clusterUid: string, namespace: string, name: string): IngressYamlVo {
   console.log('[Mock] getIngressYaml', clusterUid, namespace, name)
   return { yaml: mockIngressYaml }
 }
@@ -163,7 +181,7 @@ export function getIngressYaml(clusterUid: string, namespace: string, name: stri
  * @param query - 事件查询条件
  * @returns 分页后的事件列表
  */
-export function getIngressEventList(
+function getIngressEventList(
   clusterUid: string,
   namespace: string,
   name: string,
@@ -178,7 +196,7 @@ export function getIngressEventList(
  * @param clusterUid - 集群 UID
  * @param data - 创建请求对象
  */
-export function createIngress(clusterUid: string, data: Partial<IngressCreateForm>): void {
+function createIngress(clusterUid: string, data: Partial<IngressCreateForm>): void {
   console.log('[Mock] createIngress', clusterUid, data)
 }
 
@@ -187,7 +205,7 @@ export function createIngress(clusterUid: string, data: Partial<IngressCreateFor
  * @param clusterUid - 集群 UID
  * @param yaml - 创建 YAML 文本
  */
-export function createIngressYaml(clusterUid: string, yaml: string): void {
+function createIngressYaml(clusterUid: string, yaml: string): void {
   console.log('[Mock] createIngressYaml', clusterUid, yaml)
 }
 
@@ -198,12 +216,7 @@ export function createIngressYaml(clusterUid: string, yaml: string): void {
  * @param name - 入口名称
  * @param data - 更新请求对象
  */
-export function updateIngress(
-  clusterUid: string,
-  namespace: string,
-  name: string,
-  data: Partial<IngressUpdateForm>,
-): void {
+function updateIngress(clusterUid: string, namespace: string, name: string, data: Partial<IngressUpdateForm>): void {
   console.log('[Mock] updateIngress', clusterUid, namespace, name, data)
 }
 
@@ -214,7 +227,7 @@ export function updateIngress(
  * @param name - 入口名称
  * @param yaml - 更新 YAML 文本
  */
-export function updateIngressYaml(clusterUid: string, namespace: string, name: string, yaml: string): void {
+function updateIngressYaml(clusterUid: string, namespace: string, name: string, yaml: string): void {
   console.log('[Mock] updateIngressYaml', clusterUid, namespace, name, yaml)
 }
 
@@ -225,23 +238,18 @@ export function updateIngressYaml(clusterUid: string, namespace: string, name: s
  * @param name - 入口名称
  * @param data - 标签配置请求对象
  */
-export function manageIngressLabels(
-  clusterUid: string,
-  namespace: string,
-  name: string,
-  data: MetadataLabelForm,
-): void {
+function manageIngressLabels(clusterUid: string, namespace: string, name: string, data: MetadataLabelForm): void {
   console.log('[Mock] manageIngressLabels', clusterUid, namespace, name, data)
 }
 
 /**
- * 配置入口（ingress）注解
+ * 配置入口（Ingress）注解
  * @param clusterUid - 集群 UID
  * @param namespace - 命名空间名称
  * @param name - 入口名称
  * @param data - 注解配置请求对象
  */
-export function manageIngressAnnotations(
+function manageIngressAnnotations(
   clusterUid: string,
   namespace: string,
   name: string,
@@ -251,21 +259,21 @@ export function manageIngressAnnotations(
 }
 
 /**
- * 删除入口（ingress）
+ * 删除入口（Ingress）
  * @param clusterUid - 集群 UID
  * @param namespace - 命名空间名称
  * @param name - 入口名称
  */
-export function deleteIngress(clusterUid: string, namespace: string, name: string): void {
+function deleteIngress(clusterUid: string, namespace: string, name: string): void {
   console.log('[Mock] deleteIngress', clusterUid, namespace, name)
 }
 
 /**
- * 批量删除入口（ingress）
+ * 批量删除入口（Ingress）
  * @param clusterUid - 集群 UID
  * @param uids - 入口 UID 数组
  */
-export function deleteIngresses(clusterUid: string, uids: string[]): void {
+function deleteIngresses(clusterUid: string, uids: string[]): void {
   console.log('[Mock] deleteIngresses', clusterUid, uids)
 }
 
@@ -273,9 +281,8 @@ export function deleteIngresses(clusterUid: string, uids: string[]): void {
  * 导入入口（Ingress）
  * @param clusterUid - 集群 UID
  * @param formData - 文件数据
- * @param onProgress - 上传进度回调
  */
-export function importIngress(clusterUid: string, formData: FormData): void {
+function importIngress(clusterUid: string, formData: FormData): void {
   void formData
   console.log('[Mock] importIngress', clusterUid)
 }
@@ -285,6 +292,6 @@ export function importIngress(clusterUid: string, formData: FormData): void {
  * @param clusterUid - 集群 UID
  * @param query - 导出查询条件
  */
-export function exportIngress(clusterUid: string, query: Partial<IngressExportQueryForm>): void {
+function exportIngress(clusterUid: string, query: Partial<IngressExportQueryForm>): void {
   console.log('[Mock] exportIngress', clusterUid, query)
 }
