@@ -1,4 +1,4 @@
-import type { CurrentUserResp, LoginReq, LoginResp } from '@/types'
+import type { CurrentUserResp, LoginReq, LoginResp } from '@/types/index'
 
 import { request } from '@/utils'
 

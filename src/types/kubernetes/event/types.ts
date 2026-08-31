@@ -3,9 +3,9 @@
  * @module types/kubernetes/event/types
  */
 
-import type { EventType } from '@/config/kubernetes/event'
+import type { ObjectMeta, ObjectReference } from '@/types/kubernetes/types'
 
-import type { ObjectMeta, ObjectReference } from '../types'
+import type { EventType } from '@/config/kubernetes/event'
 
 /**
  * Kubernetes 事件实体（core/v1）

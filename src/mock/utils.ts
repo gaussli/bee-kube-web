@@ -2,7 +2,7 @@
  * Mock 工具函数
  */
 
-import type { PageVo } from '@/types/common'
+import type { PageVo } from '@/types/index'
 import type { EventListVo, EventQueryForm } from '@/types/kubernetes/event'
 
 /**

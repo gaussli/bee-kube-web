@@ -3,6 +3,8 @@
  * @module types/kubernetes/network/service/types
  */
 
+import type { Condition } from '@/types/kubernetes/types'
+
 import type { Protocol } from '@/config/kubernetes/core'
 import type {
   ServiceType,
@@ -15,8 +17,6 @@ import type {
   IPFamilyPolicy,
   TrafficDistribution,
 } from '@/config/kubernetes/network/service'
-
-import type { Condition } from '../../types'
 
 /**
  * Service 规格信息

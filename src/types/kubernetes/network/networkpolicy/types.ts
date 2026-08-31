@@ -3,10 +3,10 @@
  * @module types/kubernetes/network/networkpolicy/types
  */
 
+import type { LabelSelector } from '@/types/kubernetes/types'
+
 import type { Protocol } from '@/config/kubernetes/core'
 import type { PolicyType } from '@/config/kubernetes/network/networkpolicy'
-
-import type { LabelSelector } from '../../types'
 
 /**
  * NetworkPolicy 规格定义

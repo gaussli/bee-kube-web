@@ -2,7 +2,7 @@
  * Kubernetes 集群管理 Mock API
  * @module mock/kubernetes/cluster
  */
-import type { PageVo } from '@/types/common'
+import type { PageVo } from '@/types/index'
 import type {
   ClusterDetailVo,
   ClusterListVo,

@@ -3,6 +3,9 @@
  * @module types/kubernetes/pod/container/types
  */
 
+import type { ObjectFieldSelector, ResourceFieldSelector } from '@/types/kubernetes/pod/types'
+import type { Quantity } from '@/types/kubernetes/types'
+
 import type { Protocol, ResourceName } from '@/config/kubernetes/core'
 import type {
   MountPropagationMode,
@@ -12,9 +15,6 @@ import type {
   TerminationMessagePolicy,
   URIScheme,
 } from '@/config/kubernetes/pod'
-
-import type { Quantity } from '../../types'
-import type { ObjectFieldSelector, ResourceFieldSelector } from '../types'
 
 /**
  * 容器

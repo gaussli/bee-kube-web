@@ -3,10 +3,10 @@
  * @module types/kubernetes/workload/deployment/types
  */
 
-import type { DeploymentConditionType, DeploymentUpdateStrategyType } from '@/config/kubernetes/workload/deployment'
+import type { Condition, LabelSelector } from '@/types/kubernetes/types'
+import type { PodTemplateSpec } from '@/types/kubernetes/workload/types'
 
-import type { Condition, LabelSelector } from '../../types'
-import type { PodTemplateSpec } from '../types'
+import type { DeploymentConditionType, DeploymentUpdateStrategyType } from '@/config/kubernetes/workload/deployment'
 
 /**
  * Deployment 规格信息

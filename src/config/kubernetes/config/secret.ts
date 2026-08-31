@@ -3,7 +3,7 @@
  * @module config/kubernetes/config/secret
  */
 
-import type { Option, ResourcePageMeta } from '../common'
+import type { Option, ResourcePageMeta } from '..'
 
 /** Secret 列表页面功能元数据 */
 export const SECRET_PAGE_META: ResourcePageMeta = {

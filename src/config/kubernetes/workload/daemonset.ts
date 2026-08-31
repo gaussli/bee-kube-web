@@ -1,4 +1,4 @@
-import type { Option, ResourcePageMeta } from '../common'
+import type { Option, ResourcePageMeta } from '..'
 
 import { COLOR_DANGER, COLOR_GRAY_70, COLOR_PRIMARY, COLOR_SUCCESS } from '@/config/color'
 

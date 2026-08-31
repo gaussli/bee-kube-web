@@ -8,7 +8,7 @@ import type {
   PageVo,
   RoleQueryReq,
   RoleResp,
-} from '@/types'
+} from '@/types/index'
 
 import { request } from '@/utils'
 

@@ -3,7 +3,7 @@
  * @module config/kubernetes/network/service
  */
 
-import type { Option, ResourcePageMeta } from '@/config/kubernetes/common'
+import type { Option, ResourcePageMeta } from '@/config/kubernetes'
 
 /** Service 列表页面功能元数据 */
 export const SERVICE_PAGE_META: ResourcePageMeta = {

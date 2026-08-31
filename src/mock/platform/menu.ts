@@ -1,4 +1,6 @@
-import type { MenuDetailResp, MenuQueryReq, MenuResp, PageVo } from '@/types'
+import type { MenuDetailResp, MenuQueryReq, MenuResp } from '@/types/platform/menu'
+
+import type { PageVo } from '@/types'
 
 // 生成32位随机ID（数字+小写字母）
 function generateId(): string {

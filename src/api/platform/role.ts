@@ -10,7 +10,7 @@ import type {
   RoleUpdateReq,
   UserQueryReq,
   UserResp,
-} from '@/types'
+} from '@/types/index'
 
 import { request } from '@/utils'
 

@@ -2,7 +2,7 @@
  * 集群（Cluster）管理 API
  * @module api/kubernetes/cluster
  */
-import type { PageVo } from '@/types/common'
+import type { PageVo } from '@/types/index'
 import type {
   ClusterListVo,
   ClusterDetailVo,

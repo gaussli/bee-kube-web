@@ -3,7 +3,7 @@
  * @module types/kubernetes/security/serviceaccount/types
  */
 
-import type { LocalObjectReference, ObjectReference } from '../../types'
+import type { LocalObjectReference, ObjectReference } from '@/types/kubernetes/types'
 
 /**
  * ServiceAccount 实体

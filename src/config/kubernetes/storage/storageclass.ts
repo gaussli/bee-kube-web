@@ -3,7 +3,7 @@
  * @module config/kubernetes/storage/storageclass
  */
 
-import type { Option, ResourcePageMeta } from '@/config/kubernetes/common'
+import type { Option, ResourcePageMeta } from '@/config/kubernetes'
 
 /** StorageClass 列表页面功能元数据 */
 export const STORAGECLASS_PAGE_META: ResourcePageMeta = {

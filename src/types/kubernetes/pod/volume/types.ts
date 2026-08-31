@@ -11,7 +11,7 @@ import type {
   HostPathVolumeSource,
   PersistentVolumeClaimVolumeSource,
   SecretVolumeSource,
-} from '../../storage/volumesource/types'
+} from '@/types/kubernetes/storage/volumesource/types'
 
 /**
  * 存储卷

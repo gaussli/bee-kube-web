@@ -3,12 +3,11 @@
  * @module types/kubernetes/config/secret/index
  */
 
-import type { AuditEntity, DeletableEntity, ExportQueryForm, PageForm, UidEntity } from '@/types/common'
+import type { AuditEntity, DeletableEntity, ExportQueryForm, PageForm, UidEntity } from '@/types/index'
+import type { ObjectMetaCreatableForm, ObjectMetaEditableForm } from '@/types/kubernetes/index'
+import type { Clustered, Namespaced, ObjectMeta } from '@/types/kubernetes/types'
 
 import type { SecretType } from '@/config/kubernetes/config/secret'
-
-import type { ObjectMetaCreatableForm, ObjectMetaEditableForm } from '../../common'
-import type { Clustered, Namespaced, ObjectMeta } from '../../types'
 
 import type { Secret } from './types'
 

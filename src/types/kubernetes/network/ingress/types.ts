@@ -3,10 +3,10 @@
  * @module types/kubernetes/network/ingress/types
  */
 
+import type { TypedLocalObjectReference } from '@/types/kubernetes/types'
+
 import type { Protocol } from '@/config/kubernetes/core'
 import type { PathType } from '@/config/kubernetes/network/ingress'
-
-import type { TypedLocalObjectReference } from '../../types'
 
 /**
  * Ingress 规格信息

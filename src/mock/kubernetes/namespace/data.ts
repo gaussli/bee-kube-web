@@ -110,7 +110,6 @@ export const mockNamespaceList: NamespaceListVo[] = [
     statusMsg: '日志采集正常，ES 集群状态 Green',
     clusterUid: generateId(),
     cluster: 'prod-shanghai',
-    createUid: generateId(),
     createAt: '2025-03-10T07:30:00Z',
     createBy: 'sre',
     updateAt: '2025-08-25T08:00:00Z',

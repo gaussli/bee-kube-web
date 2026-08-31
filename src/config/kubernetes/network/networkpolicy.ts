@@ -3,7 +3,7 @@
  * @module config/kubernetes/network/networkpolicy
  */
 
-import type { Option, ResourcePageMeta } from '@/config/kubernetes/common'
+import type { Option, ResourcePageMeta } from '@/config/kubernetes'
 
 /** NetworkPolicy 列表页面功能元数据 */
 export const NETWORKPOLICY_PAGE_META: ResourcePageMeta = {

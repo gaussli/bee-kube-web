@@ -3,7 +3,7 @@
  * @module types/kubernetes/security/clusterrolebinding/types
  */
 
-import type { RoleRef, Subject } from '../types'
+import type { RoleRef, Subject } from '@/types/kubernetes/security/types'
 
 /**
  * ClusterRoleBinding 实体

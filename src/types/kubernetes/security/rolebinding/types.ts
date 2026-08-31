@@ -3,7 +3,7 @@
  * @module types/kubernetes/security/rolebinding/types
  */
 
-import type { RoleRef, Subject } from '../types'
+import type { RoleRef, Subject } from '@/types/kubernetes/security/types'
 
 /**
  * RoleBinding 实体

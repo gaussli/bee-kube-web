@@ -1,4 +1,4 @@
-import type { PageVo, RoleDetailResp, RoleQueryReq, RoleResp } from '@/types'
+import type { PageVo, RoleDetailResp, RoleQueryReq, RoleResp } from '@/types/index'
 
 // 生成32位随机ID（数字+小写字母）
 function generateId(): string {

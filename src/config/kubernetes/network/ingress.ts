@@ -3,7 +3,7 @@
  * @module config/kubernetes/network/ingress
  */
 
-import type { Option, ResourcePageMeta } from '@/config/kubernetes/common'
+import type { Option, ResourcePageMeta } from '@/config/kubernetes'
 
 /** Ingress 列表页面功能元数据 */
 export const INGRESS_PAGE_META: ResourcePageMeta = {

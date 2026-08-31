@@ -2,7 +2,7 @@
  * 容器组（Pod）资源页面 ViewObject 及请求对象聚合
  * @module types/kubernetes/pod/index
  */
-import type { AuditEntity, ExportQueryForm, PageForm, UidEntity } from '@/types/common'
+import type { AuditEntity, ExportQueryForm, PageForm, UidEntity } from '@/types/index'
 import type { Clustered, Namespaced, ObjectMeta, Quantity } from '@/types/kubernetes/types'
 
 import type { ResourceName } from '@/config/kubernetes/core'

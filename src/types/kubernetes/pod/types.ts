@@ -2,9 +2,9 @@
  * Pod 原始类型定义
  * @module types/kubernetes/pod/types
  */
-import type { DNSPolicy, PodConditionType, PodPhase, PodQOSClass, RestartPolicy } from '@/config/kubernetes/pod'
+import type { Condition, Quantity } from '@/types/kubernetes/types'
 
-import type { Condition, Quantity } from '../types'
+import type { DNSPolicy, PodConditionType, PodPhase, PodQOSClass, RestartPolicy } from '@/config/kubernetes/pod'
 
 import type { Affinity } from './affinity/types'
 import type { Container } from './container/types'

@@ -3,10 +3,10 @@
  * @module types/kubernetes/storage/volumesource/types
  */
 
+import type { Quantity } from '@/types/kubernetes/types'
+
 import type { HostPathType } from '@/config/kubernetes/core'
 import type { EmptyDirStorageMedium } from '@/config/kubernetes/pod'
-
-import type { Quantity } from '../../types'
 
 /**
  * 宿主机路径存储来源

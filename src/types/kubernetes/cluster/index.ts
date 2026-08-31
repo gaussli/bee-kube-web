@@ -3,12 +3,11 @@
  * @module types/kubernetes/cluster/index
  */
 
-import type { AuditEntity, DeletableEntity, ExportQueryForm, PageForm, UidEntity } from '@/types/common'
+import type { AuditEntity, DeletableEntity, ExportQueryForm, PageForm, UidEntity } from '@/types/index'
+import type { Quantity } from '@/types/kubernetes/types'
 
 import type { ClusterStatus } from '@/config/kubernetes/cluster'
 import type { ResourceName } from '@/config/kubernetes/core'
-
-import type { Quantity } from '../types'
 
 /**
  * 查询条件请求对象

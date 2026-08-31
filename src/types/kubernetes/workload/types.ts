@@ -3,8 +3,8 @@
  * @module types/kubernetes/workload/types
  */
 
-import type { PodSpec } from '../pod/types'
-import type { Metadata } from '../types'
+import type { PodSpec } from '@/types/kubernetes/pod/types'
+import type { Metadata } from '@/types/kubernetes/types'
 
 /**
  * 历史版本

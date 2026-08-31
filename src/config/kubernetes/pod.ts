@@ -3,7 +3,7 @@
  * @module config/kubernetes/pod
  */
 
-import type { Option } from './common'
+import type { Option } from '.'
 
 import { COLOR_DANGER, COLOR_GRAY_70, COLOR_SUCCESS, COLOR_WARNING } from '@/config/color'
 

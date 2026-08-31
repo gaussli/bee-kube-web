@@ -4,17 +4,17 @@
  */
 
 import type {
+  PersistentVolumeClaimSpec,
+  PersistentVolumeClaimStatusObj,
+} from '@/types/kubernetes/storage/persistentvolumeclaim/types'
+import type { Condition, LabelSelector, ObjectMeta } from '@/types/kubernetes/types'
+import type { PodTemplateSpec } from '@/types/kubernetes/workload/types'
+
+import type {
   PodManagementPolicyType,
   StatefulSetConditionType,
   StatefulSetUpdateStrategyType,
 } from '@/config/kubernetes/workload/statefulset'
-
-import type {
-  PersistentVolumeClaimSpec,
-  PersistentVolumeClaimStatusObj,
-} from '../../storage/persistentvolumeclaim/types'
-import type { Condition, LabelSelector, ObjectMeta } from '../../types'
-import type { PodTemplateSpec } from '../types'
 
 /**
  * StatefulSet 规格信息

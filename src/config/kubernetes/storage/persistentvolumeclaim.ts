@@ -3,7 +3,7 @@
  * @module config/kubernetes/storage/persistentvolumeclaim
  */
 
-import type { Option, ResourcePageMeta } from '@/config/kubernetes/common'
+import type { Option, ResourcePageMeta } from '@/config/kubernetes'
 
 /** PersistentVolumeClaim 列表页面功能元数据 */
 export const PERSISTENTVOLUMECLAIM_PAGE_META: ResourcePageMeta = {

@@ -3,9 +3,9 @@
  * @module types/kubernetes/pod/affinity/types
  */
 
-import type { NodeExpressionOperator } from '@/config/kubernetes/pod'
+import type { LabelSelector } from '@/types/kubernetes/types'
 
-import type { LabelSelector } from '../../types'
+import type { NodeExpressionOperator } from '@/config/kubernetes/pod'
 
 /**
  * 节点选择器表达式

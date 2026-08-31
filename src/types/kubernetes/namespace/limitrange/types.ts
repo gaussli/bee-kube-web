@@ -3,10 +3,10 @@
  * @module types/kubernetes/namespace/limitrange/types
  */
 
+import type { Quantity } from '@/types/kubernetes/types'
+
 import type { ResourceName } from '@/config/kubernetes/core'
 import type { NamespaceLimitRangeItemType } from '@/config/kubernetes/namespace'
-
-import type { Quantity } from '../../types'
 
 export interface LimitRangeSpec {
   /** 限制范围的资源限制列表 */

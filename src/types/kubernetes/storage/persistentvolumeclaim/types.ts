@@ -3,6 +3,14 @@
  * @module types/kubernetes/storage/persistentvolumeclaim/types
  */
 
+import type {
+  Condition,
+  LabelSelector,
+  Quantity,
+  TypedLocalObjectReference,
+  TypedObjectReference,
+} from '@/types/kubernetes/types'
+
 import type { PersistentVolumeAccessMode, ResourceName } from '@/config/kubernetes/core'
 import type { PersistentVolumeMode } from '@/config/kubernetes/storage/persistentvolume'
 import type {
@@ -11,8 +19,6 @@ import type {
   PersistentVolumeClaimConditionType,
   ClaimResourceStatus,
 } from '@/config/kubernetes/storage/persistentvolumeclaim'
-
-import type { Condition, LabelSelector, Quantity, TypedLocalObjectReference, TypedObjectReference } from '../../types'
 
 /**
  * PersistentVolumeClaim 的规格定义，描述 PVC 的访问模式、容量申请与数据源。

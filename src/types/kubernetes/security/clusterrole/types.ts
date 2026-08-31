@@ -3,8 +3,8 @@
  * @module types/kubernetes/security/clusterrole/types
  */
 
-import type { LabelSelector } from '../../types'
-import type { PolicyRule } from '../types'
+import type { PolicyRule } from '@/types/kubernetes/security/types'
+import type { LabelSelector } from '@/types/kubernetes/types'
 
 /**
  * ClusterRole 实体

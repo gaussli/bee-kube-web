@@ -2,7 +2,7 @@
  * 容器组（Pod）管理 API
  * @module api/kubernetes/pod
  */
-import type { PageVo } from '@/types/common'
+import type { PageVo } from '@/types/index'
 import type { EventListVo, EventQueryForm } from '@/types/kubernetes/event'
 import type {
   PodDetailVo,

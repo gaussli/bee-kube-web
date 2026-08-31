@@ -3,6 +3,13 @@
  * @module types/kubernetes/storage/persistentvolume/types
  */
 
+import type {
+  CSIPersistentVolumeSource,
+  HostPathVolumeSource,
+  LocalVolumeSource,
+} from '@/types/kubernetes/storage/volumesource/types'
+import type { Quantity, ObjectReference } from '@/types/kubernetes/types'
+
 import type { PersistentVolumeAccessMode, ResourceName } from '@/config/kubernetes/core'
 import type {
   PersistentVolumeReclaimPolicy,
@@ -10,9 +17,6 @@ import type {
   NodeSelectorOperator,
   PersistentVolumeMode,
 } from '@/config/kubernetes/storage/persistentvolume'
-
-import type { Quantity, ObjectReference } from '../../types'
-import type { CSIPersistentVolumeSource, HostPathVolumeSource, LocalVolumeSource } from '../volumesource/types'
 
 /**
  * PersistentVolume 的规格定义，描述卷的容量、访问模式与存储后端来源。

@@ -3,7 +3,7 @@
  * @module config/kubernetes/namespace
  */
 
-import type { ResourcePageMeta, Option } from '@/config/kubernetes/common'
+import type { ResourcePageMeta, Option } from '@/config/kubernetes'
 
 import { COLOR_PRIMARY, COLOR_SUCCESS } from '@/config/color'
 

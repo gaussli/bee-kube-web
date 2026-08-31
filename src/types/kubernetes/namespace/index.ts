@@ -3,12 +3,11 @@
  * @module types/kubernetes/namespace/index
  */
 
-import type { AuditEntity, DeletableEntity, ExportQueryForm, PageForm, UidEntity } from '@/types/common'
+import type { AuditEntity, DeletableEntity, ExportQueryForm, PageForm, UidEntity } from '@/types/index'
+import type { ObjectMetaCreatableForm, ObjectMetaEditableForm } from '@/types/kubernetes/index'
+import type { Clustered, NonNamespaceObjectMeta } from '@/types/kubernetes/types'
 
 import type { NamespaceStatus } from '@/config/kubernetes/namespace'
-
-import type { ObjectMetaCreatableForm, ObjectMetaEditableForm } from '../common'
-import type { Clustered, ObjectMeta } from '../types'
 
 import type { NamespaceSpec, NamespaceStatusObj } from './types'
 
@@ -53,7 +52,7 @@ export interface NamespaceSimpleListVo extends UidEntity {
 /**
  * 详情响应对象
  */
-export interface NamespaceDetailVo extends UidEntity, Clustered, AuditEntity, DeletableEntity, ObjectMeta {
+export interface NamespaceDetailVo extends UidEntity, Clustered, AuditEntity, DeletableEntity, NonNamespaceObjectMeta {
   /** 描述 */
   description?: string
   /** 状态 */

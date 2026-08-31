@@ -3,7 +3,7 @@
  * @module types/kubernetes/security/role/types
  */
 
-import type { PolicyRule } from '../types'
+import type { PolicyRule } from '@/types/kubernetes/security/types'
 
 /**
  * Role 实体

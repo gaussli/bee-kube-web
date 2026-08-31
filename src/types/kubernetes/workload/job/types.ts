@@ -3,10 +3,10 @@
  * @module types/kubernetes/workload/job/types
  */
 
-import type { JobConditionType } from '@/config/kubernetes/workload/job'
+import type { Condition } from '@/types/kubernetes/types'
+import type { PodTemplateSpec } from '@/types/kubernetes/workload/types'
 
-import type { Condition } from '../../types'
-import type { PodTemplateSpec } from '../types'
+import type { JobConditionType } from '@/config/kubernetes/workload/job'
 
 /**
  * Job 规格信息

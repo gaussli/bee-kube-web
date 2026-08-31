@@ -3,12 +3,11 @@
  * @module types/kubernetes/node/index
  */
 
-import type { AuditEntity, DeletableEntity, ExportQueryForm, PageForm, UidEntity } from '@/types/common'
+import type { AuditEntity, DeletableEntity, ExportQueryForm, PageForm, UidEntity } from '@/types/index'
+import type { Clustered, NonNamespaceObjectMeta, Quantity } from '@/types/kubernetes/types'
 
 import type { ResourceName } from '@/config/kubernetes/core'
 import type { NodeStatus } from '@/config/kubernetes/node'
-
-import type { Clustered, NonNamespaceObjectMeta, Quantity } from '../types'
 
 import type { NodeSpec, NodeStatusObj, Taint } from './types'
 

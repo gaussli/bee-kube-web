@@ -6,7 +6,7 @@ import type {
   PermissionQueryReq,
   PermissionResp,
   PermissionUpdateReq,
-} from '@/types'
+} from '@/types/index'
 
 import { request } from '@/utils'
 

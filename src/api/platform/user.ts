@@ -6,7 +6,7 @@ import type {
   UserDetailResp,
   UserQueryReq,
   UserResp,
-} from '@/types'
+} from '@/types/index'
 
 import { request } from '@/utils'
 

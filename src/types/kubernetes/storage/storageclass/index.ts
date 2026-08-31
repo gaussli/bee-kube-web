@@ -3,13 +3,12 @@
  * @module types/kubernetes/storage/storageclass/index
  */
 
-import type { AuditEntity, DeletableEntity, ExportQueryForm, PageForm, UidEntity } from '@/types/common'
+import type { AuditEntity, DeletableEntity, ExportQueryForm, PageForm, UidEntity } from '@/types/index'
+import type { ObjectMetaCreatableForm, ObjectMetaEditableForm } from '@/types/kubernetes/index'
+import type { Clustered, NonNamespaceObjectMeta } from '@/types/kubernetes/types'
 
 import type { PersistentVolumeReclaimPolicy } from '@/config/kubernetes/storage/persistentvolume'
 import type { VolumeBindingMode } from '@/config/kubernetes/storage/storageclass'
-
-import type { ObjectMetaCreatableForm, ObjectMetaEditableForm } from '../../common'
-import type { Clustered, NonNamespaceObjectMeta } from '../../types'
 
 import type { StorageClass } from './types'
 

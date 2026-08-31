@@ -3,9 +3,9 @@
  * @module types/kubernetes/namespace/types
  */
 
-import type { FinalizerName, NamespaceConditionType, NamespacePhase } from '@/config/kubernetes/namespace'
+import type { Condition } from '@/types/kubernetes/types'
 
-import type { Condition } from '../types'
+import type { FinalizerName, NamespaceConditionType, NamespacePhase } from '@/config/kubernetes/namespace'
 
 /**
  * 命名空间行为规格定义

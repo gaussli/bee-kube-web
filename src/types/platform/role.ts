@@ -1,6 +1,6 @@
 // 角色相关类型
 
-import type { AuditEntity, PageForm } from '@/types/common'
+import type { AuditEntity, PageForm } from '@/types/index'
 
 // 角色查询请求参数
 export interface RoleQueryReq extends PageForm {

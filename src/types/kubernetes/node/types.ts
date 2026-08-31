@@ -3,10 +3,10 @@
  * @module types/kubernetes/node/types
  */
 
+import type { Condition, Quantity } from '@/types/kubernetes/types'
+
 import type { ResourceName, TaintEffect } from '@/config/kubernetes/core'
 import type { NodeAddressType, NodeConditionType } from '@/config/kubernetes/node'
-
-import type { Condition, Quantity } from '../types'
 
 /**
  * 节点行为规格定义

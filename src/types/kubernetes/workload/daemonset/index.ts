@@ -3,14 +3,13 @@
  * @module types/kubernetes/workload/daemonset/index
  */
 
-import type { AuditEntity, DeletableEntity, ExportQueryForm, PageForm, UidEntity } from '@/types/common'
+import type { AuditEntity, DeletableEntity, ExportQueryForm, PageForm, UidEntity } from '@/types/index'
+import type { ObjectMetaCreatableForm, ObjectMetaEditableForm } from '@/types/kubernetes/index'
+import type { Clustered, Namespaced, ObjectMeta } from '@/types/kubernetes/types'
+import type { HistoryRevision } from '@/types/kubernetes/workload/types'
 
 import type { ServiceType } from '@/config/kubernetes/network/service'
 import type { DaemonSetStatus, DaemonSetUpdateStrategyType } from '@/config/kubernetes/workload/daemonset'
-
-import type { ObjectMetaCreatableForm, ObjectMetaEditableForm } from '../../common'
-import type { Clustered, Namespaced, ObjectMeta } from '../../types'
-import type { HistoryRevision } from '../types'
 
 import type { DaemonSetSpec, DaemonSetStatusObj } from './types'
 

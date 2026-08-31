@@ -1,5 +1,5 @@
-import type { PageVo } from '@/types/common'
-import type { MetadataAnnotationForm, MetadataLabelForm } from '@/types/kubernetes/common'
+import type { PageVo } from '@/types/index'
+import type { MetadataAnnotationForm, MetadataLabelForm } from '@/types/kubernetes'
 import type { EventListVo, EventQueryForm } from '@/types/kubernetes/event'
 import type { PodListVo, PodQueryForm } from '@/types/kubernetes/pod'
 import type {

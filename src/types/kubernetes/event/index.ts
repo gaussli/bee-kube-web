@@ -3,12 +3,11 @@
  * @module types/kubernetes/event/index
  */
 
+import type { PageForm } from '@/types/index'
+import type { Event } from '@/types/kubernetes/event/types'
+import type { ObjectReference } from '@/types/kubernetes/types'
+
 import type { EventType } from '@/config/kubernetes/event'
-
-import type { PageForm } from '../../common'
-import type { ObjectReference } from '../types'
-
-import type { Event } from './types'
 
 /**
  * 查询条件请求对象

@@ -3,13 +3,13 @@
  * @module types/kubernetes/namespace/resourcequota/types
  */
 
+import type { Quantity } from '@/types/kubernetes/types'
+
 import type {
   NamespaceResourceQuotaResourceType,
   NamespaceResourceQuotaScopeType,
   NamespaceResourceQuotaScopeSelectorOperator,
 } from '@/config/kubernetes/namespace'
-
-import type { Quantity } from '../../types'
 
 export interface ResourceQuotaSpec {
   /** 资源配额的硬限制列表 */

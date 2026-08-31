@@ -3,13 +3,12 @@
  * @module types/kubernetes/workload/cronjob/index
  */
 
-import type { AuditEntity, DeletableEntity, ExportQueryForm, PageForm, UidEntity } from '@/types/common'
+import type { AuditEntity, DeletableEntity, ExportQueryForm, PageForm, UidEntity } from '@/types/index'
+import type { ObjectMetaCreatableForm, ObjectMetaEditableForm } from '@/types/kubernetes/index'
+import type { Clustered, Namespaced, ObjectMeta } from '@/types/kubernetes/types'
 
 import type { CronJobStatus } from '@/config/kubernetes/workload/cronjob'
 import type { JobStatus } from '@/config/kubernetes/workload/job'
-
-import type { ObjectMetaCreatableForm, ObjectMetaEditableForm } from '../../common'
-import type { Clustered, Namespaced, ObjectMeta } from '../../types'
 
 import type { CronJobSpec, CronJobStatusObj } from './types'
 

@@ -3,14 +3,13 @@
  * @module types/kubernetes/storage/persistentvolumeclaim/index
  */
 
-import type { AuditEntity, DeletableEntity, ExportQueryForm, PageForm, UidEntity } from '@/types/common'
+import type { AuditEntity, DeletableEntity, ExportQueryForm, PageForm, UidEntity } from '@/types/index'
+import type { ObjectMetaCreatableForm, ObjectMetaEditableForm } from '@/types/kubernetes/index'
+import type { Clustered, Namespaced, ObjectMeta, Quantity } from '@/types/kubernetes/types'
 
 import type { PersistentVolumeAccessMode } from '@/config/kubernetes/core'
 import type { PersistentVolumeMode } from '@/config/kubernetes/storage/persistentvolume'
 import type { PersistentVolumeClaimPhase } from '@/config/kubernetes/storage/persistentvolumeclaim'
-
-import type { ObjectMetaCreatableForm, ObjectMetaEditableForm } from '../../common'
-import type { Clustered, Namespaced, ObjectMeta, Quantity } from '../../types'
 
 import type { PersistentVolumeClaimSpec, PersistentVolumeClaimStatusObj } from './types'
 

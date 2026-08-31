@@ -3,10 +3,9 @@
  * @module types/kubernetes/namespace/limitrange/index
  */
 
-import type { AuditEntity, DeletableEntity, UidEntity } from '@/types/common'
-
-import type { ObjectMetaCreatableForm, ObjectMetaEditableForm } from '../../common'
-import type { Clustered, Namespaced, ObjectMeta } from '../../types'
+import type { AuditEntity, DeletableEntity, UidEntity } from '@/types/index'
+import type { ObjectMetaCreatableForm, ObjectMetaEditableForm } from '@/types/kubernetes/index'
+import type { Clustered, Namespaced, ObjectMeta } from '@/types/kubernetes/types'
 
 import type { LimitRangeSpec } from './types'
 

@@ -2,8 +2,8 @@
  * ConfigMap 管理 Mock
  * @module mock/kubernetes/config/configmap
  */
-import type { PageVo } from '@/types/common'
-import type { MetadataAnnotationForm, MetadataLabelForm } from '@/types/kubernetes/common'
+import type { PageVo } from '@/types/index'
+import type { MetadataAnnotationForm, MetadataLabelForm } from '@/types/kubernetes'
 import type {
   ConfigMapCreateForm,
   ConfigMapDetailVo,

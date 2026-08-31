@@ -1,4 +1,4 @@
-import type { CurrentUserResp, LoginReq, LoginResp, CurrentMenu } from '@/types'
+import type { CurrentUserResp, LoginReq, LoginResp, CurrentMenu } from '@/types/auth/auth'
 
 function login(req: LoginReq): LoginResp {
   return {

@@ -3,7 +3,7 @@
  * @module config/kubernetes/cluster
  */
 
-import type { ResourcePageMeta, Option } from '@/config/kubernetes/common'
+import type { ResourcePageMeta, Option } from '@/config/kubernetes'
 
 import { COLOR_DANGER, COLOR_GRAY_70, COLOR_PRIMARY, COLOR_SUCCESS } from '@/config/color'
 
