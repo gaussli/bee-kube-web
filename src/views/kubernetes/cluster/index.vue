@@ -35,7 +35,7 @@
               <BeeClusterInfoCell :description="row.description" :name="row.name" :uid="row.uid" />
             </template>
           </BeeTableColumn>
-          <BeeTableColumn :min-width="300">
+          <BeeTableColumn :min-width="400">
             <template #default="{ row }">
               <BeeTableCommonCell subtext="API Server" :text="row.apiServer" />
             </template>
@@ -43,6 +43,11 @@
           <BeeTableColumn prop="status" :width="160">
             <template #default="{ row }">
               <BeeStatusCell :options="CLUSTER_STATUS_OPTIONS" :status="row.status" :status-msg="row.statusMsg" />
+            </template>
+          </BeeTableColumn>
+          <BeeTableColumn :min-width="160">
+            <template #default="{ row }">
+              <BeeTableCommonCell subtext="Kubernetes版本" :text="row.k8sVersion" />
             </template>
           </BeeTableColumn>
           <BeeTableColumn :width="200">
