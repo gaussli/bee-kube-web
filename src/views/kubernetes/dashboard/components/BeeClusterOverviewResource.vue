@@ -2,7 +2,7 @@
   <BeeCard class="bee-cluster-overview-resource">
     <div class="bee-cluster-overview-resource__header">
       <div class="bee-cluster-overview-resource__title">
-        <BeeIcon name="basic-id" :size="14" />
+        <BeeIcon name="kubernetes-usage" :size="16" />
         资源用量
       </div>
     </div>
@@ -80,7 +80,7 @@ const radarData = computed(() => {
       total: formatStorage(allocation.storage),
     },
     {
-      label: '容器数',
+      label: '容器组',
       value: calcPercentage(usage.pods?.value ?? 0, allocation.pods?.value ?? 1),
       used: `${usage.pods?.value ?? 0} 个`,
       total: `${allocation.pods?.value ?? 0} 个`,
@@ -91,12 +91,16 @@ const radarData = computed(() => {
 
 <style lang="scss" scoped>
 .bee-cluster-overview-resource {
+  display: flex;
+  flex-direction: column;
+
   &__header {
     display: flex;
     justify-content: space-between;
     align-items: center;
     width: 100%;
-    height: 64px;
+    height: 48px;
+    padding: 0 $spacing-16;
     font-weight: 600;
 
     &-actions {
@@ -118,7 +122,7 @@ const radarData = computed(() => {
     flex-direction: row;
     align-items: center;
     width: 100%;
-    padding: 0 0 16px 8px;
+    padding: 0 $spacing-16 $spacing-16 24px;
   }
 
   &__legend {

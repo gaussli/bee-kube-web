@@ -1,26 +1,26 @@
 <template>
   <div class="bee-node-info-cell">
     <div class="bee-node-info-cell__node-icon">
-      <BeeIcon name="kubernetes-node" :size="32" />
+      <BeeIcon name="kubernetes-node" :size="40" />
     </div>
     <div class="bee-node-info-cell__content">
       <div class="bee-node-info-cell__top">
         <BeeTooltip :label="uid">
-          <BeeTag type="primary" size="tiny">UID</BeeTag>
+          <BeeTag size="tiny" type="primary">UID</BeeTag>
         </BeeTooltip>
         <BeeTooltip :label="ip">
-          <BeeTag type="primary" size="tiny">IP</BeeTag>
+          <BeeTag size="tiny" type="primary">IP</BeeTag>
         </BeeTooltip>
         <span class="bee-node-info-cell__name">{{ name }}</span>
         <BeeIcon
+          class="bee-node-info-cell__copy-icon"
           name="basic-copy"
           :size="14"
-          class="bee-node-info-cell__copy-icon"
           @click.stop="useClipboard().copy(props.name)"
         />
       </div>
       <div class="bee-node-info-cell__bottom">
-        <BeeIcon name="basic-description" :size="14" class="bee-node-info-cell__desc-icon" />
+        <BeeIcon class="bee-node-info-cell__desc-icon" name="basic-description" :size="14" />
         <BeeTooltip :disabled="!isDescTruncated">
           <template #label>
             <span class="bee-node-info-cell__desc-tooltip">{{ description }}</span>

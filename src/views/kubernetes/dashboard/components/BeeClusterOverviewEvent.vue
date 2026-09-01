@@ -2,15 +2,12 @@
   <BeeCard class="bee-cluster-overview-event">
     <div class="bee-cluster-overview-event__header">
       <div class="bee-cluster-overview-event__title">
-        <BeeIcon name="basic-id" :size="14" />
+        <BeeIcon name="kubernetes-event" :size="16" />
         最近事件
-      </div>
-      <div class="bee-cluster-overview-event__actions">
-        <BeeCircleButton :border="false" icon="basic-refresh" size="small" tooltip="刷新" @click="loadEvents" />
       </div>
     </div>
     <div class="bee-cluster-overview-event__body">
-      <BeeTable :data="recentEvents">
+      <BeeTable :data="tableData" :loading="loading">
         <BeeTableColumn :width="100">
           <template #default="{ row }">
             <BeeTag size="small" :type="row.type === 'Warning' ? 'warning' : 'default'">
@@ -18,17 +15,17 @@
             </BeeTag>
           </template>
         </BeeTableColumn>
-        <BeeTableColumn :width="180">
+        <BeeTableColumn :width="200">
           <template #default="{ row }">
             <BeeTableCommonCell subtext="原因" :text="row.reason" />
           </template>
         </BeeTableColumn>
         <BeeTableColumn :min-width="200">
           <template #default="{ row }">
-            <BeeTableCommonCell subtext="关联资源" :text="`${row.regarding?.kind}/${row.regarding?.name}`" />
+            <BeeTableCommonCell subtext="关联资源" :text="`${row.regarding?.kind} / ${row.regarding?.name}`" />
           </template>
         </BeeTableColumn>
-        <BeeTableColumn :min-width="300">
+        <BeeTableColumn>
           <template #default="{ row }">
             <BeeTableCommonCell subtext="事件信息" :text="row.note" />
           </template>
@@ -51,7 +48,6 @@ import type { EventListVo } from '@/types/kubernetes/event'
 import { getClusterEventList } from '@/api/kubernetes/cluster'
 
 import BeeCard from '@/components/BeeCard/index.vue'
-import BeeCircleButton from '@/components/BeeCircleButton/index.vue'
 import BeeIcon from '@/components/BeeIcon/index.vue'
 import BeeTableColumn from '@/components/BeeTable/BeeTableColumn.vue'
 import BeeTableCommonCell from '@/components/BeeTable/BeeTableCommonCell.vue'
@@ -66,30 +62,42 @@ const props = defineProps<{
 }>()
 
 /** 最近事件数据 */
-const recentEvents = ref<EventListVo[]>([])
+const tableData = ref<EventListVo[]>([])
+
+/** 加载状态 */
+const loading = ref(false)
 
 /**
  * 加载事件数据
  * @remarks 获取第一页事件，每页 10 条
  */
-async function loadEvents() {
+async function loadData() {
   if (!props.clusterUid) return
-  const resp = await getClusterEventList(props.clusterUid, { page: 1, pageSize: 20 })
-  recentEvents.value = resp.list
+  loading.value = true
+  try {
+    const resp = await getClusterEventList(props.clusterUid, { page: 1, pageSize: 20 })
+    tableData.value = resp.list
+  } finally {
+    loading.value = false
+  }
 }
 
 onMounted(() => {
-  void loadEvents()
+  void loadData()
 })
 </script>
 
 <style lang="scss" scoped>
 .bee-cluster-overview-event {
+  display: flex;
+  flex-direction: column;
+
   &__header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    height: 64px;
+    height: 48px;
+    padding: 0 $spacing-16;
     font-weight: 500;
   }
 
@@ -106,7 +114,7 @@ onMounted(() => {
   }
 
   &__body {
-    padding-bottom: 16px;
+    padding: 0 $spacing-16 $spacing-16;
   }
 }
 </style>

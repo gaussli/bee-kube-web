@@ -2,47 +2,55 @@
   <BeeCard class="bee-cluster-overview-node">
     <div class="bee-cluster-overview-node__header">
       <div class="bee-cluster-overview-node__title">
-        <BeeIcon name="basic-id" :size="14" />
+        <BeeIcon name="kubernetes-node" :size="16" />
         节点用量
-      </div>
-      <div class="bee-cluster-overview-node__actions">
-        <BeeSegmentedControl v-model="sortKey" :options="sortOptions" @select="handleSortChange" />
-        <el-divider direction="vertical" />
-        <BeeButton size="small" @click="handleViewMore">查看更多</BeeButton>
       </div>
     </div>
     <div class="bee-cluster-overview-node__body">
-      <div v-for="node in nodeListData" :key="node.name" class="bee-cluster-overview-node__item">
+      <div v-for="node in tableData" :key="node.name" class="bee-cluster-overview-node__item">
         <BeeNodeInfoCell
-          :uid="node.id"
           class="bee-cluster-overview-node__item-info"
-          :name="node.name"
-          :ip="node.ip"
           :description="node.description"
+          :ip="node.ip"
+          :name="node.name"
+          :uid="node.uid"
         />
-        <BeeResourceUsageCell :percentage="node.cpuUsagePercentage" field-name="CPU" />
-        <BeeResourceUsageCell :percentage="node.memoryUsagePercentage" field-name="内存" />
+        <BeeResourceUsageCell
+          field-name="CPU"
+          :percentage="
+            calcPercentage(
+              toMillicoresOfQuantity(node.resource.usage.cpu),
+              toMillicoresOfQuantity(node.resource.allocation.cpu),
+            )
+          "
+        />
+        <BeeResourceUsageCell
+          field-name="内存"
+          :percentage="
+            calcPercentage(
+              toBytesOfQuantity(node.resource.usage.memory),
+              toBytesOfQuantity(node.resource.allocation.memory),
+            )
+          "
+        />
       </div>
     </div>
   </BeeCard>
 </template>
 
 <script setup lang="ts">
-import { computed, onMounted, ref } from 'vue'
+import { onMounted, ref } from 'vue'
 
-import type { NodeListResp } from '@/types/kubernetes/node'
-
-import { calcPercentage } from '@/utils/kubernetes'
+import type { NodeListVo } from '@/types/kubernetes/node'
 
 import { getNodeTopN } from '@/api/kubernetes/node'
 
-import BeeButton from '@/components/BeeButton/index.vue'
 import BeeCard from '@/components/BeeCard/index.vue'
 import BeeIcon from '@/components/BeeIcon/index.vue'
-import { BeeMessage } from '@/components/BeeMessage'
 import BeeNodeInfoCell from '@/components/BeeNodeInfoCell/index.vue'
 import BeeResourceUsageCell from '@/components/BeeResourceUsageCell/index.vue'
-import BeeSegmentedControl from '@/components/BeeSegmentedControl/index.vue'
+
+import { calcPercentage, toBytesOfQuantity, toMillicoresOfQuantity } from '@/utils'
 
 defineOptions({ name: 'BeeClusterOverviewNode' })
 
@@ -51,58 +59,18 @@ const props = defineProps<{
   clusterUid: string
 }>()
 
-/**
- * 节点排序
- */
-type SortKey = 'cpu' | 'memory'
-const sortKey = ref<SortKey>('cpu')
-const sortOptions = [
-  { label: 'CPU排名', value: 'cpu' },
-  { label: '内存排名', value: 'memory' },
-]
-
-/**
- * 排序切换
- * @param value - 排序指标
- */
-function handleSortChange(value?: string | number) {
-  sortKey.value = (value as SortKey) || 'cpu'
-  void loadData()
-}
-
 /** TopN 节点原始数据 */
-const topNNodes = ref<NodeListResp[]>([])
+const tableData = ref<NodeListVo[]>([])
 
 /**
  * 加载节点 TopN 数据
  */
 async function loadData() {
   if (!props.clusterUid) return
-  topNNodes.value = await getNodeTopN(props.clusterUid, {
-    metric: sortKey.value,
-    count: 5,
+  tableData.value = await getNodeTopN(props.clusterUid, {
+    sorted: 'cpuUsage',
+    n: 5,
   })
-}
-
-/**
- * 模板使用的节点列表数据（含百分比计算）
- */
-const nodeListData = computed(() => {
-  return topNNodes.value.map(node => ({
-    id: node.id,
-    name: node.name,
-    ip: node.ip,
-    description: node.description || '',
-    cpuUsagePercentage: calcPercentage(node.resource.usage.cpu, node.resource.allocation.cpu),
-    memoryUsagePercentage: calcPercentage(node.resource.usage.memory, node.resource.allocation.memory),
-  }))
-})
-
-/**
- * 查看更多节点
- */
-function handleViewMore() {
-  BeeMessage.info('查看全部节点，功能开发中')
 }
 
 onMounted(() => {
@@ -114,14 +82,14 @@ onMounted(() => {
 .bee-cluster-overview-node {
   display: flex;
   flex-direction: column;
-  padding-bottom: 16px;
 
   &__header {
     display: flex;
     justify-content: space-between;
     align-items: center;
     flex: 0 0 auto;
-    height: 64px;
+    height: 48px;
+    padding: 0 $spacing-16;
     font-weight: 500;
   }
 
@@ -131,18 +99,13 @@ onMounted(() => {
     align-items: center;
   }
 
-  &__actions {
-    display: flex;
-    gap: 8px;
-    align-items: center;
-  }
-
   &__body {
     display: flex;
     gap: 8px;
     flex-direction: column;
     justify-content: space-between;
     height: 100%;
+    padding: 0 $spacing-16 $spacing-16;
   }
 
   &__item {
