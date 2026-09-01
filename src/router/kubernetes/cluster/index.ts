@@ -12,16 +12,6 @@ export const clusterRoutes: RouteRecordRaw[] = [
     },
   },
   {
-    path: '/kubernetes/clusters/create',
-    name: 'kubernetes:cluster:create',
-    component: () => import('@/views/kubernetes/cluster/create/index.vue'),
-    meta: {
-      title: '创建集群',
-      permission: 'kubernetes:cluster:create',
-      activeCode: 'kubernetes:cluster',
-    },
-  },
-  {
     path: '/kubernetes/clusters/register',
     name: 'kubernetes:cluster:register',
     component: () => import('@/views/kubernetes/cluster/register/index.vue'),
@@ -32,7 +22,7 @@ export const clusterRoutes: RouteRecordRaw[] = [
     },
   },
   {
-    path: '/kubernetes/clusters/edit',
+    path: '/kubernetes/clusters/:uid/edit',
     name: 'kubernetes:cluster:edit',
     component: () => import('@/views/kubernetes/cluster/edit/index.vue'),
     meta: {

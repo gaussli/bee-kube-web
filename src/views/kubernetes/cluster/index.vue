@@ -7,7 +7,7 @@
     <BeeCard class="page-body">
       <!-- 工具栏 -->
       <div class="page-body__toolbar">
-        <BeeInputSearch v-model="searchKey" class="page-body__toolbar-search" placeholder="按 UID / 名称 搜索" />
+        <BeeInputSearch v-model="searchKey" class="page-body__toolbar-search" placeholder="按 UID / 名称搜索" />
         <BeeSelect
           v-model="queryForm.status"
           :menu-height="300"
@@ -16,8 +16,7 @@
         />
         <BeeButton icon="basic-search" @click="handleSearch"> 搜索 </BeeButton>
         <BeeButton icon="basic-refresh" @click="handleReset"> 重置 </BeeButton>
-        <div v-if="perm.create" class="page-body__toolbar-seperator"></div>
-        <BeeButton v-if="perm.create" icon="basic-create" type="primary" @click="handleCreate"> 新增 </BeeButton>
+        <div v-if="perm.create" class="page-body__toolbar-separator"></div>
         <BeeButton v-if="perm.create" icon="kubernetes-register" type="primary" @click="handleRegister">
           纳管
         </BeeButton>
@@ -124,7 +123,6 @@
         <p v-if="deletableRows.length > 0">
           确定要删除选中的 <strong>{{ deletableRows.length }}</strong> 个集群 吗？
         </p>
-        <p v-else class="dialog-content__warning">所有选中的集群均不可删除。</p>
         <div v-if="deletableRows.length > 0" class="delete-dialog-tags">
           <BeeTag v-for="row in deletableRows" :key="row.uid">
             {{ row.name }}
@@ -195,10 +193,18 @@ const deleteDialogVisible = ref(false)
 const batchDeleteDialogVisible = ref(false)
 const currentTargetRow = ref<ClusterListVo | null>(null)
 
+// ==================== Permission ====================
+/** 页面级权限缓存，避免模板/循环中重复调用 hasPermission */
+const perm: Record<string, boolean> = {
+  create: hasPermission('kubernetes:cluster:create'),
+  edit: hasPermission('kubernetes:cluster:edit'),
+  view: hasPermission('kubernetes:cluster:view'),
+  delete: hasPermission('kubernetes:cluster:delete'),
+}
+
 // ==================== Data Loading ====================
 /**
- * 加载集群列表数据
- * @remarks 根据当前查询条件与分页参数获取集群分页数据
+ * 请求集群列表数据
  */
 async function loadData() {
   loading.value = true
@@ -210,6 +216,9 @@ async function loadData() {
     })
     tableData.value = resp.list
     pagination.total = resp.total
+  } catch (err) {
+    console.error('[loadData]', err)
+    BeeMessage.error('加载集群列表失败')
   } finally {
     loading.value = false
   }
@@ -218,11 +227,10 @@ async function loadData() {
 // ==================== Search & Reset ====================
 /**
  * 搜索
- * @remarks 将 searchKey 同时映射到 id/name 字段进行搜索匹配，并重置页码
  */
 function handleSearch() {
-  queryForm.uid = searchKey.value
-  queryForm.name = searchKey.value
+  queryForm.uid = searchKey.value || undefined
+  queryForm.name = searchKey.value || undefined
 
   pagination.page = 1
   void loadData()
@@ -257,28 +265,33 @@ function handleClearSelection() {
   tableRef.value?.clearSelection()
 }
 
-// ==================== CRUD ====================
+// ==================== Handler ====================
 /**
- * 跳转创建页面
+ * 纳管集群
  */
-function handleCreate() {
-  router.push({ name: 'kubernetes:cluster:create' }).catch(() => {})
-}
-
 function handleRegister() {
   router.push({ name: 'kubernetes:cluster:register' }).catch(() => {})
 }
 
 /**
- * 跳转编辑页面
+ * 切换集群
  * @param row
  */
-function handleEdit(row: ClusterListVo) {
-  router.push({ name: 'kubernetes:cluster:edit', query: { id: row.uid } }).catch(() => {})
+function handleSwitchCluster(row: ClusterListVo) {
+  kubernetesStore.setActiveClusterUid(row.uid)
+  router.push({ name: 'kubernetes:dashboard', params: { clusterUid: row.uid } }).catch(() => {})
 }
 
 /**
- * 打开删除确认弹窗
+ * 编辑集群
+ * @param row
+ */
+function handleEdit(row: ClusterListVo) {
+  router.push({ name: 'kubernetes:cluster:edit', params: { uid: row.uid } }).catch(() => {})
+}
+
+/**
+ * 删除集群
  * @param row
  */
 function handleDelete(row: ClusterListVo) {
@@ -287,24 +300,7 @@ function handleDelete(row: ClusterListVo) {
 }
 
 /**
- * 确认单个删除
- * @remarks 调用删除 API，成功后关闭弹窗并刷新列表
- */
-async function handleConfirmDelete() {
-  if (!currentTargetRow.value) return
-  try {
-    await deleteCluster(currentTargetRow.value.uid)
-    BeeMessage.success('删除成功')
-    deleteDialogVisible.value = false
-    currentTargetRow.value = null
-    await loadData()
-  } catch (err) {
-    console.error('[handleConfirmDelete]', err)
-  }
-}
-
-/**
- * 打开批量删除确认弹窗
+ * 批量删除集群
  */
 function handleBatchDelete() {
   if (deletableRows.value.length === 0) {
@@ -315,8 +311,39 @@ function handleBatchDelete() {
 }
 
 /**
- * 确认批量删除
- * @remarks 仅删除可删除的选中行，成功后清空选中并刷新列表
+ * 导出集群
+ */
+function handleExport() {
+  BeeMessage.info('功能开发中')
+}
+
+/**
+ * 导入集群
+ */
+function handleImport() {
+  BeeMessage.info('功能开发中')
+}
+
+// ==================== Dialog Confirm ====================
+/**
+ * 二次确认删除集群
+ */
+async function handleConfirmDelete() {
+  if (!currentTargetRow.value) return
+  try {
+    await deleteCluster(currentTargetRow.value.uid)
+    BeeMessage.success('删除成功')
+    deleteDialogVisible.value = false
+    currentTargetRow.value = null
+    void loadData()
+  } catch (err) {
+    console.error('[handleConfirmDelete]', err)
+    BeeMessage.error('删除失败')
+  }
+}
+
+/**
+ * 二次确认批量删除集群
  */
 async function handleConfirmBatchDelete() {
   if (deletableRows.value.length === 0) return
@@ -326,64 +353,29 @@ async function handleConfirmBatchDelete() {
     BeeMessage.success(`成功删除 ${uids.length} 个集群`)
     batchDeleteDialogVisible.value = false
     selectedRows.value = []
-    await loadData()
+    tableRef.value?.clearSelection()
+    void loadData()
   } catch (err) {
     console.error('[handleConfirmBatchDelete]', err)
+    BeeMessage.error('删除失败')
   }
 }
 
-// ==================== Other Actions ====================
-/**
- * 切换集群
- * @param row
- */
-function handleSwitchCluster(row: ClusterListVo) {
-  kubernetesStore.setActiveClusterUid(row.uid)
-  router.push({ name: 'kubernetes:dashboard', params: { clusterUid: row.uid } }).catch(() => {})
-}
-
-// ==================== Export & Import ====================
-/**
- * 导出集群
- * @remarks 功能开发中
- */
-function handleExport() {
-  BeeMessage.info('功能开发中')
-}
-
-/**
- * 导入集群
- * @remarks 功能开发中
- */
-function handleImport() {
-  BeeMessage.info('功能开发中')
-}
-
 // ==================== Row Actions ====================
-/** 页面级权限缓存，避免模板/循环中重复调用 hasPermission */
-const perm: Record<string, boolean> = {
-  create: hasPermission('kubernetes:cluster:create'),
-  edit: hasPermission('kubernetes:cluster:edit'),
-  view: hasPermission('kubernetes:cluster:view'),
-  delete: hasPermission('kubernetes:cluster:delete'),
-}
-
 /**
  * 构建行操作数组
  * @param row - 当前行数据
  * @returns 操作项数组
- * @remarks 按权限和 row.deletable 条件过滤
+ * @remarks 切换集群无需权限；编辑/删除按权限和 row.deletable 条件过滤
  */
 function getActions(row: ClusterListVo): ActionItem[] {
   const actions: ActionItem[] = []
-  if (perm.view) {
-    actions.push({
-      value: 'view',
-      label: '切换集群',
-      icon: 'kubernetes-exchange',
-      handler: () => handleSwitchCluster(row),
-    })
-  }
+  actions.push({
+    value: 'view',
+    label: '切换集群',
+    icon: 'kubernetes-exchange',
+    handler: () => handleSwitchCluster(row),
+  })
   if (perm.edit) {
     actions.push({ value: 'edit', label: '编辑', icon: 'basic-edit', handler: () => handleEdit(row) })
   }
@@ -427,7 +419,7 @@ onMounted(() => {
       min-width: 0;
     }
 
-    &-seperator {
+    &-separator {
       width: 1px;
       height: 40%;
       margin: 0 $spacing-8;
