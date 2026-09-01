@@ -1,12 +1,12 @@
 <template>
-  <el-form ref="formRef" :model="formData" :rules="formRules" label-position="left" class="permission-form">
+  <el-form ref="formRef" class="permission-form" label-position="left" :model="formData" :rules="formRules">
     <div class="form-content">
       <el-form-item label="权限编码" prop="code">
         <template #label>
           <el-icon><Key /></el-icon>
           <span>权限编码</span>
         </template>
-        <el-input v-model="formData.code" placeholder="请输入权限编码，如 system:user:view" :disabled="isEdit" />
+        <el-input v-model="formData.code" :disabled="isEdit" placeholder="请输入权限编码，如 system:user:view" />
       </el-form-item>
 
       <el-form-item label="权限名称" prop="name">
@@ -22,7 +22,7 @@
           <el-icon><Collection /></el-icon>
           <span>排序</span>
         </template>
-        <el-input-number v-model="formData.sort" :min="0" :max="9999" placeholder="数值越小越靠前" />
+        <el-input-number v-model="formData.sort" :max="9999" :min="0" placeholder="数值越小越靠前" />
       </el-form-item>
 
       <el-form-item label="状态" prop="status">
@@ -46,12 +46,12 @@
         </el-radio-group>
       </el-form-item>
 
-      <el-form-item label="描述" prop="description" class="form-item-full">
+      <el-form-item class="form-item-full" label="描述" prop="description">
         <template #label>
           <el-icon><Document /></el-icon>
           <span>描述</span>
         </template>
-        <el-input v-model="formData.description" type="textarea" :rows="3" placeholder="请输入权限描述" />
+        <el-input v-model="formData.description" placeholder="请输入权限描述" :rows="3" type="textarea" />
       </el-form-item>
     </div>
   </el-form>
@@ -64,7 +64,7 @@ import { Collection, Document, Key, Switch } from '@element-plus/icons-vue'
 
 import type { FormInstance, FormRules } from 'element-plus'
 
-import type { PermissionDetailResp } from '@/types'
+import type { PermissionDetailResp } from '@/types/index'
 
 defineOptions({ name: 'PermissionForm' })
 

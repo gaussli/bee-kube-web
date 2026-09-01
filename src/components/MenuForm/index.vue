@@ -1,12 +1,12 @@
 <template>
-  <el-form ref="formRef" :model="formData" :rules="formRules" label-position="left" class="menu-form">
+  <el-form ref="formRef" class="menu-form" label-position="left" :model="formData" :rules="formRules">
     <div class="form-content">
       <el-form-item label="菜单编码" prop="code">
         <template #label>
           <el-icon><Key /></el-icon>
           <span>菜单编码</span>
         </template>
-        <el-input v-model="formData.code" placeholder="请输入菜单编码，如 system:user" :disabled="isEdit" />
+        <el-input v-model="formData.code" :disabled="isEdit" placeholder="请输入菜单编码，如 system:user" />
       </el-form-item>
 
       <el-form-item label="菜单名称" prop="name">
@@ -77,7 +77,7 @@
           <el-icon><Sort /></el-icon>
           <span>排序</span>
         </template>
-        <el-input-number v-model="formData.sort" :min="0" :max="9999" placeholder="数值越小越靠前" />
+        <el-input-number v-model="formData.sort" :max="9999" :min="0" placeholder="数值越小越靠前" />
       </el-form-item>
 
       <el-form-item label="状态" prop="status">
@@ -101,12 +101,12 @@
         </el-radio-group>
       </el-form-item>
 
-      <el-form-item label="描述" prop="description" class="form-item-full">
+      <el-form-item class="form-item-full" label="描述" prop="description">
         <template #label>
           <el-icon><Document /></el-icon>
           <span>描述</span>
         </template>
-        <el-input v-model="formData.description" type="textarea" :rows="3" placeholder="请输入菜单描述" />
+        <el-input v-model="formData.description" placeholder="请输入菜单描述" :rows="3" type="textarea" />
       </el-form-item>
     </div>
   </el-form>
@@ -119,7 +119,7 @@ import { Document, Folder, FolderOpened, Key, Link, Lock, Menu, Picture, Sort, S
 
 import type { FormInstance, FormRules } from 'element-plus'
 
-import type { MenuDetailResp } from '@/types'
+import type { MenuDetailResp } from '@/types/index'
 
 defineOptions({ name: 'MenuForm' })
 

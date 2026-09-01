@@ -2,7 +2,7 @@ import type { RouteRecordRaw } from 'vue-router'
 
 const configmapRoutes: RouteRecordRaw[] = [
   {
-    path: '/kubernetes/clusters/:clusterUid/config/configmaps',
+    path: '/kubernetes/clusters/:clusterUid/configmaps',
     name: 'kubernetes:config:configmap',
     component: () => import('@/views/kubernetes/config/configmap/index.vue'),
     meta: {
@@ -12,7 +12,7 @@ const configmapRoutes: RouteRecordRaw[] = [
     },
   },
   {
-    path: '/kubernetes/clusters/:clusterUid/config/configmaps/:name',
+    path: '/kubernetes/clusters/:clusterUid/namespaces/:namespace/configmaps/:name',
     name: 'kubernetes:config:configmap:detail',
     component: () => import('@/views/kubernetes/config/configmap/detail/index.vue'),
     meta: {
@@ -22,7 +22,7 @@ const configmapRoutes: RouteRecordRaw[] = [
     },
   },
   {
-    path: '/kubernetes/clusters/:clusterUid/config/configmaps/create',
+    path: '/kubernetes/clusters/:clusterUid/configmaps/create',
     name: 'kubernetes:config:configmap:create',
     component: () => import('@/views/kubernetes/config/configmap/create/index.vue'),
     meta: {
@@ -32,7 +32,7 @@ const configmapRoutes: RouteRecordRaw[] = [
     },
   },
   {
-    path: '/kubernetes/clusters/:clusterUid/config/configmaps/create/yaml',
+    path: '/kubernetes/clusters/:clusterUid/configmaps/create/yaml',
     name: 'kubernetes:config:configmap:create:yaml',
     component: () => import('@/views/kubernetes/config/configmap/create/yaml.vue'),
     meta: {
@@ -42,7 +42,7 @@ const configmapRoutes: RouteRecordRaw[] = [
     },
   },
   {
-    path: '/kubernetes/clusters/:clusterUid/config/configmaps/:name/edit',
+    path: '/kubernetes/clusters/:clusterUid/namespaces/:namespace/configmaps/:name/edit',
     name: 'kubernetes:config:configmap:edit',
     component: () => import('@/views/kubernetes/config/configmap/edit/index.vue'),
     meta: {
@@ -52,7 +52,7 @@ const configmapRoutes: RouteRecordRaw[] = [
     },
   },
   {
-    path: '/kubernetes/clusters/:clusterUid/config/configmaps/:name/edit/yaml',
+    path: '/kubernetes/clusters/:clusterUid/namespaces/:namespace/configmaps/:name/edit/yaml',
     name: 'kubernetes:config:configmap:edit:yaml',
     component: () => import('@/views/kubernetes/config/configmap/edit/yaml.vue'),
     meta: {
@@ -65,7 +65,7 @@ const configmapRoutes: RouteRecordRaw[] = [
 
 const secretRoutes: RouteRecordRaw[] = [
   {
-    path: '/kubernetes/clusters/:clusterUid/config/secrets',
+    path: '/kubernetes/clusters/:clusterUid/secrets',
     name: 'kubernetes:config:secret',
     component: () => import('@/views/kubernetes/config/secret/index.vue'),
     meta: {
@@ -75,7 +75,7 @@ const secretRoutes: RouteRecordRaw[] = [
     },
   },
   {
-    path: '/kubernetes/clusters/:clusterUid/config/secrets/:name',
+    path: '/kubernetes/clusters/:clusterUid/namespaces/:namespace/secrets/:name',
     name: 'kubernetes:config:secret:detail',
     component: () => import('@/views/kubernetes/config/secret/detail/index.vue'),
     meta: {
@@ -85,7 +85,7 @@ const secretRoutes: RouteRecordRaw[] = [
     },
   },
   {
-    path: '/kubernetes/clusters/:clusterUid/config/secrets/create',
+    path: '/kubernetes/clusters/:clusterUid/secrets/create',
     name: 'kubernetes:config:secret:create',
     component: () => import('@/views/kubernetes/config/secret/create/index.vue'),
     meta: {
@@ -95,7 +95,7 @@ const secretRoutes: RouteRecordRaw[] = [
     },
   },
   {
-    path: '/kubernetes/clusters/:clusterUid/config/secrets/create/yaml',
+    path: '/kubernetes/clusters/:clusterUid/secrets/create/yaml',
     name: 'kubernetes:config:secret:create:yaml',
     component: () => import('@/views/kubernetes/config/secret/create/yaml.vue'),
     meta: {
@@ -105,7 +105,7 @@ const secretRoutes: RouteRecordRaw[] = [
     },
   },
   {
-    path: '/kubernetes/clusters/:clusterUid/config/secrets/:name/edit',
+    path: '/kubernetes/clusters/:clusterUid/namespaces/:namespace/secrets/:name/edit',
     name: 'kubernetes:config:secret:edit',
     component: () => import('@/views/kubernetes/config/secret/edit/index.vue'),
     meta: {
@@ -115,7 +115,7 @@ const secretRoutes: RouteRecordRaw[] = [
     },
   },
   {
-    path: '/kubernetes/clusters/:clusterUid/config/secrets/:name/edit/yaml',
+    path: '/kubernetes/clusters/:clusterUid/namespaces/:namespace/secrets/:name/edit/yaml',
     name: 'kubernetes:config:secret:edit:yaml',
     component: () => import('@/views/kubernetes/config/secret/edit/yaml.vue'),
     meta: {
@@ -126,14 +126,4 @@ const secretRoutes: RouteRecordRaw[] = [
   },
 ]
 
-export const configRoutes: RouteRecordRaw[] = [
-  {
-    path: '/kubernetes/clusters/:clusterUid/config',
-    name: 'kubernetes:config',
-    redirect: '/kubernetes/clusters/:clusterUid/config/configmaps',
-    meta: {
-      title: '配置',
-    },
-    children: [...configmapRoutes, ...secretRoutes],
-  },
-]
+export const configRoutes: RouteRecordRaw[] = [...configmapRoutes, ...secretRoutes]

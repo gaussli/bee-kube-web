@@ -1,5 +1,5 @@
 <template>
-  <el-form ref="formRef" :model="formData" :rules="formRules" label-position="left" class="user-form">
+  <el-form ref="formRef" class="user-form" label-position="left" :model="formData" :rules="formRules">
     <div class="form-content">
       <!-- 基础信息 -->
       <el-form-item label="用户名" prop="username">
@@ -7,7 +7,7 @@
           <el-icon><User /></el-icon>
           <span>用户名</span>
         </template>
-        <el-input v-model="formData.username" placeholder="请输入用户名" :disabled="isEdit" />
+        <el-input v-model="formData.username" :disabled="isEdit" placeholder="请输入用户名" />
       </el-form-item>
 
       <el-form-item label="昵称" prop="nickname">
@@ -70,7 +70,7 @@
           <el-icon><Calendar /></el-icon>
           <span>生日</span>
         </template>
-        <el-date-picker v-model="formData.birthday" type="date" placeholder="选择生日" style="width: 100%" />
+        <el-date-picker v-model="formData.birthday" placeholder="选择生日" style="width: 100%" type="date" />
       </el-form-item>
 
       <!-- 账户设置 -->
@@ -95,12 +95,12 @@
         </el-radio-group>
       </el-form-item>
 
-      <el-form-item label="简介" prop="description" class="form-item-full">
+      <el-form-item class="form-item-full" label="简介" prop="description">
         <template #label>
           <el-icon><Document /></el-icon>
           <span>简介</span>
         </template>
-        <el-input v-model="formData.description" type="textarea" :rows="3" placeholder="请输入简介" />
+        <el-input v-model="formData.description" placeholder="请输入简介" :rows="3" type="textarea" />
       </el-form-item>
     </div>
   </el-form>
@@ -126,7 +126,7 @@ import {
 
 import type { FormInstance, FormRules } from 'element-plus'
 
-import type { UserDetailResp } from '@/types'
+import type { UserDetailResp } from '@/types/index'
 
 defineOptions({ name: 'UserForm' })
 

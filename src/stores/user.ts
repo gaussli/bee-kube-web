@@ -2,7 +2,7 @@ import { ref } from 'vue'
 
 import { defineStore } from 'pinia'
 
-import type { CurrentMenu, CurrentUser } from '@/types'
+import type { CurrentMenu, CurrentUser } from '@/types/auth/auth'
 
 import { storage } from '@/utils'
 

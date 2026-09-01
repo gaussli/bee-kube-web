@@ -21,7 +21,7 @@
  */
 import { computed } from 'vue'
 
-import type { Option } from '@/config/kubernetes/common'
+import type { Option } from '@/config/kubernetes'
 
 import BeeIcon from '@/components/BeeIcon/index.vue'
 import BeeTooltip from '@/components/BeeTooltip/index.vue'

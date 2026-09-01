@@ -270,6 +270,15 @@ export default [
       },
     },
     rules: {
+      // --- 检查 import 的模块路径是否可被解析器找到（识别坏路径 / 拼写错误别名）---
+      // 注意：当前 eslint-plugin-import@2.32.0 的 no-unresolved 默认不检查 import type 语句，
+      // 纯类型坏路径需依赖 `tsc --noEmit` 兜底；升级插件后可加 considerTypeOnlyImports: true 一并覆盖。
+      'import/no-unresolved': [
+        'error',
+        {
+          caseSensitive: true, // 严格区分大小写（避免 macOS 不敏感文件系统掩盖大小写错误）
+        },
+      ],
       'import/order': [
         'error',
         {
