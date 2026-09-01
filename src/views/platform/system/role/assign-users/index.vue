@@ -11,7 +11,7 @@
     </div>
 
     <!-- 内容主体 -->
-    <transition name="fade-slide" mode="out-in">
+    <transition mode="out-in" name="fade-slide">
       <div v-if="loaded" class="assign-body">
         <!-- 角色信息 -->
         <div class="role-header">
@@ -21,7 +21,7 @@
           <div class="role-meta">
             <div class="role-name-row">
               <span class="role-name">{{ roleData.name }}</span>
-              <el-tag :type="roleData.status === 1 ? 'success' : 'danger'" size="small">
+              <el-tag size="small" :type="roleData.status === 1 ? 'success' : 'danger'">
                 {{ roleData.status === 1 ? '启用' : '禁用' }}
               </el-tag>
             </div>
@@ -34,11 +34,11 @@
         <!-- 用户分配 -->
         <BeeTransfer
           v-model="selectedUserIds"
-          :left-data="availableUsers"
-          :right-data="selectedUsers"
-          left-title="可选用户"
-          right-title="已选用户"
           label-key="username"
+          :left-data="availableUsers"
+          left-title="可选用户"
+          :right-data="selectedUsers"
+          right-title="已选用户"
           value-key="id"
         >
           <template #left="{ item }">
@@ -100,8 +100,8 @@ import { useRouter } from 'vue-router'
 
 import { ArrowLeft, Message, User, UserFilled } from '@element-plus/icons-vue'
 
-import type { UserResp } from '@/types'
-import type { RoleDetailResp } from '@/types'
+import type { UserResp } from '@/types/index'
+import type { RoleDetailResp } from '@/types/index'
 
 import BeeButton from '@/components/BeeButton/index.vue'
 import BeeDivider from '@/components/BeeDivider/index.vue'

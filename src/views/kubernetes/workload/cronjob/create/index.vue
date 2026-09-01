@@ -26,9 +26,6 @@
             ></template>
           </el-input>
         </el-form-item>
-        <el-form-item label="暂停">
-          <el-switch v-model="formData.suspend" />
-        </el-form-item>
       </el-form>
     </div>
     <div class="page-footer">
@@ -51,7 +48,7 @@ import { Clock, Close, Check, InfoFilled } from '@element-plus/icons-vue'
 
 import type { FormInstance } from 'element-plus'
 
-import type { CronJobDetailResp } from '@/types/kubernetes/workload/cronjob'
+import type { CronJobDetailResp } from '@/types/kubernetes/workload/types'
 
 import { createCronJob } from '@/api/kubernetes/workload/cronjob'
 
@@ -68,7 +65,6 @@ const formData = ref<Partial<CronJobDetailResp>>({
   namespace: 'default',
   clusterUid: 'default',
   schedule: '*/5 * * * *',
-  suspend: false,
 })
 const formRules = {
   clusterUid: [{ required: true, message: '请选择集群', trigger: 'change' }],

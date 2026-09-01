@@ -1,8 +1,8 @@
 <template>
   <div class="bee-audit-cell">
     <div class="bee-audit-cell__value">
-      <img v-if="userAvatar" :src="userAvatar" class="bee-audit-cell__avatar" />
-      <BeeIcon v-else name="basic-id" :size="16" class="bee-audit-cell__icon" />
+      <img v-if="userAvatar" class="bee-audit-cell__avatar" :src="userAvatar" />
+      <BeeIcon v-else class="bee-audit-cell__icon" name="basic-avatar" :size="16" />
       <span class="bee-audit-cell__datetime">{{ datetime || '-' }}</span>
     </div>
     <span class="bee-audit-cell__key">{{ fieldName }}</span>

@@ -71,7 +71,7 @@ import { onMounted, reactive, ref } from 'vue'
 
 import { useRoute } from 'vue-router'
 
-import type { DeploymentPodListVo, DeploymentPodQueryForm } from '@/types/kubernetes/workload/deployment'
+import type { PodListVo, PodQueryForm } from '@/types/kubernetes/pod'
 
 import BeeButton from '@/components/BeeButton/index.vue'
 import BeeInputSearch from '@/components/BeeInputSearch/index.vue'
@@ -98,11 +98,11 @@ const namespaceUid = ref(route.params.namespaceUid as string)
 const deploymentUid = ref(route.params.uid as string)
 
 const loading = ref(false)
-const tableData = ref<DeploymentPodListVo[]>([])
+const tableData = ref<PodListVo[]>([])
 const searchKey = ref('')
 
 /** 查询条件 */
-const queryForm = reactive<Partial<Omit<DeploymentPodQueryForm, 'name'>>>({
+const queryForm = reactive<Partial<Omit<PodQueryForm, 'name'>>>({
   status: undefined,
 })
 

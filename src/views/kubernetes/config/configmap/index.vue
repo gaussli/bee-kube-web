@@ -3,9 +3,9 @@
     <!-- 页面标题 -->
     <BeeCard class="configmap-page__header">
       <BeePageHeader
+        description="配置映射（ConfigMap）用于存储非敏感配置数据，如配置文件、环境变量、命令行参数等，实现配置与工作负载的解耦。"
         icon="kubernetes-namespace"
         title="配置映射"
-        description="配置映射（ConfigMap）用于存储非敏感配置数据，如配置文件、环境变量、命令行参数等，实现配置与工作负载的解耦。"
       />
     </BeeCard>
 
@@ -13,20 +13,20 @@
     <BeeCard class="configmap-page__body">
       <!-- 查询表单 -->
       <div class="table-toolbar">
-        <BeeInputSearch v-model="searchKey" placeholder="按 UID / 名称搜索" class="table-toolbar__search" />
+        <BeeInputSearch v-model="searchKey" class="table-toolbar__search" placeholder="按 UID / 名称搜索" />
         <BeeSelect
           v-model="queryForm.namespace"
-          placeholder="命名空间筛选"
-          :options="namespaceOptions"
-          :width="300"
           :menu-height="300"
+          :options="namespaceOptions"
+          placeholder="命名空间筛选"
+          :width="300"
         />
         <BeeButton icon="basic-search" @click="handleSearch"> 搜索 </BeeButton>
         <BeeButton icon="basic-refresh" @click="handleReset"> 重置 </BeeButton>
         <BeeButton
           v-if="hasPermission('kubernetes:config:configmap:create')"
-          type="primary"
           icon="basic-create"
+          type="primary"
           @click="handleCreate"
         >
           新增
@@ -39,40 +39,40 @@
           <BeeTableColumn :width="400">
             <template #default="{ row }">
               <BeeConfigmapInfoCell
-                :uid="row.uid"
-                :name="row.name"
                 :description="row.description"
-                :icon-size="32"
                 icon="kubernetes-namespace"
+                :icon-size="32"
+                :name="row.name"
+                :uid="row.uid"
               />
             </template>
           </BeeTableColumn>
           <BeeTableColumn :width="200">
             <template #default="{ row }">
-              <BeeTableCommonCell :text="row.namespace" subtext="命名空间" />
+              <BeeTableCommonCell subtext="命名空间" :text="row.namespace" />
             </template>
           </BeeTableColumn>
           <BeeTableColumn :width="140">
             <template #default="{ row }">
-              <BeeTableCommonCell :text="String(row.dataKeysCount ?? 0)" subtext="配置项" />
+              <BeeTableCommonCell subtext="配置项" :text="String(row.dataCount ?? 0)" />
             </template>
           </BeeTableColumn>
           <BeeTableColumn :width="160">
             <template #default="{ row }">
-              <BeeTableCommonCell :text="String(row.refs?.length ?? 0)" subtext="关联工作负载" />
+              <BeeTableCommonCell subtext="关联工作负载" :text="String(row.refs?.length ?? 0)" />
             </template>
           </BeeTableColumn>
           <BeeTableColumn :width="200">
             <template #default="{ row }">
-              <BeeAuditCell :username="row.createBy" :datetime="row.createAt" field-name="创建人 / 时间" />
+              <BeeAuditCell :datetime="row.createAt" field-name="创建人 / 时间" :username="row.createBy" />
             </template>
           </BeeTableColumn>
           <BeeTableColumn :width="200">
             <template #default="{ row }">
-              <BeeAuditCell :username="row.updateBy" :datetime="row.updateAt" field-name="更新人 / 时间" />
+              <BeeAuditCell :datetime="row.updateAt" field-name="更新人 / 时间" :username="row.updateBy" />
             </template>
           </BeeTableColumn>
-          <BeeTableColumn :width="150" fixed="right">
+          <BeeTableColumn fixed="right" :width="150">
             <template #default="{ row }">
               <BeeActionCell :actions="getActions(row)" />
             </template>
@@ -85,8 +85,8 @@
         <div>
           <BeeButton
             v-if="hasPermission('kubernetes:config:configmap:delete')"
-            type="danger"
             :disabled="selectedRows.length === 0"
+            type="danger"
             @click="handleBatchDelete"
           >
             批量删除 ({{ selectedRows.length }})
@@ -95,8 +95,8 @@
         <BeePagination
           v-model="pagination.page"
           v-model:page-size="pagination.pageSize"
-          :total="pagination.total"
           :page-sizes="[10, 20, 50]"
+          :total="pagination.total"
           @change="loadData"
         />
       </div>
@@ -136,11 +136,11 @@ import { onMounted, reactive, ref } from 'vue'
 
 import { useRoute, useRouter } from 'vue-router'
 
-import type { ConfigMapQueryReq, ConfigMapListResp } from '@/types/kubernetes/config/configmap'
+import type { ConfigMapQueryForm, ConfigMapListVo } from '@/types/kubernetes/config/configmap'
 import type { NamespaceSimpleListResp } from '@/types/kubernetes/namespace'
 
 import { getConfigMapList, deleteConfigMap, deleteConfigMaps } from '@/api/kubernetes/config/configmap'
-import { getNamespacePage } from '@/api/kubernetes/namespace'
+import { getNamespacePage } from '@/api/kubernetes/namespace/namespace'
 
 import BeeActionCell, { type ActionItem } from '@/components/BeeActionCell/index.vue'
 import BeeAuditCell from '@/components/BeeAuditCell/index.vue'
@@ -174,13 +174,13 @@ const router = useRouter()
 const clusterUid = ref(route.params.clusterUid as string)
 const searchKey = ref('')
 const loading = ref(false)
-const tableData = ref<ConfigMapListResp[]>([])
-const selectedRows = ref<ConfigMapListResp[]>([])
+const tableData = ref<ConfigMapListVo[]>([])
+const selectedRows = ref<ConfigMapListVo[]>([])
 const deleteDialogVisible = ref(false)
 const batchDeleteDialogVisible = ref(false)
-const currentTargetRow = ref<ConfigMapListResp | null>(null)
+const currentTargetRow = ref<ConfigMapListVo | null>(null)
 
-const queryForm = reactive<Partial<ConfigMapQueryReq>>({})
+const queryForm = reactive<Partial<ConfigMapQueryForm>>({})
 const pagination = reactive({ page: 1, pageSize: 10, total: 0 })
 
 // ==================== Options ====================
@@ -268,7 +268,7 @@ function handleReset() {
  * @remarks BeeTable 的 selection-change 事件固定返回 Record<string, unknown>[]，需通过 unknown 桥接断言为目标类型
  */
 function handleSelectionChange(rows: Record<string, unknown>[]) {
-  selectedRows.value = rows as unknown as ConfigMapListResp[]
+  selectedRows.value = rows as unknown as ConfigMapListVo[]
 }
 
 // ==================== CRUD: Create / Edit / View ====================
@@ -282,12 +282,11 @@ function handleCreate() {
  * 跳转编辑页面
  * @param row
  */
-function handleEdit(row: ConfigMapListResp) {
+function handleEdit(row: ConfigMapListVo) {
   router
     .push({
       name: 'kubernetes:config:configmap:edit',
-      params: { clusterUid: row.clusterUid },
-      query: { namespace: row.namespace, name: row.name },
+      params: { clusterUid: row.clusterUid, namespace: row.namespace, name: row.name },
     })
     .catch(() => {})
 }
@@ -296,12 +295,11 @@ function handleEdit(row: ConfigMapListResp) {
  * 跳转详情页面
  * @param row
  */
-function handleViewDetail(row: ConfigMapListResp) {
+function handleViewDetail(row: ConfigMapListVo) {
   router
     .push({
       name: 'kubernetes:config:configmap:detail',
-      params: { clusterUid: row.clusterUid },
-      query: { namespace: row.namespace, name: row.name },
+      params: { clusterUid: row.clusterUid, namespace: row.namespace, name: row.name },
     })
     .catch(() => {})
 }
@@ -310,7 +308,7 @@ function handleViewDetail(row: ConfigMapListResp) {
  * 编辑 YAML
  * @param row
  */
-function handleEditYaml(row: ConfigMapListResp) {
+function handleEditYaml(row: ConfigMapListVo) {
   BeeMessage.info(`编辑 YAML: ${row.name}`)
 }
 
@@ -320,7 +318,7 @@ function handleEditYaml(row: ConfigMapListResp) {
  * 打开删除确认弹窗
  * @param row
  */
-function handleDelete(row: ConfigMapListResp) {
+function handleDelete(row: ConfigMapListVo) {
   currentTargetRow.value = row
   deleteDialogVisible.value = true
 }
@@ -380,7 +378,7 @@ const perm: Record<string, boolean> = {
  * @returns 操作项数组
  * @remarks 按权限和 row.deletable 条件过滤，由调用方负责
  */
-function getActions(row: ConfigMapListResp): ActionItem[] {
+function getActions(row: ConfigMapListVo): ActionItem[] {
   const actions: ActionItem[] = []
   // 查看权限
   if (perm.view) {

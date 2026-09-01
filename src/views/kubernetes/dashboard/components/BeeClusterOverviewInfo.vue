@@ -46,8 +46,8 @@ import BeeFieldCard from '@/components/BeeFieldCard/index.vue'
 import BeeFieldItem from '@/components/BeeFieldItem/index.vue'
 import BeeIcon from '@/components/BeeIcon/index.vue'
 
+import { CERT_EXPIRE_WARNING_DAYS } from '@/config/kubernetes'
 import { CLUSTER_STATUS_OPTIONS, type ClusterStatus } from '@/config/kubernetes/cluster'
-import { CERT_EXPIRE_WARNING_DAYS } from '@/config/kubernetes/common'
 
 defineOptions({ name: 'BeeClusterOverviewInfo' })
 

@@ -7,13 +7,13 @@
     <BeeCard class="page-body">
       <!-- 工具栏 -->
       <div class="page-body__toolbar">
-        <BeeInputSearch v-model="searchKey" placeholder="按 UID / 名称搜索" class="page-body__toolbar-search" />
+        <BeeInputSearch v-model="searchKey" class="page-body__toolbar-search" placeholder="按 UID / 名称搜索" />
         <BeeSelect v-model="queryForm.status" :options="NAMESPACE_STATUS_OPTIONS" placeholder="状态筛选" />
         <BeeButton icon="basic-search" @click="handleSearch"> 搜索 </BeeButton>
         <BeeButton icon="basic-refresh" @click="handleReset"> 重置 </BeeButton>
         <div v-if="perm.create" class="page-body__toolbar-seperator"></div>
-        <BeeButton v-if="perm.create" type="primary" icon="basic-create" @click="handleCreate"> 新增 </BeeButton>
-        <BeeButton v-if="perm.create" type="primary" icon="basic-create" @click="handleCreateYaml"> YAML </BeeButton>
+        <BeeButton v-if="perm.create" icon="basic-create" type="primary" @click="handleCreate"> 新增 </BeeButton>
+        <BeeButton v-if="perm.create" icon="basic-create" type="primary" @click="handleCreateYaml"> YAML </BeeButton>
       </div>
 
       <!-- 表格 -->
@@ -27,25 +27,25 @@
         >
           <BeeTableColumn :width="500">
             <template #default="{ row }">
-              <BeeNamespaceInfoCell :id="row.id" :name="row.name" :description="row.description" :icon-size="32" />
+              <BeeNamespaceInfoCell :id="row.id" :description="row.description" :icon-size="32" :name="row.name" />
             </template>
           </BeeTableColumn>
           <BeeTableColumn :min-width="160">
             <template #default="{ row }">
-              <BeeStatusCell :status="row.status" :status-msg="row.statusMsg" :options="NAMESPACE_STATUS_OPTIONS" />
+              <BeeStatusCell :options="NAMESPACE_STATUS_OPTIONS" :status="row.status" :status-msg="row.statusMsg" />
             </template>
           </BeeTableColumn>
-          <BeeTableColumn :width="160" label="类型">
+          <BeeTableColumn label="类型" :width="160">
             <template #default="{ row }">
-              <BeeTableCommonCell :text="row.type" :subtext="row.type" />
+              <BeeTableCommonCell :subtext="row.type" :text="row.type" />
             </template>
           </BeeTableColumn>
           <BeeTableColumn :width="200">
             <template #default="{ row }">
-              <BeeAuditCell :username="row.createBy" :datetime="row.createAt" field-name="创建人 / 时间" />
+              <BeeAuditCell :datetime="row.createAt" field-name="创建人 / 时间" :username="row.createBy" />
             </template>
           </BeeTableColumn>
-          <BeeTableColumn :width="150" fixed="right">
+          <BeeTableColumn fixed="right" :width="150">
             <template #default="{ row }">
               <div class="table-action">
                 <BeeCircleButton
@@ -65,16 +65,16 @@
                   <BeeCircleButton icon="basic-more" tooltip="更多" />
                   <template #dropdown>
                     <BeeDropdownItem
-                      value="resourceQuota"
-                      label="资源配额"
                       icon="kubernetes-quota"
+                      label="资源配额"
+                      value="resourceQuota"
                       @click="handleResourceQuota(row)"
                     />
                     <BeeDropdownItem
                       v-if="hasPermission('kubernetes:namespace:delete') && row.deletable !== false"
-                      value="delete"
-                      label="删除"
                       icon="basic-delete"
+                      label="删除"
+                      value="delete"
                       @click="handleDelete(row)"
                     />
                   </template>
@@ -89,7 +89,7 @@
       <div class="page-body__footer">
         <div class="page-body__footer-actions">
           <BeeButton :disabled="selectedRows.length === 0" @click="handleClearSelection"> 取消选择 </BeeButton>
-          <BeeButton v-if="perm.delete" type="danger" :disabled="selectedRows.length === 0" @click="handleBatchDelete">
+          <BeeButton v-if="perm.delete" :disabled="selectedRows.length === 0" type="danger" @click="handleBatchDelete">
             批量删除 ({{ selectedRows.length }})
           </BeeButton>
           <BeeButton v-if="perm.view" icon="basic-create" @click="handleExport"> 导出 </BeeButton>
@@ -98,8 +98,8 @@
         <BeePagination
           v-model="pagination.page"
           v-model:page-size="pagination.pageSize"
-          :total="pagination.total"
           :page-sizes="[10, 20, 50]"
+          :total="pagination.total"
           @change="loadData"
         />
       </div>
@@ -142,7 +142,7 @@ import { useRoute, useRouter } from 'vue-router'
 
 import type { NamespaceListVo, NamespaceQueryForm } from '@/types/kubernetes/namespace'
 
-import { getNamespaceList, deleteNamespace, deleteNamespaces } from '@/api/kubernetes/namespace'
+import { getNamespaceList, deleteNamespace, deleteNamespaces } from '@/api/kubernetes/namespace/namespace'
 
 import BeeAuditCell from '@/components/BeeAuditCell/index.vue'
 import BeeButton from '@/components/BeeButton/index.vue'
@@ -351,7 +351,7 @@ function handleBatchDelete() {
 async function handleConfirmBatchDelete() {
   if (deletableRows.value.length === 0) return
   const targetClusterId = deletableRows.value[0].clusterUid
-  const uids = deletableRows.value.map((row) => row.uid)
+  const uids = deletableRows.value.map(row => row.uid)
   try {
     await deleteNamespaces(targetClusterId, uids)
     BeeMessage.success(`成功删除 ${uids.length} 个命名空间`)

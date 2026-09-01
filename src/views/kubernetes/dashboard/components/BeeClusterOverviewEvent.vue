@@ -6,36 +6,36 @@
         最近事件
       </div>
       <div class="bee-cluster-overview-event__actions">
-        <BeeCircleButton icon="basic-refresh" size="small" :border="false" tooltip="刷新" @click="loadEvents" />
+        <BeeCircleButton :border="false" icon="basic-refresh" size="small" tooltip="刷新" @click="loadEvents" />
       </div>
     </div>
     <div class="bee-cluster-overview-event__body">
       <BeeTable :data="recentEvents">
         <BeeTableColumn :width="100">
           <template #default="{ row }">
-            <BeeTag :type="row.type === 'Warning' ? 'warning' : 'default'" size="small">
+            <BeeTag size="small" :type="row.type === 'Warning' ? 'warning' : 'default'">
               {{ row.type }}
             </BeeTag>
           </template>
         </BeeTableColumn>
         <BeeTableColumn :width="180">
           <template #default="{ row }">
-            <BeeTableCommonCell :text="row.reason" subtext="原因" />
+            <BeeTableCommonCell subtext="原因" :text="row.reason" />
           </template>
         </BeeTableColumn>
         <BeeTableColumn :min-width="200">
           <template #default="{ row }">
-            <BeeTableCommonCell :text="`${row.regarding?.kind}/${row.regarding?.name}`" subtext="关联资源" />
+            <BeeTableCommonCell subtext="关联资源" :text="`${row.regarding?.kind}/${row.regarding?.name}`" />
           </template>
         </BeeTableColumn>
         <BeeTableColumn :min-width="300">
           <template #default="{ row }">
-            <BeeTableCommonCell :text="row.note" subtext="事件信息" />
+            <BeeTableCommonCell subtext="事件信息" :text="row.note" />
           </template>
         </BeeTableColumn>
         <BeeTableColumn :width="180">
           <template #default="{ row }">
-            <BeeTableCommonCell :text="row.eventTime" subtext="最后触发时间" />
+            <BeeTableCommonCell subtext="最后触发时间" :text="row.eventTime" />
           </template>
         </BeeTableColumn>
       </BeeTable>
@@ -48,7 +48,7 @@ import { onMounted, ref } from 'vue'
 
 import type { EventListVo } from '@/types/kubernetes/event'
 
-import { getEventList } from '@/api/kubernetes/event'
+import { getClusterEventList } from '@/api/kubernetes/cluster'
 
 import BeeCard from '@/components/BeeCard/index.vue'
 import BeeCircleButton from '@/components/BeeCircleButton/index.vue'
@@ -74,8 +74,8 @@ const recentEvents = ref<EventListVo[]>([])
  */
 async function loadEvents() {
   if (!props.clusterUid) return
-  const { list } = await getEventList(props.clusterUid, { page: 1, pageSize: 10 })
-  recentEvents.value = list
+  const resp = await getClusterEventList(props.clusterUid, { page: 1, pageSize: 20 })
+  recentEvents.value = resp.list
 }
 
 onMounted(() => {

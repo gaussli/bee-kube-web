@@ -77,7 +77,7 @@ import { useRoute, useRouter } from 'vue-router'
 
 import { Timer, ArrowLeft, EditPen } from '@element-plus/icons-vue'
 
-import type { JobResp } from '@/types/kubernetes/workload/job'
+import type { JobResp } from '@/types/kubernetes/workload/types'
 
 import { getJobDetail } from '@/api/kubernetes/workload/job'
 

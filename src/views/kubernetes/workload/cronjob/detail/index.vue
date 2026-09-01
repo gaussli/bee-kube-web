@@ -28,12 +28,6 @@
             </div>
             <div class="detail-row">
               <div class="detail-item">
-                <span class="detail-label">暂停:</span
-                ><el-tag :type="cronjobData?.suspend ? 'warning' : 'success'" size="small">{{
-                  cronjobData?.suspend ? '是' : '否'
-                }}</el-tag>
-              </div>
-              <div class="detail-item">
                 <span class="detail-label">活跃任务:</span
                 ><span class="detail-value">{{ cronjobData?.activeJobs }}</span>
               </div>
@@ -68,7 +62,7 @@ import { useRoute, useRouter } from 'vue-router'
 
 import { Clock, ArrowLeft, EditPen } from '@element-plus/icons-vue'
 
-import type { CronJobDetailResp } from '@/types/kubernetes/workload/cronjob'
+import type { CronJobDetailResp } from '@/types/kubernetes/workload/types'
 
 import { getCronJobDetail } from '@/api/kubernetes/workload/cronjob'
 

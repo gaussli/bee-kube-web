@@ -157,9 +157,9 @@ import { computed, onMounted, reactive, ref } from 'vue'
 
 import { useRoute, useRouter } from 'vue-router'
 
-import type { StatefulSetQueryForm, StatefulSetListVo } from '@/types/kubernetes/workload/statefulset'
+import type { StatefulSetQueryForm, StatefulSetListVo } from '@/types/kubernetes/workload/types'
 
-import { getNamespaceList } from '@/api/kubernetes/namespace'
+import { getNamespaceList } from '@/api/kubernetes/namespace/namespace'
 import { getStatefulSetList, deleteStatefulSet, deleteStatefulSets } from '@/api/kubernetes/workload/statefulset'
 
 import BeeActionCell, { type ActionItem } from '@/components/BeeActionCell/index.vue'
@@ -185,7 +185,7 @@ import {
   STATEFULSET_PAGE_META,
   STATEFULSET_STATUS_OPTIONS,
   STATEFULSET_UPDATE_STRATEGY_LABEL_MAP,
-} from '@/config/kubernetes/workload/statefulset'
+} from '@/config/kubernetes/workload'
 
 defineOptions({ name: 'StatefulSetPage' })
 

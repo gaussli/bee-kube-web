@@ -40,7 +40,7 @@ import { useRoute, useRouter } from 'vue-router'
 
 import { Timer, Plus, Delete, Close, Check } from '@element-plus/icons-vue'
 
-import type { JobResp } from '@/types/kubernetes/workload/job'
+import type { JobResp } from '@/types/kubernetes/workload/types'
 
 import { getJobDetail, updateJob } from '@/api/kubernetes/workload/job'
 

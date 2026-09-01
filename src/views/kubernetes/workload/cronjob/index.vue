@@ -156,9 +156,9 @@ import { computed, onMounted, reactive, ref } from 'vue'
 
 import { useRoute, useRouter } from 'vue-router'
 
-import type { CronJobQueryForm, CronJobListVo } from '@/types/kubernetes/workload/cronjob'
+import type { CronJobQueryForm, CronJobListVo } from '@/types/kubernetes/workload/types'
 
-import { getNamespaceList } from '@/api/kubernetes/namespace'
+import { getNamespaceList } from '@/api/kubernetes/namespace/namespace'
 import { getCronJobList, deleteCronJob, deleteCronJobs } from '@/api/kubernetes/workload/cronjob'
 
 import BeeActionCell, { type ActionItem } from '@/components/BeeActionCell/index.vue'
@@ -180,7 +180,7 @@ import BeeTag from '@/components/BeeTag/index.vue'
 import BeeWorkloadInfoCell from '@/components/BeeWorkloadInfoCell/index.vue'
 
 import { usePermission } from '@/composables/usePermission'
-import { CRONJOB_PAGE_META, CRONJOB_STATUS_OPTIONS } from '@/config/kubernetes/workload/cronjob'
+import { CRONJOB_PAGE_META, CRONJOB_STATUS_OPTIONS } from '@/config/kubernetes/workload'
 
 defineOptions({ name: 'CronJobPage' })
 

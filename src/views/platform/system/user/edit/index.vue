@@ -13,7 +13,7 @@
     </div>
 
     <!-- 表单主体 -->
-    <transition name="fade-slide" mode="out-in">
+    <transition mode="out-in" name="fade-slide">
       <div class="form-body">
         <UserForm ref="userFormRef" :data="userData" />
       </div>
@@ -40,7 +40,7 @@ import { useRouter } from 'vue-router'
 
 import { ArrowLeft, Close, Check } from '@element-plus/icons-vue'
 
-import type { UserDetailResp } from '@/types'
+import type { UserDetailResp } from '@/types/index'
 
 import BeeButton from '@/components/BeeButton/index.vue'
 import BeeDivider from '@/components/BeeDivider/index.vue'

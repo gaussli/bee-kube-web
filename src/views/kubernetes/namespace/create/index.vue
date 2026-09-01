@@ -2,12 +2,12 @@
   <div class="namespace-create">
     <!-- 页面标题 -->
     <div class="page-header">
-      <BeePageHeader :icon="FolderOpened" title="创建命名空间" description="创建一个新的 Kubernetes 命名空间。" />
+      <BeePageHeader description="创建一个新的 Kubernetes 命名空间。" :icon="FolderOpened" title="创建命名空间" />
     </div>
 
     <!-- 表单内容 -->
     <div class="page-body">
-      <el-form ref="formRef" :model="formData" :rules="formRules" label-width="120px" class="create-form">
+      <el-form ref="formRef" class="create-form" label-width="120px" :model="formData" :rules="formRules">
         <el-form-item label="所属集群" prop="clusterUid">
           <el-select v-model="formData.clusterUid" placeholder="选择集群" style="width: 300px">
             <el-option label="默认集群" value="default" />
@@ -56,7 +56,7 @@
         <template #icon><Close /></template>
         取消
       </BeeButton>
-      <BeeButton type="primary" :loading="submitting" @click="handleSubmit">
+      <BeeButton :loading="submitting" type="primary" @click="handleSubmit">
         <template #icon><Check /></template>
         创建
       </BeeButton>
@@ -73,9 +73,9 @@ import { FolderOpened, Plus, Delete, Close, Check } from '@element-plus/icons-vu
 
 import type { FormInstance } from 'element-plus'
 
-import type { NamespaceReq } from '@/types'
+import type { NamespaceReq } from '@/types/index'
 
-import { createNamespace } from '@/api/kubernetes/namespace'
+import { createNamespace } from '@/api/kubernetes/namespace/namespace'
 
 import BeeButton from '@/components/BeeButton/index.vue'
 import { BeeMessage } from '@/components/BeeMessage'

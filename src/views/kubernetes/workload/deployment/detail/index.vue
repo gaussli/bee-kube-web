@@ -25,7 +25,7 @@ import { computed, onMounted, ref } from 'vue'
 
 import { useRoute } from 'vue-router'
 
-import type { DeploymentDetailVo } from '@/types/kubernetes/workload/deployment'
+import type { DeploymentDetailVo } from '@/types/kubernetes/workload/types'
 
 import { getDeploymentDetail } from '@/api/kubernetes/workload/deployment'
 

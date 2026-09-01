@@ -39,7 +39,7 @@ import BeeFieldCard from '@/components/BeeFieldCard/index.vue'
 import BeeFieldItem from '@/components/BeeFieldItem/index.vue'
 import BeeIcon from '@/components/BeeIcon/index.vue'
 
-import { DEPLOYMENT_STATUS_OPTIONS } from '@/config/kubernetes/workload/deployment'
+import { DEPLOYMENT_STATUS_OPTIONS } from '@/config/kubernetes/workload'
 
 defineOptions({ name: 'BeeResourceOverviewInfo' })
 

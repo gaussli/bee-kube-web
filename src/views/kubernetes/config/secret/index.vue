@@ -3,9 +3,9 @@
     <!-- 页面标题 -->
     <BeeCard class="secret-page__header">
       <BeePageHeader
+        description="密钥（Secret）用于存储敏感配置数据，如密码、Token、TLS 证书、Docker 仓库凭证等，实现敏感信息与工作负载的解耦。"
         icon="kubernetes-namespace"
         title="密钥"
-        description="密钥（Secret）用于存储敏感配置数据，如密码、Token、TLS 证书、Docker 仓库凭证等，实现敏感信息与工作负载的解耦。"
       />
     </BeeCard>
 
@@ -13,21 +13,21 @@
     <BeeCard class="secret-page__body">
       <!-- 查询表单 -->
       <div class="table-toolbar">
-        <BeeInputSearch v-model="searchKey" placeholder="按 UID / 名称搜索" class="table-toolbar__search" />
+        <BeeInputSearch v-model="searchKey" class="table-toolbar__search" placeholder="按 UID / 名称搜索" />
         <BeeSelect
           v-model="queryForm.namespace"
-          placeholder="命名空间筛选"
-          :options="namespaceOptions"
-          :width="300"
           :menu-height="300"
+          :options="namespaceOptions"
+          placeholder="命名空间筛选"
+          :width="300"
         />
-        <BeeSelect v-model="queryForm.type" placeholder="类型筛选" :options="typeOptions" :width="300" />
+        <BeeSelect v-model="queryForm.type" :options="typeOptions" placeholder="类型筛选" :width="300" />
         <BeeButton icon="basic-search" @click="handleSearch"> 搜索 </BeeButton>
         <BeeButton icon="basic-refresh" @click="handleReset"> 重置 </BeeButton>
         <BeeButton
           v-if="hasPermission('kubernetes:config:secret:create')"
-          type="primary"
           icon="basic-create"
+          type="primary"
           @click="handleCreate"
         >
           新增
@@ -40,45 +40,45 @@
           <BeeTableColumn :width="400">
             <template #default="{ row }">
               <BeeSecretInfoCell
-                :uid="row.uid"
-                :name="row.name"
                 :description="row.description"
-                :icon-size="32"
                 icon="kubernetes-namespace"
+                :icon-size="32"
+                :name="row.name"
+                :uid="row.uid"
               />
             </template>
           </BeeTableColumn>
           <BeeTableColumn :width="200">
             <template #default="{ row }">
-              <BeeTableCommonCell :text="row.namespace" subtext="命名空间" />
+              <BeeTableCommonCell subtext="命名空间" :text="row.namespace" />
             </template>
           </BeeTableColumn>
           <BeeTableColumn :width="320">
             <template #default="{ row }">
-              <BeeTableCommonCell :text="row.type" subtext="类型" />
+              <BeeTableCommonCell subtext="类型" :text="row.type" />
             </template>
           </BeeTableColumn>
           <BeeTableColumn :width="120">
             <template #default="{ row }">
-              <BeeTableCommonCell :text="String(row.dataKeysCount ?? 0)" subtext="数据项" />
+              <BeeTableCommonCell subtext="数据项" :text="String(row.dataCount ?? 0)" />
             </template>
           </BeeTableColumn>
           <BeeTableColumn :width="120">
             <template #default="{ row }">
-              <BeeTableCommonCell :text="String(row.refs?.length ?? 0)" subtext="关联工作负载" />
+              <BeeTableCommonCell subtext="关联工作负载" :text="String(row.refs?.length ?? 0)" />
             </template>
           </BeeTableColumn>
           <BeeTableColumn :width="200">
             <template #default="{ row }">
-              <BeeAuditCell :username="row.createBy" :datetime="row.createAt" field-name="创建人 / 时间" />
+              <BeeAuditCell :datetime="row.createAt" field-name="创建人 / 时间" :username="row.createBy" />
             </template>
           </BeeTableColumn>
           <BeeTableColumn :width="200">
             <template #default="{ row }">
-              <BeeAuditCell :username="row.updateBy" :datetime="row.updateAt" field-name="更新人 / 时间" />
+              <BeeAuditCell :datetime="row.updateAt" field-name="更新人 / 时间" :username="row.updateBy" />
             </template>
           </BeeTableColumn>
-          <BeeTableColumn :width="150" fixed="right">
+          <BeeTableColumn fixed="right" :width="150">
             <template #default="{ row }">
               <BeeActionCell :actions="getActions(row)" />
             </template>
@@ -91,8 +91,8 @@
         <div>
           <BeeButton
             v-if="hasPermission('kubernetes:config:secret:delete')"
-            type="danger"
             :disabled="selectedRows.length === 0"
+            type="danger"
             @click="handleBatchDelete"
           >
             批量删除 ({{ selectedRows.length }})
@@ -101,8 +101,8 @@
         <BeePagination
           v-model="pagination.page"
           v-model:page-size="pagination.pageSize"
-          :total="pagination.total"
           :page-sizes="[10, 20, 50]"
+          :total="pagination.total"
           @change="loadData"
         />
       </div>
@@ -142,11 +142,11 @@ import { onMounted, reactive, ref } from 'vue'
 
 import { useRoute, useRouter } from 'vue-router'
 
-import type { SecretQueryReq, SecretListResp } from '@/types/kubernetes/config/secret'
+import type { SecretQueryForm, SecretListVo } from '@/types/kubernetes/config/secret'
 import type { NamespaceSimpleListResp } from '@/types/kubernetes/namespace'
 
 import { getSecretList, deleteSecret, deleteSecrets } from '@/api/kubernetes/config/secret'
-import { getNamespacePage } from '@/api/kubernetes/namespace'
+import { getNamespacePage } from '@/api/kubernetes/namespace/namespace'
 
 import BeeActionCell, { type ActionItem } from '@/components/BeeActionCell/index.vue'
 import BeeAuditCell from '@/components/BeeAuditCell/index.vue'
@@ -180,13 +180,13 @@ const router = useRouter()
 const clusterUid = ref(route.params.clusterUid as string)
 const searchKey = ref('')
 const loading = ref(false)
-const tableData = ref<SecretListResp[]>([])
-const selectedRows = ref<SecretListResp[]>([])
+const tableData = ref<SecretListVo[]>([])
+const selectedRows = ref<SecretListVo[]>([])
 const deleteDialogVisible = ref(false)
 const batchDeleteDialogVisible = ref(false)
-const currentTargetRow = ref<SecretListResp | null>(null)
+const currentTargetRow = ref<SecretListVo | null>(null)
 
-const queryForm = reactive<Partial<SecretQueryReq>>({})
+const queryForm = reactive<Partial<SecretQueryForm>>({})
 const pagination = reactive({ page: 1, pageSize: 10, total: 0 })
 
 // ==================== Options ====================
@@ -289,7 +289,7 @@ function handleReset() {
  * @remarks BeeTable 的 selection-change 事件固定返回 Record<string, unknown>[]，需通过 unknown 桥接断言为目标类型
  */
 function handleSelectionChange(rows: Record<string, unknown>[]) {
-  selectedRows.value = rows as unknown as SecretListResp[]
+  selectedRows.value = rows as unknown as SecretListVo[]
 }
 
 // ==================== CRUD: Create / Edit / View ====================
@@ -303,12 +303,11 @@ function handleCreate() {
  * 跳转编辑页面
  * @param row
  */
-function handleEdit(row: SecretListResp) {
+function handleEdit(row: SecretListVo) {
   router
     .push({
       name: 'kubernetes:config:secret:edit',
-      params: { clusterUid: row.clusterUid },
-      query: { namespace: row.namespace, name: row.name },
+      params: { clusterUid: row.clusterUid, namespace: row.namespace, name: row.name },
     })
     .catch(() => {})
 }
@@ -317,12 +316,11 @@ function handleEdit(row: SecretListResp) {
  * 跳转详情页面
  * @param row
  */
-function handleViewDetail(row: SecretListResp) {
+function handleViewDetail(row: SecretListVo) {
   router
     .push({
       name: 'kubernetes:config:secret:detail',
-      params: { clusterUid: row.clusterUid },
-      query: { namespace: row.namespace, name: row.name },
+      params: { clusterUid: row.clusterUid, namespace: row.namespace, name: row.name },
     })
     .catch(() => {})
 }
@@ -331,7 +329,7 @@ function handleViewDetail(row: SecretListResp) {
  * 编辑 YAML
  * @param row
  */
-function handleEditYaml(row: SecretListResp) {
+function handleEditYaml(row: SecretListVo) {
   BeeMessage.info(`编辑 YAML: ${row.name}`)
 }
 
@@ -341,7 +339,7 @@ function handleEditYaml(row: SecretListResp) {
  * 打开删除确认弹窗
  * @param row
  */
-function handleDelete(row: SecretListResp) {
+function handleDelete(row: SecretListVo) {
   currentTargetRow.value = row
   deleteDialogVisible.value = true
 }
@@ -397,7 +395,7 @@ const perm: Record<string, boolean> = {
  * @returns 操作项数组
  * @remarks 按权限和 row.deletable 条件过滤，由调用方负责
  */
-function getActions(row: SecretListResp): ActionItem[] {
+function getActions(row: SecretListVo): ActionItem[] {
   const actions: ActionItem[] = []
   // 查看权限
   if (perm.view) {

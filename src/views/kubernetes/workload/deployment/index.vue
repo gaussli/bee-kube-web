@@ -157,9 +157,9 @@ import { computed, onMounted, reactive, ref } from 'vue'
 
 import { useRoute, useRouter } from 'vue-router'
 
-import type { DeploymentQueryForm, DeploymentListVo } from '@/types/kubernetes/workload/deployment'
+import type { DeploymentQueryForm, DeploymentListVo } from '@/types/kubernetes/workload/types'
 
-import { getNamespaceList } from '@/api/kubernetes/namespace'
+import { getNamespaceList } from '@/api/kubernetes/namespace/namespace'
 import { getDeploymentList, deleteDeployment, deleteDeployments } from '@/api/kubernetes/workload/deployment'
 
 import BeeActionCell, { type ActionItem } from '@/components/BeeActionCell/index.vue'
@@ -185,7 +185,7 @@ import {
   DEPLOYMENT_PAGE_META,
   DEPLOYMENT_STATUS_OPTIONS,
   DEPLOYMENT_UPDATE_STRATEGY_OPTIONS,
-} from '@/config/kubernetes/workload/deployment'
+} from '@/config/kubernetes/workload'
 
 defineOptions({ name: 'DeploymentPage' })
 

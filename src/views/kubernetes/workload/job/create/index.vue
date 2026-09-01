@@ -46,7 +46,7 @@ import { Timer, Close, Check } from '@element-plus/icons-vue'
 
 import type { FormInstance } from 'element-plus'
 
-import type { JobResp } from '@/types/kubernetes/workload/job'
+import type { JobResp } from '@/types/kubernetes/workload/types'
 
 import { createJob } from '@/api/kubernetes/workload/job'
 

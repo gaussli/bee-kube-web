@@ -3,9 +3,9 @@
     <!-- 页面标题 -->
     <div class="page-header">
       <BeePageHeader
+        description="查看命名空间详细信息、标签和注解等。"
         :icon="FolderOpened"
         :title="`命名空间详情: ${namespaceName}`"
-        description="查看命名空间详细信息、标签和注解等。"
       />
     </div>
 
@@ -22,7 +22,9 @@
               </div>
               <div class="detail-item">
                 <span class="detail-label">状态:</span>
-                <el-tag :type="getStatusType(namespaceData?.basic.status)" size="small">{{ namespaceData?.basic.status }}</el-tag>
+                <el-tag size="small" :type="getStatusType(namespaceData?.basic.status)">{{
+                  namespaceData?.basic.status
+                }}</el-tag>
               </div>
             </div>
             <div class="detail-row">
@@ -32,7 +34,9 @@
               </div>
               <div class="detail-item">
                 <span class="detail-label">集群:</span>
-                <span class="detail-value">{{ namespaceData?.basic.clusterName || namespaceData?.basic.clusterUid }}</span>
+                <span class="detail-value">{{
+                  namespaceData?.basic.clusterName || namespaceData?.basic.clusterUid
+                }}</span>
               </div>
             </div>
             <div class="detail-row">
@@ -59,7 +63,9 @@
         <!-- 注解 -->
         <el-tab-pane label="注解" name="annotations">
           <div v-loading="loading" class="detail-section">
-            <div v-if="namespaceData?.metadata.annotations && Object.keys(namespaceData.metadata.annotations).length > 0">
+            <div
+              v-if="namespaceData?.metadata.annotations && Object.keys(namespaceData.metadata.annotations).length > 0"
+            >
               <div v-for="(value, key) in namespaceData.metadata.annotations" :key="key" class="annotation-item">
                 <div class="annotation-key">{{ key }}</div>
                 <div class="annotation-value">{{ value }}</div>
@@ -94,7 +100,7 @@ import { FolderOpened, ArrowLeft, EditPen } from '@element-plus/icons-vue'
 
 import type { NamespaceDetailVo } from '@/types/kubernetes/namespace'
 
-import { getNamespaceDetail } from '@/api/kubernetes/namespace'
+import { getNamespaceDetail } from '@/api/kubernetes/namespace/namespace'
 
 import BeeButton from '@/components/BeeButton/index.vue'
 import BeePageHeader from '@/components/BeePageHeader/index.vue'

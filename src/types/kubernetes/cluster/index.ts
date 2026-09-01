@@ -38,6 +38,18 @@ export interface ClusterListVo extends UidEntity, AuditEntity, DeletableEntity {
 }
 
 /**
+ * 集群资源响应对象
+ */
+export interface ClusterResourceVo {
+  /** 物理容量（Node 总硬件资源） */
+  capacity: Partial<Record<ResourceName, Quantity>>
+  /** Kubernetes 可分配容量（物理容量减去操作系统等系统预留资源） */
+  allocation: Partial<Record<ResourceName, Quantity>>
+  /** 资源已用量 */
+  usage: Partial<Record<ResourceName, Quantity>>
+}
+
+/**
  * 详情响应对象
  */
 export interface ClusterDetailVo extends UidEntity, AuditEntity, DeletableEntity {
@@ -56,14 +68,7 @@ export interface ClusterDetailVo extends UidEntity, AuditEntity, DeletableEntity
   /** 证书过期时间 */
   certExpireAt: string
   /** 集群资源 */
-  resource: {
-    /** 物理容量（Node 总硬件资源） */
-    capacity: Partial<Record<ResourceName, Quantity>>
-    /** Kubernetes 可分配容量（物理容量减去操作系统等系统预留资源） */
-    allocation: Partial<Record<ResourceName, Quantity>>
-    /** 资源已用量 */
-    usage: Partial<Record<ResourceName, Quantity>>
-  }
+  resource: ClusterResourceVo
 }
 
 /**

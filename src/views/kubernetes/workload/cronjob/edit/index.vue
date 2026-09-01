@@ -13,9 +13,6 @@
             ></template>
           </el-input>
         </el-form-item>
-        <el-form-item label="暂停">
-          <el-switch v-model="formData.suspend" />
-        </el-form-item>
         <el-form-item label="标签">
           <div class="key-value-list">
             <div v-for="(item, index) in labelList" :key="index" class="key-value-item">
@@ -48,7 +45,7 @@ import { useRoute, useRouter } from 'vue-router'
 
 import { Clock, Plus, Delete, Close, Check, InfoFilled } from '@element-plus/icons-vue'
 
-import type { CronJobDetailResp } from '@/types/kubernetes/workload/cronjob'
+import type { CronJobDetailResp } from '@/types/kubernetes/workload/types'
 
 import { getCronJobDetail, updateCronJob } from '@/api/kubernetes/workload/cronjob'
 
@@ -66,7 +63,7 @@ const loading = ref(false)
 const submitting = ref(false)
 const formRef = ref()
 const cronjobData = ref<CronJobDetailResp>()
-const formData = ref<Partial<CronJobDetailResp>>({ schedule: '', suspend: false })
+const formData = ref<Partial<CronJobDetailResp>>({ schedule: '' })
 const labelList = ref<Array<{ key: string; value: string }>>([])
 const formRules = { schedule: [{ required: true, message: '请输入调度规则', trigger: 'blur' }] }
 async function loadData() {
@@ -75,7 +72,6 @@ async function loadData() {
   try {
     cronjobData.value = await getCronJobDetail(clusterUid.value, namespace.value, cronjobName.value)
     formData.value.schedule = cronjobData.value.schedule
-    formData.value.suspend = cronjobData.value.suspend
     if (cronjobData.value.labels)
       labelList.value = Object.entries(cronjobData.value.labels).map(([key, value]) => ({ key, value }))
   } finally {

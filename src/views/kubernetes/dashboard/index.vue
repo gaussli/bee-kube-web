@@ -6,22 +6,23 @@
     <!-- 资源雷达图 + 节点列表 -->
     <div class="cluster-overview__metrics-row">
       <!-- 资源用量 -->
-      <BeeClusterOverviewResource :cluster-uid="route.params.clusterUid as string" />
+      <BeeClusterOverviewResource :resource="clusterResource" />
       <!-- 节点列表 -->
-      <BeeClusterOverviewNode :cluster-uid="route.params.clusterUid as string" />
+      <BeeClusterOverviewNode :cluster-uid="clusterUid" />
     </div>
 
     <!-- 最近事件 -->
-    <BeeClusterOverviewEvent :cluster-uid="route.params.clusterUid as string" />
+    <BeeClusterOverviewEvent :cluster-uid="clusterUid" />
   </BeePage>
 </template>
 
 <script setup lang="ts">
-import { onMounted, ref } from 'vue'
+import { computed, onMounted, ref } from 'vue'
 
 import { useRoute } from 'vue-router'
 
 import { getClusterDetail } from '@/api/kubernetes/cluster'
+import type { ClusterResourceVo } from '@/types/kubernetes/cluster'
 
 import BeePage from '@/components/BeePage/index.vue'
 
@@ -34,6 +35,9 @@ defineOptions({ name: 'ClusterOverview' })
 
 const route = useRoute()
 
+/** 当前集群 UID（响应式） */
+const clusterUid = computed(() => route.params.clusterUid as string)
+
 /** 集群概览数据 */
 const clusterOverviewInfoData = ref<ClusterOverviewInfoData>({
   name: '',
@@ -43,6 +47,13 @@ const clusterOverviewInfoData = ref<ClusterOverviewInfoData>({
   k8sVersion: '',
   apiServer: '',
   certExpireAt: '',
+})
+
+/** 集群资源（物理容量 / 可分配容量 / 已用量） */
+const clusterResource = ref<ClusterResourceVo>({
+  capacity: {},
+  allocation: {},
+  usage: {},
 })
 
 /**
@@ -62,6 +73,7 @@ async function loadClusterOverview() {
     apiServer: detail.apiServer,
     certExpireAt: detail.certExpireAt,
   }
+  clusterResource.value = detail.resource
 }
 
 onMounted(() => {

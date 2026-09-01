@@ -5,9 +5,6 @@
         <BeeIcon name="basic-id" :size="14" />
         资源用量
       </div>
-      <div class="bee-cluster-overview-resource__actions">
-        <BeeCircleButton icon="basic-refresh" size="small" :border="false" tooltip="刷新" @click="loadData" />
-      </div>
     </div>
     <div class="bee-cluster-overview-resource__body">
       <BeeRadarChart :data="radarData" :size="200" />
@@ -35,14 +32,20 @@
 </template>
 
 <script setup lang="ts">
-import { onMounted, ref } from 'vue'
+import { computed } from 'vue'
 
-import { calcPercentage, formatCpu, formatDisk, formatMemory } from '@/utils/kubernetes'
+import type { ClusterResourceVo } from '@/types/kubernetes/cluster'
 
-import { getClusterResource } from '@/api/kubernetes/cluster'
+import {
+  calcPercentage,
+  formatCpu,
+  formatStorage,
+  formatMemory,
+  toMillicoresOfQuantity,
+  toBytesOfQuantity,
+} from '@/utils/kubernetes'
 
 import BeeCard from '@/components/BeeCard/index.vue'
-import BeeCircleButton from '@/components/BeeCircleButton/index.vue'
 import BeeIcon from '@/components/BeeIcon/index.vue'
 import BeeRadarChart from '@/components/BeeRadarChart/index.vue'
 import BeeRingChart from '@/components/BeeRingChart/index.vue'
@@ -50,54 +53,39 @@ import BeeRingChart from '@/components/BeeRingChart/index.vue'
 defineOptions({ name: 'BeeClusterOverviewResource' })
 
 const props = defineProps<{
-  /** 集群 UID */
-  clusterUid: string
+  /** 集群资源：物理容量、可分配容量、已用量 */
+  resource: ClusterResourceVo
 }>()
 
-/** 雷达图数据 */
-const radarData = ref([
-  { label: 'CPU', value: 0, used: '0', total: '0' },
-  { label: '内存', value: 0, used: '0', total: '0' },
-  { label: '磁盘', value: 0, used: '0', total: '0' },
-  { label: '容器数', value: 0, used: '0 个', total: '0 个' },
-])
-
-/**
- * 加载资源用量数据并构建雷达图数据
- */
-async function loadData() {
-  if (!props.clusterUid) return
-  const res = await getClusterResource(props.clusterUid)
-  radarData.value = [
+/** 雷达图数据（随 resource 变化响应式更新） */
+const radarData = computed(() => {
+  const { usage, allocation } = props.resource
+  return [
     {
       label: 'CPU',
-      value: calcPercentage(res.usage.cpu, res.allocation.cpu),
-      used: formatCpu(res.usage.cpu),
-      total: formatCpu(res.allocation.cpu),
+      value: calcPercentage(toMillicoresOfQuantity(usage.cpu), toMillicoresOfQuantity(allocation.cpu)),
+      used: formatCpu(usage.cpu),
+      total: formatCpu(allocation.cpu),
     },
     {
       label: '内存',
-      value: calcPercentage(res.usage.memory, res.allocation.memory),
-      used: formatMemory(res.usage.memory, 'B'),
-      total: formatMemory(res.allocation.memory, 'B'),
+      value: calcPercentage(toBytesOfQuantity(usage.memory), toBytesOfQuantity(allocation.memory)),
+      used: formatMemory(usage.memory),
+      total: formatMemory(allocation.memory),
     },
     {
       label: '磁盘',
-      value: calcPercentage(res.usage.storage, res.allocation.storage),
-      used: formatDisk(res.usage.storage, 'B'),
-      total: formatDisk(res.allocation.storage, 'B'),
+      value: calcPercentage(toBytesOfQuantity(usage.storage), toBytesOfQuantity(allocation.storage)),
+      used: formatStorage(usage.storage),
+      total: formatStorage(allocation.storage),
     },
     {
       label: '容器数',
-      value: calcPercentage(res.usage.pod, res.allocation.pod),
-      used: `${res.usage.pod} 个`,
-      total: `${res.allocation.pod} 个`,
+      value: calcPercentage(usage.pods?.value ?? 0, allocation.pods?.value ?? 1),
+      used: `${usage.pods?.value ?? 0} 个`,
+      total: `${allocation.pods?.value ?? 0} 个`,
     },
   ]
-}
-
-onMounted(() => {
-  void loadData()
 })
 </script>
 

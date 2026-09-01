@@ -156,7 +156,7 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 
-import type { DeploymentDetailVo } from '@/types/kubernetes/workload/deployment'
+import type { DeploymentDetailVo } from '@/types/kubernetes/workload/types'
 
 import { calcPercentage } from '@/utils/kubernetes'
 

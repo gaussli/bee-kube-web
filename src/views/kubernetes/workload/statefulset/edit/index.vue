@@ -34,7 +34,7 @@ import { Collection, Close, Check } from '@element-plus/icons-vue'
 
 import type { FormInstance } from 'element-plus'
 
-import type { StatefulSetUpdateForm } from '@/types/kubernetes/workload/statefulset'
+import type { StatefulSetUpdateForm } from '@/types/kubernetes/workload/types'
 
 import { getStatefulSetDetail, updateStatefulSet } from '@/api/kubernetes/workload/statefulset'
 

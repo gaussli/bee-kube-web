@@ -3,7 +3,7 @@
     <!-- 页面 Header -->
     <BeePageHeader v-bind="CLUSTER_PAGE_META" />
 
-    <!-- 页面内容 -->
+    <!-- 页面 Body -->
     <BeeCard class="page-body">
       <!-- 工具栏 -->
       <div class="page-body__toolbar">
@@ -18,7 +18,9 @@
         <BeeButton icon="basic-refresh" @click="handleReset"> 重置 </BeeButton>
         <div v-if="perm.create" class="page-body__toolbar-seperator"></div>
         <BeeButton v-if="perm.create" icon="basic-create" type="primary" @click="handleCreate"> 新增 </BeeButton>
-        <BeeButton v-if="perm.create" icon="basic-create" type="primary" @click="handleRegister"> 纳管 </BeeButton>
+        <BeeButton v-if="perm.create" icon="kubernetes-register" type="primary" @click="handleRegister">
+          纳管
+        </BeeButton>
       </div>
 
       <!-- 表格 -->
@@ -45,7 +47,7 @@
               <BeeStatusCell :options="CLUSTER_STATUS_OPTIONS" :status="row.status" :status-msg="row.statusMsg" />
             </template>
           </BeeTableColumn>
-          <BeeTableColumn :min-width="160">
+          <BeeTableColumn :width="160">
             <template #default="{ row }">
               <BeeTableCommonCell subtext="Kubernetes版本" :text="row.k8sVersion" />
             </template>
@@ -71,12 +73,20 @@
       <!-- 底部 -->
       <div class="page-body__footer">
         <div class="page-body__footer-actions">
-          <BeeButton :disabled="selectedRows.length === 0" @click="handleClearSelection"> 取消选择 </BeeButton>
-          <BeeButton v-if="perm.delete" :disabled="selectedRows.length === 0" type="danger" @click="handleBatchDelete">
-            批量删除 ({{ selectedRows.length }})
+          <BeeButton :disabled="selectedRows.length === 0" icon="basic-clear" @click="handleClearSelection">
+            清空
           </BeeButton>
-          <BeeButton v-if="perm.view" icon="basic-create" @click="handleExport"> 导出 </BeeButton>
-          <BeeButton v-if="perm.create" icon="basic-create" @click="handleImport"> 导入 </BeeButton>
+          <BeeButton
+            v-if="perm.delete"
+            :disabled="selectedRows.length === 0"
+            icon="basic-delete"
+            type="danger"
+            @click="handleBatchDelete"
+          >
+            删除 ({{ selectedRows.length }})
+          </BeeButton>
+          <BeeButton v-if="perm.view" icon="basic-export" @click="handleExport"> 导出 </BeeButton>
+          <BeeButton v-if="perm.create" icon="basic-import" @click="handleImport"> 导入 </BeeButton>
         </div>
         <BeePagination
           v-model="pagination.page"
@@ -367,7 +377,12 @@ const perm: Record<string, boolean> = {
 function getActions(row: ClusterListVo): ActionItem[] {
   const actions: ActionItem[] = []
   if (perm.view) {
-    actions.push({ value: 'view', label: '切换集群', icon: 'basic-view', handler: () => handleSwitchCluster(row) })
+    actions.push({
+      value: 'view',
+      label: '切换集群',
+      icon: 'kubernetes-exchange',
+      handler: () => handleSwitchCluster(row),
+    })
   }
   if (perm.edit) {
     actions.push({ value: 'edit', label: '编辑', icon: 'basic-edit', handler: () => handleEdit(row) })

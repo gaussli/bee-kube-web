@@ -3,15 +3,15 @@
     <!-- 页面标题 -->
     <div class="page-header">
       <BeePageHeader
+        description="编辑命名空间的标签和注解。"
         :icon="FolderOpened"
         :title="`编辑命名空间: ${namespaceName}`"
-        description="编辑命名空间的标签和注解。"
       />
     </div>
 
     <!-- 表单内容 -->
     <div class="page-body">
-      <el-form ref="formRef" :model="formData" :rules="formRules" label-width="120px" class="edit-form">
+      <el-form ref="formRef" class="edit-form" label-width="120px" :model="formData" :rules="formRules">
         <el-form-item label="标签">
           <div class="key-value-list">
             <div v-for="(item, index) in labelList" :key="index" class="key-value-item">
@@ -50,7 +50,7 @@
         <template #icon><Close /></template>
         取消
       </BeeButton>
-      <BeeButton type="primary" :loading="submitting" @click="handleSubmit">
+      <BeeButton :loading="submitting" type="primary" @click="handleSubmit">
         <template #icon><Check /></template>
         保存
       </BeeButton>
@@ -69,7 +69,7 @@ import type { FormInstance } from 'element-plus'
 
 import type { NamespaceDetailVo, NamespaceUpdateForm } from '@/types/kubernetes/namespace'
 
-import { getNamespaceDetail, updateNamespace } from '@/api/kubernetes/namespace'
+import { getNamespaceDetail, updateNamespace } from '@/api/kubernetes/namespace/namespace'
 
 import BeeButton from '@/components/BeeButton/index.vue'
 import { BeeMessage } from '@/components/BeeMessage'
@@ -124,7 +124,10 @@ async function loadData() {
     }
     // 初始化注解列表
     if (namespaceData.value.metadata.annotations) {
-      annotationList.value = Object.entries(namespaceData.value.metadata.annotations).map(([key, value]) => ({ key, value }))
+      annotationList.value = Object.entries(namespaceData.value.metadata.annotations).map(([key, value]) => ({
+        key,
+        value,
+      }))
     }
   } finally {
     loading.value = false

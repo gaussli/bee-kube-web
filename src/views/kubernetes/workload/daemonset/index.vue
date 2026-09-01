@@ -157,9 +157,9 @@ import { computed, onMounted, reactive, ref } from 'vue'
 
 import { useRoute, useRouter } from 'vue-router'
 
-import type { DaemonSetQueryForm, DaemonSetListVo } from '@/types/kubernetes/workload/daemonset'
+import type { DaemonSetQueryForm, DaemonSetListVo } from '@/types/kubernetes/workload/types'
 
-import { getNamespaceList } from '@/api/kubernetes/namespace'
+import { getNamespaceList } from '@/api/kubernetes/namespace/namespace'
 import { getDaemonSetList, deleteDaemonSet, deleteDaemonSets } from '@/api/kubernetes/workload/daemonset'
 
 import BeeActionCell, { type ActionItem } from '@/components/BeeActionCell/index.vue'
@@ -185,7 +185,7 @@ import {
   DAEMONSET_PAGE_META,
   DAEMONSET_STATUS_OPTIONS,
   DAEMONSET_UPDATE_STRATEGY_LABEL_MAP,
-} from '@/config/kubernetes/workload/daemonset'
+} from '@/config/kubernetes/workload'
 
 defineOptions({ name: 'DaemonSetPage' })
 

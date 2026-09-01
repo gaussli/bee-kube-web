@@ -79,7 +79,7 @@ import { useRoute, useRouter } from 'vue-router'
 
 import { Collection, ArrowLeft, EditPen } from '@element-plus/icons-vue'
 
-import type { StatefulSetDetailVo } from '@/types/kubernetes/workload/statefulset'
+import type { StatefulSetDetailVo } from '@/types/kubernetes/workload/types'
 
 import { getStatefulSetDetail } from '@/api/kubernetes/workload/statefulset'
 

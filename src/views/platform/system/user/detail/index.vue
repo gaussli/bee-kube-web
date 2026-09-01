@@ -11,7 +11,7 @@
     </div>
 
     <!-- 详情主体 -->
-    <transition name="fade-slide" mode="out-in">
+    <transition mode="out-in" name="fade-slide">
       <div v-if="loaded" class="detail-body">
         <!-- 用户关键信息 -->
         <div class="user-header">
@@ -19,7 +19,7 @@
           <div class="user-meta">
             <div class="user-name-row">
               <span class="user-name">{{ userData.username }}</span>
-              <el-tag :type="userData.status === 1 ? 'success' : 'danger'" size="small">
+              <el-tag size="small" :type="userData.status === 1 ? 'success' : 'danger'">
                 {{ userData.status === 1 ? '启用' : '禁用' }}
               </el-tag>
             </div>
@@ -179,7 +179,7 @@ import {
   User,
 } from '@element-plus/icons-vue'
 
-import type { UserDetailResp } from '@/types'
+import type { UserDetailResp } from '@/types/index'
 
 import BeeButton from '@/components/BeeButton/index.vue'
 import BeeDivider from '@/components/BeeDivider/index.vue'

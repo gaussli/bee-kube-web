@@ -25,16 +25,33 @@ const _protocols = [
 /** 容器端口协议 */
 export type Protocol = (typeof _protocols)[number]['value']
 
-/** 资源数量单位原始数据（用于派生类型） */
-const _quantityUnits = [
-  { value: '', label: '无单位，表示整数核或字节或个数' },
-  { value: 'm', label: '毫核，1 核 = 1000m，仅用于 CPU' },
+/** 无单位，表示整数核或字节或个数 */
+const _quantityUnitNone = [{ value: '', label: '无单位，表示整数核或字节或个数' }] as const
+
+/** 无单位值列表 */
+export const QUANTITY_UNIT_NONE_VALUES: string[] = _quantityUnitNone.map(u => u.value)
+
+/** 毫核，1 核 = 1000m，仅用于 CPU */
+const _quantityUnitMilli = [{ value: 'm', label: '毫核，1 核 = 1000m，仅用于 CPU' }] as const
+
+/** 毫核值列表 */
+export const QUANTITY_UNIT_MILLI_VALUES: string[] = _quantityUnitMilli.map(u => u.value)
+
+/** 二进制单位（1024 进制） */
+const _quantityUnitsBinary = [
   { value: 'Ki', label: '二进制千，1 Ki = 1024 字节/单位' },
   { value: 'Mi', label: '二进制兆，1 Mi = 1024 Ki' },
   { value: 'Gi', label: '二进制吉，1 Gi = 1024 Mi' },
   { value: 'Ti', label: '二进制太，1 Ti = 1024 Gi' },
   { value: 'Pi', label: '二进制拍，1 Pi = 1024 Ti' },
   { value: 'Ei', label: '二进制艾，1 Ei = 1024 Pi' },
+] as const
+
+/** 二进制单位值列表 */
+export const QUANTITY_UNIT_BINARY_VALUES: string[] = _quantityUnitsBinary.map(u => u.value)
+
+/** 十进制单位（1000 进制） */
+const _quantityUnitsDecimal = [
   { value: 'K', label: '十进制千，1 K = 1000 字节/单位' },
   { value: 'M', label: '十进制兆，1 M = 1000 K' },
   { value: 'G', label: '十进制吉，1 G = 1000 M' },
@@ -43,8 +60,29 @@ const _quantityUnits = [
   { value: 'E', label: '十进制艾，1 E = 1000 P' },
 ] as const
 
+/** 十进制单位值列表 */
+export const QUANTITY_UNIT_DECIMAL_VALUES: string[] = _quantityUnitsDecimal.map(u => u.value)
+
 /** 资源数量单位 */
-export type QuantityUnit = (typeof _quantityUnits)[number]['value']
+export type QuantityUnit =
+  | (typeof _quantityUnitNone)[number]['value']
+  | (typeof _quantityUnitMilli)[number]['value']
+  | (typeof _quantityUnitsBinary)[number]['value']
+  | (typeof _quantityUnitsDecimal)[number]['value']
+
+/** 资源数量单位值列表（运行时可用），合并自无单位 / 毫核 / 二进制 / 十进制四组单位，用于判断字符串是否属于 QuantityUnit */
+export const QUANTITY_UNIT_VALUES: string[] = [
+  ..._quantityUnitNone,
+  ..._quantityUnitMilli,
+  ..._quantityUnitsBinary,
+  ..._quantityUnitsDecimal,
+].map((u) => u.value)
+
+/** 二进制容量单位基数（1024 进制） */
+export const CAPACITY_BASE_BINARY = 1024
+
+/** 十进制容量单位基数（1000 进制） */
+export const CAPACITY_BASE_DECIMAL = 1000
 
 /** 标签选择器运算符原始数据（用于派生类型） */
 const _labelSelectorOperators = [
