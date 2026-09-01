@@ -22,11 +22,31 @@ export const nodeRoutes: RouteRecordRaw[] = [
     },
   },
   {
-    path: '/kubernetes/clusters/:clusterUid/nodes/:name/edit',
-    name: 'kubernetes:node:edit',
-    component: () => import('@/views/kubernetes/node/edit/index.vue'),
+    path: '/kubernetes/clusters/:clusterUid/nodes/:name/labels',
+    name: 'kubernetes:node:edit:labels',
+    component: () => import('@/views/kubernetes/node/edit/label.vue'),
     meta: {
-      title: '编辑节点',
+      title: '节点配置标签',
+      permission: 'kubernetes:node:edit',
+      activeCode: 'kubernetes:node',
+    },
+  },
+  {
+    path: '/kubernetes/clusters/:clusterUid/nodes/:name/annotations',
+    name: 'kubernetes:node:edit:annotations',
+    component: () => import('@/views/kubernetes/node/edit/annotation.vue'),
+    meta: {
+      title: '节点配置注解',
+      permission: 'kubernetes:node:edit',
+      activeCode: 'kubernetes:node',
+    },
+  },
+  {
+    path: '/kubernetes/clusters/:clusterUid/nodes/:name/topologies',
+    name: 'kubernetes:node:edit:topologies',
+    component: () => import('@/views/kubernetes/node/edit/topology.vue'),
+    meta: {
+      title: '节点配置拓扑',
       permission: 'kubernetes:node:edit',
       activeCode: 'kubernetes:node',
     },

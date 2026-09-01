@@ -34,6 +34,18 @@ export interface NodeQueryForm extends UidEntity, PageForm {
 }
 
 /**
+ * 节点资源响应对象
+ */
+export interface NodeResourceVo {
+  /** 物理容量（Node 总硬件资源） */
+  capacity: Partial<Record<ResourceName, Quantity>>
+  /** Kubernetes 可分配容量（物理容量减去操作系统等系统预留资源） */
+  allocation: Partial<Record<ResourceName, Quantity>>
+  /** 资源已用量 */
+  usage: Partial<Record<ResourceName, Quantity>>
+}
+
+/**
  * 列表项响应对象
  */
 export interface NodeListVo extends UidEntity, Clustered, AuditEntity, DeletableEntity {
@@ -50,14 +62,7 @@ export interface NodeListVo extends UidEntity, Clustered, AuditEntity, Deletable
   /** 是否不可调度 */
   unschedulable: boolean
   /** Node 资源 */
-  resource: {
-    /** 物理容量（Node 总硬件资源） */
-    capacity: Partial<Record<ResourceName, Quantity>>
-    /** Kubernetes 可分配容量（物理容量减去操作系统等系统预留资源） */
-    allocation: Partial<Record<ResourceName, Quantity>>
-    /** 资源已用量 */
-    usage: Partial<Record<ResourceName, Quantity>>
-  }
+  resource: NodeResourceVo
   /** Kubelet 版本 */
   kubeletVersion: string
 }

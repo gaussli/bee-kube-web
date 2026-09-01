@@ -10,7 +10,7 @@
         <BeeInputSearch
           v-model="searchKey"
           class="page-body__toolbar-search"
-          placeholder="按 UID / 名称搜索"
+          placeholder="按 UID / 名称 / IP 搜索"
           @search="handleSearch"
         />
         <BeeSelect
@@ -21,18 +21,11 @@
           @change="handleSearch"
         />
         <BeeButton icon="basic-search" @click="handleSearch">搜索</BeeButton>
-        <BeeButton icon="basic-reset" @click="handleReset">重置</BeeButton>
+        <BeeButton icon="basic-refresh" @click="handleReset">重置</BeeButton>
       </div>
       <!-- 表格 -->
       <div class="page-body__table">
-        <BeeTable
-          ref="tableRef"
-          :data="tableData"
-          :loading="loading"
-          row-key="uid"
-          selectable
-          @selection-change="handleSelectionChange"
-        >
+        <BeeTable :data="tableData" :loading="loading" row-key="uid">
           <BeeTableColumn :width="500">
             <template #default="{ row }">
               <BeeNodeInfoCell
@@ -53,7 +46,12 @@
             <template #default="{ row }">
               <BeeResourceUsageCell
                 field-name="CPU"
-                :percentage="calcPercentage(row.resource.usage.cpu, row.resource.allocation.cpu)"
+                :percentage="
+                  calcPercentage(
+                    toMillicoresOfQuantity(row.resource.usage.cpu),
+                    toMillicoresOfQuantity(row.resource.allocation.cpu),
+                  )
+                "
               />
             </template>
           </BeeTableColumn>
@@ -61,23 +59,33 @@
             <template #default="{ row }">
               <BeeResourceUsageCell
                 field-name="内存"
-                :percentage="calcPercentage(row.resource.usage.memory, row.resource.allocation.memory)"
+                :percentage="
+                  calcPercentage(
+                    toBytesOfQuantity(row.resource.usage.memory),
+                    toBytesOfQuantity(row.resource.allocation.memory),
+                  )
+                "
               />
             </template>
           </BeeTableColumn>
           <BeeTableColumn label="Pod 数" :width="120">
             <template #default="{ row }">
-              <BeeTableCommonCell subtext="运行 Pod" :text="String(row.podCount)" />
+              <BeeTableCommonCell subtext="Pod 数" :text="row.resource.usage.pods.value" />
             </template>
           </BeeTableColumn>
           <BeeTableColumn label="Kubelet 版本" :width="200">
             <template #default="{ row }">
-              <BeeTableCommonCell :text="row.kubeletVersion" />
+              <BeeTableCommonCell subtext="Kubelet 版本" :text="row.kubeletVersion" />
             </template>
           </BeeTableColumn>
           <BeeTableColumn label="创建信息" :width="200">
             <template #default="{ row }">
               <BeeAuditCell :datetime="row.createAt" field-name="创建人 / 时间" :username="row.createBy" />
+            </template>
+          </BeeTableColumn>
+          <BeeTableColumn label="更新信息" :width="200">
+            <template #default="{ row }">
+              <BeeAuditCell :datetime="row.updateAt" field-name="更新人 / 时间" :username="row.updateBy" />
             </template>
           </BeeTableColumn>
           <BeeTableColumn fixed="right" label="操作" :width="160">
@@ -91,7 +99,6 @@
       <!-- 底栏 -->
       <div class="page-body__footer">
         <div class="page-body__footer-actions">
-          <BeeButton v-if="selectedRows.length" text @click="handleClearSelection">取消选择</BeeButton>
           <BeeButton :icon="'basic-export'" @click="handleExport">导出</BeeButton>
         </div>
         <BeePagination
@@ -103,22 +110,22 @@
       </div>
     </BeeCard>
 
-    <!-- 隔离 Dialog -->
-    <BeeDialog v-model="cordonDialogVisible" title="隔离节点" @confirm="handleConfirmCordon">
+    <!-- 封锁 Dialog -->
+    <BeeDialog v-model="cordonDialogVisible" title="封锁节点" @confirm="handleConfirmCordon">
       <p>
-        确定要将节点 <strong>{{ currentTargetRow?.name }}</strong> 标记为不可调度（隔离）吗？
+        确定要将节点 <strong>{{ currentTargetRow?.name }}</strong> 标记为不可调度（封锁）吗？
       </p>
     </BeeDialog>
-    <!-- 恢复 Dialog -->
-    <BeeDialog v-model="uncordonDialogVisible" title="恢复节点" @confirm="handleConfirmUncordon">
+    <!-- 解封 Dialog -->
+    <BeeDialog v-model="uncordonDialogVisible" title="解封节点" @confirm="handleConfirmUncordon">
       <p>
-        确定要恢复节点 <strong>{{ currentTargetRow?.name }}</strong> 为可调度状态吗？
+        确定要将节点 <strong>{{ currentTargetRow?.name }}</strong> 标记为可调度（解封）吗？
       </p>
     </BeeDialog>
-    <!-- 驱逐 Dialog -->
-    <BeeDialog v-model="drainDialogVisible" title="驱逐节点" @confirm="handleConfirmDrain">
+    <!-- 排空 Dialog -->
+    <BeeDialog v-model="drainDialogVisible" title="排空节点" @confirm="handleConfirmDrain">
       <p>
-        确定要驱逐节点 <strong>{{ currentTargetRow?.name }}</strong> 上的所有 Pod 吗？
+        确定要排空节点 <strong>{{ currentTargetRow?.name }}</strong> 上的所有 Pod 吗？
       </p>
     </BeeDialog>
   </BeePage>
@@ -133,7 +140,7 @@ import { computed, onMounted, reactive, ref } from 'vue'
 
 import { useRoute, useRouter } from 'vue-router'
 
-import type { NodeListResp, NodeQueryForm } from '@/types/kubernetes/node'
+import type { NodeListVo, NodeQueryForm } from '@/types/kubernetes/node'
 
 import { cordonNode, drainNode, getNodeList } from '@/api/kubernetes/node'
 
@@ -159,6 +166,7 @@ import BeeTable from '@/components/BeeTable/index.vue'
 
 import { usePermission } from '@/composables/usePermission'
 import { NODE_PAGE_META, NODE_STATUS_OPTIONS } from '@/config/kubernetes/node'
+import { calcPercentage, toBytesOfQuantity, toMillicoresOfQuantity } from '@/utils'
 
 defineOptions({ name: 'NodePage' })
 
@@ -172,19 +180,16 @@ const clusterUid = computed(() => (route.params.clusterUid as string) || kuberne
 // ==================== Reactive State ====================
 // --- 表格数据
 const loading = ref(false)
-const tableData = ref<NodeListResp[]>([])
-const tableRef = ref<InstanceType<typeof BeeTable>>()
+const tableData = ref<NodeListVo[]>([])
 // --- 查询条件
 const searchKey = ref('')
 const queryForm = reactive<Partial<NodeQueryForm>>({})
 const pagination = reactive({ page: 1, pageSize: 10, total: 0 })
-// --- 选中逻辑
-const selectedRows = ref<NodeListResp[]>([])
 // --- 对话框
 const cordonDialogVisible = ref(false)
 const uncordonDialogVisible = ref(false)
 const drainDialogVisible = ref(false)
-const currentTargetRow = ref<NodeListResp>()
+const currentTargetRow = ref<NodeListVo>()
 
 // ==================== Data Loading ====================
 /**
@@ -216,8 +221,9 @@ async function loadData() {
  * @remarks 将 searchKey 同时映射到 id/name 字段进行搜索匹配，并重置页码
  */
 function handleSearch() {
-  queryForm.id = searchKey.value || undefined
+  queryForm.uid = searchKey.value || undefined
   queryForm.name = searchKey.value || undefined
+  queryForm.ip = searchKey.value || undefined
   pagination.page = 1
   void loadData()
 }
@@ -227,8 +233,9 @@ function handleSearch() {
  * @remarks 清空所有筛选字段、搜索关键词、分页参数，重新加载数据
  */
 function handleReset() {
-  queryForm.id = undefined
+  queryForm.uid = undefined
   queryForm.name = undefined
+  queryForm.ip = undefined
   queryForm.status = undefined
   pagination.page = 1
   pagination.pageSize = 10
@@ -236,147 +243,115 @@ function handleReset() {
   void loadData()
 }
 
-// ==================== Selection ====================
-/**
- * 表格选中行变化
- * @param rows
- * @remarks BeeTable 的 selection-change 事件固定返回 Record<string, unknown>[]，需通过 unknown 桥接断言为目标类型
- */
-function handleSelectionChange(rows: Record<string, unknown>[]) {
-  selectedRows.value = rows as unknown as NodeListResp[]
-}
-
-/** 取消全部选中 */
-function handleClearSelection() {
-  tableRef.value?.clearSelection()
-}
-
-// ==================== CRUD ====================
+// ==================== 页面操作 ====================
 /**
  * 查看详情
  * @param row
  */
-function handleViewDetail(row: NodeListResp) {
+function handleViewDetail(row: NodeListVo) {
   router
-    .push({ name: 'kubernetes:node:detail', params: { clusterUid: clusterUid.value, uid: row.uid } })
+    .push({ name: 'kubernetes:node:detail', params: { clusterUid: clusterUid.value, name: row.name } })
     .catch(() => {})
 }
 
 /**
- * 编辑节点
+ * 配置节点标签
  * @param row
  */
-function handleEdit(row: NodeListResp) {
-  router.push({ name: 'kubernetes:node:edit', params: { clusterUid: clusterUid.value, uid: row.uid } }).catch(() => {})
-}
-
-/**
- * 编辑 YAML
- * @param row
- */
-function handleEditYaml(row: NodeListResp) {
+function handleLabel(row: NodeListVo) {
   router
-    .push({ name: 'kubernetes:node:edit:yaml', params: { clusterUid: clusterUid.value, uid: row.uid } })
+    .push({ name: 'kubernetes:node:edit:labels', params: { clusterUid: clusterUid.value, name: row.name } })
     .catch(() => {})
 }
 
 /**
- * 隔离节点
+ * 配置节点注解
  * @param row
  */
-function handleCordon(row: NodeListResp) {
+function handleAnnotation(row: NodeListVo) {
+  router
+    .push({ name: 'kubernetes:node:edit:annotations', params: { clusterUid: clusterUid.value, name: row.name } })
+    .catch(() => {})
+}
+
+/**
+ * 配置节点拓扑
+ * @param row
+ */
+function handleTopology(row: NodeListVo) {
+  router
+    .push({ name: 'kubernetes:node:edit:topologies', params: { clusterUid: clusterUid.value, name: row.name } })
+    .catch(() => {})
+}
+
+/**
+ * 封锁节点
+ * @param row
+ */
+function handleCordon(row: NodeListVo) {
   currentTargetRow.value = row
   cordonDialogVisible.value = true
 }
 
 /**
- * 隔离确认
+ * 解封节点
+ * @param row
+ */
+function handleUncordon(row: NodeListVo) {
+  currentTargetRow.value = row
+  uncordonDialogVisible.value = true
+}
+
+/**
+ * 排空节点
+ * @param row
+ */
+function handleDrain(row: NodeListVo) {
+  currentTargetRow.value = row
+  drainDialogVisible.value = true
+}
+
+/**
+ * 导出节点
+ */
+function handleExport() {
+  BeeMessage.info('正在导出节点数据...')
+}
+
+/**
+ * 封锁节点确认
  */
 async function handleConfirmCordon() {
   if (!currentTargetRow.value) return
   await cordonNode(clusterUid.value, currentTargetRow.value.uid, { cordon: true })
-  BeeMessage.success('节点已隔离')
+  BeeMessage.success('封锁节点完成')
   cordonDialogVisible.value = false
   currentTargetRow.value = undefined
   void loadData()
 }
 
 /**
- * 恢复节点调度
- * @param row
- * @remarks 复用 cordon 接口，cordon=false 即恢复
- */
-function handleUncordon(row: NodeListResp) {
-  currentTargetRow.value = row
-  uncordonDialogVisible.value = true
-}
-
-/**
- * 恢复确认
+ * 解封节点确认
  */
 async function handleConfirmUncordon() {
   if (!currentTargetRow.value) return
-  await cordonNode(clusterUid.value, currentTargetRow.value.uid, { cordon: false })
-  BeeMessage.success('节点已恢复调度')
+  await cordonNode(clusterUid.value, currentTargetRow.value.name, { cordon: false })
+  BeeMessage.success('解封节点完成')
   uncordonDialogVisible.value = false
   currentTargetRow.value = undefined
   void loadData()
 }
 
 /**
- * 驱逐节点
- * @param row
- */
-function handleDrain(row: NodeListResp) {
-  currentTargetRow.value = row
-  drainDialogVisible.value = true
-}
-
-/**
- * 驱逐确认
+ * 排空节点确认
  */
 async function handleConfirmDrain() {
   if (!currentTargetRow.value) return
   await drainNode(clusterUid.value, currentTargetRow.value.uid)
-  BeeMessage.success('节点驱逐完成')
+  BeeMessage.success('排空节点完成')
   drainDialogVisible.value = false
   currentTargetRow.value = undefined
   void loadData()
-}
-
-// ==================== Other Actions ====================
-/**
- * 计算资源使用百分比
- * @param used - 已使用量
- * @param total - 总量
- * @returns 百分比（0-100，总量为 0 时返回 0）
- */
-function calcPercentage(used: number | string, total: number | string): number {
-  const usedNum = typeof used === 'string' ? parseToNumber(used) : used
-  const totalNum = typeof total === 'string' ? parseToNumber(total) : total
-  if (!totalNum) return 0
-  return Math.min(100, Math.round((usedNum / totalNum) * 100))
-}
-
-/**
- * 解析带单位的资源数值（支持 m/Ki/Mi/Gi 后缀）
- * @param value - 资源字符串
- * @returns 数值
- */
-function parseToNumber(value: string): number {
-  if (value.endsWith('m')) return parseInt(value) / 1000
-  if (value.endsWith('Ki')) return parseInt(value) / 1024
-  if (value.endsWith('Mi')) return parseInt(value) / 1024 / 1024
-  if (value.endsWith('Gi')) return parseInt(value) / 1024 / 1024 / 1024
-  return parseFloat(value) || 0
-}
-
-/**
- * 导出 Node
- * @remarks 功能开发中
- */
-function handleExport() {
-  BeeMessage.info('正在导出节点数据...')
 }
 
 // ==================== Row Actions ====================
@@ -390,21 +365,29 @@ const perm: Record<string, boolean> = {
  * 构建行操作数组
  * @param row - 当前行数据
  * @returns 操作项数组
- * @remarks Node 无删除功能，因此不含 delete 操作
  */
-function getActions(row: NodeListResp): ActionItem[] {
+function getActions(row: NodeListVo): ActionItem[] {
   const actions: ActionItem[] = []
   if (perm.view) {
     actions.push({ value: 'view', label: '详情', icon: 'basic-view', handler: () => handleViewDetail(row) })
   }
   if (perm.edit) {
     actions.push(
-      { value: 'edit', label: '编辑', icon: 'basic-edit', handler: () => handleEdit(row) },
-      { value: 'yamledit', label: '编辑 YAML', icon: 'basic-yaml', handler: () => handleEditYaml(row) },
-      { value: 'cordon', label: '隔离', icon: 'kubernetes-cordon', handler: () => handleCordon(row) },
-      { value: 'uncordon', label: '恢复', icon: 'kubernetes-uncordon', handler: () => handleUncordon(row) },
-      { value: 'drain', label: '驱逐', icon: 'kubernetes-drain', handler: () => handleDrain(row) },
+      { value: 'label', label: '配置标签', icon: 'kubernetes-label', handler: () => handleLabel(row) },
+      { value: 'annotation', label: '配置注解', icon: 'kubernetes-annotation', handler: () => handleAnnotation(row) },
+      { value: 'topology', label: '配置拓扑', icon: 'kubernetes-topology', handler: () => handleTopology(row) },
     )
+    if (row.unschedulable) {
+      actions.push({
+        value: 'uncordon',
+        label: '解封节点',
+        icon: 'kubernetes-uncordon',
+        handler: () => handleUncordon(row),
+      })
+    } else {
+      actions.push({ value: 'cordon', label: '封锁节点', icon: 'kubernetes-cordon', handler: () => handleCordon(row) })
+    }
+    actions.push({ value: 'drain', label: '排空节点', icon: 'kubernetes-drain', handler: () => handleDrain(row) })
   }
   return actions
 }
