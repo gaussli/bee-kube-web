@@ -1,14 +1,14 @@
 import type { RouteRecordRaw } from 'vue-router'
 
-import { clusterRoutes } from './cluster'
-import { configRoutes } from './config'
-import { crdRoutes } from './crd'
-import { namespaceRoutes } from './namespace'
-import { networkRoutes } from './network'
-import { nodeRoutes } from './node'
-import { securityRoutes } from './security'
-import { storageRoutes } from './storage'
-import { workloadRoutes } from './workload'
+import { clusterRoutes } from './cluster/index'
+import { configRoutes } from './config/index'
+import { customResourceDefinitionRoutes } from './customresourcedefinition/index'
+import { namespaceRoutes } from './namespace/index'
+import { networkRoutes } from './network/index'
+import { nodeRoutes } from './node/index'
+import { securityRoutes } from './security/index'
+import { storageRoutes } from './storage/index'
+import { workloadRoutes } from './workload/index'
 
 export const kubernetesRoutes: RouteRecordRaw[] = [
   {
@@ -31,6 +31,6 @@ export const kubernetesRoutes: RouteRecordRaw[] = [
   ...configRoutes,
   ...networkRoutes,
   ...storageRoutes,
-  ...crdRoutes,
+  ...customResourceDefinitionRoutes,
   ...securityRoutes,
 ]

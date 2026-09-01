@@ -1,8 +1,8 @@
 import type { RouteRecordRaw } from 'vue-router'
 
-export const crdRoutes: RouteRecordRaw[] = [
+export const customResourceDefinitionRoutes: RouteRecordRaw[] = [
   {
-    path: '/kubernetes/clusters/:clusterUid/crds',
+    path: '/kubernetes/clusters/:clusterUid/customresourcedefinitions',
     name: 'kubernetes:crd',
     component: () => import('@/views/kubernetes/crd/index.vue'),
     meta: {
@@ -12,7 +12,7 @@ export const crdRoutes: RouteRecordRaw[] = [
     },
   },
   {
-    path: '/kubernetes/clusters/:clusterUid/crds/:name',
+    path: '/kubernetes/clusters/:clusterUid/customresourcedefinitions/:name',
     name: 'kubernetes:crd:detail',
     component: () => import('@/views/kubernetes/crd/detail/index.vue'),
     meta: {
@@ -22,7 +22,7 @@ export const crdRoutes: RouteRecordRaw[] = [
     },
   },
   {
-    path: '/kubernetes/clusters/:clusterUid/crds/create',
+    path: '/kubernetes/clusters/:clusterUid/customresourcedefinitions/create',
     name: 'kubernetes:crd:create',
     component: () => import('@/views/kubernetes/crd/create/index.vue'),
     meta: {
@@ -32,7 +32,7 @@ export const crdRoutes: RouteRecordRaw[] = [
     },
   },
   {
-    path: '/kubernetes/clusters/:clusterUid/crds/create/yaml',
+    path: '/kubernetes/clusters/:clusterUid/customresourcedefinitions/create/yaml',
     name: 'kubernetes:crd:create:yaml',
     component: () => import('@/views/kubernetes/crd/create/yaml.vue'),
     meta: {
@@ -42,7 +42,7 @@ export const crdRoutes: RouteRecordRaw[] = [
     },
   },
   {
-    path: '/kubernetes/clusters/:clusterUid/crds/:name/edit',
+    path: '/kubernetes/clusters/:clusterUid/customresourcedefinitions/:name/edit',
     name: 'kubernetes:crd:edit',
     component: () => import('@/views/kubernetes/crd/edit/index.vue'),
     meta: {
@@ -52,7 +52,7 @@ export const crdRoutes: RouteRecordRaw[] = [
     },
   },
   {
-    path: '/kubernetes/clusters/:clusterUid/crds/:name/edit/yaml',
+    path: '/kubernetes/clusters/:clusterUid/customresourcedefinitions/:name/edit/yaml',
     name: 'kubernetes:crd:edit:yaml',
     component: () => import('@/views/kubernetes/crd/edit/yaml.vue'),
     meta: {
