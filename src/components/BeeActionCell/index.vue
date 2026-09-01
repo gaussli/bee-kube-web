@@ -15,9 +15,9 @@
         <BeeDropdownItem
           v-for="action in moreActions"
           :key="action.value"
-          :value="action.value"
-          :label="action.label"
           :icon="action.icon"
+          :label="action.label"
+          :value="action.value"
         />
       </template>
     </BeeDropdown>

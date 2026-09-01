@@ -189,9 +189,9 @@ const selectedRows = ref<ClusterListVo[]>([])
 const deletableRows = computed(() => selectedRows.value.filter(row => row.deletable !== false))
 const nonDeletableRows = computed(() => selectedRows.value.filter(row => row.deletable === false))
 // --- 对话框
+const currentTargetRow = ref<ClusterListVo | null>(null)
 const deleteDialogVisible = ref(false)
 const batchDeleteDialogVisible = ref(false)
-const currentTargetRow = ref<ClusterListVo | null>(null)
 
 // ==================== Permission ====================
 /** 页面级权限缓存，避免模板/循环中重复调用 hasPermission */
@@ -231,14 +231,12 @@ async function loadData() {
 function handleSearch() {
   queryForm.uid = searchKey.value || undefined
   queryForm.name = searchKey.value || undefined
-
   pagination.page = 1
   void loadData()
 }
 
 /**
  * 重置搜索条件
- * @remarks 清空所有筛选字段、搜索关键词、分页参数，重新加载数据
  */
 function handleReset() {
   queryForm.uid = undefined
@@ -366,14 +364,13 @@ async function handleConfirmBatchDelete() {
  * 构建行操作数组
  * @param row - 当前行数据
  * @returns 操作项数组
- * @remarks 切换集群无需权限；编辑/删除按权限和 row.deletable 条件过滤
  */
 function getActions(row: ClusterListVo): ActionItem[] {
   const actions: ActionItem[] = []
   actions.push({
-    value: 'view',
+    value: 'switch',
     label: '切换集群',
-    icon: 'kubernetes-exchange',
+    icon: 'kubernetes-switch',
     handler: () => handleSwitchCluster(row),
   })
   if (perm.edit) {

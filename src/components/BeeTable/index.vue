@@ -2,7 +2,7 @@
   <div class="bee-table">
     <!-- 加载遮罩 -->
     <div v-if="loading" class="bee-table__loading-mask">
-      <BeeIcon name="basic-loading" :size="24" class="bee-table__loading-icon" />
+      <BeeIcon class="bee-table__loading-icon" name="basic-loading" :size="24" />
     </div>
 
     <!-- 滚动容器 -->
