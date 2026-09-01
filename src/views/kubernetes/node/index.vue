@@ -23,6 +23,7 @@
         <BeeButton icon="basic-search" @click="handleSearch">搜索</BeeButton>
         <BeeButton icon="basic-refresh" @click="handleReset">重置</BeeButton>
       </div>
+
       <!-- 表格 -->
       <div class="page-body__table">
         <BeeTable :data="tableData" :loading="loading" row-key="uid">

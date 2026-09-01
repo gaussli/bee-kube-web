@@ -14,8 +14,8 @@
           </BeeButton>
           <el-divider
             v-if="hasPermission('platform:system:user:create')"
-            type="primary"
             direction="vertical"
+            type="primary"
             @click="handleCreate"
           />
           <BeeButton v-if="hasPermission('platform:system:user:create')" type="primary" @click="handleCreate">
@@ -29,7 +29,7 @@
     <!-- 表格主体 -->
     <div class="table-body">
       <el-table v-loading="loading" :data="tableData" height="100%" @selection-change="handleSelectionChange">
-        <el-table-column type="selection" width="60" align="center" />
+        <el-table-column align="center" type="selection" width="60" />
         <el-table-column prop="id" width="300">
           <template #header>
             <BeeIconLabel icon="key" label="ID" />
@@ -43,7 +43,7 @@
             <BeeIconLabel icon="user" label="账号" />
           </template>
           <template #default="{ row }">
-            <UserCell :username="row.username" :nickname="row.nickname" :avatar="row.avatarId" :gender="row.gender" />
+            <UserCell :avatar="row.avatarId" :gender="row.gender" :nickname="row.nickname" :username="row.username" />
           </template>
         </el-table-column>
         <el-table-column prop="status" width="100">
@@ -51,7 +51,7 @@
             <BeeIconLabel icon="circle-check" label="状态" />
           </template>
           <template #default="{ row }">
-            <BeeStatusCell :status="row.status" :options="userStatusConfig" />
+            <BeeStatusCell :options="userStatusConfig" :status="row.status" />
           </template>
         </el-table-column>
         <el-table-column width="180">
@@ -59,7 +59,7 @@
             <BeeIconLabel icon="clock" label="创建" />
           </template>
           <template #default="{ row }">
-            <BeeAuditCell :username="row.createBy" :datetime="row.createAt" field-name="创建人 / 时间" />
+            <BeeAuditCell :datetime="row.createAt" field-name="创建人 / 时间" :username="row.createBy" />
           </template>
         </el-table-column>
         <el-table-column width="180">
@@ -67,10 +67,10 @@
             <BeeIconLabel icon="clock" label="更新" />
           </template>
           <template #default="{ row }">
-            <BeeAuditCell :username="row.updateBy" :datetime="row.updateAt" field-name="更新人 / 时间" />
+            <BeeAuditCell :datetime="row.updateAt" field-name="更新人 / 时间" :username="row.updateBy" />
           </template>
         </el-table-column>
-        <el-table-column width="150" fixed="right">
+        <el-table-column fixed="right" width="150">
           <template #header>
             <BeeIconLabel icon="edit-pen" label="操作" />
           </template>
@@ -140,8 +140,8 @@
       <div>
         <BeeButton
           v-if="hasPermission('platform:system:user:delete')"
-          type="danger"
           :disabled="selectedRows.length === 0"
+          type="danger"
           @click="handleBatchDelete"
         >
           <template #icon><Delete /></template>
@@ -151,11 +151,10 @@
       <el-pagination
         v-model:current-page="pagination.page"
         v-model:page-size="pagination.pageSize"
-        :total="pagination.total"
-        :page-sizes="[10, 20, 50]"
         layout="total, sizes, prev, pager, next, jumper"
-        @size-change="loadData"
+        :total="pagination.total"
         @current-change="loadData"
+        @size-change="loadData"
       />
     </div>
   </div>

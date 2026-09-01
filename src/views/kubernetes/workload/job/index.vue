@@ -93,7 +93,6 @@
         <BeePagination
           v-model="pagination.page"
           v-model:page-size="pagination.pageSize"
-          :page-sizes="[10, 20, 50]"
           :total="pagination.total"
           @change="loadData"
         />
