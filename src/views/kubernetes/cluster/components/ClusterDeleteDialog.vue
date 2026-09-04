@@ -3,14 +3,14 @@
     <Transition name="dialog-fade">
       <div v-if="modelValue" class="bee-dialog-mask">
         <div class="bee-dialog">
-          <div class="dialog-header">
-            <div class="dialog-header__icon">
+          <div class="bee-dialog__header">
+            <div class="bee-dialog__header-icon">
               <BeeIcon name="basic-delete" :size="24" />
             </div>
-            <div class="dialog-header__title">删除集群</div>
+            <div class="bee-dialog__header-title">删除集群</div>
           </div>
-          <div class="dialog-content">您确认要删除 “{{ cluster }}” 集群吗？</div>
-          <div class="dialog-actions">
+          <div class="bee-dialog__content">您确认要删除 “{{ cluster }}” 集群吗？</div>
+          <div class="bee-dialog__actions">
             <BeeButton @click="handleCancel">取 消</BeeButton>
             <BeeButton type="danger" @click="handleConfirm">确 认</BeeButton>
           </div>
@@ -82,20 +82,20 @@ function handleConfirm() {
   overflow: hidden;
   background-color: $color-bg-dialog;
 
-  .dialog-header {
+  &__header {
     display: flex;
     gap: 12px;
     flex-direction: column;
     align-items: center;
 
-    &__icon {
+    &-icon {
       padding: 16px;
       border-radius: 1000px;
       color: map.get($colors-danger, 'text', 'base');
       background: map.get($colors-danger, 'bg', 'base');
     }
 
-    &__title {
+    &-title {
       font-size: 16px;
       font-weight: bold;
       color: map.get($colors-danger, 'text', 'base');
@@ -103,7 +103,7 @@ function handleConfirm() {
     }
   }
 
-  .dialog-content {
+  &__content {
     display: flex;
     gap: 16px;
     flex-direction: column;
@@ -114,7 +114,7 @@ function handleConfirm() {
     color: $color-text-secondary;
   }
 
-  .dialog-actions {
+  &__actions {
     --bee-button-width: 100%;
 
     display: flex;

@@ -7,7 +7,7 @@ import { reactive } from 'vue'
 import type { MessageItem, MessageOptions, MessageType } from './types'
 
 /** 消息列表（模块级响应式，index.ts 与容器组件共享） */
-export const messageState: MessageItem[] = reactive([])
+export const messageItemList: MessageItem[] = reactive([])
 
 /** 自增 ID */
 let uid = 0
@@ -21,12 +21,12 @@ let uid = 0
  */
 export function addMessage(type: MessageType, message: string, options?: MessageOptions): number {
   const id = ++uid
-  messageState.push({
+  messageItemList.push({
     id,
     type,
     message,
-    duration: options?.duration ?? 3000,
-    showClose: options?.showClose ?? true,
+    duration: options?.duration ?? 0,
+    showClose: options?.showClose ?? false,
   })
   return id
 }
@@ -36,13 +36,13 @@ export function addMessage(type: MessageType, message: string, options?: Message
  * @param id - 消息 ID
  */
 export function removeMessage(id: number): void {
-  const idx = messageState.findIndex(m => m.id === id)
-  if (idx !== -1) messageState.splice(idx, 1)
+  const idx = messageItemList.findIndex(m => m.id === id)
+  if (idx !== -1) messageItemList.splice(idx, 1)
 }
 
 /**
  * 清除所有消息
  */
 export function clearAll(): void {
-  messageState.splice(0, messageState.length)
+  messageItemList.splice(0, messageItemList.length)
 }

@@ -1,35 +1,28 @@
 <template>
-  <TransitionGroup name="bee-msg" tag="div" class="bee-message-container">
+  <TransitionGroup class="bee-message-container" name="bee-message" tag="div">
     <BeeMessageItem
-      v-for="msg in messages"
-      :key="msg.id"
-      :type="msg.type"
-      :message="msg.message"
-      :show-close="msg.showClose"
-      @close="onClose(msg.id)"
+      v-for="message in messageItemList"
+      :key="message.id"
+      :message="message.message"
+      :show-close="message.showClose"
+      :type="message.type"
+      @close="handleClose(message.id)"
     />
   </TransitionGroup>
 </template>
 
 <script setup lang="ts">
-/**
- * BeeMessage 消息容器组件
- * 通过 TransitionGroup 管理消息的入场/离场动画，固定在页面右上角
- * @module components/BeeMessage/BeeMessageContainer
- */
 import BeeMessageItem from './BeeMessage.vue'
-import { messageState, removeMessage } from './state'
+import { messageItemList, removeMessage } from './store.ts'
 
 defineOptions({ name: 'BeeMessageContainer' })
 
-/** 响应式消息列表（与 state.ts 共享代理） */
-const messages = messageState
-
+// ==================== Handler ====================
 /**
  * 关闭消息
  * @param id - 消息 ID
  */
-function onClose(id: number) {
+function handleClose(id: number) {
   removeMessage(id)
 }
 </script>
@@ -41,26 +34,26 @@ function onClose(id: number) {
   right: 16px;
   z-index: 9999;
   display: flex;
-  flex-direction: column;
   gap: 8px;
+  flex-direction: column;
   pointer-events: none;
 }
 
 // ---- TransitionGroup 动画 ----
-.bee-msg-enter-active {
+.bee-message-enter-active {
   transition: all 0.3s ease-out;
 }
 
-.bee-msg-leave-active {
+.bee-message-leave-active {
   transition: all 0.25s ease-in;
 }
 
-.bee-msg-enter-from {
+.bee-message-enter-from {
   opacity: 0;
   transform: translateX(40px);
 }
 
-.bee-msg-leave-to {
+.bee-message-leave-to {
   opacity: 0;
   transform: translateX(-40px);
 }

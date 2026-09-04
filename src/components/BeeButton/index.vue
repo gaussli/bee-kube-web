@@ -10,18 +10,28 @@ import { computed, ref } from 'vue'
 
 import BeeIcon from '@/components/BeeIcon/index.vue'
 
-defineOptions({ name: 'BeeButtonNew' })
+defineOptions({ name: 'BeeButton' })
 
 // ==================== Prop & Emit ====================
 const props = withDefaults(
   defineProps<{
+    /** 按钮类型 */
     type?: 'default' | 'primary' | 'success' | 'warning' | 'danger'
+    /** 按钮尺寸 */
     size?: 'default' | 'small' | 'large'
+    /** 禁用标记 */
     disabled?: boolean
+    /** 按钮图标 */
     icon?: string
   }>(),
-  { type: 'default', size: 'default', disabled: false, icon: undefined },
+  {
+    type: 'default',
+    size: 'default',
+    disabled: false,
+    icon: undefined,
+  },
 )
+
 const emit = defineEmits<{
   click: [event: MouseEvent]
 }>()

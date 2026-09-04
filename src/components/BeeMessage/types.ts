@@ -4,7 +4,7 @@
  */
 
 /** 消息类型 */
-export type MessageType = 'success' | 'error' | 'warning' | 'info'
+export type MessageType = 'primary' | 'success' | 'warning' | 'danger'
 
 /** 消息项 */
 export interface MessageItem {
@@ -22,7 +22,7 @@ export interface MessageItem {
 
 /** BeeMessage 调用选项 */
 export interface MessageOptions {
-  /** 自动消失时长(ms)，默认 3000，0 则不消失 */
+  /** 自动消失时长(ms)，0 则不消失 */
   duration?: number
   /** 是否显示关闭按钮，默认 true */
   showClose?: boolean

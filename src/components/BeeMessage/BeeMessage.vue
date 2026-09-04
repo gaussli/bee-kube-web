@@ -1,19 +1,14 @@
 <template>
-  <div class="bee-message" :class="`bee-message--${type}`">
-    <BeeIcon :name="iconName" :size="14" class="bee-message__icon" />
-    <span class="bee-message__content">{{ message }}</span>
-    <button v-if="showClose" class="bee-message__close" @click="$emit('close')">
+  <div class="bee-message" :class="[typeClass]">
+    <BeeIcon class="bee-message__icon" :name="iconName" />
+    <span class="bee-message__text">{{ message }}</span>
+    <button v-if="showClose" class="bee-message__close" @click="handleClose">
       <BeeIcon name="basic-close" :size="12" />
     </button>
   </div>
 </template>
 
 <script setup lang="ts">
-/**
- * BeeMessage 消息提示组件
- * 支持 success / error / warning / info 四种类型，支持关闭按钮
- * @module components/BeeMessage/BeeMessage
- */
 import { computed } from 'vue'
 
 import type { MessageType } from './types'
@@ -22,6 +17,7 @@ import BeeIcon from '@/components/BeeIcon/index.vue'
 
 defineOptions({ name: 'BeeMessage' })
 
+// ==================== Prop & Emit ====================
 const props = withDefaults(
   defineProps<{
     /** 消息类型 */
@@ -32,59 +28,57 @@ const props = withDefaults(
     showClose?: boolean
   }>(),
   {
-    type: 'info',
+    type: 'primary',
     message: '',
-    showClose: true,
+    showClose: false,
   },
 )
 
-defineEmits<{
+const emit = defineEmits<{
   close: []
 }>()
 
-/** 类型 → 图标名称映射 */
-const iconMap: Record<MessageType, string> = {
-  success: 'basic-success-filled',
-  error: 'basic-danger-filled',
-  warning: 'basic-warning-filled',
-  info: 'basic-info-filled',
-}
+// ==================== Reactive State ====================
+const typeClass = computed(() => 'bee-message--' + props.type)
+const iconName = computed(() => {
+  switch (props.type) {
+    case 'success':
+      return 'basic-success'
+    case 'warning':
+      return 'basic-warning'
+    case 'danger':
+      return 'basic-danger'
+    default:
+      return 'basic-info'
+  }
+})
 
-const iconName = computed(() => iconMap[props.type])
+// ==================== Handler ====================
+/**
+ * 关闭按钮点击事件处理
+ */
+function handleClose() {
+  emit('close')
+}
 </script>
 
 <style lang="scss" scoped>
 @use 'sass:map';
 
 .bee-message {
-  // ---- CSS 自定义属性 ----
-  --bee-message-bg: #{map.get($colors, 'gray', 15)};
-  --bee-message-border-color: #{map.get($colors, 'gray', 40)};
-  --bee-message-color: #{$color-text-primary};
-  --bee-message-icon-color: #{map.get($colors, 'gray', 70)};
-  --bee-message-shadow: 0 4px 12px rgb(0 0 0 / 15%);
+  $types: primary, success, warning, danger;
 
   display: flex;
-  gap: $spacing-8;
-  align-items: flex-start;
-  box-sizing: border-box;
-  min-width: 280px;
-  max-width: 420px;
-  padding: 10px $spacing-16;
-  border: 1px solid var(--bee-message-border-color);
-  border-radius: $radius-8;
-  font-size: $font-size-14;
-  line-height: 20px;
-  color: var(--bee-message-color);
-  background: var(--bee-message-bg);
-  box-shadow: var(--bee-message-shadow);
+  gap: 8px;
+  flex-direction: row;
+  align-items: center;
+  width: 400px;
+  padding: 12px 20px;
+  border: 1px solid;
+  border-radius: 8px;
+  font-size: 14px;
+  line-height: 1.5em;
   pointer-events: auto;
-
-  &__icon {
-    flex-shrink: 0;
-    margin-top: 3px;
-    color: var(--bee-message-icon-color);
-  }
 
   &__content {
     overflow-wrap: break-word;
@@ -95,48 +89,29 @@ const iconName = computed(() => iconMap[props.type])
     display: flex;
     justify-content: center;
     align-items: center;
-    flex-shrink: 0;
     width: 20px;
     height: 20px;
-    padding: 0;
-    margin-top: 0;
-    margin-left: auto;
     border: none;
-    border-radius: $radius-4;
-    color: var(--bee-message-color);
-    opacity: 0.6;
+    color: $color-text-secondary;
+    opacity: 0.5;
     background: transparent;
     cursor: pointer;
-    transition: opacity 0.2s;
+    transition: opacity 0.3s;
 
     &:hover {
       opacity: 1;
     }
   }
 
-  // ---- 类型修饰 ----
-  &--success {
-    --bee-message-bg: #{rgba(map.get($colors, 'success', 50), 0.5)};
-    --bee-message-border-color: #{rgba(map.get($colors, 'success', 50), 0.3)};
-    --bee-message-icon-color: #{map.get($colors, 'success', 50)};
-  }
+  @each $type in $types {
+    $colors-type: map.get($color, $type);
 
-  &--error {
-    --bee-message-bg: #{rgba(map.get($colors, 'danger', 50), 0.5)};
-    --bee-message-border-color: #{rgba(map.get($colors, 'danger', 50), 0.3)};
-    --bee-message-icon-color: #{map.get($colors, 'danger', 50)};
-  }
-
-  &--warning {
-    --bee-message-bg: #{rgba(map.get($colors, 'warning', 50), 0.5)};
-    --bee-message-border-color: #{rgba(map.get($colors, 'warning', 50), 0.3)};
-    --bee-message-icon-color: #{map.get($colors, 'warning', 50)};
-  }
-
-  &--info {
-    --bee-message-bg: #{map.get($colors, 'gray', 15)};
-    --bee-message-border-color: #{map.get($colors, 'gray', 40)};
-    --bee-message-icon-color: #{map.get($colors, 'gray', 70)};
+    &--#{$type} {
+      filter: drop-shadow(0 0 4px rgba(map.get($colors-type, 'bg', 'base'), 50%));
+      border-color: var(--bee-message-color-border-#{$type}, map.get($colors-type, 'border', 'base'));
+      color: var(--bee-message-color-text-#{$type}, map.get($colors-type, 'text', 'base'));
+      background: var(--bee-message-color-bg-#{$type}, map.get($colors-type, 'bg', 'base'));
+    }
   }
 }
 </style>

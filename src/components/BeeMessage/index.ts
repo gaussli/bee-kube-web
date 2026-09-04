@@ -21,7 +21,7 @@ import { createVNode, render } from 'vue'
 import type { MessageOptions, MessageType } from './types'
 
 import BeeMessageContainer from './BeeMessageContainer.vue'
-import { addMessage, clearAll, removeMessage } from './state'
+import { addMessage, clearAll, removeMessage } from './store.ts'
 
 /** 容器是否已挂载 */
 let isMounted = false
@@ -51,7 +51,7 @@ function ensureMounted(): void {
 function show(type: MessageType, message: string, options?: MessageOptions): void {
   ensureMounted()
   const id = addMessage(type, message, options)
-  const duration = options?.duration ?? 3000
+  const duration = options?.duration ?? 5000
   if (duration > 0) {
     setTimeout(() => removeMessage(id), duration)
   }
@@ -69,7 +69,7 @@ export const BeeMessage = {
    * @param message
    * @param options
    */
-  error: (message: string, options?: MessageOptions) => show('error', message, options),
+  error: (message: string, options?: MessageOptions) => show('danger', message, options),
   /**
    * 警告消息
    * @param message
@@ -81,8 +81,10 @@ export const BeeMessage = {
    * @param message
    * @param options
    */
-  info: (message: string, options?: MessageOptions) => show('info', message, options),
-  /** 清除所有消息 */
+  info: (message: string, options?: MessageOptions) => show('primary', message, options),
+  /**
+   * 清除所有消息
+   */
   closeAll: () => clearAll(),
 }
 

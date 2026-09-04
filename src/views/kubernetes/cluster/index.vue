@@ -131,10 +131,6 @@
 </template>
 
 <script setup lang="ts">
-/**
- * 集群管理页面
- * @module views/kubernetes/clsuter
- */
 import { computed, onMounted, reactive, ref } from 'vue'
 
 import { useRouter } from 'vue-router'
@@ -223,7 +219,40 @@ async function loadData() {
   }
 }
 
-// ==================== Search & Reset ====================
+// ==================== Row Actions Generate ====================
+/**
+ * 构建行操作数组
+ * @param row - 当前行数据
+ * @returns 操作项数组
+ */
+function getActions(row: ClusterListVo): ActionItem[] {
+  const actions: ActionItem[] = []
+  actions.push({
+    value: 'switch',
+    label: '切换集群',
+    icon: 'kubernetes-switch',
+    handler: () => handleSwitchCluster(row),
+  })
+  if (perm.edit) {
+    actions.push({ value: 'edit', label: '编辑', icon: 'basic-edit', handler: () => handleEdit(row) })
+  }
+  if (perm.delete && row.deletable !== false) {
+    actions.push({ value: 'delete', label: '删除', icon: 'basic-delete', handler: () => handleDelete(row) })
+  }
+  return actions
+}
+
+// ==================== BeeTable Handler ====================
+/**
+ * 表格选中行变化
+ * @param rows
+ * @remarks BeeTable 的 selection-change 事件固定返回 Record<string, unknown>[]，需通过 unknown 桥接断言为目标类型
+ */
+function handleSelectionChange(rows: Record<string, unknown>[]) {
+  selectedRows.value = rows as unknown as ClusterListVo[]
+}
+
+// ==================== Handler ====================
 /**
  * 搜索
  */
@@ -247,22 +276,6 @@ function handleReset() {
   void loadData()
 }
 
-// ==================== Selection ====================
-/**
- * 表格选中行变化
- * @param rows
- * @remarks BeeTable 的 selection-change 事件固定返回 Record<string, unknown>[]，需通过 unknown 桥接断言为目标类型
- */
-function handleSelectionChange(rows: Record<string, unknown>[]) {
-  selectedRows.value = rows as unknown as ClusterListVo[]
-}
-
-/** 取消全部选中 */
-function handleClearSelection() {
-  tableRef.value?.clearSelection()
-}
-
-// ==================== Handler ====================
 /**
  * 纳管集群
  */
@@ -321,6 +334,11 @@ function handleImport() {
   BeeMessage.info('功能开发中')
 }
 
+/** 取消全部选中 */
+function handleClearSelection() {
+  tableRef.value?.clearSelection()
+}
+
 // ==================== Dialog Confirm ====================
 /**
  * 二次确认删除集群
@@ -329,7 +347,7 @@ async function handleConfirmDelete() {
   if (!currentTargetRow.value) return
   try {
     await deleteCluster(currentTargetRow.value.uid)
-    BeeMessage.success('删除成功')
+    BeeMessage.success('删除成功', { duration: 0 })
     currentTargetRow.value = null
     void loadData()
   } catch (err) {
@@ -355,29 +373,6 @@ async function handleConfirmBatchDelete() {
     console.error('[handleConfirmBatchDelete]', err)
     BeeMessage.error('删除失败')
   }
-}
-
-// ==================== Row Actions ====================
-/**
- * 构建行操作数组
- * @param row - 当前行数据
- * @returns 操作项数组
- */
-function getActions(row: ClusterListVo): ActionItem[] {
-  const actions: ActionItem[] = []
-  actions.push({
-    value: 'switch',
-    label: '切换集群',
-    icon: 'kubernetes-switch',
-    handler: () => handleSwitchCluster(row),
-  })
-  if (perm.edit) {
-    actions.push({ value: 'edit', label: '编辑', icon: 'basic-edit', handler: () => handleEdit(row) })
-  }
-  if (perm.delete && row.deletable !== false) {
-    actions.push({ value: 'delete', label: '删除', icon: 'basic-delete', handler: () => handleDelete(row) })
-  }
-  return actions
 }
 
 // ==================== Lifecycle ====================
