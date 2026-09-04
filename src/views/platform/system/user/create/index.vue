@@ -11,7 +11,7 @@
     </div>
 
     <!-- 表单主体 -->
-    <transition name="fade-slide" mode="out-in">
+    <transition mode="out-in" name="fade-slide">
       <div class="form-body">
         <UserForm ref="userFormRef" />
       </div>
@@ -38,7 +38,7 @@ import { useRouter } from 'vue-router'
 
 import { ArrowLeft, Close, Check } from '@element-plus/icons-vue'
 
-import BeeButton from '@/components/BeeButton/index.vue'
+import BeeButton from '@/components/base/BeeButton/index.vue'
 import BeeDivider from '@/components/BeeDivider/index.vue'
 import { BeeMessage } from '@/components/BeeMessage'
 import UserForm from '@/components/UserForm/index.vue'

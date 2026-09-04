@@ -11,7 +11,7 @@
     </div>
 
     <!-- 表单主体 -->
-    <transition name="fade-slide" mode="out-in">
+    <transition mode="out-in" name="fade-slide">
       <div class="form-body">
         <PermissionForm ref="permissionFormRef" />
       </div>
@@ -40,7 +40,7 @@ import { ArrowLeft, Close, Check } from '@element-plus/icons-vue'
 
 import { createPermission } from '@/api/platform/permission'
 
-import BeeButton from '@/components/BeeButton/index.vue'
+import BeeButton from '@/components/base/BeeButton/index.vue'
 import BeeDivider from '@/components/BeeDivider/index.vue'
 import { BeeMessage } from '@/components/BeeMessage'
 import PermissionForm from '@/components/PermissionForm/index.vue'

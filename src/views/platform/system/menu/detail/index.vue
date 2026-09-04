@@ -11,7 +11,7 @@
     </div>
 
     <!-- 详情主体 -->
-    <transition name="fade-slide" mode="out-in">
+    <transition mode="out-in" name="fade-slide">
       <div v-if="loaded" class="detail-body">
         <!-- 菜单关键信息 -->
         <div class="menu-header">
@@ -21,8 +21,8 @@
           <div class="menu-meta">
             <div class="menu-name-row">
               <span class="menu-name">{{ menuData.name }}</span>
-              <el-tag :type="typeTagMap[menuData.type]" size="small">{{ typeTextMap[menuData.type] }}</el-tag>
-              <el-tag :type="menuData.status === 1 ? 'success' : 'danger'" size="small">
+              <el-tag size="small" :type="typeTagMap[menuData.type]">{{ typeTextMap[menuData.type] }}</el-tag>
+              <el-tag size="small" :type="menuData.status === 1 ? 'success' : 'danger'">
                 {{ menuData.status === 1 ? '启用' : '禁用' }}
               </el-tag>
             </div>
@@ -206,7 +206,7 @@ import type { MenuDetailResp } from '@/types/platform/menu'
 
 import { getMenuDetail } from '@/api/platform/menu'
 
-import BeeButton from '@/components/BeeButton/index.vue'
+import BeeButton from '@/components/base/BeeButton/index.vue'
 import BeeDivider from '@/components/BeeDivider/index.vue'
 import BeeLabelCopyable from '@/components/BeeLabelCopyable/index.vue'
 

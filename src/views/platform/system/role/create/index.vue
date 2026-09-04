@@ -11,7 +11,7 @@
     </div>
 
     <!-- 表单主体 -->
-    <transition name="fade-slide" mode="out-in">
+    <transition mode="out-in" name="fade-slide">
       <div class="form-body">
         <RoleForm ref="roleFormRef" />
       </div>
@@ -40,7 +40,7 @@ import { ArrowLeft, Close, Check } from '@element-plus/icons-vue'
 
 import { createRole } from '@/api/platform/role'
 
-import BeeButton from '@/components/BeeButton/index.vue'
+import BeeButton from '@/components/base/BeeButton/index.vue'
 import BeeDivider from '@/components/BeeDivider/index.vue'
 import { BeeMessage } from '@/components/BeeMessage'
 import RoleForm from '@/components/RoleForm/index.vue'

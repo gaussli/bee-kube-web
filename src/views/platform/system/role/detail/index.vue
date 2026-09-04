@@ -11,7 +11,7 @@
     </div>
 
     <!-- 详情主体 -->
-    <transition name="fade-slide" mode="out-in">
+    <transition mode="out-in" name="fade-slide">
       <div v-if="loaded" class="detail-body">
         <!-- 角色关键信息 -->
         <div class="role-header">
@@ -21,7 +21,7 @@
           <div class="role-meta">
             <div class="role-name-row">
               <span class="role-name">{{ roleData.name }}</span>
-              <el-tag :type="roleData.status === 1 ? 'success' : 'danger'" size="small">
+              <el-tag size="small" :type="roleData.status === 1 ? 'success' : 'danger'">
                 {{ roleData.status === 1 ? '启用' : '禁用' }}
               </el-tag>
             </div>
@@ -166,7 +166,7 @@ import type { RoleDetailResp } from '@/types/platform/role'
 
 import { getRoleDetail } from '@/api/platform/role'
 
-import BeeButton from '@/components/BeeButton/index.vue'
+import BeeButton from '@/components/base/BeeButton/index.vue'
 import BeeDivider from '@/components/BeeDivider/index.vue'
 import BeeLabelCopyable from '@/components/BeeLabelCopyable/index.vue'
 

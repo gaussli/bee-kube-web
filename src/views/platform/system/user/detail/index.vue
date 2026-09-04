@@ -181,7 +181,7 @@ import {
 
 import type { UserDetailResp } from '@/types/index'
 
-import BeeButton from '@/components/BeeButton/index.vue'
+import BeeButton from '@/components/base/BeeButton/index.vue'
 import BeeDivider from '@/components/BeeDivider/index.vue'
 import BeeLabelCopyable from '@/components/BeeLabelCopyable/index.vue'
 import UserAvatar from '@/components/UserAvatar/index.vue'

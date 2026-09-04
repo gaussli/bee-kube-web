@@ -77,7 +77,7 @@ import type { NamespaceReq } from '@/types/index'
 
 import { createNamespace } from '@/api/kubernetes/namespace/namespace'
 
-import BeeButton from '@/components/BeeButton/index.vue'
+import BeeButton from '@/components/base/BeeButton/index.vue'
 import { BeeMessage } from '@/components/BeeMessage'
 import BeePageHeader from '@/components/BeePageHeader/index.vue'
 

@@ -13,7 +13,7 @@
     </div>
 
     <!-- 表单主体 -->
-    <transition name="fade-slide" mode="out-in">
+    <transition mode="out-in" name="fade-slide">
       <div class="form-body">
         <PermissionForm v-if="loaded" ref="permissionFormRef" :data="permissionData" />
       </div>
@@ -44,7 +44,7 @@ import type { PermissionDetailResp } from '@/types/platform/permission'
 
 import { getPermissionDetail, updatePermission } from '@/api/platform/permission'
 
-import BeeButton from '@/components/BeeButton/index.vue'
+import BeeButton from '@/components/base/BeeButton/index.vue'
 import BeeDivider from '@/components/BeeDivider/index.vue'
 import { BeeMessage } from '@/components/BeeMessage'
 import PermissionForm from '@/components/PermissionForm/index.vue'

@@ -186,8 +186,8 @@ import {
   batchRemovePermissions,
 } from '@/api/platform/permission'
 
+import BeeButton from '@/components/base/BeeButton/index.vue'
 import BeeAuditCell from '@/components/BeeAuditCell/index.vue'
-import BeeButton from '@/components/BeeButton/index.vue'
 import BeeDialog from '@/components/BeeDialog/index.vue'
 import BeeIconLabel from '@/components/BeeIconLabel/index.vue'
 import BeeInputSearch from '@/components/BeeInputSearch/index.vue'

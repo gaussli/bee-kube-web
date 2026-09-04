@@ -33,7 +33,7 @@
  */
 import { computed } from 'vue'
 
-import BeeButton from '@/components/BeeButton/index.vue'
+import BeeButton from '@/components/base/BeeButton/index.vue'
 import BeeCircleButton from '@/components/BeeCircleButton/index.vue'
 
 defineOptions({ name: 'BeeDialog' })

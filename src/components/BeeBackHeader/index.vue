@@ -4,7 +4,7 @@
       <!-- 左侧：返回按钮 + 分割线 + 标题 -->
       <div class="bee-back-header__left">
         <BeeButton icon="basic-arrow-left" @click="handleBack"> 返回 </BeeButton>
-        <BeeDivider direction="vertical" :length="16" margin="12px" color="hsl(0, 0%, 70%)" />
+        <BeeDivider color="hsl(0, 0%, 70%)" direction="vertical" :length="16" margin="12px" />
         <span class="bee-back-header__title">{{ title }}</span>
       </div>
       <!-- 右侧：操作按钮组 -->
@@ -18,7 +18,7 @@
 </template>
 
 <script setup lang="ts">
-import BeeButton from '@/components/BeeButton/index.vue'
+import BeeButton from '@/components/base/BeeButton/index.vue'
 import BeeCard from '@/components/BeeCard/index.vue'
 import BeeDivider from '@/components/BeeDivider/index.vue'
 

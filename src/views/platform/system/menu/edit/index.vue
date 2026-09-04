@@ -11,7 +11,7 @@
     </div>
 
     <!-- 表单主体 -->
-    <transition name="fade-slide" mode="out-in">
+    <transition mode="out-in" name="fade-slide">
       <div v-if="loaded" class="form-body">
         <MenuForm ref="menuFormRef" :data="menuData" />
       </div>
@@ -42,7 +42,7 @@ import type { MenuDetailResp } from '@/types/platform/menu'
 
 import { getMenuDetail, updateMenu } from '@/api/platform/menu'
 
-import BeeButton from '@/components/BeeButton/index.vue'
+import BeeButton from '@/components/base/BeeButton/index.vue'
 import BeeDivider from '@/components/BeeDivider/index.vue'
 import { BeeMessage } from '@/components/BeeMessage'
 import MenuForm from '@/components/MenuForm/index.vue'

@@ -161,9 +161,9 @@ import type { DaemonSetQueryForm, DaemonSetListVo } from '@/types/kubernetes/wor
 import { getNamespaceList } from '@/api/kubernetes/namespace/namespace'
 import { getDaemonSetList, deleteDaemonSet, deleteDaemonSets } from '@/api/kubernetes/workload/daemonset'
 
+import BeeButton from '@/components/base/BeeButton/index.vue'
 import BeeActionCell, { type ActionItem } from '@/components/BeeActionCell/index.vue'
 import BeeAuditCell from '@/components/BeeAuditCell/index.vue'
-import BeeButton from '@/components/BeeButton/index.vue'
 import BeeCard from '@/components/BeeCard/index.vue'
 import BeeDialog from '@/components/BeeDialog/index.vue'
 import BeeInputSearch from '@/components/BeeInputSearch/index.vue'

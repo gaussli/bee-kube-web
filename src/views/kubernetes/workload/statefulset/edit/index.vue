@@ -2,15 +2,15 @@
   <div class="statefulset-edit">
     <div class="page-header">
       <BeePageHeader
+        description="编辑 StatefulSet 配置。"
         :icon="Collection"
         :title="`编辑有状态应用: ${statefulsetName}`"
-        description="编辑 StatefulSet 配置。"
       />
     </div>
     <div class="page-body">
-      <el-form ref="formRef" :model="formData" :rules="formRules" label-width="140px" class="edit-form">
+      <el-form ref="formRef" class="edit-form" label-width="140px" :model="formData" :rules="formRules">
         <el-form-item label="副本数量" prop="replicas">
-          <el-input-number v-model="formData.replicas" :min="0" :max="100" />
+          <el-input-number v-model="formData.replicas" :max="100" :min="0" />
         </el-form-item>
       </el-form>
     </div>
@@ -18,7 +18,7 @@
       <BeeButton @click="handleCancel"
         ><template #icon><Close /></template>取消</BeeButton
       >
-      <BeeButton type="primary" :loading="submitting" @click="handleSubmit"
+      <BeeButton :loading="submitting" type="primary" @click="handleSubmit"
         ><template #icon><Check /></template>保存</BeeButton
       >
     </div>
@@ -38,7 +38,7 @@ import type { StatefulSetUpdateForm } from '@/types/kubernetes/workload/types'
 
 import { getStatefulSetDetail, updateStatefulSet } from '@/api/kubernetes/workload/statefulset'
 
-import BeeButton from '@/components/BeeButton/index.vue'
+import BeeButton from '@/components/base/BeeButton/index.vue'
 import { BeeMessage } from '@/components/BeeMessage'
 import BeePageHeader from '@/components/BeePageHeader/index.vue'
 

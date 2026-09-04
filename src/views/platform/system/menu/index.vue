@@ -247,8 +247,8 @@ import type { MenuQueryReq, MenuResp } from '@/types/platform/menu'
 
 import { changeMenuStatus, getMenuPage, removeMenu, batchRemoveMenus } from '@/api/platform/menu'
 
+import BeeButton from '@/components/base/BeeButton/index.vue'
 import BeeAuditCell from '@/components/BeeAuditCell/index.vue'
-import BeeButton from '@/components/BeeButton/index.vue'
 import BeeDialog from '@/components/BeeDialog/index.vue'
 import BeeIconLabel from '@/components/BeeIconLabel/index.vue'
 import BeeInputSearch from '@/components/BeeInputSearch/index.vue'

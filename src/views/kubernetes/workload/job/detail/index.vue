@@ -1,7 +1,7 @@
 <template>
   <div class="job-detail">
     <div class="page-header">
-      <BeePageHeader :icon="Timer" :title="`任务详情: ${jobName}`" description="查看 Job 详细信息。" />
+      <BeePageHeader description="查看 Job 详细信息。" :icon="Timer" :title="`任务详情: ${jobName}`" />
     </div>
     <div class="page-body">
       <el-tabs v-model="activeTab" type="border-card">
@@ -81,7 +81,7 @@ import type { JobResp } from '@/types/kubernetes/workload/types'
 
 import { getJobDetail } from '@/api/kubernetes/workload/job'
 
-import BeeButton from '@/components/BeeButton/index.vue'
+import BeeButton from '@/components/base/BeeButton/index.vue'
 import BeePageHeader from '@/components/BeePageHeader/index.vue'
 
 import { usePermission } from '@/composables/usePermission'

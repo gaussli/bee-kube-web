@@ -2,9 +2,9 @@
   <div class="statefulset-detail">
     <div class="page-header">
       <BeePageHeader
+        description="查看 StatefulSet 详细信息。"
         :icon="Collection"
         :title="`有状态应用详情: ${statefulsetName}`"
-        description="查看 StatefulSet 详细信息。"
       />
     </div>
     <div class="page-body">
@@ -83,7 +83,7 @@ import type { StatefulSetDetailVo } from '@/types/kubernetes/workload/types'
 
 import { getStatefulSetDetail } from '@/api/kubernetes/workload/statefulset'
 
-import BeeButton from '@/components/BeeButton/index.vue'
+import BeeButton from '@/components/base/BeeButton/index.vue'
 import BeePageHeader from '@/components/BeePageHeader/index.vue'
 
 import { usePermission } from '@/composables/usePermission'

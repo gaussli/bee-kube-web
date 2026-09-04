@@ -1,7 +1,7 @@
 <template>
   <div class="cronjob-detail">
     <div class="page-header">
-      <BeePageHeader :icon="Clock" :title="`定时任务详情: ${cronjobName}`" description="查看 CronJob 详细信息。" />
+      <BeePageHeader description="查看 CronJob 详细信息。" :icon="Clock" :title="`定时任务详情: ${cronjobName}`" />
     </div>
     <div class="page-body">
       <el-tabs v-model="activeTab" type="border-card">
@@ -66,7 +66,7 @@ import type { CronJobDetailResp } from '@/types/kubernetes/workload/types'
 
 import { getCronJobDetail } from '@/api/kubernetes/workload/cronjob'
 
-import BeeButton from '@/components/BeeButton/index.vue'
+import BeeButton from '@/components/base/BeeButton/index.vue'
 import BeePageHeader from '@/components/BeePageHeader/index.vue'
 import TimeCell from '@/components/TimeCell/index.vue'
 

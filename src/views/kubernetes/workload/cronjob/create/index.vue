@@ -1,10 +1,10 @@
 <template>
   <div class="cronjob-create">
     <div class="page-header">
-      <BeePageHeader :icon="Clock" title="创建定时任务" description="创建一个新的 Kubernetes CronJob。" />
+      <BeePageHeader description="创建一个新的 Kubernetes CronJob。" :icon="Clock" title="创建定时任务" />
     </div>
     <div class="page-body">
-      <el-form ref="formRef" :model="formData" :rules="formRules" label-width="140px" class="create-form">
+      <el-form ref="formRef" class="create-form" label-width="140px" :model="formData" :rules="formRules">
         <el-form-item label="所属集群" prop="clusterUid">
           <el-select v-model="formData.clusterUid" placeholder="选择集群" style="width: 300px"
             ><el-option label="默认集群" value="default"
@@ -32,7 +32,7 @@
       <BeeButton @click="handleCancel"
         ><template #icon><Close /></template>取消</BeeButton
       >
-      <BeeButton type="primary" :loading="submitting" @click="handleSubmit"
+      <BeeButton :loading="submitting" type="primary" @click="handleSubmit"
         ><template #icon><Check /></template>创建</BeeButton
       >
     </div>
@@ -52,7 +52,7 @@ import type { CronJobDetailResp } from '@/types/kubernetes/workload/types'
 
 import { createCronJob } from '@/api/kubernetes/workload/cronjob'
 
-import BeeButton from '@/components/BeeButton/index.vue'
+import BeeButton from '@/components/base/BeeButton/index.vue'
 import { BeeMessage } from '@/components/BeeMessage'
 import BeePageHeader from '@/components/BeePageHeader/index.vue'
 

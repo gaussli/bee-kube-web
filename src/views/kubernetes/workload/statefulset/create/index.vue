@@ -1,10 +1,10 @@
 <template>
   <div class="statefulset-create">
     <div class="page-header">
-      <BeePageHeader :icon="Collection" title="创建有状态应用" description="创建一个新的 Kubernetes StatefulSet。" />
+      <BeePageHeader description="创建一个新的 Kubernetes StatefulSet。" :icon="Collection" title="创建有状态应用" />
     </div>
     <div class="page-body">
-      <el-form ref="formRef" :model="formData" :rules="formRules" label-width="140px" class="create-form">
+      <el-form ref="formRef" class="create-form" label-width="140px" :model="formData" :rules="formRules">
         <el-form-item label="所属集群" prop="clusterUid">
           <el-select v-model="formData.clusterUid" placeholder="选择集群" style="width: 300px">
             <el-option label="默认集群" value="default" />
@@ -19,7 +19,7 @@
           <el-input v-model="formData.name" placeholder="请输入应用名称" style="width: 300px" />
         </el-form-item>
         <el-form-item label="副本数量" prop="replicas">
-          <el-input-number v-model="formData.replicas" :min="1" :max="100" />
+          <el-input-number v-model="formData.replicas" :max="100" :min="1" />
         </el-form-item>
         <el-form-item label="服务名称" prop="serviceName">
           <el-input v-model="formData.serviceName" placeholder="请输入服务名称" style="width: 300px" />
@@ -30,7 +30,7 @@
       <BeeButton @click="handleCancel"
         ><template #icon><Close /></template>取消</BeeButton
       >
-      <BeeButton type="primary" :loading="submitting" @click="handleSubmit"
+      <BeeButton :loading="submitting" type="primary" @click="handleSubmit"
         ><template #icon><Check /></template>创建</BeeButton
       >
     </div>
@@ -50,7 +50,7 @@ import type { StatefulSetCreateForm } from '@/types/kubernetes/workload/types'
 
 import { createStatefulSet } from '@/api/kubernetes/workload/statefulset'
 
-import BeeButton from '@/components/BeeButton/index.vue'
+import BeeButton from '@/components/base/BeeButton/index.vue'
 import { BeeMessage } from '@/components/BeeMessage'
 import BeePageHeader from '@/components/BeePageHeader/index.vue'
 

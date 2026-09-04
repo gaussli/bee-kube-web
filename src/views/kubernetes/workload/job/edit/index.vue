@@ -1,12 +1,12 @@
 <template>
   <div class="job-edit">
     <div class="page-header">
-      <BeePageHeader :icon="Timer" :title="`编辑任务: ${jobName}`" description="编辑 Job 配置。" />
+      <BeePageHeader description="编辑 Job 配置。" :icon="Timer" :title="`编辑任务: ${jobName}`" />
     </div>
     <div class="page-body">
-      <el-form ref="formRef" :model="formData" :rules="formRules" label-width="140px" class="edit-form">
+      <el-form ref="formRef" class="edit-form" label-width="140px" :model="formData" :rules="formRules">
         <el-form-item label="并行度" prop="parallelism">
-          <el-input-number v-model="formData.parallelism" :min="1" :max="100" />
+          <el-input-number v-model="formData.parallelism" :max="100" :min="1" />
         </el-form-item>
         <el-form-item label="标签">
           <div class="key-value-list">
@@ -26,7 +26,7 @@
       <BeeButton @click="handleCancel"
         ><template #icon><Close /></template>取消</BeeButton
       >
-      <BeeButton type="primary" :loading="submitting" @click="handleSubmit"
+      <BeeButton :loading="submitting" type="primary" @click="handleSubmit"
         ><template #icon><Check /></template>保存</BeeButton
       >
     </div>
@@ -44,7 +44,7 @@ import type { JobResp } from '@/types/kubernetes/workload/types'
 
 import { getJobDetail, updateJob } from '@/api/kubernetes/workload/job'
 
-import BeeButton from '@/components/BeeButton/index.vue'
+import BeeButton from '@/components/base/BeeButton/index.vue'
 import { BeeMessage } from '@/components/BeeMessage'
 import BeePageHeader from '@/components/BeePageHeader/index.vue'
 

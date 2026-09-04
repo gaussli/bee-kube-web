@@ -38,8 +38,8 @@ import { computed } from 'vue'
 
 import type { ClusterListVo } from '@/types/kubernetes/cluster'
 
+import BeeButton from '@/components/base/BeeButton/index.vue'
 import BeeCapsule from '@/components/base/BeeCapsule/index.vue'
-import BeeButton from '@/components/BeeButton/index.vue'
 import BeeIcon from '@/components/BeeIcon/index.vue'
 
 import { useClipboard } from '@/composables/useClipboard'

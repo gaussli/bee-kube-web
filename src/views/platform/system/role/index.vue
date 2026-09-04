@@ -224,8 +224,8 @@ import type { RoleQueryReq, RoleResp } from '@/types/platform/role'
 
 import { changeRoleStatus, getRolePage, removeRole, batchRemoveRoles } from '@/api/platform/role'
 
+import BeeButton from '@/components/base/BeeButton/index.vue'
 import BeeAuditCell from '@/components/BeeAuditCell/index.vue'
-import BeeButton from '@/components/BeeButton/index.vue'
 import BeeDialog from '@/components/BeeDialog/index.vue'
 import BeeIconLabel from '@/components/BeeIconLabel/index.vue'
 import BeeInputSearch from '@/components/BeeInputSearch/index.vue'

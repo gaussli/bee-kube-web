@@ -6,7 +6,7 @@
         <el-checkbox v-model="leftCheckedAll" :indeterminate="leftIndeterminate" @change="handleLeftCheckAll" />
         <span class="header-title">{{ leftTitle }}</span>
         <span class="header-count">{{ leftSelectedCount }} / {{ leftData.length }}</span>
-        <BeeInputSearch v-model="leftSearch" placeholder="搜索" size="default" class="header-search" />
+        <BeeInputSearch v-model="leftSearch" class="header-search" placeholder="搜索" size="default" />
       </div>
       <div class="panel-body">
         <div
@@ -16,11 +16,11 @@
           :class="{ 'is-checked': leftCheckedKeys.has(getItemKey(item)) }"
           @click="handleLeftItemClick(item)"
         >
-          <slot name="left" :item="item">
+          <slot :item="item" name="left">
             <el-checkbox
               :model-value="leftCheckedKeys.has(getItemKey(item))"
-              @click.stop
               @change="handleLeftItemCheck(item)"
+              @click.stop
             />
             <span class="item-label">{{ getItemLabel(item) }}</span>
           </slot>
@@ -48,7 +48,7 @@
         <el-checkbox v-model="rightCheckedAll" :indeterminate="rightIndeterminate" @change="handleRightCheckAll" />
         <span class="header-title">{{ rightTitle }}</span>
         <span class="header-count">{{ rightSelectedCount }} / {{ rightData.length }}</span>
-        <BeeInputSearch v-model="rightSearch" placeholder="搜索" size="default" class="header-search" />
+        <BeeInputSearch v-model="rightSearch" class="header-search" placeholder="搜索" size="default" />
       </div>
       <div class="panel-body">
         <div
@@ -58,11 +58,11 @@
           :class="{ 'is-checked': rightCheckedKeys.has(getItemKey(item)) }"
           @click="handleRightItemClick(item)"
         >
-          <slot name="right" :item="item">
+          <slot :item="item" name="right">
             <el-checkbox
               :model-value="rightCheckedKeys.has(getItemKey(item))"
-              @click.stop
               @change="handleRightItemCheck(item)"
+              @click.stop
             />
             <span class="item-label">{{ getItemLabel(item) }}</span>
           </slot>
@@ -80,7 +80,7 @@ import { computed, ref } from 'vue'
 
 import { ArrowLeft, ArrowRight } from '@element-plus/icons-vue'
 
-import BeeButton from '@/components/BeeButton/index.vue'
+import BeeButton from '@/components/base/BeeButton/index.vue'
 import BeeInputSearch from '@/components/BeeInputSearch/index.vue'
 
 defineOptions({ name: 'BeeTransfer' })

@@ -11,7 +11,7 @@
     </div>
 
     <!-- 详情主体 -->
-    <transition name="fade-slide" mode="out-in">
+    <transition mode="out-in" name="fade-slide">
       <div v-if="loaded" class="detail-body">
         <!-- 权限关键信息 -->
         <div class="permission-header">
@@ -21,7 +21,7 @@
           <div class="permission-meta">
             <div class="permission-name-row">
               <span class="permission-name">{{ permissionData.name }}</span>
-              <el-tag :type="permissionData.status === 1 ? 'success' : 'danger'" size="small">
+              <el-tag size="small" :type="permissionData.status === 1 ? 'success' : 'danger'">
                 {{ permissionData.status === 1 ? '启用' : '禁用' }}
               </el-tag>
             </div>
@@ -166,7 +166,7 @@ import type { PermissionDetailResp } from '@/types/platform/permission'
 
 import { getPermissionDetail } from '@/api/platform/permission'
 
-import BeeButton from '@/components/BeeButton/index.vue'
+import BeeButton from '@/components/base/BeeButton/index.vue'
 import BeeDivider from '@/components/BeeDivider/index.vue'
 import BeeLabelCopyable from '@/components/BeeLabelCopyable/index.vue'
 import { BeeMessage } from '@/components/BeeMessage'

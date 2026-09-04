@@ -42,7 +42,7 @@ import { ArrowLeft, Close, Check } from '@element-plus/icons-vue'
 
 import type { UserDetailResp } from '@/types/index'
 
-import BeeButton from '@/components/BeeButton/index.vue'
+import BeeButton from '@/components/base/BeeButton/index.vue'
 import BeeDivider from '@/components/BeeDivider/index.vue'
 import { BeeMessage } from '@/components/BeeMessage'
 import UserForm from '@/components/UserForm/index.vue'

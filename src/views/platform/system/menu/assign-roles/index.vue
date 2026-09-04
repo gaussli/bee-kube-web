@@ -103,7 +103,7 @@ import { ArrowLeft, Collection, UserFilled } from '@element-plus/icons-vue'
 import type { MenuDetailResp } from '@/types/index'
 import type { RoleResp } from '@/types/index'
 
-import BeeButton from '@/components/BeeButton/index.vue'
+import BeeButton from '@/components/base/BeeButton/index.vue'
 import BeeDivider from '@/components/BeeDivider/index.vue'
 import BeeLabelCopyable from '@/components/BeeLabelCopyable/index.vue'
 import { BeeMessage } from '@/components/BeeMessage'

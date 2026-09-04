@@ -160,9 +160,9 @@ import type { CronJobQueryForm, CronJobListVo } from '@/types/kubernetes/workloa
 import { getNamespaceList } from '@/api/kubernetes/namespace/namespace'
 import { getCronJobList, deleteCronJob, deleteCronJobs } from '@/api/kubernetes/workload/cronjob'
 
+import BeeButton from '@/components/base/BeeButton/index.vue'
 import BeeActionCell, { type ActionItem } from '@/components/BeeActionCell/index.vue'
 import BeeAuditCell from '@/components/BeeAuditCell/index.vue'
-import BeeButton from '@/components/BeeButton/index.vue'
 import BeeCard from '@/components/BeeCard/index.vue'
 import BeeDialog from '@/components/BeeDialog/index.vue'
 import BeeInputSearch from '@/components/BeeInputSearch/index.vue'

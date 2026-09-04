@@ -72,7 +72,7 @@ import { useRoute } from 'vue-router'
 
 import type { PodListVo, PodQueryForm } from '@/types/kubernetes/pod'
 
-import BeeButton from '@/components/BeeButton/index.vue'
+import BeeButton from '@/components/base/BeeButton/index.vue'
 import BeeInputSearch from '@/components/BeeInputSearch/index.vue'
 import BeePagination from '@/components/BeePagination/index.vue'
 import BeePodInfoCell from '@/components/BeePodInfoCell/index.vue'

@@ -143,8 +143,8 @@ import type { NamespaceListVo, NamespaceQueryForm } from '@/types/kubernetes/nam
 
 import { getNamespaceList, deleteNamespace, deleteNamespaces } from '@/api/kubernetes/namespace/namespace'
 
+import BeeButton from '@/components/base/BeeButton/index.vue'
 import BeeAuditCell from '@/components/BeeAuditCell/index.vue'
-import BeeButton from '@/components/BeeButton/index.vue'
 import BeeCard from '@/components/BeeCard/index.vue'
 import BeeCircleButton from '@/components/BeeCircleButton/index.vue'
 import BeeDialog from '@/components/BeeDialog/index.vue'

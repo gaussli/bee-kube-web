@@ -20,7 +20,7 @@ import { useRouter } from 'vue-router'
 
 import { Lock } from '@element-plus/icons-vue'
 
-import BeeButton from '@/components/BeeButton/index.vue'
+import BeeButton from '@/components/base/BeeButton/index.vue'
 
 defineOptions({ name: 'NoPermission' })
 

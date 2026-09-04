@@ -80,7 +80,7 @@ import type { DaemonSetResp } from '@/types/kubernetes/workload/types'
 
 import { getDaemonSetDetail } from '@/api/kubernetes/workload/daemonset'
 
-import BeeButton from '@/components/BeeButton/index.vue'
+import BeeButton from '@/components/base/BeeButton/index.vue'
 import BeePageHeader from '@/components/BeePageHeader/index.vue'
 
 import { usePermission } from '@/composables/usePermission'

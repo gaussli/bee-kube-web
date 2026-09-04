@@ -1,10 +1,10 @@
 <template>
   <div class="cronjob-edit">
     <div class="page-header">
-      <BeePageHeader :icon="Clock" :title="`编辑定时任务: ${cronjobName}`" description="编辑 CronJob 配置。" />
+      <BeePageHeader description="编辑 CronJob 配置。" :icon="Clock" :title="`编辑定时任务: ${cronjobName}`" />
     </div>
     <div class="page-body">
-      <el-form ref="formRef" :model="formData" :rules="formRules" label-width="140px" class="edit-form">
+      <el-form ref="formRef" class="edit-form" label-width="140px" :model="formData" :rules="formRules">
         <el-form-item label="调度规则" prop="schedule">
           <el-input v-model="formData.schedule" placeholder="例如: */5 * * * *" style="width: 300px">
             <template #append
@@ -31,7 +31,7 @@
       <BeeButton @click="handleCancel"
         ><template #icon><Close /></template>取消</BeeButton
       >
-      <BeeButton type="primary" :loading="submitting" @click="handleSubmit"
+      <BeeButton :loading="submitting" type="primary" @click="handleSubmit"
         ><template #icon><Check /></template>保存</BeeButton
       >
     </div>
@@ -49,7 +49,7 @@ import type { CronJobDetailResp } from '@/types/kubernetes/workload/types'
 
 import { getCronJobDetail, updateCronJob } from '@/api/kubernetes/workload/cronjob'
 
-import BeeButton from '@/components/BeeButton/index.vue'
+import BeeButton from '@/components/base/BeeButton/index.vue'
 import { BeeMessage } from '@/components/BeeMessage'
 import BeePageHeader from '@/components/BeePageHeader/index.vue'
 

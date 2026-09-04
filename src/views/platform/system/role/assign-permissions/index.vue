@@ -11,7 +11,7 @@
     </div>
 
     <!-- 内容主体 -->
-    <transition name="fade-slide" mode="out-in">
+    <transition mode="out-in" name="fade-slide">
       <div v-if="loaded" class="assign-body">
         <!-- 角色信息 -->
         <div class="role-header">
@@ -21,7 +21,7 @@
           <div class="role-meta">
             <div class="role-name-row">
               <span class="role-name">{{ roleData.name }}</span>
-              <el-tag :type="roleData.status === 1 ? 'success' : 'danger'" size="small">
+              <el-tag size="small" :type="roleData.status === 1 ? 'success' : 'danger'">
                 {{ roleData.status === 1 ? '启用' : '禁用' }}
               </el-tag>
             </div>
@@ -42,8 +42,8 @@
               ref="menuTreeRef"
               v-model="selectedMenuIds"
               :data="menuTreeData"
-              :props="{ children: 'children', label: 'name' }"
               :default-expand-all="true"
+              :props="{ children: 'children', label: 'name' }"
             >
               <template #default="{ data }">
                 <div class="menu-tree-node">
@@ -83,7 +83,7 @@ import type { RoleDetailResp, MenuResp } from '@/types/platform/role'
 
 import { bindRoleMenus, getRoleDetail, getRoleMenus, getMenuPage } from '@/api/platform/role'
 
-import BeeButton from '@/components/BeeButton/index.vue'
+import BeeButton from '@/components/base/BeeButton/index.vue'
 import BeeDivider from '@/components/BeeDivider/index.vue'
 import BeeLabelCopyable from '@/components/BeeLabelCopyable/index.vue'
 import { BeeMessage } from '@/components/BeeMessage'

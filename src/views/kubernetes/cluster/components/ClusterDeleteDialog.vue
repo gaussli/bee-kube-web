@@ -21,7 +21,7 @@
 </template>
 
 <script setup lang="ts">
-import BeeButton from '@/components/BeeButton/index.vue'
+import BeeButton from '@/components/base/BeeButton/index.vue'
 import BeeIcon from '@/components/BeeIcon/index.vue'
 
 defineOptions({ name: 'ClusterDeleteDialog' })

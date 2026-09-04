@@ -41,7 +41,7 @@ import type { DaemonSetResp } from '@/types/kubernetes/workload/types'
 
 import { getDaemonSetDetail, updateDaemonSet } from '@/api/kubernetes/workload/daemonset'
 
-import BeeButton from '@/components/BeeButton/index.vue'
+import BeeButton from '@/components/base/BeeButton/index.vue'
 import { BeeMessage } from '@/components/BeeMessage'
 import BeePageHeader from '@/components/BeePageHeader/index.vue'
 

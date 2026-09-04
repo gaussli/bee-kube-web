@@ -3,9 +3,9 @@
     <!-- 页面标题 -->
     <div class="page-header">
       <BeePageHeader
+        description="查看节点详细信息、资源使用情况、标签和污点等。"
         :icon="Box"
         :title="`节点详情: ${nodeUid}`"
-        description="查看节点详细信息、资源使用情况、标签和污点等。"
       />
     </div>
 
@@ -22,7 +22,7 @@
               </div>
               <div class="detail-item">
                 <span class="detail-label">状态:</span>
-                <el-tag :type="getStatusType(nodeData?.status)" size="small">{{ nodeData?.status }}</el-tag>
+                <el-tag size="small" :type="getStatusType(nodeData?.status)">{{ nodeData?.status }}</el-tag>
               </div>
             </div>
             <div class="detail-row">
@@ -138,7 +138,7 @@ import type { NodeListResp } from '@/types/kubernetes/node'
 
 import { getNodeDetail } from '@/api/kubernetes/node'
 
-import BeeButton from '@/components/BeeButton/index.vue'
+import BeeButton from '@/components/base/BeeButton/index.vue'
 import BeePageHeader from '@/components/BeePageHeader/index.vue'
 import BeeTag from '@/components/BeeTag/index.vue'
 

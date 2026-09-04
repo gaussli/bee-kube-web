@@ -11,9 +11,9 @@
     </div>
 
     <!-- 表单主体 -->
-    <transition name="fade-slide" mode="out-in">
+    <transition mode="out-in" name="fade-slide">
       <div v-if="loaded" class="form-body">
-        <el-form ref="formRef" :model="formData" :rules="rules" label-width="120px">
+        <el-form ref="formRef" label-width="120px" :model="formData" :rules="rules">
           <el-form-item label="名称">
             <el-input v-model="formData.name" disabled />
           </el-form-item>
@@ -21,7 +21,7 @@
             <el-input v-model="formData.apiServer" disabled />
           </el-form-item>
           <el-form-item label="描述" prop="description">
-            <el-input v-model="formData.description" type="textarea" placeholder="请输入描述" />
+            <el-input v-model="formData.description" placeholder="请输入描述" type="textarea" />
           </el-form-item>
         </el-form>
       </div>
@@ -48,7 +48,7 @@ import { useRouter } from 'vue-router'
 
 import { ArrowLeft, Check, Close } from '@element-plus/icons-vue'
 
-import BeeButton from '@/components/BeeButton/index.vue'
+import BeeButton from '@/components/base/BeeButton/index.vue'
 import BeeDivider from '@/components/BeeDivider/index.vue'
 
 defineOptions({ name: 'ClusterEdit' })

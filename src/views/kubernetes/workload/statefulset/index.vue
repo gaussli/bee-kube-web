@@ -161,9 +161,9 @@ import type { StatefulSetQueryForm, StatefulSetListVo } from '@/types/kubernetes
 import { getNamespaceList } from '@/api/kubernetes/namespace/namespace'
 import { getStatefulSetList, deleteStatefulSet, deleteStatefulSets } from '@/api/kubernetes/workload/statefulset'
 
+import BeeButton from '@/components/base/BeeButton/index.vue'
 import BeeActionCell, { type ActionItem } from '@/components/BeeActionCell/index.vue'
 import BeeAuditCell from '@/components/BeeAuditCell/index.vue'
-import BeeButton from '@/components/BeeButton/index.vue'
 import BeeCard from '@/components/BeeCard/index.vue'
 import BeeDialog from '@/components/BeeDialog/index.vue'
 import BeeInputSearch from '@/components/BeeInputSearch/index.vue'
