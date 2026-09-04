@@ -7,7 +7,7 @@
 
 <script setup lang="ts">
 import BeeIcon from '@/components/base/BeeIcon/index.vue'
-import { BeeMessage } from '@/components/BeeMessage'
+import { BeeMessage } from '@/components/base/BeeMessage'
 
 defineOptions({ name: 'BeeLabelCopyable' })
 

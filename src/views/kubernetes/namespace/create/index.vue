@@ -78,7 +78,7 @@ import type { NamespaceReq } from '@/types/index'
 import { createNamespace } from '@/api/kubernetes/namespace/namespace'
 
 import BeeButton from '@/components/base/BeeButton/index.vue'
-import { BeeMessage } from '@/components/BeeMessage'
+import { BeeMessage } from '@/components/base/BeeMessage'
 import BeePageHeader from '@/components/BeePageHeader/index.vue'
 
 defineOptions({ name: 'NamespaceCreate' })

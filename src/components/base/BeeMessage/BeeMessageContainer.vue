@@ -12,7 +12,7 @@
 </template>
 
 <script setup lang="ts">
-import BeeMessageItem from './BeeMessage.vue'
+import BeeMessageItem from './BeeMessageItem.vue'
 import { messageItemList, removeMessage } from './store.ts'
 
 defineOptions({ name: 'BeeMessageContainer' })

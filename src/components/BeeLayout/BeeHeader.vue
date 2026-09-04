@@ -5,13 +5,13 @@
     </div>
 
     <div class="header-title">
-      <img src="@/assets/bee.svg" alt="logo" />
+      <img alt="logo" src="@/assets/bee.svg" />
       <span>Bee Kube</span>
     </div>
 
     <div class="header-right">
-      <BeeCircleButton icon="basic-help" :border="false" tooltip="帮助" />
-      <BeeCircleButton :icon="fullscreenIcon" :tooltip="fullscreenTooltip" :border="false" @click="toggleFullscreen" />
+      <BeeCircleButton :border="false" icon="basic-help" tooltip="帮助" />
+      <BeeCircleButton :border="false" :icon="fullscreenIcon" :tooltip="fullscreenTooltip" @click="toggleFullscreen" />
       <BeeDropdown :options="dropdownOptions" @change="handleDropdownChange">
         <BeeHeaderUserInfo
           :img="currentUser?.avatarId"
@@ -38,10 +38,10 @@ import type { TabType } from '@/stores/app'
 
 import { logout } from '@/api/auth/auth'
 
+import { BeeMessage } from '@/components/base/BeeMessage'
 import BeeCircleButton from '@/components/BeeCircleButton/index.vue'
 import BeeDropdown from '@/components/BeeDropdown/index.vue'
 import BeeHeaderUserInfo from '@/components/BeeHeaderUserInfo/index.vue'
-import { BeeMessage } from '@/components/BeeMessage'
 import BeeSegmentedControl from '@/components/BeeSegmentedControl/index.vue'
 
 import { useAppStore, useUserStore } from '@/stores'

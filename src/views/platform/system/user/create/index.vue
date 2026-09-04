@@ -39,8 +39,8 @@ import { useRouter } from 'vue-router'
 import { ArrowLeft, Close, Check } from '@element-plus/icons-vue'
 
 import BeeButton from '@/components/base/BeeButton/index.vue'
+import { BeeMessage } from '@/components/base/BeeMessage'
 import BeeDivider from '@/components/BeeDivider/index.vue'
-import { BeeMessage } from '@/components/BeeMessage'
 import UserForm from '@/components/UserForm/index.vue'
 
 defineOptions({ name: 'UserCreate' })

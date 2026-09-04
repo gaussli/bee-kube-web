@@ -45,8 +45,8 @@ import type { PermissionDetailResp } from '@/types/platform/permission'
 import { getPermissionDetail, updatePermission } from '@/api/platform/permission'
 
 import BeeButton from '@/components/base/BeeButton/index.vue'
+import { BeeMessage } from '@/components/base/BeeMessage'
 import BeeDivider from '@/components/BeeDivider/index.vue'
-import { BeeMessage } from '@/components/BeeMessage'
 import PermissionForm from '@/components/PermissionForm/index.vue'
 
 defineOptions({ name: 'PermissionEdit' })

@@ -43,8 +43,8 @@ import type { MenuDetailResp } from '@/types/platform/menu'
 import { getMenuDetail, updateMenu } from '@/api/platform/menu'
 
 import BeeButton from '@/components/base/BeeButton/index.vue'
+import { BeeMessage } from '@/components/base/BeeMessage'
 import BeeDivider from '@/components/BeeDivider/index.vue'
-import { BeeMessage } from '@/components/BeeMessage'
 import MenuForm from '@/components/MenuForm/index.vue'
 
 defineOptions({ name: 'MenuEdit' })

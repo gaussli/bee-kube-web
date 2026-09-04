@@ -51,7 +51,7 @@ import type { JobResp } from '@/types/kubernetes/workload/types'
 import { createJob } from '@/api/kubernetes/workload/job'
 
 import BeeButton from '@/components/base/BeeButton/index.vue'
-import { BeeMessage } from '@/components/BeeMessage'
+import { BeeMessage } from '@/components/base/BeeMessage'
 import BeePageHeader from '@/components/BeePageHeader/index.vue'
 
 defineOptions({ name: 'JobCreate' })

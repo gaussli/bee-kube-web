@@ -4,7 +4,7 @@ import type { AxiosInstance, AxiosRequestConfig, AxiosResponse, InternalAxiosReq
 
 import { mockRequest } from '@/mock'
 
-import { BeeMessage } from '@/components/BeeMessage'
+import { BeeMessage } from '@/components/base/BeeMessage'
 
 import router from '@/router'
 import { useUserStore } from '@/stores'

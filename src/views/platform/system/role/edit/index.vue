@@ -45,8 +45,8 @@ import type { RoleDetailResp } from '@/types/platform/role'
 import { getRoleDetail, updateRole } from '@/api/platform/role'
 
 import BeeButton from '@/components/base/BeeButton/index.vue'
+import { BeeMessage } from '@/components/base/BeeMessage'
 import BeeDivider from '@/components/BeeDivider/index.vue'
-import { BeeMessage } from '@/components/BeeMessage'
 import RoleForm from '@/components/RoleForm/index.vue'
 
 defineOptions({ name: 'RoleEdit' })

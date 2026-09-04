@@ -50,7 +50,7 @@ import type { CronJobDetailResp } from '@/types/kubernetes/workload/types'
 import { getCronJobDetail, updateCronJob } from '@/api/kubernetes/workload/cronjob'
 
 import BeeButton from '@/components/base/BeeButton/index.vue'
-import { BeeMessage } from '@/components/BeeMessage'
+import { BeeMessage } from '@/components/base/BeeMessage'
 import BeePageHeader from '@/components/BeePageHeader/index.vue'
 
 defineOptions({ name: 'CronJobEdit' })

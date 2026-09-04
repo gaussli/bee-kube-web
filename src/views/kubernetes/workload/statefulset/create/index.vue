@@ -51,7 +51,7 @@ import type { StatefulSetCreateForm } from '@/types/kubernetes/workload/types'
 import { createStatefulSet } from '@/api/kubernetes/workload/statefulset'
 
 import BeeButton from '@/components/base/BeeButton/index.vue'
-import { BeeMessage } from '@/components/BeeMessage'
+import { BeeMessage } from '@/components/base/BeeMessage'
 import BeePageHeader from '@/components/BeePageHeader/index.vue'
 
 defineOptions({ name: 'StatefulSetCreate' })

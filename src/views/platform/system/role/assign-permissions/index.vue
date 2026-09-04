@@ -84,9 +84,9 @@ import type { RoleDetailResp, MenuResp } from '@/types/platform/role'
 import { bindRoleMenus, getRoleDetail, getRoleMenus, getMenuPage } from '@/api/platform/role'
 
 import BeeButton from '@/components/base/BeeButton/index.vue'
+import { BeeMessage } from '@/components/base/BeeMessage'
 import BeeDivider from '@/components/BeeDivider/index.vue'
 import BeeLabelCopyable from '@/components/BeeLabelCopyable/index.vue'
-import { BeeMessage } from '@/components/BeeMessage'
 import BeeTree from '@/components/BeeTree/index.vue'
 
 defineOptions({ name: 'RoleAssignPermissions' })

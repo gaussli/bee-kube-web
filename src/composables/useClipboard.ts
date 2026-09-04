@@ -1,4 +1,4 @@
-import { BeeMessage } from '@/components/BeeMessage'
+import { BeeMessage } from '@/components/base/BeeMessage'
 
 /**
  *

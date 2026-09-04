@@ -104,9 +104,9 @@ import type { UserResp } from '@/types/index'
 import type { RoleDetailResp } from '@/types/index'
 
 import BeeButton from '@/components/base/BeeButton/index.vue'
+import { BeeMessage } from '@/components/base/BeeMessage'
 import BeeDivider from '@/components/BeeDivider/index.vue'
 import BeeLabelCopyable from '@/components/BeeLabelCopyable/index.vue'
-import { BeeMessage } from '@/components/BeeMessage'
 import BeeTag from '@/components/BeeTag/index.vue'
 import BeeTransfer from '@/components/BeeTransfer/index.vue'
 

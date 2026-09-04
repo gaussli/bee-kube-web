@@ -6,23 +6,23 @@
           <span>Bee Kube 管理平台</span>
         </div>
       </template>
-      <el-form ref="formRef" :model="loginForm" :rules="rules" label-width="0">
+      <el-form ref="formRef" label-width="0" :model="loginForm" :rules="rules">
         <el-form-item prop="username">
           <el-input v-model="loginForm.username" placeholder="请输入用户名" prefix-icon="User" size="large" />
         </el-form-item>
         <el-form-item prop="password">
           <el-input
             v-model="loginForm.password"
-            type="password"
             placeholder="请输入密码"
             prefix-icon="Lock"
             show-password
             size="large"
+            type="password"
             @keyup.enter="handleLogin"
           />
         </el-form-item>
         <el-form-item>
-          <el-button type="primary" size="large" :loading="loading" class="login-btn" @click="handleLogin">
+          <el-button class="login-btn" :loading="loading" size="large" type="primary" @click="handleLogin">
             登 录
           </el-button>
         </el-form-item>
@@ -38,7 +38,7 @@ import { useRoute, useRouter } from 'vue-router'
 
 import { getCurrentUser, login } from '@/api/auth/auth'
 
-import { BeeMessage } from '@/components/BeeMessage'
+import { BeeMessage } from '@/components/base/BeeMessage'
 
 import { useUserStore } from '@/stores'
 

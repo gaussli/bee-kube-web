@@ -122,12 +122,12 @@ import type { ClusterListVo, ClusterQueryForm } from '@/types/kubernetes/cluster
 import { getClusterList, deleteCluster, deleteClusters } from '@/api/kubernetes/cluster'
 
 import BeeButton from '@/components/base/BeeButton/index.vue'
+import { BeeMessage } from '@/components/base/BeeMessage'
 import BeeActionCell, { type ActionItem } from '@/components/BeeActionCell/index.vue'
 import BeeAuditCell from '@/components/BeeAuditCell/index.vue'
 import BeeCard from '@/components/BeeCard/index.vue'
 import BeeClusterInfoCell from '@/components/BeeClusterInfoCell/index.vue'
 import BeeInputSearch from '@/components/BeeInputSearch/index.vue'
-import { BeeMessage } from '@/components/BeeMessage'
 import BeePage from '@/components/BeePage/index.vue'
 import BeePageHeader from '@/components/BeePageHeader/index.vue'
 import BeePagination from '@/components/BeePagination/index.vue'

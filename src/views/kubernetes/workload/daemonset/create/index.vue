@@ -45,7 +45,7 @@ import type { DaemonSetResp } from '@/types/kubernetes/workload/types'
 import { createDaemonSet } from '@/api/kubernetes/workload/daemonset'
 
 import BeeButton from '@/components/base/BeeButton/index.vue'
-import { BeeMessage } from '@/components/BeeMessage'
+import { BeeMessage } from '@/components/base/BeeMessage'
 import BeePageHeader from '@/components/BeePageHeader/index.vue'
 
 defineOptions({ name: 'DaemonSetCreate' })

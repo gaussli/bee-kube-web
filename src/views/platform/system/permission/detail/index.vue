@@ -167,9 +167,9 @@ import type { PermissionDetailResp } from '@/types/platform/permission'
 import { getPermissionDetail } from '@/api/platform/permission'
 
 import BeeButton from '@/components/base/BeeButton/index.vue'
+import { BeeMessage } from '@/components/base/BeeMessage'
 import BeeDivider from '@/components/BeeDivider/index.vue'
 import BeeLabelCopyable from '@/components/BeeLabelCopyable/index.vue'
-import { BeeMessage } from '@/components/BeeMessage'
 
 defineOptions({ name: 'PermissionDetail' })
 

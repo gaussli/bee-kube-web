@@ -2,14 +2,14 @@
   <aside class="bee-aside">
     <BeeMenu :default-active="defaultActive" @select="handleSelect">
       <template v-for="item in currentMenuList" :key="item.id">
-        <BeeMenuItem v-if="!item.children?.length" :index="item.code" :label="item.name" :icon="item.icon" />
-        <BeeSubMenu v-else :index="item.code" :label="item.name" :icon="item.icon">
+        <BeeMenuItem v-if="!item.children?.length" :icon="item.icon" :index="item.code" :label="item.name" />
+        <BeeSubMenu v-else :icon="item.icon" :index="item.code" :label="item.name">
           <BeeMenuItem
             v-for="child in item.children"
             :key="child.id"
+            :icon="child.icon"
             :index="child.code"
             :label="child.name"
-            :icon="child.icon"
           />
         </BeeSubMenu>
       </template>
@@ -27,10 +27,10 @@ import { computed } from 'vue'
 
 import { useRoute, useRouter } from 'vue-router'
 
+import { BeeMessage } from '@/components/base/BeeMessage'
 import BeeMenu from '@/components/BeeMenu/BeeMenu.vue'
 import BeeMenuItem from '@/components/BeeMenu/BeeMenuItem.vue'
 import BeeSubMenu from '@/components/BeeMenu/BeeSubMenu.vue'
-import { BeeMessage } from '@/components/BeeMessage'
 
 import { useAppStore, useUserStore, useKubernetesStore } from '@/stores'
 
