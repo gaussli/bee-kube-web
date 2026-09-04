@@ -6,7 +6,7 @@ import { generateId } from '@/mock/utils'
 export const mockClusterList: ClusterListVo[] = [
   {
     uid: generateId(),
-    name: 'prod-beijing-01prod-beijing-01prod-beijing-01prod-beijing-01prod-beijing-01prod-beijing-01prod-beijing-01',
+    name: 'prod-beijing-01',
     description: '北京生产集群，核心业务',
     status: 'Healthy',
     statusMsg: '所有节点运行正常',

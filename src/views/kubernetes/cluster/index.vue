@@ -373,16 +373,16 @@ onMounted(() => {
 
 .page-body {
   display: flex;
-  gap: $spacing-16;
+  gap: 16px;
   flex-direction: column;
   flex: 1;
   min-height: 0;
-  padding: $spacing-16;
+  padding: 16px;
   overflow: hidden;
 
   &__toolbar {
     display: flex;
-    gap: $spacing-8;
+    gap: 8px;
     flex-flow: row wrap;
     align-items: center;
 
@@ -395,7 +395,7 @@ onMounted(() => {
       flex-shrink: 0;
       width: 1px;
       height: 16px;
-      margin: 0 $spacing-8;
+      margin: 0 8px;
       background: $color-separator;
     }
   }
@@ -407,29 +407,17 @@ onMounted(() => {
 
   &__footer {
     display: flex;
-    flex-direction: row;
+    gap: 8px;
+    flex-flow: row wrap;
     justify-content: space-between;
     align-items: center;
 
     &-actions {
       display: flex;
-      gap: $spacing-8;
-      flex-direction: row;
+      gap: 8px;
+      flex-flow: row wrap;
       align-items: center;
     }
   }
-}
-
-.dialog-content {
-  strong {
-    color: $color-primary;
-  }
-}
-
-.delete-dialog-tags {
-  display: flex;
-  gap: $spacing-8;
-  flex-flow: row wrap;
-  margin: 12px 0;
 }
 </style>
