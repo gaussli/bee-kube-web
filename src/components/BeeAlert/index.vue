@@ -1,6 +1,6 @@
 <template>
   <div class="bee-alert" :class="`bee-alert--${type}`">
-    <BeeIcon v-if="showIcon" :name="iconName" :size="12" class="bee-alert__icon" />
+    <BeeIcon v-if="showIcon" class="bee-alert__icon" :name="iconName" :size="12" />
     <span v-if="label" class="bee-alert__label">{{ label }}</span>
   </div>
 </template>

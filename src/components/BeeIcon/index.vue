@@ -1,5 +1,5 @@
 <template>
-  <svg class="bee-icon" :style="iconStyle" aria-hidden="true">
+  <svg aria-hidden="true" class="bee-icon" :style="iconStyle">
     <use :xlink:href="iconName" />
   </svg>
 </template>
@@ -38,7 +38,7 @@ const iconStyle = computed(() => {
 .bee-icon {
   --bee-icon-size: 24px;
 
-  display: inline-block;
+  display: block;
   width: var(--bee-icon-size);
   height: var(--bee-icon-size);
   color: inherit;

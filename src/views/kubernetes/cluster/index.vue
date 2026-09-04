@@ -97,13 +97,11 @@
     </BeeCard>
 
     <!-- 单个删除 Dialog -->
-    <BeeDialog v-model="deleteDialogVisible" title="确认删除" @confirm="handleConfirmDelete">
-      <div class="dialog-content">
-        <p>
-          确定要删除集群 <strong>{{ currentTargetRow?.name }}</strong> 吗？
-        </p>
-      </div>
-    </BeeDialog>
+    <ClusterDeleteDialog
+      v-model="deleteDialogVisible"
+      :cluster="currentTargetRow?.name ?? ''"
+      @confirm="handleConfirmDelete"
+    />
 
     <!-- 批量删除 Dialog -->
     <BeeDialog v-model="batchDeleteDialogVisible" title="确认删除" @confirm="handleConfirmBatchDelete">
@@ -166,6 +164,8 @@ import BeeTag from '@/components/BeeTag/index.vue'
 import { usePermission } from '@/composables/usePermission'
 import { CLUSTER_PAGE_META, CLUSTER_STATUS_OPTIONS } from '@/config/kubernetes/cluster'
 import { useKubernetesStore } from '@/stores'
+
+import ClusterDeleteDialog from './components/ClusterDeleteDialog.vue'
 
 defineOptions({ name: 'ClusterPage' })
 
@@ -330,7 +330,6 @@ async function handleConfirmDelete() {
   try {
     await deleteCluster(currentTargetRow.value.uid)
     BeeMessage.success('删除成功')
-    deleteDialogVisible.value = false
     currentTargetRow.value = null
     void loadData()
   } catch (err) {

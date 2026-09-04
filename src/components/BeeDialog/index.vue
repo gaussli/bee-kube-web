@@ -6,7 +6,7 @@
           <!-- 头部：标题 + 关闭按钮 -->
           <div class="dialog-header">
             <span class="dialog-title">{{ title }}</span>
-            <BeeCircleButton icon="basic-close" tooltip="关闭" :border="false" size="small" @click="handleClose" />
+            <BeeCircleButton :border="false" icon="basic-close" size="small" tooltip="关闭" @click="handleClose" />
           </div>
 
           <!-- 内容区：优先渲染 slot -->

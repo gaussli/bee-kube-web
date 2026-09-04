@@ -1,172 +1,158 @@
 <template>
-  <button
-    class="bee-button"
-    :class="[`bee-button--${type}`, { 'is-disabled': disabled, 'is-loading': loading }]"
-    :disabled="disabled || loading"
-    @click="handleClick"
-  >
-    <BeeIcon v-if="loading" name="basic-loading" :size="14" class="bee-button__icon is-loading" />
-    <BeeIcon v-else-if="icon" :name="icon" :size="14" class="bee-button__icon" />
-    <slot v-else-if="$slots.icon" name="icon" />
-    <span class="bee-button__label">
-      <slot />
-    </span>
+  <button class="bee-button" :class="[typeClass, sizeClass, isDisabledClass, isLoadingClass]" @click="handleClick">
+    <BeeIcon v-if="iconName" class="bee-button__icon" :name="iconName" :size="iconSize" />
+    <span><slot /></span>
   </button>
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue'
+import { computed, ref } from 'vue'
 
 import BeeIcon from '@/components/BeeIcon/index.vue'
 
-defineOptions({ name: 'BeeButton' })
+defineOptions({ name: 'BeeButtonNew' })
 
-withDefaults(
+// ==================== Prop & Emit ====================
+const props = withDefaults(
   defineProps<{
     type?: 'default' | 'primary' | 'success' | 'warning' | 'danger'
+    size?: 'default' | 'small' | 'large'
     disabled?: boolean
     icon?: string
   }>(),
-  {
-    type: 'default',
-    disabled: false,
-    icon: '',
-  },
+  { type: 'default', size: 'default', disabled: false, icon: undefined },
 )
-
 const emit = defineEmits<{
-  click: [event: Event]
+  click: [event: MouseEvent]
 }>()
 
+// ==================== Reactive State ====================
 const loading = ref(false)
+const typeClass = computed(() => (props.type !== 'default' ? 'bee-button--' + props.type : ''))
+const sizeClass = computed(() => (props.size !== 'default' ? 'bee-button--' + props.size : ''))
+const isDisabledClass = computed(() => (props.disabled || loading.value ? 'is-disabled' : ''))
+const isLoadingClass = computed(() => (loading.value ? 'is-loading' : ''))
+const iconName = computed(() => (loading.value ? 'basic-loading' : props.icon))
+const iconSize = computed(() => {
+  switch (props.size) {
+    case 'small':
+      return 12
+    case 'large':
+      return 16
+    default:
+      return 14
+  }
+})
 
-async function handleClick(event: Event) {
-  if (loading.value) return
+// ==================== Handler ====================
+/**
+ * 点击事件处理
+ * @param event - 原生鼠标事件对象
+ */
+function handleClick(event: MouseEvent) {
+  if (loading.value) return // loading 期间直接忽略，避免重复触发
   loading.value = true
   try {
-    emit('click', event)
+    emit('click', event) // emit 为同步派发，若监听器是异步函数不会等待其完成
   } finally {
-    loading.value = false
+    loading.value = false // 无论是否抛出异常都复位，防止按钮卡在 loading 态
   }
 }
-
-defineExpose({ loading })
 </script>
 
 <style lang="scss" scoped>
 @use 'sass:map';
+@use './variables' as *;
 
 .bee-button {
-  // 类型颜色 CSS 变量（使用者可覆盖）
-  /* stylelint-disable order/custom-properties-alphabetical-order */
-  // ---- default 类型 ----
-  --bee-button-color-default: #{$color-text-secondary};
-  --bee-button-color-default-hover: #{$color-text-secondary};
-  --bee-button-color-default-active: #{$color-text-primary};
-  --bee-button-color-default-disabled: #{rgba($color-text-secondary, 0.3)};
-  --bee-button-bg-default-hover: #{rgba($color-text-secondary, 0.1)};
-  --bee-button-bg-default-active: #{rgba($color-text-secondary, 0.2)};
+  $types: primary, success, warning, danger;
 
-  // ---- primary 类型 ----
-  --bee-button-color-primary: #{map.get($colors, 'primary', 50)};
-  --bee-button-color-primary-hover: #{map.get($colors, 'primary', 60)};
-  --bee-button-color-primary-active: #{map.get($colors, 'primary', 40)};
-  --bee-button-color-primary-disabled: #{rgba(map.get($colors, 'primary', 50), 0.3)};
-  --bee-button-bg-primary-hover: #{rgba(map.get($colors, 'primary', 50), 0.1)};
-  --bee-button-bg-primary-active: #{rgba(map.get($colors, 'primary', 50), 0.2)};
-
-  // ---- success 类型 ----
-  --bee-button-color-success: #{map.get($colors, 'success', 50)};
-  --bee-button-color-success-hover: #{map.get($colors, 'success', 60)};
-  --bee-button-color-success-active: #{map.get($colors, 'success', 40)};
-  --bee-button-color-success-disabled: #{rgba(map.get($colors, 'success', 50), 0.3)};
-  --bee-button-bg-success-hover: #{rgba(map.get($colors, 'success', 50), 0.1)};
-  --bee-button-bg-success-active: #{rgba(map.get($colors, 'success', 50), 0.2)};
-
-  // ---- warning 类型 ----
-  --bee-button-color-warning: #{map.get($colors, 'warning', 50)};
-  --bee-button-color-warning-hover: #{map.get($colors, 'warning', 60)};
-  --bee-button-color-warning-active: #{map.get($colors, 'warning', 40)};
-  --bee-button-color-warning-disabled: #{rgba(map.get($colors, 'warning', 50), 0.3)};
-  --bee-button-bg-warning-hover: #{rgba(map.get($colors, 'warning', 50), 0.1)};
-  --bee-button-bg-warning-active: #{rgba(map.get($colors, 'warning', 50), 0.2)};
-
-  // ---- danger 类型 ----
-  --bee-button-color-danger: #{map.get($colors, 'danger', 50)};
-  --bee-button-color-danger-hover: #{map.get($colors, 'danger', 60)};
-  --bee-button-color-danger-active: #{map.get($colors, 'danger', 40)};
-  --bee-button-color-danger-disabled: #{rgba(map.get($colors, 'danger', 50), 0.3)};
-  --bee-button-bg-danger-hover: #{rgba(map.get($colors, 'danger', 50), 0.1)};
-  --bee-button-bg-danger-active: #{rgba(map.get($colors, 'danger', 50), 0.2)};
-  /* stylelint-enable order/custom-properties-alphabetical-order */
-
-  $types: default, primary, success, warning, danger;
-
-  display: inline-flex;
-  gap: $spacing-4;
+  display: flex;
+  gap: 4px;
+  flex-direction: row;
   justify-content: center;
   align-items: center;
-  height: 32px;
-  padding: 0 $spacing-16;
+  width: var(--bee-button-width, $width);
+  height: 40px;
+  padding: 0 20px;
   border: 1px solid;
-  border-radius: $radius-full;
-  font-size: $font-size-14;
-  white-space: nowrap;
-  background: transparent;
+  border-color: var(--bee-button-color-border-default, map.get($colors-default, 'border', 'base'));
+  border-radius: 9999px;
+  font-size: 14px;
+  font-weight: normal;
+  color: var(--bee-button-color-text-default, map.get($colors-default, 'text', 'base'));
+  background: var(--bee-button-color-bg-default, map.get($colors-default, 'bg', 'base'));
   cursor: pointer;
   user-select: none;
-  transition: all 0.3s;
 
-  &__icon.is-loading {
-    animation: rotating 2s linear infinite;
+  &--small {
+    height: 32px;
+    padding: 0 14px;
+    font-size: 12px;
   }
 
-  // ---- 默认（Rest）状态 ----
+  &--large {
+    height: 48px;
+    padding: 0 28px;
+    font-size: 16px;
+  }
+
+  &:hover:not(.is-disabled) {
+    border-color: var(--bee-button-color-border-default-hover, map.get($colors-default, 'border', 'hover'));
+    color: var(--bee-button-color-text-default-hover, map.get($colors-default, 'text', 'hover'));
+    background: var(--bee-button-color-bg-default-hover, map.get($colors-default, 'bg', 'hover'));
+  }
+
+  &:active:not(.is-disabled) {
+    border-color: var(--bee-button-color-border-default-active, map.get($colors-default, 'border', 'active'));
+    color: var(--bee-button-color-text-default-active, map.get($colors-default, 'text', 'active'));
+    background: var(--bee-button-color-bg-default-active, map.get($colors-default, 'bg', 'active'));
+  }
+
   @each $type in $types {
+    $colors-type: map.get($color, $type);
+
     &.bee-button--#{$type} {
-      border-color: var(--bee-button-color-#{$type});
-      color: var(--bee-button-color-#{$type});
-    }
-  }
+      border-color: var(--bee-button-color-border-#{$type}, map.get($colors-type, 'border', 'base'));
+      color: var(--bee-button-color-text-#{$type}, map.get($colors-type, 'text', 'base'));
+      background: var(--bee-button-color-bg-#{$type}, map.get($colors-type, 'bg', 'base'));
 
-  // ---- 悬停（Hover）状态 ----
-  &:hover:not(.is-disabled, .is-loading) {
-    @each $type in $types {
-      &.bee-button--#{$type} {
-        border-color: var(--bee-button-color-#{$type}-hover);
-        color: var(--bee-button-color-#{$type}-hover);
-        background: var(--bee-button-bg-#{$type}-hover);
+      &:hover {
+        border-color: var(--bee-button-color-border-#{$type}-hover, map.get($colors-type, 'border', 'hover'));
+        color: var(--bee-button-color-text-#{$type}-hover, map.get($colors-type, 'text', 'hover'));
+        background: var(--bee-button-color-bg-#{$type}-hover, map.get($colors-type, 'bg', 'hover'));
+      }
+
+      &:active {
+        border-color: var(--bee-button-color-border-#{$type}-active, map.get($colors-type, 'border', 'active'));
+        color: var(--bee-button-color-text-#{$type}-active, map.get($colors-type, 'text', 'active'));
+        background: var(--bee-button-color-bg-#{$type}-active, map.get($colors-type, 'bg', 'active'));
       }
     }
   }
 
-  // ---- 激活（Active）状态 ----
-  &:active:not(.is-disabled, .is-loading) {
-    @each $type in $types {
-      &.bee-button--#{$type} {
-        border-color: var(--bee-button-color-#{$type}-active);
-        color: var(--bee-button-color-#{$type}-active);
-        background: var(--bee-button-bg-#{$type}-active);
-      }
-    }
-  }
-
-  // ---- 禁用（Disabled）状态 ----
   &.is-disabled {
-    background: transparent;
+    border-color: var(--bee-button-color-border-default-disabled, map.get($colors-default, 'border', 'disabled'));
+    color: var(--bee-button-color-text-default-disabled, map.get($colors-default, 'text', 'disabled'));
+    background: var(--bee-button-color-bg-default-disabled, map.get($colors-default, 'bg', 'disabled'));
     cursor: not-allowed;
 
     @each $type in $types {
+      $colors-type: map.get($color, $type);
       &.bee-button--#{$type} {
-        border-color: var(--bee-button-color-#{$type}-disabled);
-        color: var(--bee-button-color-#{$type}-disabled);
+        border-color: var(--bee-button-color-border-#{$type}-disabled, map.get($colors-type, 'border', 'disabled'));
+        color: var(--bee-button-color-text-#{$type}-disabled, map.get($colors-type, 'text', 'disabled'));
+        background: var(--bee-button-color-bg-#{$type}-disabled, map.get($colors-type, 'bg', 'disabled'));
       }
     }
   }
 
-  // ---- 加载（Loading）状态 ----
   &.is-loading {
     cursor: wait;
+
+    .bee-button__icon {
+      animation: rotating 2s linear infinite;
+    }
   }
 }
 

@@ -31,7 +31,7 @@ $colors: () !default;
  */
 @function generate-color-variants($hue, $step: 10) {
   $result: (
-    'bg': hsl(30deg 20% 10%)
+    'bg': hsl(30deg 20% 10%),
   );
 
   @for $s from 0 through math.div(100, $step) {
@@ -51,7 +51,7 @@ $colors: map.merge(
     'primary': generate-color-variants(30),
     'success': generate-color-variants(140),
     'warning': generate-color-variants(45),
-    'danger': generate-color-variants(355)
+    'danger': generate-color-variants(355),
   )
 );
 
@@ -60,15 +60,13 @@ $colors: map.merge(
 $color-primary: map.get($colors, 'primary', 50);
 
 // ---- 文字颜色 ----
-$color-text-regular: map.get($colors, 'gray', 100);
-$color-text-primary: map.get($colors, 'gray', 90);
-$color-text-secondary: map.get($colors, 'gray', 70);
-$color-text-tertiary: map.get($colors, 'gray', 50);
-$color-text-placeholder: map.get($colors, 'gray', 40);
-$color-text-disabled: map.get($colors, 'gray', 40);
-$color-text-success: map.get($colors, 'success', 50);
-$color-text-warning: map.get($colors, 'warning', 50);
-$color-text-danger: map.get($colors, 'danger1', 50);
+$color-text-regular: rgb(255 255 255);
+$color-text-primary: rgb(230 230 230);
+$color-text-secondary: rgb(180 180 180);
+$color-text-third: rgb(130 130 130);
+$color-text-tertiary: $color-text-third;
+$color-text-placeholder: $color-text-third;
+$color-text-disabled: rgb(80 80 80);
 
 // ---- 边框颜色 ----
 $color-border-primary: map.get($colors, 'gray', 90);
@@ -78,13 +76,16 @@ $color-border-placeholder: map.get($colors, 'gray', 40);
 $color-border-disabled: map.get($colors, 'gray', 40);
 $color-border-success: map.get($colors, 'success', 20);
 $color-border-warning: map.get($colors, 'warning', 20);
-$color-border-danger: map.get($colors, 'danger1', 20);
+$color-border-danger: map.get($colors, 'danger', 20);
 
 // ---- 背景颜色 ----
-$color-bg-page: map.get($colors, 'gray', 5);
-$color-bg-surface: map.get($colors, 'gray', 10);
-$color-bg-elevated: map.get($colors, 'gray', 15);
+$color-bg: #0d0d0d;
+$color-bg-page: rgb(10 10 10);
+$color-bg-card: rgb(20 20 20);
+$color-bg-elevated: rgb(30 30 30);
 $color-bg-mask: rgb(0 0 0 / 60%);
+$color-bg-dialog: rgb(30 30 30);
+$color-bg-surface: rgb(20 20 20);
 
 // 间距
 $spacing-4: 4px;
@@ -187,6 +188,113 @@ $border-tertiary: $bee-tertiary;
 $border-hover: $bee-hover;
 $border-active: $bee-primary;
 $border-disabled: #ffffff32;
+$colors-default: (
+  bg: (
+    base: transparent,
+    hover: rgb(48 48 48),
+    active: transparent,
+    disabled: transparent,
+  ),
+  border: (
+    base: rgb(153 153 153 / 50%),
+    hover: rgb(153 153 153 / 50%),
+    active: rgb(153 153 153 / 50%),
+    disabled: rgb(76.5 76.5 76.5 / 50%),
+  ),
+  text: (
+    base: $color-text-third,
+    hover: $color-text-secondary,
+    active: $color-text-secondary,
+    disabled: $color-text-disabled,
+  ),
+);
+$colors-primary: (
+  bg: (
+    base: rgb(30 20 0),
+    hover: rgb(60 30 0),
+    active: rgb(30 20 0),
+    disabled: rgb(20 10 0),
+  ),
+  border: (
+    base: rgb(200 100 0),
+    hover: rgb(200 100 0),
+    active: rgb(200 100 0),
+    disabled: rgb(80 50 0),
+  ),
+  text: (
+    base: rgb(200 100 0),
+    hover: rgb(200 100 0),
+    active: rgb(200 100 0),
+    disabled: rgb(80 50 0),
+  ),
+);
+$colors-success: (
+  bg: (
+    base: rgb(40 60 40),
+    hover: rgb(40 80 40),
+    active: rgb(40 50 40),
+    disabled: rgb(30 40 30),
+  ),
+  border: (
+    base: rgb(100 200 100),
+    hover: rgb(100 200 100),
+    active: rgb(100 200 100),
+    disabled: rgb(50 80 50),
+  ),
+  text: (
+    base: rgb(100 200 100),
+    hover: rgb(100 200 100),
+    active: rgb(100 200 100),
+    disabled: rgb(50 80 50),
+  ),
+);
+$colors-warning: (
+  bg: (
+    base: rgb(60 60 40),
+    hover: rgb(80 80 40),
+    active: rgb(50 50 40),
+    disabled: rgb(40 40 30),
+  ),
+  border: (
+    base: rgb(200 200 100),
+    hover: rgb(200 200 100),
+    active: rgb(200 200 100),
+    disabled: rgb(80 80 50),
+  ),
+  text: (
+    base: rgb(200 200 100),
+    hover: rgb(200 200 100),
+    active: rgb(200 200 100),
+    disabled: rgb(80 80 50),
+  ),
+);
+$colors-danger: (
+  bg: (
+    base: rgb(60 40 40),
+    hover: rgb(80 40 40),
+    active: rgb(50 40 40),
+    disabled: rgb(40 30 30),
+  ),
+  border: (
+    base: rgb(200 100 100),
+    hover: rgb(200 100 100),
+    active: rgb(200 100 100),
+    disabled: rgb(80 50 50),
+  ),
+  text: (
+    base: rgb(200 100 100),
+    hover: rgb(200 100 100),
+    active: rgb(200 100 100),
+    disabled: rgb(80 50 50),
+  ),
+);
+$color: (
+  default: $colors-default,
+  primary: $colors-primary,
+  success: $colors-success,
+  warning: $colors-warning,
+  danger: $colors-danger,
+);
 
 // 动画定义
 @keyframes fade-slide-in {
