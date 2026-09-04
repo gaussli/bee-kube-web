@@ -18,7 +18,7 @@ const props = withDefaults(
   {
     type: 'basic',
     size: undefined,
-    color: '',
+    color: undefined,
   },
 )
 
@@ -26,7 +26,7 @@ const iconName = computed(() => `#icon-${props.name}`)
 const iconStyle = computed(() => {
   const style: Record<string, string> = {}
   if (props.size) {
-    style['--bee-icon-size'] = typeof props.size === 'number' ? `${props.size}px` : props.size
+    style['--bee-icon-size'] = `${props.size}px`
   }
   if (props.color) {
     style.color = props.color
@@ -41,7 +41,6 @@ const iconStyle = computed(() => {
   flex-shrink: 0;
   width: var(--bee-icon-size, 1em);
   height: var(--bee-icon-size, 1em);
-  font-size: inherit;
   color: inherit;
   fill: currentcolor;
 }

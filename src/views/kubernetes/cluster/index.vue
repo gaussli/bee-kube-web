@@ -347,7 +347,7 @@ async function handleConfirmDelete() {
   if (!currentTargetRow.value) return
   try {
     await deleteCluster(currentTargetRow.value.uid)
-    BeeMessage.success('删除成功', { duration: 0 })
+    BeeMessage.success('删除成功')
     currentTargetRow.value = null
     void loadData()
   } catch (err) {
