@@ -39,7 +39,7 @@ const emit = defineEmits<{
 }>()
 
 // ==================== Reactive State ====================
-const typeClass = computed(() => 'bee-message--' + props.type)
+const typeClass = computed(() => `bee-message--${props.type}`)
 const iconName = computed(() => {
   switch (props.type) {
     case 'success':

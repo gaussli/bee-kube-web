@@ -104,29 +104,11 @@
     />
 
     <!-- 批量删除 Dialog -->
-    <BeeDialog v-model="batchDeleteDialogVisible" title="确认删除" @confirm="handleConfirmBatchDelete">
-      <div class="dialog-content">
-        <template v-if="nonDeletableRows.length > 0">
-          <p class="dialog-content__warning">
-            共选中 {{ selectedRows.length }} 个集群，但以下 {{ nonDeletableRows.length }} 个集群
-            不可删除，将从列表忽略：
-          </p>
-          <div class="delete-dialog-tags">
-            <BeeTag v-for="row in nonDeletableRows" :key="row.uid" type="warning">
-              {{ row.name }}
-            </BeeTag>
-          </div>
-        </template>
-        <p v-if="deletableRows.length > 0">
-          确定要删除选中的 <strong>{{ deletableRows.length }}</strong> 个集群 吗？
-        </p>
-        <div v-if="deletableRows.length > 0" class="delete-dialog-tags">
-          <BeeTag v-for="row in deletableRows" :key="row.uid">
-            {{ row.name }}
-          </BeeTag>
-        </div>
-      </div>
-    </BeeDialog>
+    <ClusterBatchDeleteDialog
+      v-model="batchDeleteDialogVisible"
+      :delete-data="selectedRows"
+      @confirm="handleConfirmBatchDelete"
+    />
   </BeePage>
 </template>
 
@@ -144,7 +126,6 @@ import BeeAuditCell from '@/components/BeeAuditCell/index.vue'
 import BeeButton from '@/components/BeeButton/index.vue'
 import BeeCard from '@/components/BeeCard/index.vue'
 import BeeClusterInfoCell from '@/components/BeeClusterInfoCell/index.vue'
-import BeeDialog from '@/components/BeeDialog/index.vue'
 import BeeInputSearch from '@/components/BeeInputSearch/index.vue'
 import { BeeMessage } from '@/components/BeeMessage'
 import BeePage from '@/components/BeePage/index.vue'
@@ -155,12 +136,12 @@ import BeeStatusCell from '@/components/BeeStatusCell/index.vue'
 import BeeTableColumn from '@/components/BeeTable/BeeTableColumn.vue'
 import BeeTableCommonCell from '@/components/BeeTable/BeeTableCommonCell.vue'
 import BeeTable from '@/components/BeeTable/index.vue'
-import BeeTag from '@/components/BeeTag/index.vue'
 
 import { usePermission } from '@/composables/usePermission'
 import { CLUSTER_PAGE_META, CLUSTER_STATUS_OPTIONS } from '@/config/kubernetes/cluster'
 import { useKubernetesStore } from '@/stores'
 
+import ClusterBatchDeleteDialog from './components/ClusterBatchDeleteDialog.vue'
 import ClusterDeleteDialog from './components/ClusterDeleteDialog.vue'
 
 defineOptions({ name: 'ClusterPage' })
@@ -182,7 +163,6 @@ const tableRef = ref<InstanceType<typeof BeeTable>>()
 // --- 选中逻辑
 const selectedRows = ref<ClusterListVo[]>([])
 const deletableRows = computed(() => selectedRows.value.filter(row => row.deletable !== false))
-const nonDeletableRows = computed(() => selectedRows.value.filter(row => row.deletable === false))
 // --- 对话框
 const currentTargetRow = ref<ClusterListVo | null>(null)
 const deleteDialogVisible = ref(false)
@@ -389,6 +369,8 @@ onMounted(() => {
 </script>
 
 <style lang="scss" scoped>
+@use 'sass:map';
+
 .page-body {
   display: flex;
   gap: $spacing-16;
@@ -401,19 +383,20 @@ onMounted(() => {
   &__toolbar {
     display: flex;
     gap: $spacing-8;
-    flex-direction: row;
+    flex-flow: row wrap;
     align-items: center;
 
     &-search {
       flex: 1;
-      min-width: 0;
+      min-width: 100px;
     }
 
     &-separator {
+      flex-shrink: 0;
       width: 1px;
-      height: 40%;
+      height: 16px;
       margin: 0 $spacing-8;
-      background: $color-border-tertiary;
+      background: $color-separator;
     }
   }
 

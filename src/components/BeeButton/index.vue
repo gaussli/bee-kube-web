@@ -1,6 +1,6 @@
 <template>
   <button class="bee-button" :class="[typeClass, sizeClass, isDisabledClass, isLoadingClass]" @click="handleClick">
-    <BeeIcon v-if="iconName" class="bee-button__icon" :name="iconName" :size="iconSize" />
+    <BeeIcon v-if="iconName" class="bee-button__icon" :name="iconName" />
     <span><slot /></span>
   </button>
 </template>
@@ -38,21 +38,11 @@ const emit = defineEmits<{
 
 // ==================== Reactive State ====================
 const loading = ref(false)
-const typeClass = computed(() => (props.type !== 'default' ? 'bee-button--' + props.type : ''))
-const sizeClass = computed(() => (props.size !== 'default' ? 'bee-button--' + props.size : ''))
+const typeClass = computed(() => (props.type !== 'default' ? `bee-button--${props.type}` : ''))
+const sizeClass = computed(() => (props.size !== 'default' ? `bee-button--${props.size}` : ''))
 const isDisabledClass = computed(() => (props.disabled || loading.value ? 'is-disabled' : ''))
 const isLoadingClass = computed(() => (loading.value ? 'is-loading' : ''))
 const iconName = computed(() => (loading.value ? 'basic-loading' : props.icon))
-const iconSize = computed(() => {
-  switch (props.size) {
-    case 'small':
-      return 12
-    case 'large':
-      return 16
-    default:
-      return 14
-  }
-})
 
 // ==================== Handler ====================
 /**
@@ -72,11 +62,11 @@ function handleClick(event: MouseEvent) {
 
 <style lang="scss" scoped>
 @use 'sass:map';
-@use './variables' as *;
+
+$width: auto;
+$types: primary, success, warning, danger;
 
 .bee-button {
-  $types: primary, success, warning, danger;
-
   display: flex;
   gap: 4px;
   flex-direction: row;
@@ -91,6 +81,7 @@ function handleClick(event: MouseEvent) {
   font-size: 14px;
   font-weight: normal;
   color: var(--bee-button-color-text-default, map.get($colors-default, 'text', 'base'));
+  white-space: nowrap;
   background: var(--bee-button-color-bg-default, map.get($colors-default, 'bg', 'base'));
   cursor: pointer;
   user-select: none;
