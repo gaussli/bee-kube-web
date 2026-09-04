@@ -1,6 +1,6 @@
 <template>
   <div class="bee-menu-item" :class="{ 'is-active': isActive }" @click="handleClick">
-    <BeeIcon v-if="icon" :name="icon" :size="14" class="bee-menu-item__icon" />
+    <BeeIcon v-if="icon" class="bee-menu-item__icon" :name="icon" :size="14" />
     <span class="bee-menu-item__label">{{ label }}</span>
   </div>
 </template>
@@ -12,7 +12,7 @@
  */
 import { computed, inject } from 'vue'
 
-import BeeIcon from '@/components/BeeIcon/index.vue'
+import BeeIcon from '@/components/base/BeeIcon/index.vue'
 
 import { MenuContextKey } from './types'
 

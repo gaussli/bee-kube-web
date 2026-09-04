@@ -23,7 +23,7 @@ import { computed } from 'vue'
 
 import type { Option } from '@/config/kubernetes'
 
-import BeeIcon from '@/components/BeeIcon/index.vue'
+import BeeIcon from '@/components/base/BeeIcon/index.vue'
 import BeeTooltip from '@/components/BeeTooltip/index.vue'
 
 import { COLOR_GRAY_90 } from '@/config/color'

@@ -1,16 +1,16 @@
 <template>
   <div class="bee-submenu">
     <div class="bee-submenu__title" @click="toggle">
-      <BeeIcon v-if="icon" :name="icon" :size="14" class="bee-submenu__icon" />
+      <BeeIcon v-if="icon" class="bee-submenu__icon" :name="icon" :size="14" />
       <span class="bee-submenu__label">{{ label }}</span>
-      <BeeIcon name="basic-arrow-down" :size="14" class="bee-submenu__arrow" :class="{ 'is-expanded': isExpanded }" />
+      <BeeIcon class="bee-submenu__arrow" :class="{ 'is-expanded': isExpanded }" name="basic-arrow-down" :size="14" />
     </div>
     <Transition
       name="bee-submenu-collapse"
-      @enter="onEnter"
       @after-enter="onAfterEnter"
-      @leave="onLeave"
       @after-leave="onAfterLeave"
+      @enter="onEnter"
+      @leave="onLeave"
     >
       <div v-if="isExpanded" class="bee-submenu__content">
         <slot />
@@ -26,7 +26,7 @@
  */
 import { computed, inject } from 'vue'
 
-import BeeIcon from '@/components/BeeIcon/index.vue'
+import BeeIcon from '@/components/base/BeeIcon/index.vue'
 
 import { MenuContextKey } from './types'
 

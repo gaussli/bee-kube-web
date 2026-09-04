@@ -15,7 +15,7 @@
     </div>
   </div>
 
-  <Teleport to="body" :disabled="!isOpen">
+  <Teleport :disabled="!isOpen" to="body">
     <Transition name="bee-select">
       <div
         v-if="isOpen"
@@ -52,7 +52,7 @@ import { arrow, flip, offset, shift, useFloating } from '@floating-ui/vue'
 
 import type { SelectOption } from './types'
 
-import BeeIcon from '@/components/BeeIcon/index.vue'
+import BeeIcon from '@/components/base/BeeIcon/index.vue'
 
 defineOptions({ name: 'BeeSelect' })
 

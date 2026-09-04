@@ -40,7 +40,7 @@
  */
 import { ref, onMounted, onUnmounted } from 'vue'
 
-import BeeIcon from '@/components/BeeIcon/index.vue'
+import BeeIcon from '@/components/base/BeeIcon/index.vue'
 import BeeTag from '@/components/BeeTag/index.vue'
 import BeeTooltip from '@/components/BeeTooltip/index.vue'
 

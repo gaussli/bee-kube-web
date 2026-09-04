@@ -12,11 +12,11 @@
     >
       <BeeIcon
         v-if="loading"
+        class="bee-circle-button__icon is-loading"
         name="basic-loading"
         :size="effectiveIconSize"
-        class="bee-circle-button__icon is-loading"
       />
-      <BeeIcon v-else :name="icon" :size="effectiveIconSize" class="bee-circle-button__icon" />
+      <BeeIcon v-else class="bee-circle-button__icon" :name="icon" :size="effectiveIconSize" />
     </button>
   </BeeTooltip>
 </template>
@@ -24,7 +24,7 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue'
 
-import BeeIcon from '@/components/BeeIcon/index.vue'
+import BeeIcon from '@/components/base/BeeIcon/index.vue'
 import BeeTooltip from '@/components/BeeTooltip/index.vue'
 
 defineOptions({ name: 'BeeCircleButton' })

@@ -6,13 +6,13 @@
     <div class="bee-pod-info-cell__content">
       <div class="bee-pod-info-cell__top">
         <BeeTooltip :label="uid">
-          <BeeTag type="primary" size="tiny">UID</BeeTag>
+          <BeeTag size="tiny" type="primary">UID</BeeTag>
         </BeeTooltip>
         <span class="bee-pod-info-cell__name">{{ name }}</span>
         <BeeIcon
+          class="bee-pod-info-cell__copy-icon"
           name="basic-copy"
           :size="14"
-          class="bee-pod-info-cell__copy-icon"
           @click.stop="useClipboard().copy(props.name)"
         />
       </div>
@@ -29,7 +29,7 @@
  * 上下结构展示 Pod 名称（支持复制）和 IP 信息
  * @module components/BeePodInfoCell
  */
-import BeeIcon from '@/components/BeeIcon/index.vue'
+import BeeIcon from '@/components/base/BeeIcon/index.vue'
 import BeeTag from '@/components/BeeTag/index.vue'
 import BeeTooltip from '@/components/BeeTooltip/index.vue'
 

@@ -16,8 +16,8 @@
  * 左侧图标 + 右侧标题和描述的横向布局
  * @module components/BeePageHeader
  */
+import BeeIcon from '@/components/base/BeeIcon/index.vue'
 import BeeCard from '@/components/BeeCard/index.vue'
-import BeeIcon from '@/components/BeeIcon/index.vue'
 
 defineOptions({ name: 'BeePageHeader' })
 

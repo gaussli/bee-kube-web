@@ -20,20 +20,20 @@
         :disabled="isFirstPage"
         @click="handlePrevPage"
       >
-        <BeeIcon name="basic-arrow-down" class="bee-pagination__icon" />
+        <BeeIcon class="bee-pagination__icon" name="basic-arrow-down" />
       </button>
 
       <!-- 当前页码输入 -->
       <div class="bee-pagination__page-input-wrapper">
         <input
           v-model="pageInput"
-          type="number"
           class="bee-pagination__input"
-          :min="1"
           :max="totalPages"
+          :min="1"
+          type="number"
+          @blur="handlePageInput"
           @input="handlePageInputFilter"
           @keyup.enter="handlePageInput"
-          @blur="handlePageInput"
         />
         <span class="bee-pagination__page-separator">/</span>
         <span class="bee-pagination__total-pages">{{ totalPages }}</span>
@@ -46,7 +46,7 @@
         :disabled="isLastPage"
         @click="handleNextPage"
       >
-        <BeeIcon name="basic-arrow-down" class="bee-pagination__icon" />
+        <BeeIcon class="bee-pagination__icon" name="basic-arrow-down" />
       </button>
     </div>
   </div>
@@ -58,7 +58,7 @@
  */
 import { ref, computed, watch } from 'vue'
 
-import BeeIcon from '@/components/BeeIcon/index.vue'
+import BeeIcon from '@/components/base/BeeIcon/index.vue'
 import BeeSelect from '@/components/BeeSelect/index.vue'
 
 defineOptions({ name: 'BeePagination' })

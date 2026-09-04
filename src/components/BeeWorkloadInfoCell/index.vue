@@ -6,18 +6,18 @@
     <div class="bee-workload-info-cell__content">
       <div class="bee-workload-info-cell__top">
         <BeeTooltip :label="uid">
-          <BeeTag type="primary" size="tiny">UID</BeeTag>
+          <BeeTag size="tiny" type="primary">UID</BeeTag>
         </BeeTooltip>
         <span class="bee-workload-info-cell__name">{{ name }}</span>
         <BeeIcon
+          class="bee-workload-info-cell__copy-icon"
           name="basic-copy"
           :size="14"
-          class="bee-workload-info-cell__copy-icon"
           @click.stop="useClipboard().copy(props.name)"
         />
       </div>
       <div class="bee-workload-info-cell__bottom">
-        <BeeIcon name="basic-description" :size="14" class="bee-workload-info-cell__desc-icon" />
+        <BeeIcon class="bee-workload-info-cell__desc-icon" name="basic-description" :size="14" />
         <BeeTooltip :disabled="!isDescTruncated">
           <template #label>
             <span class="bee-workload-info-cell__desc-tooltip">{{ description }}</span>
@@ -37,7 +37,7 @@
  */
 import { ref, onMounted, onUnmounted } from 'vue'
 
-import BeeIcon from '@/components/BeeIcon/index.vue'
+import BeeIcon from '@/components/base/BeeIcon/index.vue'
 import BeeTag from '@/components/BeeTag/index.vue'
 import BeeTooltip from '@/components/BeeTooltip/index.vue'
 

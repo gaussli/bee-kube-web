@@ -13,7 +13,7 @@ import { computed } from 'vue'
 
 import type { MessageType } from './types'
 
-import BeeIcon from '@/components/BeeIcon/index.vue'
+import BeeIcon from '@/components/base/BeeIcon/index.vue'
 
 defineOptions({ name: 'BeeMessage' })
 

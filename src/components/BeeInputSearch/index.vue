@@ -1,7 +1,7 @@
 <template>
   <div class="bee-input-search">
-    <BeeIcon name="basic-search" :size="14" class="bee-input-search__icon" />
-    <input v-model="inputValue" :placeholder="placeholder" class="bee-input-search__input" />
+    <BeeIcon class="bee-input-search__icon" name="basic-search" :size="14" />
+    <input v-model="inputValue" class="bee-input-search__input" :placeholder="placeholder" />
   </div>
 </template>
 
@@ -13,7 +13,7 @@
  */
 import { computed } from 'vue'
 
-import BeeIcon from '@/components/BeeIcon/index.vue'
+import BeeIcon from '@/components/base/BeeIcon/index.vue'
 
 defineOptions({ name: 'BeeInputSearch' })
 

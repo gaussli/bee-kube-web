@@ -45,8 +45,8 @@ import {
   toBytesOfQuantity,
 } from '@/utils/kubernetes'
 
+import BeeIcon from '@/components/base/BeeIcon/index.vue'
 import BeeCard from '@/components/BeeCard/index.vue'
-import BeeIcon from '@/components/BeeIcon/index.vue'
 import BeeRadarChart from '@/components/BeeRadarChart/index.vue'
 import BeeRingChart from '@/components/BeeRingChart/index.vue'
 

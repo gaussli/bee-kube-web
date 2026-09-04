@@ -7,11 +7,11 @@
       <div class="bee-cluster-info-cell__top">
         <span class="bee-cluster-info-cell__name">{{ name }}</span>
         <BeeTooltip :label="uid">
-          <BeeTag type="primary" size="tiny">UID</BeeTag>
+          <BeeTag size="tiny" type="primary">UID</BeeTag>
         </BeeTooltip>
       </div>
       <div class="bee-cluster-info-cell__bottom">
-        <BeeIcon name="basic-description" :size="14" class="bee-cluster-info-cell__desc-icon" />
+        <BeeIcon class="bee-cluster-info-cell__desc-icon" name="basic-description" :size="14" />
         <BeeTooltip :disabled="!isDescTruncated">
           <template #label>
             <span class="bee-cluster-info-cell__desc-tooltip">{{ description }}</span>
@@ -31,7 +31,7 @@
  */
 import { ref, onMounted, onUnmounted } from 'vue'
 
-import BeeIcon from '@/components/BeeIcon/index.vue'
+import BeeIcon from '@/components/base/BeeIcon/index.vue'
 import BeeTag from '@/components/BeeTag/index.vue'
 import BeeTooltip from '@/components/BeeTooltip/index.vue'
 

@@ -8,7 +8,7 @@
       :class="{ active: activeIndex === index }"
       @click="handleClick(index, option.value)"
     >
-      <BeeIcon v-if="option.icon" :name="option.icon" :size="14" class="bee-segmented-control__icon" />
+      <BeeIcon v-if="option.icon" class="bee-segmented-control__icon" :name="option.icon" :size="14" />
       {{ option.label }}
     </div>
   </div>
@@ -21,7 +21,7 @@
  */
 import { computed, ref, watch, nextTick, onMounted } from 'vue'
 
-import BeeIcon from '@/components/BeeIcon/index.vue'
+import BeeIcon from '@/components/base/BeeIcon/index.vue'
 
 defineOptions({ name: 'BeeSegmentedControl' })
 

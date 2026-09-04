@@ -15,7 +15,7 @@
  * 上下结构：上方展示操作用户（头像+用户名），下方展示属性名称
  * @module components/BeeAuditCell
  */
-import BeeIcon from '@/components/BeeIcon/index.vue'
+import BeeIcon from '@/components/base/BeeIcon/index.vue'
 
 defineOptions({ name: 'BeeAuditCell' })
 

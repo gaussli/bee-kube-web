@@ -41,10 +41,10 @@ import { computed } from 'vue'
 
 import { calcRemainDays, formatTimeElapsed } from '@/utils/datetime'
 
+import BeeIcon from '@/components/base/BeeIcon/index.vue'
 import BeeCard from '@/components/BeeCard/index.vue'
 import BeeFieldCard from '@/components/BeeFieldCard/index.vue'
 import BeeFieldItem from '@/components/BeeFieldItem/index.vue'
-import BeeIcon from '@/components/BeeIcon/index.vue'
 
 import { CERT_EXPIRE_WARNING_DAYS } from '@/config/kubernetes'
 import { CLUSTER_STATUS_OPTIONS, type ClusterStatus } from '@/config/kubernetes/cluster'

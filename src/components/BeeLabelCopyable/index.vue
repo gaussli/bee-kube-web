@@ -1,12 +1,12 @@
 <template>
   <div class="bee-label-copyable" :style="{ color }">
     <span class="bee-label-copyable__label">{{ label }}</span>
-    <BeeIcon name="basic-copy" :size="12" class="bee-label-copyable__copy" @click="handleCopy" />
+    <BeeIcon class="bee-label-copyable__copy" name="basic-copy" :size="12" @click="handleCopy" />
   </div>
 </template>
 
 <script setup lang="ts">
-import BeeIcon from '@/components/BeeIcon/index.vue'
+import BeeIcon from '@/components/base/BeeIcon/index.vue'
 import { BeeMessage } from '@/components/BeeMessage'
 
 defineOptions({ name: 'BeeLabelCopyable' })

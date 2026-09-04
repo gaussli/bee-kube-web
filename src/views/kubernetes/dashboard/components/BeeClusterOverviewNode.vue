@@ -45,8 +45,8 @@ import type { NodeListVo } from '@/types/kubernetes/node'
 
 import { getNodeTopN } from '@/api/kubernetes/node'
 
+import BeeIcon from '@/components/base/BeeIcon/index.vue'
 import BeeCard from '@/components/BeeCard/index.vue'
-import BeeIcon from '@/components/BeeIcon/index.vue'
 import BeeNodeInfoCell from '@/components/BeeNodeInfoCell/index.vue'
 import BeeResourceUsageCell from '@/components/BeeResourceUsageCell/index.vue'
 

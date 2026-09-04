@@ -16,7 +16,6 @@ const props = withDefaults(
     color?: string
   }>(),
   {
-    type: 'basic',
     size: undefined,
     color: undefined,
   },

@@ -34,10 +34,10 @@ import { computed } from 'vue'
 
 import { formatTimeElapsed } from '@/utils/datetime'
 
+import BeeIcon from '@/components/base/BeeIcon/index.vue'
 import BeeCard from '@/components/BeeCard/index.vue'
 import BeeFieldCard from '@/components/BeeFieldCard/index.vue'
 import BeeFieldItem from '@/components/BeeFieldItem/index.vue'
-import BeeIcon from '@/components/BeeIcon/index.vue'
 
 import { DEPLOYMENT_STATUS_OPTIONS } from '@/config/kubernetes/workload'
 
