@@ -57,7 +57,7 @@ $colors: map.merge(
 
 @debug $colors;
 
-$color-primary: map.get($colors, 'primary', 50);
+$color-primary: #ff814a;
 
 // ---- 文字颜色 ----
 $color-text-regular: rgb(255 255 255);
@@ -79,16 +79,10 @@ $color-border-disabled: map.get($colors, 'gray', 40);
 $color-separator: rgb(80 80 80);
 
 // ---- 背景颜色 ----
-$color-bg-primary: #0d0d0d;
+$color-bg-primary: rgb(10 10 10);
 $color-bg-secondary: rgb(20 20 20);
 $color-bg-third: rgb(30 30 30);
 $color-bg-mask: rgb(0 0 0 / 60%);
-
-// 废弃
-$color-bg-page: rgb(10 10 10);
-$color-bg-elevated: rgb(30 30 30);
-$color-bg-dialog: rgb(30 30 30);
-$color-bg-surface: rgb(20 20 20);
 
 // 间距
 $spacing-4: 4px;
@@ -219,13 +213,13 @@ $colors-primary: (
     disabled: rgb(20 10 0),
   ),
   border: (
-    base: rgb(200 100 0),
+    base: #ff814a,
     hover: rgb(200 100 0),
     active: rgb(200 100 0),
     disabled: rgb(80 50 0),
   ),
   text: (
-    base: rgb(200 100 0),
+    base: #ff814a,
     hover: rgb(200 100 0),
     active: rgb(200 100 0),
     disabled: rgb(80 50 0),

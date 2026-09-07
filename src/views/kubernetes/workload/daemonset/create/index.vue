@@ -88,7 +88,7 @@ async function handleSubmit() {
   flex-shrink: 0;
   padding: 16px 20px 0;
   margin-bottom: 16px;
-  background-color: $color-bg-surface;
+  background-color: $color-bg-secondary;
 }
 
 .page-body {
@@ -96,7 +96,7 @@ async function handleSubmit() {
   min-height: 0;
   padding: 0 20px;
   overflow-y: auto;
-  background-color: $color-bg-surface;
+  background-color: $color-bg-secondary;
 }
 
 .page-footer {
@@ -104,7 +104,7 @@ async function handleSubmit() {
   justify-content: space-between;
   flex-shrink: 0;
   padding: 16px 20px;
-  background-color: $color-bg-surface;
+  background-color: $color-bg-secondary;
 }
 
 .create-form {

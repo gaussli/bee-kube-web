@@ -239,7 +239,7 @@ onMounted(() => {
   display: flex;
   flex-direction: column;
   height: 100%;
-  background-color: $color-bg-surface;
+  background-color: $color-bg-secondary;
 }
 
 .assign-header {
@@ -283,7 +283,7 @@ onMounted(() => {
   align-items: center;
   padding: 24px;
   border-radius: 12px;
-  background-color: $color-bg-page;
+  background-color: $color-bg-primary;
 
   .role-icon {
     display: flex;
@@ -330,7 +330,7 @@ onMounted(() => {
   min-height: 300px;
   border-radius: 12px;
   overflow: hidden;
-  background-color: $color-bg-page;
+  background-color: $color-bg-primary;
 
   .panel-header {
     display: flex;

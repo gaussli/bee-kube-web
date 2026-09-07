@@ -388,7 +388,7 @@ onMounted(() => {
   display: flex;
   flex-direction: column;
   height: 100%;
-  background-color: $color-bg-surface;
+  background-color: $color-bg-secondary;
 }
 
 .table-header {

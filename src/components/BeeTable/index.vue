@@ -272,7 +272,7 @@ function getColumnStyle(col: ColumnConfig, index: number) {
 
 .bee-table {
   --bee-table-bg: transparent;
-  --bee-table-row-bg: #{$color-bg-elevated};
+  --bee-table-row-bg: #{$color-bg-third};
   --bee-table-row-gap: 8px;
   --bee-table-row-hover-bg: #{map.get($colors, 'primary', 'bg')};
   --bee-table-row-padding: 16px;

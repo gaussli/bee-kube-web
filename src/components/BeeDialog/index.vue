@@ -116,7 +116,7 @@ function handleConfirm() {
   width: var(--dialog-width);
   border-radius: 12px;
   overflow: hidden;
-  background-color: $color-bg-elevated;
+  background-color: $color-bg-third;
   box-shadow: 0 8 32px rgb(0 0 0 / 40%);
 }
 

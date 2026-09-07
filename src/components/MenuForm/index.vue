@@ -257,7 +257,7 @@ defineExpose({ validate, resetFields, getFormData })
   border: 1px solid rgba($color-text-secondary, 0.15);
   border-radius: 8px;
   color: $color-text-primary;
-  background: rgba($color-bg-page, 0.6);
+  background: rgba($color-bg-primary, 0.6);
 
   &::placeholder {
     color: $color-text-placeholder;
@@ -286,7 +286,7 @@ defineExpose({ validate, resetFields, getFormData })
 
 :deep(.el-radio__inner) {
   border-color: rgba($color-text-secondary, 0.3);
-  background: rgba($color-bg-page, 0.6);
+  background: rgba($color-bg-primary, 0.6);
 }
 
 :deep(.el-radio__label) {

@@ -147,7 +147,7 @@ async function handleLogout() {
   width: 100%;
   height: 64px;
   padding: $spacing-8 $spacing-16;
-  background: $color-bg-page;
+  background: $color-bg-primary;
 
   &::after {
     position: absolute;
@@ -155,7 +155,7 @@ async function handleLogout() {
     bottom: 0;
     left: 0;
     height: 1px;
-    background: linear-gradient(to right, $color-bg-page 10%, $color-primary 50%, $color-bg-page 90%);
+    background: linear-gradient(to right, $color-bg-primary 10%, $color-primary 50%, $color-bg-primary 90%);
     content: '';
   }
 

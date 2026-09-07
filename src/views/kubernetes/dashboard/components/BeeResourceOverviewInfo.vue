@@ -97,7 +97,7 @@ const statusConfig = computed(() => {
       height: 64px;
       border-radius: 50% 0 50% 50%;
       color: $color-primary;
-      background: $color-bg-elevated;
+      background: $color-bg-third;
     }
 
     &-content {

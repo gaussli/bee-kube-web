@@ -133,7 +133,7 @@ onMounted(() => {
   flex-shrink: 0;
   padding: 16px 20px 0;
   margin-bottom: 16px;
-  background-color: $color-bg-surface;
+  background-color: $color-bg-secondary;
 }
 
 .page-body {
@@ -141,7 +141,7 @@ onMounted(() => {
   min-height: 0;
   padding: 0 20px;
   overflow: hidden;
-  background-color: $color-bg-surface;
+  background-color: $color-bg-secondary;
 
   :deep(.el-tabs) {
     display: flex;
@@ -160,7 +160,7 @@ onMounted(() => {
   justify-content: space-between;
   flex-shrink: 0;
   padding: 16px 20px;
-  background-color: $color-bg-surface;
+  background-color: $color-bg-secondary;
 }
 
 .detail-section {

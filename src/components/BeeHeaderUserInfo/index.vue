@@ -1,7 +1,7 @@
 <template>
   <div class="bee-header-user-info">
     <!-- 左部分：头像 -->
-    <img :src="avatarSrc" class="bee-header-user-info__avatar" alt="用户头像" />
+    <img alt="用户头像" class="bee-header-user-info__avatar" :src="avatarSrc" />
     <!-- 右部分：用户信息 -->
     <div class="bee-header-user-info__info">
       <span class="bee-header-user-info__nickname">{{ nickname }}</span>
@@ -47,7 +47,7 @@ const avatarSrc = computed(() => props.img || defaultAvatarImg)
   height: 100%;
   padding: $spacing-8 $spacing-16;
   border-radius: $radius-8;
-  background: $color-bg-surface;
+  background: $color-bg-secondary;
   user-select: none;
 
   &__avatar {

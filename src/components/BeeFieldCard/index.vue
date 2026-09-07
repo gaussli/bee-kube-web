@@ -25,7 +25,7 @@ defineProps<{
 
 <style lang="scss" scoped>
 .bee-fieldcard {
-  --bee-fieldcard-bg: #{$color-bg-surface};
+  --bee-fieldcard-bg: #{$color-bg-secondary};
   --bee-fieldcard-subtext-color: #{$color-text-tertiary};
   --bee-fieldcard-text-color: #{$color-text-primary};
   --bee-fieldcard-width: 240px;

@@ -72,7 +72,9 @@ function handleConfirm() {
 
 // ==================== 对话框容器 ====================
 .bee-dialog {
-  filter: drop-shadow(0 0 4px rgba($color-bg-dialog, 50%));
+  --bee-dialog-color-shadow: rgba(var(--bee-dialog-color-bg, $color-bg-third), 50%);
+
+  filter: drop-shadow(0 0 4px var(--bee-dialog-color-shadow));
   display: flex;
   gap: 48px;
   flex-direction: column;
@@ -82,7 +84,7 @@ function handleConfirm() {
   padding: 24px;
   border-radius: 16px;
   overflow: hidden;
-  background-color: $color-bg-dialog;
+  background-color: var(--bee-dialog-color-bg, $color-bg-third);
 
   &__header {
     display: flex;

@@ -176,7 +176,7 @@ onMounted(() => {
   display: flex;
   flex-direction: column;
   height: 100%;
-  background-color: $color-bg-surface;
+  background-color: $color-bg-secondary;
 }
 
 .assign-header {
@@ -226,7 +226,7 @@ onMounted(() => {
   align-items: center;
   padding: 24px;
   border-radius: 12px;
-  background-color: $color-bg-page;
+  background-color: $color-bg-primary;
 
   .user-meta {
     display: flex;

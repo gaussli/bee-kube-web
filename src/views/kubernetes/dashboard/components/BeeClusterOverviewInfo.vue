@@ -1,8 +1,3 @@
-<!--
-  集群概览信息卡片
-  @module views/kubernetes/dashboard/components/BeeClusterOverviewInfo
--->
-
 <template>
   <div class="bee-cluster-overview-info">
     <BeeCard class="bee-cluster-overview-info__core">
@@ -94,16 +89,17 @@ const statusConfig = computed(() => {
 <style lang="scss" scoped>
 .bee-cluster-overview-info {
   display: flex;
-  gap: $spacing-16;
+  gap: 16px;
   align-items: center;
+  width: 100%;
 
   &__core {
     display: flex;
-    gap: $spacing-16;
+    gap: 16px;
     align-items: flex-start;
     flex: 1;
     height: 100%;
-    padding: $spacing-16;
+    padding: 16px;
 
     &-icon {
       display: flex;
@@ -113,12 +109,12 @@ const statusConfig = computed(() => {
       height: 64px;
       border-radius: 50% 0 50% 50%;
       color: $color-primary;
-      background: $color-bg-elevated;
+      background: $color-bg-third;
     }
 
     &-content {
       display: flex;
-      gap: $spacing-16;
+      gap: 16px;
       flex-direction: column;
       align-items: center;
       flex: 1;
@@ -134,7 +130,7 @@ const statusConfig = computed(() => {
 
   &__field-cards {
     display: grid;
-    gap: $spacing-16;
+    gap: 16px;
     grid-template-columns: repeat(2, 1fr);
   }
 }

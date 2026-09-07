@@ -51,7 +51,7 @@ defineProps<{
     height: var(--bee-page-header-icon-size);
     border-radius: 50% 0 50% 50%;
     color: $color-primary;
-    background: $color-bg-elevated;
+    background: $color-bg-third;
   }
 
   &__content {

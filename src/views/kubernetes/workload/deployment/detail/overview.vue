@@ -11,7 +11,7 @@
         <div
           class="replica-stats__ring"
           :style="{
-            background: `conic-gradient(${replicaRingColor} 0% ${replicaPercentage}%, $color-bg-elevated ${replicaPercentage}% 100%)`,
+            background: `conic-gradient(${replicaRingColor} 0% ${replicaPercentage}%, $color-bg-third ${replicaPercentage}% 100%)`,
           }"
         >
           <div class="replica-stats__ring-inner">
@@ -249,7 +249,7 @@ const strategyLabel = computed(() => {
     width: 120px;
     height: 120px;
     border-radius: 50%;
-    background: conic-gradient($color-success 0% 100%, $color-bg-elevated 100% 100%);
+    background: conic-gradient($color-success 0% 100%, $color-bg-third 100% 100%);
 
     &-inner {
       display: flex;
@@ -258,7 +258,7 @@ const strategyLabel = computed(() => {
       width: 100px;
       height: 100px;
       border-radius: 50%;
-      background: $color-bg-surface;
+      background: $color-bg-secondary;
     }
 
     &-value {
@@ -281,7 +281,7 @@ const strategyLabel = computed(() => {
     flex-direction: column;
     padding: $spacing-16;
     border-radius: $radius-8;
-    background: $color-bg-elevated;
+    background: $color-bg-third;
 
     &-label {
       font-size: $font-size-12;
@@ -320,7 +320,7 @@ const strategyLabel = computed(() => {
   border-radius: $radius-4;
   font-size: $font-size-12;
   color: $color-text-secondary;
-  background: $color-bg-elevated;
+  background: $color-bg-third;
 }
 
 /* 资源配额 */
@@ -378,7 +378,7 @@ const strategyLabel = computed(() => {
   grid-template-columns: 100px 80px 160px 1fr 140px;
   padding: $spacing-8 $spacing-16;
   border-radius: $radius-8;
-  background: $color-bg-elevated;
+  background: $color-bg-third;
 
   &__type {
     font-size: $font-size-12;

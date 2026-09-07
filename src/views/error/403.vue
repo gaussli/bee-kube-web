@@ -41,7 +41,7 @@ function handleGoBack() {
   justify-content: center;
   align-items: center;
   height: 100%;
-  background-color: $color-bg-surface;
+  background-color: $color-bg-secondary;
 
   .no-permission-content {
     text-align: center;

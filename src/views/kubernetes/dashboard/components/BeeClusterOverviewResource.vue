@@ -139,7 +139,7 @@ const radarData = computed(() => {
       grid-template-columns: 48px 1fr 1fr 1fr;
       padding: 16px;
       border-radius: 8px;
-      background: $color-bg-elevated;
+      background: $color-bg-third;
     }
 
     &-ring {

@@ -114,7 +114,7 @@ onMounted(() => {
     align-items: center;
     padding: 8px 16px;
     border-radius: 8px;
-    background: $color-bg-elevated;
+    background: $color-bg-third;
 
     &-info {
       flex: 1;

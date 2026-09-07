@@ -4,7 +4,7 @@
     <BeeClusterOverviewInfo :data="clusterOverviewInfoData" />
 
     <!-- 资源雷达图 + 节点列表 -->
-    <div class="cluster-overview__metrics-row">
+    <div class="cluster-overview__resource-section">
       <!-- 资源用量 -->
       <BeeClusterOverviewResource :resource="clusterResource" />
       <!-- 节点列表 -->
@@ -86,9 +86,10 @@ onMounted(() => {
 .cluster-overview {
   overflow-y: auto;
 
-  &__metrics-row {
+  &__resource-section {
     display: flex;
     gap: 16px;
+    width: 100%;
 
     > * {
       flex: 1;

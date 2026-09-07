@@ -213,7 +213,7 @@ onMounted(() => {
   display: flex;
   flex-direction: column;
   height: 100%;
-  background-color: $color-bg-surface;
+  background-color: $color-bg-secondary;
 }
 
 .detail-header {
@@ -246,7 +246,7 @@ onMounted(() => {
   align-items: center;
   padding: 24px;
   border-radius: 12px;
-  background-color: $color-bg-page;
+  background-color: $color-bg-primary;
 
   .role-icon {
     display: flex;
@@ -292,7 +292,7 @@ onMounted(() => {
   .info-section {
     padding: 20px;
     border-radius: 12px;
-    background-color: $color-bg-page;
+    background-color: $color-bg-primary;
 
     &-full {
       grid-column: 1 / -1;
