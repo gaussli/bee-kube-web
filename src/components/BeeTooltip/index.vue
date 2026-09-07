@@ -18,9 +18,9 @@
         ref="floatingRef"
         class="bee-tooltip"
         :class="[size !== 'default' && `bee-tooltip--${size}`]"
+        :data-popper-placement="dataPlacement"
         role="tooltip"
         :style="floatingStyles"
-        :data-popper-placement="dataPlacement"
         @mouseenter="handleTooltipMouseEnter"
         @mouseleave="handleTooltipMouseLeave"
       >

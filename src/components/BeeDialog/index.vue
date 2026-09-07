@@ -6,7 +6,7 @@
           <!-- 头部：标题 + 关闭按钮 -->
           <div class="dialog-header">
             <span class="dialog-title">{{ title }}</span>
-            <BeeCircleButton :border="false" icon="basic-close" size="small" tooltip="关闭" @click="handleClose" />
+            <BeeIconButton :border="false" icon="basic-close" size="small" tooltip="关闭" @click="handleClose" />
           </div>
 
           <!-- 内容区：优先渲染 slot -->
@@ -34,7 +34,7 @@
 import { computed } from 'vue'
 
 import BeeButton from '@/components/base/BeeButton/index.vue'
-import BeeCircleButton from '@/components/BeeCircleButton/index.vue'
+import BeeIconButton from '@/components/base/BeeIconButton/index.vue'
 
 defineOptions({ name: 'BeeDialog' })
 

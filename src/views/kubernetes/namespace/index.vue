@@ -45,43 +45,6 @@
               <BeeAuditCell :datetime="row.createAt" field-name="创建人 / 时间" :username="row.createBy" />
             </template>
           </BeeTableColumn>
-          <BeeTableColumn fixed="right" :width="150">
-            <template #default="{ row }">
-              <div class="table-action">
-                <BeeCircleButton
-                  v-if="hasPermission('kubernetes:namespace:edit')"
-                  icon="basic-edit"
-                  tooltip="编辑"
-                  @click="handleEdit(row)"
-                />
-                <BeeCircleButton
-                  v-if="hasPermission('kubernetes:namespace:edit')"
-                  icon="basic-yaml"
-                  tooltip="编辑 YAML"
-                  @click="handleEditYaml(row)"
-                />
-                <BeeCircleButton icon="basic-view" tooltip="详情" @click="handleViewDetail(row)" />
-                <BeeDropdown trigger="click">
-                  <BeeCircleButton icon="basic-more" tooltip="更多" />
-                  <template #dropdown>
-                    <BeeDropdownItem
-                      icon="kubernetes-quota"
-                      label="资源配额"
-                      value="resourceQuota"
-                      @click="handleResourceQuota(row)"
-                    />
-                    <BeeDropdownItem
-                      v-if="hasPermission('kubernetes:namespace:delete') && row.deletable !== false"
-                      icon="basic-delete"
-                      label="删除"
-                      value="delete"
-                      @click="handleDelete(row)"
-                    />
-                  </template>
-                </BeeDropdown>
-              </div>
-            </template>
-          </BeeTableColumn>
         </BeeTable>
       </div>
 
@@ -146,10 +109,7 @@ import { getNamespaceList, deleteNamespace, deleteNamespaces } from '@/api/kuber
 import BeeButton from '@/components/base/BeeButton/index.vue'
 import { BeeMessage } from '@/components/base/BeeMessage'
 import BeeAuditCell from '@/components/BeeAuditCell/index.vue'
-import BeeCircleButton from '@/components/BeeCircleButton/index.vue'
 import BeeDialog from '@/components/BeeDialog/index.vue'
-import BeeDropdown from '@/components/BeeDropdown/index.vue'
-import BeeDropdownItem from '@/components/BeeDropdownItem/index.vue'
 import BeeInputSearch from '@/components/BeeInputSearch/index.vue'
 import BeeNamespaceInfoCell from '@/components/BeeNamespaceInfoCell/index.vue'
 import BeePageHeader from '@/components/BeePageHeader/index.vue'

@@ -10,8 +10,8 @@
     </div>
 
     <div class="header-right">
-      <BeeCircleButton :border="false" icon="basic-help" tooltip="帮助" />
-      <BeeCircleButton :border="false" :icon="fullscreenIcon" :tooltip="fullscreenTooltip" @click="toggleFullscreen" />
+      <BeeIconButton icon="basic-help" tooltip="帮助" />
+      <BeeIconButton :icon="fullscreenIcon" :tooltip="fullscreenTooltip" @click="toggleFullscreen" />
       <BeeDropdown :options="dropdownOptions" @change="handleDropdownChange">
         <BeeHeaderUserInfo
           :img="currentUser?.avatarId"
@@ -38,8 +38,8 @@ import type { TabType } from '@/stores/app'
 
 import { logout } from '@/api/auth/auth'
 
+import BeeIconButton from '@/components/base/BeeIconButton/index.vue'
 import { BeeMessage } from '@/components/base/BeeMessage'
-import BeeCircleButton from '@/components/BeeCircleButton/index.vue'
 import BeeDropdown from '@/components/BeeDropdown/index.vue'
 import BeeHeaderUserInfo from '@/components/BeeHeaderUserInfo/index.vue'
 import BeeSegmentedControl from '@/components/BeeSegmentedControl/index.vue'
