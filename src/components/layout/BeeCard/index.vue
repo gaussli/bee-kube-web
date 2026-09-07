@@ -6,10 +6,8 @@
 
 <style lang="scss" scoped>
 .bee-card {
-  --bee-card-bg: #{$color-bg-surface};
-
   padding: 0;
-  border-radius: $radius-16;
-  background: var(--bee-card-bg);
+  border-radius: 16px;
+  background: var(--bee-card-color-bg, #{$color-bg-secondary});
 }
 </style>

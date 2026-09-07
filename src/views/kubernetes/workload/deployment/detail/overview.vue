@@ -160,8 +160,8 @@ import type { DeploymentDetailVo } from '@/types/kubernetes/workload/types'
 
 import { calcPercentage } from '@/utils/kubernetes'
 
-import BeeCard from '@/components/BeeCard/index.vue'
 import BeeFieldItem from '@/components/BeeFieldItem/index.vue'
+import BeeCard from '@/components/layout/BeeCard/index.vue'
 
 defineOptions({ name: 'DeploymentOverview' })
 

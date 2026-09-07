@@ -19,8 +19,8 @@
 
 <script setup lang="ts">
 import BeeButton from '@/components/base/BeeButton/index.vue'
-import BeeCard from '@/components/BeeCard/index.vue'
 import BeeDivider from '@/components/BeeDivider/index.vue'
+import BeeCard from '@/components/layout/BeeCard/index.vue'
 
 /** 操作按钮项 */
 export interface ActionItem {

@@ -9,8 +9,8 @@
 import { useRouter } from 'vue-router'
 
 import BeeBackHeader from '@/components/BeeBackHeader/index.vue'
-import BeeCard from '@/components/BeeCard/index.vue'
 import BeePage from '@/components/BeePage/index.vue'
+import BeeCard from '@/components/layout/BeeCard/index.vue'
 
 defineOptions({ name: 'JobCreateYaml' })
 

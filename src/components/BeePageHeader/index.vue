@@ -17,7 +17,7 @@
  * @module components/BeePageHeader
  */
 import BeeIcon from '@/components/base/BeeIcon/index.vue'
-import BeeCard from '@/components/BeeCard/index.vue'
+import BeeCard from '@/components/layout/BeeCard/index.vue'
 
 defineOptions({ name: 'BeePageHeader' })
 

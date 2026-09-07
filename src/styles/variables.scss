@@ -79,11 +79,14 @@ $color-border-disabled: map.get($colors, 'gray', 40);
 $color-separator: rgb(80 80 80);
 
 // ---- 背景颜色 ----
-$color-bg: #0d0d0d;
-$color-bg-page: rgb(10 10 10);
-$color-bg-card: rgb(20 20 20);
-$color-bg-elevated: rgb(30 30 30);
+$color-bg-primary: #0d0d0d;
+$color-bg-secondary: rgb(20 20 20);
+$color-bg-third: rgb(30 30 30);
 $color-bg-mask: rgb(0 0 0 / 60%);
+
+// 废弃
+$color-bg-page: rgb(10 10 10);
+$color-bg-elevated: rgb(30 30 30);
 $color-bg-dialog: rgb(30 30 30);
 $color-bg-surface: rgb(20 20 20);
 

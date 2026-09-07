@@ -48,11 +48,11 @@ import type { EventListVo } from '@/types/kubernetes/event'
 import { getClusterEventList } from '@/api/kubernetes/cluster'
 
 import BeeIcon from '@/components/base/BeeIcon/index.vue'
-import BeeCard from '@/components/BeeCard/index.vue'
 import BeeTableColumn from '@/components/BeeTable/BeeTableColumn.vue'
 import BeeTableCommonCell from '@/components/BeeTable/BeeTableCommonCell.vue'
 import BeeTable from '@/components/BeeTable/index.vue'
 import BeeTag from '@/components/BeeTag/index.vue'
+import BeeCard from '@/components/layout/BeeCard/index.vue'
 
 defineOptions({ name: 'BeeClusterOverviewEvent' })
 

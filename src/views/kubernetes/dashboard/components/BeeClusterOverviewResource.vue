@@ -46,9 +46,9 @@ import {
 } from '@/utils/kubernetes'
 
 import BeeIcon from '@/components/base/BeeIcon/index.vue'
-import BeeCard from '@/components/BeeCard/index.vue'
 import BeeRadarChart from '@/components/BeeRadarChart/index.vue'
 import BeeRingChart from '@/components/BeeRingChart/index.vue'
+import BeeCard from '@/components/layout/BeeCard/index.vue'
 
 defineOptions({ name: 'BeeClusterOverviewResource' })
 
