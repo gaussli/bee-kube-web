@@ -30,9 +30,9 @@ import type { DeploymentDetailVo } from '@/types/kubernetes/workload/types'
 import { getDeploymentDetail } from '@/api/kubernetes/workload/deployment'
 
 import BeeBackHeader from '@/components/BeeBackHeader/index.vue'
-import BeePage from '@/components/BeePage/index.vue'
 import BeeSegmentedControl from '@/components/BeeSegmentedControl/index.vue'
 import BeeCard from '@/components/layout/BeeCard/index.vue'
+import BeePage from '@/components/layout/BeePage/index.vue'
 
 import { type ResourceOverviewInfoData } from '@/views/kubernetes/dashboard/components/BeeResourceOverviewInfo.vue'
 import BeeResourceOverviewInfo from '@/views/kubernetes/dashboard/components/BeeResourceOverviewInfo.vue'

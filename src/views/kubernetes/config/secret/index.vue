@@ -153,7 +153,6 @@ import BeeActionCell, { type ActionItem } from '@/components/BeeActionCell/index
 import BeeAuditCell from '@/components/BeeAuditCell/index.vue'
 import BeeDialog from '@/components/BeeDialog/index.vue'
 import BeeInputSearch from '@/components/BeeInputSearch/index.vue'
-import BeePage from '@/components/BeePage/index.vue'
 import BeePageHeader from '@/components/BeePageHeader/index.vue'
 import BeePagination from '@/components/BeePagination/index.vue'
 import BeeSecretInfoCell from '@/components/BeeSecretInfoCell/index.vue'
@@ -163,6 +162,7 @@ import BeeTableCommonCell from '@/components/BeeTable/BeeTableCommonCell.vue'
 import BeeTable from '@/components/BeeTable/index.vue'
 import BeeTag from '@/components/BeeTag/index.vue'
 import BeeCard from '@/components/layout/BeeCard/index.vue'
+import BeePage from '@/components/layout/BeePage/index.vue'
 
 import { usePermission } from '@/composables/usePermission'
 

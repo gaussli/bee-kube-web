@@ -21,10 +21,11 @@ import { computed, onMounted, ref } from 'vue'
 
 import { useRoute } from 'vue-router'
 
-import { getClusterDetail } from '@/api/kubernetes/cluster'
 import type { ClusterResourceVo } from '@/types/kubernetes/cluster'
 
-import BeePage from '@/components/BeePage/index.vue'
+import { getClusterDetail } from '@/api/kubernetes/cluster'
+
+import BeePage from '@/components/layout/BeePage/index.vue'
 
 import BeeClusterOverviewEvent from './components/BeeClusterOverviewEvent.vue'
 import BeeClusterOverviewInfo, { type ClusterOverviewInfoData } from './components/BeeClusterOverviewInfo.vue'
