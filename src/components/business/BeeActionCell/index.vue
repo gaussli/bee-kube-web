@@ -1,16 +1,14 @@
 <template>
   <div v-if="actions.length > 0" class="bee-action-cell">
     <!-- 前两个操作（或全部操作，若 ≤3 个） -->
-    <BeeIconButton
-      v-for="action in primaryActions"
-      :key="action.value"
-      :icon="action.icon"
-      size="small"
-      @click.stop="action.handler"
-    />
+    <BeeTooltip v-for="action in primaryActions" :key="action.value" size="small" :tooltip="action.label">
+      <BeeIconButton :icon="action.icon" size="small" @click.stop="action.handler" />
+    </BeeTooltip>
     <!-- 更多下拉菜单 -->
     <BeeDropdown v-if="showMore" trigger="click" @change="handleDropdownChange">
-      <BeeIconButton icon="basic-more" size="small" />
+      <BeeTooltip size="small" tooltip="更多">
+        <BeeIconButton icon="basic-more" size="small" />
+      </BeeTooltip>
       <template #dropdown>
         <BeeDropdownItem
           v-for="action in moreActions"
@@ -28,6 +26,7 @@
 import { computed } from 'vue'
 
 import BeeIconButton from '@/components/base/BeeIconButton/index.vue'
+import BeeTooltip from '@/components/base/BeeTooltip/index.vue'
 import BeeDropdown from '@/components/BeeDropdown/index.vue'
 import BeeDropdownItem from '@/components/BeeDropdownItem/index.vue'
 

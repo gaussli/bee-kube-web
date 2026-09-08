@@ -70,13 +70,13 @@ function handleClick() {
     border-color 0.2s ease;
 
   &:hover {
-    background: rgba(map.get($colors, 'primary', 50), 0.1);
+    background: map.get($colors-primary, 'bg', 'hover');
   }
 
   &.is-active {
-    border-color: map.get($colors, 'primary', 50);
-    color: map.get($colors, 'primary', 50);
-    background: rgba(map.get($colors, 'primary', 50), 0.1);
+    border-color: map.get($colors-primary, 'border', 'active');
+    color: map.get($colors-primary, 'text', 'active');
+    background: map.get($colors-primary, 'bg', 'active');
   }
 
   &__icon {

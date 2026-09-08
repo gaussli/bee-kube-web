@@ -1,20 +1,24 @@
 <template>
-  <div class="bee-input-search">
+  <div class="bee-input-search" :class="[sizeClass]">
     <BeeIcon class="bee-input-search__icon" name="basic-search" />
-    <input v-model="modelValue" class="bee-input-search__input" :placeholder="placeholder" />
+    <input id="input-search" v-model="modelValue" class="bee-input-search__input" :placeholder="placeholder" />
   </div>
 </template>
 
 <script setup lang="ts">
+import { computed } from 'vue'
+
 import BeeIcon from '@/components/base/BeeIcon/index.vue'
 
 defineOptions({ name: 'BeeInputSearch' })
 
 // ==================== Prop & Emit ====================
 const modelValue = defineModel<string>()
-withDefaults(
+const props = withDefaults(
   defineProps<{
+    /** 占位文本 */
     placeholder?: string
+    /** 输入框尺寸 */
     size?: 'default' | 'small' | 'large'
   }>(),
   {
@@ -22,30 +26,32 @@ withDefaults(
     size: 'default',
   },
 )
+
+// ==================== Computed ====================
+const sizeClass = computed(() => (props.size !== 'default' ? `bee-input-search--${props.size}` : ''))
 </script>
 
 <style lang="scss" scoped>
 @use 'sass:map';
 
 .bee-input-search {
-  --bee-input-search-bg: transparent;
-  --bee-input-search-border-color: #{$color-text-secondary};
-  --bee-input-search-border-color-focus: #{map.get($colors, 'primary', 50)};
-
   display: flex;
-  gap: $spacing-8;
+  gap: 8px;
+  justify-content: flex-start;
   align-items: center;
-  box-sizing: border-box;
   width: 100%;
-  height: 32px;
-  padding: 0 $spacing-16;
-  border: 1px solid var(--bee-input-search-border-color);
+  height: 40px;
+  padding: 0 20px;
+  border: 1px solid;
+  border-color: var(--bee-input-search-color-border, map.get($colors-default, 'border', 'base'));
   border-radius: $radius-full;
-  background: var(--bee-input-search-bg);
-  transition: border-color 0.2s ease;
+  font-size: 14px;
+  color: var(--bee-input-search-color-text, $color-text-primary);
+  background: var(--bee-input-search-color-bg, map.get($colors-default, 'bg', 'base'));
+  transition: border-color 0.3s ease;
 
   &:focus-within {
-    border-color: var(--bee-input-search-border-color-focus);
+    border-color: var(--bee-input-search-color-border-focus, map.get($colors-primary, 'border', 'base'));
   }
 
   &__icon {
@@ -56,16 +62,18 @@ withDefaults(
   &__input {
     flex: 1;
     min-width: 0;
-    padding: 0;
-    border: none;
-    font-size: $font-size-14;
-    color: $color-text-primary;
-    background: transparent;
-    outline: none;
+  }
 
-    &::placeholder {
-      color: $color-text-placeholder;
-    }
+  &--small {
+    height: 32px;
+    padding: 0 14px;
+    font-size: 12px;
+  }
+
+  &--large {
+    height: 48px;
+    padding: 0 28;
+    font-size: 16px;
   }
 }
 </style>

@@ -26,9 +26,9 @@ withDefaults(
 
 .bee-tag {
   $tag-hover-colors: (
-    'primary': map.get($colors, 'primary', 50),
-    'warning': map.get($colors, 'warning', 50),
-    'danger': map.get($colors, 'danger', 50),
+    'primary': map.get($colors-primary, 'border', 'hover'),
+    'warning': map.get('colors-warning', 'border', 'hover'),
+    'danger': map.get('colors-danger', 'border', 'hover'),
   );
   $tag-sizes: (
     'large': (
@@ -56,7 +56,8 @@ withDefaults(
   display: inline-flex;
   justify-content: center;
   align-items: center;
-  border: 1px solid $color-border-secondary;
+
+  // border: 1px solid $color-border-secondary;
   border-radius: $radius-full;
   color: $color-text-secondary;
   white-space: nowrap;
@@ -71,7 +72,7 @@ withDefaults(
   }
 
   &:hover {
-    border-color: $color-border-primary;
+    border-color: map.get($colors-primary, 'border', 'hover');
     color: $color-text-primary;
   }
 

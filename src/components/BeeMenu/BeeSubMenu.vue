@@ -122,7 +122,7 @@ function onAfterLeave(el: Element) {
       border-color 0.2s ease;
 
     &:hover {
-      background: rgba(map.get($colors, 'primary', 50), 0.1);
+      background: map.get($colors-primary, 'bg', 'hover');
     }
   }
 

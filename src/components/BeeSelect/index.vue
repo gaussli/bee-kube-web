@@ -232,7 +232,8 @@ defineExpose({
     width: 100%;
     height: 100%;
     padding: 0 $spacing-16;
-    border: 1px solid $color-border-secondary;
+
+    // border: 1px solid $color-border-secondary;
     border-radius: $radius-full;
     font-size: $font-size-14;
     color: $color-text-secondary;
@@ -243,7 +244,7 @@ defineExpose({
 
   // 展开时边框高亮
   &.is-open &__trigger {
-    border-color: map.get($colors, 'primary', 50);
+    border-color: map.get($colors-primary, 'border', 'active');
   }
 
   &__value {

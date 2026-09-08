@@ -1,16 +1,16 @@
 <template>
   <div class="bee-radar-chart">
-    <svg :width="size" :height="size" :viewBox="`0 0 ${size} ${size}`">
+    <svg :height="size" :viewBox="`0 0 ${size} ${size}`" :width="size">
       <defs>
         <!-- 数据区域径向渐变：从中心向外越来越浅 -->
         <radialGradient
           :id="`radar-area-gradient-${uid}`"
           cx="50%"
           cy="50%"
-          gradientUnits="userSpaceOnUse"
+          :fr="0"
           :fx="center"
           :fy="center"
-          :fr="0"
+          gradientUnits="userSpaceOnUse"
           :r="radius"
         >
           <stop offset="0%" :stop-color="color" stop-opacity="1" />
@@ -23,36 +23,36 @@
         <circle
           v-for="level in levels"
           :key="`bg-circle-${level}`"
-          :r="radius * level"
-          fill="none"
-          :stroke="gridColor"
-          :stroke-width="1"
-          :stroke-opacity="0.3"
           class="grid-circle"
+          fill="none"
+          :r="radius * level"
+          :stroke="gridColor"
+          :stroke-opacity="0.3"
+          :stroke-width="1"
         />
 
         <!-- 网格线 -->
         <line
           v-for="(axis, index) in axes"
           :key="`grid-line-${index}`"
-          :x1="0"
-          :y1="0"
-          :x2="radius * Math.cos(angleToRad(axis.angle))"
-          :y2="radius * Math.sin(angleToRad(axis.angle))"
-          :stroke="gridColor"
-          :stroke-width="1"
-          :stroke-opacity="0.3"
           class="grid-line"
+          :stroke="gridColor"
+          :stroke-opacity="0.3"
+          :stroke-width="1"
+          :x1="0"
+          :x2="radius * Math.cos(angleToRad(axis.angle))"
+          :y1="0"
+          :y2="radius * Math.sin(angleToRad(axis.angle))"
         />
 
         <!-- 数据区域 -->
         <polygon
-          :points="getPolygonPoints()"
-          :fill="`url(#radar-area-gradient-${uid})`"
-          :stroke="color"
-          :stroke-width="2"
-          stroke-linejoin="round"
           class="data-area"
+          :fill="`url(#radar-area-gradient-${uid})`"
+          :points="getPolygonPoints()"
+          :stroke="color"
+          stroke-linejoin="round"
+          :stroke-width="2"
           :style="dataAreaStyle"
         />
 
@@ -65,22 +65,22 @@
           @mousemove="moveTooltip($event)"
         >
           <circle
+            class="data-point"
             :cx="point.x"
             :cy="point.y"
-            :r="pointRadius"
             :fill="color"
-            class="data-point"
             :opacity="animationProgress"
+            :r="pointRadius"
           />
           <!-- 数据点脉冲效果 -->
           <circle
             v-if="showAnimation"
+            class="data-point-pulse"
             :cx="point.x"
             :cy="point.y"
-            :r="pointRadius"
             :fill="color"
             :fill-opacity="0.3 * animationProgress"
-            class="data-point-pulse"
+            :r="pointRadius"
             :style="{ animationDelay: `${(index / axes.length) * (animationDuration * 0.5)}ms` }"
           />
         </g>
@@ -88,14 +88,14 @@
         <!-- 轴标签（沿轴线对齐） -->
         <g v-for="(axis, index) in axes" :key="`label-${index}`">
           <text
-            :x="labelPosition(index).x"
-            :y="labelPosition(index).y"
-            :text-anchor="labelAlign(index)"
+            class="axis-label"
             :dominant-baseline="labelBaseline(index)"
             :fill="labelColor"
             :font-size="fontSize"
             font-weight="500"
-            class="axis-label"
+            :text-anchor="labelAlign(index)"
+            :x="labelPosition(index).x"
+            :y="labelPosition(index).y"
           >
             {{ axis.label }}
           </text>
@@ -408,7 +408,7 @@ watch(
     min-width: 140px;
     padding: 8px;
     border-radius: 4px;
-    background: map.get($colors, 'gray', 25);
+    background: rgb(40 40 40);
     box-shadow: 0 4px 12px rgb(0 0 0 / 30%);
     pointer-events: none;
 
@@ -434,7 +434,7 @@ watch(
 
         .tooltip-value {
           font-weight: 500;
-          color: map.get($colors, 'primary', 50);
+          color: map.get($colors-primary, 'text', 'base');
         }
       }
     }

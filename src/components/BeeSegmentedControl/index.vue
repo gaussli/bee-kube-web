@@ -120,12 +120,12 @@ function handleClick(index: number, value?: string | number) {
   // ---- 通用 ----
   --bee-segmented-bg: transparent;
   --bee-segmented-color: #{$color-text-primary};
-  --bee-segmented-hover-bg: #{rgba(map.get($colors, 'primary', 50), 0.1)};
+  --bee-segmented-hover-bg: map.get($colors-primary, 'bg', 'hover');
 
   // ---- 选中 ----
-  --bee-segmented-slider-bg: #{rgba(map.get($colors, 'primary', 50), 0.1)};
-  --bee-segmented-slider-border-color: #{map.get($colors, 'primary', 50)};
-  --bee-segmented-active-color: #{map.get($colors, 'primary', 50)};
+  --bee-segmented-slider-bg: map.get($colors-primary, 'bg', 'active');
+  --bee-segmented-slider-border-color: map.get($colors-primary, 'border', 'active');
+  --bee-segmented-active-color: map.get($colors-primary, 'text', 'active');
   /* stylelint-enable order/custom-properties-alphabetical-order */
 
   position: relative;

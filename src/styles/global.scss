@@ -27,6 +27,24 @@ body {
   overflow: hidden;
 }
 
+input,
+button {
+  font-size: inherit;
+  font-weight: inherit;
+  color: inherit;
+}
+
+input {
+  padding: 0;
+  border: none;
+  background: transparent;
+  outline: none;
+
+  &::placeholder {
+    color: $color-text-placeholder;
+  }
+}
+
 // 滚动条样式
 ::-webkit-scrollbar {
   width: 6px;

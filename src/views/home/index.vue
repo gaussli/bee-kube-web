@@ -15,8 +15,8 @@
  * @module views/home
  */
 import BeeAside from '@/components/BeeLayout/BeeAside.vue'
-import BeeHeader from '@/components/BeeLayout/BeeHeader.vue'
 import BeeMain from '@/components/BeeLayout/BeeMain.vue'
+import BeeHeader from '@/components/layout/BeeHeader/index.vue'
 
 defineOptions({ name: 'Home' })
 </script>

@@ -274,10 +274,10 @@ function getColumnStyle(col: ColumnConfig, index: number) {
   --bee-table-bg: transparent;
   --bee-table-row-bg: #{$color-bg-third};
   --bee-table-row-gap: 8px;
-  --bee-table-row-hover-bg: #{map.get($colors, 'primary', 'bg')};
+  --bee-table-row-hover-bg: #{map.get($colors-primary, 'bg', 'hover')};
   --bee-table-row-padding: 16px;
   --bee-table-row-radius: 8px;
-  --bee-table-row-selected-bg: #{map.get($colors, 'primary', 10)};
+  --bee-table-row-selected-bg: #{map.get($colors-primary, 'bg', 'active')};
 
   position: relative;
   box-sizing: border-box;
