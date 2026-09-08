@@ -25,14 +25,6 @@
 </template>
 
 <script setup lang="ts">
-/**
- * 表格操作列组件
- * @module components/BeeActionCell
- * @remarks
- * - 由使用者负责过滤与排序操作项（权限、条件等）
- * - 传入操作 ≤3 个时全部并排展示
- * - 传入操作 >3 个时展示前 2 个 + "更多" 下拉菜单
- */
 import { computed } from 'vue'
 
 import BeeIconButton from '@/components/base/BeeIconButton/index.vue'
@@ -91,8 +83,9 @@ function handleDropdownChange(value: string | number) {
 <style lang="scss" scoped>
 .bee-action-cell {
   display: flex;
-  gap: $spacing-8;
-  width: 100%;
-  height: auto;
+  gap: 4px;
+  flex-direction: row;
+  justify-content: flex-start;
+  align-items: center;
 }
 </style>

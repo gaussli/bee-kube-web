@@ -61,7 +61,7 @@
               <BeeAuditCell :datetime="row.updateAt" field-name="更新人 / 时间" :username="row.updateBy" />
             </template>
           </BeeTableColumn>
-          <BeeTableColumn fixed="right" :width="150">
+          <BeeTableColumn fixed="right" :width="136">
             <template #default="{ row }">
               <BeeActionCell :actions="getActions(row)" />
             </template>
