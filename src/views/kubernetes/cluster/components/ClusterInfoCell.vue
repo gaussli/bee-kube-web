@@ -1,9 +1,9 @@
 <template>
-  <div class="bee-cluster-info-cell">
-    <div class="bee-cluster-info-cell__icon">
+  <div class="cluster-info-cell">
+    <div class="cluster-info-cell__icon">
       <BeeIcon name="kubernetes-cluster" />
     </div>
-    <div class="bee-cluster-info-cell__content">
+    <div class="cluster-info-cell__content">
       <div class="content-top">
         <BeeTooltip :tooltip="uid">
           <BeeCapsule label="UID" size="tiny" />
@@ -41,7 +41,7 @@ withDefaults(
 </script>
 
 <style lang="scss" scoped>
-.bee-cluster-info-cell {
+.cluster-info-cell {
   display: flex;
   gap: $spacing-8;
   flex-direction: row;

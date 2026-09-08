@@ -125,7 +125,6 @@ import BeeButton from '@/components/base/BeeButton/index.vue'
 import { BeeMessage } from '@/components/base/BeeMessage'
 import BeeActionCell, { type ActionItem } from '@/components/BeeActionCell/index.vue'
 import BeeAuditCell from '@/components/BeeAuditCell/index.vue'
-import BeeClusterInfoCell from '@/components/BeeClusterInfoCell/index.vue'
 import BeeInputSearch from '@/components/BeeInputSearch/index.vue'
 import BeePageHeader from '@/components/BeePageHeader/index.vue'
 import BeePagination from '@/components/BeePagination/index.vue'
@@ -143,6 +142,7 @@ import { useKubernetesStore } from '@/stores'
 
 import ClusterBatchDeleteDialog from './components/ClusterBatchDeleteDialog.vue'
 import ClusterDeleteDialog from './components/ClusterDeleteDialog.vue'
+import BeeClusterInfoCell from './components/ClusterInfoCell.vue'
 
 defineOptions({ name: 'ClusterPage' })
 
