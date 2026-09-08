@@ -132,7 +132,7 @@ function handleClick(index: number, value?: string | number) {
   display: inline-flex;
   align-items: center;
   height: 32px;
-  border-radius: $radius-full;
+  border-radius: 9999px;
   background-color: var(--bee-segmented-bg);
 
   &__slider {
@@ -142,7 +142,7 @@ function handleClick(index: number, value?: string | number) {
     box-sizing: border-box;
     height: 100%;
     border: 1px solid var(--bee-segmented-slider-border-color);
-    border-radius: $radius-full;
+    border-radius: 9999px;
     background-color: var(--bee-segmented-slider-bg);
     pointer-events: none;
     transition:
@@ -167,7 +167,7 @@ function handleClick(index: number, value?: string | number) {
     transition: color 0.25s ease;
 
     &:hover {
-      border-radius: $radius-full;
+      border-radius: 9999px;
       background-color: var(--bee-segmented-hover-bg);
     }
 

@@ -55,7 +55,7 @@ const avatarSrc = computed(() => props.img || defaultAvatarImg)
     width: auto;
     height: 100%;
     aspect-ratio: 1 / 1;
-    border-radius: $radius-full;
+    border-radius: 9999px;
     object-fit: cover;
     vertical-align: middle;
   }

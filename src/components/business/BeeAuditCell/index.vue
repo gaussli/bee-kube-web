@@ -54,7 +54,7 @@ defineProps<{
     flex-shrink: 0;
     width: 16px;
     height: 16px;
-    border-radius: $radius-full;
+    border-radius: 9999px;
     object-fit: cover;
   }
 

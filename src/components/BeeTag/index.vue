@@ -58,7 +58,7 @@ withDefaults(
   align-items: center;
 
   // border: 1px solid $color-border-secondary;
-  border-radius: $radius-full;
+  border-radius: 9999px;
   color: $color-text-secondary;
   white-space: nowrap;
   background: transparent;

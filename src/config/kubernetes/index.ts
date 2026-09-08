@@ -8,7 +8,7 @@
  */
 export interface Option {
   /** 状态匹配值 */
-  value: string | number | undefined
+  value?: string | number
   /** 状态中文标签 */
   label: string
   /** 状态英文标签 */

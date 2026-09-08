@@ -18,7 +18,7 @@ const props = defineProps<{
 }>()
 
 // ==================== Reactive State ====================
-const spanRef = ref<HTMLElement | null>(null)
+const spanRef = ref<HTMLElement>()
 const isOverflow = ref(false)
 
 // ==================== Variables ====================

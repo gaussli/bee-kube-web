@@ -44,14 +44,14 @@ const sizeClass = computed(() => (props.size !== 'default' ? `bee-input-search--
   padding: 0 20px;
   border: 1px solid;
   border-color: var(--bee-input-search-color-border, map.get($colors-default, 'border', 'base'));
-  border-radius: $radius-full;
+  border-radius: 9999px;
   font-size: 14px;
   color: var(--bee-input-search-color-text, $color-text-primary);
   background: var(--bee-input-search-color-bg, map.get($colors-default, 'bg', 'base'));
   transition: border-color 0.3s ease;
 
   &:focus-within {
-    border-color: var(--bee-input-search-color-border-focus, map.get($colors-primary, 'border', 'base'));
+    border-color: var(--bee-input-search-color-border-active, map.get($colors-primary, 'border', 'base'));
   }
 
   &__icon {
@@ -72,7 +72,7 @@ const sizeClass = computed(() => (props.size !== 'default' ? `bee-input-search--
 
   &--large {
     height: 48px;
-    padding: 0 28;
+    padding: 0 28px;
     font-size: 16px;
   }
 }

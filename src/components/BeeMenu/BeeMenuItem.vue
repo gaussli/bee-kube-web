@@ -59,7 +59,7 @@ function handleClick() {
   height: 40px;
   padding: 0 20px;
   border: 1px solid transparent;
-  border-radius: $radius-full;
+  border-radius: 9999px;
   font-size: 14px;
   color: $color-text-secondary;
   cursor: pointer;

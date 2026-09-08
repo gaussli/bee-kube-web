@@ -59,7 +59,7 @@
 import { ref, computed, watch } from 'vue'
 
 import BeeIcon from '@/components/base/BeeIcon/index.vue'
-import BeeSelect from '@/components/BeeSelect/index.vue'
+import BeeSelect from '@/components/base/BeeSelect/index.vue'
 
 defineOptions({ name: 'BeePagination' })
 
@@ -245,7 +245,7 @@ function handlePageInputFilter(event: Event) {
     height: 32px;
     padding: 0 $spacing-16;
     border: 1px solid transparent;
-    border-radius: $radius-full;
+    border-radius: 9999px;
     background: $color-bg-primary;
     transition: border-color 0.2s;
 

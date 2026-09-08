@@ -2,7 +2,7 @@
   <!-- 触发器：包裹 slot 默认内容，hover 时显示 tooltip -->
   <div
     ref="triggerRef"
-    class="bee-tooltip-trigger"
+    class="bee-tooltip__trigger"
     @mouseenter="handleTriggerMouseEnter"
     @mouseleave="handleTriggerMouseLeave"
   >
@@ -191,7 +191,7 @@ export default {
 @use 'sass:map';
 
 // ==================== 触发器 ====================
-.bee-tooltip-trigger {
+.bee-tooltip__trigger {
   cursor: pointer;
 }
 

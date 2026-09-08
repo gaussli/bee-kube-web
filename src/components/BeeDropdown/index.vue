@@ -276,7 +276,7 @@ defineExpose({
     align-items: center;
     padding: $spacing-8 $spacing-16;
     margin: $spacing-8;
-    border-radius: $radius-full;
+    border-radius: 9999px;
     font-size: $font-size-12;
     color: $color-text-regular;
     cursor: pointer;

@@ -8,12 +8,7 @@
       <!-- 工具栏 -->
       <div class="page-body__toolbar">
         <BeeInputSearch v-model="searchKey" class="page-body__toolbar-search" placeholder="按 UID / 名称搜索" />
-        <BeeSelect
-          v-model="queryForm.status"
-          :menu-height="300"
-          :options="CLUSTER_STATUS_OPTIONS"
-          placeholder="状态筛选"
-        />
+        <BeeSelect v-model="queryForm.status" :options="CLUSTER_STATUS_OPTIONS" placeholder="状态筛选" :width="120" />
         <BeeButton icon="basic-search" @click="handleSearch"> 搜索 </BeeButton>
         <BeeButton icon="basic-refresh" @click="handleReset"> 重置 </BeeButton>
         <div v-if="perm.create" class="page-body__toolbar-separator"></div>
@@ -124,8 +119,8 @@ import { getClusterList, deleteCluster, deleteClusters } from '@/api/kubernetes/
 import BeeButton from '@/components/base/BeeButton/index.vue'
 import BeeInputSearch from '@/components/base/BeeInputSearch/index.vue'
 import { BeeMessage } from '@/components/base/BeeMessage'
+import BeeSelect from '@/components/base/BeeSelect/index.vue'
 import BeePagination from '@/components/BeePagination/index.vue'
-import BeeSelect from '@/components/BeeSelect/index.vue'
 import BeeTableColumn from '@/components/BeeTable/BeeTableColumn.vue'
 import BeeTableCommonCell from '@/components/BeeTable/BeeTableCommonCell.vue'
 import BeeTable from '@/components/BeeTable/index.vue'
