@@ -11,11 +11,6 @@
 </template>
 
 <script setup lang="ts">
-/**
- * 页面标题组件
- * 左侧图标 + 右侧标题和描述的横向布局
- * @module components/BeePageHeader
- */
 import BeeIcon from '@/components/base/BeeIcon/index.vue'
 import BeeCard from '@/components/layout/BeeCard/index.vue'
 
@@ -33,22 +28,20 @@ defineProps<{
 
 <style lang="scss" scoped>
 .bee-page-header {
-  --bee-page-header-icon-size: 64px;
-
   display: flex;
-  gap: $spacing-16;
+  gap: 16px;
   flex-direction: row;
   justify-content: center;
-  box-sizing: border-box;
+  align-items: flex-start;
   width: 100%;
-  padding: 24px $spacing-16;
+  padding: 24px 16px;
 
   &__icon {
     display: flex;
     justify-content: center;
     align-items: center;
-    width: var(--bee-page-header-icon-size);
-    height: var(--bee-page-header-icon-size);
+    width: 64px;
+    height: 64px;
     border-radius: 50% 0 50% 50%;
     color: $color-primary;
     background: $color-bg-third;
@@ -56,24 +49,24 @@ defineProps<{
 
   &__content {
     display: flex;
-    gap: $spacing-4;
+    gap: 12px;
     flex-direction: column;
     justify-content: center;
+    align-items: flex-start;
     flex: 1;
+    height: 100%;
     min-width: 0;
   }
 
   &__title {
     font-size: 24px;
     font-weight: 600;
-    line-height: 32px;
     color: $color-text-primary;
   }
 
   &__desc {
-    font-size: $font-size-14;
-    line-height: 24px;
-    color: $color-text-secondary;
+    font-size: 14px;
+    color: $color-text-third;
   }
 }
 </style>

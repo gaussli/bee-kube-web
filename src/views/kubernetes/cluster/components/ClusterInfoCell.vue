@@ -9,7 +9,7 @@
           <BeeCapsule label="UID" size="tiny" />
         </BeeTooltip>
         <BeeEllipsisTooltipLabel :label="name" />
-        <BeeIcon name="basic-copy" />
+        <BeeIcon class="content-top__icon-copy" name="basic-copy" @click.stop="handleCopy" />
       </div>
       <div class="content-bottom">
         <BeeIcon name="basic-description" />
@@ -25,9 +25,12 @@ import BeeIcon from '@/components/base/BeeIcon/index.vue'
 import BeeTooltip from '@/components/base/BeeTooltip/index.vue'
 import BeeEllipsisTooltipLabel from '@/components/business/BeeEllipsisTooltipLabel/index.vue'
 
+import { useClipboard } from '@/composables/useClipboard'
+
 defineOptions({ name: 'BeeClusterInfoCell' })
 
-withDefaults(
+// ==================== Props ====================
+const props = withDefaults(
   defineProps<{
     /** 集群 UID，hover UID 标签时显示 */
     uid: string
@@ -38,6 +41,11 @@ withDefaults(
   }>(),
   { description: '-' },
 )
+
+// ==================== Handler ====================
+async function handleCopy() {
+  await useClipboard().copy(props.name)
+}
 </script>
 
 <style lang="scss" scoped>
@@ -84,6 +92,19 @@ withDefaults(
       font-size: 12px;
       color: $color-text-third;
     }
+  }
+
+  .content-top__icon-copy {
+    opacity: 0;
+    transition: opacity 0.15s;
+
+    &:hover {
+      color: $color-primary;
+    }
+  }
+
+  &:hover .content-top__icon-copy {
+    opacity: 1;
   }
 }
 </style>

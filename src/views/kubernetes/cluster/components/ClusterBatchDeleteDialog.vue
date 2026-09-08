@@ -42,8 +42,6 @@ import BeeButton from '@/components/base/BeeButton/index.vue'
 import BeeCapsule from '@/components/base/BeeCapsule/index.vue'
 import BeeIcon from '@/components/base/BeeIcon/index.vue'
 
-import { useClipboard } from '@/composables/useClipboard'
-
 defineOptions({ name: 'ClusterDeleteDialog' })
 
 // ==================== Prop & Emit ====================
@@ -66,11 +64,6 @@ const extraMsg = computed(
   () =>
     `您共选中 ${props.deleteData.length} 个集群。其中以下 ${nonDeletableData.value.length} 个集群不可删除，将忽略：`,
 )
-
-// ==================== Handler ====================
-async function handleCopy(s: string) {
-  await useClipboard().copy(s)
-}
 
 /**
  * 取消删除
