@@ -64,7 +64,6 @@ $color-text-regular: rgb(255 255 255);
 $color-text-primary: rgb(230 230 230);
 $color-text-secondary: rgb(180 180 180);
 $color-text-third: rgb(130 130 130);
-$color-text-tertiary: $color-text-third;
 $color-text-placeholder: $color-text-third;
 $color-text-disabled: rgb(80 80 80);
 
@@ -104,87 +103,7 @@ $font-size-14: 14px;
 $font-size-16: 16px;
 $font-size-18: 18px;
 
-// 主色调
-// 接近蜂蜜琥珀色与蜜蜂身体橘黄的中间调，不刺眼且具有自然亲和力。
-// rgb(218, 128, 48) / #da8030;
-// 更明亮活泼 —— 适合强调按钮或悬停状态
-// rgb(235, 140, 55) / #eb8c37
-// 更复古沉稳 —— 适合禁用或辅助元素
-// rgb(200, 110, 40) / #c86e28
-$color-primary-50: #fff9ea;
-$color-primary-100: #fff3e5;
-$color-primary-200: #ffe6cd;
-$color-primary-300: #ffd2ab;
-$color-primary-400: #f4bf99;
-$color-primary-500: #eaa067;
-$color-primary-600: #da8030;
-$color-primary-700: #aa611e;
-$color-primary-800: #804300;
-$color-primary-900: #5e2600;
-
-// 接近蜂蜜琥珀色与蜜蜂身体橘黄的中间调，不刺眼且具有自然亲和力。
-// $primary-color: rgb(218, 128, 48);
-// 更明亮活泼：rgb(235, 140, 55) —— 适合强调按钮或悬停状态
-// $primary-color: rgb(235, 140, 55);
-// 更复古沉稳：rgb(200, 110, 40) —— 适合禁用或辅助元素
-// $primary-color: rgb(200, 110, 40);
-$color-success: #67c23a;
-$color-warning: #e6a23c;
-$color-danger: #f56c6c;
-$color-info: #bbbdc1;
-
-// 过度灰
-$bg-hover: #26292c;
-
-// 高级灰
-// $bg-hover: rgb(55, 58, 62);
-// 微蓝灰
-// $bg-hover: rgb(40, 49, 65);
-$bg-selected: #2b2e31;
-$bg-disabled: rgb(43 46 49);
-
-// 弹出框的背景遮罩
-$bg-mask: #2b2e31;
-
-// 弹框、下拉菜单
-$bg-overlay: #26272d;
-
-// 系统基础颜色
-$bee-regular: white;
-$bee-primary: #bbbdc1;
-$bee-secondary: #7e8184;
-
-// 三级，非关键、禁用状态、图标辅助
-$bee-tertiary: #6b6e72;
-
-// // 过度灰
-// $bee-hover: rgb(150, 153, 158);
-// // 近选白
-// $bee-hover: rgb(170, 173, 178);
-// 高亮银
-$bee-hover: #c8cad0;
-$bee-active: $bee-primary;
-
-// 轻度禁用，比默认字体稍暗，仍保留一定可读性，适合短暂禁用或可恢复的选项。
-$bee-disabled: #5f6267;
-
-// // 中度禁用，进一步降低亮度，与背景对比度较弱，清晰表明不可交互，适合永久禁用的菜单项。
-// $bee-disabled: rgb(78, 80, 84);
-// // 重度禁用，几乎与背景融合（仅略亮），视觉上完全弱化，适合完全隐藏又需占位或提示存在的场景。
-// $bee-disabled: rgb(60, 62, 66);
-
-// 文字颜色
-$text-hover: $bee-hover;
-$text-active: $bee-primary;
-
-// 边框颜色
-$border-regular: $bee-regular;
-$color-border-primary: $bee-primary;
-$border-secondary: $bee-secondary;
-$border-tertiary: $bee-tertiary;
-$border-hover: $bee-hover;
-$border-active: $bee-primary;
-$border-disabled: #ffffff32;
+// 重定义颜色
 $colors-default: (
   bg: (
     base: transparent,

@@ -369,7 +369,7 @@ onMounted(() => {
     .menu-code {
       font-family: 'SF Mono', Consolas, monospace;
       font-size: 12px;
-      color: $color-text-tertiary;
+      color: $color-text-third;
     }
   }
 }

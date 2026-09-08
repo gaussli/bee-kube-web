@@ -54,7 +54,7 @@ import { createCronJob } from '@/api/kubernetes/workload/cronjob'
 
 import BeeButton from '@/components/base/BeeButton/index.vue'
 import { BeeMessage } from '@/components/base/BeeMessage'
-import BeePageHeader from '@/components/BeePageHeader/index.vue'
+import BeePageHeader from '@/components/business/BeePageHeader/index.vue'
 
 defineOptions({ name: 'CronJobCreate' })
 const router = useRouter()

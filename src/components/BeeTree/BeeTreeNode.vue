@@ -1,5 +1,5 @@
 <template>
-  <div class="bee-tree-node" role="treeitem" :aria-expanded="isExpanded">
+  <div :aria-expanded="isExpanded" class="bee-tree-node" role="treeitem">
     <div
       class="bee-tree-node__content"
       :class="{ 'is-selected': isSelected, 'is-disabled': isNodeDisabled }"
@@ -20,9 +20,9 @@
       <!-- 复选框 -->
       <el-checkbox
         v-if="showCheckbox"
-        :model-value="isChecked"
-        :indeterminate="isHalfChecked"
         :disabled="isNodeDisabled"
+        :indeterminate="isHalfChecked"
+        :model-value="isChecked"
         @change="handleCheck"
         @click.stop
       />
@@ -40,20 +40,20 @@
       <BeeTreeNode
         v-for="child in node.children"
         :key="child[nodeKey]"
+        :checked-keys="checkedKeys"
+        :disabled="disabled"
+        :expand-all="expandAll"
+        :half-checked-keys="halfCheckedKeys"
+        :expanded-keys="expandedKeys"
+        :indent="indent"
+        :level="level + 1"
         :node="child"
         :node-key="nodeKey"
-        :checked-keys="checkedKeys"
-        :half-checked-keys="halfCheckedKeys"
-        :disabled="disabled"
         :selected-key="selectedKey"
-        :level="level + 1"
-        :indent="indent"
         :show-checkbox="showCheckbox"
-        :expand-all="expandAll"
-        :expanded-keys="expandedKeys"
-        @toggle="$emit('toggle', $event)"
         @check="handleChildCheck"
         @select="$emit('select', $event)"
+        @toggle="$emit('toggle', $event)"
       />
     </div>
   </div>
@@ -170,7 +170,7 @@ function handleContentClick() {
     width: 24px;
     height: 24px;
     font-size: 12px;
-    color: $color-text-tertiary;
+    color: $color-text-third;
     transition: transform 0.3s ease;
 
     &.is-leaf {
@@ -228,8 +228,8 @@ function handleContentClick() {
 
   &.is-disabled {
     .el-checkbox__inner {
-      border-color: rgba($color-text-tertiary, 0.3);
-      background-color: rgba($color-text-tertiary, 0.2);
+      border-color: rgba($color-text-third, 0.3);
+      background-color: rgba($color-text-third, 0.2);
     }
   }
 }

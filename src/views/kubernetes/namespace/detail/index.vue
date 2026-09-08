@@ -103,8 +103,8 @@ import type { NamespaceDetailVo } from '@/types/kubernetes/namespace'
 import { getNamespaceDetail } from '@/api/kubernetes/namespace/namespace'
 
 import BeeButton from '@/components/base/BeeButton/index.vue'
-import BeePageHeader from '@/components/BeePageHeader/index.vue'
 import BeeTag from '@/components/BeeTag/index.vue'
+import BeePageHeader from '@/components/business/BeePageHeader/index.vue'
 
 import { usePermission } from '@/composables/usePermission'
 

@@ -81,7 +81,7 @@ import { computed, ref } from 'vue'
 import { ArrowLeft, ArrowRight } from '@element-plus/icons-vue'
 
 import BeeButton from '@/components/base/BeeButton/index.vue'
-import BeeInputSearch from '@/components/BeeInputSearch/index.vue'
+import BeeInputSearch from '@/components/base/BeeInputSearch/index.vue'
 
 defineOptions({ name: 'BeeTransfer' })
 

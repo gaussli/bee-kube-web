@@ -187,9 +187,9 @@ import {
 } from '@/api/platform/permission'
 
 import BeeButton from '@/components/base/BeeButton/index.vue'
+import BeeInputSearch from '@/components/base/BeeInputSearch/index.vue'
 import { BeeMessage } from '@/components/base/BeeMessage'
 import BeeDialog from '@/components/BeeDialog/index.vue'
-import BeeInputSearch from '@/components/BeeInputSearch/index.vue'
 import BeeLabelCopyable from '@/components/BeeLabelCopyable/index.vue'
 import BeeSegmentedControl from '@/components/BeeSegmentedControl/index.vue'
 import BeeTag from '@/components/BeeTag/index.vue'

@@ -139,8 +139,8 @@ import type { NodeListResp } from '@/types/kubernetes/node'
 import { getNodeDetail } from '@/api/kubernetes/node'
 
 import BeeButton from '@/components/base/BeeButton/index.vue'
-import BeePageHeader from '@/components/BeePageHeader/index.vue'
 import BeeTag from '@/components/BeeTag/index.vue'
+import BeePageHeader from '@/components/business/BeePageHeader/index.vue'
 
 import { usePermission } from '@/composables/usePermission'
 

@@ -296,7 +296,7 @@ const strategyLabel = computed(() => {
 
     &-sublabel {
       font-size: $font-size-10;
-      color: $color-text-tertiary;
+      color: $color-text-third;
     }
   }
 }
@@ -354,7 +354,7 @@ const strategyLabel = computed(() => {
     &-label {
       margin-bottom: $spacing-4;
       font-size: $font-size-10;
-      color: $color-text-tertiary;
+      color: $color-text-third;
     }
 
     &-value {
@@ -416,12 +416,12 @@ const strategyLabel = computed(() => {
 
   &__message {
     font-size: $font-size-12;
-    color: $color-text-tertiary;
+    color: $color-text-third;
   }
 
   &__time {
     font-size: $font-size-10;
-    color: $color-text-tertiary;
+    color: $color-text-third;
     text-align: right;
   }
 }
@@ -437,7 +437,7 @@ const strategyLabel = computed(() => {
     &-label {
       margin-bottom: $spacing-4;
       font-size: $font-size-10;
-      color: $color-text-tertiary;
+      color: $color-text-third;
     }
 
     &-value {

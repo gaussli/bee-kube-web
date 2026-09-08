@@ -283,7 +283,7 @@ function handlePageInputFilter(event: Event) {
     }
 
     &.is-disabled {
-      color: $color-text-tertiary;
+      color: $color-text-third;
       opacity: 0.5;
       cursor: not-allowed;
     }

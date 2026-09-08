@@ -45,11 +45,13 @@ export interface ActionItem {
   handler: () => void
 }
 
+// ==================== Props ====================
 const props = defineProps<{
   /** 操作信息数组 */
   actions: ActionItem[]
 }>()
 
+// ==================== Computed ====================
 /** 是否展示"更多"下拉按钮 */
 const showMore = computed(() => props.actions.length > 3)
 
@@ -69,6 +71,7 @@ const moreActions = computed(() => {
   return []
 })
 
+// ==================== Handler ====================
 /**
  * 更多下拉菜单选中回调
  * @param value - 选中的操作标识

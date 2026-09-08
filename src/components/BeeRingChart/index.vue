@@ -1,20 +1,20 @@
 <template>
   <div class="bee-ring-chart">
-    <svg :width="size" :height="size" :viewBox="`0 0 ${size} ${size}`">
+    <svg :height="size" :viewBox="`0 0 ${size} ${size}`" :width="size">
       <!-- 背景圆环 -->
-      <circle :cx="center" :cy="center" :r="radius" fill="none" :stroke="bgColor" :stroke-width="strokeWidth" />
+      <circle :cx="center" :cy="center" fill="none" :r="radius" :stroke="bgColor" :stroke-width="strokeWidth" />
       <!-- 数据圆环 -->
       <circle
         :cx="center"
         :cy="center"
-        :r="radius"
+        class="ring-progress"
         fill="none"
+        :r="radius"
         :stroke="color"
-        :stroke-width="strokeWidth"
         :stroke-dasharray="circumference"
         :stroke-dashoffset="dashOffset"
         stroke-linecap="round"
-        class="ring-progress"
+        :stroke-width="strokeWidth"
         :style="ringStyle"
       />
     </svg>
@@ -93,7 +93,7 @@ const ringStyle = computed(() => {
     .ring-value {
       font-size: 12px;
       font-weight: 600;
-      color: $color-text-tertiary;
+      color: $color-text-third;
     }
   }
 }

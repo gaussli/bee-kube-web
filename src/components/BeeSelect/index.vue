@@ -267,7 +267,7 @@ defineExpose({
 
 .bee-select__menu {
   // CSS 变量：使用者可覆盖菜单背景和阴影
-  --bee-select-menu-bg: #{$bg-overlay};
+  --bee-select-menu-bg: rgb(40 40 40);
   --bee-select-menu-shadow: #{0 4px 12px rgb(0 0 0 / 30%)};
 
   position: relative;

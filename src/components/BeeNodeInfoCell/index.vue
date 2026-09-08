@@ -131,7 +131,7 @@ onUnmounted(() => {
 
   &__copy-icon {
     flex-shrink: 0;
-    color: $color-text-tertiary;
+    color: $color-text-third;
     opacity: 0;
     cursor: pointer;
     transition: opacity 0.15s;
@@ -159,13 +159,13 @@ onUnmounted(() => {
 
   &__desc-icon {
     flex-shrink: 0;
-    color: $color-text-tertiary;
+    color: $color-text-third;
   }
 
   &__desc {
     overflow: hidden;
     font-size: $font-size-12;
-    color: $color-text-tertiary;
+    color: $color-text-third;
     text-overflow: ellipsis;
     white-space: nowrap;
   }

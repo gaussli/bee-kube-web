@@ -38,12 +38,12 @@ defineProps<{
     display: flex;
     gap: 4px;
     align-items: center;
-    color: $color-text-tertiary;
+    color: $color-text-third;
   }
 
   &__label {
     font-size: $font-size-12;
-    color: $color-text-tertiary;
+    color: $color-text-third;
   }
 
   &__value {

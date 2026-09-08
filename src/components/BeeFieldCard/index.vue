@@ -26,7 +26,7 @@ defineProps<{
 <style lang="scss" scoped>
 .bee-fieldcard {
   --bee-fieldcard-bg: #{$color-bg-secondary};
-  --bee-fieldcard-subtext-color: #{$color-text-tertiary};
+  --bee-fieldcard-subtext-color: #{$color-text-third};
   --bee-fieldcard-text-color: #{$color-text-primary};
   --bee-fieldcard-width: 240px;
 
@@ -47,7 +47,7 @@ defineProps<{
 
   &__field-name {
     font-size: $font-size-12;
-    color: $color-text-tertiary;
+    color: $color-text-third;
   }
 
   &__body {

@@ -14,11 +14,6 @@
 </template>
 
 <script setup lang="ts">
-/**
- * 状态单元格组件
- * 上下结构：上方展示状态 dot + 中文标签，下方展示英文标签及可选帮助提示
- * @module components/BeeStatusCell
- */
 import { computed } from 'vue'
 
 import type { Option } from '@/config/kubernetes'
@@ -30,6 +25,7 @@ import { COLOR_GRAY_90 } from '@/config/color'
 
 defineOptions({ name: 'BeeStatusCell' })
 
+// ==================== Props ====================
 const props = defineProps<{
   /** 当前状态值 */
   status?: string | number
@@ -39,11 +35,11 @@ const props = defineProps<{
   options: Option[]
 }>()
 
+// ==================== Computed ====================
 /** 匹配当前 status 的状态选项，无匹配返回 '-' 占位 */
 const currentStatus = computed(
   () => props.options.find(item => item.value === props.status) || { label: '-', color: COLOR_GRAY_90, labelEn: '-' },
 )
-
 /** 状态指示色，用于 dot 背景和 label 文字 */
 const currentStatusColor = computed(() => currentStatus.value.color)
 </script>

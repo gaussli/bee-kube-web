@@ -73,7 +73,7 @@ import { getNamespaceDetail, updateNamespace } from '@/api/kubernetes/namespace/
 
 import BeeButton from '@/components/base/BeeButton/index.vue'
 import { BeeMessage } from '@/components/base/BeeMessage'
-import BeePageHeader from '@/components/BeePageHeader/index.vue'
+import BeePageHeader from '@/components/business/BeePageHeader/index.vue'
 
 defineOptions({ name: 'NamespaceEdit' })
 

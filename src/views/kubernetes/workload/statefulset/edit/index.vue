@@ -40,7 +40,7 @@ import { getStatefulSetDetail, updateStatefulSet } from '@/api/kubernetes/worklo
 
 import BeeButton from '@/components/base/BeeButton/index.vue'
 import { BeeMessage } from '@/components/base/BeeMessage'
-import BeePageHeader from '@/components/BeePageHeader/index.vue'
+import BeePageHeader from '@/components/business/BeePageHeader/index.vue'
 
 defineOptions({ name: 'StatefulSetEdit' })
 const route = useRoute()

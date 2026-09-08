@@ -16,6 +16,7 @@ import BeeCard from '@/components/layout/BeeCard/index.vue'
 
 defineOptions({ name: 'BeePageHeader' })
 
+// ==================== Props ====================
 defineProps<{
   /** 图标名称 */
   icon: string

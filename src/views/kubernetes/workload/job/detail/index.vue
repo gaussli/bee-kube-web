@@ -82,7 +82,7 @@ import type { JobResp } from '@/types/kubernetes/workload/types'
 import { getJobDetail } from '@/api/kubernetes/workload/job'
 
 import BeeButton from '@/components/base/BeeButton/index.vue'
-import BeePageHeader from '@/components/BeePageHeader/index.vue'
+import BeePageHeader from '@/components/business/BeePageHeader/index.vue'
 
 import { usePermission } from '@/composables/usePermission'
 

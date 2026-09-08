@@ -1,41 +1,27 @@
 <template>
   <div class="bee-input-search">
-    <BeeIcon class="bee-input-search__icon" name="basic-search" :size="14" />
-    <input v-model="inputValue" class="bee-input-search__input" :placeholder="placeholder" />
+    <BeeIcon class="bee-input-search__icon" name="basic-search" />
+    <input v-model="modelValue" class="bee-input-search__input" :placeholder="placeholder" />
   </div>
 </template>
 
 <script setup lang="ts">
-/**
- * 搜索输入框组件
- * 左侧图标 + 输入框，支持 v-model 双向绑定
- * @module components/BeeInputSearch
- */
-import { computed } from 'vue'
-
 import BeeIcon from '@/components/base/BeeIcon/index.vue'
 
 defineOptions({ name: 'BeeInputSearch' })
 
-const props = withDefaults(
+// ==================== Prop & Emit ====================
+const modelValue = defineModel<string>()
+withDefaults(
   defineProps<{
-    modelValue?: string
     placeholder?: string
+    size?: 'default' | 'small' | 'large'
   }>(),
   {
-    modelValue: '',
     placeholder: '搜索',
+    size: 'default',
   },
 )
-
-const emit = defineEmits<{
-  'update:modelValue': [value: string]
-}>()
-
-const inputValue = computed({
-  get: () => props.modelValue,
-  set: val => emit('update:modelValue', val),
-})
 </script>
 
 <style lang="scss" scoped>

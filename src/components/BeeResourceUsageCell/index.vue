@@ -77,7 +77,7 @@ const usageColor = computed(() => {
 
   &__field-name {
     font-size: $font-size-12;
-    color: $color-text-tertiary;
+    color: $color-text-third;
   }
 }
 </style>

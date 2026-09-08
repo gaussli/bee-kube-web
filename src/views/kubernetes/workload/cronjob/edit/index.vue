@@ -51,7 +51,7 @@ import { getCronJobDetail, updateCronJob } from '@/api/kubernetes/workload/cronj
 
 import BeeButton from '@/components/base/BeeButton/index.vue'
 import { BeeMessage } from '@/components/base/BeeMessage'
-import BeePageHeader from '@/components/BeePageHeader/index.vue'
+import BeePageHeader from '@/components/business/BeePageHeader/index.vue'
 
 defineOptions({ name: 'CronJobEdit' })
 const route = useRoute()

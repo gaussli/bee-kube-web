@@ -263,7 +263,7 @@ defineExpose({
     z-index: 1000;
     max-height: 300px;
     border-radius: $radius-4;
-    background: $bg-overlay;
+    background: rgb(40 40 40);
     box-shadow: 0 4px 12px rgb(0 0 0 / 30%);
   }
 
@@ -293,7 +293,7 @@ defineExpose({
     width: 10px;
     height: 10px;
     border-top-left-radius: 4px;
-    background: $bg-overlay;
+    background: rgb(40 40 40);
     transform: rotate(45deg);
   }
 }

@@ -112,7 +112,7 @@ onMounted(() => {
 
   .header-subtitle {
     font-size: 12px;
-    color: $color-text-tertiary;
+    color: $color-text-third;
   }
 }
 
