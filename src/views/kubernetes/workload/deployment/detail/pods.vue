@@ -77,10 +77,10 @@ import BeeInputSearch from '@/components/BeeInputSearch/index.vue'
 import BeePagination from '@/components/BeePagination/index.vue'
 import BeePodInfoCell from '@/components/BeePodInfoCell/index.vue'
 import BeeSelect from '@/components/BeeSelect/index.vue'
-import BeeStatusCell from '@/components/BeeStatusCell/index.vue'
 import BeeTableColumn from '@/components/BeeTable/BeeTableColumn.vue'
 import BeeTableCommonCell from '@/components/BeeTable/BeeTableCommonCell.vue'
 import BeeTable from '@/components/BeeTable/index.vue'
+import BeeStatusCell from '@/components/business/BeeStatusCell/index.vue'
 
 import { POD_STATUS_OPTIONS } from '@/config/kubernetes/pod'
 

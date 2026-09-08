@@ -37,7 +37,6 @@ watch(
 const checkOverflow = () => {
   const el = spanRef.value
   if (!el) return
-  console.log(`scroll: ${el.scrollWidth}; client: ${el.clientWidth}`)
   isOverflow.value = el.scrollWidth > el.clientWidth
 }
 
@@ -53,7 +52,6 @@ const initCheck = () => {
  */
 const setupObserver = () => {
   if (!spanRef.value) return
-  console.log('setup')
   resizeObjserver = new ResizeObserver(checkOverflow)
   resizeObjserver.observe(spanRef.value)
 }
@@ -78,6 +76,7 @@ onBeforeUnmount(() => {
 
 <style lang="scss" scoped>
 .bee-ellipsis-tooltip-label {
+  max-width: 100%;
   overflow: hidden;
 
   span {

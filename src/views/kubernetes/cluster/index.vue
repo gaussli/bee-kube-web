@@ -36,9 +36,9 @@
               <BeeClusterInfoCell :description="row.description" :name="row.name" :uid="row.uid" />
             </template>
           </BeeTableColumn>
-          <BeeTableColumn :min-width="400">
+          <BeeTableColumn :min-width="200">
             <template #default="{ row }">
-              <BeeTableCommonCell subtext="API Server" :text="row.apiServer" />
+              <BeeTableCommonCell :label="row.apiServer" sublabel="API Server" />
             </template>
           </BeeTableColumn>
           <BeeTableColumn prop="status" :width="160">
@@ -48,7 +48,7 @@
           </BeeTableColumn>
           <BeeTableColumn :width="160">
             <template #default="{ row }">
-              <BeeTableCommonCell subtext="Kubernetes版本" :text="row.k8sVersion" />
+              <BeeTableCommonCell :label="row.k8sVersion" sublabel="Kubernetes 版本" />
             </template>
           </BeeTableColumn>
           <BeeTableColumn :width="200">
@@ -129,10 +129,10 @@ import BeeInputSearch from '@/components/BeeInputSearch/index.vue'
 import BeePageHeader from '@/components/BeePageHeader/index.vue'
 import BeePagination from '@/components/BeePagination/index.vue'
 import BeeSelect from '@/components/BeeSelect/index.vue'
-import BeeStatusCell from '@/components/BeeStatusCell/index.vue'
 import BeeTableColumn from '@/components/BeeTable/BeeTableColumn.vue'
 import BeeTableCommonCell from '@/components/BeeTable/BeeTableCommonCell.vue'
 import BeeTable from '@/components/BeeTable/index.vue'
+import BeeStatusCell from '@/components/business/BeeStatusCell/index.vue'
 import BeeCard from '@/components/layout/BeeCard/index.vue'
 import BeePage from '@/components/layout/BeePage/index.vue'
 

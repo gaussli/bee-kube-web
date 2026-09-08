@@ -6,8 +6,8 @@
     </div>
     <div class="bee-status-cell__bottom">
       <span class="bee-status-cell__label-en">{{ currentStatus.labelEn || '-' }}</span>
-      <BeeTooltip v-if="statusMsg" :label="statusMsg" placement="top">
-        <BeeIcon class="bee-status-cell__help-icon" name="basic-help" :size="12" />
+      <BeeTooltip v-if="statusMsg" placement="right" :tooltip="statusMsg">
+        <BeeIcon class="bee-status-cell__help-icon" name="basic-help" />
       </BeeTooltip>
     </div>
   </div>
@@ -53,46 +53,40 @@ const currentStatusColor = computed(() => currentStatus.value.color)
   display: flex;
   gap: 8px;
   flex-direction: column;
+  justify-content: center;
+  align-items: flex-start;
   width: 100%;
   height: auto;
-  line-height: 1;
 
   &__top {
     display: flex;
     gap: 8px;
+    flex-direction: row;
+    justify-content: flex-start;
     align-items: center;
   }
 
   &__dot {
-    flex-shrink: 0;
     width: 10px;
     height: 10px;
-    border-radius: 50%;
+    border-radius: 9999px;
     background: v-bind(currentStatusColor);
   }
 
   &__label {
     font-size: 14px;
-    font-weight: 600;
-    line-height: 1;
+    font-weight: bold;
     color: v-bind(currentStatusColor);
   }
 
   &__bottom {
     display: flex;
     gap: 4px;
+    flex-direction: row;
+    justify-content: flex-start;
     align-items: center;
-  }
-
-  &__label-en {
     font-size: 12px;
-    line-height: 1;
-    color: $color-text-tertiary;
-  }
-
-  &__help-icon {
-    flex-shrink: 0;
-    color: $color-text-tertiary;
+    color: $color-text-third;
   }
 }
 </style>

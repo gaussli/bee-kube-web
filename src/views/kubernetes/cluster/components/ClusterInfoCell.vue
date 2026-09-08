@@ -58,6 +58,8 @@ withDefaults(
     display: flex;
     gap: 8px;
     flex-direction: column;
+    justify-content: center;
+    align-items: flex-start;
     flex: 1;
     min-width: 0;
 
