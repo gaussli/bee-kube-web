@@ -1,21 +1,19 @@
 <template>
   <div class="bee-audit-cell">
-    <div class="bee-audit-cell__value">
-      <img v-if="userAvatar" class="bee-audit-cell__avatar" :src="userAvatar" />
-      <BeeIcon v-else class="bee-audit-cell__icon" name="basic-avatar" :size="16" />
+    <div class="bee-audit-cell__top">
+      <BeeTooltip :tooltip="username">
+        <img v-if="userAvatar" class="bee-audit-cell__avatar" :src="userAvatar" />
+        <BeeIcon v-else class="bee-audit-cell__icon" name="basic-avatar" />
+      </BeeTooltip>
       <span class="bee-audit-cell__datetime">{{ datetime || '-' }}</span>
     </div>
-    <span class="bee-audit-cell__key">{{ fieldName }}</span>
+    <span class="bee-audit-cell__bottom">{{ fieldName }}</span>
   </div>
 </template>
 
 <script setup lang="ts">
-/**
- * 审计信息单元格组件
- * 上下结构：上方展示操作用户（头像+用户名），下方展示属性名称
- * @module components/BeeAuditCell
- */
 import BeeIcon from '@/components/base/BeeIcon/index.vue'
+import BeeTooltip from '@/components/base/BeeTooltip/index.vue'
 
 defineOptions({ name: 'BeeAuditCell' })
 
@@ -36,13 +34,19 @@ defineProps<{
   display: flex;
   gap: 8px;
   flex-direction: column;
+  justify-content: center;
+  align-items: flex-start;
   width: 100%;
   height: auto;
 
-  &__value {
+  &__top {
     display: flex;
     gap: 4px;
+    justify-content: flex-start;
     align-items: center;
+    font-size: 14px;
+    font-weight: normal;
+    color: $color-text-primary;
   }
 
   &__avatar {
@@ -53,23 +57,10 @@ defineProps<{
     object-fit: cover;
   }
 
-  &__icon {
-    flex-shrink: 0;
-    color: $color-text-secondary;
-  }
-
-  &__datetime {
-    overflow: hidden;
-    font-size: 14px;
-    color: $color-text-primary;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-  }
-
-  &__key {
+  &__bottom {
     font-size: 12px;
-    color: $color-text-tertiary;
-    white-space: nowrap;
+    font-weight: normal;
+    color: $color-text-third;
   }
 }
 </style>

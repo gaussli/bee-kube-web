@@ -226,12 +226,12 @@ import { changeRoleStatus, getRolePage, removeRole, batchRemoveRoles } from '@/a
 
 import BeeButton from '@/components/base/BeeButton/index.vue'
 import { BeeMessage } from '@/components/base/BeeMessage'
-import BeeAuditCell from '@/components/BeeAuditCell/index.vue'
 import BeeDialog from '@/components/BeeDialog/index.vue'
 import BeeInputSearch from '@/components/BeeInputSearch/index.vue'
 import BeeLabelCopyable from '@/components/BeeLabelCopyable/index.vue'
 import BeeSegmentedControl from '@/components/BeeSegmentedControl/index.vue'
 import BeeTag from '@/components/BeeTag/index.vue'
+import BeeAuditCell from '@/components/business/BeeAuditCell/index.vue'
 import BeeIconLabel from '@/components/business/BeeIconLabel/index.vue'
 import BeeStatusCell from '@/components/business/BeeStatusCell/index.vue'
 import RoleCell from '@/components/RoleCell/index.vue'
