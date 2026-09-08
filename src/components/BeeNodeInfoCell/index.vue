@@ -5,10 +5,10 @@
     </div>
     <div class="bee-node-info-cell__content">
       <div class="bee-node-info-cell__top">
-        <BeeTooltip :label="uid">
+        <BeeTooltip :tooltip="uid">
           <BeeTag size="tiny" type="primary">UID</BeeTag>
         </BeeTooltip>
-        <BeeTooltip :label="ip">
+        <BeeTooltip :tooltip="ip">
           <BeeTag size="tiny" type="primary">IP</BeeTag>
         </BeeTooltip>
         <span class="bee-node-info-cell__name">{{ name }}</span>
@@ -41,8 +41,8 @@
 import { ref, onMounted, onUnmounted } from 'vue'
 
 import BeeIcon from '@/components/base/BeeIcon/index.vue'
+import BeeTooltip from '@/components/base/BeeTooltip/index.vue'
 import BeeTag from '@/components/BeeTag/index.vue'
-import BeeTooltip from '@/components/BeeTooltip/index.vue'
 
 import { useClipboard } from '@/composables/useClipboard'
 

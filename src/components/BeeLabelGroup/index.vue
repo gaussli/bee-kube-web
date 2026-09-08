@@ -1,20 +1,20 @@
 <template>
   <div class="bee-label-group">
-    <BeeIconLabel :icon="mainIcon" :label="mainLabel" :color="mainColor" :font-weight="600" />
+    <BeeIconLabel :color="mainColor" :font-weight="600" :icon="mainIcon" :label="mainLabel" />
     <BeeIconLabel
       v-if="subLabel"
       class="bee-label-group__sub"
+      :color="subColor"
+      :font-weight="300"
       :icon="subIcon"
       :label="subLabel"
-      :color="subColor"
       size="12px"
-      :font-weight="300"
     />
   </div>
 </template>
 
 <script setup lang="ts">
-import BeeIconLabel from '@/components/BeeIconLabel/index.vue'
+import BeeIconLabel from '@/components/business/BeeIconLabel/index.vue'
 
 defineOptions({ name: 'BeeLabelGroup' })
 

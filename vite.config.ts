@@ -25,7 +25,13 @@ export default defineConfig({
      *    Vue 3 SFC 编译插件，处理 .vue 文件中 template/script/style 的
      *    编译和 HMR 热更新
      * ------------------------------------------------------------------ */
-    vue(),
+    vue({
+      template: {
+        compilerOptions: {
+          comments: false,
+        },
+      },
+    }),
 
     /* ------------------------------------------------------------------
      * 2. vite-plugin-svg-icons

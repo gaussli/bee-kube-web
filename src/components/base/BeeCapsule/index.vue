@@ -1,6 +1,6 @@
 <template>
-  <div class="bee-capsule" :class="[typeClass, sizeClass]" @click="handleCopy(text)">
-    <span>{{ text }}</span>
+  <div class="bee-capsule" :class="[typeClass, sizeClass]" @click="handleCopy(label)">
+    <span>{{ label }}</span>
   </div>
 </template>
 
@@ -12,9 +12,9 @@ import { useClipboard } from '@/composables/useClipboard'
 // ==================== Props ====================
 const props = withDefaults(
   defineProps<{
-    text: string
+    label: string
     type?: 'default' | 'primary' | 'success' | 'warning' | 'danger'
-    size?: 'default' | 'small' | 'large'
+    size?: 'default' | 'tiny' | 'small' | 'large'
   }>(),
   {
     type: 'default',
@@ -45,10 +45,10 @@ $types: primary, success, warning, danger;
   max-width: 100%;
   padding: 0 10px;
   border: 1px solid;
-  border-color: map.get($colors-default, 'border', 'base');
+  border-color: var(--bee-capsule-color-border-default, map.get($colors-default, 'border', 'base'));
   border-radius: 9999px;
   font-size: 13px;
-  color: map.get($colors-default, 'text', 'base');
+  color: var(--bee-capsule-color-text-default, map.get($colors-default, 'text', 'base'));
 
   span {
     overflow: hidden;
@@ -58,6 +58,12 @@ $types: primary, success, warning, danger;
 
   &:hover {
     cursor: pointer;
+  }
+
+  &--tiny {
+    height: 18px;
+    padding: 0 6px;
+    font-size: 10px;
   }
 
   &--small {

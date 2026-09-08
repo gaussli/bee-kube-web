@@ -1,78 +1,43 @@
 <template>
   <div class="bee-cluster-info-cell">
-    <div class="bee-cluster-info-cell__cluster-icon">
-      <BeeIcon name="kubernetes-cluster" :size="48" />
+    <div class="bee-cluster-info-cell__icon">
+      <BeeIcon name="kubernetes-cluster" />
     </div>
     <div class="bee-cluster-info-cell__content">
-      <div class="bee-cluster-info-cell__top">
-        <span class="bee-cluster-info-cell__name">{{ name }}</span>
-        <BeeTooltip :label="uid">
-          <BeeTag size="tiny" type="primary">UID</BeeTag>
+      <div class="content-top">
+        <BeeTooltip :tooltip="uid">
+          <BeeCapsule label="UID" size="tiny" />
         </BeeTooltip>
+        <BeeEllipsisTooltipLabel :label="name" />
+        <BeeIcon name="basic-copy" />
       </div>
-      <div class="bee-cluster-info-cell__bottom">
-        <BeeIcon class="bee-cluster-info-cell__desc-icon" name="basic-description" :size="14" />
-        <BeeTooltip :disabled="!isDescTruncated">
-          <template #label>
-            <span class="bee-cluster-info-cell__desc-tooltip">{{ description }}</span>
-          </template>
-          <span ref="descRef" class="bee-cluster-info-cell__desc">{{ description }}</span>
-        </BeeTooltip>
+      <div class="content-bottom">
+        <BeeIcon name="basic-description" />
+        <BeeEllipsisTooltipLabel :label="description" />
       </div>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-/**
- * 集群信息单元格组件
- * 上下结构展示集群名称+UID标签 和 描述信息
- * @module components/BeeClusterInfoCell
- */
-import { ref, onMounted, onUnmounted } from 'vue'
-
+import BeeCapsule from '@/components/base/BeeCapsule/index.vue'
 import BeeIcon from '@/components/base/BeeIcon/index.vue'
-import BeeTag from '@/components/BeeTag/index.vue'
-import BeeTooltip from '@/components/BeeTooltip/index.vue'
+import BeeTooltip from '@/components/base/BeeTooltip/index.vue'
+import BeeEllipsisTooltipLabel from '@/components/business/BeeEllipsisTooltipLabel/index.vue'
 
 defineOptions({ name: 'BeeClusterInfoCell' })
 
-defineProps<{
-  /** 集群 UID，hover UID 标签时显示 */
-  uid: string
-  /** 集群名称 */
-  name: string
-  /** 集群描述 */
-  description?: string
-}>()
-
-// ==================== 描述文本溢出检测 ====================
-
-/** 描述文本元素引用 */
-const descRef = ref<HTMLElement>()
-/** 描述文本是否被截断（出现省略号） */
-const isDescTruncated = ref(false)
-
-let resizeObserver: ResizeObserver | null = null
-
-onMounted(() => {
-  const el = descRef.value
-  if (!el) return
-
-  /** 检测并更新截断状态 */
-  const check = () => {
-    isDescTruncated.value = el.scrollWidth > el.clientWidth
-  }
-
-  check()
-  resizeObserver = new ResizeObserver(check)
-  resizeObserver.observe(el)
-})
-
-onUnmounted(() => {
-  resizeObserver?.disconnect()
-  resizeObserver = null
-})
+withDefaults(
+  defineProps<{
+    /** 集群 UID，hover UID 标签时显示 */
+    uid: string
+    /** 集群名称 */
+    name: string
+    /** 集群描述 */
+    description?: string
+  }>(),
+  { description: '-' },
+)
 </script>
 
 <style lang="scss" scoped>
@@ -84,67 +49,39 @@ onUnmounted(() => {
   width: 100%;
   height: auto;
 
-  &__cluster-icon {
+  &__icon {
+    font-size: 48px;
     color: var(--bee-row-selected-icon-color, $color-text-secondary);
   }
 
   &__content {
     display: flex;
-    gap: $spacing-8;
+    gap: 8px;
     flex-direction: column;
     flex: 1;
     min-width: 0;
-  }
 
-  &__top {
-    display: flex;
-    gap: $spacing-8;
-    align-items: center;
+    .content-top {
+      display: flex;
+      gap: 8px;
+      flex-direction: row;
+      justify-content: flex-start;
+      align-items: center;
+      width: 100%;
+      font-size: 14px;
+      color: $color-text-primary;
+    }
 
-    // height: 24px;
-  }
-
-  &__name {
-    font-size: $font-size-14;
-    color: $color-text-primary;
-    white-space: nowrap;
-  }
-
-  &__bottom {
-    display: flex;
-    gap: $spacing-4;
-    align-items: center;
-
-    // height: 24px;
-    min-width: 0;
-
-    :deep(.bee-tooltip-trigger) {
-      min-width: 0;
-      overflow: hidden;
+    .content-bottom {
+      display: flex;
+      gap: 4px;
+      flex-direction: row;
+      justify-content: flex-start;
+      align-items: center;
+      width: 100%;
+      font-size: 12px;
+      color: $color-text-third;
     }
   }
-
-  &__desc-icon {
-    flex-shrink: 0;
-    color: $color-text-tertiary;
-  }
-
-  &__desc {
-    overflow: hidden;
-    font-size: $font-size-12;
-    color: $color-text-tertiary;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-  }
-}
-</style>
-
-<style lang="scss">
-// BeeTooltip label slot 内容样式（Teleport 到 body，需全局样式）
-.bee-cluster-info-cell__desc-tooltip {
-  display: inline-block;
-  max-width: 400px;
-  word-break: break-all;
-  white-space: normal;
 }
 </style>

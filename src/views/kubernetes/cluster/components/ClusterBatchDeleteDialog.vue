@@ -13,13 +13,13 @@
             <template v-if="nonDeletableData.length > 0">
               <span>{{ extraMsg }}</span>
               <div class="bee-dialog__content-tags">
-                <BeeCapsule v-for="item in nonDeletableData" :key="item.uid" size="small" :text="item.name" />
+                <BeeCapsule v-for="item in nonDeletableData" :key="item.uid" :label="item.name" size="small" />
               </div>
             </template>
             <template v-if="deletableData.length > 0">
               <span>{{ deleteMsg }}</span>
               <div class="bee-dialog__content-tags">
-                <BeeCapsule v-for="item in deletableData" :key="item.uid" size="small" :text="item.name" />
+                <BeeCapsule v-for="item in deletableData" :key="item.uid" :label="item.name" size="small" />
               </div>
             </template>
           </div>

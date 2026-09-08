@@ -5,7 +5,7 @@
     </div>
     <div class="bee-namespace-info-cell__content">
       <div class="bee-namespace-info-cell__top">
-        <BeeTooltip :label="id">
+        <BeeTooltip :tooltip="id">
           <BeeTag size="tiny" type="primary">UID</BeeTag>
         </BeeTooltip>
         <span class="bee-namespace-info-cell__name">{{ name }}</span>
@@ -30,8 +30,8 @@
  * @module components/BeeNamespaceInfoCell
  */
 import BeeIcon from '@/components/base/BeeIcon/index.vue'
+import BeeTooltip from '@/components/base/BeeTooltip/index.vue'
 import BeeTag from '@/components/BeeTag/index.vue'
-import BeeTooltip from '@/components/BeeTooltip/index.vue'
 
 import { useClipboard } from '@/composables/useClipboard'
 

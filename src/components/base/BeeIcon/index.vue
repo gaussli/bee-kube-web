@@ -1,5 +1,5 @@
 <template>
-  <svg aria-hidden="true" class="bee-icon" :style="iconStyle">
+  <svg aria-hidden="true" class="bee-icon">
     <use :xlink:href="iconName" />
   </svg>
 </template>
@@ -9,38 +9,39 @@ import { computed } from 'vue'
 
 defineOptions({ name: 'BeeIcon' })
 
+// ==================== Prop & Emit ====================
 const props = withDefaults(
   defineProps<{
     name: string
-    size?: number
+    size?: number | string
     color?: string
   }>(),
   {
-    size: undefined,
-    color: undefined,
+    size: '1em',
+    color: 'inherit',
   },
 )
 
+// ==================== Computed ====================
 const iconName = computed(() => `#icon-${props.name}`)
-const iconStyle = computed(() => {
-  const style: Record<string, string> = {}
-  if (props.size) {
-    style['--bee-icon-size'] = `${props.size}px`
-  }
-  if (props.color) {
-    style.color = props.color
-  }
-  return style
+const sizeStyle = computed(() => {
+  const size = props.size
+  if (typeof size === 'number') return `${size}px`
+  if (typeof size === 'string' && size.trim() !== '') return size
+  return '1em'
 })
 </script>
 
 <style lang="scss" scoped>
 .bee-icon {
+  --bee-icon-color: v-bind(color);
+  --bee-icon-size: v-bind(sizeStyle);
+
   display: block;
   flex-shrink: 0;
-  width: var(--bee-icon-size, 1em);
-  height: var(--bee-icon-size, 1em);
-  color: inherit;
+  width: var(--bee-icon-size);
+  height: var(--bee-icon-size);
+  color: var(--bee-icon-color);
   fill: currentcolor;
 }
 </style>

@@ -38,6 +38,8 @@ const emit = defineEmits<{
 
 // ==================== Reactive State ====================
 const loading = ref(false)
+
+// ==================== Computed ====================
 const typeClass = computed(() => (props.type !== 'default' ? `bee-button--${props.type}` : ''))
 const sizeClass = computed(() => (props.size !== 'default' ? `bee-button--${props.size}` : ''))
 const isDisabledClass = computed(() => (props.disabled || loading.value ? 'is-disabled' : ''))
