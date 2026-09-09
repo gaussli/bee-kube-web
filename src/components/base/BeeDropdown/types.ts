@@ -6,4 +6,6 @@ export interface DropdownOption {
   label: string
   /** 选项图标 */
   icon?: string
+  /** 分隔线标记 */
+  divided?: boolean
 }

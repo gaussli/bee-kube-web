@@ -41,6 +41,7 @@ const sizeStyle = computed(() => {
   flex-shrink: 0;
   width: var(--bee-icon-size);
   height: var(--bee-icon-size);
+  line-height: inherit;
   color: var(--bee-icon-color);
   fill: currentcolor;
 }

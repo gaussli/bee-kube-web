@@ -255,7 +255,6 @@ $bee-select-menu-color-bg: rgb(40 40 40);
   }
 
   .bee-select__menu-item {
-    position: relative;
     display: flex;
     gap: 8px;
     flex-flow: row nowrap;
@@ -270,7 +269,7 @@ $bee-select-menu-color-bg: rgb(40 40 40);
     font-weight: normal;
     color: var(--bee-select-menu-item-color-text, map.get($colors-default, 'text', 'hover'));
     cursor: pointer;
-    transition: background 0.3s;
+    transition: background 0.2s;
 
     .bee-select__menu-item-icon {
       flex-shrink: 0;

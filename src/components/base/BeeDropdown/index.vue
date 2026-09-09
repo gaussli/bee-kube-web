@@ -15,8 +15,11 @@
           class="bee-dropdown__menu-item"
           @click="handleSelect(option)"
         >
-          <BeeIcon v-if="option.icon" class="bee-dropdown__menu-item-icon" :name="option.icon" />
-          <span>{{ option.label }}</span>
+          <div v-if="option.divided" class="bee-dropdown__menu-item-separator"></div>
+          <div class="bee-dropdown__menu-item-content">
+            <BeeIcon v-if="option.icon" class="bee-dropdown__menu-item-icon" :name="option.icon" />
+            <span>{{ option.label }}</span>
+          </div>
         </div>
         <div ref="arrowRef" class="bee-dropdown__arrow" :style="arrowStyle" />
       </div>
@@ -201,6 +204,7 @@ $bee-dropdown-menu-color-bg: rgb(40 40 40);
   align-items: flex-start;
   padding: 8px;
   border-radius: 8px;
+  overflow: hidden;
   background: var(--bee-dropdown-menu-color-bg);
 
   .bee-dropdown__arrow {
@@ -213,37 +217,44 @@ $bee-dropdown-menu-color-bg: rgb(40 40 40);
   }
 
   .bee-dropdown__menu-item {
-    position: relative;
     display: flex;
     gap: 8px;
-    flex-flow: row nowrap;
-    justify-content: flex-start;
+    flex-direction: column;
+    justify-content: center;
     align-items: center;
-    width: 100%;
-    padding: 8px 16px;
-    border: 1px solid;
-    border-color: transparent;
-    border-radius: 9999px;
-    font-size: 12px;
-    font-weight: normal;
-    color: var(--bee-dropdown-menu-item-color-text, map.get($colors-default, 'text', 'hover'));
-    cursor: pointer;
-    transition: background 0.3s;
 
-    .bee-dropdown__menu-item-icon {
-      flex-shrink: 0;
+    .bee-dropdown__menu-item-separator {
+      width: 120%;
+      height: 1px;
+      background: $color-separator;
     }
 
-    &.bee-dropdown__menu-actived {
-      border-color: var(--bee-dropdown-menu-item-color-border-active, map.get($colors-primary, 'border', 'base'));
-      color: var(--bee-dropdown-menu-item-color-text-active, map.get($colors-primary, 'text', 'base'));
-      background: var(--bee-dropdown-menu-item-color-bg-active, map.get($colors-primary, 'bg', 'base'));
-    }
-
-    &:hover {
+    .bee-dropdown__menu-item-content {
+      display: flex;
+      gap: 8px;
+      flex-flow: row nowrap;
+      justify-content: center;
+      align-items: center;
+      width: 100%;
+      padding: 8px 16px;
+      border: 1px solid;
       border-color: transparent;
-      color: var(--bee-dropdown-menu-item-color-text-hover, $color-text-primary);
-      background: var(--bee-dropdown-menu-item-color-bg-hover, $color-primary);
+      border-radius: 9999px;
+      font-size: 12px;
+      font-weight: normal;
+      color: var(--bee-dropdown-menu-item-color-text, map.get($colors-default, 'text', 'hover'));
+      cursor: pointer;
+      transition: background 0.2s;
+
+      .bee-dropdown__menu-item-icon {
+        flex-shrink: 0;
+      }
+
+      &:hover {
+        border-color: transparent;
+        color: var(--bee-dropdown-menu-item-color-text-hover, $color-text-primary);
+        background: var(--bee-dropdown-menu-item-color-bg-hover, $color-primary);
+      }
     }
   }
 }

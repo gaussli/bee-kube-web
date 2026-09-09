@@ -1,142 +1,195 @@
 <template>
-  <div class="cluster-edit">
-    <!-- 表单头部 -->
-    <div class="form-header">
-      <BeeButton @click="handleBack">
-        <template #icon><ArrowLeft /></template>
-        返回
-      </BeeButton>
-      <BeeDivider direction="vertical" :length="25" margin="12px" />
-      <span class="header-title">编辑集群</span>
-    </div>
+  <BeePage>
+    <!-- 页面 Header -->
+    <BeeBackHeader :actions="headerActionItems" title="编辑集群" @action="handleHeaderActions" @back="handleBack" />
 
-    <!-- 表单主体 -->
-    <transition mode="out-in" name="fade-slide">
-      <div v-if="loaded" class="form-body">
-        <el-form ref="formRef" label-width="120px" :model="formData" :rules="rules">
-          <el-form-item label="名称">
-            <el-input v-model="formData.name" disabled />
-          </el-form-item>
-          <el-form-item label="API Server">
-            <el-input v-model="formData.apiServer" disabled />
-          </el-form-item>
-          <el-form-item label="描述" prop="description">
-            <el-input v-model="formData.description" placeholder="请输入描述" type="textarea" />
-          </el-form-item>
-        </el-form>
+    <!-- 表单 Body -->
+    <BeeCard class="edit-body">
+      <div class="edit-basic">
+        <div class="edit-basic__field">
+          <div class="edit-basic__field-name">
+            <BeeIcon class="edit-basic__field-name-icon" name="basic-id" />
+            <span>UID</span>
+          </div>
+          <div class="edit-basic__field-value is-disabled">
+            <input id="uid" v-model="detailData.uid" disabled />
+          </div>
+        </div>
+        <div class="edit-basic__field">
+          <div class="edit-basic__field-name">
+            <BeeIcon class="edit-basic__field-name-icon" name="basic-field-name" />
+            <span>名称 / Name</span>
+          </div>
+          <div class="edit-basic__field-value is-disabled">
+            <input id="name" v-model="detailData.name" disabled />
+          </div>
+        </div>
+        <div class="edit-basic__field grid-line">
+          <div class="edit-basic__field-name">
+            <BeeIcon class="edit-basic__field-name-icon" name="basic-description" />
+            <span>描述</span>
+          </div>
+          <div class="edit-basic__field-value edit-basic__field-value-textarea">
+            <textarea id="desc" v-model="detailData.description" placeholder="集群描述" :rows="5"></textarea>
+          </div>
+        </div>
       </div>
-    </transition>
-
-    <!-- 表单底部 -->
-    <div class="form-footer">
-      <BeeButton @click="handleBack">
-        <template #icon><Close /></template>
-        取消
-      </BeeButton>
-      <BeeButton type="primary" @click="handleUpdate">
-        <template #icon><Check /></template>
-        保存
-      </BeeButton>
-    </div>
-  </div>
+    </BeeCard>
+  </BeePage>
 </template>
 
 <script setup lang="ts">
-import { onMounted, ref } from 'vue'
+import { onMounted, reactive, ref } from 'vue'
 
 import { useRouter } from 'vue-router'
 
-import { ArrowLeft, Check, Close } from '@element-plus/icons-vue'
+import type { ClusterDetailVo } from '@/types/kubernetes/cluster'
 
-import BeeButton from '@/components/base/BeeButton/index.vue'
-import BeeDivider from '@/components/BeeDivider/index.vue'
+import BeeIcon from '@/components/base/BeeIcon/index.vue'
+import BeeBackHeader, { type ActionItem } from '@/components/business/BeeBackHeader/index.vue'
+import BeeCard from '@/components/layout/BeeCard/index.vue'
+import BeePage from '@/components/layout/BeePage/index.vue'
 
 defineOptions({ name: 'ClusterEdit' })
 
+// ==================== Route ====================
 const router = useRouter()
-const formRef = ref()
-const loaded = ref(false)
 
-const formData = ref({
-  name: '',
-  apiServer: '',
-  description: '',
+// ==================== Reactive State ====================
+const detailData = reactive<ClusterDetailVo>({
+  uid: 'fjkdalfafdasifklqwureioqw',
+  name: 'cluster-fdjaklfjkkasdfas',
+  description: '飞经理开始点击发送看了卷发恐龙时代俊峰快乐',
+  status: 'Healthy',
+  statusMsg: 'jsfklasdjfklas daklfjaslfj',
+  apiServer: 'https://192.23.234.54:6443',
+  k8sVersion: 'v1.25.4',
+  certExpireAt: '2028-08-21 23:34:56',
+  resource: { capacity: {}, allocation: {}, usage: {} },
+  deletable: false,
 })
-const rules = {}
 
-async function loadData() {
-  try {
-    // TODO: 调用获取集群详情 API
-    // const data = await getClusterDetail(clusterUid)
-  } finally {
-    loaded.value = true
-  }
-}
+// ==================== Variable ====================
+const headerActionItems = ref<ActionItem[]>([
+  {
+    value: 'save',
+    label: '暂存',
+    icon: 'basic-save',
+  },
+  {
+    value: 'submit',
+    label: '提交',
+    icon: 'basic-right',
+    type: 'success',
+  },
+])
 
+// ==================== Handler ====================
+/**
+ * 处理页面返回
+ */
 function handleBack() {
   router.back()
 }
 
-async function handleUpdate() {
-  try {
-    await formRef.value?.validate()
-    // TODO: 调用更新集群 API
-    router.push({ name: 'kubernetes:cluster' }).catch(() => {})
-  } catch {
-    // 验证失败
+/**
+ * 处理操作按钮组逻辑
+ * @param value
+ */
+async function handleHeaderActions(value: string) {
+  switch (value) {
+    case 'save': {
+      await handleSave()
+      break
+    }
+    case 'submit': {
+      await handleSubmit()
+      break
+    }
   }
 }
 
-onMounted(() => {
-  void loadData()
-})
+/**
+ * 暂存集群数据
+ */
+async function handleSave() {}
+
+/**
+ * 提交集群数据
+ */
+async function handleSubmit() {}
+
+// ====================  ====================
+onMounted(() => {})
 </script>
 
 <style lang="scss" scoped>
-.cluster-edit {
+@use 'sass:map';
+
+.edit-body {
   display: flex;
+  gap: 16px;
   flex-direction: column;
-  height: 100%;
-  background-color: $color-bg-secondary;
-}
-
-.form-header {
-  display: flex;
-  align-items: center;
-  flex-shrink: 0;
-  height: 48px;
-  padding: 0 8px;
-  border-bottom: 1px solid rgba($color-text-secondary, 0.1);
-
-  .header-title {
-    font-weight: 600;
-    color: $color-text-secondary;
-  }
-}
-
-.form-body {
   flex: 1;
-  min-height: 0;
-  padding: 20px;
-  overflow-y: auto;
-  animation: fade-slide-in 0.3s ease-out;
-}
+  padding: 16px;
+  overflow: hidden auto;
 
-.form-footer {
-  display: flex;
-  gap: 12px;
-  justify-content: flex-end;
-  align-items: center;
-  flex-shrink: 0;
-  padding: 16px 20px;
-  border-top: 1px solid rgba($color-text-secondary, 0.1);
-}
+  .edit-basic {
+    display: grid;
+    gap: 16px;
+    grid-template-columns: 1fr 1fr;
 
-.fade-slide-enter-active {
-  animation: fade-slide-in 0.3s ease-out;
-}
+    &__field {
+      display: flex;
+      gap: 8px;
+      flex-direction: column;
+      width: 100%;
 
-.fade-slide-leave-active {
-  animation: fade-slide-out 0.2s ease-in;
+      &-name {
+        display: flex;
+        gap: 8px;
+        flex-direction: row;
+        justify-content: flex-start;
+        align-items: center;
+        font-size: 12px;
+        font-weight: normal;
+        color: $color-text-third;
+      }
+
+      &-value {
+        display: flex;
+        gap: 8px;
+        flex-direction: row;
+        justify-content: flex-start;
+        align-items: center;
+        min-height: 32px;
+        padding: 0 14px;
+        border: 1px solid;
+        border-color: map.get($colors-default, 'border', 'base');
+        border-radius: 9999px;
+        font-size: 14px;
+        font-weight: normal;
+        color: $color-text-primary;
+
+        input,
+        textarea {
+          flex: 1;
+        }
+
+        &-textarea {
+          padding: 14px;
+          border-radius: 8px;
+        }
+
+        &.is-disabled {
+          background: map.get($colors-default, 'bg', 'hover');
+        }
+      }
+
+      &.grid-line {
+        grid-column: 1 / 3;
+      }
+    }
+  }
 }
 </style>

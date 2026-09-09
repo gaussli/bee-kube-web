@@ -28,13 +28,16 @@ body {
 }
 
 input,
+textarea,
 button {
+  font-family: inherit;
   font-size: inherit;
   font-weight: inherit;
   color: inherit;
 }
 
-input {
+input,
+textarea {
   padding: 0;
   border: none;
   background: transparent;

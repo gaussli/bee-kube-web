@@ -8,7 +8,7 @@
 <script setup lang="ts">
 import { useRouter } from 'vue-router'
 
-import BeeBackHeader from '@/components/BeeBackHeader/index.vue'
+import BeeBackHeader from '@/components/business/BeeBackHeader/index.vue'
 import BeeCard from '@/components/layout/BeeCard/index.vue'
 import BeePage from '@/components/layout/BeePage/index.vue'
 

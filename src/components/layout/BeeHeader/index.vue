@@ -14,7 +14,7 @@
         <BeeIconButton icon="basic-help" />
       </BeeTooltip>
       <BeeTooltip size="small" :tooltip="fullscreenTooltip">
-        <BeeIconButton :icon="fullscreenIcon" @click="toggleFullscreen" />
+        <BeeIconButton :icon="fullscreenIcon" @click="handleFullscreenToggle" />
       </BeeTooltip>
       <BeeDropdown :options="dropdownOptions" @change="handleDropdownChange">
         <BeeHeaderUserInfo
@@ -28,17 +28,13 @@
 </template>
 
 <script setup lang="ts">
-/**
- * 顶部导航栏组件
- * @module components/BeeLayout/BeeHeader
- */
 import { computed, ref, onMounted, onUnmounted } from 'vue'
 
 import { useRouter } from 'vue-router'
 
-import { ElMessageBox } from 'element-plus'
-
 import type { TabType } from '@/stores/app'
+
+import type { DropdownOption } from '@/components/base/BeeDropdown/types'
 
 import { logout } from '@/api/auth/auth'
 
@@ -53,24 +49,25 @@ import { useAppStore, useUserStore } from '@/stores'
 
 defineOptions({ name: 'BeeHeader' })
 
+// ==================== Route & Store ====================
 const router = useRouter()
 const appStore = useAppStore()
 const userStore = useUserStore()
 
+// ==================== Reactive State ====================
 const isFullscreen = ref(false)
 
+// ==================== Computed ====================
 /** 全屏按钮图标，根据全屏状态动态切换 */
 const fullscreenIcon = computed(() => (isFullscreen.value ? 'basic-close' : 'basic-fullscreen'))
 /** 全屏按钮 tooltip 提示文字 */
 const fullscreenTooltip = computed(() => (isFullscreen.value ? '退出全屏' : '全屏'))
 const currentUser = computed(() => userStore.getCurrentUser())
 const currentMenus = computed(() => userStore.getCurrentMenus())
-
 const currentTab = computed({
   get: () => appStore.currentTab,
   set: (val: TabType) => appStore.setCurrentTab(val),
 })
-
 // tabOptions 从用户菜单第一层获取，label 对应 name，value 对应 code
 const tabOptions = computed(
   () =>
@@ -81,13 +78,15 @@ const tabOptions = computed(
     })) ?? [],
 )
 
+// ==================== Variables ====================
 /** 用户下拉菜单选项 */
-const dropdownOptions: { label: string; value: string; icon: string; divided?: boolean }[] = [
+const dropdownOptions: DropdownOption[] = [
   { label: '用户信息', value: 'profile', icon: 'basic-userinfo' },
   { label: '系统设置', value: 'setting', icon: 'basic-system-setting' },
   { label: '退出登录', value: 'logout', icon: 'basic-logout', divided: true },
 ]
 
+// ==================== Handler ====================
 function handleTabChange(tab?: string | number) {
   if (tab) {
     appStore.setCurrentTab(tab as TabType)
@@ -95,20 +94,7 @@ function handleTabChange(tab?: string | number) {
   }
 }
 
-/** 监听全屏状态变化（覆盖 ESC 退出等非按钮触发场景） */
-function onFullscreenChange() {
-  isFullscreen.value = !!document.fullscreenElement
-}
-
-onMounted(() => {
-  document.addEventListener('fullscreenchange', onFullscreenChange)
-})
-
-onUnmounted(() => {
-  document.removeEventListener('fullscreenchange', onFullscreenChange)
-})
-
-function toggleFullscreen() {
+function handleFullscreenToggle() {
   if (!document.fullscreenElement) {
     void document.documentElement.requestFullscreen().catch(() => {})
   } else {
@@ -131,16 +117,33 @@ async function handleDropdownChange(command: string | number) {
 }
 
 async function handleLogout() {
-  await ElMessageBox.confirm('确定要退出登录吗？', '提示', { type: 'warning' })
   try {
     await logout()
     BeeMessage.success('退出登录成功')
-  } catch {
-    // 忽略退出接口错误，继续清理
+  } catch (err) {
+    console.error('[logout]', err)
+    BeeMessage.error('退出失败')
   }
   void userStore.clear()
   router.push('/login').catch(() => {})
 }
+
+// ==================== Method ====================
+/**
+ * 监听全屏状态变化（覆盖 ESC 退出等非按钮触发场景）
+ */
+function onFullscreenChange() {
+  isFullscreen.value = !!document.fullscreenElement
+}
+
+// ==================== Lifecycle ====================
+onMounted(() => {
+  document.addEventListener('fullscreenchange', onFullscreenChange)
+})
+
+onUnmounted(() => {
+  document.removeEventListener('fullscreenchange', onFullscreenChange)
+})
 </script>
 
 <style lang="scss" scoped>

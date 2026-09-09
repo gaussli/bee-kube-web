@@ -26,7 +26,7 @@ defineOptions({ name: 'BeeActionCell' })
 export interface ActionItem {
   /** 操作标识 */
   value: string
-  /** 操作标签（tooltip 与下拉菜单项文本） */
+  /** 操作标签 */
   label: string
   /** 图标名称 */
   icon: string
