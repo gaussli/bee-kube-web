@@ -16,9 +16,7 @@
         v-if="visible"
         ref="floatingRef"
         class="bee-tooltip"
-        :class="[size !== 'default' && `bee-tooltip--${size}`]"
-        :data-popper-placement="dataPlacement"
-        role="tooltip"
+        :class="[sizeClass]"
         :style="floatingStyles"
         @mouseenter="handleTooltipMouseEnter"
         @mouseleave="handleTooltipMouseLeave"
@@ -70,8 +68,8 @@ const visible = ref(false)
 const isHovered = ref(false)
 
 // ==================== Computed ====================
-/** flip 中间件计算后的实际 placement */
-const dataPlacement = computed(() => placement.value)
+/** 尺寸 class 名称 */
+const sizeClass = computed(() => (props.size !== 'default' ? `bee-tooltip--${props.size}` : ''))
 /** 箭头动态定位样式，根据 placement 计算箭头坐标和方向侧偏移 */
 const arrowStyle = computed(() => {
   const arrowData = middlewareData.value.arrow
@@ -87,12 +85,11 @@ const arrowStyle = computed(() => {
   const side = placement.value.split('-')[0]
   const staticSide = staticSideMap[side] || 'bottom'
 
-  const style: Record<string, string> = {
+  return {
     left: x != null ? `${x}px` : '',
     top: y != null ? `${y}px` : '',
+    [staticSide]: '-4px',
   }
-  style[staticSide] = '-4px'
-  return style
 })
 
 // ==================== Floating UI ====================

@@ -1,12 +1,12 @@
 <template>
   <!-- 触发器：click 时显示下拉菜单选项 -->
-  <div ref="triggerRef" class="bee-select__trigger" :class="[openedClass]" :style="[widthStyle]" @click="toggle">
+  <div ref="triggerRef" class="bee-select__trigger" :class="[openedClass]" :style="[widthStyle]" @click="handleToggle">
     <span class="bee-select__trigger-value" :class="[placeholderClass]">{{ selectedLabel || placeholder }}</span>
     <BeeIcon class="bee-select__trigger-icon-arrow" :class="[openedClass]" name="basic-arrow-down" />
   </div>
 
   <!-- 下拉菜单选项容器浮层：Teleport 到 body，使用 @floating-ui 智能定位 -->
-  <Teleport :disabled="!isOpen" to="body">
+  <Teleport to="body">
     <Transition name="bee-select">
       <div v-if="isOpen" ref="floatingRef" class="bee-select__menu" :style="[floatingStyles, widthStyle]" @click.stop>
         <div
@@ -62,50 +62,39 @@ const emit = defineEmits<{
 }>()
 
 // ==================== Reactive State ====================
-/** 是否展开 */
-const isOpen = ref(false)
 /** 触发器元素引用 */
 const triggerRef = ref<HTMLElement>()
 /** 菜单浮层元素引用 */
 const floatingRef = ref<HTMLElement>()
 /** 箭头元素引用 */
 const arrowRef = ref<HTMLElement>()
+/** 是否展开 */
+const isOpen = ref(false)
 
 // ==================== Computed ====================
+/** 下拉菜单展开标记 class 名称 */
 const openedClass = computed(() => (isOpen.value ? 'is-opened' : ''))
+/** 占位标记 class 名称 */
 const placeholderClass = computed(() => (!selectedLabel.value ? 'is-placeholder' : ''))
+/** 组件宽度样式对象 */
 const widthStyle = computed(() => {
   const width: string = typeof props.width === 'number' ? `${props.width}px` : props.width
   return {
     width: width,
   }
 })
-
-/** 当前选中项标签文本 */
-const selectedLabel = computed(() => {
-  const selected = props.options.find(opt => opt.value === modelValue.value)
-  return selected?.label ?? ''
-})
-
-// ==================== Floating-UI 定位 ====================
-
-const { floatingStyles, middlewareData, placement } = useFloating(triggerRef, floatingRef, {
-  placement: 'bottom-start',
-  middleware: [offset(12), flip(), shift({ padding: 8 }), arrow({ element: arrowRef })],
-})
-
-/** 箭头定位样式 */
+/** 箭头动态定位样式，根据 placement 计算箭头坐标和方向侧偏移 */
 const arrowStyle = computed(() => {
   const arrowData = middlewareData.value.arrow
   if (!arrowData) return {}
 
+  const { x, y } = arrowData
   const staticSideMap: Record<string, string> = {
     top: 'bottom',
     right: 'left',
     bottom: 'top',
     left: 'right',
   }
-  const { x, y } = arrowData
   const side = placement.value.split('-')[0]
   const staticSide = staticSideMap[side] || 'bottom'
 
@@ -115,11 +104,31 @@ const arrowStyle = computed(() => {
     [staticSide]: '-4px',
   }
 })
+/** 当前选中项标签文本 */
+const selectedLabel = computed(() => {
+  const selected = props.options.find(opt => opt.value === modelValue.value)
+  return selected?.label ?? ''
+})
 
-// ==================== Methods ====================
+// ==================== Floating UI ====================
+/**
+ * 使用 @floating-ui 实现智能定位，含偏移、翻转、边界约束和箭头
+ */
+const { floatingStyles, middlewareData, placement } = useFloating(triggerRef, floatingRef, {
+  placement: 'bottom-start',
+  middleware: [
+    offset(12), // tooltip 与触发器间距 12px
+    flip(), // 超出视口时自动翻转方向
+    shift({ padding: 8 }), // 防止超出视口，保留 8px 安全边距
+    arrow({ element: arrowRef }), // 箭头定位
+  ],
+})
 
-/** 切换展开/收起 */
-function toggle() {
+// ==================== Handler ====================
+/**
+ * 切换展开/收起
+ */
+function handleToggle() {
   isOpen.value = !isOpen.value
   emit('visible-change', isOpen.value)
 }
@@ -149,7 +158,6 @@ function handleClickOutside(event: MouseEvent) {
 }
 
 // ==================== Lifecycle ====================
-
 onMounted(() => {
   document.addEventListener('click', handleClickOutside)
 })
