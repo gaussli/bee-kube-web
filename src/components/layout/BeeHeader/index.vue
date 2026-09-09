@@ -10,13 +10,11 @@
     </div>
 
     <div class="header-right">
-      <BeeTooltip size="small">
+      <BeeTooltip size="small" tooltip="帮助">
         <BeeIconButton icon="basic-help" />
-        <template #tooltip>帮助</template>
       </BeeTooltip>
-      <BeeTooltip size="small">
+      <BeeTooltip size="small" :tooltip="fullscreenTooltip">
         <BeeIconButton :icon="fullscreenIcon" @click="toggleFullscreen" />
-        <template #tooltip>{{ fullscreenTooltip }}</template>
       </BeeTooltip>
       <BeeDropdown :options="dropdownOptions" @change="handleDropdownChange">
         <BeeHeaderUserInfo

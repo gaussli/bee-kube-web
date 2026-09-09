@@ -3,7 +3,7 @@
     <!-- 左部分：头像 -->
     <img alt="用户头像" class="bee-header-user-info__avatar" :src="avatarSrc" />
     <!-- 右部分：用户信息 -->
-    <div class="bee-header-user-info__info">
+    <div class="bee-header-user-info__content">
       <span class="bee-header-user-info__nickname">{{ nickname }}</span>
       <span class="bee-header-user-info__username">{{ username }}</span>
     </div>
@@ -17,6 +17,7 @@ import defaultAvatarImg from '@/assets/user_avatar.png'
 
 defineOptions({ name: 'BeeHeaderUserInfo' })
 
+// ==================== Prop  ====================
 const props = withDefaults(
   defineProps<{
     /** 头像图片地址，为空时使用默认头像 */
@@ -40,52 +41,41 @@ const avatarSrc = computed(() => props.img || defaultAvatarImg)
 <style lang="scss" scoped>
 .bee-header-user-info {
   display: flex;
-  gap: $spacing-8;
+  gap: 12px;
+  flex-direction: row;
+  justify-content: flex-start;
   align-items: center;
-  box-sizing: border-box;
-  width: fit-content;
-  height: 100%;
-  padding: $spacing-8 $spacing-16;
-  border-radius: $radius-8;
+  padding: 8px 12px;
+  border-radius: 8px;
   background: $color-bg-secondary;
   user-select: none;
 
   &__avatar {
     flex-shrink: 0;
-    width: auto;
-    height: 100%;
-    aspect-ratio: 1 / 1;
+    width: 36px;
+    height: 36px;
     border-radius: 9999px;
     object-fit: cover;
-    vertical-align: middle;
   }
 
-  &__info {
+  &__content {
     display: flex;
-    gap: $spacing-4;
+    gap: 8px;
     flex-direction: column;
     justify-content: center;
-    min-width: 0;
+    align-items: flex-start;
   }
 
   &__nickname {
-    overflow: hidden;
-    font-size: $font-size-12;
+    font-size: 13px;
     font-weight: bold;
-    line-height: 1.2;
     color: $color-text-primary;
-    text-overflow: ellipsis;
-    white-space: nowrap;
   }
 
   &__username {
-    overflow: hidden;
-    font-size: $font-size-10;
+    font-size: 12px;
     font-weight: normal;
-    line-height: 1.2;
-    color: $color-text-primary;
-    text-overflow: ellipsis;
-    white-space: nowrap;
+    color: $color-text-secondary;
   }
 }
 </style>
