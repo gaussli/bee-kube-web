@@ -1,8 +1,10 @@
 <template>
   <div class="cluster-info-cell">
+    <!-- 左部分：资源图标 -->
     <div class="cluster-info-cell__icon">
       <BeeIcon name="kubernetes-cluster" />
     </div>
+    <!-- 右部分：资源基础信息（UID、名称、描述） -->
     <div class="cluster-info-cell__content">
       <div class="content-top">
         <BeeTooltip :tooltip="uid">
