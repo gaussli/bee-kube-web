@@ -506,7 +506,7 @@ onMounted(() => {
       width: 1px;
       height: 40%;
       margin: 0 $spacing-8;
-      background: $color-border-tertiary;
+      background: $color-border-third;
     }
   }
 

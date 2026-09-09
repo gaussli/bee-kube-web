@@ -44,10 +44,10 @@ import type { TabType } from '@/stores/app'
 
 import { logout } from '@/api/auth/auth'
 
+import BeeDropdown from '@/components/base/BeeDropdown/index.vue'
 import BeeIconButton from '@/components/base/BeeIconButton/index.vue'
 import { BeeMessage } from '@/components/base/BeeMessage'
 import BeeTooltip from '@/components/base/BeeTooltip/index.vue'
-import BeeDropdown from '@/components/BeeDropdown/index.vue'
 import BeeHeaderUserInfo from '@/components/BeeHeaderUserInfo/index.vue'
 import BeeSegmentedControl from '@/components/BeeSegmentedControl/index.vue'
 

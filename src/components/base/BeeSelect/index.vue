@@ -9,6 +9,7 @@
   <Teleport to="body">
     <Transition name="bee-select">
       <div v-if="isOpen" ref="floatingRef" class="bee-select__menu" :style="[floatingStyles, widthStyle]" @click.stop>
+        <!-- 渲染菜单选项 -->
         <div
           v-for="option in options"
           :key="option.value"
@@ -16,7 +17,7 @@
           :class="{ 'bee-select__menu-actived': option.value === modelValue }"
           @click="handleSelect(option)"
         >
-          <BeeIcon v-if="option.icon" class="bee-select__menu-icon" :name="option.icon" />
+          <BeeIcon v-if="option.icon" class="bee-select__menu-item-icon" :name="option.icon" />
           <span>{{ option.label }}</span>
         </div>
         <div ref="arrowRef" class="bee-select__arrow" :style="arrowStyle" />
@@ -124,6 +125,23 @@ const { floatingStyles, middlewareData, placement } = useFloating(triggerRef, fl
   ],
 })
 
+// ==================== Method ====================
+/**
+ * 判断目标是否在 trigger 或 menu 内部
+ * @param target
+ */
+function isInside(target: Node): boolean {
+  return !!(triggerRef.value?.contains(target) || floatingRef.value?.contains(target))
+}
+
+/**
+ * 关闭下拉菜单
+ */
+function closeMenu() {
+  isOpen.value = false
+  emit('visible-change', false)
+}
+
 // ==================== Handler ====================
 /**
  * 切换展开/收起
@@ -134,14 +152,13 @@ function handleToggle() {
 }
 
 /**
- * 选中选项
+ * 处理选项选中
  * @param option
  */
 function handleSelect(option: SelectOption) {
   modelValue.value = option.value
   emit('change', option.value)
-  isOpen.value = false
-  emit('visible-change', false)
+  closeMenu()
 }
 
 /**
@@ -150,10 +167,8 @@ function handleSelect(option: SelectOption) {
  */
 function handleClickOutside(event: MouseEvent) {
   if (!isOpen.value) return
-  const target = event.target as Node
-  if (!triggerRef.value?.contains(target) && !floatingRef.value?.contains(target)) {
-    isOpen.value = false
-    emit('visible-change', false)
+  if (!isInside(event.target as Node)) {
+    closeMenu()
   }
 }
 
@@ -257,7 +272,7 @@ $bee-select-menu-color-bg: rgb(40 40 40);
     cursor: pointer;
     transition: background 0.3s;
 
-    .bee-select__menu-icon {
+    .bee-select__menu-item-icon {
       flex-shrink: 0;
     }
 
@@ -269,17 +284,16 @@ $bee-select-menu-color-bg: rgb(40 40 40);
 
     &:hover {
       border-color: transparent;
-      color: var(--bee-select-menu-item-color-text-hover, map.get($colors-default, 'text', 'hover'));
-      background: var(--bee-select-menu-item-color-bg-hover, map.get($colors-primary, 'bg', 'hover'));
+      color: var(--bee-select-menu-item-color-text-hover, $color-text-primary);
+      background: var(--bee-select-menu-item-color-bg-hover, $color-primary);
     }
   }
 }
 
 // ==================== 过渡动画 ====================
-
 .bee-select-enter-active,
 .bee-select-leave-active {
-  transition: opacity 0.15s ease;
+  transition: opacity 0.2s ease;
 }
 
 .bee-select-enter-from,

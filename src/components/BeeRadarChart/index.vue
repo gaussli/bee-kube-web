@@ -414,7 +414,7 @@ watch(
 
     .tooltip-header {
       padding-bottom: 8px;
-      border-bottom: 1px solid $color-border-tertiary;
+      border-bottom: 1px solid $color-border-third;
       font-size: 14px;
       font-weight: 500;
       color: $color-text-primary;

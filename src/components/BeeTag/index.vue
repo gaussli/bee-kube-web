@@ -27,8 +27,8 @@ withDefaults(
 .bee-tag {
   $tag-hover-colors: (
     'primary': map.get($colors-primary, 'border', 'hover'),
-    'warning': map.get('colors-warning', 'border', 'hover'),
-    'danger': map.get('colors-danger', 'border', 'hover'),
+    'warning': map.get($colors-warning, 'border', 'hover'),
+    'danger': map.get($colors-danger, 'border', 'hover'),
   );
   $tag-sizes: (
     'large': (

@@ -59,7 +59,7 @@ const usageColor = computed(() => {
     height: 6px;
     border-radius: 3px;
     overflow: hidden;
-    background: $color-border-tertiary;
+    background: $color-border-third;
   }
 
   &__fill {

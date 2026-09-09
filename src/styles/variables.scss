@@ -20,7 +20,8 @@ $color-text-disabled: rgb(80 80 80);
 // ---- 边框颜色 ----
 // $color-border-primary: map.get($colors, 'gray', 90);
 // $color-border-secondary: map.get($colors, 'gray', 70);
-// $color-border-tertiary: map.get($colors, 'gray', 50);
+$color-border-third: map.get($colors, 'gray', 50);
+
 // $color-border-placeholder: map.get($colors, 'gray', 40);
 // $color-border-disabled: map.get($colors, 'gray', 40);
 

@@ -5,19 +5,10 @@
       <BeeIconButton :icon="action.icon" size="small" @click.stop="action.handler" />
     </BeeTooltip>
     <!-- 更多下拉菜单 -->
-    <BeeDropdown v-if="showMore" trigger="click" @change="handleDropdownChange">
+    <BeeDropdown v-if="showMore" :options="moreActions" @change="handleDropdownChange">
       <BeeTooltip size="small" tooltip="更多">
         <BeeIconButton icon="basic-more" size="small" />
       </BeeTooltip>
-      <template #dropdown>
-        <BeeDropdownItem
-          v-for="action in moreActions"
-          :key="action.value"
-          :icon="action.icon"
-          :label="action.label"
-          :value="action.value"
-        />
-      </template>
     </BeeDropdown>
   </div>
 </template>
@@ -25,10 +16,9 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 
+import BeeDropdown from '@/components/base/BeeDropdown/index.vue'
 import BeeIconButton from '@/components/base/BeeIconButton/index.vue'
 import BeeTooltip from '@/components/base/BeeTooltip/index.vue'
-import BeeDropdown from '@/components/BeeDropdown/index.vue'
-import BeeDropdownItem from '@/components/BeeDropdownItem/index.vue'
 
 defineOptions({ name: 'BeeActionCell' })
 
