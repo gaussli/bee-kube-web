@@ -73,7 +73,7 @@ const arrowRef = ref<HTMLElement>()
 
 // ==================== Computed ====================
 const openedClass = computed(() => (isOpen.value ? 'is-opened' : ''))
-const placeholderClass = computed(() => (!selectedLabel.value ? 'bee-select__trigger-value-placeholder' : ''))
+const placeholderClass = computed(() => (!selectedLabel.value ? 'is-placeholder' : ''))
 const widthStyle = computed(() => {
   const width: string = typeof props.width === 'number' ? `${props.width}px` : props.width
   return {
@@ -182,13 +182,15 @@ onBeforeUnmount(() => {
   transition: border-color 0.3s ease;
 
   &.is-opened {
-    border-color: var(--bee-input-search-color-border-active, map.get($colors-primary, 'border', 'active'));
+    border-color: var(--bee-select-color-border-active, map.get($colors-primary, 'border', 'base'));
+    color: var(--bee-select-color-text-active, map.get($colors-primary, 'text', 'base'));
+    background: var(--bee-select-color-bg-active, map.get($colors-primary, 'bg', 'base'));
   }
 
   &-value {
     flex: 1;
 
-    &-placeholder {
+    .is-placeholder {
       color: $color-text-placeholder;
     }
   }
@@ -203,10 +205,12 @@ onBeforeUnmount(() => {
 }
 
 // ==================== 下拉菜单 ====================
-.bee-select__menu {
-  --bee-select-menu-bg: rgb(40 40 40);
+$bee-select-menu-color-bg: rgb(40 40 40);
 
-  filter: drop-shadow(0 0 4px rgb(var(--bee-select-menu-bg), 50%));
+.bee-select__menu {
+  --bee-select-menu-color-bg: #{$bee-select-menu-color-bg};
+
+  filter: drop-shadow(0 0 4px rgba($bee-select-menu-color-bg, 50%));
   position: relative;
   z-index: 1000;
   display: flex;
@@ -216,14 +220,14 @@ onBeforeUnmount(() => {
   align-items: flex-start;
   padding: 8px;
   border-radius: 8px;
-  background: var(--bee-select-menu-bg);
+  background: var(--bee-select-menu-color-bg);
 
   .bee-select__arrow {
     position: absolute;
     width: 10px;
     height: 10px;
     border-top-left-radius: 4px;
-    background: var(--bee-select-menu-bg);
+    background: var(--bee-select-menu-color-bg);
     transform: rotate(45deg);
   }
 
@@ -236,10 +240,12 @@ onBeforeUnmount(() => {
     align-items: center;
     width: 100%;
     padding: 8px 16px;
+    border: 1px solid;
+    border-color: transparent;
     border-radius: 9999px;
     font-size: 12px;
     font-weight: normal;
-    color: $color-text-primary;
+    color: var(--bee-select-menu-item-color-text, map.get($colors-default, 'text', 'hover'));
     cursor: pointer;
     transition: background 0.3s;
 
@@ -248,11 +254,15 @@ onBeforeUnmount(() => {
     }
 
     &.bee-select__menu-actived {
-      background: map.get($colors-primary, 'text', 'base');
+      border-color: var(--bee-select-menu-item-color-border-active, map.get($colors-primary, 'border', 'base'));
+      color: var(--bee-select-menu-item-color-text-active, map.get($colors-primary, 'text', 'base'));
+      background: var(--bee-select-menu-item-color-bg-active, map.get($colors-primary, 'bg', 'base'));
     }
 
     &:hover {
-      background: map.get($colors-primary, 'bg', 'hover');
+      border-color: transparent;
+      color: var(--bee-select-menu-item-color-text-hover, map.get($colors-default, 'text', 'hover'));
+      background: var(--bee-select-menu-item-color-bg-hover, map.get($colors-primary, 'bg', 'hover'));
     }
   }
 }
