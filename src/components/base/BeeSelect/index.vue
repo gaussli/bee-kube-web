@@ -8,17 +8,19 @@
   <!-- 下拉菜单选项容器浮层：Teleport 到 body，使用 @floating-ui 智能定位 -->
   <Teleport to="body">
     <Transition name="bee-select">
-      <div v-if="isOpen" ref="floatingRef" class="bee-select__menu" :style="[floatingStyles, widthStyle]" @click.stop>
-        <!-- 渲染菜单选项 -->
-        <div
-          v-for="option in options"
-          :key="option.value"
-          class="bee-select__menu-item"
-          :class="{ 'bee-select__menu-actived': option.value === modelValue }"
-          @click="handleSelect(option)"
-        >
-          <BeeIcon v-if="option.icon" class="bee-select__menu-item-icon" :name="option.icon" />
-          <span>{{ option.label }}</span>
+      <div v-if="isOpen" ref="floatingRef" class="bee-select__menu" :style="[floatingStyles]" @click.stop>
+        <div class="bee-select__menu-wrapper" :style="[widthStyle]">
+          <!-- 渲染菜单选项 -->
+          <div
+            v-for="option in options"
+            :key="option.value"
+            class="bee-select__menu-item"
+            :class="{ 'bee-select__menu-actived': option.value === modelValue }"
+            @click="handleSelect(option)"
+          >
+            <BeeIcon v-if="option.icon" class="bee-select__menu-item-icon" :name="option.icon" />
+            <span>{{ option.label }}</span>
+          </div>
         </div>
         <div ref="arrowRef" class="bee-select__arrow" :style="arrowStyle" />
       </div>
@@ -27,9 +29,10 @@
 </template>
 
 <script setup lang="ts">
-import { computed, onBeforeUnmount, onMounted, ref } from 'vue'
+import { computed, ref, watch } from 'vue'
 
 import { arrow, flip, offset, shift, useFloating } from '@floating-ui/vue'
+import { onClickOutside, useElementHover, useTimeoutFn } from '@vueuse/core'
 
 import type { SelectOption } from './types'
 
@@ -84,6 +87,7 @@ const widthStyle = computed(() => {
     width: width,
   }
 })
+
 /** 箭头动态定位样式，根据 placement 计算箭头坐标和方向侧偏移 */
 const arrowStyle = computed(() => {
   const arrowData = middlewareData.value.arrow
@@ -96,48 +100,60 @@ const arrowStyle = computed(() => {
     bottom: 'top',
     left: 'right',
   }
+  console.log(placement)
   const side = placement.value.split('-')[0]
   const staticSide = staticSideMap[side] || 'bottom'
 
   return {
     left: x != null ? `${x}px` : '',
     top: y != null ? `${y}px` : '',
-    [staticSide]: '-4px',
+    [staticSide]: '8px', // 勾股定理获得对角线除以 2，再向上取整（防止出现直角转角）
   }
 })
+
 /** 当前选中项标签文本 */
 const selectedLabel = computed(() => {
   const selected = props.options.find(opt => opt.value === modelValue.value)
   return selected?.label ?? ''
 })
 
+// ==================== Vueuse ====================
+const isTriggerHover = useElementHover(triggerRef)
+const isFloatingHover = useElementHover(floatingRef)
+const { start: startCloseMenuTimeout, stop: stopCloseMenuTimeout } = useTimeoutFn(() => closeMenu(), 150, {
+  immediate: false,
+})
+
+watch([isTriggerHover, isFloatingHover], ([th, fh]) => {
+  if (th || fh) {
+    stopCloseMenuTimeout()
+  } else {
+    startCloseMenuTimeout()
+  }
+})
+
+onClickOutside(triggerRef, () => closeMenu(), { ignore: [floatingRef] })
+
 // ==================== Floating UI ====================
 /**
  * 使用 @floating-ui 实现智能定位，含偏移、翻转、边界约束和箭头
  */
 const { floatingStyles, middlewareData, placement } = useFloating(triggerRef, floatingRef, {
-  placement: 'bottom-start',
+  placement: 'bottom',
   middleware: [
-    offset(12), // tooltip 与触发器间距 12px
+    offset(0), // tooltip 与触发器间距 0px
     flip(), // 超出视口时自动翻转方向
-    shift({ padding: 8 }), // 防止超出视口，保留 8px 安全边距
+    shift({ padding: 16 }), // 防止超出视口，保留 16px 安全边距
     arrow({ element: arrowRef }), // 箭头定位
   ],
 })
 
 // ==================== Method ====================
 /**
- * 判断目标是否在 trigger 或 menu 内部
- * @param target
- */
-function isInside(target: Node): boolean {
-  return !!(triggerRef.value?.contains(target) || floatingRef.value?.contains(target))
-}
-
-/**
  * 关闭下拉菜单
  */
 function closeMenu() {
+  if (!isOpen.value) return
   isOpen.value = false
   emit('visible-change', false)
 }
@@ -160,26 +176,6 @@ function handleSelect(option: SelectOption) {
   emit('change', option.value)
   closeMenu()
 }
-
-/**
- * 点击外部区域关闭菜单
- * @param event
- */
-function handleClickOutside(event: MouseEvent) {
-  if (!isOpen.value) return
-  if (!isInside(event.target as Node)) {
-    closeMenu()
-  }
-}
-
-// ==================== Lifecycle ====================
-onMounted(() => {
-  document.addEventListener('click', handleClickOutside)
-})
-
-onBeforeUnmount(() => {
-  document.removeEventListener('click', handleClickOutside)
-})
 </script>
 
 <style lang="scss" scoped>
@@ -236,14 +232,8 @@ $bee-select-menu-color-bg: rgb(40 40 40);
   filter: drop-shadow(0 0 4px rgba($bee-select-menu-color-bg, 50%));
   position: relative;
   z-index: 1000;
-  display: flex;
-  gap: 8px;
-  flex-direction: column;
-  justify-content: center;
-  align-items: flex-start;
-  padding: 8px;
-  border-radius: 8px;
-  background: var(--bee-select-menu-color-bg);
+  padding: 12px;
+  background: transparent;
 
   .bee-select__arrow {
     position: absolute;
@@ -254,37 +244,48 @@ $bee-select-menu-color-bg: rgb(40 40 40);
     transform: rotate(45deg);
   }
 
-  .bee-select__menu-item {
+  .bee-select__menu-wrapper {
     display: flex;
     gap: 8px;
-    flex-flow: row nowrap;
-    justify-content: flex-start;
-    align-items: center;
-    width: 100%;
-    padding: 8px 16px;
-    border: 1px solid;
-    border-color: transparent;
-    border-radius: 9999px;
-    font-size: 12px;
-    font-weight: normal;
-    color: var(--bee-select-menu-item-color-text, map.get($colors-default, 'text', 'hover'));
-    cursor: pointer;
-    transition: background 0.2s;
+    flex-direction: column;
+    justify-content: center;
+    align-items: flex-start;
+    padding: 8px;
+    border-radius: 8px;
+    background: var(--bee-select-menu-color-bg);
 
-    .bee-select__menu-item-icon {
-      flex-shrink: 0;
-    }
-
-    &.bee-select__menu-actived {
-      border-color: var(--bee-select-menu-item-color-border-active, map.get($colors-primary, 'border', 'base'));
-      color: var(--bee-select-menu-item-color-text-active, map.get($colors-primary, 'text', 'base'));
-      background: var(--bee-select-menu-item-color-bg-active, map.get($colors-primary, 'bg', 'base'));
-    }
-
-    &:hover {
+    .bee-select__menu-item {
+      display: flex;
+      gap: 8px;
+      flex-flow: row nowrap;
+      justify-content: flex-start;
+      align-items: center;
+      width: 100%;
+      padding: 8px 16px;
+      border: 1px solid;
       border-color: transparent;
-      color: var(--bee-select-menu-item-color-text-hover, $color-text-primary);
-      background: var(--bee-select-menu-item-color-bg-hover, $color-primary);
+      border-radius: 9999px;
+      font-size: 12px;
+      font-weight: normal;
+      color: var(--bee-select-menu-item-color-text, map.get($colors-default, 'text', 'hover'));
+      cursor: pointer;
+      transition: background 0.2s;
+
+      .bee-select__menu-item-icon {
+        flex-shrink: 0;
+      }
+
+      &.bee-select__menu-actived {
+        border-color: var(--bee-select-menu-item-color-border-active, map.get($colors-primary, 'border', 'base'));
+        color: var(--bee-select-menu-item-color-text-active, map.get($colors-primary, 'text', 'base'));
+        background: var(--bee-select-menu-item-color-bg-active, map.get($colors-primary, 'bg', 'base'));
+      }
+
+      &:hover {
+        border-color: transparent;
+        color: var(--bee-select-menu-item-color-text-hover, $color-text-primary);
+        background: var(--bee-select-menu-item-color-bg-hover, $color-primary);
+      }
     }
   }
 }

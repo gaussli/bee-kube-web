@@ -6,24 +6,10 @@
     <!-- 表单 Body -->
     <BeeCard class="edit-body">
       <div class="edit-basic">
-        <div class="edit-basic__field">
-          <div class="edit-basic__field-name">
-            <BeeIcon class="edit-basic__field-name-icon" name="basic-id" />
-            <span>UID</span>
-          </div>
-          <div class="edit-basic__field-value is-disabled">
-            <input id="uid" v-model="detailData.uid" disabled />
-          </div>
-        </div>
-        <div class="edit-basic__field">
-          <div class="edit-basic__field-name">
-            <BeeIcon class="edit-basic__field-name-icon" name="basic-field-name" />
-            <span>名称 / Name</span>
-          </div>
-          <div class="edit-basic__field-value is-disabled">
-            <input id="name" v-model="detailData.name" disabled />
-          </div>
-        </div>
+        <BeeFieldInput id="uid" v-model="detailData.uid" disabled icon="basic-id" label="UID" />
+        <BeeFieldInput id="name" v-model="detailData.name" disabled icon="basic-field-name" label="名称 / Name" />
+        <BeeFieldInput id="name" v-model="detailData.name" icon="basic-field-name" label="名称 / Name" />
+
         <div class="edit-basic__field grid-line">
           <div class="edit-basic__field-name">
             <BeeIcon class="edit-basic__field-name-icon" name="basic-description" />
@@ -45,6 +31,7 @@ import { useRouter } from 'vue-router'
 
 import type { ClusterDetailVo } from '@/types/kubernetes/cluster'
 
+import BeeFieldInput from '@/components/base/BeeFieldInput/index.vue'
 import BeeIcon from '@/components/base/BeeIcon/index.vue'
 import BeeBackHeader, { type ActionItem } from '@/components/business/BeeBackHeader/index.vue'
 import BeeCard from '@/components/layout/BeeCard/index.vue'

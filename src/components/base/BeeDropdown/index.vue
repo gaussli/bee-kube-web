@@ -8,17 +8,19 @@
   <Teleport to="body">
     <Transition name="bee-dropdown">
       <div v-if="isOpen" ref="floatingRef" class="bee-dropdown__menu" :style="floatingStyles" @click.stop>
-        <!-- 渲染菜单项 -->
-        <div
-          v-for="option in options"
-          :key="option.value"
-          class="bee-dropdown__menu-item"
-          @click="handleSelect(option)"
-        >
-          <div v-if="option.divided" class="bee-dropdown__menu-item-separator"></div>
-          <div class="bee-dropdown__menu-item-content">
-            <BeeIcon v-if="option.icon" class="bee-dropdown__menu-item-icon" :name="option.icon" />
-            <span>{{ option.label }}</span>
+        <div class="bee-dropdown__menu-wrapper">
+          <!-- 渲染菜单项 -->
+          <div
+            v-for="option in options"
+            :key="option.value"
+            class="bee-dropdown__menu-item"
+            @click="handleSelect(option)"
+          >
+            <div v-if="option.divided" class="bee-dropdown__menu-item-separator"></div>
+            <div class="bee-dropdown__menu-item-content">
+              <BeeIcon v-if="option.icon" class="bee-dropdown__menu-item-icon" :name="option.icon" />
+              <span>{{ option.label }}</span>
+            </div>
           </div>
         </div>
         <div ref="arrowRef" class="bee-dropdown__arrow" :style="arrowStyle" />
@@ -28,9 +30,10 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted, onBeforeUnmount } from 'vue'
+import { ref, computed, watch } from 'vue'
 
 import { arrow, flip, offset, shift, useFloating } from '@floating-ui/vue'
+import { onClickOutside, useElementHover, useTimeoutFn } from '@vueuse/core'
 
 import type { DropdownOption } from './types'
 
@@ -92,9 +95,29 @@ const arrowStyle = computed(() => {
   return {
     left: x != null ? `${x}px` : '',
     top: y != null ? `${y}px` : '',
-    [staticSide]: '-4px',
+    [staticSide]: '8px', // 勾股定理获得对角线除以 2，再向上取整（防止出现直角转角）
   }
 })
+
+// ==================== Vueuse ====================
+const isTriggerHover = useElementHover(triggerRef)
+const isFloatingHover = useElementHover(floatingRef)
+const { start: startCloseMenuTimeout, stop: stopCloseMenuTimeout } = useTimeoutFn(() => closeMenu(), 150, {
+  immediate: false,
+})
+
+watch([isTriggerHover, isFloatingHover], ([th, fh]) => {
+  if (th && props.trigger == 'hover') {
+    showMenu()
+  }
+  if (th || fh) {
+    stopCloseMenuTimeout()
+  } else {
+    startCloseMenuTimeout()
+  }
+})
+
+onClickOutside(triggerRef, () => closeMenu(), { ignore: [floatingRef] })
 
 // ==================== Floating UI ====================
 /**
@@ -103,26 +126,25 @@ const arrowStyle = computed(() => {
 const { floatingStyles, middlewareData, placement } = useFloating(triggerRef, floatingRef, {
   placement: props.placement,
   middleware: [
-    offset(12), // tooltip 与触发器间距 12px
+    offset(0), // tooltip 与触发器间距 0px
     flip(), // 超出视口时自动翻转方向
-    shift({ padding: 8 }), // 防止超出视口，保留 8px 安全边距
+    shift({ padding: 16 }), // 防止超出视口，保留 16px 安全边距
     arrow({ element: arrowRef }), // 箭头定位
   ],
 })
 
 // ==================== Method ====================
-/**
- * 判断目标是否在 trigger 或 menu 内部
- * @param target
- */
-function isInside(target: Node): boolean {
-  return !!(triggerRef.value?.contains(target) || floatingRef.value?.contains(target))
-}
-
 /** 关闭下拉菜单 */
-function close() {
+function closeMenu() {
+  if (!isOpen.value) return
   isOpen.value = false
   emit('visible-change', false)
+}
+
+function showMenu() {
+  if (isOpen.value) return
+  isOpen.value = true
+  emit('visible-change', true)
 }
 
 // ==================== Handler ====================
@@ -146,37 +168,6 @@ function handleSelect(option: DropdownOption) {
   isOpen.value = false
   emit('visible-change', false)
 }
-
-/**
- * 点击外部区域关闭下拉框
- * @param event
- */
-function handleClickOutside(event: MouseEvent) {
-  if (!isInside(event.target as Node)) {
-    close()
-  }
-}
-
-/**
- * 焦点移出时关闭（Tab 键、点击其他可聚焦元素等场景）
- * @param event
- */
-function handleFocusOut(event: FocusEvent) {
-  if (!isInside(event.target as Node)) {
-    close()
-  }
-}
-
-// ==================== Lifecycle ====================
-onMounted(() => {
-  document.addEventListener('click', handleClickOutside)
-  document.addEventListener('focusin', handleFocusOut)
-})
-
-onBeforeUnmount(() => {
-  document.removeEventListener('click', handleClickOutside)
-  document.removeEventListener('focusin', handleFocusOut)
-})
 </script>
 
 <style lang="scss" scoped>
@@ -197,15 +188,8 @@ $bee-dropdown-menu-color-bg: rgb(40 40 40);
   filter: drop-shadow(0 0 4px rgba($bee-dropdown-menu-color-bg, 50%));
   position: relative;
   z-index: 1000;
-  display: flex;
-  gap: 8px;
-  flex-direction: column;
-  justify-content: center;
-  align-items: flex-start;
-  padding: 8px;
-  border-radius: 8px;
-  overflow: hidden;
-  background: var(--bee-dropdown-menu-color-bg);
+  padding-top: 12px;
+  background: transparent;
 
   .bee-dropdown__arrow {
     position: absolute;
@@ -216,44 +200,56 @@ $bee-dropdown-menu-color-bg: rgb(40 40 40);
     transform: rotate(45deg);
   }
 
-  .bee-dropdown__menu-item {
+  .bee-dropdown__menu-wrapper {
     display: flex;
     gap: 8px;
     flex-direction: column;
     justify-content: center;
-    align-items: center;
+    align-items: flex-start;
+    padding: 8px;
+    border-radius: 8px;
+    overflow: hidden;
+    background: var(--bee-dropdown-menu-color-bg);
 
-    .bee-dropdown__menu-item-separator {
-      width: 120%;
-      height: 1px;
-      background: $color-separator;
-    }
-
-    .bee-dropdown__menu-item-content {
+    .bee-dropdown__menu-item {
       display: flex;
       gap: 8px;
-      flex-flow: row nowrap;
+      flex-direction: column;
       justify-content: center;
       align-items: center;
-      width: 100%;
-      padding: 8px 16px;
-      border: 1px solid;
-      border-color: transparent;
-      border-radius: 9999px;
-      font-size: 12px;
-      font-weight: normal;
-      color: var(--bee-dropdown-menu-item-color-text, map.get($colors-default, 'text', 'hover'));
-      cursor: pointer;
-      transition: background 0.2s;
 
-      .bee-dropdown__menu-item-icon {
-        flex-shrink: 0;
+      &-separator {
+        width: 120%;
+        height: 1px;
+        background: $color-separator;
       }
 
-      &:hover {
+      &-content {
+        display: flex;
+        gap: 8px;
+        flex-flow: row nowrap;
+        justify-content: center;
+        align-items: center;
+        width: 100%;
+        padding: 8px 16px;
+        border: 1px solid;
         border-color: transparent;
-        color: var(--bee-dropdown-menu-item-color-text-hover, $color-text-primary);
-        background: var(--bee-dropdown-menu-item-color-bg-hover, $color-primary);
+        border-radius: 9999px;
+        font-size: 12px;
+        font-weight: normal;
+        color: var(--bee-dropdown-menu-item-color-text, map.get($colors-default, 'text', 'hover'));
+        cursor: pointer;
+        transition: background 0.2s;
+
+        .bee-dropdown__menu-item-icon {
+          flex-shrink: 0;
+        }
+
+        &:hover {
+          border-color: transparent;
+          color: var(--bee-dropdown-menu-item-color-text-hover, $color-text-primary);
+          background: var(--bee-dropdown-menu-item-color-bg-hover, $color-primary);
+        }
       }
     }
   }

@@ -16,7 +16,7 @@
       <BeeTooltip size="small" :tooltip="fullscreenTooltip">
         <BeeIconButton :icon="fullscreenIcon" @click="handleFullscreenToggle" />
       </BeeTooltip>
-      <BeeDropdown :options="dropdownOptions" @change="handleDropdownChange">
+      <BeeDropdown :options="dropdownOptions" trigger="hover" @change="handleDropdownChange">
         <BeeHeaderUserInfo
           :img="currentUser?.avatarId"
           :nickname="currentUser?.nickname || ''"
@@ -31,6 +31,8 @@
 import { computed, ref, onMounted, onUnmounted } from 'vue'
 
 import { useRouter } from 'vue-router'
+
+import { useFullscreen } from '@vueuse/core'
 
 import type { TabType } from '@/stores/app'
 
@@ -53,6 +55,9 @@ defineOptions({ name: 'BeeHeader' })
 const router = useRouter()
 const appStore = useAppStore()
 const userStore = useUserStore()
+
+// ==================== Vueuse ====================
+const { toggle } = useFullscreen()
 
 // ==================== Reactive State ====================
 const isFullscreen = ref(false)
@@ -94,12 +99,8 @@ function handleTabChange(tab?: string | number) {
   }
 }
 
-function handleFullscreenToggle() {
-  if (!document.fullscreenElement) {
-    void document.documentElement.requestFullscreen().catch(() => {})
-  } else {
-    void document.exitFullscreen().catch(() => {})
-  }
+async function handleFullscreenToggle() {
+  await toggle()
 }
 
 async function handleDropdownChange(command: string | number) {
