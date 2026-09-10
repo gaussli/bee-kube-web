@@ -1,27 +1,16 @@
 <template>
   <!-- 触发器：包裹 slot 默认内容，hover 时显示 tooltip -->
-  <div
-    ref="triggerRef"
-    class="bee-tooltip__trigger"
-    @mouseenter="handleTriggerMouseEnter"
-    @mouseleave="handleTriggerMouseLeave"
-  >
+  <div ref="triggerRef" class="bee-tooltip__trigger">
     <slot />
   </div>
 
   <!-- Tooltip 浮层：Teleport 到 body，使用 @floating-ui 智能定位 -->
   <Teleport to="body">
     <Transition name="bee-tooltip">
-      <div
-        v-if="visible"
-        ref="floatingRef"
-        class="bee-tooltip"
-        :class="[sizeClass]"
-        :style="floatingStyles"
-        @mouseenter="handleTooltipMouseEnter"
-        @mouseleave="handleTooltipMouseLeave"
-      >
-        <slot name="tooltip">{{ tooltip }}</slot>
+      <div v-if="visible" ref="floatingRef" class="bee-tooltip" :style="floatingStyles">
+        <div class="bee-tooltip__wrapper" :class="[sizeClass]">
+          <slot name="tooltip">{{ tooltip }}</slot>
+        </div>
         <div ref="arrowRef" class="bee-tooltip__arrow" :style="arrowStyle" />
       </div>
     </Transition>
@@ -29,9 +18,10 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed } from 'vue'
+import { ref, computed, watch } from 'vue'
 
 import { arrow, flip, offset, shift, useFloating } from '@floating-ui/vue'
+import { useElementHover, useTimeoutFn } from '@vueuse/core'
 
 defineOptions({ name: 'BeeTooltip' })
 
@@ -64,8 +54,6 @@ const floatingRef = ref<HTMLElement>()
 const arrowRef = ref<HTMLElement>()
 /** 浮层可见性 */
 const visible = ref(false)
-/** 鼠标是否悬停在 tooltip 上（防止误隐藏） */
-const isHovered = ref(false)
 
 // ==================== Computed ====================
 /** 尺寸 class 名称 */
@@ -88,7 +76,25 @@ const arrowStyle = computed(() => {
   return {
     left: x != null ? `${x}px` : '',
     top: y != null ? `${y}px` : '',
-    [staticSide]: '-4px',
+    [staticSide]: '8px',
+  }
+})
+
+// ==================== Vueuse ====================
+const isTriggerHover = useElementHover(triggerRef)
+const isFloatingHover = useElementHover(floatingRef)
+const { start: startCloseTooltipTimeout, stop: stopCloseTooltipTimeout } = useTimeoutFn(() => closeTooltip(), 150, {
+  immediate: false,
+})
+
+watch([isTriggerHover, isFloatingHover], ([th, fh]) => {
+  if (th) {
+    showTooltip()
+  }
+  if (th || fh) {
+    stopCloseTooltipTimeout()
+  } else {
+    startCloseTooltipTimeout()
   }
 })
 
@@ -99,82 +105,29 @@ const arrowStyle = computed(() => {
 const { floatingStyles, middlewareData, placement } = useFloating(triggerRef, floatingRef, {
   placement: props.placement,
   middleware: [
-    offset(12), // tooltip 与触发器间距 12px
+    offset(0), // tooltip 与触发器间距 0px
     flip(), // 超出视口时自动翻转方向
-    shift({ padding: 8 }), // 防止超出视口，保留 8px 安全边距
+    shift({ padding: 16 }), // 防止超出视口，保留 16px 安全边距
     arrow({ element: arrowRef }), // 箭头定位
   ],
 })
 
-// ==================== Timers ====================
-let showTimeout: ReturnType<typeof setTimeout> | null = null
-let hideTimeout: ReturnType<typeof setTimeout> | null = null
-
 // ==================== Methods ====================
 /**
- * 立即显示 tooltip，取消待处理的隐藏定时器。
+ * 打开 Tooltip
  */
-function show() {
+function showTooltip() {
   if (props.disabled) return
-  if (hideTimeout) {
-    clearTimeout(hideTimeout)
-    hideTimeout = null
-  }
-  if (showTimeout) {
-    clearTimeout(showTimeout)
-    showTimeout = null
-  }
+  if (visible.value) return
   visible.value = true
 }
 
 /**
- * 延迟 150ms 隐藏 tooltip（若鼠标未移回 tooltip 上方）
+ * 关闭 Tooltip
  */
-function hide() {
-  if (showTimeout) {
-    clearTimeout(showTimeout)
-    showTimeout = null
-  }
-  hideTimeout = setTimeout(() => {
-    if (!isHovered.value) {
-      visible.value = false
-    }
-    hideTimeout = null
-  }, 150)
-}
-
-// ==================== Handlers ====================
-/**
- * 鼠标移入触发器：立即显示
- */
-function handleTriggerMouseEnter() {
-  show()
-}
-
-/**
- * 鼠标移出触发器：延迟隐藏
- */
-function handleTriggerMouseLeave() {
-  hide()
-}
-
-/**
- * 鼠标移入 tooltip：标记悬停，取消隐藏定时器
- */
-function handleTooltipMouseEnter() {
-  isHovered.value = true
-  if (hideTimeout) {
-    clearTimeout(hideTimeout)
-    hideTimeout = null
-  }
-}
-
-/**
- * 鼠标移出 tooltip：取消悬停标记，触发延迟隐藏
- */
-function handleTooltipMouseLeave() {
-  isHovered.value = false
-  hide()
+function closeTooltip() {
+  if (!visible.value) return
+  visible.value = false
 }
 </script>
 
@@ -196,33 +149,39 @@ export default {
 .bee-tooltip {
   --bee-tooltip-bg: rgb(40 40 40);
 
-  filter: drop-shadow(2px 2px 10px rgb(var(--bee-tooltip-bg), 0.4));
   z-index: 9999;
   max-width: 30%;
-  padding: 8px;
-  border-radius: 8px;
-  font-size: 12px;
-  color: $color-text-primary;
-  background: var(--bee-tooltip-bg);
-  cursor: default;
-  user-select: text;
+  padding: 12px;
 
-  // ==================== 尺寸变体 ====================
-  &--large {
-    border-radius: 12px;
-    font-size: 14px;
-  }
+  &__wrapper {
+    filter: drop-shadow(2px 2px 10px rgb(var(--bee-tooltip-bg), 0.4));
+    padding: 8px 14px;
+    border-radius: 8px;
+    font-size: 12px;
+    color: $color-text-primary;
+    background: var(--bee-tooltip-bg);
+    cursor: default;
+    user-select: text;
 
-  &--small {
-    border-radius: 4px;
-    font-size: 10px;
+    // ==================== 尺寸变体 ====================
+    &.bee-tooltip--large {
+      padding: 12px 20px;
+      border-radius: 12px;
+      font-size: 14px;
+    }
+
+    &.bee-tooltip--small {
+      padding: 8px;
+      border-radius: 4px;
+      font-size: 10px;
+    }
   }
 
   &__arrow {
     position: absolute;
-    width: 8px;
-    height: 8px;
-    border-top-left-radius: 2px;
+    width: 10px;
+    height: 10px;
+    border-top-left-radius: 4px;
     background: var(--bee-tooltip-bg);
     pointer-events: none;
     transform: rotate(45deg);

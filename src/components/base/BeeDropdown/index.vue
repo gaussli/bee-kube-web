@@ -134,17 +134,20 @@ const { floatingStyles, middlewareData, placement } = useFloating(triggerRef, fl
 })
 
 // ==================== Method ====================
+/**
+ * 打开下拉菜单
+ */
+function showMenu() {
+  if (isOpen.value) return
+  isOpen.value = true
+  emit('visible-change', true)
+}
+
 /** 关闭下拉菜单 */
 function closeMenu() {
   if (!isOpen.value) return
   isOpen.value = false
   emit('visible-change', false)
-}
-
-function showMenu() {
-  if (isOpen.value) return
-  isOpen.value = true
-  emit('visible-change', true)
 }
 
 // ==================== Handler ====================
