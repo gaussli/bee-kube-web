@@ -1,14 +1,23 @@
 <template>
   <BeePage>
     <!-- 页面 Header -->
-    <BeeBackHeader :actions="headerActionItems" title="编辑集群" @action="handleHeaderActions" @back="handleBack" />
+    <BeeBackHeader :actions="actionItems" title="编辑集群" @action="handleHeaderActions" @back="handleBack" />
 
     <!-- 表单 Body -->
     <BeeCard class="edit-body">
       <div class="edit-basic">
         <BeeFieldInput id="uid" v-model="detailData.uid" disabled icon="basic-id" label="UID" />
         <BeeFieldInput id="name" v-model="detailData.name" disabled icon="basic-field-name" label="名称 / Name" />
-        <BeeFieldInput id="name" v-model="detailData.name" icon="basic-field-name" label="名称 / Name" />
+        <BeeFieldInput
+          id="desc"
+          v-model="detailData.name"
+          icon="basic-field-name"
+          label="名称 / Name"
+          :max-length="63"
+          :required="true"
+          tip="名称只能包含小写字母、数字和 -，且必须以字母或数字开头和结尾，长度不能超过 63 个字符"
+          :validator="validateName"
+        />
 
         <div class="edit-basic__field grid-line">
           <div class="edit-basic__field-name">
@@ -25,7 +34,7 @@
 </template>
 
 <script setup lang="ts">
-import { onMounted, reactive, ref } from 'vue'
+import { reactive, ref } from 'vue'
 
 import { useRouter } from 'vue-router'
 
@@ -37,9 +46,10 @@ import BeeBackHeader, { type ActionItem } from '@/components/business/BeeBackHea
 import BeeCard from '@/components/layout/BeeCard/index.vue'
 import BeePage from '@/components/layout/BeePage/index.vue'
 
+import { useValidator } from '../composables/useValidator'
+
 defineOptions({ name: 'ClusterEdit' })
 
-// ==================== Route ====================
 const router = useRouter()
 
 // ==================== Reactive State ====================
@@ -56,8 +66,9 @@ const detailData = reactive<ClusterDetailVo>({
   deletable: false,
 })
 
-// ==================== Variable ====================
-const headerActionItems = ref<ActionItem[]>([
+const { validateName } = useValidator()
+
+const actionItems = ref<ActionItem[]>([
   {
     value: 'save',
     label: '暂存',
@@ -71,7 +82,6 @@ const headerActionItems = ref<ActionItem[]>([
   },
 ])
 
-// ==================== Handler ====================
 /**
  * 处理页面返回
  */
@@ -105,9 +115,6 @@ async function handleSave() {}
  * 提交集群数据
  */
 async function handleSubmit() {}
-
-// ====================  ====================
-onMounted(() => {})
 </script>
 
 <style lang="scss" scoped>
