@@ -98,7 +98,6 @@ const debouncedValidate = useDebounceFn((value: string) => {
 // ==================== Method ====================
 function validate(value: string) {
   const result: RuleResult = props.validator(value)
-  console.log(result)
   if (result == null) {
     tipRef.value = 'OK!'
     tipIconName.value = 'basic-success'
@@ -108,7 +107,6 @@ function validate(value: string) {
     tipIconName.value = 'basic-danger'
     tipStatusClass.value = 'bee-field-input__tip--danger'
   }
-  console.log(tipRef.value)
 }
 
 // ==================== Handler ====================
