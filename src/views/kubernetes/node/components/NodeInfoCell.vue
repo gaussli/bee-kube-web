@@ -1,14 +1,17 @@
 <template>
-  <div class="cluster-info-cell">
-    <!-- 左部分：集群图标 -->
-    <div class="cluster-info-cell__icon">
-      <BeeIcon name="kubernetes-cluster" />
+  <div class="bee-node-info-cell">
+    <!-- 左部分：节点图标 -->
+    <div class="bee-node-info-cell__icon">
+      <BeeIcon name="kubernetes-node" />
     </div>
-    <!-- 右部分：集群基础信息（UID、名称、描述） -->
-    <div class="cluster-info-cell__content">
+    <!-- 右部分：节点基础信息（UID、IP、名称、描述） -->
+    <div class="bee-node-info-cell__content">
       <div class="content-top">
         <BeeTooltip :tooltip="uid">
           <BeeCapsule label="UID" size="tiny" />
+        </BeeTooltip>
+        <BeeTooltip :tooltip="ip">
+          <BeeCapsule label="IP" size="tiny" />
         </BeeTooltip>
         <BeeEllipsisTooltipLabel :label="name" />
         <BeeIcon class="content-top__icon-copy" name="basic-copy" @click.stop="handleCopy" />
@@ -29,19 +32,23 @@ import BeeEllipsisTooltipLabel from '@/components/business/BeeEllipsisTooltipLab
 
 import { useClipboard } from '@/composables/useClipboard'
 
-defineOptions({ name: 'BeeClusterInfoCell' })
+defineOptions({ name: 'NodeInfoCell' })
 
 // ==================== Props ====================
 const props = withDefaults(
   defineProps<{
-    /** 集群 UID */
+    /** 节点 UID */
     uid: string
-    /** 集群名称 */
+    /** 节点名称 */
     name: string
-    /** 集群描述 */
+    /** 节点 IP */
+    ip: string
+    /** 节点描述 */
     description?: string
   }>(),
-  { description: '-' },
+  {
+    description: '-',
+  },
 )
 
 // ==================== Handler ====================
@@ -51,7 +58,7 @@ async function handleCopy() {
 </script>
 
 <style lang="scss" scoped>
-.cluster-info-cell {
+.bee-node-info-cell {
   display: flex;
   gap: 8px;
   flex-direction: row;

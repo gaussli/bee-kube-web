@@ -13,23 +13,17 @@
           placeholder="按 UID / 名称 / IP 搜索"
           @search="handleSearch"
         />
-        <BeeSelect
-          v-model="queryForm.status"
-          clearable
-          :options="NODE_STATUS_OPTIONS"
-          placeholder="节点状态"
-          @change="handleSearch"
-        />
+        <BeeSelect v-model="queryForm.status" :options="NODE_STATUS_OPTIONS" placeholder="节点状态" />
         <BeeButton icon="basic-search" @click="handleSearch">搜索</BeeButton>
         <BeeButton icon="basic-refresh" @click="handleReset">重置</BeeButton>
       </div>
 
       <!-- 表格 -->
       <div class="page-body__table">
-        <BeeTable :data="tableData" :loading="loading" row-key="uid">
+        <BeeTable :data="tableData" :loading="loading">
           <BeeTableColumn :width="500">
             <template #default="{ row }">
-              <BeeNodeInfoCell
+              <NodeInfoCell
                 :description="row.description"
                 icon="kubernetes-node"
                 :ip="row.ip"
@@ -71,12 +65,12 @@
           </BeeTableColumn>
           <BeeTableColumn label="Pod 数" :width="120">
             <template #default="{ row }">
-              <BeeTableCommonCell subtext="Pod 数" :text="row.resource.usage.pods.value" />
+              <BeeTableCommonCell :label="String(row.resource.usage.pods.value)" sublabel="Pod 数" />
             </template>
           </BeeTableColumn>
           <BeeTableColumn label="Kubelet 版本" :width="200">
             <template #default="{ row }">
-              <BeeTableCommonCell subtext="Kubelet 版本" :text="row.kubeletVersion" />
+              <BeeTableCommonCell :label="row.kubeletVersion" sublabel="Kubelet 版本" />
             </template>
           </BeeTableColumn>
           <BeeTableColumn label="创建信息" :width="200">
@@ -89,7 +83,7 @@
               <BeeAuditCell :datetime="row.updateAt" field-name="更新人 / 时间" :username="row.updateBy" />
             </template>
           </BeeTableColumn>
-          <BeeTableColumn fixed="right" label="操作" :width="160">
+          <BeeTableColumn fixed="right" :width="136">
             <template #default="{ row }">
               <BeeActionCell :actions="getActions(row)" />
             </template>
@@ -100,7 +94,7 @@
       <!-- 底栏 -->
       <div class="page-body__footer">
         <div class="page-body__footer-actions">
-          <BeeButton :icon="'basic-export'" @click="handleExport">导出</BeeButton>
+          <BeeButton v-if="perm.view" :icon="'basic-export'" @click="handleExport">导出</BeeButton>
         </div>
         <BeePagination
           v-model="pagination.page"
@@ -111,32 +105,22 @@
       </div>
     </BeeCard>
 
-    <!-- 封锁 Dialog -->
-    <BeeDialog v-model="cordonDialogVisible" title="封锁节点" @confirm="handleConfirmCordon">
-      <p>
-        确定要将节点 <strong>{{ currentTargetRow?.name }}</strong> 标记为不可调度（封锁）吗？
-      </p>
-    </BeeDialog>
-    <!-- 解封 Dialog -->
-    <BeeDialog v-model="uncordonDialogVisible" title="解封节点" @confirm="handleConfirmUncordon">
-      <p>
-        确定要将节点 <strong>{{ currentTargetRow?.name }}</strong> 标记为可调度（解封）吗？
-      </p>
-    </BeeDialog>
-    <!-- 排空 Dialog -->
-    <BeeDialog v-model="drainDialogVisible" title="排空节点" @confirm="handleConfirmDrain">
-      <p>
-        确定要排空节点 <strong>{{ currentTargetRow?.name }}</strong> 上的所有 Pod 吗？
-      </p>
-    </BeeDialog>
+    <!-- 单个封锁 Dialog -->
+    <NodeCordonDialog v-model="cordonDialogVisible" :name="selectedRow?.name ?? ''" @confirm="handleConfirmCordon" />
+
+    <!-- 单个解封 Dialog -->
+    <NodeUncordonDialog
+      v-model="uncordonDialogVisible"
+      :name="selectedRow?.name ?? ''"
+      @confirm="handleConfirmUncordon"
+    />
+
+    <!-- 单个排空 Dialog -->
+    <NodeDrainDialog v-model="drainDialogVisible" :name="selectedRow?.name ?? ''" @confirm="handleConfirmDrain" />
   </BeePage>
 </template>
 
 <script setup lang="ts">
-/**
- * Node 管理页面
- * @module views/kubernetes/node
- */
 import { computed, onMounted, reactive, ref } from 'vue'
 
 import { useRoute, useRouter } from 'vue-router'
@@ -151,8 +135,6 @@ import BeeButton from '@/components/base/BeeButton/index.vue'
 import BeeInputSearch from '@/components/base/BeeInputSearch/index.vue'
 import { BeeMessage } from '@/components/base/BeeMessage'
 import BeeSelect from '@/components/base/BeeSelect/index.vue'
-import BeeDialog from '@/components/BeeDialog/index.vue'
-import BeeNodeInfoCell from '@/components/BeeNodeInfoCell/index.vue'
 import BeePagination from '@/components/BeePagination/index.vue'
 import BeeResourceUsageCell from '@/components/BeeResourceUsageCell/index.vue'
 import BeeTableColumn from '@/components/BeeTable/BeeTableColumn.vue'
@@ -169,9 +151,14 @@ import { usePermission } from '@/composables/usePermission'
 import { NODE_PAGE_META, NODE_STATUS_OPTIONS } from '@/config/kubernetes/node'
 import { calcPercentage, toBytesOfQuantity, toMillicoresOfQuantity } from '@/utils'
 
+import NodeCordonDialog from './components/NodeCordonDialog.vue'
+import NodeDrainDialog from './components/NodeDrainDialog.vue'
+import NodeInfoCell from './components/NodeInfoCell.vue'
+import NodeUncordonDialog from './components/NodeUncordonDialog.vue'
+
 defineOptions({ name: 'NodePage' })
 
-// ==================== Composables & Route ====================
+// ==================== Composables & Route & Store ====================
 const { hasPermission } = usePermission()
 const route = useRoute()
 const router = useRouter()
@@ -179,18 +166,19 @@ const kubernetesStore = useKubernetesStore()
 const clusterUid = computed(() => (route.params.clusterUid as string) || kubernetesStore.activeClusterUid || '')
 
 // ==================== Reactive State ====================
-// --- 表格数据
-const loading = ref(false)
-const tableData = ref<NodeListVo[]>([])
 // --- 查询条件
 const searchKey = ref('')
 const queryForm = reactive<Partial<NodeQueryForm>>({})
 const pagination = reactive({ page: 1, pageSize: 10, total: 0 })
+// --- 表格数据
+const loading = ref(false)
+const tableData = ref<NodeListVo[]>([])
+// --- 选中数据
+const selectedRow = ref<NodeListVo>()
 // --- 对话框
 const cordonDialogVisible = ref(false)
 const uncordonDialogVisible = ref(false)
 const drainDialogVisible = ref(false)
-const currentTargetRow = ref<NodeListVo>()
 
 // ==================== Data Loading ====================
 /**
@@ -290,7 +278,7 @@ function handleTopology(row: NodeListVo) {
  * @param row
  */
 function handleCordon(row: NodeListVo) {
-  currentTargetRow.value = row
+  selectedRow.value = row
   cordonDialogVisible.value = true
 }
 
@@ -299,7 +287,7 @@ function handleCordon(row: NodeListVo) {
  * @param row
  */
 function handleUncordon(row: NodeListVo) {
-  currentTargetRow.value = row
+  selectedRow.value = row
   uncordonDialogVisible.value = true
 }
 
@@ -308,7 +296,7 @@ function handleUncordon(row: NodeListVo) {
  * @param row
  */
 function handleDrain(row: NodeListVo) {
-  currentTargetRow.value = row
+  selectedRow.value = row
   drainDialogVisible.value = true
 }
 
@@ -323,11 +311,11 @@ function handleExport() {
  * 封锁节点确认
  */
 async function handleConfirmCordon() {
-  if (!currentTargetRow.value) return
-  await cordonNode(clusterUid.value, currentTargetRow.value.uid, { cordon: true })
+  if (!selectedRow.value) return
+  await cordonNode(clusterUid.value, selectedRow.value.uid, { cordon: true })
   BeeMessage.success('封锁节点完成')
   cordonDialogVisible.value = false
-  currentTargetRow.value = undefined
+  selectedRow.value = undefined
   void loadData()
 }
 
@@ -335,11 +323,11 @@ async function handleConfirmCordon() {
  * 解封节点确认
  */
 async function handleConfirmUncordon() {
-  if (!currentTargetRow.value) return
-  await cordonNode(clusterUid.value, currentTargetRow.value.name, { cordon: false })
+  if (!selectedRow.value) return
+  await cordonNode(clusterUid.value, selectedRow.value.name, { cordon: false })
   BeeMessage.success('解封节点完成')
   uncordonDialogVisible.value = false
-  currentTargetRow.value = undefined
+  selectedRow.value = undefined
   void loadData()
 }
 
@@ -347,11 +335,11 @@ async function handleConfirmUncordon() {
  * 排空节点确认
  */
 async function handleConfirmDrain() {
-  if (!currentTargetRow.value) return
-  await drainNode(clusterUid.value, currentTargetRow.value.uid)
+  if (!selectedRow.value) return
+  await drainNode(clusterUid.value, selectedRow.value.uid)
   BeeMessage.success('排空节点完成')
   drainDialogVisible.value = false
-  currentTargetRow.value = undefined
+  selectedRow.value = undefined
   void loadData()
 }
 

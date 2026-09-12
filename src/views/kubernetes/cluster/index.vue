@@ -8,13 +8,11 @@
       <!-- 工具栏 -->
       <div class="page-body__toolbar">
         <BeeInputSearch v-model="searchKey" class="page-body__toolbar-search" placeholder="按 UID / 名称搜索" />
-        <BeeSelect v-model="queryForm.status" :options="CLUSTER_STATUS_OPTIONS" placeholder="状态筛选" :width="120" />
+        <BeeSelect v-model="queryForm.status" :options="CLUSTER_STATUS_OPTIONS" placeholder="状态筛选" />
         <BeeButton icon="basic-search" @click="handleSearch"> 搜索 </BeeButton>
         <BeeButton icon="basic-refresh" @click="handleReset"> 重置 </BeeButton>
         <div v-if="perm.create" class="page-body__toolbar-separator"></div>
-        <BeeButton v-if="perm.create" icon="kubernetes-register" type="primary" @click="handleRegister">
-          纳管
-        </BeeButton>
+        <BeeButton v-if="perm.create" icon="kubernetes-register" type="primary" @click="handleRegister">纳管</BeeButton>
       </div>
 
       <!-- 表格 -->
@@ -67,9 +65,9 @@
       <!-- 底部 -->
       <div class="page-body__footer">
         <div class="page-body__footer-actions">
-          <BeeButton :disabled="selectedRows.length === 0" icon="basic-clear" @click="handleClearSelection">
-            清空
-          </BeeButton>
+          <BeeButton :disabled="selectedRows.length === 0" icon="basic-clear" @click="handleClearSelection"
+            >清空</BeeButton
+          >
           <BeeButton
             v-if="perm.delete"
             :disabled="selectedRows.length === 0"
@@ -94,7 +92,7 @@
     <!-- 单个删除 Dialog -->
     <ClusterDeleteDialog
       v-model="deleteDialogVisible"
-      :cluster="currentTargetRow?.name ?? ''"
+      :cluster="selectedRow?.name ?? ''"
       @confirm="handleConfirmDelete"
     />
 
@@ -152,14 +150,14 @@ const searchKey = ref('')
 const queryForm = reactive<Partial<ClusterQueryForm>>({})
 const pagination = reactive({ page: 1, pageSize: 10, total: 0 })
 // --- 表格数据
+const tableRef = ref<InstanceType<typeof BeeTable>>()
 const loading = ref(false)
 const tableData = ref<ClusterListVo[]>([])
-const tableRef = ref<InstanceType<typeof BeeTable>>()
-// --- 选中逻辑
+// --- 选中数据
+const selectedRow = ref<ClusterListVo | null>(null)
 const selectedRows = ref<ClusterListVo[]>([])
 const deletableRows = computed(() => selectedRows.value.filter(row => row.deletable !== false))
 // --- 对话框
-const currentTargetRow = ref<ClusterListVo | null>(null)
 const deleteDialogVisible = ref(false)
 const batchDeleteDialogVisible = ref(false)
 
@@ -280,7 +278,7 @@ function handleEdit(row: ClusterListVo) {
  * @param row
  */
 function handleDelete(row: ClusterListVo) {
-  currentTargetRow.value = row
+  selectedRow.value = row
   deleteDialogVisible.value = true
 }
 
@@ -319,11 +317,11 @@ function handleClearSelection() {
  * 二次确认删除集群
  */
 async function handleConfirmDelete() {
-  if (!currentTargetRow.value) return
+  if (!selectedRow.value) return
   try {
-    await deleteCluster(currentTargetRow.value.uid)
+    await deleteCluster(selectedRow.value.uid)
     BeeMessage.success('删除成功')
-    currentTargetRow.value = null
+    selectedRow.value = null
     void loadData()
   } catch (err) {
     console.error('[handleConfirmDelete]', err)
