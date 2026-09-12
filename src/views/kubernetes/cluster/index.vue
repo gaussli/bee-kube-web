@@ -83,7 +83,7 @@
           <BeeButton v-if="perm.create" icon="basic-import" @click="handleImport"> 导入 </BeeButton>
         </div>
         <BeePagination
-          v-model="pagination.page"
+          v-model:page="pagination.page"
           v-model:page-size="pagination.pageSize"
           :total="pagination.total"
           @change="loadData"
