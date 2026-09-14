@@ -1,51 +1,51 @@
 <template>
   <div class="bee-status-cell">
-    <div class="bee-status-cell__top">
-      <span class="bee-status-cell__dot"></span>
-      <span class="bee-status-cell__label">{{ currentStatus.label }}</span>
+    <div class="content-top" :class="[typeClass]">
+      <div class="content-top__dot"></div>
+      <span class="content-top__label">{{ statusLabel }}</span>
     </div>
-    <div class="bee-status-cell__bottom">
-      <span class="bee-status-cell__label-en">{{ currentStatus.labelEn || '-' }}</span>
+    <div class="content-bottom">
+      <span class="content-bottom__label-en">{{ status }}</span>
       <BeeTooltip v-if="statusMsg" placement="right" :tooltip="statusMsg">
-        <BeeIcon class="bee-status-cell__help-icon" name="basic-help" />
+        <BeeIcon class="content-bottom__icon" name="basic-help" />
       </BeeTooltip>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { computed } from 'vue'
+import { computed, ref } from 'vue'
 
 import type { Option } from '@/config/kubernetes'
 
 import BeeIcon from '@/components/base/BeeIcon/index.vue'
 import BeeTooltip from '@/components/base/BeeTooltip/index.vue'
 
-import { COLOR_GRAY_90 } from '@/config/color'
-
 defineOptions({ name: 'BeeStatusCell' })
 
 // ==================== Props ====================
 const props = defineProps<{
-  /** 当前状态值 */
-  status?: string | number
-  /** 帮助提示信息，存在时在 labelEn 旁显示帮助图标 */
+  status: string
   statusMsg?: string
-  /** 状态配置数组 */
   options: Option[]
 }>()
 
-// ==================== Computed ====================
-/** 匹配当前 status 的状态选项，无匹配返回 '-' 占位 */
-const currentStatus = computed(
-  () => props.options.find(item => item.value === props.status) || { label: '-', color: COLOR_GRAY_90, labelEn: '-' },
-)
-/** 状态指示色，用于 dot 背景和 label 文字 */
-const currentStatusColor = computed(() => currentStatus.value.color)
+// ==================== Reactive Status ====================
+const statusLabel = ref<string>(props.options.find(option => option.value === props.status)?.label || '-')
+const typeClass = computed(() => {
+  const option = props.options.find(option => option.value === props.status)
+  return option?.type && option.type != 'default' ? `bee-status-cell--${option.type}` : ''
+})
 </script>
 
 <style lang="scss" scoped>
+@use 'sass:map';
+
+$types: primary, success, warning, danger;
+
 .bee-status-cell {
+  --bee-status-cell-color: #{$color-text-primary};
+
   display: flex;
   gap: 8px;
   flex-direction: column;
@@ -54,28 +54,34 @@ const currentStatusColor = computed(() => currentStatus.value.color)
   width: 100%;
   height: auto;
 
-  &__top {
+  @each $type in $types {
+    &--#{$type} {
+      --bee-status-cell-color: #{map.get($color, $type, 'text', 'base')};
+    }
+  }
+
+  .content-top {
     display: flex;
     gap: 8px;
     flex-direction: row;
     justify-content: flex-start;
     align-items: center;
+
+    &__dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 9999px;
+      background: var(--bee-status-cell-color, #f00);
+    }
+
+    &__label {
+      font-size: 14px;
+      font-weight: bold;
+      color: var(--bee-status-cell-color);
+    }
   }
 
-  &__dot {
-    width: 10px;
-    height: 10px;
-    border-radius: 9999px;
-    background: v-bind(currentStatusColor);
-  }
-
-  &__label {
-    font-size: 14px;
-    font-weight: bold;
-    color: v-bind(currentStatusColor);
-  }
-
-  &__bottom {
+  .content-bottom {
     display: flex;
     gap: 4px;
     flex-direction: row;

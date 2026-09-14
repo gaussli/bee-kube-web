@@ -8,7 +8,7 @@
     </div>
     <div class="bee-cluster-overview-node__body">
       <div v-for="node in tableData" :key="node.name" class="bee-cluster-overview-node__item">
-        <BeeNodeInfoCell
+        <NodeInfoCell
           class="bee-cluster-overview-node__item-info"
           :description="node.description"
           :ip="node.ip"
@@ -46,9 +46,10 @@ import type { NodeListVo } from '@/types/kubernetes/node'
 import { getNodeTopN } from '@/api/kubernetes/node'
 
 import BeeIcon from '@/components/base/BeeIcon/index.vue'
-import BeeNodeInfoCell from '@/components/BeeNodeInfoCell/index.vue'
 import BeeResourceUsageCell from '@/components/BeeResourceUsageCell/index.vue'
 import BeeCard from '@/components/layout/BeeCard/index.vue'
+
+import NodeInfoCell from '@/views/kubernetes/node/components/NodeInfoCell.vue'
 
 import { calcPercentage, toBytesOfQuantity, toMillicoresOfQuantity } from '@/utils'
 

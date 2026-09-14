@@ -3,25 +3,19 @@
     <div class="bee-resource-usage-cell__top">
       <span class="bee-resource-usage-cell__value">{{ percentage }}%</span>
       <div class="bee-resource-usage-cell__track">
-        <div class="bee-resource-usage-cell__fill" :style="{ width: percentage + '%', background: usageColor }" />
+        <div class="bee-resource-usage-cell__fill" :class="[typeClass]" :style="widthStyle" />
       </div>
     </div>
-    <span class="bee-resource-usage-cell__field-name">{{ fieldName }}</span>
+    <span class="bee-resource-usage-cell__bottom">{{ fieldName }}</span>
   </div>
 </template>
 
 <script setup lang="ts">
-/**
- * 资源用量单元格组件
- * 上下结构展示资源用量百分比+进度条 和 资源名称
- * @module components/BeeResourceUsageCell
- */
 import { computed } from 'vue'
-
-import { COLOR_SUCCESS, COLOR_WARNING, COLOR_DANGER } from '@/config/color'
 
 defineOptions({ name: 'BeeResourceUsageCell' })
 
+// ==================== Prop ====================
 const props = defineProps<{
   /** 资源用量百分比 (0-100) */
   percentage: number
@@ -29,54 +23,75 @@ const props = defineProps<{
   fieldName: string
 }>()
 
-/**
- * 根据用量百分比计算进度条颜色
- * < 60%：success；>= 60% 且 < 80%：warning；>= 80%：danger
- */
-const usageColor = computed(() => {
-  if (props.percentage >= 80) return COLOR_DANGER
-  if (props.percentage >= 60) return COLOR_WARNING
-  return COLOR_SUCCESS
+// ==================== Computed ====================
+const typeClass = computed(() => {
+  if (props.percentage >= 80) return 'bee-resource-usage-cell__fill--danger'
+  if (props.percentage >= 60) return 'bee-resource-usage-cell__fill--warning'
+  return 'bee-resource-usage-cell__fill--success'
 })
+
+const widthStyle = computed(() => ({
+  width: `${props.percentage}%`,
+}))
 </script>
 
 <style lang="scss" scoped>
+@use 'sass:map';
+
 .bee-resource-usage-cell {
   display: flex;
-  gap: $spacing-8;
+  gap: 8px;
   flex-direction: column;
-  width: 120px;
+  justify-content: center;
+  align-items: flex-start;
+  width: 100%;
   height: auto;
 
   &__top {
     display: flex;
-    gap: $spacing-4;
+    gap: 4;
+    flex-direction: row;
+    justify-content: flex-start;
     align-items: center;
+    width: 100%;
+  }
+
+  &__value {
+    flex-shrink: 0;
+    width: 36px;
+    font-size: 14px;
+    color: $color-text-primary;
   }
 
   &__track {
     flex: 1;
+    width: 100%;
     height: 6px;
     border-radius: 3px;
     overflow: hidden;
-    background: $color-border-third;
+    background: $color-text-third;
   }
 
   &__fill {
     height: 100%;
     border-radius: 3px;
     transition: width 0.3s ease;
+
+    &--success {
+      background: map.get($colors-success, 'text', 'base');
+    }
+
+    &--warning {
+      background: map.get($colors-warning, 'text', 'base');
+    }
+
+    &--danger {
+      background: map.get($colors-danger, 'text', 'base');
+    }
   }
 
-  &__value {
-    flex-shrink: 0;
-    width: 36px;
-    font-size: $font-size-14;
-    color: $color-text-primary;
-  }
-
-  &__field-name {
-    font-size: $font-size-12;
+  &__bottom {
+    font-size: 12px;
     color: $color-text-third;
   }
 }

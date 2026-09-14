@@ -3,20 +3,6 @@
  * @module config/kubernetes/common
  */
 
-/**
- * 配置项
- */
-export interface Option {
-  /** 状态匹配值 */
-  value?: string | number
-  /** 状态中文标签 */
-  label: string
-  /** 状态英文标签 */
-  labelEn?: string
-  /** 状态指示色 */
-  color?: string
-}
-
 /** 资源页面元数据 */
 export interface ResourcePageMeta {
   /** 图标名称 */
@@ -25,6 +11,20 @@ export interface ResourcePageMeta {
   title: string
   /** 页面描述 */
   description: string
+}
+
+export type OptionType = 'default' | 'primary' | 'success' | 'warning' | 'danger'
+
+/**
+ * 配置项
+ */
+export interface Option {
+  /** 状态匹配值 */
+  value?: string | number
+  /** 状态中文标签 */
+  label: string
+  /** 选项类型 */
+  type?: OptionType
 }
 
 /** 证书即将过期告警阈值（天） */

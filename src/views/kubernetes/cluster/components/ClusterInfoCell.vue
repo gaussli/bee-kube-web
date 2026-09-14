@@ -61,7 +61,7 @@ async function handleCopy() {
 
   &__icon {
     font-size: 48px;
-    color: var(--bee-row-selected-icon-color, $color-text-secondary);
+    color: var(--bee-row-selected-icon-color, $color-text-primary);
   }
 
   &__content {
