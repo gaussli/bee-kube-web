@@ -11,17 +11,17 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue'
 
+import type { BeeType } from '@/config'
+
 import BeeIcon from '@/components/base/BeeIcon/index.vue'
 
 defineOptions({ name: 'BeeIconButton' })
-
-export type BeeIconButtonType = 'default' | 'primary' | 'success' | 'warning' | 'danger'
 
 // ==================== Prop & Emit ====================
 const props = withDefaults(
   defineProps<{
     /** 按钮类型 */
-    type?: BeeIconButtonType
+    type?: BeeType
     /** 按钮尺寸 */
     size?: 'default' | 'small' | 'large'
     /** 禁用标记 */

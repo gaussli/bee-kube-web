@@ -51,15 +51,23 @@
       <!-- 底栏 -->
       <div class="page-body__footer">
         <div class="page-body__footer-actions">
-          <BeeButton :disabled="selectedRows.length === 0" @click="handleClearSelection"> 取消选择 </BeeButton>
-          <BeeButton v-if="perm.delete" :disabled="selectedRows.length === 0" type="danger" @click="handleBatchDelete">
-            批量删除 ({{ selectedRows.length }})
+          <BeeButton :disabled="selectedRows.length === 0" icon="basic-clear" @click="handleClearSelection">
+            清空
           </BeeButton>
-          <BeeButton v-if="perm.view" icon="basic-create" @click="handleExport"> 导出 </BeeButton>
-          <BeeButton v-if="perm.create" icon="basic-create" @click="handleImport"> 导入 </BeeButton>
+          <BeeButton
+            v-if="perm.delete"
+            :disabled="selectedRows.length === 0"
+            icon="basic-delete"
+            type="danger"
+            @click="handleBatchDelete"
+          >
+            删除 ({{ selectedRows.length }})
+          </BeeButton>
+          <BeeButton v-if="perm.view" icon="basic-export" @click="handleExport"> 导出 </BeeButton>
+          <BeeButton v-if="perm.create" icon="basic-import" @click="handleImport"> 导入 </BeeButton>
         </div>
         <BeePagination
-          v-model="pagination.page"
+          v-model:page="pagination.page"
           v-model:page-size="pagination.pageSize"
           :total="pagination.total"
           @change="loadData"
@@ -68,17 +76,12 @@
     </BeeCard>
 
     <!-- 单个删除 Dialog -->
-    <BeeDialog v-model="deleteDialogVisible" title="确认删除" @confirm="handleConfirmDelete">
-      <div class="dialog-content">
-        <p>
-          确定要删除命名空间 <strong>{{ currentTargetRow?.name }}</strong> 吗？
-        </p>
-        <p class="warning-text">删除命名空间将同时删除该命名空间下的所有资源！</p>
-      </div>
+    <BeeDialog v-model="deleteDialogVisible" icon="basic-delete" title="删除命名空间" @confirm="handleConfirmDelete">
+      <span>您确认要删除 “{{ currentTargetRow?.name || '' }}” 命名空间吗？</span>
     </BeeDialog>
 
     <!-- 批量删除 Dialog -->
-    <BeeDialog v-model="batchDeleteDialogVisible" title="确认删除" @confirm="handleConfirmBatchDelete">
+    <!-- <BeeDialog v-model="batchDeleteDialogVisible" title="确认删除" @confirm="handleConfirmBatchDelete">
       <div class="dialog-content">
         <p>
           确定要删除选中的 <strong>{{ deletableRows.length }}</strong> 个命名空间吗？
@@ -93,7 +96,7 @@
         </p>
         <p class="warning-text">删除命名空间将同时删除该命名空间下的所有资源！</p>
       </div>
-    </BeeDialog>
+    </BeeDialog> -->
   </BeePage>
 </template>
 
@@ -107,15 +110,14 @@ import type { NamespaceListVo, NamespaceQueryForm } from '@/types/kubernetes/nam
 import { getNamespaceList, deleteNamespace, deleteNamespaces } from '@/api/kubernetes/namespace/namespace'
 
 import BeeButton from '@/components/base/BeeButton/index.vue'
+import BeeDialog from '@/components/base/BeeDialog/index.vue'
 import BeeInputSearch from '@/components/base/BeeInputSearch/index.vue'
 import { BeeMessage } from '@/components/base/BeeMessage'
 import BeeSelect from '@/components/base/BeeSelect/index.vue'
-import BeeDialog from '@/components/BeeDialog/index.vue'
 import BeeNamespaceInfoCell from '@/components/BeeNamespaceInfoCell/index.vue'
 import BeePagination from '@/components/BeePagination/index.vue'
 import BeeTableColumn from '@/components/BeeTable/BeeTableColumn.vue'
 import BeeTable from '@/components/BeeTable/index.vue'
-import BeeTag from '@/components/BeeTag/index.vue'
 import BeeAuditCell from '@/components/business/BeeAuditCell/index.vue'
 import BeePageHeader from '@/components/business/BeePageHeader/index.vue'
 import BeeStatusCell from '@/components/business/BeeStatusCell/index.vue'

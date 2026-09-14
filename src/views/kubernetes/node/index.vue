@@ -1,3 +1,11 @@
+<!--
+  NodePage 节点管理列表页
+
+  展示集群下所有节点的运行状态与资源占用（CPU / 内存 / Pod 数），支持按 UID / 名称 / IP 搜索、
+  按状态筛选，并提供详情查看、标签 / 注解 / 拓扑配置，以及调度控制（封锁 / 解封 / 排空）。
+
+  集群 UID 取自路由参数 `clusterUid`，缺失时回退到 Pinia 中的激活集群；两者都为空时不发起列表请求。
+-->
 <template>
   <BeePage>
     <!-- 页面 Header -->
@@ -21,6 +29,7 @@
       <!-- 表格 -->
       <div class="page-body__table">
         <BeeTable :data="tableData" :loading="loading">
+          <!-- 节点信息列：图标 + UID / IP / 名称（可复制）/ 描述 -->
           <BeeTableColumn :width="500">
             <template #default="{ row }">
               <NodeInfoCell
@@ -83,6 +92,7 @@
               <BeeAuditCell :datetime="row.updateAt" field-name="更新人 / 时间" :username="row.updateBy" />
             </template>
           </BeeTableColumn>
+          <!-- 操作列：依据权限与节点是否被封锁动态生成操作项 -->
           <BeeTableColumn fixed="right" :width="136">
             <template #default="{ row }">
               <BeeActionCell :actions="getActions(row)" />
@@ -106,21 +116,52 @@
     </BeeCard>
 
     <!-- 单个封锁 Dialog -->
-    <NodeCordonDialog v-model="cordonDialogVisible" :name="selectedRow?.name ?? ''" @confirm="handleConfirmCordon" />
+    <BeeDialog
+      v-model="cordonDialogVisible"
+      icon="kubernetes-cordon"
+      title="封锁节点"
+      type="primary"
+      @confirm="handleConfirmCordon"
+    >
+      <span>
+        您确认要将节点 <strong>{{ selectedRow?.name || '' }}</strong> 标记为不可调度（封锁）吗？
+      </span>
+    </BeeDialog>
 
     <!-- 单个解封 Dialog -->
-    <NodeUncordonDialog
+    <BeeDialog
       v-model="uncordonDialogVisible"
-      :name="selectedRow?.name ?? ''"
+      icon="kubernetes-uncordon"
+      title="解封节点"
+      type="primary"
       @confirm="handleConfirmUncordon"
-    />
+    >
+      <span>
+        您确认要将节点 <strong>{{ selectedRow?.name || '' }}</strong> 标记为可调度（解封）吗？
+      </span>
+    </BeeDialog>
 
     <!-- 单个排空 Dialog -->
-    <NodeDrainDialog v-model="drainDialogVisible" :name="selectedRow?.name ?? ''" @confirm="handleConfirmDrain" />
+    <BeeDialog
+      v-model="drainDialogVisible"
+      icon="kubernetes-drain"
+      title="排空节点"
+      type="primary"
+      @confirm="handleConfirmDrain"
+    >
+      <span>
+        您确认要排空节点 <strong>{{ selectedRow?.name || '' }}</strong> 上的所有 Pod 吗？
+      </span>
+    </BeeDialog>
   </BeePage>
 </template>
 
 <script setup lang="ts">
+/**
+ * NodePage 节点管理列表页
+ * @module views/kubernetes/node
+ * @description 列表页容器：负责筛选、分页、行操作及调度控制弹窗，列表数据来自 getNodeList
+ */
 import { computed, onMounted, reactive, ref } from 'vue'
 
 import { useRoute, useRouter } from 'vue-router'
@@ -132,6 +173,7 @@ import { cordonNode, drainNode, getNodeList } from '@/api/kubernetes/node'
 import { useKubernetesStore } from '@/stores/kubernetes'
 
 import BeeButton from '@/components/base/BeeButton/index.vue'
+import BeeDialog from '@/components/base/BeeDialog/index.vue'
 import BeeInputSearch from '@/components/base/BeeInputSearch/index.vue'
 import { BeeMessage } from '@/components/base/BeeMessage'
 import BeeSelect from '@/components/base/BeeSelect/index.vue'
@@ -151,10 +193,7 @@ import { usePermission } from '@/composables/usePermission'
 import { NODE_PAGE_META, NODE_STATUS_OPTIONS } from '@/config/kubernetes/node'
 import { calcPercentage, toBytesOfQuantity, toMillicoresOfQuantity } from '@/utils'
 
-import NodeCordonDialog from './components/NodeCordonDialog.vue'
-import NodeDrainDialog from './components/NodeDrainDialog.vue'
 import NodeInfoCell from './components/NodeInfoCell.vue'
-import NodeUncordonDialog from './components/NodeUncordonDialog.vue'
 
 defineOptions({ name: 'NodePage' })
 
@@ -163,21 +202,31 @@ const { hasPermission } = usePermission()
 const route = useRoute()
 const router = useRouter()
 const kubernetesStore = useKubernetesStore()
+/** 当前集群 UID：优先取路由参数，回退到 Pinia 中的激活集群 */
 const clusterUid = computed(() => (route.params.clusterUid as string) || kubernetesStore.activeClusterUid || '')
 
 // ==================== Reactive State ====================
 // --- 查询条件
+/** 搜索关键词，提交时同时映射到 uid / name / ip 三个查询字段 */
 const searchKey = ref('')
+/** 除搜索外的筛选条件（如状态） */
 const queryForm = reactive<Partial<NodeQueryForm>>({})
+/** 分页参数，与 BeePagination 双向绑定 */
 const pagination = reactive({ page: 1, pageSize: 10, total: 0 })
 // --- 表格数据
+/** 列表加载态 */
 const loading = ref(false)
+/** 列表数据 */
 const tableData = ref<NodeListVo[]>([])
 // --- 选中数据
+/** 当前操作的行数据，供三个调度弹窗取值 */
 const selectedRow = ref<NodeListVo>()
 // --- 对话框
+/** 封锁弹窗显隐 */
 const cordonDialogVisible = ref(false)
+/** 解封弹窗显隐 */
 const uncordonDialogVisible = ref(false)
+/** 排空弹窗显隐 */
 const drainDialogVisible = ref(false)
 
 // ==================== Data Loading ====================
@@ -207,7 +256,7 @@ async function loadData() {
 // ==================== Search & Reset ====================
 /**
  * 搜索
- * @remarks 将 searchKey 同时映射到 id/name 字段进行搜索匹配，并重置页码
+ * @remarks 将 searchKey 同时映射到 uid / name / ip 三个查询字段，并重置页码
  */
 function handleSearch() {
   queryForm.uid = searchKey.value || undefined
@@ -232,10 +281,11 @@ function handleReset() {
   void loadData()
 }
 
-// ==================== 页面操作 ====================
+// ==================== Handlers ====================
 /**
  * 查看详情
- * @param row
+ * @remarks 跳转到节点详情页
+ * @param row - 当前行数据
  */
 function handleViewDetail(row: NodeListVo) {
   router
@@ -245,7 +295,8 @@ function handleViewDetail(row: NodeListVo) {
 
 /**
  * 配置节点标签
- * @param row
+ * @remarks 跳转到标签配置页
+ * @param row - 当前行数据
  */
 function handleLabel(row: NodeListVo) {
   router
@@ -255,7 +306,8 @@ function handleLabel(row: NodeListVo) {
 
 /**
  * 配置节点注解
- * @param row
+ * @remarks 跳转到注解配置页
+ * @param row - 当前行数据
  */
 function handleAnnotation(row: NodeListVo) {
   router
@@ -265,7 +317,8 @@ function handleAnnotation(row: NodeListVo) {
 
 /**
  * 配置节点拓扑
- * @param row
+ * @remarks 跳转到拓扑配置页
+ * @param row - 当前行数据
  */
 function handleTopology(row: NodeListVo) {
   router
@@ -275,7 +328,7 @@ function handleTopology(row: NodeListVo) {
 
 /**
  * 封锁节点
- * @param row
+ * @param row - 当前行数据
  */
 function handleCordon(row: NodeListVo) {
   selectedRow.value = row
@@ -284,7 +337,7 @@ function handleCordon(row: NodeListVo) {
 
 /**
  * 解封节点
- * @param row
+ * @param row - 当前行数据
  */
 function handleUncordon(row: NodeListVo) {
   selectedRow.value = row
@@ -293,7 +346,7 @@ function handleUncordon(row: NodeListVo) {
 
 /**
  * 排空节点
- * @param row
+ * @param row - 当前行数据
  */
 function handleDrain(row: NodeListVo) {
   selectedRow.value = row
@@ -390,22 +443,22 @@ onMounted(() => {
 <style lang="scss" scoped>
 .page-body {
   display: flex;
-  gap: $spacing-16;
+  gap: 16px;
   flex-direction: column;
   flex: 1;
   min-height: 0;
-  padding: $spacing-16;
+  padding: 16px;
   overflow: hidden;
 
   &__toolbar {
     display: flex;
-    gap: $spacing-8;
-    flex-direction: row;
+    gap: 8px;
+    flex-flow: row wrap;
     align-items: center;
 
     &-search {
       flex: 1;
-      min-width: 0;
+      min-width: 100px;
     }
   }
 
@@ -416,14 +469,15 @@ onMounted(() => {
 
   &__footer {
     display: flex;
-    flex-direction: row;
+    gap: 8px;
+    flex-flow: row wrap;
     justify-content: space-between;
     align-items: center;
 
     &-actions {
       display: flex;
-      gap: $spacing-8;
-      flex-direction: row;
+      gap: 8px;
+      flex-flow: row wrap;
       align-items: center;
     }
   }

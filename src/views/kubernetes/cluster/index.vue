@@ -1,3 +1,11 @@
+<!--
+  ClusterPage 集群管理列表页
+
+  展示平台纳管的所有 Kubernetes 集群（名称 / API Server / 状态 / 版本 / 审计信息），支持按 UID / 名称搜索、
+  按状态筛选，并提供纳管、编辑、切换集群与删除（单个 / 批量）操作。
+
+  进入页面时若 Pinia 中已存在激活集群，则直接跳转集群概览而不加载列表；行数据 `deletable` 为 false 的集群不可删除。
+-->
 <template>
   <BeePage>
     <!-- 页面 Header -->
@@ -24,11 +32,13 @@
           selectable
           @selection-change="handleSelectionChange"
         >
+          <!-- 集群信息列：图标 + UID + 名称（可复制）+ 描述 -->
           <BeeTableColumn :width="500">
             <template #default="{ row }">
               <BeeClusterInfoCell :description="row.description" :name="row.name" :uid="row.uid" />
             </template>
           </BeeTableColumn>
+          <!-- API Server 地址列 -->
           <BeeTableColumn :min-width="200">
             <template #default="{ row }">
               <BeeTableCommonCell :label="row.apiServer" sublabel="API Server" />
@@ -54,6 +64,7 @@
               <BeeAuditCell :datetime="row.updateAt" field-name="更新人 / 时间" :username="row.updateBy" />
             </template>
           </BeeTableColumn>
+          <!-- 操作列：依据权限与集群是否可删除动态生成操作项 -->
           <BeeTableColumn fixed="right" :width="136">
             <template #default="{ row }">
               <BeeActionCell :actions="getActions(row)" />
@@ -62,12 +73,12 @@
         </BeeTable>
       </div>
 
-      <!-- 底部 -->
+      <!-- 底栏 -->
       <div class="page-body__footer">
         <div class="page-body__footer-actions">
-          <BeeButton :disabled="selectedRows.length === 0" icon="basic-clear" @click="handleClearSelection"
-            >清空</BeeButton
-          >
+          <BeeButton :disabled="selectedRows.length === 0" icon="basic-clear" @click="handleClearSelection">
+            清空
+          </BeeButton>
           <BeeButton
             v-if="perm.delete"
             :disabled="selectedRows.length === 0"
@@ -90,22 +101,39 @@
     </BeeCard>
 
     <!-- 单个删除 Dialog -->
-    <ClusterDeleteDialog
+
+    <BeeDialog
       v-model="deleteDialogVisible"
-      :cluster="selectedRow?.name ?? ''"
+      icon="basic-delete"
+      title="删除集群"
+      type="danger"
       @confirm="handleConfirmDelete"
-    />
+    >
+      <span>
+        您确认要删除 <strong>{{ selectedRow?.name || '' }}</strong> 集群吗？
+      </span>
+    </BeeDialog>
 
     <!-- 批量删除 Dialog -->
-    <ClusterBatchDeleteDialog
+
+    <BeeDialog
       v-model="batchDeleteDialogVisible"
-      :delete-data="selectedRows"
+      icon="basic-delete"
+      title="批量删除集群"
+      type="danger"
       @confirm="handleConfirmBatchDelete"
-    />
+    >
+      <BeeBatchDeleteDialogContent :delete-data="selectedRows" resource-type="集群" />
+    </BeeDialog>
   </BeePage>
 </template>
 
 <script setup lang="ts">
+/**
+ * ClusterPage 集群管理列表页
+ * @module views/kubernetes/cluster
+ * @description 列表页容器：负责筛选、分页、行操作与纳管 / 删除弹窗，列表数据来自 getClusterList
+ */
 import { computed, onMounted, reactive, ref } from 'vue'
 
 import { useRouter } from 'vue-router'
@@ -115,6 +143,7 @@ import type { ClusterListVo, ClusterQueryForm } from '@/types/kubernetes/cluster
 import { getClusterList, deleteCluster, deleteClusters } from '@/api/kubernetes/cluster'
 
 import BeeButton from '@/components/base/BeeButton/index.vue'
+import BeeDialog from '@/components/base/BeeDialog/index.vue'
 import BeeInputSearch from '@/components/base/BeeInputSearch/index.vue'
 import { BeeMessage } from '@/components/base/BeeMessage'
 import BeeSelect from '@/components/base/BeeSelect/index.vue'
@@ -124,6 +153,7 @@ import BeeTableCommonCell from '@/components/BeeTable/BeeTableCommonCell.vue'
 import BeeTable from '@/components/BeeTable/index.vue'
 import BeeActionCell, { type ActionItem } from '@/components/business/BeeActionCell/index.vue'
 import BeeAuditCell from '@/components/business/BeeAuditCell/index.vue'
+import BeeBatchDeleteDialogContent from '@/components/business/BeeDialogContent/BeeBatchDeleteDialogContent.vue'
 import BeePageHeader from '@/components/business/BeePageHeader/index.vue'
 import BeeStatusCell from '@/components/business/BeeStatusCell/index.vue'
 import BeeCard from '@/components/layout/BeeCard/index.vue'
@@ -133,8 +163,6 @@ import { usePermission } from '@/composables/usePermission'
 import { CLUSTER_PAGE_META, CLUSTER_STATUS_OPTIONS } from '@/config/kubernetes/cluster'
 import { useKubernetesStore } from '@/stores'
 
-import ClusterBatchDeleteDialog from './components/ClusterBatchDeleteDialog.vue'
-import ClusterDeleteDialog from './components/ClusterDeleteDialog.vue'
 import BeeClusterInfoCell from './components/ClusterInfoCell.vue'
 
 defineOptions({ name: 'ClusterPage' })
@@ -146,19 +174,30 @@ const kubernetesStore = useKubernetesStore()
 
 // ==================== Reactive State ====================
 // --- 查询条件
+/** 搜索关键词，提交时同时映射到 uid / name 两个查询字段 */
 const searchKey = ref('')
+/** 除搜索外的筛选条件（如状态） */
 const queryForm = reactive<Partial<ClusterQueryForm>>({})
+/** 分页参数，与 BeePagination 双向绑定 */
 const pagination = reactive({ page: 1, pageSize: 10, total: 0 })
 // --- 表格数据
+/** BeeTable 实例引用，用于批量操作后清空选中 */
 const tableRef = ref<InstanceType<typeof BeeTable>>()
+/** 列表加载态 */
 const loading = ref(false)
+/** 列表数据 */
 const tableData = ref<ClusterListVo[]>([])
 // --- 选中数据
+/** 当前操作的行数据，供单个删除弹窗取值 */
 const selectedRow = ref<ClusterListVo | null>(null)
+/** 表格多选结果，用于批量删除 */
 const selectedRows = ref<ClusterListVo[]>([])
+/** 选中行中允许删除的子集（后端可用 deletable 标记禁止删除） */
 const deletableRows = computed(() => selectedRows.value.filter(row => row.deletable !== false))
 // --- 对话框
+/** 单个删除弹窗显隐 */
 const deleteDialogVisible = ref(false)
+/** 批量删除弹窗显隐 */
 const batchDeleteDialogVisible = ref(false)
 
 // ==================== Permission ====================
@@ -173,6 +212,7 @@ const perm: Record<string, boolean> = {
 // ==================== Data Loading ====================
 /**
  * 请求集群列表数据
+ * @remarks 请求失败时不向上抛出，仅在控制台记录并通过 BeeMessage 提示，同时复位加载态
  */
 async function loadData() {
   loading.value = true
@@ -218,16 +258,17 @@ function getActions(row: ClusterListVo): ActionItem[] {
 // ==================== BeeTable Handler ====================
 /**
  * 表格选中行变化
- * @param rows
+ * @param rows - 当前选中的行数组
  * @remarks BeeTable 的 selection-change 事件固定返回 Record<string, unknown>[]，需通过 unknown 桥接断言为目标类型
  */
 function handleSelectionChange(rows: Record<string, unknown>[]) {
   selectedRows.value = rows as unknown as ClusterListVo[]
 }
 
-// ==================== Handler ====================
+// ==================== Handlers ====================
 /**
  * 搜索
+ * @remarks 将 searchKey 同时映射到 uid / name 两个查询字段，并重置页码
  */
 function handleSearch() {
   queryForm.uid = searchKey.value || undefined
@@ -238,6 +279,7 @@ function handleSearch() {
 
 /**
  * 重置搜索条件
+ * @remarks 清空所有筛选字段、搜索关键词、分页参数，重新加载数据
  */
 function handleReset() {
   queryForm.uid = undefined
@@ -258,7 +300,8 @@ function handleRegister() {
 
 /**
  * 切换集群
- * @param row
+ * @remarks 写入 Pinia 激活集群后跳转集群概览
+ * @param row - 当前行数据
  */
 function handleSwitchCluster(row: ClusterListVo) {
   kubernetesStore.setActiveClusterUid(row.uid)
@@ -267,7 +310,8 @@ function handleSwitchCluster(row: ClusterListVo) {
 
 /**
  * 编辑集群
- * @param row
+ * @remarks 跳转到集群编辑页
+ * @param row - 当前行数据
  */
 function handleEdit(row: ClusterListVo) {
   router.push({ name: 'kubernetes:cluster:edit', params: { uid: row.uid } }).catch(() => {})
@@ -275,7 +319,8 @@ function handleEdit(row: ClusterListVo) {
 
 /**
  * 删除集群
- * @param row
+ * @remarks 记录当前行并打开单个删除弹窗，实际删除由弹窗确认后触发
+ * @param row - 当前行数据
  */
 function handleDelete(row: ClusterListVo) {
   selectedRow.value = row
@@ -284,6 +329,7 @@ function handleDelete(row: ClusterListVo) {
 
 /**
  * 批量删除集群
+ * @remarks 仅提交 deletableRows，若选中的集群全部不可删除则给出提示并中止
  */
 function handleBatchDelete() {
   if (deletableRows.value.length === 0) {
@@ -295,6 +341,7 @@ function handleBatchDelete() {
 
 /**
  * 导出集群
+ * @remarks 功能尚未实现，仅占位提示
  */
 function handleExport() {
   BeeMessage.info('功能开发中')
@@ -302,12 +349,13 @@ function handleExport() {
 
 /**
  * 导入集群
+ * @remarks 功能尚未实现，仅占位提示
  */
 function handleImport() {
   BeeMessage.info('功能开发中')
 }
 
-/** 取消全部选中 */
+/** 清空表格全部选中 */
 function handleClearSelection() {
   tableRef.value?.clearSelection()
 }
@@ -315,6 +363,7 @@ function handleClearSelection() {
 // ==================== Dialog Confirm ====================
 /**
  * 二次确认删除集群
+ * @remarks 弹窗关闭由 dialog 自身控制，成功后仅复位选中行并刷新列表
  */
 async function handleConfirmDelete() {
   if (!selectedRow.value) return
@@ -331,6 +380,7 @@ async function handleConfirmDelete() {
 
 /**
  * 二次确认批量删除集群
+ * @remarks 按 deletableRows 的 uid 批量提交，成功后关闭弹窗并清空表格选中态
  */
 async function handleConfirmBatchDelete() {
   if (deletableRows.value.length === 0) return
@@ -362,8 +412,6 @@ onMounted(() => {
 </script>
 
 <style lang="scss" scoped>
-@use 'sass:map';
-
 .page-body {
   display: flex;
   gap: 16px;

@@ -26,18 +26,17 @@
  */
 import { computed, ref } from 'vue'
 
+import type { BeeType } from '@/config'
+
 import BeeIcon from '@/components/base/BeeIcon/index.vue'
 
 defineOptions({ name: 'BeeButton' })
-
-/** 按钮类型：default 为默认描边样式，其余为对应语义色 */
-export type BeeButtonType = 'default' | 'primary' | 'success' | 'warning' | 'danger'
 
 // ==================== Prop & Emit ====================
 const props = withDefaults(
   defineProps<{
     /** 按钮类型 */
-    type?: BeeButtonType
+    type?: BeeType
     /** 按钮尺寸 */
     size?: 'default' | 'small' | 'large'
     /** 是否禁用 */

@@ -21,7 +21,9 @@
 </template>
 
 <script setup lang="ts">
-import BeeButton, { type BeeButtonType } from '@/components/base/BeeButton/index.vue'
+import type { BeeType } from '@/config'
+
+import BeeButton from '@/components/base/BeeButton/index.vue'
 import BeeIconButton from '@/components/base/BeeIconButton/index.vue'
 import BeeCard from '@/components/layout/BeeCard/index.vue'
 
@@ -34,7 +36,7 @@ export interface ActionItem {
   /** 按钮icon */
   icon?: string
   /** 按钮类型 */
-  type?: BeeButtonType
+  type?: BeeType
   /** 分隔线标记 */
   divided?: boolean
 }

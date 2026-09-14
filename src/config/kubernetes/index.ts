@@ -3,6 +3,8 @@
  * @module config/kubernetes/common
  */
 
+import type { BeeType } from '..'
+
 /** 资源页面元数据 */
 export interface ResourcePageMeta {
   /** 图标名称 */
@@ -13,8 +15,6 @@ export interface ResourcePageMeta {
   description: string
 }
 
-export type OptionType = 'default' | 'primary' | 'success' | 'warning' | 'danger'
-
 /**
  * 配置项
  */
@@ -24,7 +24,7 @@ export interface Option {
   /** 状态中文标签 */
   label: string
   /** 选项类型 */
-  type?: OptionType
+  type?: BeeType
 }
 
 /** 证书即将过期告警阈值（天） */

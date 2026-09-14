@@ -7,13 +7,15 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 
+import type { BeeType } from '@/config'
+
 import { useClipboard } from '@/composables/useClipboard'
 
 // ==================== Props ====================
 const props = withDefaults(
   defineProps<{
     label: string
-    type?: 'default' | 'primary' | 'success' | 'warning' | 'danger'
+    type?: BeeType
     size?: 'default' | 'tiny' | 'small' | 'large'
   }>(),
   {

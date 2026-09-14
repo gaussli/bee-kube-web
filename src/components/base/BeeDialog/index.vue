@@ -2,17 +2,19 @@
   <Teleport to="body">
     <Transition name="dialog-fade">
       <div v-if="modelValue" class="bee-dialog-mask">
-        <div class="bee-dialog">
+        <div class="bee-dialog" :class="[typeClass]">
           <div class="bee-dialog__header">
             <div class="bee-dialog__header-icon">
-              <BeeIcon name="kubernetes-cordon" :size="24" />
+              <BeeIcon :name="icon" :size="24" />
             </div>
-            <div class="bee-dialog__header-title">封锁节点</div>
+            <div class="bee-dialog__header-title">{{ title }}</div>
           </div>
-          <div class="bee-dialog__content">您确认要将节点 {{ name }} 标记为不可调度（封锁）吗？</div>
+          <div class="bee-dialog__content">
+            <slot />
+          </div>
           <div class="bee-dialog__actions">
             <BeeButton @click="handleCancel">取 消</BeeButton>
-            <BeeButton type="primary" @click="handleConfirm">确 认</BeeButton>
+            <BeeButton :type="type" @click="handleConfirm">确 认</BeeButton>
           </div>
         </div>
       </div>
@@ -21,22 +23,36 @@
 </template>
 
 <script setup lang="ts">
+import { computed } from 'vue'
+
+import type { BeeType } from '@/config'
+
 import BeeButton from '@/components/base/BeeButton/index.vue'
 import BeeIcon from '@/components/base/BeeIcon/index.vue'
 
-defineOptions({ name: 'NodeCordonDialog' })
+defineOptions({ name: 'BeeDialog' })
 
 // ==================== Prop & Emit ====================
 const modelValue = defineModel<boolean>()
 
-defineProps<{
-  name: string
-}>()
+const props = withDefaults(
+  defineProps<{
+    icon: string
+    title: string
+    type?: BeeType
+  }>(),
+  {
+    type: 'default',
+  },
+)
 
 const emit = defineEmits<{
   confirm: []
   cancel: []
 }>()
+
+// ==================== Computed ====================
+const typeClass = computed(() => (props.type != 'default' ? `bee-dialog--${props.type}` : ''))
 
 // ==================== Handler ====================
 /**
@@ -59,6 +75,8 @@ function handleConfirm() {
 <style lang="scss" scoped>
 @use 'sass:map';
 
+$types: primary, success, warning, danger;
+
 // ==================== 遮罩层 ====================
 .bee-dialog-mask {
   position: fixed;
@@ -72,7 +90,17 @@ function handleConfirm() {
 
 // ==================== 对话框容器 ====================
 .bee-dialog {
-  --bee-dialog-color-shadow: rgba(var(--bee-dialog-color-bg, $color-bg-third), 50%);
+  --bee-dialog-color-bg: #{$color-bg-third};
+  --bee-dialog-color-icon-bg: #{map.get($colors-default, 'bg', 'base')};
+  --bee-dialog-color-shadow: rgb(var(--bee-dialog-color-bg), 50%);
+  --bee-dialog-color-text: #{map.get($colors-default, 'text', 'base')};
+
+  @each $type in $types {
+    &--#{$type} {
+      --bee-dialog-color-icon-bg: #{map.get($color, $type, 'bg', 'base')};
+      --bee-dialog-color-text: #{map.get($color, $type, 'text', 'base')};
+    }
+  }
 
   filter: drop-shadow(0 0 4px var(--bee-dialog-color-shadow));
   display: flex;
@@ -81,28 +109,31 @@ function handleConfirm() {
   justify-content: center;
   align-items: center;
   width: 400px;
+  min-height: 288px;
+  max-height: 80%;
   padding: 24px;
   border-radius: 16px;
   overflow: hidden;
-  background-color: var(--bee-dialog-color-bg, $color-bg-third);
+  background-color: var(--bee-dialog-color-bg);
 
   &__header {
     display: flex;
     gap: 12px;
     flex-direction: column;
+    justify-content: flex-start;
     align-items: center;
 
     &-icon {
       padding: 16px;
-      border-radius: 1000px;
-      color: map.get($colors-primary, 'text', 'base');
-      background: map.get($colors-primary, 'bg', 'base');
+      border-radius: 9999px;
+      color: var(--bee-dialog-color-text);
+      background: var(--bee-dialog-color-icon-bg);
     }
 
     &-title {
       font-size: 16px;
       font-weight: bold;
-      color: map.get($colors-primary, 'text', 'base');
+      color: var(--bee-dialog-color-text);
       user-select: none;
     }
   }
@@ -113,7 +144,9 @@ function handleConfirm() {
     justify-content: center;
     align-items: center;
     width: 100%;
+    overflow: hidden;
     font-size: 14px;
+    font-weight: normal;
     color: $color-text-secondary;
   }
 
@@ -124,6 +157,7 @@ function handleConfirm() {
     gap: 16px;
     flex-direction: row;
     justify-content: center;
+    align-items: center;
     width: 100%;
   }
 }
