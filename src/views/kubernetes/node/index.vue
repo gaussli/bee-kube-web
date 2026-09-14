@@ -97,7 +97,7 @@
           <BeeButton v-if="perm.view" :icon="'basic-export'" @click="handleExport">导出</BeeButton>
         </div>
         <BeePagination
-          v-model="pagination.page"
+          v-model:page="pagination.page"
           v-model:page-size="pagination.pageSize"
           :total="pagination.total"
           @change="loadData"

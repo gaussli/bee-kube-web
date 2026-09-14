@@ -12,7 +12,7 @@
           <div class="bee-dialog__content">您确认要将节点 {{ name }} 标记为可调度（解封）吗？</div>
           <div class="bee-dialog__actions">
             <BeeButton @click="handleCancel">取 消</BeeButton>
-            <BeeButton type="danger" @click="handleConfirm">确 认</BeeButton>
+            <BeeButton type="primary" @click="handleConfirm">确 认</BeeButton>
           </div>
         </div>
       </div>
@@ -95,14 +95,14 @@ function handleConfirm() {
     &-icon {
       padding: 16px;
       border-radius: 1000px;
-      color: map.get($colors-danger, 'text', 'base');
-      background: map.get($colors-danger, 'bg', 'base');
+      color: map.get($colors-primary, 'text', 'base');
+      background: map.get($colors-primary, 'bg', 'base');
     }
 
     &-title {
       font-size: 16px;
       font-weight: bold;
-      color: map.get($colors-danger, 'text', 'base');
+      color: map.get($colors-primary, 'text', 'base');
       user-select: none;
     }
   }
