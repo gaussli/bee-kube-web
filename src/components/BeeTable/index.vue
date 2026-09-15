@@ -27,10 +27,7 @@
               :class="getFixedClass(col)"
               :style="getColumnStyle(col, colIndex)"
             >
-              <template v-if="col.slots.default">
-                <component :is="cellRenderer(col, row)" />
-              </template>
-              <span v-else>{{ row[col.prop] ?? '' }}</span>
+              <BeeTableCell :col="col" :row="row" />
             </div>
           </div>
         </div>
@@ -49,11 +46,12 @@
  * 支持 loading、固定列、CSS 变量定制等。
  * @module components/BeeTable
  */
-import { provide, ref } from 'vue'
+import { provide, ref, watch } from 'vue'
 
 import type { VNode } from 'vue'
 
 import BeeIcon from '@/components/base/BeeIcon/index.vue'
+import BeeTableCell from '@/components/BeeTable/BeeTableCell.vue'
 
 defineOptions({ name: 'BeeTable' })
 
@@ -121,19 +119,6 @@ function unregisterColumn(id: string) {
 
 provide('BeeTableContext', { registerColumn, unregisterColumn })
 
-// ---- 单元格渲染器 ----
-
-/**
- * 获取单元格渲染函数
- * 优先使用列的自定义插槽，否则按 prop 从行数据取值
- * @param col - 列配置
- * @param row - 行数据
- * @returns 渲染函数
- */
-function cellRenderer(col: ColumnConfig, row: Record<string, unknown>) {
-  return () => col.slots.default?.({ row }) ?? row[col.prop] ?? ''
-}
-
 // ---- 行 key ----
 
 /**
@@ -179,7 +164,7 @@ function handleRowClick(row: Record<string, unknown>, index: number) {
   emitSelectionChange()
 }
 
-/** 触发选中行变化事件 */
+/** 触发选中行变化事件：输出当前数据中处于选中状态的行 */
 function emitSelectionChange() {
   const selected = props.data.filter((row, i) => selectedRowKeys.value.has(getRowKey(row, i)))
   emit('selection-change', selected)
@@ -190,6 +175,16 @@ function clearSelection() {
   selectedRowKeys.value = new Set()
   emitSelectionChange()
 }
+
+// 数据变更（翻页/搜索/刷新）时清空选中，避免保留已不在当前页的行
+watch(
+  () => props.data,
+  () => {
+    if (selectedRowKeys.value.size > 0) {
+      clearSelection()
+    }
+  },
+)
 
 defineExpose({ clearSelection })
 

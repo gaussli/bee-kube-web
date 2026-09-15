@@ -22,6 +22,7 @@
           ref="tableRef"
           :data="tableData"
           :loading="loading"
+          row-key="uid"
           selectable
           @selection-change="handleSelectionChange"
         >
@@ -198,7 +199,6 @@ const perm: Record<string, boolean> = {
  * 请求命名空间列表数据
  */
 async function loadData() {
-  tableRef.value?.clearSelection()
   if (!clusterUid.value) {
     tableData.value = []
     return

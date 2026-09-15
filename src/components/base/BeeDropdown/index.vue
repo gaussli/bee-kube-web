@@ -1,6 +1,6 @@
 <template>
-  <!-- 触发器：click 时显示下拉框 -->
-  <div ref="triggerRef" class="bee-dropdown bee-dropdown__trigger" @click.capture="handleToggle">
+  <!-- 触发器：捕获阶段切换展开态，冒泡阶段阻断，避免误触发上层容器（如表格行选中） -->
+  <div ref="triggerRef" class="bee-dropdown bee-dropdown__trigger" @click.capture="handleToggle" @click.stop>
     <slot />
   </div>
 
