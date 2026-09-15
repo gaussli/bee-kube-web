@@ -62,7 +62,6 @@ const props = withDefaults(
 // ==================== Handler ====================
 /**
  * 复制节点名称到剪贴板
- * @remarks 复制结果由 useClipboard 内部统一通过 BeeMessage 提示，调用方无需处理
  */
 async function handleCopy() {
   await useClipboard().copy(props.name)

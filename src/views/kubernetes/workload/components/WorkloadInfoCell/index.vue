@@ -1,11 +1,11 @@
 <template>
-  <div class="namespace-info-cell">
-    <!-- 左部分：命名空间图标 -->
-    <div class="namespace-info-cell__icon">
-      <BeeIcon :name="NAMESPACE_PAGE_META.icon" />
+  <div class="workload-info-cell">
+    <!-- 左部分：工作负载图标 -->
+    <div class="workload-info-cell__icon">
+      <BeeIcon :name="icon" />
     </div>
-    <!-- 右部分：命名空间基础信息（UID、名称、描述） -->
-    <div class="namespace-info-cell__content">
+    <!-- 右部分：工作负载基础信息（UID、名称、描述） -->
+    <div class="workload-info-cell__content">
       <div class="content-top">
         <BeeTooltip :tooltip="uid">
           <BeeCapsule label="UID" size="tiny" />
@@ -28,18 +28,19 @@ import BeeTooltip from '@/components/base/BeeTooltip/index.vue'
 import BeeEllipsisTooltipLabel from '@/components/business/BeeEllipsisTooltipLabel/index.vue'
 
 import { useClipboard } from '@/composables/useClipboard'
-import { NAMESPACE_PAGE_META } from '@/config/kubernetes/namespace'
 
-defineOptions({ name: 'NamespaceInfoCell' })
+defineOptions({ name: 'WorkloadInfoCell' })
 
 // ==================== Prop ====================
 const props = withDefaults(
   defineProps<{
-    /** 命名空间 UID */
+    /** 工作负载图标 */
+    icon: string
+    /** 工作负载 UID */
     uid: string
-    /** 命名空间名称 */
+    /** 工作负载名称 */
     name: string
-    /** 命名空间描述 */
+    /** 工作负载描述 */
     description?: string
   }>(),
   {
@@ -49,7 +50,7 @@ const props = withDefaults(
 
 // ==================== Handler ====================
 /**
- * 复制命名空间名称到剪贴板
+ * 复制工作负载名称到剪贴板
  */
 async function handleCopy() {
   await useClipboard().copy(props.name)
@@ -57,7 +58,7 @@ async function handleCopy() {
 </script>
 
 <style lang="scss" scoped>
-.namespace-info-cell {
+.workload-info-cell {
   display: flex;
   gap: 8px;
   flex-direction: row;

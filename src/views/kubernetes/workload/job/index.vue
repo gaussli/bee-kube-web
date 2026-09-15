@@ -18,7 +18,7 @@
         <BeeSelect v-model="queryForm.status" :menu-height="300" :options="JOB_STATUS_OPTIONS" placeholder="状态筛选" />
         <BeeButton icon="basic-search" @click="handleSearch"> 搜索 </BeeButton>
         <BeeButton icon="basic-refresh" @click="handleReset"> 重置 </BeeButton>
-        <div v-if="perm.create" class="page-body__toolbar-seperator"></div>
+        <div v-if="perm.create" class="page-body__toolbar-separator"></div>
         <BeeButton v-if="perm.create" icon="basic-create" type="primary" @click="handleCreate"> 新增 </BeeButton>
         <BeeButton v-if="perm.create" icon="basic-create" type="primary" @click="handleCreateYaml"> YAML </BeeButton>
       </div>
@@ -34,12 +34,7 @@
         >
           <BeeTableColumn :width="500">
             <template #default="{ row }">
-              <BeeWorkloadInfoCell
-                :description="row.description"
-                icon="kubernetes-job"
-                :name="row.name"
-                :uid="row.uid"
-              />
+              <WorkloadInfoCell :description="row.description" icon="kubernetes-job" :name="row.name" :uid="row.uid" />
             </template>
           </BeeTableColumn>
           <BeeTableColumn :width="200">
@@ -160,13 +155,14 @@ import BeeTableColumn from '@/components/BeeTable/BeeTableColumn.vue'
 import BeeTableCommonCell from '@/components/BeeTable/BeeTableCommonCell.vue'
 import BeeTable from '@/components/BeeTable/index.vue'
 import BeeTag from '@/components/BeeTag/index.vue'
-import BeeWorkloadInfoCell from '@/components/BeeWorkloadInfoCell/index.vue'
 import BeeActionCell, { type ActionItem } from '@/components/business/BeeActionCell/index.vue'
 import BeeAuditCell from '@/components/business/BeeAuditCell/index.vue'
 import BeePageHeader from '@/components/business/BeePageHeader/index.vue'
 import BeeStatusCell from '@/components/business/BeeStatusCell/index.vue'
 import BeeCard from '@/components/layout/BeeCard/index.vue'
 import BeePage from '@/components/layout/BeePage/index.vue'
+
+import WorkloadInfoCell from '@/views/kubernetes/workload/components/WorkloadInfoCell/index.vue'
 
 import { usePermission } from '@/composables/usePermission'
 import { JOB_PAGE_META, JOB_STATUS_OPTIONS } from '@/config/kubernetes/workload'
@@ -502,7 +498,7 @@ onMounted(() => {
       min-width: 0;
     }
 
-    &-seperator {
+    &-separator {
       width: 1px;
       height: 40%;
       margin: 0 $spacing-8;

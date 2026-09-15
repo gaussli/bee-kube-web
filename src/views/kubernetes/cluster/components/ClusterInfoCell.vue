@@ -46,6 +46,9 @@ const props = withDefaults(
 )
 
 // ==================== Handler ====================
+/**
+ * 复制集群名称到剪贴板
+ */
 async function handleCopy() {
   await useClipboard().copy(props.name)
 }

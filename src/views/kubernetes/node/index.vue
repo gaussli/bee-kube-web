@@ -182,7 +182,7 @@ import NodeInfoCell from './components/NodeInfoCell.vue'
 
 defineOptions({ name: 'NodePage' })
 
-// ==================== Composables & Route & Store ====================
+// ==================== Composables & Route ====================
 const { hasPermission } = usePermission()
 const route = useRoute()
 const router = useRouter()

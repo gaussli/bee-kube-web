@@ -148,7 +148,7 @@ import NamespaceInfoCell from './components/NamespaceInfoCell/index.vue'
 
 defineOptions({ name: 'NamespacePage' })
 
-// ==================== Composables & Route & Store ====================
+// ==================== Composables & Route ====================
 const { hasPermission } = usePermission()
 const route = useRoute()
 const router = useRouter()
@@ -304,7 +304,6 @@ function handleCreate() {
 
 /**
  * 创建命名空间（YAML）
- * @remarks 功能开发中，路由尚未实现
  */
 function handleCreateYaml() {
   router
@@ -415,7 +414,9 @@ function handleImport() {
   BeeMessage.info('功能开发中')
 }
 
-/** 清空选中数据 */
+/**
+ * 清空选中数据
+ */
 function handleClearSelection() {
   tableRef.value?.clearSelection()
 }
