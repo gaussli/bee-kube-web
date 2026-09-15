@@ -244,12 +244,12 @@ $bee-select-menu-color-bg: rgb(40 40 40);
 
 .bee-select__menu {
   --bee-select-menu-color-bg: #{$bee-select-menu-color-bg};
-  --bee-select-menu-padding-y: 12px;
+  --bee-select-menu-padding: 12px;
 
   filter: drop-shadow(0 0 4px rgba($bee-select-menu-color-bg, 50%));
   position: relative;
   z-index: 1000;
-  padding: var(--bee-select-menu-padding-y);
+  padding: var(--bee-select-menu-padding);
   background: transparent;
 
   .bee-select__arrow {

@@ -187,12 +187,12 @@ $bee-dropdown-menu-color-bg: rgb(40 40 40);
 
 .bee-dropdown__menu {
   --bee-dropdown-menu-color-bg: #{$bee-dropdown-menu-color-bg};
-  --bee-dropdown-menu-padding-y: 12px;
+  --bee-dropdown-menu-padding: 12px;
 
   filter: drop-shadow(0 0 4px rgba($bee-dropdown-menu-color-bg, 50%));
   position: relative;
   z-index: 1000;
-  padding: var(--bee-dropdown-menu-padding-y);
+  padding: var(--bee-dropdown-menu-padding);
   background: transparent;
 
   .bee-dropdown__arrow {

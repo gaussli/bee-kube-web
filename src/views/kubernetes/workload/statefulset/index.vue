@@ -8,19 +8,8 @@
       <!-- 工具栏 -->
       <div class="page-body__toolbar">
         <BeeInputSearch v-model="searchKey" class="page-body__toolbar-search" placeholder="按 UID / 名称搜索" />
-        <BeeSelect
-          v-model="queryForm.namespace"
-          :menu-height="300"
-          :options="namespaceOptions"
-          placeholder="命名空间筛选"
-          :width="300"
-        />
-        <BeeSelect
-          v-model="queryForm.status"
-          :menu-height="300"
-          :options="STATEFULSET_STATUS_OPTIONS"
-          placeholder="状态筛选"
-        />
+        <BeeSelect v-model="queryForm.namespace" :options="namespaceOptions" placeholder="命名空间筛选" />
+        <BeeSelect v-model="queryForm.status" :options="STATEFULSET_STATUS_OPTIONS" placeholder="状态筛选" />
         <BeeButton icon="basic-search" @click="handleSearch"> 搜索 </BeeButton>
         <BeeButton icon="basic-refresh" @click="handleReset"> 重置 </BeeButton>
         <div v-if="perm.create" class="page-body__toolbar-separator"></div>
@@ -34,6 +23,7 @@
           ref="tableRef"
           :data="tableData"
           :loading="loading"
+          row-key="uid"
           selectable
           @selection-change="handleSelectionChange"
         >
