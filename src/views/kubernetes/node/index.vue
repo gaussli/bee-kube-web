@@ -164,6 +164,8 @@ import type { NodeListVo, NodeQueryForm } from '@/types/kubernetes/node'
 
 import { cordonNode, drainNode, getNodeList } from '@/api/kubernetes/node'
 
+import { KubernetesRouteNames } from '@/router/names.ts'
+
 import { useKubernetesStore } from '@/stores/kubernetes'
 
 import BeeButton from '@/components/base/BeeButton/index.vue'
@@ -285,7 +287,7 @@ function handleReset() {
  */
 function handleViewDetail(row: NodeListVo) {
   router
-    .push({ name: 'kubernetes:node:detail', params: { clusterUid: clusterUid.value, name: row.name } })
+    .push({ name: KubernetesRouteNames.Node.Detail, params: { clusterUid: clusterUid.value, name: row.name } })
     .catch(() => {})
 }
 
@@ -296,7 +298,7 @@ function handleViewDetail(row: NodeListVo) {
  */
 function handleLabel(row: NodeListVo) {
   router
-    .push({ name: 'kubernetes:node:edit:labels', params: { clusterUid: clusterUid.value, name: row.name } })
+    .push({ name: KubernetesRouteNames.Node.ManageLabels, params: { clusterUid: clusterUid.value, name: row.name } })
     .catch(() => {})
 }
 
@@ -307,7 +309,10 @@ function handleLabel(row: NodeListVo) {
  */
 function handleAnnotation(row: NodeListVo) {
   router
-    .push({ name: 'kubernetes:node:edit:annotations', params: { clusterUid: clusterUid.value, name: row.name } })
+    .push({
+      name: KubernetesRouteNames.Node.ManageAnnotations,
+      params: { clusterUid: clusterUid.value, name: row.name },
+    })
     .catch(() => {})
 }
 
@@ -318,7 +323,10 @@ function handleAnnotation(row: NodeListVo) {
  */
 function handleTopology(row: NodeListVo) {
   router
-    .push({ name: 'kubernetes:node:edit:topologies', params: { clusterUid: clusterUid.value, name: row.name } })
+    .push({
+      name: KubernetesRouteNames.Node.ManageTopologies,
+      params: { clusterUid: clusterUid.value, name: row.name },
+    })
     .catch(() => {})
 }
 

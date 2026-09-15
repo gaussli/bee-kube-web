@@ -123,6 +123,8 @@ import type { ActionItem } from '@/components/business/BeeActionCell/index.vue'
 
 import { getNamespaceList, deleteNamespace, deleteNamespaces } from '@/api/kubernetes/namespace/namespace'
 
+import { KubernetesRouteNames } from '@/router/names.ts'
+
 import BeeButton from '@/components/base/BeeButton/index.vue'
 import BeeDialog from '@/components/base/BeeDialog/index.vue'
 import BeeInputSearch from '@/components/base/BeeInputSearch/index.vue'
@@ -192,6 +194,8 @@ const perm: Record<string, boolean> = {
   edit: hasPermission('kubernetes:namespace:edit'),
   view: hasPermission('kubernetes:namespace:view'),
   delete: hasPermission('kubernetes:namespace:delete'),
+  resourceQuotaView: hasPermission('kubernetes:resourcequota:view'),
+  limitRangeView: hasPermission('kubernetes:limitrange:view'),
 }
 
 // ==================== Data Loading ====================
@@ -236,14 +240,23 @@ function getActions(row: NamespaceListVo): ActionItem[] {
       { value: 'edit', label: '编辑', icon: 'basic-edit', handler: () => handleEdit(row) },
       { value: 'labels', label: '配置标签', icon: 'kubernetes-label', handler: () => handleLabels(row) },
       { value: 'annotations', label: '配置注解', icon: 'kubernetes-annotation', handler: () => handleAnnotations(row) },
-      {
-        value: 'resourcequota',
-        label: '资源配额',
-        icon: 'kubernetes-resource-quota',
-        handler: () => handleResourceQuota(row),
-      },
-      { value: 'limitrange', label: '资源限制', icon: 'kubernetes-limit-range', handler: () => handleLimitRange(row) },
     )
+  }
+  if (perm.resourceQuotaView) {
+    actions.push({
+      value: 'resourcequota',
+      label: '资源配额',
+      icon: 'kubernetes-resource-quota',
+      handler: () => handleResourceQuota(row),
+    })
+  }
+  if (perm.limitRangeView) {
+    actions.push({
+      value: 'limitrange',
+      label: '资源限制',
+      icon: 'kubernetes-limit-range',
+      handler: () => handleLimitRange(row),
+    })
   }
   if (perm.delete && row.deletable) {
     actions.push({ value: 'delete', label: '删除', icon: 'basic-delete', handler: () => handleDelete(row) })
@@ -288,7 +301,7 @@ function handleReset() {
  * 创建命名空间
  */
 function handleCreate() {
-  router.push({ name: 'kubernetes:namespace:create', params: { clusterUid: clusterUid.value } }).catch(() => {})
+  router.push({ name: KubernetesRouteNames.Namespace.Create, params: { clusterUid: clusterUid.value } }).catch(() => {})
 }
 
 /**
@@ -296,7 +309,9 @@ function handleCreate() {
  * @remarks 功能开发中，路由尚未实现
  */
 function handleCreateYaml() {
-  BeeMessage.info('功能开发中')
+  router
+    .push({ name: KubernetesRouteNames.Namespace.CreateYaml, params: { clusterUid: clusterUid.value } })
+    .catch(() => {})
 }
 
 /**
@@ -305,7 +320,7 @@ function handleCreateYaml() {
  */
 function handleViewDetail(row: NamespaceListVo) {
   router
-    .push({ name: 'kubernetes:namespace:detail', params: { clusterUid: clusterUid.value, name: row.name } })
+    .push({ name: KubernetesRouteNames.Namespace.Detail, params: { clusterUid: clusterUid.value, name: row.name } })
     .catch(() => {})
 }
 
@@ -315,7 +330,7 @@ function handleViewDetail(row: NamespaceListVo) {
  */
 function handleEdit(row: NamespaceListVo) {
   router
-    .push({ name: 'kubernetes:namespace:edit', params: { clusterUid: clusterUid.value, name: row.name } })
+    .push({ name: KubernetesRouteNames.Namespace.Edit, params: { clusterUid: clusterUid.value, name: row.name } })
     .catch(() => {})
 }
 
@@ -325,7 +340,10 @@ function handleEdit(row: NamespaceListVo) {
  */
 function handleLabels(row: NamespaceListVo) {
   router
-    .push({ name: 'kubernetes:namespace:label', params: { clusterUid: clusterUid.value, name: row.name } })
+    .push({
+      name: KubernetesRouteNames.Namespace.ManageLabels,
+      params: { clusterUid: clusterUid.value, name: row.name },
+    })
     .catch(() => {})
 }
 
@@ -335,7 +353,10 @@ function handleLabels(row: NamespaceListVo) {
  */
 function handleAnnotations(row: NamespaceListVo) {
   router
-    .push({ name: 'kubernetes:namespace:annotation', params: { clusterUid: clusterUid.value, name: row.name } })
+    .push({
+      name: KubernetesRouteNames.Namespace.ManageAnnotations,
+      params: { clusterUid: clusterUid.value, name: row.name },
+    })
     .catch(() => {})
 }
 
@@ -345,7 +366,10 @@ function handleAnnotations(row: NamespaceListVo) {
  */
 function handleResourceQuota(row: NamespaceListVo) {
   router
-    .push({ name: 'kubernetes:resourcequota:list', query: { clusterUid: clusterUid.value, namespace: row.name } })
+    .push({
+      name: KubernetesRouteNames.ResourceQuota.List,
+      query: { clusterUid: clusterUid.value, namespace: row.name },
+    })
     .catch(() => {})
 }
 
@@ -355,7 +379,7 @@ function handleResourceQuota(row: NamespaceListVo) {
  */
 function handleLimitRange(row: NamespaceListVo) {
   router
-    .push({ name: 'kubernetes:limitrange:list', query: { clusterUid: clusterUid.value, namespace: row.name } })
+    .push({ name: KubernetesRouteNames.LimitRange.List, query: { clusterUid: clusterUid.value, namespace: row.name } })
     .catch(() => {})
 }
 

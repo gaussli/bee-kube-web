@@ -131,6 +131,8 @@ import type { ClusterListVo, ClusterQueryForm } from '@/types/kubernetes/cluster
 
 import { getClusterList, deleteCluster, deleteClusters } from '@/api/kubernetes/cluster'
 
+import { KubernetesRouteNames } from '@/router/names.ts'
+
 import BeeButton from '@/components/base/BeeButton/index.vue'
 import BeeDialog from '@/components/base/BeeDialog/index.vue'
 import BeeInputSearch from '@/components/base/BeeInputSearch/index.vue'
@@ -205,7 +207,6 @@ const perm: Record<string, boolean> = {
  * 请求集群列表数据
  */
 async function loadData() {
-  tableRef.value?.clearSelection()
   loading.value = true
   try {
     const { list, total } = await getClusterList({
@@ -283,7 +284,7 @@ function handleReset() {
  * 纳管集群
  */
 function handleRegister() {
-  router.push({ name: 'kubernetes:cluster:register' }).catch(() => {})
+  router.push({ name: KubernetesRouteNames.Cluster.Register }).catch(() => {})
 }
 
 /**
@@ -292,7 +293,7 @@ function handleRegister() {
  */
 function handleSwitchCluster(row: ClusterListVo) {
   kubernetesStore.setActiveClusterUid(row.uid)
-  router.push({ name: 'kubernetes:dashboard', params: { clusterUid: row.uid } }).catch(() => {})
+  router.push({ name: KubernetesRouteNames.Dashboard, params: { clusterUid: row.uid } }).catch(() => {})
 }
 
 /**
@@ -300,7 +301,7 @@ function handleSwitchCluster(row: ClusterListVo) {
  * @param row - 当前行数据
  */
 function handleEdit(row: ClusterListVo) {
-  router.push({ name: 'kubernetes:cluster:edit', params: { uid: row.uid } }).catch(() => {})
+  router.push({ name: KubernetesRouteNames.Cluster.Edit, params: { uid: row.uid } }).catch(() => {})
 }
 
 /**

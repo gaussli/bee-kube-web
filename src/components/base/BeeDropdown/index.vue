@@ -220,6 +220,7 @@ $bee-dropdown-menu-color-bg: rgb(40 40 40);
       flex-direction: column;
       justify-content: center;
       align-items: center;
+      width: 100%;
 
       &-separator {
         width: 120%;
@@ -231,7 +232,7 @@ $bee-dropdown-menu-color-bg: rgb(40 40 40);
         display: flex;
         gap: 8px;
         flex-flow: row nowrap;
-        justify-content: center;
+        justify-content: flex-start;
         align-items: center;
         width: 100%;
         padding: 8px 16px;

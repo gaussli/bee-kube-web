@@ -2,12 +2,11 @@ export const RootRouteNames = {
   Root: {
     Login: 'login',
     Forbidden: '403',
-    KubernetesDashboard: 'kubernetes:dashboard',
-    PlatformDashboard: 'platform:dashboard',
   },
 } as const
 
 export const PlatformRouteNames = {
+  Dashboard: 'platform:dashboard',
   User: {
     List: 'platform:system:user',
     Detail: 'platform:system:user:detail',
@@ -59,6 +58,7 @@ export const PlatformRouteNames = {
 } as const
 
 export const KubernetesRouteNames = {
+  Dashboard: 'kubernetes:dashboard',
   Cluster: {
     List: 'kubernetes:cluster',
     Register: 'kubernetes:cluster:register',
