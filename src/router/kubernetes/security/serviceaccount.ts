@@ -75,7 +75,7 @@ export const serviceAccountRoutes: RouteRecordRaw[] = [
   },
   {
     path: '/kubernetes/clusters/:clusterUid/namespaces/:namespace/serviceaccounts/:name/annotations',
-    name: KubernetesRouteNames.ServiceAccount.ManageAnnotatioins,
+    name: KubernetesRouteNames.ServiceAccount.ManageAnnotations,
     component: () => import('@/views/kubernetes/security/serviceaccount/edit/annotations.vue'),
     meta: {
       title: '配置服务账号注解',

@@ -75,7 +75,7 @@ export const deploymentRoutes: RouteRecordRaw[] = [
   },
   {
     path: '/kubernetes/clusters/:clusterUid/namespaces/:namespace/deployments/:name/annotations',
-    name: KubernetesRouteNames.Deployment.ManageAnnotatioins,
+    name: KubernetesRouteNames.Deployment.ManageAnnotations,
     component: () => import('@/views/kubernetes/workload/deployment/edit/annotations.vue'),
     meta: {
       title: '配置无状态应用注解',

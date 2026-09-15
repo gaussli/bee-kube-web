@@ -75,7 +75,7 @@ export const cronJobRoutes: RouteRecordRaw[] = [
   },
   {
     path: '/kubernetes/clusters/:clusterUid/namespaces/:namespace/cronjobs/:name/annotations',
-    name: KubernetesRouteNames.CronJob.ManageAnnotatioins,
+    name: KubernetesRouteNames.CronJob.ManageAnnotations,
     component: () => import('@/views/kubernetes/workload/cronjob/edit/annotations.vue'),
     meta: {
       title: '配置定时任务注解',

@@ -75,7 +75,7 @@ export const secretRoutes: RouteRecordRaw[] = [
   },
   {
     path: '/kubernetes/clusters/:clusterUid/namespaces/:namespace/secrets/:name/annotations',
-    name: KubernetesRouteNames.Secret.ManageAnnotatioins,
+    name: KubernetesRouteNames.Secret.ManageAnnotations,
     component: () => import('@/views/kubernetes/config/secret/edit/annotations.vue'),
     meta: {
       title: '配置密钥注解',

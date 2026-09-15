@@ -75,7 +75,7 @@ export const storageClassRoutes: RouteRecordRaw[] = [
   },
   {
     path: '/kubernetes/clusters/:clusterUid/storageclasses/:name/annotations',
-    name: KubernetesRouteNames.StorageClass.ManageAnnotatioins,
+    name: KubernetesRouteNames.StorageClass.ManageAnnotations,
     component: () => import('@/views/kubernetes/storage/storageclass/edit/annotations.vue'),
     meta: {
       title: '配置存储类注解',

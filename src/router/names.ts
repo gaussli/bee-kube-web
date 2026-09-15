@@ -119,7 +119,7 @@ export const KubernetesRouteNames = {
     Edit: 'kubernetes:workload:deployment:edit',
     EditYaml: 'kubernetes:workload:deployment:edit:yaml',
     ManageLabels: 'kubernetes:workload:deployment:manage-labels',
-    ManageAnnotatioins: 'kubernetes:workload:deployment:manage-annotations',
+    ManageAnnotations: 'kubernetes:workload:deployment:manage-annotations',
   },
 
   StatefulSet: {
@@ -130,7 +130,7 @@ export const KubernetesRouteNames = {
     Edit: 'kubernetes:workload:statefulset:edit',
     EditYaml: 'kubernetes:workload:statefulset:edit:yaml',
     ManageLabels: 'kubernetes:workload:statefulset:manage-labels',
-    ManageAnnotatioins: 'kubernetes:workload:statefulset:manage-annotations',
+    ManageAnnotations: 'kubernetes:workload:statefulset:manage-annotations',
   },
 
   DaemonSet: {
@@ -141,7 +141,7 @@ export const KubernetesRouteNames = {
     Edit: 'kubernetes:workload:daemonset:edit',
     EditYaml: 'kubernetes:workload:daemonset:edit:yaml',
     ManageLabels: 'kubernetes:workload:daemonset:manage-labels',
-    ManageAnnotatioins: 'kubernetes:workload:daemonset:manage-annotations',
+    ManageAnnotations: 'kubernetes:workload:daemonset:manage-annotations',
   },
 
   Job: {
@@ -152,7 +152,7 @@ export const KubernetesRouteNames = {
     Edit: 'kubernetes:workload:job:edit',
     EditYaml: 'kubernetes:workload:job:edit:yaml',
     ManageLabels: 'kubernetes:workload:job:manage-labels',
-    ManageAnnotatioins: 'kubernetes:workload:job:manage-annotations',
+    ManageAnnotations: 'kubernetes:workload:job:manage-annotations',
   },
 
   CronJob: {
@@ -163,7 +163,7 @@ export const KubernetesRouteNames = {
     Edit: 'kubernetes:workload:cronjob:edit',
     EditYaml: 'kubernetes:workload:cronjob:edit:yaml',
     ManageLabels: 'kubernetes:workload:cronjob:manage-labels',
-    ManageAnnotatioins: 'kubernetes:workload:cronjob:manage-annotations',
+    ManageAnnotations: 'kubernetes:workload:cronjob:manage-annotations',
   },
 
   ConfigMap: {
@@ -174,7 +174,7 @@ export const KubernetesRouteNames = {
     Edit: 'kubernetes:config:configmap:edit',
     EditYaml: 'kubernetes:config:configmap:edit:yaml',
     ManageLabels: 'kubernetes:config:configmap:manage-labels',
-    ManageAnnotatioins: 'kubernetes:config:configmap:manage-annotations',
+    ManageAnnotations: 'kubernetes:config:configmap:manage-annotations',
   },
 
   Secret: {
@@ -185,7 +185,7 @@ export const KubernetesRouteNames = {
     Edit: 'kubernetes:config:secret:edit',
     EditYaml: 'kubernetes:config:secret:edit:yaml',
     ManageLabels: 'kubernetes:config:secret:manage-labels',
-    ManageAnnotatioins: 'kubernetes:config:secret:manage-annotations',
+    ManageAnnotations: 'kubernetes:config:secret:manage-annotations',
   },
 
   Service: {
@@ -196,7 +196,7 @@ export const KubernetesRouteNames = {
     Edit: 'kubernetes:network:service:edit',
     EditYaml: 'kubernetes:network:service:edit:yaml',
     ManageLabels: 'kubernetes:network:service:manage-labels',
-    ManageAnnotatioins: 'kubernetes:network:service:manage-annotations',
+    ManageAnnotations: 'kubernetes:network:service:manage-annotations',
   },
 
   Ingress: {
@@ -207,7 +207,7 @@ export const KubernetesRouteNames = {
     Edit: 'kubernetes:network:ingress:edit',
     EditYaml: 'kubernetes:network:ingress:edit:yaml',
     ManageLabels: 'kubernetes:network:ingress:manage-labels',
-    ManageAnnotatioins: 'kubernetes:network:ingress:manage-annotations',
+    ManageAnnotations: 'kubernetes:network:ingress:manage-annotations',
   },
 
   NetworkPolicy: {
@@ -218,7 +218,7 @@ export const KubernetesRouteNames = {
     Edit: 'kubernetes:network:networkpolicy:edit',
     EditYaml: 'kubernetes:network:networkpolicy:edit:yaml',
     ManageLabels: 'kubernetes:network:networkpolicy:manage-labels',
-    ManageAnnotatioins: 'kubernetes:network:networkpolicy:manage-annotations',
+    ManageAnnotations: 'kubernetes:network:networkpolicy:manage-annotations',
   },
 
   PersistentVolume: {
@@ -229,7 +229,7 @@ export const KubernetesRouteNames = {
     Edit: 'kubernetes:storage:persistentvolume:edit',
     EditYaml: 'kubernetes:storage:persistentvolume:edit:yaml',
     ManageLabels: 'kubernetes:storage:persistentvolume:manage-labels',
-    ManageAnnotatioins: 'kubernetes:storage:persistentvolume:manage-annotations',
+    ManageAnnotations: 'kubernetes:storage:persistentvolume:manage-annotations',
   },
 
   PersistentVolumeClaim: {
@@ -240,7 +240,7 @@ export const KubernetesRouteNames = {
     Edit: 'kubernetes:storage:persistentvolumeclaim:edit',
     EditYaml: 'kubernetes:storage:persistentvolumeclaim:edit:yaml',
     ManageLabels: 'kubernetes:storage:persistentvolumeclaim:manage-labels',
-    ManageAnnotatioins: 'kubernetes:storage:persistentvolumeclaim:manage-annotations',
+    ManageAnnotations: 'kubernetes:storage:persistentvolumeclaim:manage-annotations',
   },
 
   StorageClass: {
@@ -251,7 +251,7 @@ export const KubernetesRouteNames = {
     Edit: 'kubernetes:storage:storageclass:edit',
     EditYaml: 'kubernetes:storage:storageclass:edit:yaml',
     ManageLabels: 'kubernetes:storage:storageclass:manage-labels',
-    ManageAnnotatioins: 'kubernetes:storage:storageclass:manage-annotations',
+    ManageAnnotations: 'kubernetes:storage:storageclass:manage-annotations',
   },
 
   ServiceAccount: {
@@ -262,7 +262,7 @@ export const KubernetesRouteNames = {
     Edit: 'kubernetes:security:serviceaccount:edit',
     EditYaml: 'kubernetes:security:serviceaccount:edit:yaml',
     ManageLabels: 'kubernetes:security:serviceaccount:manage-labels',
-    ManageAnnotatioins: 'kubernetes:security:serviceaccount:manage-annotations',
+    ManageAnnotations: 'kubernetes:security:serviceaccount:manage-annotations',
   },
 
   ClusterRole: {
@@ -273,7 +273,7 @@ export const KubernetesRouteNames = {
     Edit: 'kubernetes:security:clusterrole:edit',
     EditYaml: 'kubernetes:security:clusterrole:edit:yaml',
     ManageLabels: 'kubernetes:security:clusterrole:manage-labels',
-    ManageAnnotatioins: 'kubernetes:security:clusterrole:manage-annotations',
+    ManageAnnotations: 'kubernetes:security:clusterrole:manage-annotations',
   },
 
   ClusterRoleBinding: {
@@ -284,7 +284,7 @@ export const KubernetesRouteNames = {
     Edit: 'kubernetes:security:clusterrolebinding:edit',
     EditYaml: 'kubernetes:security:clusterrolebinding:edit:yaml',
     ManageLabels: 'kubernetes:security:clusterrolebinding:manage-labels',
-    ManageAnnotatioins: 'kubernetes:security:clusterrolebinding:manage-annotations',
+    ManageAnnotations: 'kubernetes:security:clusterrolebinding:manage-annotations',
   },
 
   Role: {
@@ -295,7 +295,7 @@ export const KubernetesRouteNames = {
     Edit: 'kubernetes:security:role:edit',
     EditYaml: 'kubernetes:security:role:edit:yaml',
     ManageLabels: 'kubernetes:security:role:manage-labels',
-    ManageAnnotatioins: 'kubernetes:security:role:manage-annotations',
+    ManageAnnotations: 'kubernetes:security:role:manage-annotations',
   },
 
   RoleBinding: {
@@ -306,6 +306,6 @@ export const KubernetesRouteNames = {
     Edit: 'kubernetes:security:rolebinding:edit',
     EditYaml: 'kubernetes:security:rolebinding:edit:yaml',
     ManageLabels: 'kubernetes:security:rolebinding:manage-labels',
-    ManageAnnotatioins: 'kubernetes:security:rolebinding:manage-annotations',
+    ManageAnnotations: 'kubernetes:security:rolebinding:manage-annotations',
   },
 } as const

@@ -75,7 +75,7 @@ export const statefulSetRoutes: RouteRecordRaw[] = [
   },
   {
     path: '/kubernetes/clusters/:clusterUid/namespaces/:namespace/statefulsets/:name/annotations',
-    name: KubernetesRouteNames.StatefulSet.ManageAnnotatioins,
+    name: KubernetesRouteNames.StatefulSet.ManageAnnotations,
     component: () => import('@/views/kubernetes/workload/statefulset/edit/annotations.vue'),
     meta: {
       title: '配置有状态应用注解',

@@ -75,7 +75,7 @@ export const roleRoutes: RouteRecordRaw[] = [
   },
   {
     path: '/kubernetes/clusters/:clusterUid/namespaces/:namespace/roles/:name/annotations',
-    name: KubernetesRouteNames.Role.ManageAnnotatioins,
+    name: KubernetesRouteNames.Role.ManageAnnotations,
     component: () => import('@/views/kubernetes/security/role/edit/annotations.vue'),
     meta: {
       title: '配置角色注解',

@@ -75,7 +75,7 @@ export const clusterRoleBindingRoutes: RouteRecordRaw[] = [
   },
   {
     path: '/kubernetes/clusters/:clusterUid/clusterrolebindings/:name/annotations',
-    name: KubernetesRouteNames.ClusterRoleBinding.ManageAnnotatioins,
+    name: KubernetesRouteNames.ClusterRoleBinding.ManageAnnotations,
     component: () => import('@/views/kubernetes/security/clusterrolebinding/edit/annotations.vue'),
     meta: {
       title: '配置集群角色绑定注解',

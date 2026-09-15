@@ -75,7 +75,7 @@ export const networkPolicyRoutes: RouteRecordRaw[] = [
   },
   {
     path: '/kubernetes/clusters/:clusterUid/namespaces/:namespace/networkpolicies/:name/annotations',
-    name: KubernetesRouteNames.NetworkPolicy.ManageAnnotatioins,
+    name: KubernetesRouteNames.NetworkPolicy.ManageAnnotations,
     component: () => import('@/views/kubernetes/network/networkpolicy/edit/annotations.vue'),
     meta: {
       title: '配置网络策略注解',

@@ -75,7 +75,7 @@ export const jobRoutes: RouteRecordRaw[] = [
   },
   {
     path: '/kubernetes/clusters/:clusterUid/namespaces/:namespace/jobs/:name/annotations',
-    name: KubernetesRouteNames.Job.ManageAnnotatioins,
+    name: KubernetesRouteNames.Job.ManageAnnotations,
     component: () => import('@/views/kubernetes/workload/job/edit/annotations.vue'),
     meta: {
       title: '配置任务注解',

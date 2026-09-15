@@ -75,7 +75,7 @@ export const daemonSetRoutes: RouteRecordRaw[] = [
   },
   {
     path: '/kubernetes/clusters/:clusterUid/namespaces/:namespace/daemonsets/:name/annotations',
-    name: KubernetesRouteNames.DaemonSet.ManageAnnotatioins,
+    name: KubernetesRouteNames.DaemonSet.ManageAnnotations,
     component: () => import('@/views/kubernetes/workload/daemonset/edit/annotations.vue'),
     meta: {
       title: '配置守护进程集注解',

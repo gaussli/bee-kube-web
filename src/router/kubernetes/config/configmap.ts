@@ -75,7 +75,7 @@ export const configMapRoutes: RouteRecordRaw[] = [
   },
   {
     path: '/kubernetes/clusters/:clusterUid/namespaces/:namespace/configmaps/:name/annotations',
-    name: KubernetesRouteNames.ConfigMap.ManageAnnotatioins,
+    name: KubernetesRouteNames.ConfigMap.ManageAnnotations,
     component: () => import('@/views/kubernetes/config/configmap/edit/annotations.vue'),
     meta: {
       title: '配置配置映射注解',

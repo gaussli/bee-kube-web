@@ -75,7 +75,7 @@ export const ingressRoutes: RouteRecordRaw[] = [
   },
   {
     path: '/kubernetes/clusters/:clusterUid/namespaces/:namespace/ingresses/:name/annotations',
-    name: KubernetesRouteNames.Ingress.ManageAnnotatioins,
+    name: KubernetesRouteNames.Ingress.ManageAnnotations,
     component: () => import('@/views/kubernetes/network/ingress/edit/annotations.vue'),
     meta: {
       title: '配置入口注解',

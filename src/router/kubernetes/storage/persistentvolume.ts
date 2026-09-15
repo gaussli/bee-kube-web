@@ -75,7 +75,7 @@ export const persistentVolumeRoutes: RouteRecordRaw[] = [
   },
   {
     path: '/kubernetes/clusters/:clusterUid/persistentvolumes/:name/annotations',
-    name: KubernetesRouteNames.PersistentVolume.ManageAnnotatioins,
+    name: KubernetesRouteNames.PersistentVolume.ManageAnnotations,
     component: () => import('@/views/kubernetes/storage/persistentvolume/edit/annotations.vue'),
     meta: {
       title: '配置持久卷注解',
