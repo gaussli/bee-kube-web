@@ -481,7 +481,7 @@ function handleTrigger(row: CronJobListVo) {
  * 恢复定时任务更新
  * @param row - 当前行数据
  */
-async function handleResume(row: CronJobListVo) {
+function handleResume(row: CronJobListVo) {
   selectedRow.value = row
   resumeDialogVisible.value = true
 }
@@ -490,7 +490,7 @@ async function handleResume(row: CronJobListVo) {
  * 暂停定时任务更新
  * @param row - 当前行数据
  */
-async function handlePause(row: CronJobListVo) {
+function handlePause(row: CronJobListVo) {
   selectedRow.value = row
   pauseDialogVisible.value = true
 }

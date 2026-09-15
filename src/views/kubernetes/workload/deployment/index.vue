@@ -116,6 +116,58 @@
       </div>
     </BeeCard>
 
+    <!-- 扩缩容 Dialog -->
+    <BeeDialog
+      v-model="scaleDialogVisible"
+      icon="kubernetes-scale"
+      title="扩缩容无状态应用"
+      type="primary"
+      @confirm="handleConfirmScale"
+    >
+      <span>
+        您确认删除 <strong>{{ selectedRow?.name || '' }}</strong> 无状态应用吗？
+      </span>
+    </BeeDialog>
+
+    <!-- 重启确认 Dialog -->
+    <BeeDialog
+      v-model="restartDialogVisible"
+      icon="basic-refresh"
+      title="重启无状态应用"
+      type="primary"
+      @confirm="handleConfirmRestart"
+    >
+      <span>
+        您确认重启 <strong>{{ selectedRow?.name || '' }}</strong> 无状态应用吗？
+      </span>
+    </BeeDialog>
+
+    <!-- 恢复更新确认 Dialog -->
+    <BeeDialog
+      v-model="resumeDialogVisible"
+      icon="kubernetes-resume"
+      title="恢复无状态应用更新"
+      type="primary"
+      @confirm="handleConfirmResume"
+    >
+      <span>
+        您确认恢复 <strong>{{ selectedRow?.name || '' }}</strong> 无状态应用的更新吗？
+      </span>
+    </BeeDialog>
+
+    <!-- 暂停更新确认 Dialog -->
+    <BeeDialog
+      v-model="pauseDialogVisible"
+      icon="kubernetes-pause"
+      title="暂停无状态应用更新"
+      type="primary"
+      @confirm="handleConfirmPause"
+    >
+      <span>
+        您确认暂停 <strong>{{ selectedRow?.name || '' }}</strong> 无状态应用的更新吗？
+      </span>
+    </BeeDialog>
+
     <!-- 单个删除 Dialog -->
     <BeeDialog
       v-model="deleteDialogVisible"
@@ -154,9 +206,10 @@ import {
   getDeploymentList,
   deleteDeployment,
   deleteDeployments,
+  restartDeployment,
+  scaleDeployment,
   resumeDeployment,
   pauseDeployment,
-  restartDeployment,
 } from '@/api/kubernetes/workload/deployment'
 
 import { KubernetesRouteNames } from '@/router/names'
@@ -216,6 +269,14 @@ const selectedRow = ref<DeploymentListVo>()
 /** 多选选中数据 */
 const selectedRows = ref<DeploymentListVo[]>([])
 // ---------- 对话框 ----------
+/** 扩缩容弹框显隐 */
+const scaleDialogVisible = ref(false)
+/** 重启确认弹框显隐 */
+const restartDialogVisible = ref(false)
+/** 恢复更新确认弹框显隐 */
+const resumeDialogVisible = ref(false)
+/** 暂停更新确认弹框显隐 */
+const pauseDialogVisible = ref(false)
 /** 单个删除弹框显隐 */
 const deleteDialogVisible = ref(false)
 /** 批量删除弹框显隐 */
@@ -436,23 +497,17 @@ function handleAnnotations(row: DeploymentListVo) {
  * @param row - 当前行数据
  */
 function handleScale(row: DeploymentListVo) {
-  BeeMessage.info(`扩缩容: ${row.name}`)
+  selectedRow.value = row
+  scaleDialogVisible.value = true
 }
 
 /**
  * 重启无状态应用
  * @param row - 当前行数据
  */
-async function handleRestart(row: DeploymentListVo) {
-  try {
-    await restartDeployment(clusterUid.value, row.namespace, row.name)
-    BeeMessage.success(`成功重启无状态应用【${row.name}】`)
-    selectedRow.value = undefined
-    void loadData()
-  } catch (err) {
-    console.error('[handleRestart]', err)
-    BeeMessage.error(`重启无状态应用【${row.name}】失败`)
-  }
+function handleRestart(row: DeploymentListVo) {
+  selectedRow.value = row
+  restartDialogVisible.value = true
 }
 
 /**
@@ -467,32 +522,18 @@ function handleRollback(row: DeploymentListVo) {
  * 恢复无状态应用更新
  * @param row - 当前行数据
  */
-async function handleResume(row: DeploymentListVo) {
-  try {
-    await resumeDeployment(clusterUid.value, row.namespace, row.name)
-    BeeMessage.success(`成功恢复无状态应用【${row.name}】更新`)
-    selectedRow.value = undefined
-    void loadData()
-  } catch (err) {
-    console.error('[handleResume]', err)
-    BeeMessage.error(`恢复无状态应用【${row.name}】更新失败`)
-  }
+function handleResume(row: DeploymentListVo) {
+  selectedRow.value = row
+  resumeDialogVisible.value = true
 }
 
 /**
  * 暂停无状态应用更新
  * @param row - 当前行数据
  */
-async function handlePause(row: DeploymentListVo) {
-  try {
-    await pauseDeployment(clusterUid.value, row.namespace, row.name)
-    BeeMessage.success(`成功暂停无状态应用【${row.name}】更新`)
-    selectedRow.value = undefined
-    void loadData()
-  } catch (err) {
-    console.error('[handlePause]', err)
-    BeeMessage.error(`暂停无状态应用【${row.name}】更新失败`)
-  }
+function handlePause(row: DeploymentListVo) {
+  selectedRow.value = row
+  pauseDialogVisible.value = true
 }
 
 /**
@@ -538,6 +579,76 @@ function handleClearSelection() {
 }
 
 // ==================== Dialog Confirm ====================
+/**
+ * 二次确认扩缩容无状态应用
+ * @param newReplicas
+ */
+async function handleConfirmScale(newReplicas: number) {
+  if (!selectedRow.value) return
+  const { namespace, name, replicas } = selectedRow.value
+  try {
+    await scaleDeployment(clusterUid.value, namespace, name, { replicas: newReplicas })
+    if (replicas > newReplicas) BeeMessage.success(`成功缩容无状态应用【${name}】`)
+    else BeeMessage.success(`成功扩容无状态应用【${name}】`)
+    selectedRow.value = undefined
+    void loadData()
+  } catch (err) {
+    console.error('[handleRestart]', err)
+    BeeMessage.error(`扩缩容无状态应用【${name}】失败`)
+  }
+}
+
+/**
+ * 二次确认重启无状态应用
+ */
+async function handleConfirmRestart() {
+  if (!selectedRow.value) return
+  const { namespace, name } = selectedRow.value
+  try {
+    await restartDeployment(clusterUid.value, namespace, name)
+    BeeMessage.success(`成功重启无状态应用【${name}】`)
+    selectedRow.value = undefined
+    void loadData()
+  } catch (err) {
+    console.error('[handleRestart]', err)
+    BeeMessage.error(`重启无状态应用【${name}】失败`)
+  }
+}
+
+/**
+ * 二次确认恢复无状态应用更新
+ */
+async function handleConfirmResume() {
+  if (!selectedRow.value) return
+  const { namespace, name } = selectedRow.value
+  try {
+    await resumeDeployment(clusterUid.value, namespace, name)
+    BeeMessage.success(`成功恢复无状态应用【${name}】更新`)
+    selectedRow.value = undefined
+    void loadData()
+  } catch (err) {
+    console.error('[handleResume]', err)
+    BeeMessage.error(`恢复无状态应用【${name}】更新失败`)
+  }
+}
+
+/**
+ * 二次确认暂停无状态应用更新
+ */
+async function handleConfirmPause() {
+  if (!selectedRow.value) return
+  const { namespace, name } = selectedRow.value
+  try {
+    await pauseDeployment(clusterUid.value, namespace, name)
+    BeeMessage.success(`成功暂停无状态应用【${name}】更新`)
+    selectedRow.value = undefined
+    void loadData()
+  } catch (err) {
+    console.error('[handlePause]', err)
+    BeeMessage.error(`暂停无状态应用【${name}】更新失败`)
+  }
+}
+
 /**
  * 二次确认删除无状态应用
  */

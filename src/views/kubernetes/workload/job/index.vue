@@ -457,7 +457,7 @@ function handleAnnotations(row: JobListVo) {
  * 重跑任务
  * @param row - 当前行数据
  */
-async function handleRerun(row: JobListVo) {
+function handleRerun(row: JobListVo) {
   selectedRow.value = row
   rerunDialogVisible.value = true
 }
@@ -466,7 +466,7 @@ async function handleRerun(row: JobListVo) {
  * 恢复任务更新
  * @param row - 当前行数据
  */
-async function handleResume(row: JobListVo) {
+function handleResume(row: JobListVo) {
   selectedRow.value = row
   resumeDialogVisible.value = true
 }
@@ -475,7 +475,7 @@ async function handleResume(row: JobListVo) {
  * 暂停任务更新
  * @param row - 当前行数据
  */
-async function handlePause(row: JobListVo) {
+function handlePause(row: JobListVo) {
   selectedRow.value = row
   pauseDialogVisible.value = true
 }
