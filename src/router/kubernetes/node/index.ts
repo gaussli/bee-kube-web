@@ -1,54 +1,56 @@
 import type { RouteRecordRaw } from 'vue-router'
 
+import { KubernetesRouteNames } from '@/router/names'
+
 export const nodeRoutes: RouteRecordRaw[] = [
   {
     path: '/kubernetes/clusters/:clusterUid/nodes',
-    name: 'kubernetes:node',
+    name: KubernetesRouteNames.Node.List,
     component: () => import('@/views/kubernetes/node/index.vue'),
     meta: {
       title: '节点',
       permission: 'kubernetes:node:view',
-      activeCode: 'kubernetes:node',
+      activeCode: KubernetesRouteNames.Node.List,
     },
   },
   {
     path: '/kubernetes/clusters/:clusterUid/nodes/:name',
-    name: 'kubernetes:node:detail',
+    name: KubernetesRouteNames.Node.Detail,
     component: () => import('@/views/kubernetes/node/detail/index.vue'),
     meta: {
       title: '节点详情',
       permission: 'kubernetes:node:view',
-      activeCode: 'kubernetes:node',
+      activeCode: KubernetesRouteNames.Node.List,
     },
   },
   {
     path: '/kubernetes/clusters/:clusterUid/nodes/:name/labels',
-    name: 'kubernetes:node:edit:labels',
+    name: KubernetesRouteNames.Node.ManageLabels,
     component: () => import('@/views/kubernetes/node/edit/label.vue'),
     meta: {
-      title: '节点配置标签',
+      title: '配置节点标签',
       permission: 'kubernetes:node:edit',
-      activeCode: 'kubernetes:node',
+      activeCode: KubernetesRouteNames.Node.List,
     },
   },
   {
     path: '/kubernetes/clusters/:clusterUid/nodes/:name/annotations',
-    name: 'kubernetes:node:edit:annotations',
+    name: KubernetesRouteNames.Node.ManageAnnotations,
     component: () => import('@/views/kubernetes/node/edit/annotation.vue'),
     meta: {
-      title: '节点配置注解',
+      title: '配置节点注解',
       permission: 'kubernetes:node:edit',
-      activeCode: 'kubernetes:node',
+      activeCode: KubernetesRouteNames.Node.List,
     },
   },
   {
     path: '/kubernetes/clusters/:clusterUid/nodes/:name/topologies',
-    name: 'kubernetes:node:edit:topologies',
+    name: KubernetesRouteNames.Node.ManageTopologies,
     component: () => import('@/views/kubernetes/node/edit/topology.vue'),
     meta: {
-      title: '节点配置拓扑',
+      title: '配置节点拓扑',
       permission: 'kubernetes:node:edit',
-      activeCode: 'kubernetes:node',
+      activeCode: KubernetesRouteNames.Node.List,
     },
   },
 ]

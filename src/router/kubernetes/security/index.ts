@@ -1,10 +1,10 @@
 import type { RouteRecordRaw } from 'vue-router'
 
-import { serviceAccountRoutes } from './serviceaccount'
 import { clusterRoleRoutes } from './clusterrole'
-import { roleRoutes } from './role'
 import { clusterRoleBindingRoutes } from './clusterrolebinding'
+import { roleRoutes } from './role'
 import { roleBindingRoutes } from './rolebinding'
+import { serviceAccountRoutes } from './serviceaccount'
 
 export const securityRoutes: RouteRecordRaw[] = [
   {

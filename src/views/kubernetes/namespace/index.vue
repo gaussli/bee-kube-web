@@ -26,13 +26,13 @@
           @selection-change="handleSelectionChange"
         >
           <!-- 命名空间信息列 -->
-          <BeeTableColumn :width="500">
+          <BeeTableColumn :min-width="500">
             <template #default="{ row }">
               <NamespaceInfoCell :description="row.description" :name="row.name" :uid="row.uid" />
             </template>
           </BeeTableColumn>
           <!-- 状态列 -->
-          <BeeTableColumn :min-width="160">
+          <BeeTableColumn :width="160">
             <template #default="{ row }">
               <BeeStatusCell :options="NAMESPACE_STATUS_OPTIONS" :status="row.status" :status-msg="row.statusMsg" />
             </template>

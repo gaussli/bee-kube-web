@@ -1,15 +1,15 @@
 import type { RouteRecordRaw } from 'vue-router'
 
-import { cronjobRoutes } from './cronjob'
-import { daemonsetRoutes } from './daemonset'
+import { cronJobRoutes } from './cronjob'
+import { daemonSetRoutes } from './daemonset'
 import { deploymentRoutes } from './deployment'
 import { jobRoutes } from './job'
-import { statefulsetRoutes } from './statefulset'
+import { statefulSetRoutes } from './statefulset'
 
 export const workloadRoutes: RouteRecordRaw[] = [
   ...deploymentRoutes,
-  ...statefulsetRoutes,
-  ...daemonsetRoutes,
+  ...statefulSetRoutes,
+  ...daemonSetRoutes,
   ...jobRoutes,
-  ...cronjobRoutes,
+  ...cronJobRoutes,
 ]

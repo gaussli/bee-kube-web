@@ -28,6 +28,7 @@ export const kubernetesRoutes: RouteRecordRaw[] = [
   },
   ...clusterRoutes,
   ...nodeRoutes,
+  ...customResourceDefinitionRoutes,
   ...namespaceRoutes,
   ...resourceQuotaRoutes,
   ...limitRangeRoutes,
@@ -35,6 +36,5 @@ export const kubernetesRoutes: RouteRecordRaw[] = [
   ...configRoutes,
   ...networkRoutes,
   ...storageRoutes,
-  ...customResourceDefinitionRoutes,
   ...securityRoutes,
 ]
