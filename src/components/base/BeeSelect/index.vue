@@ -8,7 +8,13 @@
   <!-- 下拉菜单选项容器浮层：Teleport 到 body，使用 @floating-ui 智能定位 -->
   <Teleport to="body">
     <Transition name="bee-select">
-      <div v-if="isOpen" ref="floatingRef" class="bee-select__menu" :style="[floatingStyles]" @click.stop>
+      <div
+        v-if="isOpen"
+        ref="floatingRef"
+        class="bee-select__menu"
+        :style="[floatingStyles, availableHeightStyle]"
+        @click.stop
+      >
         <div class="bee-select__menu-wrapper" :style="[widthStyle]">
           <!-- 渲染菜单选项 -->
           <div
@@ -31,7 +37,7 @@
 <script setup lang="ts">
 import { computed, ref, watch } from 'vue'
 
-import { arrow, flip, offset, shift, useFloating } from '@floating-ui/vue'
+import { arrow, autoUpdate, flip, offset, shift, size, useFloating } from '@floating-ui/vue'
 import { onClickOutside, useElementHover, useTimeoutFn } from '@vueuse/core'
 
 import type { SelectOption } from './types'
@@ -72,6 +78,8 @@ const triggerRef = ref<HTMLElement>()
 const floatingRef = ref<HTMLElement>()
 /** 箭头元素引用 */
 const arrowRef = ref<HTMLElement>()
+/** 菜单可用高度样式（CSS 变量形式，wrapper 据此换算最大高度） */
+const availableHeightStyle = ref<Record<string, string>>({})
 /** 是否展开 */
 const isOpen = ref(false)
 
@@ -100,7 +108,6 @@ const arrowStyle = computed(() => {
     bottom: 'top',
     left: 'right',
   }
-  console.log(placement)
   const side = placement.value.split('-')[0]
   const staticSide = staticSideMap[side] || 'bottom'
 
@@ -136,14 +143,23 @@ onClickOutside(triggerRef, () => closeMenu(), { ignore: [floatingRef] })
 
 // ==================== Floating UI ====================
 /**
- * 使用 @floating-ui 实现智能定位，含偏移、翻转、边界约束和箭头
+ * 使用 @floating-ui 实现智能定位，含偏移、翻转、边界约束、可用高度约束和箭头；
+ * 元素挂载期间由 autoUpdate 持续重算，跟随滚动与窗口尺寸变化
  */
 const { floatingStyles, middlewareData, placement } = useFloating(triggerRef, floatingRef, {
   placement: 'bottom',
+  whileElementsMounted: autoUpdate,
   middleware: [
     offset(0), // tooltip 与触发器间距 0px
     flip(), // 超出视口时自动翻转方向
     shift({ padding: 16 }), // 防止超出视口，保留 16px 安全边距
+    // 按剩余可用空间约束菜单高度（padding 与 shift 的 16px 叠加，实际离视口边 24px）
+    size({
+      padding: 8,
+      apply({ availableHeight }) {
+        availableHeightStyle.value = { '--bee-select-menu-available-height': `${availableHeight}px` }
+      },
+    }),
     arrow({ element: arrowRef }), // 箭头定位
   ],
 })
@@ -228,15 +244,17 @@ $bee-select-menu-color-bg: rgb(40 40 40);
 
 .bee-select__menu {
   --bee-select-menu-color-bg: #{$bee-select-menu-color-bg};
+  --bee-select-menu-padding-y: 12px;
 
   filter: drop-shadow(0 0 4px rgba($bee-select-menu-color-bg, 50%));
   position: relative;
   z-index: 1000;
-  padding: 12px;
+  padding: var(--bee-select-menu-padding-y);
   background: transparent;
 
   .bee-select__arrow {
     position: absolute;
+    z-index: -1;
     width: 10px;
     height: 10px;
     border-top-left-radius: 4px;
@@ -248,10 +266,14 @@ $bee-select-menu-color-bg: rgb(40 40 40);
     display: flex;
     gap: 8px;
     flex-direction: column;
-    justify-content: center;
-    align-items: flex-start;
+    justify-content: flex-start;
+    align-items: stretch;
+
+    // 最大高度 = 可用高度 - 浮层上下 padding，超出后菜单内部滚动
+    max-height: calc(var(--bee-select-menu-available-height, 100vh) - var(--bee-select-menu-padding-y) * 2);
     padding: 8px;
     border-radius: 8px;
+    overflow-y: auto;
     background: var(--bee-select-menu-color-bg);
 
     .bee-select__menu-item {

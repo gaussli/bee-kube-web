@@ -184,7 +184,7 @@ import {
   DEPLOYMENT_PAGE_META,
   DEPLOYMENT_STATUS_OPTIONS,
   DEPLOYMENT_UPDATE_STRATEGY_OPTIONS,
-} from '@/config/kubernetes/workload'
+} from '@/config/kubernetes/workload/deployment.ts'
 
 defineOptions({ name: 'DeploymentPage' })
 

@@ -1,7 +1,5 @@
 import type { Option, ResourcePageMeta } from '..'
 
-import { COLOR_DANGER, COLOR_GRAY_70, COLOR_PRIMARY, COLOR_SUCCESS } from '@/config/color'
-
 /** Deployment 列表页面功能元数据 */
 export const DEPLOYMENT_PAGE_META: ResourcePageMeta = {
   icon: 'kubernetes-deployment',
@@ -11,28 +9,25 @@ export const DEPLOYMENT_PAGE_META: ResourcePageMeta = {
 }
 
 /** Deployment 状态原始数据（用于派生类型） */
-const _deploymentStatuses = [
-  { value: 'Running', label: '运行中', labelEn: 'Running', color: COLOR_SUCCESS },
-  { value: 'Available', label: '部分就绪', labelEn: 'Available', color: COLOR_SUCCESS },
-  { value: 'Stopped', label: '已停止', labelEn: 'Stopped', color: COLOR_GRAY_70 },
-  { value: 'Creating', label: '创建中', labelEn: 'Creating', color: COLOR_PRIMARY },
-  { value: 'Updating', label: '更新中', labelEn: 'Updating', color: COLOR_PRIMARY },
-  { value: 'Paused', label: '更新暂停', labelEn: 'Paused', color: COLOR_GRAY_70 },
-  { value: 'Terminating', label: '终止中', labelEn: 'Terminating', color: COLOR_PRIMARY },
-  { value: 'CreateTimeout', label: '创建超时', labelEn: 'CreateTimeout', color: COLOR_DANGER },
-  { value: 'UpdateTimeout', label: '更新超时', labelEn: 'UpdateTimeout', color: COLOR_DANGER },
-  { value: 'Failed', label: '失败异常', labelEn: 'Failed', color: COLOR_DANGER },
-  { value: 'Unknown', label: '未知', labelEn: 'Unknown', color: COLOR_GRAY_70 },
+const _deploymentStatuses: Option[] = [
+  { value: 'Running', label: '运行中', type: 'success' },
+  { value: 'Available', label: '部分就绪', type: 'success' },
+  { value: 'Stopped', label: '已停止', type: 'default' },
+  { value: 'Creating', label: '创建中', type: 'primary' },
+  { value: 'Updating', label: '更新中', type: 'primary' },
+  { value: 'Paused', label: '更新暂停', type: 'default' },
+  { value: 'Terminating', label: '终止中', type: 'primary' },
+  { value: 'CreateTimeout', label: '创建超时', type: 'danger' },
+  { value: 'UpdateTimeout', label: '更新超时', type: 'danger' },
+  { value: 'Failed', label: '失败异常', type: 'danger' },
+  { value: 'Unknown', label: '未知', type: 'default' },
 ] as const
 
 /** Deployment 状态类型 */
 export type DeploymentStatus = (typeof _deploymentStatuses)[number]['value']
 
 /** Deployment 状态配置选项 */
-export const DEPLOYMENT_STATUS_OPTIONS: Option[] = [
-  { value: undefined, label: '全部状态', labelEn: 'ALL', color: COLOR_SUCCESS },
-  ..._deploymentStatuses,
-]
+export const DEPLOYMENT_STATUS_OPTIONS: Option[] = [{ value: undefined, label: '全部状态' }, ..._deploymentStatuses]
 
 /** Deployment 更新策略原始数据（用于派生类型） */
 const _deploymentUpdateStrategyTypes = [

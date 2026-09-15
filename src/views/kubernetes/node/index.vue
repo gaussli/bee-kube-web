@@ -7,20 +7,15 @@
     <BeeCard class="page-body">
       <!-- 工具栏 -->
       <div class="page-body__toolbar">
-        <BeeInputSearch
-          v-model="searchKey"
-          class="page-body__toolbar-search"
-          placeholder="按 UID / 名称 / IP 搜索"
-          @search="handleSearch"
-        />
+        <BeeInputSearch v-model="searchKey" class="page-body__toolbar-search" placeholder="按 UID / 名称 / IP 搜索" />
         <BeeSelect v-model="queryForm.status" :options="NODE_STATUS_OPTIONS" placeholder="节点状态" />
-        <BeeButton icon="basic-search" @click="handleSearch">搜索</BeeButton>
-        <BeeButton icon="basic-refresh" @click="handleReset">重置</BeeButton>
+        <BeeButton icon="basic-search" @click="handleSearch"> 搜索 </BeeButton>
+        <BeeButton icon="basic-refresh" @click="handleReset"> 重置 </BeeButton>
       </div>
 
       <!-- 表格 -->
       <div class="page-body__table">
-        <BeeTable :data="tableData" :loading="loading" selectable>
+        <BeeTable :data="tableData" :loading="loading" row-key="uid">
           <!-- 节点信息列 -->
           <BeeTableColumn :width="500">
             <template #default="{ row }">
@@ -28,7 +23,7 @@
             </template>
           </BeeTableColumn>
           <!-- 状态列 -->
-          <BeeTableColumn :width="180">
+          <BeeTableColumn :width="160">
             <template #default="{ row }">
               <BeeStatusCell :options="NODE_STATUS_OPTIONS" :status="row.status" :status-msg="row.statusMsg" />
             </template>
@@ -160,7 +155,7 @@ import { cordonNode, drainNode, getNodeList } from '@/api/kubernetes/node'
 
 import { KubernetesRouteNames } from '@/router/names.ts'
 
-import { useKubernetesStore } from '@/stores/kubernetes'
+import { useKubernetesStore } from '@/stores/kubernetes.ts'
 
 import BeeButton from '@/components/base/BeeButton/index.vue'
 import BeeDialog from '@/components/base/BeeDialog/index.vue'
@@ -388,7 +383,7 @@ function handleDrain(row: NodeListVo) {
  * 导出节点
  */
 function handleExport() {
-  BeeMessage.info('正在导出节点数据...')
+  BeeMessage.info('功能开发中')
 }
 
 // ==================== Dialog Confirm ====================
@@ -418,7 +413,6 @@ async function handleConfirmUncordon() {
   try {
     await cordonNode(clusterUid.value, name, { cordon: false })
     BeeMessage.success(`成功解封节点【${name}】`)
-    uncordonDialogVisible.value = false
     selectedRow.value = undefined
     void loadData()
   } catch (err) {
@@ -436,7 +430,6 @@ async function handleConfirmDrain() {
   try {
     await drainNode(clusterUid.value, name)
     BeeMessage.success(`成功排空节点【${name}】`)
-    drainDialogVisible.value = false
     selectedRow.value = undefined
     void loadData()
   } catch (err) {

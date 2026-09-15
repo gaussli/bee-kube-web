@@ -21,6 +21,7 @@
           ref="tableRef"
           :data="tableData"
           :loading="loading"
+          row-key="uid"
           selectable
           @selection-change="handleSelectionChange"
         >
@@ -133,6 +134,8 @@ import { getClusterList, deleteCluster, deleteClusters } from '@/api/kubernetes/
 
 import { KubernetesRouteNames } from '@/router/names.ts'
 
+import { useKubernetesStore } from '@/stores/kubernetes.ts'
+
 import BeeButton from '@/components/base/BeeButton/index.vue'
 import BeeDialog from '@/components/base/BeeDialog/index.vue'
 import BeeInputSearch from '@/components/base/BeeInputSearch/index.vue'
@@ -152,7 +155,6 @@ import BeePage from '@/components/layout/BeePage/index.vue'
 
 import { usePermission } from '@/composables/usePermission'
 import { CLUSTER_PAGE_META, CLUSTER_STATUS_OPTIONS } from '@/config/kubernetes/cluster'
-import { useKubernetesStore } from '@/stores'
 
 import ClusterInfoCell from './components/ClusterInfoCell.vue'
 
@@ -164,26 +166,26 @@ const router = useRouter()
 const kubernetesStore = useKubernetesStore()
 
 // ==================== Reactive State ====================
-// --- 查询条件
+// ---------- 查询条件 ----------
 /** 搜索关键词 */
 const searchKey = ref('')
 /** 查询条件 */
 const queryForm = reactive<Partial<ClusterQueryForm>>({})
 /** 分页条件请求 / 响应 */
 const pagination = reactive({ page: 1, pageSize: 10, total: 0 })
-// --- 表格数据
+// ---------- 表格数据 ----------
 /** BeeTable 实例引用 */
 const tableRef = ref<InstanceType<typeof BeeTable>>()
 /** 列表加载态 */
 const loading = ref(false)
 /** 列表数据 */
 const tableData = ref<ClusterListVo[]>([])
-// --- 选中数据
+// ---------- 选中数据 ----------
 /** 当前行数据 */
-const selectedRow = ref<ClusterListVo | null>(null)
+const selectedRow = ref<ClusterListVo>()
 /** 多选选中数据 */
 const selectedRows = ref<ClusterListVo[]>([])
-// --- 对话框
+// ---------- 对话框 ----------
 /** 单个删除弹框显隐 */
 const deleteDialogVisible = ref(false)
 /** 批量删除弹框显隐 */
@@ -256,7 +258,7 @@ function handleSelectionChange(rows: Record<string, unknown>[]) {
   selectedRows.value = rows as unknown as ClusterListVo[]
 }
 
-// ==================== Handlers ====================
+// ==================== Handler ====================
 /**
  * 搜索
  */
@@ -353,7 +355,7 @@ async function handleConfirmDelete() {
   try {
     await deleteCluster(uid)
     BeeMessage.success(`成功删除集群【${name}】`)
-    selectedRow.value = null
+    selectedRow.value = undefined
     void loadData()
   } catch (err) {
     console.error('[handleConfirmDelete]', err)
