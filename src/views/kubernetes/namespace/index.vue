@@ -198,32 +198,6 @@ const perm: Record<string, boolean> = {
   limitRangeView: hasPermission('kubernetes:limitrange:view'),
 }
 
-// ==================== Data Loading ====================
-/**
- * 请求命名空间列表数据
- */
-async function loadData() {
-  if (!clusterUid.value) {
-    tableData.value = []
-    return
-  }
-  loading.value = true
-  try {
-    const { list, total } = await getNamespaceList(clusterUid.value, {
-      ...queryForm,
-      page: pagination.page,
-      pageSize: pagination.pageSize,
-    })
-    tableData.value = list as NamespaceListVo[]
-    pagination.total = total
-  } catch (err) {
-    console.error('[loadData]', err)
-    BeeMessage.error('加载命名空间列表失败')
-  } finally {
-    loading.value = false
-  }
-}
-
 // ==================== Row Actions Generate ====================
 /**
  * 构建行操作数组
@@ -262,6 +236,32 @@ function getActions(row: NamespaceListVo): ActionItem[] {
     actions.push({ value: 'delete', label: '删除', icon: 'basic-delete', handler: () => handleDelete(row) })
   }
   return actions
+}
+
+// ==================== Data Loading ====================
+/**
+ * 请求命名空间列表数据
+ */
+async function loadData() {
+  if (!clusterUid.value) {
+    tableData.value = []
+    return
+  }
+  loading.value = true
+  try {
+    const { list, total } = await getNamespaceList(clusterUid.value, {
+      ...queryForm,
+      page: pagination.page,
+      pageSize: pagination.pageSize,
+    })
+    tableData.value = list as NamespaceListVo[]
+    pagination.total = total
+  } catch (err) {
+    console.error('[loadData]', err)
+    BeeMessage.error('加载命名空间列表失败')
+  } finally {
+    loading.value = false
+  }
 }
 
 // ==================== BeeTable Handler ====================
@@ -316,7 +316,7 @@ function handleCreateYaml() {
 
 /**
  * 查看命名空间详情
- * @param row
+ * @param row - 当前行数据
  */
 function handleViewDetail(row: NamespaceListVo) {
   router
@@ -326,7 +326,7 @@ function handleViewDetail(row: NamespaceListVo) {
 
 /**
  * 编辑命名空间
- * @param row
+ * @param row - 当前行数据
  */
 function handleEdit(row: NamespaceListVo) {
   router
@@ -336,7 +336,7 @@ function handleEdit(row: NamespaceListVo) {
 
 /**
  * 配置命名空间标签
- * @param row
+ * @param row - 当前行数据
  */
 function handleLabels(row: NamespaceListVo) {
   router
@@ -349,7 +349,7 @@ function handleLabels(row: NamespaceListVo) {
 
 /**
  * 配置命名空间注解
- * @param row
+ * @param row - 当前行数据
  */
 function handleAnnotations(row: NamespaceListVo) {
   router
@@ -362,7 +362,7 @@ function handleAnnotations(row: NamespaceListVo) {
 
 /**
  * 查看命名空间的资源配额
- * @param row
+ * @param row - 当前行数据
  */
 function handleResourceQuota(row: NamespaceListVo) {
   router
@@ -375,7 +375,7 @@ function handleResourceQuota(row: NamespaceListVo) {
 
 /**
  * 查看命名空间的资源限制
- * @param row
+ * @param row - 当前行数据
  */
 function handleLimitRange(row: NamespaceListVo) {
   router
@@ -385,7 +385,7 @@ function handleLimitRange(row: NamespaceListVo) {
 
 /**
  * 删除命名空间
- * @param row
+ * @param row - 当前行数据
  */
 function handleDelete(row: NamespaceListVo) {
   selectedRow.value = row
@@ -428,14 +428,15 @@ function handleClearSelection() {
  */
 async function handleConfirmDelete() {
   if (!selectedRow.value) return
+  const { name } = selectedRow.value
   try {
-    await deleteNamespace(clusterUid.value, selectedRow.value.name)
-    BeeMessage.success(`成功删除命名空间【${selectedRow.value.name}】`)
+    await deleteNamespace(clusterUid.value, name)
+    BeeMessage.success(`成功删除命名空间【${name}】`)
     selectedRow.value = null
-    await loadData()
+    void loadData()
   } catch (err) {
     console.error('[handleConfirmDelete]', err)
-    BeeMessage.error('删除失败')
+    BeeMessage.error(`删除命名空间【${name}】失败`)
   }
 }
 
@@ -449,11 +450,10 @@ async function handleConfirmBatchDelete() {
     await deleteNamespaces(clusterUid.value, uids)
     BeeMessage.success(`成功删除 ${uids.length} 个命名空间`)
     selectedRows.value = []
-    tableRef.value?.clearSelection()
-    await loadData()
+    void loadData()
   } catch (err) {
     console.error('[handleConfirmBatchDelete]', err)
-    BeeMessage.error('批量删除失败')
+    BeeMessage.error('批量删除命名空间失败')
   }
 }
 

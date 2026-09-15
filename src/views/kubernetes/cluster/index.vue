@@ -202,28 +202,6 @@ const perm: Record<string, boolean> = {
   delete: hasPermission('kubernetes:cluster:delete'),
 }
 
-// ==================== Data Loading ====================
-/**
- * 请求集群列表数据
- */
-async function loadData() {
-  loading.value = true
-  try {
-    const { list, total } = await getClusterList({
-      ...queryForm,
-      page: pagination.page,
-      pageSize: pagination.pageSize,
-    })
-    tableData.value = list
-    pagination.total = total
-  } catch (err) {
-    console.error('[loadData]', err)
-    BeeMessage.error('加载集群列表失败')
-  } finally {
-    loading.value = false
-  }
-}
-
 // ==================== Row Actions Generate ====================
 /**
  * 构建行操作数组
@@ -245,6 +223,28 @@ function getActions(row: ClusterListVo): ActionItem[] {
     actions.push({ value: 'delete', label: '删除', icon: 'basic-delete', handler: () => handleDelete(row) })
   }
   return actions
+}
+
+// ==================== Data Loading ====================
+/**
+ * 请求集群列表数据
+ */
+async function loadData() {
+  loading.value = true
+  try {
+    const { list, total } = await getClusterList({
+      ...queryForm,
+      page: pagination.page,
+      pageSize: pagination.pageSize,
+    })
+    tableData.value = list
+    pagination.total = total
+  } catch (err) {
+    console.error('[loadData]', err)
+    BeeMessage.error('加载集群列表失败')
+  } finally {
+    loading.value = false
+  }
 }
 
 // ==================== BeeTable Handler ====================
@@ -349,14 +349,15 @@ function handleClearSelection() {
  */
 async function handleConfirmDelete() {
   if (!selectedRow.value) return
+  const { uid, name } = selectedRow.value
   try {
-    await deleteCluster(selectedRow.value.uid)
-    BeeMessage.success(`集群【${selectedRow.value.name}】删除成功`)
+    await deleteCluster(uid)
+    BeeMessage.success(`成功删除集群【${name}】`)
     selectedRow.value = null
     void loadData()
   } catch (err) {
     console.error('[handleConfirmDelete]', err)
-    BeeMessage.error('删除失败')
+    BeeMessage.error(`删除集群【${name}】失败`)
   }
 }
 
@@ -370,11 +371,10 @@ async function handleConfirmBatchDelete() {
     await deleteClusters(uids)
     BeeMessage.success(`成功删除 ${uids.length} 个集群`)
     selectedRows.value = []
-    tableRef.value?.clearSelection()
     void loadData()
   } catch (err) {
     console.error('[handleConfirmBatchDelete]', err)
-    BeeMessage.error('批量删除失败')
+    BeeMessage.error('批量删除集群失败')
   }
 }
 
