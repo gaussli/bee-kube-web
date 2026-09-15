@@ -42,6 +42,8 @@ export interface CronJobListVo extends UidEntity, Clustered, Namespaced, AuditEn
   active: number
   /** 最近一次触发时间 */
   lastScheduleTime: string
+  /** 暂停更新标记 */
+  suspend: boolean
 }
 
 /**

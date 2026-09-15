@@ -8,14 +8,8 @@
       <!-- 工具栏 -->
       <div class="page-body__toolbar">
         <BeeInputSearch v-model="searchKey" class="page-body__toolbar-search" placeholder="按 UID / 名称搜索" />
-        <BeeSelect
-          v-model="queryForm.namespace"
-          :menu-height="300"
-          :options="namespaceOptions"
-          placeholder="命名空间筛选"
-          :width="300"
-        />
-        <BeeSelect v-model="queryForm.status" :menu-height="300" :options="JOB_STATUS_OPTIONS" placeholder="状态筛选" />
+        <BeeSelect v-model="queryForm.namespace" :options="namespaceOptions" placeholder="命名空间筛选" />
+        <BeeSelect v-model="queryForm.status" :options="JOB_STATUS_OPTIONS" placeholder="状态筛选" />
         <BeeButton icon="basic-search" @click="handleSearch"> 搜索 </BeeButton>
         <BeeButton icon="basic-refresh" @click="handleReset"> 重置 </BeeButton>
         <div v-if="perm.create" class="page-body__toolbar-separator"></div>
@@ -29,45 +23,59 @@
           ref="tableRef"
           :data="tableData"
           :loading="loading"
+          row-key="uid"
           selectable
           @selection-change="handleSelectionChange"
         >
+          <!-- 任务信息列 -->
           <BeeTableColumn :width="500">
             <template #default="{ row }">
-              <WorkloadInfoCell :description="row.description" icon="kubernetes-job" :name="row.name" :uid="row.uid" />
+              <WorkloadInfoCell
+                :description="row.description"
+                :icon="JOB_PAGE_META.icon"
+                :name="row.name"
+                :uid="row.uid"
+              />
             </template>
           </BeeTableColumn>
+          <!-- 命名空间列 -->
           <BeeTableColumn :width="200">
             <template #default="{ row }">
-              <BeeTableCommonCell subtext="命名空间" :text="row.namespace" />
+              <BeeTableCommonCell :label="row.namespace" sublabel="命名空间" />
             </template>
           </BeeTableColumn>
+          <!-- 状态列 -->
           <BeeTableColumn :width="160">
             <template #default="{ row }">
               <BeeStatusCell :options="JOB_STATUS_OPTIONS" :status="row.status" :status-msg="row.statusMsg" />
             </template>
           </BeeTableColumn>
+          <!-- 完成进度列 -->
           <BeeTableColumn :width="120">
             <template #default="{ row }">
-              <BeeTableCommonCell subtext="完成进度" :text="`${row.succeeded} / ${row.completions}`" />
+              <BeeTableCommonCell :label="`${row.succeeded} / ${row.completions}`" sublabel="完成进度" />
             </template>
           </BeeTableColumn>
+          <!-- 并行度列 -->
           <BeeTableColumn :width="120">
             <template #default="{ row }">
-              <BeeTableCommonCell subtext="并行度" :text="`${row.active} / ${row.parallelism}`" />
+              <BeeTableCommonCell :label="`${row.active} / ${row.parallelism}`" sublabel="并行度" />
             </template>
           </BeeTableColumn>
+          <!-- 创建信息列 -->
           <BeeTableColumn :width="200">
             <template #default="{ row }">
               <BeeAuditCell :datetime="row.createAt" field-name="创建人 / 时间" :username="row.createBy" />
             </template>
           </BeeTableColumn>
+          <!-- 更新信息列 -->
           <BeeTableColumn :width="200">
             <template #default="{ row }">
               <BeeAuditCell :datetime="row.updateAt" field-name="更新人 / 时间" :username="row.updateBy" />
             </template>
           </BeeTableColumn>
-          <BeeTableColumn fixed="right" :width="150">
+          <!-- 操作列 -->
+          <BeeTableColumn fixed="right" :width="136">
             <template #default="{ row }">
               <BeeActionCell :actions="getActions(row)" />
             </template>
@@ -78,15 +86,23 @@
       <!-- 底栏 -->
       <div class="page-body__footer">
         <div class="page-body__footer-actions">
-          <BeeButton :disabled="selectedRows.length === 0" @click="handleClearSelection"> 取消选择 </BeeButton>
-          <BeeButton v-if="perm.delete" :disabled="selectedRows.length === 0" type="danger" @click="handleBatchDelete">
-            批量删除 ({{ selectedRows.length }})
+          <BeeButton :disabled="selectedRows.length === 0" icon="basic-clear" @click="handleClearSelection">
+            清空
           </BeeButton>
-          <BeeButton v-if="perm.view" icon="basic-create" @click="handleExport"> 导出 </BeeButton>
-          <BeeButton v-if="perm.create" icon="basic-create" @click="handleImport"> 导入 </BeeButton>
+          <BeeButton
+            v-if="perm.delete"
+            :disabled="selectedRows.length === 0"
+            icon="basic-delete"
+            type="danger"
+            @click="handleBatchDelete"
+          >
+            删除 ({{ selectedRows.length }})
+          </BeeButton>
+          <BeeButton v-if="perm.view" icon="basic-export" @click="handleExport"> 导出 </BeeButton>
+          <BeeButton v-if="perm.create" icon="basic-import" @click="handleImport"> 导入 </BeeButton>
         </div>
         <BeePagination
-          v-model="pagination.page"
+          v-model:page="pagination.page"
           v-model:page-size="pagination.pageSize"
           :total="pagination.total"
           @change="loadData"
@@ -94,69 +110,95 @@
       </div>
     </BeeCard>
 
+    <!-- 重跑确认 Dialog -->
+    <BeeDialog
+      v-model="rerunDialogVisible"
+      icon="kubernetes-rerun"
+      title="重跑任务"
+      type="primary"
+      @confirm="handleConfirmRerun"
+    >
+      <span>
+        您确认重跑 <strong>{{ selectedRow?.name || '' }}</strong> 任务吗？
+      </span>
+    </BeeDialog>
+
+    <!-- 恢复更新确认 Dialog -->
+    <BeeDialog
+      v-model="resumeDialogVisible"
+      icon="kubernetes-resume"
+      title="恢复任务更新"
+      type="primary"
+      @confirm="handleConfirmResume"
+    >
+      <span>
+        您确认恢复 <strong>{{ selectedRow?.name || '' }}</strong> 任务的更新吗？
+      </span>
+    </BeeDialog>
+
+    <!-- 暂停更新确认 Dialog -->
+    <BeeDialog
+      v-model="pauseDialogVisible"
+      icon="kubernetes-pause"
+      title="暂停任务更新"
+      type="primary"
+      @confirm="handleConfirmPause"
+    >
+      <span>
+        您确认暂停 <strong>{{ selectedRow?.name || '' }}</strong> 任务的更新吗？
+      </span>
+    </BeeDialog>
+
     <!-- 单个删除 Dialog -->
-    <BeeDialog v-model="deleteDialogVisible" title="确认删除" @confirm="handleConfirmDelete">
-      <div class="dialog-content">
-        <p>
-          确定要删除 Job <strong>{{ currentTargetRow?.name }}</strong> 吗？
-        </p>
-      </div>
+    <BeeDialog
+      v-model="deleteDialogVisible"
+      icon="basic-delete"
+      title="删除任务"
+      type="danger"
+      @confirm="handleConfirmDelete"
+    >
+      <span>
+        您确认删除 <strong>{{ selectedRow?.name || '' }}</strong> 任务吗？
+      </span>
     </BeeDialog>
 
     <!-- 批量删除 Dialog -->
-    <BeeDialog v-model="batchDeleteDialogVisible" title="确认删除" @confirm="handleConfirmBatchDelete">
-      <div class="dialog-content">
-        <template v-if="nonDeletableRows.length > 0">
-          <p class="dialog-content__warning">
-            共选中 {{ selectedRows.length }} 个 Job，但以下 {{ nonDeletableRows.length }} 个 Job
-            不可删除，将从列表忽略：
-          </p>
-          <div class="delete-dialog-tags">
-            <BeeTag v-for="row in nonDeletableRows" :key="row.uid" type="warning">
-              {{ row.name }}
-            </BeeTag>
-          </div>
-        </template>
-        <p v-if="deletableRows.length > 0">
-          确定要删除选中的 <strong>{{ deletableRows.length }}</strong> 个 Job 吗？
-        </p>
-        <p v-else class="dialog-content__warning">所有选中的 Job 均不可删除。</p>
-        <div v-if="deletableRows.length > 0" class="delete-dialog-tags">
-          <BeeTag v-for="row in deletableRows" :key="row.uid">
-            {{ row.name }}
-          </BeeTag>
-        </div>
-      </div>
+    <BeeDialog
+      v-model="batchDeleteDialogVisible"
+      icon="basic-delete"
+      title="批量删除任务"
+      type="danger"
+      @confirm="handleConfirmBatchDelete"
+    >
+      <BeeBatchDeleteDialogContent :delete-data="selectedRows" resource-type="任务" />
     </BeeDialog>
   </BeePage>
 </template>
 
 <script setup lang="ts">
-/**
- * Job 管理页面
- * @module views/kubernetes/workload/job
- */
 import { computed, onMounted, reactive, ref } from 'vue'
 
 import { useRoute, useRouter } from 'vue-router'
 
-import type { JobQueryForm, JobListVo } from '@/types/kubernetes/workload/types'
+import type { JobListVo, JobQueryForm } from '@/types/kubernetes/workload/job'
 
 import { getNamespaceList } from '@/api/kubernetes/namespace/namespace'
-import { getJobList, deleteJob, deleteJobs } from '@/api/kubernetes/workload/job'
+import { getJobList, deleteJob, deleteJobs, rerunJob, resumeJob, pauseJob } from '@/api/kubernetes/workload/job'
+
+import { KubernetesRouteNames } from '@/router/names'
 
 import BeeButton from '@/components/base/BeeButton/index.vue'
+import BeeDialog from '@/components/base/BeeDialog/index.vue'
 import BeeInputSearch from '@/components/base/BeeInputSearch/index.vue'
 import { BeeMessage } from '@/components/base/BeeMessage'
 import BeeSelect from '@/components/base/BeeSelect/index.vue'
-import BeeDialog from '@/components/BeeDialog/index.vue'
 import BeePagination from '@/components/BeePagination/index.vue'
 import BeeTableColumn from '@/components/BeeTable/BeeTableColumn.vue'
 import BeeTableCommonCell from '@/components/BeeTable/BeeTableCommonCell.vue'
 import BeeTable from '@/components/BeeTable/index.vue'
-import BeeTag from '@/components/BeeTag/index.vue'
 import BeeActionCell, { type ActionItem } from '@/components/business/BeeActionCell/index.vue'
 import BeeAuditCell from '@/components/business/BeeAuditCell/index.vue'
+import BeeBatchDeleteDialogContent from '@/components/business/BeeDialogContent/BeeBatchDeleteDialogContent.vue'
 import BeePageHeader from '@/components/business/BeePageHeader/index.vue'
 import BeeStatusCell from '@/components/business/BeeStatusCell/index.vue'
 import BeeCard from '@/components/layout/BeeCard/index.vue'
@@ -165,7 +207,8 @@ import BeePage from '@/components/layout/BeePage/index.vue'
 import WorkloadInfoCell from '@/views/kubernetes/workload/components/WorkloadInfoCell/index.vue'
 
 import { usePermission } from '@/composables/usePermission'
-import { JOB_PAGE_META, JOB_STATUS_OPTIONS } from '@/config/kubernetes/workload'
+import { JOB_PAGE_META, JOB_STATUS_OPTIONS } from '@/config/kubernetes/workload/job.ts'
+import { useKubernetesStore } from '@/stores'
 
 defineOptions({ name: 'JobPage' })
 
@@ -175,24 +218,36 @@ const route = useRoute()
 const router = useRouter()
 
 // ==================== Reactive State ====================
-// --- 上下文
-const clusterUid = ref(route.params.clusterUid as string)
-// --- 查询条件
+// ---------- 查询条件 ----------
+/** 搜索关键词 */
 const searchKey = ref('')
+/** 查询条件 */
 const queryForm = reactive<Partial<JobQueryForm>>({})
+/** 分页条件请求 / 响应 */
 const pagination = reactive({ page: 1, pageSize: 10, total: 0 })
-// --- 表格数据
-const loading = ref(false)
-const tableData = ref<JobListVo[]>([])
+// ---------- 表格数据 ----------
+/** BeeTable 实例引用 */
 const tableRef = ref<InstanceType<typeof BeeTable>>()
-// --- 选中逻辑
+/** 列表加载态 */
+const loading = ref(false)
+/** 列表数据 */
+const tableData = ref<JobListVo[]>([])
+// ---------- 选中逻辑 ----------
+/** 当前行数据 */
+const selectedRow = ref<JobListVo>()
+/** 多选选中数据 */
 const selectedRows = ref<JobListVo[]>([])
-const deletableRows = computed(() => selectedRows.value.filter(row => row.deletable !== false))
-const nonDeletableRows = computed(() => selectedRows.value.filter(row => row.deletable === false))
-// --- 对话框
+// ---------- 对话框 ----------
+/** 重跑确认弹框显隐 */
+const rerunDialogVisible = ref(false)
+/** 恢复更新确认弹框显隐 */
+const resumeDialogVisible = ref(false)
+/** 暂停更新确认弹框显隐 */
+const pauseDialogVisible = ref(false)
+/** 单个删除弹框显隐 */
 const deleteDialogVisible = ref(false)
+/** 批量删除弹框显隐 */
 const batchDeleteDialogVisible = ref(false)
-const currentTargetRow = ref<JobListVo | null>(null)
 
 // --- 选项数据
 /** 命名空间选项 */
@@ -200,28 +255,81 @@ const namespaceOptions = ref<{ label: string; value: string | undefined }[]>([
   { label: '全部命名空间', value: undefined },
 ])
 
+// ==================== Computed ====================
+/** 当前集群 UID */
+const clusterUid = computed(() => (route.params.clusterUid as string) || useKubernetesStore().activeClusterUid || '')
+/** 多选选中数据中可删除列表 */
+const deletableRows = computed(() => selectedRows.value.filter(row => row.deletable))
+
+// ==================== Permission ====================
+/** 页面级权限缓存，避免模板/循环中重复调用 hasPermission */
+const perm: Record<string, boolean> = {
+  create: hasPermission('kubernetes:workload:job:create'),
+  edit: hasPermission('kubernetes:workload:job:edit'),
+  view: hasPermission('kubernetes:workload:job:view'),
+  delete: hasPermission('kubernetes:workload:job:delete'),
+}
+
+// ==================== Row Actions Generate ====================
+/**
+ * 构建行操作数组
+ * @param row - 当前行数据
+ * @returns 操作项数组
+ */
+function getActions(row: JobListVo): ActionItem[] {
+  const actions: ActionItem[] = []
+  if (perm.view) {
+    actions.push({ value: 'view', label: '详情', icon: 'basic-view', handler: () => handleViewDetail(row) })
+  }
+  if (perm.edit) {
+    actions.push(
+      { value: 'edit', label: '编辑', icon: 'basic-edit', handler: () => handleEdit(row) },
+      { value: 'labels', label: '配置标签', icon: 'kubernetes-label', handler: () => handleLabels(row) },
+      { value: 'annotations', label: '配置注解', icon: 'kubernetes-annotation', handler: () => handleAnnotations(row) },
+      { value: 'rerun', label: '重跑', icon: 'kubernetes-rerun', handler: () => handleRerun(row) },
+    )
+    if (row.suspend) {
+      actions.push({
+        value: 'resume',
+        label: '恢复更新',
+        icon: 'kubernetes-resume',
+        handler: () => handleResume(row),
+      })
+    } else {
+      actions.push({
+        value: 'pause',
+        label: '暂停更新',
+        icon: 'kubernetes-pause',
+        handler: () => handlePause(row),
+      })
+    }
+  }
+  if (perm.delete && row.deletable) {
+    actions.push({ value: 'delete', label: '删除', icon: 'basic-delete', handler: () => handleDelete(row) })
+  }
+  return actions
+}
+
 // ==================== Data Loading ====================
 /**
- * 加载命名空间选项
- * @remarks 通过 getNamespaceList 获取列表，转换后填充下拉选项
+ * 请求命名空间选项列表数据
  */
 async function loadNamespaceOptions() {
   if (!clusterUid.value) return
   try {
-    const res = await getNamespaceList(clusterUid.value, {})
-    const namespaces = 'list' in res ? res.list : []
+    const { list } = await getNamespaceList(clusterUid.value, { mode: 'Simple' })
     namespaceOptions.value = [
       { label: '全部命名空间', value: undefined },
-      ...namespaces.map(ns => ({ label: ns.name, value: ns.name })),
+      ...list.map(ns => ({ label: ns.name, value: ns.name })),
     ]
-  } catch {
-    // 加载失败时保留默认选项
+  } catch (err) {
+    console.error('[loadNamespaceOptions]', err)
+    BeeMessage.error('加载命名空间选项失败，请稍后再试')
   }
 }
 
 /**
- * 加载 Job 列表数据
- * @remarks 根据当前查询条件与分页参数获取 Job 分页数据
+ * 请求任务列表数据
  */
 async function loadData() {
   if (!clusterUid.value) {
@@ -230,22 +338,33 @@ async function loadData() {
   }
   loading.value = true
   try {
-    const resp = await getJobList(clusterUid.value, {
+    const { list, total } = await getJobList(clusterUid.value, {
       ...queryForm,
       page: pagination.page,
       pageSize: pagination.pageSize,
     })
-    tableData.value = resp.list
-    pagination.total = resp.total
+    tableData.value = list
+    pagination.total = total
+  } catch (err) {
+    console.error('[loadData]', err)
+    BeeMessage.error('加载任务列表失败')
   } finally {
     loading.value = false
   }
 }
 
-// ==================== Search & Reset ====================
+// ==================== BeeTable Handler ====================
+/**
+ * 表格选中行变化
+ * @param rows
+ */
+function handleSelectionChange(rows: Record<string, unknown>[]) {
+  selectedRows.value = rows as unknown as JobListVo[]
+}
+
+// ==================== Handler ====================
 /**
  * 搜索
- * @remarks 将 searchKey 同时映射到 uid/name 字段进行搜索匹配，并重置页码
  */
 function handleSearch() {
   queryForm.uid = searchKey.value
@@ -256,7 +375,6 @@ function handleSearch() {
 
 /**
  * 重置搜索条件
- * @remarks 清空所有筛选字段、搜索关键词、分页参数，重新加载数据
  */
 function handleReset() {
   queryForm.uid = undefined
@@ -269,157 +387,118 @@ function handleReset() {
   void loadData()
 }
 
-// ==================== Selection ====================
 /**
- * 表格选中行变化
- * @param rows
- * @remarks BeeTable 的 selection-change 事件固定返回 Record<string, unknown>[]，需通过 unknown 桥接断言为目标类型
+ * 创建任务
  */
-function handleSelectionChange(rows: Record<string, unknown>[]) {
-  selectedRows.value = rows as unknown as JobListVo[]
+function handleCreate() {
+  router.push({ name: KubernetesRouteNames.Job.Create, params: { clusterUid: clusterUid.value } }).catch(() => {})
 }
 
-/** 取消全部选中 */
-function handleClearSelection() {
-  tableRef.value?.clearSelection()
-}
-
-// ==================== CRUD ====================
 /**
- * 跳转详情页面
- * @param row
+ * 创建任务（YAML）
+ */
+function handleCreateYaml() {
+  router.push({ name: KubernetesRouteNames.Job.CreateYaml, params: { clusterUid: clusterUid.value } }).catch(() => {})
+}
+
+/**
+ * 查看任务详情
+ * @param row - 当前行数据
  */
 function handleViewDetail(row: JobListVo) {
   router
     .push({
-      name: 'kubernetes:workload:job:detail',
-      params: { clusterId: route.params.clusterId, namespace: row.namespace, name: row.name },
+      name: KubernetesRouteNames.Job.Detail,
+      params: { clusterId: clusterUid.value, namespace: row.namespace, name: row.name },
     })
     .catch(() => {})
 }
 
 /**
- * 跳转创建页面
- */
-function handleCreate() {
-  router.push({ name: 'kubernetes:workload:job:create', params: { clusterUid: clusterUid.value } }).catch(() => {})
-}
-
-/**
- * 跳转创建页面（YAML 方式）
- */
-function handleCreateYaml() {
-  router.push({ name: 'kubernetes:workload:job:create:yaml', params: { clusterUid: clusterUid.value } }).catch(() => {})
-}
-
-/**
- * 跳转编辑页面
+ * 编辑任务
  * @param row
  */
 function handleEdit(row: JobListVo) {
   router
     .push({
-      name: 'kubernetes:workload:job:edit',
-      params: { clusterId: route.params.clusterId, namespace: row.namespace, name: row.name },
+      name: KubernetesRouteNames.Job.Edit,
+      params: { clusterId: clusterUid.value, namespace: row.namespace, name: row.name },
     })
     .catch(() => {})
 }
 
 /**
- * 跳转编辑页面（YAML 方式）
- * @param row
+ * 配置任务标签
+ * @param row - 当前行数据
  */
-function handleEditYaml(row: JobListVo) {
+function handleLabels(row: JobListVo) {
   router
     .push({
-      name: 'kubernetes:workload:job:edit:yaml',
-      params: { clusterId: route.params.clusterId, namespace: row.namespace, name: row.name },
+      name: KubernetesRouteNames.Job.ManageLabels,
+      params: { clusterUid: clusterUid.value, namespace: row.namespace, name: row.name },
     })
     .catch(() => {})
 }
 
 /**
- * 打开删除确认弹窗
+ * 配置任务注解
+ * @param row - 当前行数据
+ */
+function handleAnnotations(row: JobListVo) {
+  router
+    .push({
+      name: KubernetesRouteNames.Job.ManageAnnotations,
+      params: { clusterUid: clusterUid.value, namespace: row.namespace, name: row.name },
+    })
+    .catch(() => {})
+}
+
+/**
+ * 重跑任务
+ * @param row - 当前行数据
+ */
+async function handleRerun(row: JobListVo) {
+  selectedRow.value = row
+  rerunDialogVisible.value = true
+}
+
+/**
+ * 恢复任务更新
+ * @param row - 当前行数据
+ */
+async function handleResume(row: JobListVo) {
+  selectedRow.value = row
+  resumeDialogVisible.value = true
+}
+
+/**
+ * 暂停任务更新
+ * @param row - 当前行数据
+ */
+async function handlePause(row: JobListVo) {
+  selectedRow.value = row
+  pauseDialogVisible.value = true
+}
+
+/**
+ * 删除任务
  * @param row
  */
 function handleDelete(row: JobListVo) {
-  currentTargetRow.value = row
+  selectedRow.value = row
   deleteDialogVisible.value = true
 }
-
-/**
- * 确认单个删除
- * @remarks 调用删除 API，成功后关闭弹窗并刷新列表
- */
-async function handleConfirmDelete() {
-  if (!currentTargetRow.value) return
-  try {
-    await deleteJob(currentTargetRow.value.clusterUid, currentTargetRow.value.namespace, currentTargetRow.value.name)
-    BeeMessage.success('删除成功')
-    deleteDialogVisible.value = false
-    currentTargetRow.value = null
-    await loadData()
-  } catch (err) {
-    console.error('[handleConfirmDelete]', err)
-  }
-}
-
 /**
  * 打开批量删除确认弹窗
  */
 function handleBatchDelete() {
   if (deletableRows.value.length === 0) {
-    BeeMessage.warning('选中的 Job 均不可删除')
+    BeeMessage.warning('选中的任务均不可删除')
     return
   }
   batchDeleteDialogVisible.value = true
 }
 
-/**
- * 确认批量删除
- * @remarks 仅删除可删除的选中行，成功后清空选中并刷新列表
- */
-async function handleConfirmBatchDelete() {
-  if (deletableRows.value.length === 0) return
-  const targetClusterUid = deletableRows.value[0].clusterUid
-  const uids = deletableRows.value.map(row => row.uid)
-  try {
-    await deleteJobs(targetClusterUid, uids)
-    BeeMessage.success(`成功删除 ${uids.length} 个 Job`)
-    batchDeleteDialogVisible.value = false
-    selectedRows.value = []
-    await loadData()
-  } catch (err) {
-    console.error('[handleConfirmBatchDelete]', err)
-  }
-}
-
-// ==================== Other Actions ====================
-/**
- * 手动重跑
- * @param row
- */
-function handleRerun(row: JobListVo) {
-  BeeMessage.info(`手动重跑: ${row.name}`)
-}
-
-/**
- * 暂停更新
- * @param row
- */
-function handlePause(row: JobListVo) {
-  BeeMessage.info(`暂停更新: ${row.name}`)
-}
-
-/**
- * 恢复更新
- * @param row
- */
-function handleResume(row: JobListVo) {
-  BeeMessage.info(`恢复更新: ${row.name}`)
-}
-
-// ==================== Export & Import ====================
 /**
  * 导出 Job
  * @remarks 功能开发中
@@ -436,39 +515,96 @@ function handleImport() {
   BeeMessage.info('功能开发中')
 }
 
-// ==================== Row Actions ====================
-/** 页面级权限缓存，避免模板/循环中重复调用 hasPermission */
-const perm: Record<string, boolean> = {
-  create: hasPermission('kubernetes:workload:job:create'),
-  edit: hasPermission('kubernetes:workload:job:edit'),
-  view: hasPermission('kubernetes:workload:job:view'),
-  delete: hasPermission('kubernetes:workload:job:delete'),
+/**
+ * 清空选中数据
+ */
+function handleClearSelection() {
+  tableRef.value?.clearSelection()
+}
+
+// ==================== Dialog Confirm ====================
+/**
+ * 二次确认重跑任务
+ */
+async function handleConfirmRerun() {
+  if (!selectedRow.value) return
+  const { namespace, name } = selectedRow.value
+  try {
+    await rerunJob(clusterUid.value, namespace, name)
+    BeeMessage.success(`成功重跑任务【${name}】`)
+    selectedRow.value = undefined
+    void loadData()
+  } catch (err) {
+    console.error('[handleRestart]', err)
+    BeeMessage.error(`重跑任务【${name}】失败`)
+  }
 }
 
 /**
- * 构建行操作数组
- * @param row - 当前行数据
- * @returns 操作项数组
- * @remarks 按权限和 row.deletable 条件过滤
+ * 二次确认恢复任务更新
  */
-function getActions(row: JobListVo): ActionItem[] {
-  const actions: ActionItem[] = []
-  if (perm.view) {
-    actions.push({ value: 'view', label: '详情', icon: 'basic-view', handler: () => handleViewDetail(row) })
+async function handleConfirmResume() {
+  if (!selectedRow.value) return
+  const { namespace, name } = selectedRow.value
+  try {
+    await resumeJob(clusterUid.value, namespace, name)
+    BeeMessage.success(`成功恢复任务【${name}】更新`)
+    selectedRow.value = undefined
+    void loadData()
+  } catch (err) {
+    console.error('[handleResume]', err)
+    BeeMessage.error(`恢复任务【${name}】更新失败`)
   }
-  if (perm.edit) {
-    actions.push(
-      { value: 'edit', label: '编辑', icon: 'basic-edit', handler: () => handleEdit(row) },
-      { value: 'yamledit', label: '编辑 YAML', icon: 'basic-code', handler: () => handleEditYaml(row) },
-      { value: 'rerun', label: '手动重跑', icon: 'basic-refresh', handler: () => handleRerun(row) },
-      { value: 'pause', label: '暂停更新', icon: 'basic-pause', handler: () => handlePause(row) },
-      { value: 'resume', label: '恢复更新', icon: 'basic-play', handler: () => handleResume(row) },
-    )
+}
+
+/**
+ * 二次确认暂停任务更新
+ */
+async function handleConfirmPause() {
+  if (!selectedRow.value) return
+  const { namespace, name } = selectedRow.value
+  try {
+    await pauseJob(clusterUid.value, namespace, name)
+    BeeMessage.success(`成功暂停任务【${name}】更新`)
+    selectedRow.value = undefined
+    void loadData()
+  } catch (err) {
+    console.error('[handlePause]', err)
+    BeeMessage.error(`暂停任务【${name}】更新失败`)
   }
-  if (perm.delete && row.deletable !== false) {
-    actions.push({ value: 'delete', label: '删除', icon: 'basic-delete', handler: () => handleDelete(row) })
+}
+/**
+ * 二次确认删除任务
+ */
+async function handleConfirmDelete() {
+  if (!selectedRow.value) return
+  const { namespace, name } = selectedRow.value
+  try {
+    await deleteJob(clusterUid.value, namespace, name)
+    BeeMessage.success(`成功删除任务【${name}】`)
+    selectedRow.value = undefined
+    void loadData()
+  } catch (err) {
+    console.error('[handleConfirmDelete]', err)
+    BeeMessage.error(`删除任务【${name}】失败`)
   }
-  return actions
+}
+
+/**
+ * 二次确认批量删除任务
+ */
+async function handleConfirmBatchDelete() {
+  if (deletableRows.value.length === 0) return
+  const uids = deletableRows.value.map(row => row.uid)
+  try {
+    await deleteJobs(clusterUid.value, uids)
+    BeeMessage.success(`成功删除 ${uids.length} 个任务`)
+    selectedRows.value = []
+    void loadData()
+  } catch (err) {
+    console.error('[handleConfirmBatchDelete]', err)
+    BeeMessage.error('批量删除任务失败')
+  }
 }
 
 // ==================== Lifecycle ====================
@@ -481,28 +617,33 @@ onMounted(() => {
 <style lang="scss" scoped>
 .page-body {
   display: flex;
+  gap: 16px;
   flex-direction: column;
+  justify-content: flex-start;
+  align-items: stretch;
   flex: 1;
+  width: 100%;
   min-height: 0;
-  padding: $spacing-16;
+  padding: 16px;
   overflow: hidden;
 
   &__toolbar {
     display: flex;
-    gap: $spacing-8;
-    flex-direction: row;
+    gap: 8px;
+    flex-flow: row wrap;
     align-items: center;
 
     &-search {
       flex: 1;
-      min-width: 0;
+      min-width: 100px;
     }
 
     &-separator {
+      flex-shrink: 0;
       width: 1px;
-      height: 40%;
-      margin: 0 $spacing-8;
-      background: $color-border-third;
+      height: 16px;
+      margin: 0 8px;
+      background: $color-separator;
     }
   }
 
@@ -513,29 +654,18 @@ onMounted(() => {
 
   &__footer {
     display: flex;
-    flex-direction: row;
+    gap: 8px;
+    flex-flow: row wrap;
     justify-content: space-between;
     align-items: center;
 
     &-actions {
       display: flex;
-      gap: $spacing-8;
-      flex-direction: row;
+      gap: 8px;
+      flex-flow: row wrap;
+      justify-content: flex-start;
       align-items: center;
     }
   }
-}
-
-.dialog-content {
-  strong {
-    color: $color-primary;
-  }
-}
-
-.delete-dialog-tags {
-  display: flex;
-  gap: $spacing-8;
-  flex-flow: row wrap;
-  margin: 12px 0;
 }
 </style>

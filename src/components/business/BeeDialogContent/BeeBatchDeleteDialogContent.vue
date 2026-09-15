@@ -11,7 +11,7 @@
     </template>
     <template v-if="deletableData.length > 0">
       <span
-        >您确认要删除以下 <strong>{{ deletableData.length }}</strong> 个{{ resourceType }}吗？</span
+        >您确认删除以下 <strong>{{ deletableData.length }}</strong> 个{{ resourceType }}吗？</span
       >
       <div class="content-tags">
         <BeeCapsule v-for="item in deletableData" :key="item.uid" :label="item.name" size="small" />
@@ -36,8 +36,8 @@ const props = defineProps<{
 }>()
 
 // ==================== Reactive State ====================
-const deletableData = computed(() => props.deleteData.filter(row => row.deletable !== false))
-const nonDeletableData = computed(() => props.deleteData.filter(row => row.deletable === false))
+const deletableData = computed(() => props.deleteData.filter(row => row.deletable))
+const nonDeletableData = computed(() => props.deleteData.filter(row => !row.deletable))
 </script>
 
 <style lang="scss" scoped>

@@ -125,7 +125,7 @@
       @confirm="handleConfirmDelete"
     >
       <span>
-        您确认要删除 <strong>{{ selectedRow?.name || '' }}</strong> 无状态应用吗？
+        您确认删除 <strong>{{ selectedRow?.name || '' }}</strong> 无状态应用吗？
       </span>
     </BeeDialog>
 
@@ -172,6 +172,7 @@ import BeeTableCommonCell from '@/components/BeeTable/BeeTableCommonCell.vue'
 import BeeTable from '@/components/BeeTable/index.vue'
 import BeeActionCell, { type ActionItem } from '@/components/business/BeeActionCell/index.vue'
 import BeeAuditCell from '@/components/business/BeeAuditCell/index.vue'
+import BeeBatchDeleteDialogContent from '@/components/business/BeeDialogContent/BeeBatchDeleteDialogContent.vue'
 import BeePageHeader from '@/components/business/BeePageHeader/index.vue'
 import BeeStatusCell from '@/components/business/BeeStatusCell/index.vue'
 import BeeCard from '@/components/layout/BeeCard/index.vue'
@@ -230,7 +231,7 @@ const namespaceOptions = ref<{ label: string; value: string | undefined }[]>([
 /** 当前集群 UID */
 const clusterUid = computed(() => (route.params.clusterUid as string) || useKubernetesStore().activeClusterUid || '')
 /** 多选选中数据中可删除列表 */
-const deletableRows = computed(() => selectedRows.value.filter(row => row.deletable !== false))
+const deletableRows = computed(() => selectedRows.value.filter(row => row.deletable))
 
 // ==================== Permission ====================
 /** 页面级权限缓存，避免模板/循环中重复调用 hasPermission */
@@ -277,7 +278,7 @@ function getActions(row: DeploymentListVo): ActionItem[] {
       })
     }
   }
-  if (perm.delete && row.deletable !== false) {
+  if (perm.delete && row.deletable) {
     actions.push({ value: 'delete', label: '删除', icon: 'basic-delete', handler: () => handleDelete(row) })
   }
   return actions

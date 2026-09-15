@@ -1,7 +1,5 @@
 import type { Option, ResourcePageMeta } from '..'
 
-import { COLOR_GRAY_70, COLOR_SUCCESS } from '@/config/color'
-
 /** CronJob 列表页面功能元数据 */
 export const CRONJOB_PAGE_META: ResourcePageMeta = {
   icon: 'kubernetes-cronjob',
@@ -10,10 +8,10 @@ export const CRONJOB_PAGE_META: ResourcePageMeta = {
 }
 
 /** CronJob 状态原始数据（用于派生类型） */
-const _cronjobStatuses = [
-  { value: 'Active', label: '运行中', labelEn: 'Active', color: COLOR_SUCCESS },
-  { value: 'Suspended', label: '已暂停', labelEn: 'Suspended', color: COLOR_GRAY_70 },
-  { value: 'Unknown', label: '未知', labelEn: 'Unknown', color: COLOR_GRAY_70 },
+const _cronjobStatuses: Option[] = [
+  { value: 'Active', label: '运行中', type: 'success' },
+  { value: 'Suspended', label: '已暂停', type: 'default' },
+  { value: 'Unknown', label: '未知', type: 'default' },
 ] as const
 
 /** CronJob 状态类型 */
@@ -21,7 +19,7 @@ export type CronJobStatus = (typeof _cronjobStatuses)[number]['value']
 
 /** CronJob 状态配置选项 */
 export const CRONJOB_STATUS_OPTIONS: Option[] = [
-  { value: undefined, label: '全部状态', labelEn: 'ALL', color: COLOR_SUCCESS },
+  { value: undefined, label: '全部状态', type: 'success' },
   ..._cronjobStatuses,
 ]
 

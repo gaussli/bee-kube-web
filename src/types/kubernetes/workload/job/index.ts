@@ -45,6 +45,8 @@ export interface JobListVo extends UidEntity, Clustered, Namespaced, AuditEntity
   completions: number
   /** 并行运行的 Pod 数 */
   parallelism: number
+  /** 暂停更新标记 */
+  suspend: boolean
 }
 
 /**

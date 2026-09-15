@@ -106,7 +106,7 @@
       @confirm="handleConfirmDelete"
     >
       <span>
-        您确认要删除 <strong>{{ selectedRow?.name || '' }}</strong> 集群吗？
+        您确认删除 <strong>{{ selectedRow?.name || '' }}</strong> 集群吗？
       </span>
     </BeeDialog>
 
@@ -193,7 +193,7 @@ const batchDeleteDialogVisible = ref(false)
 
 // ==================== Computed ====================
 /** 多选选中数据中的可删除列表 */
-const deletableRows = computed(() => selectedRows.value.filter(row => row.deletable !== false))
+const deletableRows = computed(() => selectedRows.value.filter(row => row.deletable))
 
 // ==================== Permission ====================
 /** 页面级权限缓存，避免模板/循环中重复调用 hasPermission */
