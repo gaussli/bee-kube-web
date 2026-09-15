@@ -150,7 +150,14 @@ import { useRoute, useRouter } from 'vue-router'
 import type { DeploymentListVo, DeploymentQueryForm } from '@/types/kubernetes/workload/deployment'
 
 import { getNamespaceList } from '@/api/kubernetes/namespace/namespace'
-import { getDeploymentList, deleteDeployment, deleteDeployments } from '@/api/kubernetes/workload/deployment'
+import {
+  getDeploymentList,
+  deleteDeployment,
+  deleteDeployments,
+  resumeDeployment,
+  pauseDeployment,
+  restartDeployment,
+} from '@/api/kubernetes/workload/deployment'
 
 import { KubernetesRouteNames } from '@/router/names'
 
@@ -254,6 +261,21 @@ function getActions(row: DeploymentListVo): ActionItem[] {
       { value: 'restart', label: '重启', icon: 'basic-refresh', handler: () => handleRestart(row) },
       { value: 'rollback', label: '回滚', icon: 'kubernetes-rollback', handler: () => handleRollback(row) },
     )
+    if (row.paused) {
+      actions.push({
+        value: 'resume',
+        label: '恢复更新',
+        icon: 'kubernetes-resume',
+        handler: () => handleResume(row),
+      })
+    } else {
+      actions.push({
+        value: 'pause',
+        label: '暂停更新',
+        icon: 'kubernetes-pause',
+        handler: () => handlePause(row),
+      })
+    }
   }
   if (perm.delete && row.deletable !== false) {
     actions.push({ value: 'delete', label: '删除', icon: 'basic-delete', handler: () => handleDelete(row) })
@@ -420,8 +442,16 @@ function handleScale(row: DeploymentListVo) {
  * 重启无状态应用
  * @param row - 当前行数据
  */
-function handleRestart(row: DeploymentListVo) {
-  BeeMessage.info(`重启: ${row.name}`)
+async function handleRestart(row: DeploymentListVo) {
+  try {
+    await restartDeployment(clusterUid.value, row.namespace, row.name)
+    BeeMessage.success(`成功重启无状态应用【${row.name}】`)
+    selectedRow.value = undefined
+    void loadData()
+  } catch (err) {
+    console.error('[handleRestart]', err)
+    BeeMessage.error(`重启无状态应用【${row.name}】失败`)
+  }
 }
 
 /**
@@ -430,6 +460,38 @@ function handleRestart(row: DeploymentListVo) {
  */
 function handleRollback(row: DeploymentListVo) {
   BeeMessage.info(`回滚: ${row.name}`)
+}
+
+/**
+ * 恢复无状态应用更新
+ * @param row - 当前行数据
+ */
+async function handleResume(row: DeploymentListVo) {
+  try {
+    await resumeDeployment(clusterUid.value, row.namespace, row.name)
+    BeeMessage.success(`成功恢复无状态应用【${row.name}】更新`)
+    selectedRow.value = undefined
+    void loadData()
+  } catch (err) {
+    console.error('[handleResume]', err)
+    BeeMessage.error(`恢复无状态应用【${row.name}】更新失败`)
+  }
+}
+
+/**
+ * 暂停无状态应用更新
+ * @param row - 当前行数据
+ */
+async function handlePause(row: DeploymentListVo) {
+  try {
+    await pauseDeployment(clusterUid.value, row.namespace, row.name)
+    BeeMessage.success(`成功暂停无状态应用【${row.name}】更新`)
+    selectedRow.value = undefined
+    void loadData()
+  } catch (err) {
+    console.error('[handlePause]', err)
+    BeeMessage.error(`暂停无状态应用【${row.name}】更新失败`)
+  }
 }
 
 /**
@@ -482,10 +544,10 @@ async function handleConfirmDelete() {
   if (!selectedRow.value) return
   const { namespace, name } = selectedRow.value
   try {
-    await deleteDeployment(selectedRow.value.clusterUid, namespace, name)
+    await deleteDeployment(clusterUid.value, namespace, name)
     BeeMessage.success(`成功删除无状态应用【${name}】`)
     selectedRow.value = undefined
-    await loadData()
+    void loadData()
   } catch (err) {
     console.error('[handleConfirmDelete]', err)
     BeeMessage.error(`删除无状态应用【${name}】失败`)

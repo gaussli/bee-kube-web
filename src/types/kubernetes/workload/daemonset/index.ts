@@ -43,6 +43,8 @@ export interface DaemonSetListVo extends UidEntity, Clustered, Namespaced, Audit
   numberReady: number
   /** 更新策略 */
   updateStrategyType: DaemonSetUpdateStrategyType
+  /** 暂停更新标记 */
+  paused: boolean
 }
 
 /**

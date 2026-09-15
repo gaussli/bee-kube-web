@@ -43,6 +43,8 @@ export interface DeploymentListVo extends UidEntity, Clustered, Namespaced, Audi
   readyReplicas: number
   /** 更新策略 */
   updateStrategyType: DeploymentUpdateStrategyType
+  /** 暂停更新标记 */
+  paused: boolean
 }
 
 /**

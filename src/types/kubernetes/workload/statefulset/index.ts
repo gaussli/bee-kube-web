@@ -43,6 +43,8 @@ export interface StatefulSetListVo extends UidEntity, Clustered, Namespaced, Aud
   readyReplicas: number
   /** 更新策略 */
   updateStrategyType: StatefulSetUpdateStrategyType
+  /** 暂停更新标记 */
+  paused: boolean
 }
 
 /**
