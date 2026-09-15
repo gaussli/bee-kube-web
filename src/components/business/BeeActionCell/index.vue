@@ -5,8 +5,13 @@
       <BeeIconButton :icon="action.icon" size="small" @click.stop="action.handler" />
     </BeeTooltip>
     <!-- 更多下拉菜单 -->
-    <BeeDropdown v-if="showMore" :options="moreActions" @change="handleDropdownChange">
-      <BeeTooltip size="small" tooltip="更多">
+    <BeeDropdown
+      v-if="showMore"
+      :options="moreActions"
+      @change="handleDropdownChange"
+      @visible-change="handleDropdownVisible"
+    >
+      <BeeTooltip :disabled="dropdownMenuVisible" size="small" tooltip="更多">
         <BeeIconButton icon="basic-more" size="small" />
       </BeeTooltip>
     </BeeDropdown>
@@ -14,7 +19,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed } from 'vue'
+import { computed, ref } from 'vue'
 
 import BeeDropdown from '@/components/base/BeeDropdown/index.vue'
 import BeeIconButton from '@/components/base/BeeIconButton/index.vue'
@@ -40,6 +45,9 @@ const props = defineProps<{
   actions: ActionItem[]
 }>()
 
+// ==================== Reactive State ====================
+const dropdownMenuVisible = ref<boolean>(false)
+
 // ==================== Computed ====================
 /** 是否展示"更多"下拉按钮 */
 const showMore = computed(() => props.actions.length > 3)
@@ -61,6 +69,14 @@ const moreActions = computed(() => {
 })
 
 // ==================== Handler ====================
+/**
+ * 下拉菜单展示标记处理
+ * @param visible
+ */
+function handleDropdownVisible(visible: boolean) {
+  dropdownMenuVisible.value = visible
+}
+
 /**
  * 更多下拉菜单选中回调
  * @param value - 选中的操作标识

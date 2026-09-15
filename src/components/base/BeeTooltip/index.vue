@@ -80,6 +80,14 @@ const arrowStyle = computed(() => {
   }
 })
 
+// ==================== Watch ====================
+watch(
+  () => props.disabled,
+  () => {
+    visible.value = !props.disabled
+  },
+)
+
 // ==================== Vueuse ====================
 const isTriggerHover = useElementHover(triggerRef)
 const isFloatingHover = useElementHover(floatingRef)
