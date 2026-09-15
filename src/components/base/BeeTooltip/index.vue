@@ -84,7 +84,9 @@ const arrowStyle = computed(() => {
 watch(
   () => props.disabled,
   () => {
-    visible.value = !props.disabled
+    if (props.disabled) {
+      visible.value = !props.disabled
+    }
   },
 )
 

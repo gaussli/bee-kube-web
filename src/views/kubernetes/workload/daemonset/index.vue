@@ -8,19 +8,8 @@
       <!-- 工具栏 -->
       <div class="page-body__toolbar">
         <BeeInputSearch v-model="searchKey" class="page-body__toolbar-search" placeholder="按 UID / 名称搜索" />
-        <BeeSelect
-          v-model="queryForm.namespace"
-          :menu-height="300"
-          :options="namespaceOptions"
-          placeholder="命名空间筛选"
-          :width="300"
-        />
-        <BeeSelect
-          v-model="queryForm.status"
-          :menu-height="300"
-          :options="DAEMONSET_STATUS_OPTIONS"
-          placeholder="状态筛选"
-        />
+        <BeeSelect v-model="queryForm.namespace" :options="namespaceOptions" placeholder="命名空间筛选" />
+        <BeeSelect v-model="queryForm.status" :options="DAEMONSET_STATUS_OPTIONS" placeholder="状态筛选" />
         <BeeButton icon="basic-search" @click="handleSearch"> 搜索 </BeeButton>
         <BeeButton icon="basic-refresh" @click="handleReset"> 重置 </BeeButton>
         <div v-if="perm.create" class="page-body__toolbar-separator"></div>
@@ -34,56 +23,65 @@
           ref="tableRef"
           :data="tableData"
           :loading="loading"
+          row-key="uid"
           selectable
           @selection-change="handleSelectionChange"
         >
+          <!-- 守护进程集信息列 -->
           <BeeTableColumn :width="500">
             <template #default="{ row }">
               <WorkloadInfoCell
                 :description="row.description"
-                icon="kubernetes-daemonset"
+                :icon="DAEMONSET_PAGE_META.icon"
                 :name="row.name"
                 :uid="row.uid"
               />
             </template>
           </BeeTableColumn>
+          <!-- 命名空间列 -->
           <BeeTableColumn :width="200">
             <template #default="{ row }">
-              <BeeTableCommonCell subtext="命名空间" :text="row.namespace" />
+              <BeeTableCommonCell :label="row.namespace" sublabel="命名空间" />
             </template>
           </BeeTableColumn>
+          <!-- 状态列 -->
           <BeeTableColumn :width="160">
             <template #default="{ row }">
               <BeeStatusCell :options="DAEMONSET_STATUS_OPTIONS" :status="row.status" :status-msg="row.statusMsg" />
             </template>
           </BeeTableColumn>
+          <!-- 副本数列 -->
           <BeeTableColumn :width="120">
             <template #default="{ row }">
-              <BeeTableCommonCell subtext="调度数" :text="`${row.numberReady} / ${row.desiredNumberScheduled}`" />
+              <BeeTableCommonCell :label="`${row.readyReplicas} / ${row.replicas}`" sublabel="副本数" />
             </template>
           </BeeTableColumn>
+          <!-- 更新策略列 -->
           <BeeTableColumn :width="160">
             <template #default="{ row }">
               <BeeTableCommonCell
-                :subtext="row.updateStrategyType"
-                :text="
-                  (DAEMONSET_UPDATE_STRATEGY_LABEL_MAP as Record<string, string>)[row.updateStrategyType] ||
+                :label="
+                  DAEMONSET_UPDATE_STRATEGY_OPTIONS.find(item => item.value === row.updateStrategyType)?.label ||
                   row.updateStrategyType
                 "
+                :sublabel="row.updateStrategyType"
               />
             </template>
           </BeeTableColumn>
+          <!-- 创建信息列 -->
           <BeeTableColumn :width="200">
             <template #default="{ row }">
               <BeeAuditCell :datetime="row.createAt" field-name="创建人 / 时间" :username="row.createBy" />
             </template>
           </BeeTableColumn>
+          <!-- 更新信息列 -->
           <BeeTableColumn :width="200">
             <template #default="{ row }">
               <BeeAuditCell :datetime="row.updateAt" field-name="更新人 / 时间" :username="row.updateBy" />
             </template>
           </BeeTableColumn>
-          <BeeTableColumn fixed="right" :width="150">
+          <!-- 操作列 -->
+          <BeeTableColumn fixed="right" :width="136">
             <template #default="{ row }">
               <BeeActionCell :actions="getActions(row)" />
             </template>
@@ -94,15 +92,23 @@
       <!-- 底栏 -->
       <div class="page-body__footer">
         <div class="page-body__footer-actions">
-          <BeeButton :disabled="selectedRows.length === 0" @click="handleClearSelection"> 取消选择 </BeeButton>
-          <BeeButton v-if="perm.delete" :disabled="selectedRows.length === 0" type="danger" @click="handleBatchDelete">
-            批量删除 ({{ selectedRows.length }})
+          <BeeButton :disabled="selectedRows.length === 0" icon="basic-clear" @click="handleClearSelection">
+            清空
           </BeeButton>
-          <BeeButton v-if="perm.view" icon="basic-create" @click="handleExport"> 导出 </BeeButton>
-          <BeeButton v-if="perm.create" icon="basic-create" @click="handleImport"> 导入 </BeeButton>
+          <BeeButton
+            v-if="perm.delete"
+            :disabled="selectedRows.length === 0"
+            icon="basic-delete"
+            type="danger"
+            @click="handleBatchDelete"
+          >
+            删除 ({{ selectedRows.length }})
+          </BeeButton>
+          <BeeButton v-if="perm.view" icon="basic-export" @click="handleExport"> 导出 </BeeButton>
+          <BeeButton v-if="perm.create" icon="basic-import" @click="handleImport"> 导入 </BeeButton>
         </div>
         <BeePagination
-          v-model="pagination.page"
+          v-model:page="pagination.page"
           v-model:page-size="pagination.pageSize"
           :total="pagination.total"
           @change="loadData"
@@ -111,66 +117,59 @@
     </BeeCard>
 
     <!-- 单个删除 Dialog -->
-    <BeeDialog v-model="deleteDialogVisible" title="确认删除" @confirm="handleConfirmDelete">
-      <div class="dialog-content">
-        <p>
-          确定要删除 DaemonSet <strong>{{ currentTargetRow?.name }}</strong> 吗？
-        </p>
-      </div>
+    <BeeDialog
+      v-model="deleteDialogVisible"
+      icon="basic-delete"
+      title="删除守护进程集"
+      type="danger"
+      @confirm="handleConfirmDelete"
+    >
+      <span>
+        您确认要删除 <strong>{{ selectedRow?.name || '' }}</strong> 守护进程集吗？
+      </span>
     </BeeDialog>
 
     <!-- 批量删除 Dialog -->
-    <BeeDialog v-model="batchDeleteDialogVisible" title="确认删除" @confirm="handleConfirmBatchDelete">
-      <div class="dialog-content">
-        <template v-if="nonDeletableRows.length > 0">
-          <p class="dialog-content__warning">
-            共选中 {{ selectedRows.length }} 个 DaemonSet，但以下 {{ nonDeletableRows.length }} 个 DaemonSet
-            不可删除，将从列表忽略：
-          </p>
-          <div class="delete-dialog-tags">
-            <BeeTag v-for="row in nonDeletableRows" :key="row.uid" type="warning">
-              {{ row.name }}
-            </BeeTag>
-          </div>
-        </template>
-        <p v-if="deletableRows.length > 0">
-          确定要删除选中的 <strong>{{ deletableRows.length }}</strong> 个 DaemonSet 吗？
-        </p>
-        <p v-else class="dialog-content__warning">所有选中的 DaemonSet 均不可删除。</p>
-        <div v-if="deletableRows.length > 0" class="delete-dialog-tags">
-          <BeeTag v-for="row in deletableRows" :key="row.uid">
-            {{ row.name }}
-          </BeeTag>
-        </div>
-      </div>
+    <BeeDialog
+      v-model="batchDeleteDialogVisible"
+      icon="basic-delete"
+      title="批量删除守护进程集"
+      type="danger"
+      @confirm="handleConfirmBatchDelete"
+    >
+      <BeeBatchDeleteDialogContent :delete-data="selectedRows" resource-type="守护进程集" />
     </BeeDialog>
   </BeePage>
 </template>
 
 <script setup lang="ts">
-/**
- * DaemonSet 管理页面
- * @module views/kubernetes/workload/daemonset
- */
 import { computed, onMounted, reactive, ref } from 'vue'
 
 import { useRoute, useRouter } from 'vue-router'
 
-import type { DaemonSetQueryForm, DaemonSetListVo } from '@/types/kubernetes/workload/types'
+import type { DaemonSetListVo, DaemonSetQueryForm } from '@/types/kubernetes/workload/daemonset'
 
 import { getNamespaceList } from '@/api/kubernetes/namespace/namespace'
-import { getDaemonSetList, deleteDaemonSet, deleteDaemonSets } from '@/api/kubernetes/workload/daemonset'
+import {
+  getDaemonSetList,
+  deleteDaemonSet,
+  deleteDaemonSets,
+  resumeDaemonSet,
+  pauseDaemonSet,
+  restartDaemonSet,
+} from '@/api/kubernetes/workload/daemonset'
+
+import { KubernetesRouteNames } from '@/router/names'
 
 import BeeButton from '@/components/base/BeeButton/index.vue'
+import BeeDialog from '@/components/base/BeeDialog/index.vue'
 import BeeInputSearch from '@/components/base/BeeInputSearch/index.vue'
 import { BeeMessage } from '@/components/base/BeeMessage'
 import BeeSelect from '@/components/base/BeeSelect/index.vue'
-import BeeDialog from '@/components/BeeDialog/index.vue'
 import BeePagination from '@/components/BeePagination/index.vue'
 import BeeTableColumn from '@/components/BeeTable/BeeTableColumn.vue'
 import BeeTableCommonCell from '@/components/BeeTable/BeeTableCommonCell.vue'
 import BeeTable from '@/components/BeeTable/index.vue'
-import BeeTag from '@/components/BeeTag/index.vue'
 import BeeActionCell, { type ActionItem } from '@/components/business/BeeActionCell/index.vue'
 import BeeAuditCell from '@/components/business/BeeAuditCell/index.vue'
 import BeePageHeader from '@/components/business/BeePageHeader/index.vue'
@@ -184,8 +183,9 @@ import { usePermission } from '@/composables/usePermission'
 import {
   DAEMONSET_PAGE_META,
   DAEMONSET_STATUS_OPTIONS,
-  DAEMONSET_UPDATE_STRATEGY_LABEL_MAP,
-} from '@/config/kubernetes/workload'
+  DAEMONSET_UPDATE_STRATEGY_OPTIONS,
+} from '@/config/kubernetes/workload/daemonset.ts'
+import { useKubernetesStore } from '@/stores'
 
 defineOptions({ name: 'DaemonSetPage' })
 
@@ -195,24 +195,30 @@ const route = useRoute()
 const router = useRouter()
 
 // ==================== Reactive State ====================
-// --- 上下文
-const clusterUid = ref(route.params.clusterUid as string)
-// --- 查询条件
+// ---------- 查询条件 ----------
+/** 搜索关键词 */
 const searchKey = ref('')
+/** 查询条件 */
 const queryForm = reactive<Partial<DaemonSetQueryForm>>({})
+/** 分页条件请求 / 响应 */
 const pagination = reactive({ page: 1, pageSize: 10, total: 0 })
-// --- 表格数据
-const loading = ref(false)
-const tableData = ref<DaemonSetListVo[]>([])
+// ---------- 表格数据 ----------
+/** BeeTable 实例引用 */
 const tableRef = ref<InstanceType<typeof BeeTable>>()
-// --- 选中逻辑
+/** 列表加载态 */
+const loading = ref(false)
+/** 列表数据 */
+const tableData = ref<DaemonSetListVo[]>([])
+// ---------- 选中逻辑 ----------
+/** 当前行数据 */
+const selectedRow = ref<DaemonSetListVo>()
+/** 多选选中数据 */
 const selectedRows = ref<DaemonSetListVo[]>([])
-const deletableRows = computed(() => selectedRows.value.filter(row => row.deletable !== false))
-const nonDeletableRows = computed(() => selectedRows.value.filter(row => row.deletable === false))
-// --- 对话框
+// ---------- 对话框 ----------
+/** 单个删除弹框显隐 */
 const deleteDialogVisible = ref(false)
+/** 批量删除弹框显隐 */
 const batchDeleteDialogVisible = ref(false)
-const currentTargetRow = ref<DaemonSetListVo | null>(null)
 
 // --- 选项数据
 /** 命名空间选项 */
@@ -220,28 +226,82 @@ const namespaceOptions = ref<{ label: string; value: string | undefined }[]>([
   { label: '全部命名空间', value: undefined },
 ])
 
+// ==================== Computed ====================
+/** 当前集群 UID */
+const clusterUid = computed(() => (route.params.clusterUid as string) || useKubernetesStore().activeClusterUid || '')
+/** 多选选中数据中可删除列表 */
+const deletableRows = computed(() => selectedRows.value.filter(row => row.deletable !== false))
+
+// ==================== Permission ====================
+/** 页面级权限缓存，避免模板/循环中重复调用 hasPermission */
+const perm: Record<string, boolean> = {
+  create: hasPermission('kubernetes:workload:daemonset:create'),
+  edit: hasPermission('kubernetes:workload:daemonset:edit'),
+  view: hasPermission('kubernetes:workload:daemonset:view'),
+  delete: hasPermission('kubernetes:workload:daemonset:delete'),
+}
+
+// ==================== Row Actions Generate ====================
+/**
+ * 构建行操作数组
+ * @param row - 当前行数据
+ * @returns 操作项数组
+ */
+function getActions(row: DaemonSetListVo): ActionItem[] {
+  const actions: ActionItem[] = []
+  if (perm.view) {
+    actions.push({ value: 'view', label: '详情', icon: 'basic-view', handler: () => handleViewDetail(row) })
+  }
+  if (perm.edit) {
+    actions.push(
+      { value: 'edit', label: '编辑', icon: 'basic-edit', handler: () => handleEdit(row) },
+      { value: 'labels', label: '配置标签', icon: 'kubernetes-label', handler: () => handleLabels(row) },
+      { value: 'annotations', label: '配置注解', icon: 'kubernetes-annotation', handler: () => handleAnnotations(row) },
+      { value: 'restart', label: '重启', icon: 'basic-refresh', handler: () => handleRestart(row) },
+      { value: 'rollback', label: '回滚', icon: 'kubernetes-rollback', handler: () => handleRollback(row) },
+    )
+    if (row.paused) {
+      actions.push({
+        value: 'resume',
+        label: '恢复更新',
+        icon: 'kubernetes-resume',
+        handler: () => handleResume(row),
+      })
+    } else {
+      actions.push({
+        value: 'pause',
+        label: '暂停更新',
+        icon: 'kubernetes-pause',
+        handler: () => handlePause(row),
+      })
+    }
+  }
+  if (perm.delete && row.deletable !== false) {
+    actions.push({ value: 'delete', label: '删除', icon: 'basic-delete', handler: () => handleDelete(row) })
+  }
+  return actions
+}
+
 // ==================== Data Loading ====================
 /**
- * 加载命名空间选项
- * @remarks 通过 getNamespaceList 获取列表，转换后填充下拉选项
+ * 请求命名空间选项列表数据
  */
 async function loadNamespaceOptions() {
   if (!clusterUid.value) return
   try {
-    const res = await getNamespaceList(clusterUid.value, {})
-    const namespaces = 'list' in res ? res.list : []
+    const { list } = await getNamespaceList(clusterUid.value, { mode: 'Simple' })
     namespaceOptions.value = [
       { label: '全部命名空间', value: undefined },
-      ...namespaces.map(ns => ({ label: ns.name, value: ns.name })),
+      ...list.map(ns => ({ label: ns.name, value: ns.name })),
     ]
-  } catch {
-    // 加载失败时保留默认选项
+  } catch (err) {
+    console.error('[loadNamespaceOptions]', err)
+    BeeMessage.error('加载命名空间选项失败，请稍后再试')
   }
 }
 
 /**
- * 加载 DaemonSet 列表数据
- * @remarks 根据当前查询条件与分页参数获取 DaemonSet 分页数据
+ * 请求守护进程集列表数据
  */
 async function loadData() {
   if (!clusterUid.value) {
@@ -250,22 +310,33 @@ async function loadData() {
   }
   loading.value = true
   try {
-    const resp = await getDaemonSetList(clusterUid.value, {
+    const { list, total } = await getDaemonSetList(clusterUid.value, {
       ...queryForm,
       page: pagination.page,
       pageSize: pagination.pageSize,
     })
-    tableData.value = resp.list
-    pagination.total = resp.total
+    tableData.value = list
+    pagination.total = total
+  } catch (err) {
+    console.error('[loadData]', err)
+    BeeMessage.error('加载守护进程集列表失败')
   } finally {
     loading.value = false
   }
 }
 
-// ==================== Search & Reset ====================
+// ==================== BeeTable Handler ====================
+/**
+ * 表格选中行变化
+ * @param rows
+ */
+function handleSelectionChange(rows: Record<string, unknown>[]) {
+  selectedRows.value = rows as unknown as DaemonSetListVo[]
+}
+
+// ==================== Handler ====================
 /**
  * 搜索
- * @remarks 将 searchKey 同时映射到 uid/name 字段进行搜索匹配，并重置页码
  */
 function handleSearch() {
   queryForm.uid = searchKey.value
@@ -276,7 +347,6 @@ function handleSearch() {
 
 /**
  * 重置搜索条件
- * @remarks 清空所有筛选字段、搜索关键词、分页参数，重新加载数据
  */
 function handleReset() {
   queryForm.uid = undefined
@@ -289,173 +359,149 @@ function handleReset() {
   void loadData()
 }
 
-// ==================== Selection ====================
 /**
- * 表格选中行变化
- * @param rows
- * @remarks BeeTable 的 selection-change 事件固定返回 Record<string, unknown>[]，需通过 unknown 桥接断言为目标类型
+ * 创建守护进程集
  */
-function handleSelectionChange(rows: Record<string, unknown>[]) {
-  selectedRows.value = rows as unknown as DaemonSetListVo[]
+function handleCreate() {
+  router.push({ name: KubernetesRouteNames.DaemonSet.Create, params: { clusterUid: clusterUid.value } }).catch(() => {})
 }
 
-/** 取消全部选中 */
-function handleClearSelection() {
-  tableRef.value?.clearSelection()
-}
-
-// ==================== CRUD ====================
 /**
- * 跳转详情页面
- * @param row
+ * 创建守护进程集（YAML）
+ */
+function handleCreateYaml() {
+  router
+    .push({ name: KubernetesRouteNames.DaemonSet.CreateYaml, params: { clusterUid: clusterUid.value } })
+    .catch(() => {})
+}
+
+/**
+ * 查看守护进程集详情
+ * @param row - 当前行数据
  */
 function handleViewDetail(row: DaemonSetListVo) {
   router
     .push({
-      name: 'kubernetes:workload:daemonset:detail',
-      params: { clusterId: route.params.clusterId, namespace: row.namespace, name: row.name },
+      name: KubernetesRouteNames.DaemonSet.Detail,
+      params: { clusterId: clusterUid.value, namespace: row.namespace, name: row.name },
     })
     .catch(() => {})
 }
 
 /**
- * 跳转创建页面
- */
-function handleCreate() {
-  router
-    .push({ name: 'kubernetes:workload:daemonset:create', params: { clusterUid: clusterUid.value } })
-    .catch(() => {})
-}
-
-/**
- * 跳转创建页面（YAML 方式）
- */
-function handleCreateYaml() {
-  router
-    .push({ name: 'kubernetes:workload:daemonset:create:yaml', params: { clusterUid: clusterUid.value } })
-    .catch(() => {})
-}
-
-/**
- * 跳转编辑页面
+ * 编辑守护进程集
  * @param row
  */
 function handleEdit(row: DaemonSetListVo) {
   router
     .push({
-      name: 'kubernetes:workload:daemonset:edit',
-      params: { clusterId: route.params.clusterId, namespace: row.namespace, name: row.name },
+      name: KubernetesRouteNames.DaemonSet.Edit,
+      params: { clusterId: clusterUid.value, namespace: row.namespace, name: row.name },
     })
     .catch(() => {})
 }
 
 /**
- * 跳转编辑页面（YAML 方式）
- * @param row
+ * 配置守护进程集标签
+ * @param row - 当前行数据
  */
-function handleEditYaml(row: DaemonSetListVo) {
+function handleLabels(row: DaemonSetListVo) {
   router
     .push({
-      name: 'kubernetes:workload:daemonset:edit:yaml',
-      params: { clusterId: route.params.clusterId, namespace: row.namespace, name: row.name },
+      name: KubernetesRouteNames.DaemonSet.ManageLabels,
+      params: { clusterUid: clusterUid.value, namespace: row.namespace, name: row.name },
     })
     .catch(() => {})
 }
 
 /**
- * 打开删除确认弹窗
- * @param row
+ * 配置守护进程集注解
+ * @param row - 当前行数据
  */
-function handleDelete(row: DaemonSetListVo) {
-  currentTargetRow.value = row
-  deleteDialogVisible.value = true
+function handleAnnotations(row: DaemonSetListVo) {
+  router
+    .push({
+      name: KubernetesRouteNames.DaemonSet.ManageAnnotations,
+      params: { clusterUid: clusterUid.value, namespace: row.namespace, name: row.name },
+    })
+    .catch(() => {})
 }
 
 /**
- * 确认单个删除
- * @remarks 调用删除 API，成功后关闭弹窗并刷新列表
+ * 重启守护进程集
+ * @param row - 当前行数据
  */
-async function handleConfirmDelete() {
-  if (!currentTargetRow.value) return
+async function handleRestart(row: DaemonSetListVo) {
   try {
-    await deleteDaemonSet(
-      currentTargetRow.value.clusterUid,
-      currentTargetRow.value.namespace,
-      currentTargetRow.value.name,
-    )
-    BeeMessage.success('删除成功')
-    deleteDialogVisible.value = false
-    currentTargetRow.value = null
-    await loadData()
+    await restartDaemonSet(clusterUid.value, row.namespace, row.name)
+    BeeMessage.success(`成功重启守护进程集【${row.name}】`)
+    selectedRow.value = undefined
+    void loadData()
   } catch (err) {
-    console.error('[handleConfirmDelete]', err)
+    console.error('[handleRestart]', err)
+    BeeMessage.error(`重启守护进程集【${row.name}】失败`)
   }
 }
 
 /**
- * 打开批量删除确认弹窗
- */
-function handleBatchDelete() {
-  if (deletableRows.value.length === 0) {
-    BeeMessage.warning('选中的 DaemonSet 均不可删除')
-    return
-  }
-  batchDeleteDialogVisible.value = true
-}
-
-/**
- * 确认批量删除
- * @remarks 仅删除可删除的选中行，成功后清空选中并刷新列表
- */
-async function handleConfirmBatchDelete() {
-  if (deletableRows.value.length === 0) return
-  const targetClusterUid = deletableRows.value[0].clusterUid
-  const uids = deletableRows.value.map(row => row.uid)
-  try {
-    await deleteDaemonSets(targetClusterUid, uids)
-    BeeMessage.success(`成功删除 ${uids.length} 个 DaemonSet`)
-    batchDeleteDialogVisible.value = false
-    selectedRows.value = []
-    await loadData()
-  } catch (err) {
-    console.error('[handleConfirmBatchDelete]', err)
-  }
-}
-
-// ==================== Other Actions ====================
-/**
- * 重启
- * @param row
- */
-function handleRestart(row: DaemonSetListVo) {
-  BeeMessage.info(`重启: ${row.name}`)
-}
-
-/**
- * 回滚
- * @param row
+ * 回滚守护进程集
+ * @param row - 当前行数据
  */
 function handleRollback(row: DaemonSetListVo) {
   BeeMessage.info(`回滚: ${row.name}`)
 }
 
 /**
- * 暂停
- * @param row
+ * 恢复守护进程集更新
+ * @param row - 当前行数据
  */
-function handlePause(row: DaemonSetListVo) {
-  BeeMessage.info(`暂停: ${row.name}`)
+async function handleResume(row: DaemonSetListVo) {
+  try {
+    await resumeDaemonSet(clusterUid.value, row.namespace, row.name)
+    BeeMessage.success(`成功恢复守护进程集【${row.name}】更新`)
+    selectedRow.value = undefined
+    void loadData()
+  } catch (err) {
+    console.error('[handleResume]', err)
+    BeeMessage.error(`恢复守护进程集【${row.name}】更新失败`)
+  }
 }
 
 /**
- * 恢复
- * @param row
+ * 暂停守护进程集更新
+ * @param row - 当前行数据
  */
-function handleResume(row: DaemonSetListVo) {
-  BeeMessage.info(`恢复: ${row.name}`)
+async function handlePause(row: DaemonSetListVo) {
+  try {
+    await pauseDaemonSet(clusterUid.value, row.namespace, row.name)
+    BeeMessage.success(`成功暂停守护进程集【${row.name}】更新`)
+    selectedRow.value = undefined
+    void loadData()
+  } catch (err) {
+    console.error('[handlePause]', err)
+    BeeMessage.error(`暂停守护进程集【${row.name}】更新失败`)
+  }
 }
 
-// ==================== Export & Import ====================
+/**
+ * 删除守护进程集
+ * @param row
+ */
+function handleDelete(row: DaemonSetListVo) {
+  selectedRow.value = row
+  deleteDialogVisible.value = true
+}
+/**
+ * 打开批量删除确认弹窗
+ */
+function handleBatchDelete() {
+  if (deletableRows.value.length === 0) {
+    BeeMessage.warning('选中的守护进程集均不可删除')
+    return
+  }
+  batchDeleteDialogVisible.value = true
+}
+
 /**
  * 导出 DaemonSet
  * @remarks 功能开发中
@@ -472,40 +518,46 @@ function handleImport() {
   BeeMessage.info('功能开发中')
 }
 
-// ==================== Row Actions ====================
-/** 页面级权限缓存，避免模板/循环中重复调用 hasPermission */
-const perm: Record<string, boolean> = {
-  create: hasPermission('kubernetes:workload:daemonset:create'),
-  edit: hasPermission('kubernetes:workload:daemonset:edit'),
-  view: hasPermission('kubernetes:workload:daemonset:view'),
-  delete: hasPermission('kubernetes:workload:daemonset:delete'),
+/**
+ * 清空选中数据
+ */
+function handleClearSelection() {
+  tableRef.value?.clearSelection()
+}
+
+// ==================== Dialog Confirm ====================
+/**
+ * 二次确认删除守护进程集
+ */
+async function handleConfirmDelete() {
+  if (!selectedRow.value) return
+  const { namespace, name } = selectedRow.value
+  try {
+    await deleteDaemonSet(clusterUid.value, namespace, name)
+    BeeMessage.success(`成功删除守护进程集【${name}】`)
+    selectedRow.value = undefined
+    void loadData()
+  } catch (err) {
+    console.error('[handleConfirmDelete]', err)
+    BeeMessage.error(`删除守护进程集【${name}】失败`)
+  }
 }
 
 /**
- * 构建行操作数组
- * @param row - 当前行数据
- * @returns 操作项数组
- * @remarks 按权限和 row.deletable 条件过滤
+ * 二次确认批量删除守护进程集
  */
-function getActions(row: DaemonSetListVo): ActionItem[] {
-  const actions: ActionItem[] = []
-  if (perm.view) {
-    actions.push({ value: 'view', label: '详情', icon: 'basic-view', handler: () => handleViewDetail(row) })
+async function handleConfirmBatchDelete() {
+  if (deletableRows.value.length === 0) return
+  const uids = deletableRows.value.map(row => row.uid)
+  try {
+    await deleteDaemonSets(clusterUid.value, uids)
+    BeeMessage.success(`成功删除 ${uids.length} 个守护进程集`)
+    selectedRows.value = []
+    void loadData()
+  } catch (err) {
+    console.error('[handleConfirmBatchDelete]', err)
+    BeeMessage.error('批量删除守护进程集失败')
   }
-  if (perm.edit) {
-    actions.push(
-      { value: 'edit', label: '编辑', icon: 'basic-edit', handler: () => handleEdit(row) },
-      { value: 'yamledit', label: '编辑 YAML', icon: 'basic-code', handler: () => handleEditYaml(row) },
-      { value: 'restart', label: '重启', icon: 'basic-refresh', handler: () => handleRestart(row) },
-      { value: 'rollback', label: '回滚', icon: 'kubernetes-namespace', handler: () => handleRollback(row) },
-      { value: 'pause', label: '暂停', icon: 'basic-pause', handler: () => handlePause(row) },
-      { value: 'resume', label: '恢复', icon: 'basic-play', handler: () => handleResume(row) },
-    )
-  }
-  if (perm.delete && row.deletable !== false) {
-    actions.push({ value: 'delete', label: '删除', icon: 'basic-delete', handler: () => handleDelete(row) })
-  }
-  return actions
 }
 
 // ==================== Lifecycle ====================
@@ -518,28 +570,33 @@ onMounted(() => {
 <style lang="scss" scoped>
 .page-body {
   display: flex;
+  gap: 16px;
   flex-direction: column;
+  justify-content: flex-start;
+  align-items: stretch;
   flex: 1;
+  width: 100%;
   min-height: 0;
-  padding: $spacing-16;
+  padding: 16px;
   overflow: hidden;
 
   &__toolbar {
     display: flex;
-    gap: $spacing-8;
-    flex-direction: row;
+    gap: 8px;
+    flex-flow: row wrap;
     align-items: center;
 
     &-search {
       flex: 1;
-      min-width: 0;
+      min-width: 100px;
     }
 
     &-separator {
+      flex-shrink: 0;
       width: 1px;
-      height: 40%;
-      margin: 0 $spacing-8;
-      background: $color-border-third;
+      height: 16px;
+      margin: 0 8px;
+      background: $color-separator;
     }
   }
 
@@ -550,29 +607,18 @@ onMounted(() => {
 
   &__footer {
     display: flex;
-    flex-direction: row;
+    gap: 8px;
+    flex-flow: row wrap;
     justify-content: space-between;
     align-items: center;
 
     &-actions {
       display: flex;
-      gap: $spacing-8;
-      flex-direction: row;
+      gap: 8px;
+      flex-flow: row wrap;
+      justify-content: flex-start;
       align-items: center;
     }
   }
-}
-
-.dialog-content {
-  strong {
-    color: $color-primary;
-  }
-}
-
-.delete-dialog-tags {
-  display: flex;
-  gap: $spacing-8;
-  flex-flow: row wrap;
-  margin: 12px 0;
 }
 </style>
