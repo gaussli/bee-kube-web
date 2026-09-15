@@ -1,0 +1,1 @@
+<template>ResourceQuota Detail</template>

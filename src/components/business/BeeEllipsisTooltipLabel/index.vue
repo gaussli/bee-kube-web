@@ -11,7 +11,7 @@ import { nextTick, onBeforeUnmount, onMounted, ref, watch } from 'vue'
 
 import BeeTooltip from '@/components/base/BeeTooltip/index.vue'
 
-// ==================== Props ====================
+// ==================== Prop ====================
 const props = defineProps<{
   /** 文本 */
   label: string

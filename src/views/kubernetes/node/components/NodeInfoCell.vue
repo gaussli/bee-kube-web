@@ -1,17 +1,8 @@
-<!--
-  NodeInfoCell 节点信息单元格
-
-  节点列表表格首列的信息单元：左侧节点图标，右侧为 UID / IP 胶囊（hover 显示实际值）、
-  名称（可复制）与描述。名称、描述超长时省略并 hover 显示完整内容，表格行选中时图标随之高亮。
-
-  @example
-  <NodeInfoCell :uid="row.uid" :name="row.name" :ip="row.ip" :description="row.description" />
--->
 <template>
   <div class="bee-node-info-cell">
     <!-- 左部分：节点图标 -->
     <div class="bee-node-info-cell__icon">
-      <BeeIcon name="kubernetes-node" />
+      <BeeIcon :name="NODE_PAGE_META.icon" />
     </div>
     <!-- 右部分：节点基础信息（UID、IP、名称、描述） -->
     <div class="bee-node-info-cell__content">
@@ -47,10 +38,11 @@ import BeeTooltip from '@/components/base/BeeTooltip/index.vue'
 import BeeEllipsisTooltipLabel from '@/components/business/BeeEllipsisTooltipLabel/index.vue'
 
 import { useClipboard } from '@/composables/useClipboard'
+import { NODE_PAGE_META } from '@/config/kubernetes/node'
 
 defineOptions({ name: 'NodeInfoCell' })
 
-// ==================== Props ====================
+// ==================== Prop ====================
 const props = withDefaults(
   defineProps<{
     /** 节点 UID，hover UID 胶囊时以 tooltip 展示完整值 */

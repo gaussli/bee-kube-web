@@ -28,17 +28,11 @@
 
       <!-- 表格 -->
       <div class="page-body__table">
-        <BeeTable :data="tableData" :loading="loading">
+        <BeeTable :data="tableData" :loading="loading" selectable>
           <!-- 节点信息列：图标 + UID / IP / 名称（可复制）/ 描述 -->
           <BeeTableColumn :width="500">
             <template #default="{ row }">
-              <NodeInfoCell
-                :description="row.description"
-                icon="kubernetes-node"
-                :ip="row.ip"
-                :name="row.name"
-                :uid="row.uid"
-              />
+              <NodeInfoCell :description="row.description" :ip="row.ip" :name="row.name" :uid="row.uid" />
             </template>
           </BeeTableColumn>
           <BeeTableColumn label="状态" :width="180">
@@ -201,17 +195,17 @@ defineOptions({ name: 'NodePage' })
 const { hasPermission } = usePermission()
 const route = useRoute()
 const router = useRouter()
-const kubernetesStore = useKubernetesStore()
-/** 当前集群 UID：优先取路由参数，回退到 Pinia 中的激活集群 */
-const clusterUid = computed(() => (route.params.clusterUid as string) || kubernetesStore.activeClusterUid || '')
+
+/** 当前集群 UID */
+const clusterUid = computed(() => (route.params.clusterUid as string) || useKubernetesStore().activeClusterUid || '')
 
 // ==================== Reactive State ====================
 // --- 查询条件
-/** 搜索关键词，提交时同时映射到 uid / name / ip 三个查询字段 */
+/** 搜索关键词 */
 const searchKey = ref('')
-/** 除搜索外的筛选条件（如状态） */
+/** 查询条件 */
 const queryForm = reactive<Partial<NodeQueryForm>>({})
-/** 分页参数，与 BeePagination 双向绑定 */
+/** 分页条件请求 / 响应 */
 const pagination = reactive({ page: 1, pageSize: 10, total: 0 })
 // --- 表格数据
 /** 列表加载态 */
@@ -219,20 +213,19 @@ const loading = ref(false)
 /** 列表数据 */
 const tableData = ref<NodeListVo[]>([])
 // --- 选中数据
-/** 当前操作的行数据，供三个调度弹窗取值 */
+/** 当前行数据 */
 const selectedRow = ref<NodeListVo>()
 // --- 对话框
-/** 封锁弹窗显隐 */
+/** 封锁弹框显隐 */
 const cordonDialogVisible = ref(false)
-/** 解封弹窗显隐 */
+/** 解封弹框显隐 */
 const uncordonDialogVisible = ref(false)
-/** 排空弹窗显隐 */
+/** 排空弹框显隐 */
 const drainDialogVisible = ref(false)
 
 // ==================== Data Loading ====================
 /**
  * 加载 Node 列表数据
- * @remarks 根据当前查询条件与分页参数获取 Node 分页数据
  */
 async function loadData() {
   if (!clusterUid.value) {
@@ -248,6 +241,9 @@ async function loadData() {
     })
     tableData.value = list
     pagination.total = total
+  } catch (err) {
+    console.error('[loadData]', err)
+    BeeMessage.error('加载节点列表失败')
   } finally {
     loading.value = false
   }

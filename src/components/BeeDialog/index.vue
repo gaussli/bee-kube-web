@@ -38,7 +38,7 @@ import BeeIconButton from '@/components/base/BeeIconButton/index.vue'
 
 defineOptions({ name: 'BeeDialog' })
 
-// ==================== Props ====================
+// ==================== Prop ====================
 
 const props = withDefaults(
   defineProps<{

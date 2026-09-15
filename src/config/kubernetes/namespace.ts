@@ -5,8 +5,6 @@
 
 import type { ResourcePageMeta, Option } from '@/config/kubernetes'
 
-import { COLOR_PRIMARY, COLOR_SUCCESS } from '@/config/color'
-
 /** 命名空间列表页面功能元数据 */
 export const NAMESPACE_PAGE_META: ResourcePageMeta = {
   icon: 'kubernetes-namespace',
@@ -16,28 +14,16 @@ export const NAMESPACE_PAGE_META: ResourcePageMeta = {
 }
 
 /** 命名空间状态原始数据（不含"所有状态"选项，用于派生类型） */
-const _namespaceStatuses = [
-  { value: 'Active', label: '活跃', labelEn: 'Active', color: COLOR_SUCCESS },
-  { value: 'Terminating', label: '终止中', labelEn: 'Terminating', color: COLOR_PRIMARY },
+const _namespaceStatuses: Option[] = [
+  { value: 'Active', label: '活跃', type: 'success' },
+  { value: 'Terminating', label: '终止中', type: 'primary' },
 ] as const
 
 /** 命名空间状态类型 */
 export type NamespaceStatus = (typeof _namespaceStatuses)[number]['value']
 
 /** 命名空间状态配置选项（含"所有状态"） */
-export const NAMESPACE_STATUS_OPTIONS: Option[] = [
-  { value: undefined, label: '所有状态', labelEn: 'ALL', color: COLOR_SUCCESS },
-  ..._namespaceStatuses,
-]
-
-/** 命名空间生命周期阶段 */
-export const _namespacePhases = [
-  { value: 'Active', label: '活跃' },
-  { value: 'Terminating', label: '终止中' },
-] as const
-
-/** 命名空间生命周期阶段类型 */
-export type NamespacePhase = (typeof _namespacePhases)[number]['value']
+export const NAMESPACE_STATUS_OPTIONS: Option[] = [{ value: undefined, label: '所有状态' }, ..._namespaceStatuses]
 
 /** 命名空间终结器名称 */
 export const _finalizerNames = [{ value: 'kubernetes', label: '内置终结器' }] as const

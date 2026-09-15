@@ -61,4 +61,24 @@ export const namespaceRoutes: RouteRecordRaw[] = [
       activeCode: 'kubernetes:namespace',
     },
   },
+  {
+    path: '/kubernetes/clusters/:clusterUid/namespaces/:name/labels',
+    name: 'kubernetes:namespace:edit:labels',
+    component: () => import('@/views/kubernetes/namespace/edit/labels.vue'),
+    meta: {
+      title: '命名空间配置标签',
+      permission: 'kubernetes:namespace:edit',
+      activeCode: 'kubernetes:namespace',
+    },
+  },
+  {
+    path: '/kubernetes/clusters/:clusterUid/namespaces/:name/annotations',
+    name: 'kubernetes:namespace:edit:annotations',
+    component: () => import('@/views/kubernetes/namespace/edit/annotations.vue'),
+    meta: {
+      title: '命名空间配置注解',
+      permission: 'kubernetes:namespace:edit',
+      activeCode: 'kubernetes:namespace',
+    },
+  },
 ]

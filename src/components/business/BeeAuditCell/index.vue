@@ -17,7 +17,7 @@ import BeeTooltip from '@/components/base/BeeTooltip/index.vue'
 
 defineOptions({ name: 'BeeAuditCell' })
 
-// ==================== Props ====================
+// ==================== Prop ====================
 defineProps<{
   /** 操作用户名 */
   username: string

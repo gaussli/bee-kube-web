@@ -11,7 +11,7 @@ import type { BeeType } from '@/config'
 
 import { useClipboard } from '@/composables/useClipboard'
 
-// ==================== Props ====================
+// ==================== Prop ====================
 const props = withDefaults(
   defineProps<{
     label: string

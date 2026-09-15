@@ -1,17 +1,7 @@
 import type { RouteRecordRaw } from 'vue-router'
 
-import { serviceRoutes } from './service'
 import { ingressRoutes } from './ingress'
 import { networkPolicyRoutes } from './networkpolicy'
+import { serviceRoutes } from './service'
 
-export const networkRoutes: RouteRecordRaw[] = [
-  {
-    path: '/kubernetes/clusters/:clusterUid/network',
-    name: 'kubernetes:network',
-    redirect: '/kubernetes/clusters/:clusterUid/network/services',
-    meta: {
-      title: '网络',
-    },
-    children: [...serviceRoutes, ...ingressRoutes, ...networkPolicyRoutes],
-  },
-]
+export const networkRoutes: RouteRecordRaw[] = [...serviceRoutes, ...ingressRoutes, ...networkPolicyRoutes]

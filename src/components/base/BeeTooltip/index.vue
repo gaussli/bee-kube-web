@@ -25,7 +25,7 @@ import { useElementHover, useTimeoutFn } from '@vueuse/core'
 
 defineOptions({ name: 'BeeTooltip' })
 
-// ==================== Props ====================
+// ==================== Prop ====================
 const props = withDefaults(
   defineProps<{
     /** 提示文本 */

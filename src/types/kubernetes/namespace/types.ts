@@ -5,7 +5,7 @@
 
 import type { Condition } from '@/types/kubernetes/types'
 
-import type { FinalizerName, NamespaceConditionType, NamespacePhase } from '@/config/kubernetes/namespace'
+import type { FinalizerName, NamespaceConditionType, NamespaceStatus } from '@/config/kubernetes/namespace'
 
 /**
  * 命名空间行为规格定义
@@ -20,7 +20,7 @@ export interface NamespaceSpec {
  */
 export interface NamespaceStatusObj {
   /** 命名空间最近观测到的生命周期阶段 */
-  phase?: NamespacePhase
+  phase?: NamespaceStatus
   /** 命名空间当前观测到的条件列表 */
   conditions?: Condition<NamespaceConditionType>[]
 }

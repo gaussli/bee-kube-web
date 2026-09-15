@@ -34,7 +34,7 @@ export interface ActionItem {
   handler: () => void
 }
 
-// ==================== Props ====================
+// ==================== Prop ====================
 const props = defineProps<{
   /** 操作信息数组 */
   actions: ActionItem[]

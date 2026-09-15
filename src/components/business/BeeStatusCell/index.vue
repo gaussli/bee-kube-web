@@ -23,7 +23,7 @@ import BeeTooltip from '@/components/base/BeeTooltip/index.vue'
 
 defineOptions({ name: 'BeeStatusCell' })
 
-// ==================== Props ====================
+// ==================== Prop ====================
 const props = defineProps<{
   status: string
   statusMsg?: string

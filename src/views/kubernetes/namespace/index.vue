@@ -25,24 +25,34 @@
           selectable
           @selection-change="handleSelectionChange"
         >
+          <!-- 命名空间信息列 -->
           <BeeTableColumn :width="500">
             <template #default="{ row }">
-              <BeeNamespaceInfoCell :id="row.id" :description="row.description" :icon-size="32" :name="row.name" />
+              <NamespaceInfoCell :description="row.description" :name="row.name" :uid="row.uid" />
             </template>
           </BeeTableColumn>
+          <!-- 状态列 -->
           <BeeTableColumn :min-width="160">
             <template #default="{ row }">
               <BeeStatusCell :options="NAMESPACE_STATUS_OPTIONS" :status="row.status" :status-msg="row.statusMsg" />
             </template>
           </BeeTableColumn>
-          <BeeTableColumn label="类型" :width="160">
-            <template #default="{ row }">
-              <BeeTableCommonCell :subtext="row.type" :text="row.type" />
-            </template>
-          </BeeTableColumn>
+          <!-- 创建信息列 -->
           <BeeTableColumn :width="200">
             <template #default="{ row }">
               <BeeAuditCell :datetime="row.createAt" field-name="创建人 / 时间" :username="row.createBy" />
+            </template>
+          </BeeTableColumn>
+          <!-- 更新信息列 -->
+          <BeeTableColumn :width="200">
+            <template #default="{ row }">
+              <BeeAuditCell :datetime="row.updateAt" field-name="更新人 / 时间" :username="row.updateBy" />
+            </template>
+          </BeeTableColumn>
+          <!-- 操作列 -->
+          <BeeTableColumn fixed="right" :width="136">
+            <template #default="{ row }">
+              <BeeActionCell :actions="getActions(row)" />
             </template>
           </BeeTableColumn>
         </BeeTable>
@@ -76,27 +86,28 @@
     </BeeCard>
 
     <!-- 单个删除 Dialog -->
-    <BeeDialog v-model="deleteDialogVisible" icon="basic-delete" title="删除命名空间" @confirm="handleConfirmDelete">
-      <span>您确认要删除 “{{ currentTargetRow?.name || '' }}” 命名空间吗？</span>
+    <BeeDialog
+      v-model="deleteDialogVisible"
+      icon="basic-delete"
+      title="删除命名空间"
+      type="danger"
+      @confirm="handleConfirmDelete"
+    >
+      <span>
+        您确认要删除 <strong>{{ selectedRow?.name || '' }}</strong> 命名空间吗？
+      </span>
     </BeeDialog>
 
     <!-- 批量删除 Dialog -->
-    <!-- <BeeDialog v-model="batchDeleteDialogVisible" title="确认删除" @confirm="handleConfirmBatchDelete">
-      <div class="dialog-content">
-        <p>
-          确定要删除选中的 <strong>{{ deletableRows.length }}</strong> 个命名空间吗？
-        </p>
-        <div class="delete-dialog-tags">
-          <BeeTag v-for="row in deletableRows" :key="row.uid">
-            {{ row.name }}
-          </BeeTag>
-        </div>
-        <p v-if="nonDeletableRows.length" class="warning-text">
-          以下 {{ nonDeletableRows.length }} 个命名空间不可删除：{{ nonDeletableRows.map(r => r.name).join('、') }}
-        </p>
-        <p class="warning-text">删除命名空间将同时删除该命名空间下的所有资源！</p>
-      </div>
-    </BeeDialog> -->
+    <BeeDialog
+      v-model="batchDeleteDialogVisible"
+      icon="basic-delete"
+      title="批量删除命名空间"
+      type="danger"
+      @confirm="handleConfirmBatchDelete"
+    >
+      <BeeBatchDeleteDialogContent :delete-data="selectedRows" resource-type="命名空间" />
+    </BeeDialog>
   </BeePage>
 </template>
 
@@ -107,6 +118,8 @@ import { useRoute, useRouter } from 'vue-router'
 
 import type { NamespaceListVo, NamespaceQueryForm } from '@/types/kubernetes/namespace'
 
+import type { ActionItem } from '@/components/business/BeeActionCell/index.vue'
+
 import { getNamespaceList, deleteNamespace, deleteNamespaces } from '@/api/kubernetes/namespace/namespace'
 
 import BeeButton from '@/components/base/BeeButton/index.vue'
@@ -114,11 +127,12 @@ import BeeDialog from '@/components/base/BeeDialog/index.vue'
 import BeeInputSearch from '@/components/base/BeeInputSearch/index.vue'
 import { BeeMessage } from '@/components/base/BeeMessage'
 import BeeSelect from '@/components/base/BeeSelect/index.vue'
-import BeeNamespaceInfoCell from '@/components/BeeNamespaceInfoCell/index.vue'
 import BeePagination from '@/components/BeePagination/index.vue'
 import BeeTableColumn from '@/components/BeeTable/BeeTableColumn.vue'
 import BeeTable from '@/components/BeeTable/index.vue'
+import BeeActionCell from '@/components/business/BeeActionCell/index.vue'
 import BeeAuditCell from '@/components/business/BeeAuditCell/index.vue'
+import BeeBatchDeleteDialogContent from '@/components/business/BeeDialogContent/BeeBatchDeleteDialogContent.vue'
 import BeePageHeader from '@/components/business/BeePageHeader/index.vue'
 import BeeStatusCell from '@/components/business/BeeStatusCell/index.vue'
 import BeeCard from '@/components/layout/BeeCard/index.vue'
@@ -126,41 +140,51 @@ import BeePage from '@/components/layout/BeePage/index.vue'
 
 import { usePermission } from '@/composables/usePermission'
 import { NAMESPACE_PAGE_META, NAMESPACE_STATUS_OPTIONS } from '@/config/kubernetes/namespace'
+import { useKubernetesStore } from '@/stores'
+
+import NamespaceInfoCell from './components/NamespaceInfoCell/index.vue'
 
 defineOptions({ name: 'NamespaceManage' })
 
+// ==================== Composables & Route & Store ====================
 const { hasPermission } = usePermission()
 const route = useRoute()
 const router = useRouter()
 
+/** 当前集群 UID */
+const clusterUid = computed(() => (route.params.clusterUid as string) || useKubernetesStore().activeClusterUid || '')
+
 // ==================== Reactive State ====================
-// --- 上下文
-const clusterUid = ref(route.params.clusterUid as string)
-const searchKey = ref('')
 // --- 查询条件
+/** 搜索关键词 */
+const searchKey = ref('')
+/** 查询条件 */
 const queryForm = reactive<Partial<NamespaceQueryForm>>({})
+/** 分页条件请求 / 响应 */
 const pagination = reactive({ page: 1, pageSize: 10, total: 0 })
 // --- 表格数据
-const loading = ref(false)
-const tableData = ref<NamespaceListVo[]>([])
+/** BeeTable 实例引用 */
 const tableRef = ref<InstanceType<typeof BeeTable>>()
+/** 列表加载态 */
+const loading = ref(false)
+/** 列表数据 */
+const tableData = ref<NamespaceListVo[]>([])
 // --- 选中逻辑
+/** 当前行数据 */
+const selectedRow = ref<NamespaceListVo | null>(null)
+/** 多选选中数据 */
 const selectedRows = ref<NamespaceListVo[]>([])
 // --- 对话框
+/** 单个删除弹框显隐 */
 const deleteDialogVisible = ref(false)
+/** 批量删除弹框显隐 */
 const batchDeleteDialogVisible = ref(false)
-const currentTargetRow = ref<NamespaceListVo | null>(null)
 
-/**
- * 可删除行（deletable 不为 false 的选中行）
- */
+// ==================== Computed ====================
+/** 多选选中数据中可删除列表 */
 const deletableRows = computed(() => selectedRows.value.filter(row => row.deletable !== false))
-/**
- * 不可删除行（deletable 为 false 的选中行）
- */
-const nonDeletableRows = computed(() => selectedRows.value.filter(row => row.deletable === false))
 
-// --- 权限缓存
+// ==================== Permission ====================
 /** 页面级权限缓存，避免模板/循环中重复调用 hasPermission */
 const perm: Record<string, boolean> = {
   create: hasPermission('kubernetes:namespace:create'),
@@ -169,28 +193,76 @@ const perm: Record<string, boolean> = {
   delete: hasPermission('kubernetes:namespace:delete'),
 }
 
+// ==================== Data Loading ====================
+/**
+ * 请求命名空间列表数据
+ */
 async function loadData() {
+  tableRef.value?.clearSelection()
   if (!clusterUid.value) {
     tableData.value = []
     return
   }
   loading.value = true
   try {
-    const resp = await getNamespaceList(clusterUid.value, {
+    const { list, total } = await getNamespaceList(clusterUid.value, {
       ...queryForm,
       page: pagination.page,
       pageSize: pagination.pageSize,
     })
-    tableData.value = resp.list
-    pagination.total = resp.total
+    tableData.value = list as NamespaceListVo[]
+    pagination.total = total
+  } catch (err) {
+    console.error('[loadData]', err)
+    BeeMessage.error('加载命名空间列表失败')
   } finally {
     loading.value = false
   }
 }
 
+// ==================== Row Actions Generate ====================
+/**
+ * 构建行操作数组
+ * @param row - 当前行数据
+ * @returns 操作项数组
+ */
+function getActions(row: NamespaceListVo): ActionItem[] {
+  const actions: ActionItem[] = []
+  if (perm.view) {
+    actions.push({ value: 'view', label: '详情', icon: 'basic-view', handler: () => handleViewDetail(row) })
+  }
+  if (perm.edit) {
+    actions.push(
+      { value: 'edit', label: '编辑', icon: 'basic-edit', handler: () => handleEdit(row) },
+      { value: 'labels', label: '配置标签', icon: 'kubernetes-label', handler: () => handleLabels(row) },
+      { value: 'annotations', label: '配置注解', icon: 'kubernetes-annotation', handler: () => handleAnnotations(row) },
+      {
+        value: 'resourcequota',
+        label: '资源配额',
+        icon: 'kubernetes-resource-quota',
+        handler: () => handleResourceQuota(row),
+      },
+      { value: 'limitrange', label: '资源限制', icon: 'kubernetes-limit-range', handler: () => handleLimitRange(row) },
+    )
+  }
+  if (perm.delete && row.deletable) {
+    actions.push({ value: 'delete', label: '删除', icon: 'basic-delete', handler: () => handleDelete(row) })
+  }
+  return actions
+}
+
+// ==================== BeeTable Handler ====================
+/**
+ * 表格选中行变化
+ * @param rows - 当前选中的行数组
+ */
+function handleSelectionChange(rows: Record<string, unknown>[]) {
+  selectedRows.value = rows as unknown as NamespaceListVo[]
+}
+
+// ==================== Handler ====================
 /**
  * 搜索
- * @remarks 将 searchKey 同时映射到 uid/name 字段进行搜索匹配，并重置页码
  */
 function handleSearch() {
   queryForm.uid = searchKey.value || undefined
@@ -201,7 +273,6 @@ function handleSearch() {
 
 /**
  * 重置搜索条件
- * @remarks 清空所有筛选字段、搜索关键词、分页参数，重新加载数据
  */
 function handleReset() {
   queryForm.uid = undefined
@@ -214,28 +285,28 @@ function handleReset() {
 }
 
 /**
- * 表格选中行变化
- * @param rows
- */
-/**
- * 表格选中行变化
- * @param rows
- * @remarks BeeTable 的 selection-change 事件固定返回 Record<string, unknown>[]，需通过 unknown 桥接断言为目标类型
- */
-function handleSelectionChange(rows: Record<string, unknown>[]) {
-  selectedRows.value = rows as unknown as NamespaceListVo[]
-}
-
-/** 取消全部选中 */
-function handleClearSelection() {
-  tableRef.value?.clearSelection()
-}
-
-/**
- * 新建命名空间
+ * 创建命名空间
  */
 function handleCreate() {
   router.push({ name: 'kubernetes:namespace:create', params: { clusterUid: clusterUid.value } }).catch(() => {})
+}
+
+/**
+ * 创建命名空间（YAML）
+ * @remarks 功能开发中，路由尚未实现
+ */
+function handleCreateYaml() {
+  BeeMessage.info('功能开发中')
+}
+
+/**
+ * 查看命名空间详情
+ * @param row
+ */
+function handleViewDetail(row: NamespaceListVo) {
+  router
+    .push({ name: 'kubernetes:namespace:detail', params: { clusterUid: clusterUid.value, name: row.name } })
+    .catch(() => {})
 }
 
 /**
@@ -244,32 +315,32 @@ function handleCreate() {
  */
 function handleEdit(row: NamespaceListVo) {
   router
-    .push({ name: 'kubernetes:namespace:edit', params: { clusterUid: clusterUid.value, uid: row.uid } })
+    .push({ name: 'kubernetes:namespace:edit', params: { clusterUid: clusterUid.value, name: row.name } })
     .catch(() => {})
 }
 
 /**
- * 编辑 YAML
+ * 配置命名空间标签
  * @param row
  */
-function handleEditYaml(row: NamespaceListVo) {
+function handleLabels(row: NamespaceListVo) {
   router
-    .push({ name: 'kubernetes:namespace:edit:yaml', params: { clusterUid: clusterUid.value, uid: row.uid } })
+    .push({ name: 'kubernetes:namespace:label', params: { clusterUid: clusterUid.value, name: row.name } })
     .catch(() => {})
 }
 
 /**
- * 查看详情
+ * 配置命名空间注解
  * @param row
  */
-function handleViewDetail(row: NamespaceListVo) {
+function handleAnnotations(row: NamespaceListVo) {
   router
-    .push({ name: 'kubernetes:namespace:detail', params: { clusterUid: clusterUid.value, uid: row.uid } })
+    .push({ name: 'kubernetes:namespace:annotation', params: { clusterUid: clusterUid.value, name: row.name } })
     .catch(() => {})
 }
 
 /**
- * 查看资源配额
+ * 查看命名空间的资源配额
  * @param row
  */
 function handleResourceQuota(row: NamespaceListVo) {
@@ -279,63 +350,37 @@ function handleResourceQuota(row: NamespaceListVo) {
 }
 
 /**
+ * 查看命名空间的资源限制
+ * @param row
+ */
+function handleLimitRange(row: NamespaceListVo) {
+  router
+    .push({ name: 'kubernetes:limitrange:list', query: { clusterUid: clusterUid.value, namespace: row.name } })
+    .catch(() => {})
+}
+
+/**
  * 删除命名空间
  * @param row
  */
 function handleDelete(row: NamespaceListVo) {
-  currentTargetRow.value = row
+  selectedRow.value = row
   deleteDialogVisible.value = true
 }
 
-async function handleConfirmDelete() {
-  if (!currentTargetRow.value) return
-  try {
-    await deleteNamespace(currentTargetRow.value.clusterUid, currentTargetRow.value.uid)
-    BeeMessage.success('删除成功')
-    deleteDialogVisible.value = false
-    currentTargetRow.value = null
-    await loadData()
-  } catch {
-    // 失败处理
-  }
-}
-
 /**
- * 批量删除
- * @remarks 仅对可删除行（deletable 不为 false）进行批量删除确认
+ * 批量删除命名空间
  */
 function handleBatchDelete() {
-  if (deletableRows.value.length === 0) return
+  if (deletableRows.value.length === 0) {
+    BeeMessage.warning('选中的命名空间均不可删除')
+    return
+  }
   batchDeleteDialogVisible.value = true
 }
 
-async function handleConfirmBatchDelete() {
-  if (deletableRows.value.length === 0) return
-  const targetClusterId = deletableRows.value[0].clusterUid
-  const uids = deletableRows.value.map(row => row.uid)
-  try {
-    await deleteNamespaces(targetClusterId, uids)
-    BeeMessage.success(`成功删除 ${uids.length} 个命名空间`)
-    batchDeleteDialogVisible.value = false
-    selectedRows.value = []
-    await loadData()
-  } catch {
-    // 失败处理
-  }
-}
-
-/**
- * 跳转创建页面（YAML 方式）
- * @remarks 功能开发中，路由尚未实现
- */
-function handleCreateYaml() {
-  BeeMessage.info('功能开发中')
-}
-
-// ==================== Export & Import ====================
 /**
  * 导出命名空间
- * @remarks 功能开发中
  */
 function handleExport() {
   BeeMessage.info('功能开发中')
@@ -343,10 +388,49 @@ function handleExport() {
 
 /**
  * 导入命名空间
- * @remarks 功能开发中
  */
 function handleImport() {
   BeeMessage.info('功能开发中')
+}
+
+/** 清空选中数据 */
+function handleClearSelection() {
+  tableRef.value?.clearSelection()
+}
+
+// ==================== Dialog Confirm ====================
+/**
+ * 二次确认删除命名空间
+ */
+async function handleConfirmDelete() {
+  if (!selectedRow.value) return
+  try {
+    await deleteNamespace(clusterUid.value, selectedRow.value.name)
+    BeeMessage.success(`成功删除命名空间【${selectedRow.value.name}】`)
+    selectedRow.value = null
+    await loadData()
+  } catch (err) {
+    console.error('[handleConfirmDelete]', err)
+    BeeMessage.error('删除失败')
+  }
+}
+
+/**
+ * 二次确认批量删除命名空间
+ */
+async function handleConfirmBatchDelete() {
+  if (deletableRows.value.length === 0) return
+  const uids = deletableRows.value.map(row => row.uid)
+  try {
+    await deleteNamespaces(clusterUid.value, uids)
+    BeeMessage.success(`成功删除 ${uids.length} 个命名空间`)
+    selectedRows.value = []
+    tableRef.value?.clearSelection()
+    await loadData()
+  } catch (err) {
+    console.error('[handleConfirmBatchDelete]', err)
+    BeeMessage.error('批量删除失败')
+  }
 }
 
 // ==================== Lifecycle ====================
@@ -358,29 +442,33 @@ onMounted(() => {
 <style lang="scss" scoped>
 .page-body {
   display: flex;
-  gap: $spacing-16;
+  gap: 16px;
   flex-direction: column;
+  justify-content: flex-start;
+  align-items: stretch;
   flex: 1;
+  width: 100%;
   min-height: 0;
-  padding: $spacing-16;
+  padding: 16px;
   overflow: hidden;
 
   &__toolbar {
     display: flex;
-    gap: $spacing-8;
-    flex-direction: row;
+    gap: 8px;
+    flex-flow: row wrap;
     align-items: center;
 
     &-search {
       flex: 1;
-      min-width: 0;
+      min-width: 100px;
     }
 
     &-seperator {
+      flex-shrink: 0;
       width: 1px;
-      height: 40%;
-      margin: 0 $spacing-8;
-      background: $color-border-third;
+      height: 16px;
+      margin: 0 8px;
+      background: $color-separator;
     }
   }
 
@@ -391,41 +479,18 @@ onMounted(() => {
 
   &__footer {
     display: flex;
-    flex-direction: row;
+    gap: 8px;
+    flex-flow: row wrap;
     justify-content: space-between;
     align-items: center;
 
     &-actions {
       display: flex;
-      gap: $spacing-8;
-      flex-direction: row;
+      gap: 8px;
+      flex-flow: row wrap;
+      justify-content: flex-start;
       align-items: center;
     }
   }
-}
-
-.table-action {
-  display: flex;
-  gap: $spacing-8;
-  width: 100%;
-  height: auto;
-}
-
-.dialog-content {
-  strong {
-    color: $color-primary;
-  }
-
-  .warning-text {
-    margin-top: 12px;
-    color: $color-danger;
-  }
-}
-
-.delete-dialog-tags {
-  display: flex;
-  gap: $spacing-8;
-  flex-flow: row wrap;
-  margin: 12px 0;
 }
 </style>
