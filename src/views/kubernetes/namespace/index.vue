@@ -12,7 +12,9 @@
         <BeeButton icon="basic-search" @click="handleSearch"> 搜索 </BeeButton>
         <BeeButton icon="basic-refresh" @click="handleReset"> 重置 </BeeButton>
         <div v-if="permissionMap.create" class="page-body__toolbar-separator"></div>
-        <BeeButton v-if="permissionMap.create" icon="basic-create" type="primary" @click="handleCreate"> 新增 </BeeButton>
+        <BeeButton v-if="permissionMap.create" icon="basic-create" type="primary" @click="handleCreate">
+          新增
+        </BeeButton>
         <BeeButton v-if="permissionMap.create" icon="basic-create" type="primary" @click="handleCreateYaml">
           YAML
         </BeeButton>
