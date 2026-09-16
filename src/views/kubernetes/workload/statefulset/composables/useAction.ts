@@ -2,20 +2,20 @@ import { computed, reactive, ref, type Reactive, type Ref } from 'vue'
 
 import { useRouter } from 'vue-router'
 
-import type { DeploymentQueryForm } from '@/types/kubernetes/workload/deployment'
+import type { StatefulSetQueryForm } from '@/types/kubernetes/workload/statefulset'
 
 import type { ActionItem } from '@/components/business/BeeActionCell/index.vue'
 
 import type { PageEntity } from '@/types'
 
 import {
-  deleteDeployment,
-  deleteDeployments,
-  pauseDeployment,
-  restartDeployment,
-  resumeDeployment,
-  scaleDeployment,
-} from '@/api/kubernetes/workload/deployment'
+  deleteStatefulSet,
+  deleteStatefulSets,
+  pauseStatefulSet,
+  restartStatefulSet,
+  resumeStatefulSet,
+  scaleStatefulSet,
+} from '@/api/kubernetes/workload/statefulset'
 
 import { KubernetesRouteNames } from '@/router/names'
 
@@ -37,22 +37,22 @@ type dialogData = {
 }
 
 /**
- *
+ * 有状态应用行操作与弹框组合式函数
  * @param clusterUid
  * @param permissionMap
  * @param queryForm
  * @param pageData
- * @param fetchDeployments
+ * @param fetchStatefulSets
  * @param tableRef
  * @param dialogData
  * @param dialogDataList
  */
-export function useDeploymentAction<T extends dialogData>(
+export function useStatefulSetAction<T extends dialogData>(
   clusterUid: Ref<string>,
   permissionMap: Record<string, boolean>,
-  queryForm: Reactive<Partial<DeploymentQueryForm>>,
+  queryForm: Reactive<Partial<StatefulSetQueryForm>>,
   pageData: Reactive<PageEntity>,
-  fetchDeployments: () => Promise<void>,
+  fetchStatefulSets: () => Promise<void>,
   tableRef: Ref<InstanceType<typeof BeeTable> | undefined>,
   dialogData: Ref<T | undefined>,
   dialogDataList: Ref<T[]>,
@@ -148,7 +148,7 @@ export function useDeploymentAction<T extends dialogData>(
     queryForm.uid = searchKey.value
     queryForm.name = searchKey.value
     pageData.page = 1
-    void fetchDeployments()
+    void fetchStatefulSets()
   }
 
   /**
@@ -162,81 +162,81 @@ export function useDeploymentAction<T extends dialogData>(
     pageData.page = 1
     pageData.pageSize = 10
     searchKey.value = ''
-    void fetchDeployments()
+    void fetchStatefulSets()
   }
 
   /**
-   * 创建无状态应用
+   * 创建有状态应用
    */
   function handleCreate() {
     router
-      .push({ name: KubernetesRouteNames.Deployment.Create, params: { clusterUid: clusterUid.value } })
+      .push({ name: KubernetesRouteNames.StatefulSet.Create, params: { clusterUid: clusterUid.value } })
       .catch(() => {})
   }
 
   /**
-   * 创建无状态应用（YAML）
+   * 创建有状态应用（YAML）
    */
   function handleCreateYaml() {
     router
-      .push({ name: KubernetesRouteNames.Deployment.CreateYaml, params: { clusterUid: clusterUid.value } })
+      .push({ name: KubernetesRouteNames.StatefulSet.CreateYaml, params: { clusterUid: clusterUid.value } })
       .catch(() => {})
   }
 
   /**
-   * 查看无状态应用详情
+   * 查看有状态应用详情
    * @param row - 当前行数据
    */
   function handleViewDetail(row: T) {
     router
       .push({
-        name: KubernetesRouteNames.Deployment.Detail,
+        name: KubernetesRouteNames.StatefulSet.Detail,
         params: { clusterId: clusterUid.value, namespace: row.namespace, name: row.name },
       })
       .catch(() => {})
   }
 
   /**
-   * 编辑无状态应用
+   * 编辑有状态应用
    * @param row
    */
   function handleEdit(row: T) {
     router
       .push({
-        name: KubernetesRouteNames.Deployment.Edit,
+        name: KubernetesRouteNames.StatefulSet.Edit,
         params: { clusterId: clusterUid.value, namespace: row.namespace, name: row.name },
       })
       .catch(() => {})
   }
 
   /**
-   * 配置无状态应用标签
+   * 配置有状态应用标签
    * @param row - 当前行数据
    */
   function handleLabels(row: T) {
     router
       .push({
-        name: KubernetesRouteNames.Deployment.ManageLabels,
+        name: KubernetesRouteNames.StatefulSet.ManageLabels,
         params: { clusterUid: clusterUid.value, namespace: row.namespace, name: row.name },
       })
       .catch(() => {})
   }
 
   /**
-   * 配置无状态应用注解
+   * 配置有状态应用注解
    * @param row - 当前行数据
    */
   function handleAnnotations(row: T) {
     router
       .push({
-        name: KubernetesRouteNames.Deployment.ManageAnnotations,
+        name: KubernetesRouteNames.StatefulSet.ManageAnnotations,
         params: { clusterUid: clusterUid.value, namespace: row.namespace, name: row.name },
       })
       .catch(() => {})
   }
 
   /**
-   * 回滚无状态应用
+   * 回滚有状态应用
    * @param row - 当前行数据
    */
   function handleRollback(row: T) {
@@ -244,10 +244,8 @@ export function useDeploymentAction<T extends dialogData>(
   }
 
   /**
-   * 扩缩容无状态应用
+   * 扩缩容有状态应用
    * @param row - 当前行数据
-   * @param row.namespace
-   * @param row.name
    */
   function handleScale(row: T) {
     dialogData.value = row
@@ -255,7 +253,7 @@ export function useDeploymentAction<T extends dialogData>(
   }
 
   /**
-   * 重启无状态应用
+   * 重启有状态应用
    * @param row - 当前行数据
    */
   function handleRestart(row: T) {
@@ -264,7 +262,7 @@ export function useDeploymentAction<T extends dialogData>(
   }
 
   /**
-   * 恢复无状态应用更新
+   * 恢复有状态应用更新
    * @param row - 当前行数据
    */
   function handleResume(row: T) {
@@ -273,7 +271,7 @@ export function useDeploymentAction<T extends dialogData>(
   }
 
   /**
-   * 暂停无状态应用更新
+   * 暂停有状态应用更新
    * @param row - 当前行数据
    */
   function handlePause(row: T) {
@@ -282,7 +280,7 @@ export function useDeploymentAction<T extends dialogData>(
   }
 
   /**
-   * 删除无状态应用
+   * 删除有状态应用
    * @param row
    */
   function handleDelete(row: T) {
@@ -295,14 +293,14 @@ export function useDeploymentAction<T extends dialogData>(
    */
   function handleBatchDelete() {
     if (deletableRows.value.length === 0) {
-      BeeMessage.warning('选中的无状态应用均不可删除')
+      BeeMessage.warning('选中的有状态应用均不可删除')
       return
     }
     batchDeleteDialogConfig.visible = true
   }
 
   /**
-   * 导出 Deployment
+   * 导出 StatefulSet
    * @remarks 功能开发中
    */
   function handleExport() {
@@ -310,7 +308,7 @@ export function useDeploymentAction<T extends dialogData>(
   }
 
   /**
-   * 导入 Deployment
+   * 导入 StatefulSet
    * @remarks 功能开发中
    */
   function handleImport() {
@@ -325,7 +323,7 @@ export function useDeploymentAction<T extends dialogData>(
   }
 
   /**
-   * 二次确认扩缩容无状态应用
+   * 二次确认扩缩容有状态应用
    * @param newReplicas
    */
   async function handleConfirmScale(newReplicas: number) {
@@ -337,13 +335,13 @@ export function useDeploymentAction<T extends dialogData>(
     const { namespace, name, replicas } = dialogData.value
     try {
       scaleDialogConfig.loading = true
-      await scaleDeployment(clusterUid.value, namespace, name, { replicas: newReplicas })
-      if (replicas > newReplicas) BeeMessage.success(`成功缩容无状态应用【${name}】`)
-      else BeeMessage.success(`成功扩容无状态应用【${name}】`)
-      void fetchDeployments()
+      await scaleStatefulSet(clusterUid.value, namespace, name, { replicas: newReplicas })
+      if (replicas > newReplicas) BeeMessage.success(`成功缩容有状态应用【${name}】`)
+      else BeeMessage.success(`成功扩容有状态应用【${name}】`)
+      void fetchStatefulSets()
     } catch (err) {
       console.error('[handleConfirmScale]', err)
-      BeeMessage.error(`扩缩容无状态应用【${name}】失败`)
+      BeeMessage.error(`扩缩容有状态应用【${name}】失败`)
     } finally {
       scaleDialogConfig.loading = false
       scaleDialogConfig.visible = false
@@ -352,7 +350,7 @@ export function useDeploymentAction<T extends dialogData>(
   }
 
   /**
-   * 二次确认重启无状态应用
+   * 二次确认重启有状态应用
    */
   async function handleConfirmRestart() {
     if (!dialogData.value) {
@@ -363,12 +361,12 @@ export function useDeploymentAction<T extends dialogData>(
     const { namespace, name } = dialogData.value
     try {
       restartDialogConfig.loading = true
-      await restartDeployment(clusterUid.value, namespace, name)
-      BeeMessage.success(`成功重启无状态应用【${name}】`)
-      void fetchDeployments()
+      await restartStatefulSet(clusterUid.value, namespace, name)
+      BeeMessage.success(`成功重启有状态应用【${name}】`)
+      void fetchStatefulSets()
     } catch (err) {
       console.error('[handleConfirmRestart]', err)
-      BeeMessage.error(`重启无状态应用【${name}】失败`)
+      BeeMessage.error(`重启有状态应用【${name}】失败`)
     } finally {
       restartDialogConfig.loading = false
       restartDialogConfig.visible = false
@@ -377,7 +375,7 @@ export function useDeploymentAction<T extends dialogData>(
   }
 
   /**
-   * 二次确认恢复无状态应用更新
+   * 二次确认恢复有状态应用更新
    */
   async function handleConfirmResume() {
     if (!dialogData.value) {
@@ -388,12 +386,12 @@ export function useDeploymentAction<T extends dialogData>(
     const { namespace, name } = dialogData.value
     try {
       resumeDialogConfig.loading = true
-      await resumeDeployment(clusterUid.value, namespace, name)
-      BeeMessage.success(`成功恢复无状态应用【${name}】更新`)
-      void fetchDeployments()
+      await resumeStatefulSet(clusterUid.value, namespace, name)
+      BeeMessage.success(`成功恢复有状态应用【${name}】更新`)
+      void fetchStatefulSets()
     } catch (err) {
       console.error('[handleConfirmResume]', err)
-      BeeMessage.error(`恢复无状态应用【${name}】更新失败`)
+      BeeMessage.error(`恢复有状态应用【${name}】更新失败`)
     } finally {
       resumeDialogConfig.loading = false
       resumeDialogConfig.visible = false
@@ -402,7 +400,7 @@ export function useDeploymentAction<T extends dialogData>(
   }
 
   /**
-   * 二次确认暂停无状态应用更新
+   * 二次确认暂停有状态应用更新
    */
   async function handleConfirmPause() {
     if (!dialogData.value) {
@@ -413,12 +411,12 @@ export function useDeploymentAction<T extends dialogData>(
     const { namespace, name } = dialogData.value
     try {
       pauseDialogConfig.loading = true
-      await pauseDeployment(clusterUid.value, namespace, name)
-      BeeMessage.success(`成功暂停无状态应用【${name}】更新`)
-      void fetchDeployments()
+      await pauseStatefulSet(clusterUid.value, namespace, name)
+      BeeMessage.success(`成功暂停有状态应用【${name}】更新`)
+      void fetchStatefulSets()
     } catch (err) {
       console.error('[handleConfirmPause]', err)
-      BeeMessage.error(`暂停无状态应用【${name}】更新失败`)
+      BeeMessage.error(`暂停有状态应用【${name}】更新失败`)
     } finally {
       pauseDialogConfig.loading = false
       pauseDialogConfig.visible = false
@@ -427,7 +425,7 @@ export function useDeploymentAction<T extends dialogData>(
   }
 
   /**
-   * 二次确认删除无状态应用
+   * 二次确认删除有状态应用
    */
   async function handleConfirmDelete() {
     if (!dialogData.value) {
@@ -438,12 +436,12 @@ export function useDeploymentAction<T extends dialogData>(
     const { namespace, name } = dialogData.value
     try {
       deleteDialogConfig.loading = true
-      await deleteDeployment(clusterUid.value, namespace, name)
-      BeeMessage.success(`成功删除无状态应用【${name}】`)
-      void fetchDeployments()
+      await deleteStatefulSet(clusterUid.value, namespace, name)
+      BeeMessage.success(`成功删除有状态应用【${name}】`)
+      void fetchStatefulSets()
     } catch (err) {
       console.error('[handleConfirmDelete]', err)
-      BeeMessage.error(`删除无状态应用【${name}】失败`)
+      BeeMessage.error(`删除有状态应用【${name}】失败`)
     } finally {
       deleteDialogConfig.loading = false
       deleteDialogConfig.visible = false
@@ -452,7 +450,7 @@ export function useDeploymentAction<T extends dialogData>(
   }
 
   /**
-   * 二次确认批量删除无状态应用
+   * 二次确认批量删除有状态应用
    */
   async function handleConfirmBatchDelete() {
     if (deletableRows.value.length === 0) {
@@ -463,12 +461,12 @@ export function useDeploymentAction<T extends dialogData>(
     const uids = deletableRows.value.map(row => row.uid)
     try {
       batchDeleteDialogConfig.loading = true
-      await deleteDeployments(clusterUid.value, uids)
-      BeeMessage.success(`成功删除 ${uids.length} 个无状态应用`)
-      void fetchDeployments()
+      await deleteStatefulSets(clusterUid.value, uids)
+      BeeMessage.success(`成功删除 ${uids.length} 个有状态应用`)
+      void fetchStatefulSets()
     } catch (err) {
       console.error('[handleConfirmBatchDelete]', err)
-      BeeMessage.error('批量删除无状态应用失败')
+      BeeMessage.error('批量删除有状态应用失败')
     } finally {
       batchDeleteDialogConfig.loading = false
       batchDeleteDialogConfig.visible = false

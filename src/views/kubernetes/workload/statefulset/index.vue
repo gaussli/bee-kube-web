@@ -12,16 +12,20 @@
         <BeeSelect v-model="queryForm.status" :options="STATEFULSET_STATUS_OPTIONS" placeholder="状态筛选" />
         <BeeButton icon="basic-search" @click="handleSearch"> 搜索 </BeeButton>
         <BeeButton icon="basic-refresh" @click="handleReset"> 重置 </BeeButton>
-        <div v-if="perm.create" class="page-body__toolbar-separator"></div>
-        <BeeButton v-if="perm.create" icon="basic-create" type="primary" @click="handleCreate"> 新增 </BeeButton>
-        <BeeButton v-if="perm.create" icon="basic-create" type="primary" @click="handleCreateYaml"> YAML </BeeButton>
+        <div v-if="permissionMap.create" class="page-body__toolbar-separator"></div>
+        <BeeButton v-if="permissionMap.create" icon="basic-create" type="primary" @click="handleCreate">
+          新增
+        </BeeButton>
+        <BeeButton v-if="permissionMap.create" icon="basic-create" type="primary" @click="handleCreateYaml">
+          YAML
+        </BeeButton>
       </div>
 
       <!-- 表格 -->
       <div class="page-body__table">
         <BeeTable
           ref="tableRef"
-          :data="tableData"
+          :data="statefulSets"
           :loading="loading"
           row-key="uid"
           selectable
@@ -96,7 +100,7 @@
             清空
           </BeeButton>
           <BeeButton
-            v-if="perm.delete"
+            v-if="permissionMap.delete"
             :disabled="selectedRows.length === 0"
             icon="basic-delete"
             type="danger"
@@ -104,22 +108,77 @@
           >
             删除 ({{ selectedRows.length }})
           </BeeButton>
-          <BeeButton v-if="perm.view" icon="basic-export" @click="handleExport"> 导出 </BeeButton>
-          <BeeButton v-if="perm.create" icon="basic-import" @click="handleImport"> 导入 </BeeButton>
+          <BeeButton v-if="permissionMap.view" icon="basic-export" @click="handleExport"> 导出 </BeeButton>
+          <BeeButton v-if="permissionMap.create" icon="basic-import" @click="handleImport"> 导入 </BeeButton>
         </div>
         <BeePagination
-          v-model:page="pagination.page"
-          v-model:page-size="pagination.pageSize"
-          :total="pagination.total"
-          @change="loadData"
+          v-model:page="pageData.page"
+          v-model:page-size="pageData.pageSize"
+          :total="pageData.total"
+          @change="fetchStatefulSets"
         />
       </div>
     </BeeCard>
 
+    <!-- 扩缩容 Dialog -->
+    <BeeDialog
+      v-model="scaleDialogConfig.visible"
+      icon="kubernetes-scale"
+      :loading="scaleDialogConfig.loading"
+      title="扩缩容有状态应用"
+      type="primary"
+      @confirm="handleConfirmScale(5)"
+    >
+      <span> Scale Form </span>
+    </BeeDialog>
+
+    <!-- 重启确认 Dialog -->
+    <BeeDialog
+      v-model="restartDialogConfig.visible"
+      icon="basic-refresh"
+      :loading="restartDialogConfig.loading"
+      title="重启有状态应用"
+      type="primary"
+      @confirm="handleConfirmRestart"
+    >
+      <span>
+        您确认重启 <strong>{{ selectedRow?.name || '' }}</strong> 有状态应用吗？
+      </span>
+    </BeeDialog>
+
+    <!-- 恢复更新确认 Dialog -->
+    <BeeDialog
+      v-model="resumeDialogConfig.visible"
+      icon="kubernetes-resume"
+      :loading="resumeDialogConfig.loading"
+      title="恢复有状态应用更新"
+      type="primary"
+      @confirm="handleConfirmResume"
+    >
+      <span>
+        您确认恢复 <strong>{{ selectedRow?.name || '' }}</strong> 有状态应用的更新吗？
+      </span>
+    </BeeDialog>
+
+    <!-- 暂停更新确认 Dialog -->
+    <BeeDialog
+      v-model="pauseDialogConfig.visible"
+      icon="kubernetes-pause"
+      :loading="pauseDialogConfig.loading"
+      title="暂停有状态应用更新"
+      type="primary"
+      @confirm="handleConfirmPause"
+    >
+      <span>
+        您确认暂停 <strong>{{ selectedRow?.name || '' }}</strong> 有状态应用的更新吗？
+      </span>
+    </BeeDialog>
+
     <!-- 单个删除 Dialog -->
     <BeeDialog
-      v-model="deleteDialogVisible"
+      v-model="deleteDialogConfig.visible"
       icon="basic-delete"
+      :loading="deleteDialogConfig.loading"
       title="删除有状态应用"
       type="danger"
       @confirm="handleConfirmDelete"
@@ -131,8 +190,9 @@
 
     <!-- 批量删除 Dialog -->
     <BeeDialog
-      v-model="batchDeleteDialogVisible"
+      v-model="batchDeleteDialogConfig.visible"
       icon="basic-delete"
+      :loading="batchDeleteDialogConfig.loading"
       title="批量删除有状态应用"
       type="danger"
       @confirm="handleConfirmBatchDelete"
@@ -143,34 +203,19 @@
 </template>
 
 <script setup lang="ts">
-import { computed, onMounted, reactive, ref } from 'vue'
+import { computed, onMounted } from 'vue'
 
-import { useRoute, useRouter } from 'vue-router'
-
-import type { StatefulSetListVo, StatefulSetQueryForm } from '@/types/kubernetes/workload/statefulset'
-
-import { getNamespaceList } from '@/api/kubernetes/namespace/namespace'
-import {
-  getStatefulSetList,
-  deleteStatefulSet,
-  deleteStatefulSets,
-  resumeStatefulSet,
-  pauseStatefulSet,
-  restartStatefulSet,
-} from '@/api/kubernetes/workload/statefulset'
-
-import { KubernetesRouteNames } from '@/router/names'
+import { useRoute } from 'vue-router'
 
 import BeeButton from '@/components/base/BeeButton/index.vue'
 import BeeDialog from '@/components/base/BeeDialog/index.vue'
 import BeeInputSearch from '@/components/base/BeeInputSearch/index.vue'
-import { BeeMessage } from '@/components/base/BeeMessage'
 import BeeSelect from '@/components/base/BeeSelect/index.vue'
 import BeePagination from '@/components/BeePagination/index.vue'
 import BeeTableColumn from '@/components/BeeTable/BeeTableColumn.vue'
 import BeeTableCommonCell from '@/components/BeeTable/BeeTableCommonCell.vue'
 import BeeTable from '@/components/BeeTable/index.vue'
-import BeeActionCell, { type ActionItem } from '@/components/business/BeeActionCell/index.vue'
+import BeeActionCell from '@/components/business/BeeActionCell/index.vue'
 import BeeAuditCell from '@/components/business/BeeAuditCell/index.vue'
 import BeeBatchDeleteDialogContent from '@/components/business/BeeDialogContent/BeeBatchDeleteDialogContent.vue'
 import BeePageHeader from '@/components/business/BeePageHeader/index.vue'
@@ -180,7 +225,6 @@ import BeePage from '@/components/layout/BeePage/index.vue'
 
 import WorkloadInfoCell from '@/views/kubernetes/workload/components/WorkloadInfoCell/index.vue'
 
-import { usePermission } from '@/composables/usePermission'
 import {
   STATEFULSET_PAGE_META,
   STATEFULSET_STATUS_OPTIONS,
@@ -188,394 +232,66 @@ import {
 } from '@/config/kubernetes/workload/statefulset.ts'
 import { useKubernetesStore } from '@/stores'
 
+import { useNamespaceFetch } from '../../namespace/composables/useFetch'
+
+import { useStatefulSetAction } from './composables/useAction'
+import { useStatefulSetFetch } from './composables/useFetch'
+import { useStatefulSetPermission } from './composables/usePermission'
+import { useStatefulSetTable } from './composables/useTable'
+
 defineOptions({ name: 'StatefulSetPage' })
-
-// ==================== Composables & Route ====================
-const { hasPermission } = usePermission()
-const route = useRoute()
-const router = useRouter()
-
-// ==================== Reactive State ====================
-// ---------- 查询条件 ----------
-/** 搜索关键词 */
-const searchKey = ref('')
-/** 查询条件 */
-const queryForm = reactive<Partial<StatefulSetQueryForm>>({})
-/** 分页条件请求 / 响应 */
-const pagination = reactive({ page: 1, pageSize: 10, total: 0 })
-// ---------- 表格数据 ----------
-/** BeeTable 实例引用 */
-const tableRef = ref<InstanceType<typeof BeeTable>>()
-/** 列表加载态 */
-const loading = ref(false)
-/** 列表数据 */
-const tableData = ref<StatefulSetListVo[]>([])
-// ---------- 选中逻辑 ----------
-/** 当前行数据 */
-const selectedRow = ref<StatefulSetListVo>()
-/** 多选选中数据 */
-const selectedRows = ref<StatefulSetListVo[]>([])
-// ---------- 对话框 ----------
-/** 单个删除弹框显隐 */
-const deleteDialogVisible = ref(false)
-/** 批量删除弹框显隐 */
-const batchDeleteDialogVisible = ref(false)
-
-// --- 选项数据
-/** 命名空间选项 */
-const namespaceOptions = ref<{ label: string; value: string | undefined }[]>([
-  { label: '全部命名空间', value: undefined },
-])
 
 // ==================== Computed ====================
 /** 当前集群 UID */
-const clusterUid = computed(() => (route.params.clusterUid as string) || useKubernetesStore().activeClusterUid || '')
-/** 多选选中数据中可删除列表 */
-const deletableRows = computed(() => selectedRows.value.filter(row => row.deletable))
+const clusterUid = computed(
+  () => (useRoute().params.clusterUid as string) || useKubernetesStore().activeClusterUid || '',
+)
 
-// ==================== Permission ====================
-/** 页面级权限缓存，避免模板/循环中重复调用 hasPermission */
-const perm: Record<string, boolean> = {
-  create: hasPermission('kubernetes:workload:statefulset:create'),
-  edit: hasPermission('kubernetes:workload:statefulset:edit'),
-  view: hasPermission('kubernetes:workload:statefulset:view'),
-  delete: hasPermission('kubernetes:workload:statefulset:delete'),
-}
+// ==================== Namespace Composables ====================
+const { namespaceOptions, fetchNamespaceOptions } = useNamespaceFetch(clusterUid)
 
-// ==================== Row Actions Generate ====================
-/**
- * 构建行操作数组
- * @param row - 当前行数据
- * @returns 操作项数组
- */
-function getActions(row: StatefulSetListVo): ActionItem[] {
-  const actions: ActionItem[] = []
-  if (perm.view) {
-    actions.push({ value: 'view', label: '详情', icon: 'basic-view', handler: () => handleViewDetail(row) })
-  }
-  if (perm.edit) {
-    actions.push(
-      { value: 'edit', label: '编辑', icon: 'basic-edit', handler: () => handleEdit(row) },
-      { value: 'labels', label: '配置标签', icon: 'kubernetes-label', handler: () => handleLabels(row) },
-      { value: 'annotations', label: '配置注解', icon: 'kubernetes-annotation', handler: () => handleAnnotations(row) },
-      { value: 'scale', label: '扩缩容', icon: 'kubernetes-scale', handler: () => handleScale(row) },
-      { value: 'restart', label: '重启', icon: 'basic-refresh', handler: () => handleRestart(row) },
-      { value: 'rollback', label: '回滚', icon: 'kubernetes-rollback', handler: () => handleRollback(row) },
-    )
-    if (row.paused) {
-      actions.push({
-        value: 'resume',
-        label: '恢复更新',
-        icon: 'kubernetes-resume',
-        handler: () => handleResume(row),
-      })
-    } else {
-      actions.push({
-        value: 'pause',
-        label: '暂停更新',
-        icon: 'kubernetes-pause',
-        handler: () => handlePause(row),
-      })
-    }
-  }
-  if (perm.delete && row.deletable) {
-    actions.push({ value: 'delete', label: '删除', icon: 'basic-delete', handler: () => handleDelete(row) })
-  }
-  return actions
-}
-
-// ==================== Data Loading ====================
-/**
- * 请求命名空间选项列表数据
- */
-async function loadNamespaceOptions() {
-  if (!clusterUid.value) return
-  try {
-    const { list } = await getNamespaceList(clusterUid.value, { mode: 'Simple' })
-    namespaceOptions.value = [
-      { label: '全部命名空间', value: undefined },
-      ...list.map(ns => ({ label: ns.name, value: ns.name })),
-    ]
-  } catch (err) {
-    console.error('[loadNamespaceOptions]', err)
-    BeeMessage.error('加载命名空间选项失败，请稍后再试')
-  }
-}
-
-/**
- * 请求有状态应用列表数据
- */
-async function loadData() {
-  if (!clusterUid.value) {
-    tableData.value = []
-    return
-  }
-  loading.value = true
-  try {
-    const { list, total } = await getStatefulSetList(clusterUid.value, {
-      ...queryForm,
-      page: pagination.page,
-      pageSize: pagination.pageSize,
-    })
-    tableData.value = list
-    pagination.total = total
-  } catch (err) {
-    console.error('[loadData]', err)
-    BeeMessage.error('加载有状态应用列表失败')
-  } finally {
-    loading.value = false
-  }
-}
-
-// ==================== BeeTable Handler ====================
-/**
- * 表格选中行变化
- * @param rows
- */
-function handleSelectionChange(rows: Record<string, unknown>[]) {
-  selectedRows.value = rows as unknown as StatefulSetListVo[]
-}
-
-// ==================== Handler ====================
-/**
- * 搜索
- */
-function handleSearch() {
-  queryForm.uid = searchKey.value
-  queryForm.name = searchKey.value
-  pagination.page = 1
-  void loadData()
-}
-
-/**
- * 重置搜索条件
- */
-function handleReset() {
-  queryForm.uid = undefined
-  queryForm.name = undefined
-  queryForm.namespace = undefined
-  queryForm.status = undefined
-  pagination.page = 1
-  pagination.pageSize = 10
-  searchKey.value = ''
-  void loadData()
-}
-
-/**
- * 创建有状态应用
- */
-function handleCreate() {
-  router
-    .push({ name: KubernetesRouteNames.StatefulSet.Create, params: { clusterUid: clusterUid.value } })
-    .catch(() => {})
-}
-
-/**
- * 创建有状态应用（YAML）
- */
-function handleCreateYaml() {
-  router
-    .push({ name: KubernetesRouteNames.StatefulSet.CreateYaml, params: { clusterUid: clusterUid.value } })
-    .catch(() => {})
-}
-
-/**
- * 查看有状态应用详情
- * @param row - 当前行数据
- */
-function handleViewDetail(row: StatefulSetListVo) {
-  router
-    .push({
-      name: KubernetesRouteNames.StatefulSet.Detail,
-      params: { clusterId: clusterUid.value, namespace: row.namespace, name: row.name },
-    })
-    .catch(() => {})
-}
-
-/**
- * 编辑有状态应用
- * @param row
- */
-function handleEdit(row: StatefulSetListVo) {
-  router
-    .push({
-      name: KubernetesRouteNames.StatefulSet.Edit,
-      params: { clusterId: clusterUid.value, namespace: row.namespace, name: row.name },
-    })
-    .catch(() => {})
-}
-
-/**
- * 配置有状态应用标签
- * @param row - 当前行数据
- */
-function handleLabels(row: StatefulSetListVo) {
-  router
-    .push({
-      name: KubernetesRouteNames.StatefulSet.ManageLabels,
-      params: { clusterUid: clusterUid.value, namespace: row.namespace, name: row.name },
-    })
-    .catch(() => {})
-}
-
-/**
- * 配置有状态应用注解
- * @param row - 当前行数据
- */
-function handleAnnotations(row: StatefulSetListVo) {
-  router
-    .push({
-      name: KubernetesRouteNames.StatefulSet.ManageAnnotations,
-      params: { clusterUid: clusterUid.value, namespace: row.namespace, name: row.name },
-    })
-    .catch(() => {})
-}
-
-/**
- * 扩缩容有状态应用
- * @param row - 当前行数据
- */
-function handleScale(row: StatefulSetListVo) {
-  BeeMessage.info(`扩缩容: ${row.name}`)
-}
-
-/**
- * 重启有状态应用
- * @param row - 当前行数据
- */
-async function handleRestart(row: StatefulSetListVo) {
-  try {
-    await restartStatefulSet(clusterUid.value, row.namespace, row.name)
-    BeeMessage.success(`成功重启有状态应用【${row.name}】`)
-    selectedRow.value = undefined
-    void loadData()
-  } catch (err) {
-    console.error('[handleRestart]', err)
-    BeeMessage.error(`重启有状态应用【${row.name}】失败`)
-  }
-}
-
-/**
- * 回滚有状态应用
- * @param row - 当前行数据
- */
-function handleRollback(row: StatefulSetListVo) {
-  BeeMessage.info(`回滚: ${row.name}`)
-}
-
-/**
- * 恢复有状态应用更新
- * @param row - 当前行数据
- */
-async function handleResume(row: StatefulSetListVo) {
-  try {
-    await resumeStatefulSet(clusterUid.value, row.namespace, row.name)
-    BeeMessage.success(`成功恢复有状态应用【${row.name}】更新`)
-    selectedRow.value = undefined
-    void loadData()
-  } catch (err) {
-    console.error('[handleResume]', err)
-    BeeMessage.error(`恢复有状态应用【${row.name}】更新失败`)
-  }
-}
-
-/**
- * 暂停有状态应用更新
- * @param row - 当前行数据
- */
-async function handlePause(row: StatefulSetListVo) {
-  try {
-    await pauseStatefulSet(clusterUid.value, row.namespace, row.name)
-    BeeMessage.success(`成功暂停有状态应用【${row.name}】更新`)
-    selectedRow.value = undefined
-    void loadData()
-  } catch (err) {
-    console.error('[handlePause]', err)
-    BeeMessage.error(`暂停有状态应用【${row.name}】更新失败`)
-  }
-}
-
-/**
- * 删除有状态应用
- * @param row
- */
-function handleDelete(row: StatefulSetListVo) {
-  selectedRow.value = row
-  deleteDialogVisible.value = true
-}
-/**
- * 打开批量删除确认弹窗
- */
-function handleBatchDelete() {
-  if (deletableRows.value.length === 0) {
-    BeeMessage.warning('选中的有状态应用均不可删除')
-    return
-  }
-  batchDeleteDialogVisible.value = true
-}
-
-/**
- * 导出 StatefulSet
- * @remarks 功能开发中
- */
-function handleExport() {
-  BeeMessage.info('功能开发中')
-}
-
-/**
- * 导入 StatefulSet
- * @remarks 功能开发中
- */
-function handleImport() {
-  BeeMessage.info('功能开发中')
-}
-
-/**
- * 清空选中数据
- */
-function handleClearSelection() {
-  tableRef.value?.clearSelection()
-}
-
-// ==================== Dialog Confirm ====================
-/**
- * 二次确认删除有状态应用
- */
-async function handleConfirmDelete() {
-  if (!selectedRow.value) return
-  const { namespace, name } = selectedRow.value
-  try {
-    await deleteStatefulSet(clusterUid.value, namespace, name)
-    BeeMessage.success(`成功删除有状态应用【${name}】`)
-    selectedRow.value = undefined
-    void loadData()
-  } catch (err) {
-    console.error('[handleConfirmDelete]', err)
-    BeeMessage.error(`删除有状态应用【${name}】失败`)
-  }
-}
-
-/**
- * 二次确认批量删除有状态应用
- */
-async function handleConfirmBatchDelete() {
-  if (deletableRows.value.length === 0) return
-  const uids = deletableRows.value.map(row => row.uid)
-  try {
-    await deleteStatefulSets(clusterUid.value, uids)
-    BeeMessage.success(`成功删除 ${uids.length} 个有状态应用`)
-    selectedRows.value = []
-    void loadData()
-  } catch (err) {
-    console.error('[handleConfirmBatchDelete]', err)
-    BeeMessage.error('批量删除有状态应用失败')
-  }
-}
+// ==================== StatefulSet Composables ====================
+const { permissionMap } = useStatefulSetPermission()
+const { tableRef, loading, selectedRow, selectedRows, handleSelectionChange } = useStatefulSetTable()
+const { queryForm, pageData, statefulSets, fetchStatefulSets } = useStatefulSetFetch(clusterUid, loading)
+const {
+  searchKey,
+  scaleDialogConfig,
+  restartDialogConfig,
+  resumeDialogConfig,
+  pauseDialogConfig,
+  deleteDialogConfig,
+  batchDeleteDialogConfig,
+  getActions,
+  handleSearch,
+  handleReset,
+  handleCreate,
+  handleCreateYaml,
+  handleBatchDelete,
+  handleImport,
+  handleExport,
+  handleClearSelection,
+  handleConfirmScale,
+  handleConfirmRestart,
+  handleConfirmResume,
+  handleConfirmPause,
+  handleConfirmDelete,
+  handleConfirmBatchDelete,
+} = useStatefulSetAction(
+  clusterUid,
+  permissionMap,
+  queryForm,
+  pageData,
+  fetchStatefulSets,
+  tableRef,
+  selectedRow,
+  selectedRows,
+)
 
 // ==================== Lifecycle ====================
 onMounted(() => {
-  void loadNamespaceOptions()
-  void loadData()
+  void fetchNamespaceOptions()
+  void fetchStatefulSets()
 })
 </script>
 
