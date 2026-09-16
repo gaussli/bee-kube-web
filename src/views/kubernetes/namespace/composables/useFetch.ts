@@ -10,10 +10,15 @@ import { getNamespaceList } from '@/api/kubernetes/namespace/namespace'
 import { BeeMessage } from '@/components/base/BeeMessage'
 
 /**
- *
+ * 命名空间列表数据组合式函数
  * @param clusterUid
+ * @param tableLoading - 列表加载态（可选：仅取命名空间下拉选项的页面无需传入，此时使用内部兜底加载态）
  */
-export function useNamespaceFetch(clusterUid: Ref<string>) {
+export function useNamespaceFetch(clusterUid: Ref<string>, tableLoading?: Ref<boolean>) {
+  /** 内部兜底加载态 */
+  const internalLoading = ref(false)
+  /** 列表加载态 */
+  const loading = tableLoading ?? internalLoading
   /** 查询条件 */
   const queryForm = reactive<Partial<NamespaceQueryForm>>({})
   /** 分页数据 */
@@ -25,14 +30,13 @@ export function useNamespaceFetch(clusterUid: Ref<string>) {
 
   /**
    * 请求命名空间列表数据
-   * @param tableLoading
    */
-  async function fetchNamespaces(tableLoading: Ref<boolean>) {
+  async function fetchNamespaces() {
     if (!clusterUid.value) {
       namespaces.value = []
       return
     }
-    tableLoading.value = true
+    loading.value = true
     try {
       const { list, total } = await getNamespaceList(clusterUid.value, {
         ...queryForm,
@@ -45,7 +49,7 @@ export function useNamespaceFetch(clusterUid: Ref<string>) {
       console.error('[fetchNamespaces]', err)
       BeeMessage.error('加载命名空间列表失败')
     } finally {
-      tableLoading.value = false
+      loading.value = false
     }
   }
 
