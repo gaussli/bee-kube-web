@@ -61,7 +61,7 @@ export function useNamespaceFetch(clusterUid: Ref<string>) {
         ...list.map(ns => ({ label: ns.name, value: ns.name })),
       ]
     } catch (err) {
-      console.error('[loadNamespaceOptions]', err)
+      console.error('[fetchNamespaceOptions]', err)
       BeeMessage.error('加载命名空间选项失败，请稍后再试')
     }
   }
