@@ -29,6 +29,7 @@ export const mockCronJobList: CronJobListVo[] = [
     createBy: 'admin',
     updateAt: '2025-08-28 08:00:00',
     updateBy: 'admin',
+    suspend: false,
     deletable: false,
   },
   {
@@ -48,6 +49,7 @@ export const mockCronJobList: CronJobListVo[] = [
     createBy: 'ops',
     updateAt: '2025-08-28 07:00:00',
     updateBy: 'ops',
+    suspend: false,
     deletable: false,
   },
   {
@@ -67,6 +69,7 @@ export const mockCronJobList: CronJobListVo[] = [
     createBy: 'admin',
     updateAt: '2025-08-28 08:00:00',
     updateBy: 'admin',
+    suspend: false,
     deletable: true,
   },
   {
@@ -86,6 +89,7 @@ export const mockCronJobList: CronJobListVo[] = [
     createBy: 'dba',
     updateAt: '2025-08-28 08:00:00',
     updateBy: 'dba',
+    suspend: false,
     deletable: false,
   },
   {
@@ -105,6 +109,7 @@ export const mockCronJobList: CronJobListVo[] = [
     createBy: 'devops',
     updateAt: '2025-08-28 07:45:00',
     updateBy: 'devops',
+    suspend: false,
     deletable: true,
   },
   {
@@ -124,6 +129,7 @@ export const mockCronJobList: CronJobListVo[] = [
     createBy: 'dba',
     updateAt: '2025-08-28 08:00:00',
     updateBy: 'dba',
+    suspend: false,
     deletable: false,
   },
   {
@@ -143,6 +149,7 @@ export const mockCronJobList: CronJobListVo[] = [
     createBy: 'admin',
     updateAt: '2025-08-28 08:00:00',
     updateBy: 'admin',
+    suspend: false,
     deletable: true,
   },
   {
@@ -162,6 +169,7 @@ export const mockCronJobList: CronJobListVo[] = [
     createBy: 'devops',
     updateAt: '2025-08-28 08:00:00',
     updateBy: 'devops',
+    suspend: false,
     deletable: false,
   },
   {
@@ -181,6 +189,7 @@ export const mockCronJobList: CronJobListVo[] = [
     createBy: 'developer',
     updateAt: '2025-08-28 07:55:00',
     updateBy: 'developer',
+    suspend: false,
     deletable: true,
   },
   {
@@ -200,6 +209,7 @@ export const mockCronJobList: CronJobListVo[] = [
     createBy: 'sec-team',
     updateAt: '2025-08-28 08:00:00',
     updateBy: 'sec-team',
+    suspend: false,
     deletable: false,
   },
   {
@@ -219,6 +229,7 @@ export const mockCronJobList: CronJobListVo[] = [
     createBy: 'sre',
     updateAt: '2025-08-28 08:00:00',
     updateBy: 'sre',
+    suspend: false,
     deletable: true,
   },
   {
@@ -238,6 +249,7 @@ export const mockCronJobList: CronJobListVo[] = [
     createBy: 'dba',
     updateAt: '2025-08-28 08:00:00',
     updateBy: 'dba',
+    suspend: false,
     deletable: false,
   },
   {
@@ -257,6 +269,7 @@ export const mockCronJobList: CronJobListVo[] = [
     createBy: 'net-team',
     updateAt: '2025-08-28 08:00:00',
     updateBy: 'net-team',
+    suspend: false,
     deletable: false,
   },
   {
@@ -276,6 +289,7 @@ export const mockCronJobList: CronJobListVo[] = [
     createBy: 'admin',
     updateAt: '2025-08-28 10:00:00',
     updateBy: 'admin',
+    suspend: false,
     deletable: true,
   },
   {
@@ -295,6 +309,7 @@ export const mockCronJobList: CronJobListVo[] = [
     createBy: 'admin',
     updateAt: '2025-08-28 08:00:00',
     updateBy: 'admin',
+    suspend: false,
     deletable: false,
   },
   {
@@ -314,6 +329,7 @@ export const mockCronJobList: CronJobListVo[] = [
     createBy: 'dba',
     updateAt: '2025-08-28 08:00:00',
     updateBy: 'dba',
+    suspend: false,
     deletable: true,
   },
   {
@@ -333,6 +349,7 @@ export const mockCronJobList: CronJobListVo[] = [
     createBy: 'ops',
     updateAt: '2025-08-28 07:00:00',
     updateBy: 'ops',
+    suspend: false,
     deletable: false,
   },
   {
@@ -352,6 +369,7 @@ export const mockCronJobList: CronJobListVo[] = [
     createBy: 'devops',
     updateAt: '2025-08-28 08:00:00',
     updateBy: 'devops',
+    suspend: false,
     deletable: true,
   },
   {
@@ -371,6 +389,7 @@ export const mockCronJobList: CronJobListVo[] = [
     createBy: 'dev',
     updateAt: '2025-08-28 08:00:00',
     updateBy: 'dev',
+    suspend: false,
     deletable: false,
   },
   {
@@ -390,6 +409,7 @@ export const mockCronJobList: CronJobListVo[] = [
     createBy: 'ops',
     updateAt: '2025-08-28 08:00:00',
     updateBy: 'ops',
+    suspend: false,
     deletable: false,
   },
 
@@ -411,6 +431,7 @@ export const mockCronJobList: CronJobListVo[] = [
     createBy: 'admin',
     updateAt: '2026-08-21 09:00:00',
     updateBy: 'admin',
+    suspend: true,
     deletable: true,
   },
   {
@@ -430,6 +451,7 @@ export const mockCronJobList: CronJobListVo[] = [
     createBy: 'ops',
     updateAt: '2026-08-19 10:30:00',
     updateBy: 'ops',
+    suspend: true,
     deletable: false,
   },
   {
@@ -449,6 +471,7 @@ export const mockCronJobList: CronJobListVo[] = [
     createBy: 'admin',
     updateAt: '2026-08-19 08:00:00',
     updateBy: 'admin',
+    suspend: true,
     deletable: true,
   },
   {
@@ -468,6 +491,7 @@ export const mockCronJobList: CronJobListVo[] = [
     createBy: 'devops',
     updateAt: '2026-08-18 09:00:00',
     updateBy: 'devops',
+    suspend: true,
     deletable: false,
   },
   {
@@ -487,6 +511,7 @@ export const mockCronJobList: CronJobListVo[] = [
     createBy: 'dba',
     updateAt: '2026-07-15 10:00:00',
     updateBy: 'dba',
+    suspend: true,
     deletable: false,
   },
   {
@@ -506,6 +531,7 @@ export const mockCronJobList: CronJobListVo[] = [
     createBy: 'admin',
     updateAt: '2026-08-16 08:00:00',
     updateBy: 'admin',
+    suspend: true,
     deletable: true,
   },
   {
@@ -525,6 +551,7 @@ export const mockCronJobList: CronJobListVo[] = [
     createBy: 'sec-team',
     updateAt: '2026-08-24 09:00:00',
     updateBy: 'sec-team',
+    suspend: true,
     deletable: false,
   },
   {
@@ -544,6 +571,7 @@ export const mockCronJobList: CronJobListVo[] = [
     createBy: 'dba',
     updateAt: '2026-08-11 08:00:00',
     updateBy: 'dba',
+    suspend: true,
     deletable: false,
   },
 
@@ -565,6 +593,7 @@ export const mockCronJobList: CronJobListVo[] = [
     createBy: 'admin',
     updateAt: '2026-08-28 08:00:00',
     updateBy: 'system',
+    suspend: false,
     deletable: true,
   },
   {
@@ -584,6 +613,7 @@ export const mockCronJobList: CronJobListVo[] = [
     createBy: 'devops',
     updateAt: '2026-08-28 07:00:00',
     updateBy: 'system',
+    suspend: false,
     deletable: false,
   },
 ]

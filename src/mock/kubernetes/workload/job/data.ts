@@ -28,6 +28,7 @@ export const mockJobList: JobListVo[] = [
     createBy: 'admin',
     updateAt: '2026-08-28 08:15:00',
     updateBy: 'admin',
+    suspend: true,
     deletable: false,
   },
   {
@@ -49,6 +50,7 @@ export const mockJobList: JobListVo[] = [
     createBy: 'data-scientist',
     updateAt: '2026-08-28 08:00:00',
     updateBy: 'data-scientist',
+    suspend: true,
     deletable: true,
   },
   {
@@ -70,6 +72,7 @@ export const mockJobList: JobListVo[] = [
     createBy: 'admin',
     updateAt: '2026-08-28 08:10:00',
     updateBy: 'admin',
+    suspend: false,
     deletable: false,
   },
   {
@@ -91,6 +94,7 @@ export const mockJobList: JobListVo[] = [
     createBy: 'dev',
     updateAt: '2026-08-28 08:05:00',
     updateBy: 'dev',
+    suspend: false,
     deletable: true,
   },
   {
@@ -112,6 +116,7 @@ export const mockJobList: JobListVo[] = [
     createBy: 'ops',
     updateAt: '2026-08-28 08:20:00',
     updateBy: 'ops',
+    suspend: false,
     deletable: false,
   },
   {
@@ -133,6 +138,7 @@ export const mockJobList: JobListVo[] = [
     createBy: 'devops',
     updateAt: '2026-08-28 08:10:00',
     updateBy: 'devops',
+    suspend: false,
     deletable: true,
   },
   {
@@ -154,6 +160,7 @@ export const mockJobList: JobListVo[] = [
     createBy: 'admin',
     updateAt: '2026-08-28 08:00:00',
     updateBy: 'admin',
+    suspend: false,
     deletable: false,
   },
   {
@@ -175,6 +182,7 @@ export const mockJobList: JobListVo[] = [
     createBy: 'dev',
     updateAt: '2026-08-28 08:15:00',
     updateBy: 'dev',
+    suspend: false,
     deletable: true,
   },
   {
@@ -196,6 +204,7 @@ export const mockJobList: JobListVo[] = [
     createBy: 'dba',
     updateAt: '2026-08-28 08:10:00',
     updateBy: 'dba',
+    suspend: true,
     deletable: false,
   },
   {
@@ -217,6 +226,7 @@ export const mockJobList: JobListVo[] = [
     createBy: 'qa',
     updateAt: '2026-08-28 08:00:00',
     updateBy: 'qa',
+    suspend: false,
     deletable: true,
   },
 
@@ -240,6 +250,7 @@ export const mockJobList: JobListVo[] = [
     createBy: 'admin',
     updateAt: '2026-08-28 07:00:00',
     updateBy: 'system',
+    suspend: false,
     deletable: false,
   },
   {
@@ -261,6 +272,7 @@ export const mockJobList: JobListVo[] = [
     createBy: 'dba',
     updateAt: '2026-08-28 06:00:00',
     updateBy: 'system',
+    suspend: false,
     deletable: true,
   },
   {
@@ -282,6 +294,7 @@ export const mockJobList: JobListVo[] = [
     createBy: 'ops',
     updateAt: '2026-08-28 05:00:00',
     updateBy: 'system',
+    suspend: false,
     deletable: false,
   },
   {
@@ -303,6 +316,7 @@ export const mockJobList: JobListVo[] = [
     createBy: 'admin',
     updateAt: '2026-08-28 04:00:00',
     updateBy: 'system',
+    suspend: false,
     deletable: true,
   },
   {
@@ -324,6 +338,7 @@ export const mockJobList: JobListVo[] = [
     createBy: 'devops',
     updateAt: '2026-08-28 03:00:00',
     updateBy: 'system',
+    suspend: false,
     deletable: false,
   },
   {
@@ -345,6 +360,7 @@ export const mockJobList: JobListVo[] = [
     createBy: 'qa',
     updateAt: '2026-08-28 02:00:00',
     updateBy: 'system',
+    suspend: false,
     deletable: true,
   },
   {
@@ -366,6 +382,7 @@ export const mockJobList: JobListVo[] = [
     createBy: 'admin',
     updateAt: '2026-08-28 01:00:00',
     updateBy: 'system',
+    suspend: false,
     deletable: false,
   },
   {
@@ -387,6 +404,7 @@ export const mockJobList: JobListVo[] = [
     createBy: 'admin',
     updateAt: '2026-08-28 00:30:00',
     updateBy: 'system',
+    suspend: false,
     deletable: true,
   },
 
@@ -410,6 +428,7 @@ export const mockJobList: JobListVo[] = [
     createBy: 'admin',
     updateAt: '2026-08-28 08:10:00',
     updateBy: 'system',
+    suspend: false,
     deletable: false,
   },
   {
@@ -431,6 +450,7 @@ export const mockJobList: JobListVo[] = [
     createBy: 'devops',
     updateAt: '2026-08-28 08:05:00',
     updateBy: 'system',
+    suspend: false,
     deletable: true,
   },
   {
@@ -452,6 +472,7 @@ export const mockJobList: JobListVo[] = [
     createBy: 'dev',
     updateAt: '2026-08-28 07:40:00',
     updateBy: 'system',
+    suspend: false,
     deletable: false,
   },
   {
@@ -473,6 +494,7 @@ export const mockJobList: JobListVo[] = [
     createBy: 'ops',
     updateAt: '2026-08-28 06:30:00',
     updateBy: 'system',
+    suspend: false,
     deletable: true,
   },
   {
@@ -494,6 +516,7 @@ export const mockJobList: JobListVo[] = [
     createBy: 'admin',
     updateAt: '2026-08-28 05:30:00',
     updateBy: 'system',
+    suspend: false,
     deletable: false,
   },
   {
@@ -515,6 +538,7 @@ export const mockJobList: JobListVo[] = [
     createBy: 'dev',
     updateAt: '2026-08-28 04:05:00',
     updateBy: 'system',
+    suspend: false,
     deletable: true,
   },
   {
@@ -536,6 +560,7 @@ export const mockJobList: JobListVo[] = [
     createBy: 'dev',
     updateAt: '2026-08-28 03:10:00',
     updateBy: 'system',
+    suspend: false,
     deletable: false,
   },
 
@@ -559,6 +584,7 @@ export const mockJobList: JobListVo[] = [
     createBy: 'admin',
     updateAt: '2026-08-28 08:10:00',
     updateBy: 'system',
+    suspend: false,
     deletable: false,
   },
   {
@@ -580,6 +606,7 @@ export const mockJobList: JobListVo[] = [
     createBy: 'devops',
     updateAt: '2026-08-28 07:20:00',
     updateBy: 'system',
+    suspend: false,
     deletable: true,
   },
   {
@@ -601,6 +628,7 @@ export const mockJobList: JobListVo[] = [
     createBy: 'admin',
     updateAt: '2026-08-28 06:30:00',
     updateBy: 'system',
+    suspend: false,
     deletable: false,
   },
   {
@@ -622,6 +650,7 @@ export const mockJobList: JobListVo[] = [
     createBy: 'ops',
     updateAt: '2026-08-28 05:30:00',
     updateBy: 'system',
+    suspend: false,
     deletable: true,
   },
   {
@@ -643,6 +672,7 @@ export const mockJobList: JobListVo[] = [
     createBy: 'qa',
     updateAt: '2026-08-28 04:10:00',
     updateBy: 'system',
+    suspend: false,
     deletable: false,
   },
 ]
