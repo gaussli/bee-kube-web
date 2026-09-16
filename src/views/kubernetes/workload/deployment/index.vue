@@ -122,7 +122,7 @@
 
     <!-- 扩缩容 Dialog -->
     <BeeDialog
-      v-model="scaleDialogConfig.visiable"
+      v-model="scaleDialogConfig.visible"
       icon="kubernetes-scale"
       :loading="scaleDialogConfig.loading"
       title="扩缩容无状态应用"
@@ -134,7 +134,7 @@
 
     <!-- 重启确认 Dialog -->
     <BeeDialog
-      v-model="restartDialogConfig.visiable"
+      v-model="restartDialogConfig.visible"
       icon="basic-refresh"
       :loading="restartDialogConfig.loading"
       title="重启无状态应用"
@@ -148,7 +148,7 @@
 
     <!-- 恢复更新确认 Dialog -->
     <BeeDialog
-      v-model="resumeDialogConfig.visiable"
+      v-model="resumeDialogConfig.visible"
       icon="kubernetes-resume"
       :loading="resumeDialogConfig.loading"
       title="恢复无状态应用更新"
@@ -162,7 +162,7 @@
 
     <!-- 暂停更新确认 Dialog -->
     <BeeDialog
-      v-model="pauseDialogConfig.visiable"
+      v-model="pauseDialogConfig.visible"
       icon="kubernetes-pause"
       :loading="pauseDialogConfig.loading"
       title="暂停无状态应用更新"
@@ -176,7 +176,7 @@
 
     <!-- 单个删除 Dialog -->
     <BeeDialog
-      v-model="deleteDialogConfig.visiable"
+      v-model="deleteDialogConfig.visible"
       icon="basic-delete"
       :loading="deleteDialogConfig.loading"
       title="删除无状态应用"
@@ -190,7 +190,7 @@
 
     <!-- 批量删除 Dialog -->
     <BeeDialog
-      v-model="batchDeleteDialogConfig.visiable"
+      v-model="batchDeleteDialogConfig.visible"
       icon="basic-delete"
       :loading="batchDeleteDialogConfig.loading"
       title="批量删除无状态应用"

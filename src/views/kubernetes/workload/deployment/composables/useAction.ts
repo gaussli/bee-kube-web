@@ -25,7 +25,7 @@ import BeeTable from '@/components/BeeTable/index.vue'
 const router = useRouter()
 
 type DialogConfig = {
-  visiable: boolean
+  visible: boolean
   loading: boolean
 }
 
@@ -63,32 +63,32 @@ export function useDeploymentAction<T extends dialogData>(
   const searchKey = ref('')
 
   const scaleDialogConfig = reactive<DialogConfig>({
-    visiable: false,
+    visible: false,
     loading: false,
   })
 
   const restartDialogConfig = reactive<DialogConfig>({
-    visiable: false,
+    visible: false,
     loading: false,
   })
 
   const resumeDialogConfig = reactive<DialogConfig>({
-    visiable: false,
+    visible: false,
     loading: false,
   })
 
   const pauseDialogConfig = reactive<DialogConfig>({
-    visiable: false,
+    visible: false,
     loading: false,
   })
 
   const deleteDialogConfig = reactive<DialogConfig>({
-    visiable: false,
+    visible: false,
     loading: false,
   })
 
   const batchDeleteDialogConfig = reactive<DialogConfig>({
-    visiable: false,
+    visible: false,
     loading: false,
   })
 
@@ -251,7 +251,7 @@ export function useDeploymentAction<T extends dialogData>(
    */
   function handleScale(row: T) {
     dialogData.value = row
-    scaleDialogConfig.visiable = true
+    scaleDialogConfig.visible = true
   }
 
   /**
@@ -260,7 +260,7 @@ export function useDeploymentAction<T extends dialogData>(
    */
   function handleRestart(row: T) {
     dialogData.value = row
-    restartDialogConfig.visiable = true
+    restartDialogConfig.visible = true
   }
 
   /**
@@ -269,7 +269,7 @@ export function useDeploymentAction<T extends dialogData>(
    */
   function handleResume(row: T) {
     dialogData.value = row
-    resumeDialogConfig.visiable = true
+    resumeDialogConfig.visible = true
   }
 
   /**
@@ -278,7 +278,7 @@ export function useDeploymentAction<T extends dialogData>(
    */
   function handlePause(row: T) {
     dialogData.value = row
-    pauseDialogConfig.visiable = true
+    pauseDialogConfig.visible = true
   }
 
   /**
@@ -287,7 +287,7 @@ export function useDeploymentAction<T extends dialogData>(
    */
   function handleDelete(row: T) {
     dialogData.value = row
-    deleteDialogConfig.visiable = true
+    deleteDialogConfig.visible = true
   }
 
   /**
@@ -298,7 +298,7 @@ export function useDeploymentAction<T extends dialogData>(
       BeeMessage.warning('选中的无状态应用均不可删除')
       return
     }
-    batchDeleteDialogConfig.visiable = true
+    batchDeleteDialogConfig.visible = true
   }
 
   /**
@@ -331,7 +331,7 @@ export function useDeploymentAction<T extends dialogData>(
   async function handleConfirmScale(newReplicas: number) {
     if (!dialogData.value) {
       scaleDialogConfig.loading = false
-      scaleDialogConfig.visiable = false
+      scaleDialogConfig.visible = false
       return
     }
     const { namespace, name, replicas } = dialogData.value
@@ -346,7 +346,7 @@ export function useDeploymentAction<T extends dialogData>(
       BeeMessage.error(`扩缩容无状态应用【${name}】失败`)
     } finally {
       scaleDialogConfig.loading = false
-      scaleDialogConfig.visiable = false
+      scaleDialogConfig.visible = false
       dialogData.value = undefined
     }
   }
@@ -357,7 +357,7 @@ export function useDeploymentAction<T extends dialogData>(
   async function handleConfirmRestart() {
     if (!dialogData.value) {
       restartDialogConfig.loading = false
-      restartDialogConfig.visiable = false
+      restartDialogConfig.visible = false
       return
     }
     const { namespace, name } = dialogData.value
@@ -371,7 +371,7 @@ export function useDeploymentAction<T extends dialogData>(
       BeeMessage.error(`重启无状态应用【${name}】失败`)
     } finally {
       restartDialogConfig.loading = false
-      restartDialogConfig.visiable = false
+      restartDialogConfig.visible = false
       dialogData.value = undefined
     }
   }
@@ -382,7 +382,7 @@ export function useDeploymentAction<T extends dialogData>(
   async function handleConfirmResume() {
     if (!dialogData.value) {
       resumeDialogConfig.loading = false
-      resumeDialogConfig.visiable = false
+      resumeDialogConfig.visible = false
       return
     }
     const { namespace, name } = dialogData.value
@@ -396,7 +396,7 @@ export function useDeploymentAction<T extends dialogData>(
       BeeMessage.error(`恢复无状态应用【${name}】更新失败`)
     } finally {
       resumeDialogConfig.loading = false
-      resumeDialogConfig.visiable = false
+      resumeDialogConfig.visible = false
       dialogData.value = undefined
     }
   }
@@ -407,7 +407,7 @@ export function useDeploymentAction<T extends dialogData>(
   async function handleConfirmPause() {
     if (!dialogData.value) {
       pauseDialogConfig.loading = false
-      pauseDialogConfig.visiable = false
+      pauseDialogConfig.visible = false
       return
     }
     const { namespace, name } = dialogData.value
@@ -421,7 +421,7 @@ export function useDeploymentAction<T extends dialogData>(
       BeeMessage.error(`暂停无状态应用【${name}】更新失败`)
     } finally {
       pauseDialogConfig.loading = false
-      pauseDialogConfig.visiable = false
+      pauseDialogConfig.visible = false
       dialogData.value = undefined
     }
   }
@@ -432,7 +432,7 @@ export function useDeploymentAction<T extends dialogData>(
   async function handleConfirmDelete() {
     if (!dialogData.value) {
       deleteDialogConfig.loading = false
-      deleteDialogConfig.visiable = false
+      deleteDialogConfig.visible = false
       return
     }
     const { namespace, name } = dialogData.value
@@ -446,7 +446,7 @@ export function useDeploymentAction<T extends dialogData>(
       BeeMessage.error(`删除无状态应用【${name}】失败`)
     } finally {
       deleteDialogConfig.loading = false
-      deleteDialogConfig.visiable = false
+      deleteDialogConfig.visible = false
       dialogData.value = undefined
     }
   }
@@ -457,7 +457,7 @@ export function useDeploymentAction<T extends dialogData>(
   async function handleConfirmBatchDelete() {
     if (deletableRows.value.length === 0) {
       batchDeleteDialogConfig.loading = false
-      batchDeleteDialogConfig.visiable = false
+      batchDeleteDialogConfig.visible = false
       return
     }
     const uids = deletableRows.value.map(row => row.uid)
@@ -471,7 +471,7 @@ export function useDeploymentAction<T extends dialogData>(
       BeeMessage.error('批量删除无状态应用失败')
     } finally {
       batchDeleteDialogConfig.loading = false
-      batchDeleteDialogConfig.visiable = false
+      batchDeleteDialogConfig.visible = false
       dialogDataList.value = []
     }
   }
