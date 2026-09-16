@@ -3,9 +3,9 @@ import type { Option, ResourcePageMeta } from '..'
 /** DaemonSet 列表页面功能元数据 */
 export const DAEMONSET_PAGE_META: ResourcePageMeta = {
   icon: 'kubernetes-daemonset',
-  title: '守护应用',
+  title: '守护进程集',
   description:
-    '守护应用（DaemonSet）是 Kubernetes 中用于确保每个节点运行一个 Pod 副本的控制器，常用于日志采集、监控代理、存储驱动等节点级守护服务。',
+    '守护进程集（DaemonSet）是 Kubernetes 中用于确保每个节点运行一个 Pod 副本的控制器，常用于日志采集、监控代理、存储驱动等节点级守护服务。',
 }
 
 /** DaemonSet 状态原始数据（用于派生类型） */
