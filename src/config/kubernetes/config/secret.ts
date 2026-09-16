@@ -29,4 +29,4 @@ const _secretTypes = [
 export type SecretType = (typeof _secretTypes)[number]['value']
 
 /** Secret 类型配置选项 */
-export const SECRET_TYPE_OPTIONS: Option[] = [..._secretTypes]
+export const SECRET_TYPE_OPTIONS: Option[] = [{ value: undefined, label: '所有类型' }, ..._secretTypes]
