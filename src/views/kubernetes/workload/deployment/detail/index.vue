@@ -25,7 +25,7 @@ import { computed, onMounted, ref } from 'vue'
 
 import { useRoute } from 'vue-router'
 
-import type { DeploymentDetailVo } from '@/types/kubernetes/workload/types'
+import type { DeploymentDetailVo } from '@/types/kubernetes/workload/deployment/index.ts'
 
 import { getDeploymentDetail } from '@/api/kubernetes/workload/deployment'
 
@@ -33,9 +33,6 @@ import BeeSegmentedControl from '@/components/BeeSegmentedControl/index.vue'
 import BeeBackHeader from '@/components/business/BeeBackHeader/index.vue'
 import BeeCard from '@/components/layout/BeeCard/index.vue'
 import BeePage from '@/components/layout/BeePage/index.vue'
-
-import { type ResourceOverviewInfoData } from '@/views/kubernetes/dashboard/components/BeeResourceOverviewInfo.vue'
-import BeeResourceOverviewInfo from '@/views/kubernetes/dashboard/components/BeeResourceOverviewInfo.vue'
 
 import DeploymentAdvanced from './advanced.vue'
 import DeploymentEvents from './events.vue'
@@ -77,7 +74,7 @@ const tabOptions = [
 ]
 
 /** 从详情数据映射为资源概览数据 */
-const resourceData = computed<ResourceOverviewInfoData>(() => ({
+const resourceData = computed(() => ({
   namespace: detailData.value?.namespace || '',
   name: detailData.value?.name || '',
   description: detailData.value?.description,

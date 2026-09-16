@@ -15,9 +15,8 @@
     <div class="bee-cluster-overview-info__field-cards">
       <BeeFieldCard
         field-name="状态 / Status"
-        :field-sub-value="statusConfig.labelEn"
+        :field-sub-value="(statusConfig.value as string) ?? '-'"
         :field-value="statusConfig.label"
-        :style="{ '--bee-fieldcard-text-color': statusConfig.color }"
       />
       <BeeFieldCard field-name="版本 / Version" :field-value="data.k8sVersion" />
       <BeeFieldCard field-name="运行时间 / Uptime" :field-sub-value="data.createdAt" :field-value="clusterUptime" />
