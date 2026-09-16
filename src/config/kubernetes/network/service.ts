@@ -25,7 +25,7 @@ const _serviceTypes = [
 export type ServiceType = (typeof _serviceTypes)[number]['value']
 
 /** Service 类型配置选项 */
-export const SERVICE_TYPE_OPTIONS: Option[] = [..._serviceTypes]
+export const SERVICE_TYPE_OPTIONS: Option[] = [{ value: undefined, label: '所有类型' }, ..._serviceTypes]
 
 /** Service 会话亲和性类型原始数据（用于派生类型） */
 const _serviceAffinities = [
