@@ -1,78 +1,67 @@
 <template>
-  <BeePage class="configmap-page">
-    <!-- 页面标题 -->
-    <BeeCard class="configmap-page__header">
-      <BeePageHeader
-        description="配置映射（ConfigMap）用于存储非敏感配置数据，如配置文件、环境变量、命令行参数等，实现配置与工作负载的解耦。"
-        icon="kubernetes-namespace"
-        title="配置映射"
-      />
-    </BeeCard>
+  <BeePage>
+    <!-- 页面 Header -->
+    <BeePageHeader v-bind="CONFIGMAP_PAGE_META" />
 
-    <!-- 页面内容 -->
-    <BeeCard class="configmap-page__body">
-      <!-- 查询表单 -->
-      <div class="table-toolbar">
-        <BeeInputSearch v-model="searchKey" class="table-toolbar__search" placeholder="按 UID / 名称搜索" />
-        <BeeSelect
-          v-model="queryForm.namespace"
-          :menu-height="300"
-          :options="namespaceOptions"
-          placeholder="命名空间筛选"
-          :width="300"
-        />
+    <!-- 页面 Body -->
+    <BeeCard class="page-body">
+      <!-- 工具栏 -->
+      <div class="page-body__toolbar">
+        <BeeInputSearch v-model="searchKey" class="page-body__toolbar-search" placeholder="按 UID / 名称搜索" />
+        <BeeSelect v-model="queryForm.namespace" :options="namespaceOptions" placeholder="命名空间筛选" :width="200" />
         <BeeButton icon="basic-search" @click="handleSearch"> 搜索 </BeeButton>
         <BeeButton icon="basic-refresh" @click="handleReset"> 重置 </BeeButton>
-        <BeeButton
-          v-if="hasPermission('kubernetes:config:configmap:create')"
-          icon="basic-create"
-          type="primary"
-          @click="handleCreate"
-        >
+        <div v-if="permissionMap.create" class="page-body__toolbar-separator"></div>
+        <BeeButton v-if="permissionMap.create" icon="basic-create" type="primary" @click="handleCreate">
           新增
+        </BeeButton>
+        <BeeButton v-if="permissionMap.create" icon="basic-create" type="primary" @click="handleCreateYaml">
+          YAML
         </BeeButton>
       </div>
 
-      <!-- 表格主体 -->
-      <div class="table-body">
-        <BeeTable :data="tableData" :loading="loading" selectable @selection-change="handleSelectionChange">
-          <BeeTableColumn :width="400">
+      <!-- 表格 -->
+      <div class="page-body__table">
+        <BeeTable
+          ref="tableRef"
+          :data="configMaps"
+          :loading="loading"
+          row-key="uid"
+          selectable
+          @selection-change="handleSelectionChange"
+        >
+          <!-- 配置映射信息列 -->
+          <BeeTableColumn :width="500">
             <template #default="{ row }">
-              <BeeConfigmapInfoCell
-                :description="row.description"
-                icon="kubernetes-namespace"
-                :icon-size="32"
-                :name="row.name"
-                :uid="row.uid"
-              />
+              <ConfigMapInfoCell :description="row.description" :name="row.name" :uid="row.uid" />
             </template>
           </BeeTableColumn>
+          <!-- 命名空间列 -->
           <BeeTableColumn :width="200">
             <template #default="{ row }">
-              <BeeTableCommonCell subtext="命名空间" :text="row.namespace" />
+              <BeeTableCommonCell :label="row.namespace" sublabel="命名空间" />
             </template>
           </BeeTableColumn>
+          <!-- 配置项列 -->
           <BeeTableColumn :width="140">
             <template #default="{ row }">
-              <BeeTableCommonCell subtext="配置项" :text="String(row.dataCount ?? 0)" />
+              <BeeTableCommonCell :label="String(row.dataCount ?? 0)" sublabel="配置项" />
             </template>
           </BeeTableColumn>
-          <BeeTableColumn :width="160">
-            <template #default="{ row }">
-              <BeeTableCommonCell subtext="关联工作负载" :text="String(row.refs?.length ?? 0)" />
-            </template>
-          </BeeTableColumn>
+          <!-- 创建信息列 -->
           <BeeTableColumn :width="200">
             <template #default="{ row }">
               <BeeAuditCell :datetime="row.createAt" field-name="创建人 / 时间" :username="row.createBy" />
             </template>
           </BeeTableColumn>
+          <!-- 更新信息列 -->
           <BeeTableColumn :width="200">
             <template #default="{ row }">
               <BeeAuditCell :datetime="row.updateAt" field-name="更新人 / 时间" :username="row.updateBy" />
             </template>
           </BeeTableColumn>
-          <BeeTableColumn fixed="right" :width="150">
+          <!-- 操作列 -->
+          <BeeTableColumn fixed="right" :width="136">
             <template #default="{ row }">
               <BeeActionCell :actions="getActions(row)" />
             </template>
@@ -80,377 +69,192 @@
         </BeeTable>
       </div>
 
-      <!-- 表格底部 -->
-      <div class="table-footer">
-        <div>
+      <!-- 底栏 -->
+      <div class="page-body__footer">
+        <div class="page-body__footer-actions">
+          <BeeButton :disabled="selectedRows.length === 0" icon="basic-clear" @click="handleClearSelection">
+            清空
+          </BeeButton>
           <BeeButton
-            v-if="hasPermission('kubernetes:config:configmap:delete')"
+            v-if="permissionMap.delete"
             :disabled="selectedRows.length === 0"
+            icon="basic-delete"
             type="danger"
             @click="handleBatchDelete"
           >
-            批量删除 ({{ selectedRows.length }})
+            删除 ({{ selectedRows.length }})
           </BeeButton>
+          <BeeButton v-if="permissionMap.view" icon="basic-export" @click="handleExport"> 导出 </BeeButton>
+          <BeeButton v-if="permissionMap.create" icon="basic-import" @click="handleImport"> 导入 </BeeButton>
         </div>
         <BeePagination
-          v-model="pagination.page"
-          v-model:page-size="pagination.pageSize"
-          :total="pagination.total"
-          @change="loadData"
+          v-model:page="pageData.page"
+          v-model:page-size="pageData.pageSize"
+          :total="pageData.total"
+          @change="fetchConfigMaps"
         />
       </div>
     </BeeCard>
 
     <!-- 单个删除 Dialog -->
-    <BeeDialog v-model="deleteDialogVisible" title="确认删除" @confirm="handleConfirmDelete">
-      <div class="dialog-content">
-        <p>
-          确定要删除 ConfigMap <strong>{{ currentTargetRow?.name }}</strong> 吗？
-        </p>
-      </div>
+    <BeeDialog
+      v-model="deleteDialogConfig.visible"
+      icon="basic-delete"
+      :loading="deleteDialogConfig.loading"
+      title="删除配置映射"
+      type="danger"
+      @confirm="handleConfirmDelete"
+    >
+      <span>
+        您确认删除 <strong>{{ selectedRow?.name || '' }}</strong> 配置映射吗？
+      </span>
     </BeeDialog>
 
     <!-- 批量删除 Dialog -->
-    <BeeDialog v-model="batchDeleteDialogVisible" title="确认删除" @confirm="handleConfirmBatchDelete">
-      <div class="dialog-content">
-        <p>
-          确定要删除选中的 <strong>{{ selectedRows.length }}</strong> 个 ConfigMap 吗？
-        </p>
-        <div class="delete-configmap-tags">
-          <BeeTag v-for="row in selectedRows" :key="row.id">
-            {{ row.name }}
-          </BeeTag>
-        </div>
-      </div>
+    <BeeDialog
+      v-model="batchDeleteDialogConfig.visible"
+      icon="basic-delete"
+      :loading="batchDeleteDialogConfig.loading"
+      title="批量删除配置映射"
+      type="danger"
+      @confirm="handleConfirmBatchDelete"
+    >
+      <BeeBatchDeleteDialogContent :delete-data="selectedRows" resource-type="配置映射" />
     </BeeDialog>
   </BeePage>
 </template>
 
 <script setup lang="ts">
-/**
- * ConfigMap 管理页面
- * @module views/kubernetes/config/configmap
- */
-import { onMounted, reactive, ref } from 'vue'
+import { computed, onMounted } from 'vue'
 
-import { useRoute, useRouter } from 'vue-router'
-
-import type { ConfigMapQueryForm, ConfigMapListVo } from '@/types/kubernetes/config/configmap'
-import type { NamespaceSimpleListResp } from '@/types/kubernetes/namespace'
-
-import { getConfigMapList, deleteConfigMap, deleteConfigMaps } from '@/api/kubernetes/config/configmap'
-import { getNamespacePage } from '@/api/kubernetes/namespace/namespace'
+import { useRoute } from 'vue-router'
 
 import BeeButton from '@/components/base/BeeButton/index.vue'
+import BeeDialog from '@/components/base/BeeDialog/index.vue'
 import BeeInputSearch from '@/components/base/BeeInputSearch/index.vue'
-import { BeeMessage } from '@/components/base/BeeMessage'
 import BeeSelect from '@/components/base/BeeSelect/index.vue'
-import BeeConfigmapInfoCell from '@/components/BeeConfigmapInfoCell/index.vue'
-import BeeDialog from '@/components/BeeDialog/index.vue'
 import BeePagination from '@/components/BeePagination/index.vue'
 import BeeTableColumn from '@/components/BeeTable/BeeTableColumn.vue'
 import BeeTableCommonCell from '@/components/BeeTable/BeeTableCommonCell.vue'
 import BeeTable from '@/components/BeeTable/index.vue'
-import BeeTag from '@/components/BeeTag/index.vue'
-import BeeActionCell, { type ActionItem } from '@/components/business/BeeActionCell/index.vue'
+import BeeActionCell from '@/components/business/BeeActionCell/index.vue'
 import BeeAuditCell from '@/components/business/BeeAuditCell/index.vue'
+import BeeBatchDeleteDialogContent from '@/components/business/BeeDialogContent/BeeBatchDeleteDialogContent.vue'
 import BeePageHeader from '@/components/business/BeePageHeader/index.vue'
 import BeeCard from '@/components/layout/BeeCard/index.vue'
 import BeePage from '@/components/layout/BeePage/index.vue'
 
-import { usePermission } from '@/composables/usePermission'
+import { CONFIGMAP_PAGE_META } from '@/config/kubernetes/config/configmap'
+import { useKubernetesStore } from '@/stores'
 
-defineOptions({ name: 'ConfigMapManage' })
+import { useNamespaceFetch } from '../../namespace/composables/useFetch'
 
-// ==================== Composables & Route ====================
+import ConfigMapInfoCell from './components/ConfigMapInfoCell/index.vue'
+import { useConfigMapAction } from './composables/useAction'
+import { useConfigMapFetch } from './composables/useFetch'
+import { useConfigMapPermission } from './composables/usePermission'
+import { useConfigMapTable } from './composables/useTable'
 
-const { hasPermission } = usePermission()
-const route = useRoute()
-const router = useRouter()
+defineOptions({ name: 'ConfigMapPage' })
 
-// ==================== Reactive State ====================
+// ==================== Computed ====================
+/** 当前集群 UID */
+const clusterUid = computed(
+  () => (useRoute().params.clusterUid as string) || useKubernetesStore().activeClusterUid || '',
+)
 
-const clusterUid = ref(route.params.clusterUid as string)
-const searchKey = ref('')
-const loading = ref(false)
-const tableData = ref<ConfigMapListVo[]>([])
-const selectedRows = ref<ConfigMapListVo[]>([])
-const deleteDialogVisible = ref(false)
-const batchDeleteDialogVisible = ref(false)
-const currentTargetRow = ref<ConfigMapListVo | null>(null)
+// ==================== Namespace Composables ====================
+const { namespaceOptions, fetchNamespaceOptions } = useNamespaceFetch(clusterUid)
 
-const queryForm = reactive<Partial<ConfigMapQueryForm>>({})
-const pagination = reactive({ page: 1, pageSize: 10, total: 0 })
-
-// ==================== Options ====================
-
-/** 命名空间选项 */
-const namespaceOptions = ref<{ label: string; value: string | undefined }[]>([
-  { label: '全部命名空间', value: undefined },
-])
-
-// ==================== Data Loading ====================
-
-/**
- * 加载命名空间选项
- * @remarks 通过 getNamespacePage mode=simple 获取简化列表，转换后填充下拉选项
- */
-async function loadNamespaceOptions() {
-  if (!clusterUid.value) return
-  try {
-    const namespaces = (await getNamespacePage(clusterUid.value, { mode: 'simple' })) as NamespaceSimpleListResp[]
-    namespaceOptions.value = [
-      { label: '全部命名空间', value: undefined },
-      ...namespaces.map(ns => ({ label: ns.name, value: ns.name })),
-    ]
-  } catch {
-    // 加载失败时保留默认选项
-  }
-}
-
-/**
- * 加载 ConfigMap 列表数据
- * @remarks 根据当前查询条件与分页参数获取 ConfigMap 分页数据
- */
-async function loadData() {
-  if (!clusterUid.value) {
-    tableData.value = []
-    return
-  }
-  loading.value = true
-  try {
-    const resp = await getConfigMapList(clusterUid.value, {
-      name: queryForm.name,
-      namespace: queryForm.namespace || undefined,
-      page: pagination.page,
-      pageSize: pagination.pageSize,
-    })
-    tableData.value = resp.list
-    pagination.total = resp.total
-  } finally {
-    loading.value = false
-  }
-}
-
-// ==================== Search & Reset ====================
-
-/**
- * 搜索
- * @remarks 将 searchKey 同时映射到 id（精确匹配）和 name（模糊匹配）字段
- */
-function handleSearch() {
-  queryForm.id = searchKey.value
-  queryForm.name = searchKey.value
-  pagination.page = 1
-  void loadData()
-}
-
-/**
- * 重置搜索条件
- */
-function handleReset() {
-  queryForm.id = undefined
-  queryForm.name = undefined
-  queryForm.namespace = undefined
-  queryForm.labelSelector = undefined
-  pagination.page = 1
-  pagination.pageSize = 10
-  searchKey.value = ''
-  void loadData()
-}
-
-// ==================== Selection ====================
-
-/**
- * 表格选中行变化
- * @param rows
- * @remarks BeeTable 的 selection-change 事件固定返回 Record<string, unknown>[]，需通过 unknown 桥接断言为目标类型
- */
-function handleSelectionChange(rows: Record<string, unknown>[]) {
-  selectedRows.value = rows as unknown as ConfigMapListVo[]
-}
-
-// ==================== CRUD: Create / Edit / View ====================
-
-/** 跳转创建页面 */
-function handleCreate() {
-  router.push({ name: 'kubernetes:config:configmap:create', params: { clusterUid: clusterUid.value } }).catch(() => {})
-}
-
-/**
- * 跳转编辑页面
- * @param row
- */
-function handleEdit(row: ConfigMapListVo) {
-  router
-    .push({
-      name: 'kubernetes:config:configmap:edit',
-      params: { clusterUid: row.clusterUid, namespace: row.namespace, name: row.name },
-    })
-    .catch(() => {})
-}
-
-/**
- * 跳转详情页面
- * @param row
- */
-function handleViewDetail(row: ConfigMapListVo) {
-  router
-    .push({
-      name: 'kubernetes:config:configmap:detail',
-      params: { clusterUid: row.clusterUid, namespace: row.namespace, name: row.name },
-    })
-    .catch(() => {})
-}
-
-/**
- * 编辑 YAML
- * @param row
- */
-function handleEditYaml(row: ConfigMapListVo) {
-  BeeMessage.info(`编辑 YAML: ${row.name}`)
-}
-
-// ==================== CRUD: Delete ====================
-
-/**
- * 打开删除确认弹窗
- * @param row
- */
-function handleDelete(row: ConfigMapListVo) {
-  currentTargetRow.value = row
-  deleteDialogVisible.value = true
-}
-
-/** 确认单个删除 */
-async function handleConfirmDelete() {
-  if (!currentTargetRow.value) return
-  try {
-    await deleteConfigMap(
-      currentTargetRow.value.clusterUid,
-      currentTargetRow.value.namespace,
-      currentTargetRow.value.name,
-    )
-    BeeMessage.success('删除成功')
-    deleteDialogVisible.value = false
-    currentTargetRow.value = null
-    await loadData()
-  } catch (err) {
-    console.error('[handleConfirmDelete]', err)
-  }
-}
-
-/** 打开批量删除确认弹窗 */
-function handleBatchDelete() {
-  batchDeleteDialogVisible.value = true
-}
-
-/** 确认批量删除 */
-async function handleConfirmBatchDelete() {
-  if (selectedRows.value.length === 0) return
-  const targetClusterId = selectedRows.value[0].clusterUid
-  const targetNamespace = selectedRows.value[0].namespace
-  const names = selectedRows.value.map(row => row.name)
-  try {
-    await deleteConfigMaps(targetClusterId, targetNamespace, names)
-    BeeMessage.success(`成功删除 ${names.length} 个 ConfigMap`)
-    batchDeleteDialogVisible.value = false
-    selectedRows.value = []
-    await loadData()
-  } catch (err) {
-    console.error('[handleConfirmBatchDelete]', err)
-  }
-}
-
-// ==================== Row Actions ====================
-
-/** 页面级权限缓存，避免每个 row 都重复调用 hasPermission */
-const perm: Record<string, boolean> = {
-  edit: hasPermission('kubernetes:config:configmap:edit'),
-  view: hasPermission('kubernetes:config:configmap:view'),
-  delete: hasPermission('kubernetes:config:configmap:delete'),
-}
-
-/**
- * 构建行操作数组
- * @param row - 当前行数据
- * @returns 操作项数组
- * @remarks 按权限和 row.deletable 条件过滤，由调用方负责
- */
-function getActions(row: ConfigMapListVo): ActionItem[] {
-  const actions: ActionItem[] = []
-  // 查看权限
-  if (perm.view) {
-    actions.push({ value: 'view', label: '详情', icon: 'basic-view', handler: () => handleViewDetail(row) })
-  }
-  // 编辑权限：编辑、编辑 YAML
-  if (perm.edit) {
-    actions.push(
-      { value: 'edit', label: '编辑', icon: 'basic-edit', handler: () => handleEdit(row) },
-      { value: 'yamledit', label: '编辑 YAML', icon: 'basic-code', handler: () => handleEditYaml(row) },
-    )
-  }
-  // 删除权限 + deletable 条件
-  if (perm.delete && row.deletable !== false) {
-    actions.push({ value: 'delete', label: '删除', icon: 'basic-delete', handler: () => handleDelete(row) })
-  }
-
-  return actions
-}
+// ==================== ConfigMap Composables ====================
+const { permissionMap } = useConfigMapPermission()
+const { tableRef, loading, selectedRow, selectedRows, handleSelectionChange } = useConfigMapTable()
+const { queryForm, pageData, configMaps, fetchConfigMaps } = useConfigMapFetch(clusterUid, loading)
+const {
+  searchKey,
+  deleteDialogConfig,
+  batchDeleteDialogConfig,
+  getActions,
+  handleSearch,
+  handleReset,
+  handleCreate,
+  handleCreateYaml,
+  handleBatchDelete,
+  handleImport,
+  handleExport,
+  handleClearSelection,
+  handleConfirmDelete,
+  handleConfirmBatchDelete,
+} = useConfigMapAction(
+  clusterUid,
+  permissionMap,
+  queryForm,
+  pageData,
+  fetchConfigMaps,
+  tableRef,
+  selectedRow,
+  selectedRows,
+)
 
 // ==================== Lifecycle ====================
-
 onMounted(() => {
-  void loadNamespaceOptions()
-  void loadData()
+  void fetchNamespaceOptions()
+  void fetchConfigMaps()
 })
 </script>
 
 <style lang="scss" scoped>
-.configmap-page {
-  .configmap-page__body {
+.page-body {
+  display: flex;
+  gap: 16px;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: stretch;
+  flex: 1;
+  width: 100%;
+  min-height: 0;
+  padding: 16px;
+  overflow: hidden;
+
+  &__toolbar {
     display: flex;
-    flex-direction: column;
+    gap: 8px;
+    flex-flow: row wrap;
+    align-items: center;
+
+    &-search {
+      flex: 1;
+      min-width: 100px;
+    }
+
+    &-separator {
+      flex-shrink: 0;
+      width: 1px;
+      height: 16px;
+      margin: 0 8px;
+      background: $color-separator;
+    }
+  }
+
+  &__table {
     flex: 1;
     min-height: 0;
-    overflow: hidden;
+  }
 
-    .table-toolbar {
+  &__footer {
+    display: flex;
+    gap: 8px;
+    flex-flow: row wrap;
+    justify-content: space-between;
+    align-items: center;
+
+    &-actions {
       display: flex;
-      gap: $spacing-8;
+      gap: 8px;
+      flex-flow: row wrap;
+      justify-content: flex-start;
       align-items: center;
-      padding: $spacing-16 0;
-
-      &__search {
-        flex: 1;
-        min-width: 0;
-      }
-    }
-
-    .table-body {
-      flex: 1;
-      min-height: 0;
-    }
-
-    .table-footer {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: $spacing-16 0;
     }
   }
-}
-
-.dialog-content {
-  strong {
-    color: $color-primary;
-  }
-}
-
-.delete-configmap-tags {
-  display: flex;
-  gap: 8px;
-  flex-wrap: wrap;
-  margin: 12px 0;
 }
 </style>

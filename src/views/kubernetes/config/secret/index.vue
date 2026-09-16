@@ -19,9 +19,9 @@
           :menu-height="300"
           :options="namespaceOptions"
           placeholder="命名空间筛选"
-          :width="300"
+          :width="200"
         />
-        <BeeSelect v-model="queryForm.type" :options="typeOptions" placeholder="类型筛选" :width="300" />
+        <BeeSelect v-model="queryForm.type" :options="typeOptions" placeholder="类型筛选" :width="200" />
         <BeeButton icon="basic-search" @click="handleSearch"> 搜索 </BeeButton>
         <BeeButton icon="basic-refresh" @click="handleReset"> 重置 </BeeButton>
         <BeeButton

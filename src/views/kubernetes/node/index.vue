@@ -113,7 +113,7 @@
       @confirm="handleConfirmCordon"
     >
       <span>
-        您确认要将节点 <strong>{{ dialogData?.name || '' }}</strong> 标记为不可调度（封锁）吗？
+        您确认要将节点 <strong>{{ selectedRow?.name || '' }}</strong> 标记为不可调度（封锁）吗？
       </span>
     </BeeDialog>
 
@@ -127,7 +127,7 @@
       @confirm="handleConfirmUncordon"
     >
       <span>
-        您确认要将节点 <strong>{{ dialogData?.name || '' }}</strong> 标记为可调度（解封）吗？
+        您确认要将节点 <strong>{{ selectedRow?.name || '' }}</strong> 标记为可调度（解封）吗？
       </span>
     </BeeDialog>
 
@@ -141,7 +141,7 @@
       @confirm="handleConfirmDrain"
     >
       <span>
-        您确认要排空节点 <strong>{{ dialogData?.name || '' }}</strong> 上的所有 Pod 吗？
+        您确认要排空节点 <strong>{{ selectedRow?.name || '' }}</strong> 上的所有 Pod 吗？
       </span>
     </BeeDialog>
   </BeePage>

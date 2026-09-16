@@ -270,7 +270,7 @@ $bee-select-menu-color-bg: rgb(40 40 40);
     align-items: stretch;
 
     // 最大高度 = 可用高度 - 浮层上下 padding，超出后菜单内部滚动
-    max-height: calc(var(--bee-select-menu-available-height, 100vh) - var(--bee-select-menu-padding-y) * 2);
+    max-height: calc(var(--bee-select-menu-available-height, 100vh) - var(--bee-select-menu-padding) * 2);
     padding: 8px;
     border-radius: 8px;
     overflow-y: auto;
