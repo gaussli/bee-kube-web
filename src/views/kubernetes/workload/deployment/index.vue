@@ -12,16 +12,20 @@
         <BeeSelect v-model="queryForm.status" :options="DEPLOYMENT_STATUS_OPTIONS" placeholder="状态筛选" />
         <BeeButton icon="basic-search" @click="handleSearch"> 搜索 </BeeButton>
         <BeeButton icon="basic-refresh" @click="handleReset"> 重置 </BeeButton>
-        <div v-if="perm.create" class="page-body__toolbar-separator"></div>
-        <BeeButton v-if="perm.create" icon="basic-create" type="primary" @click="handleCreate"> 新增 </BeeButton>
-        <BeeButton v-if="perm.create" icon="basic-create" type="primary" @click="handleCreateYaml"> YAML </BeeButton>
+        <div v-if="permissionMap.create" class="page-body__toolbar-separator"></div>
+        <BeeButton v-if="permissionMap.create" icon="basic-create" type="primary" @click="handleCreate">
+          新增
+        </BeeButton>
+        <BeeButton v-if="permissionMap.create" icon="basic-create" type="primary" @click="handleCreateYaml">
+          YAML
+        </BeeButton>
       </div>
 
       <!-- 表格 -->
       <div class="page-body__table">
         <BeeTable
           ref="tableRef"
-          :data="tableData"
+          :data="deployments"
           :loading="loading"
           row-key="uid"
           selectable
@@ -96,7 +100,7 @@
             清空
           </BeeButton>
           <BeeButton
-            v-if="perm.delete"
+            v-if="permissionMap.delete"
             :disabled="selectedRows.length === 0"
             icon="basic-delete"
             type="danger"
@@ -104,35 +108,35 @@
           >
             删除 ({{ selectedRows.length }})
           </BeeButton>
-          <BeeButton v-if="perm.view" icon="basic-export" @click="handleExport"> 导出 </BeeButton>
-          <BeeButton v-if="perm.create" icon="basic-import" @click="handleImport"> 导入 </BeeButton>
+          <BeeButton v-if="permissionMap.view" icon="basic-export" @click="handleExport"> 导出 </BeeButton>
+          <BeeButton v-if="permissionMap.create" icon="basic-import" @click="handleImport"> 导入 </BeeButton>
         </div>
         <BeePagination
-          v-model:page="pagination.page"
-          v-model:page-size="pagination.pageSize"
-          :total="pagination.total"
-          @change="loadData"
+          v-model:page="pageData.page"
+          v-model:page-size="pageData.pageSize"
+          :total="pageData.total"
+          @change="fetchDeployments"
         />
       </div>
     </BeeCard>
 
     <!-- 扩缩容 Dialog -->
     <BeeDialog
-      v-model="scaleDialogVisible"
+      v-model="scaleDialogConfig.visiable"
       icon="kubernetes-scale"
+      :loading="scaleDialogConfig.loading"
       title="扩缩容无状态应用"
       type="primary"
-      @confirm="handleConfirmScale"
+      @confirm="handleConfirmScale(5)"
     >
-      <span>
-        您确认删除 <strong>{{ selectedRow?.name || '' }}</strong> 无状态应用吗？
-      </span>
+      <span> Scale Form </span>
     </BeeDialog>
 
     <!-- 重启确认 Dialog -->
     <BeeDialog
-      v-model="restartDialogVisible"
+      v-model="restartDialogConfig.visiable"
       icon="basic-refresh"
+      :loading="restartDialogConfig.loading"
       title="重启无状态应用"
       type="primary"
       @confirm="handleConfirmRestart"
@@ -144,8 +148,9 @@
 
     <!-- 恢复更新确认 Dialog -->
     <BeeDialog
-      v-model="resumeDialogVisible"
+      v-model="resumeDialogConfig.visiable"
       icon="kubernetes-resume"
+      :loading="resumeDialogConfig.loading"
       title="恢复无状态应用更新"
       type="primary"
       @confirm="handleConfirmResume"
@@ -157,8 +162,9 @@
 
     <!-- 暂停更新确认 Dialog -->
     <BeeDialog
-      v-model="pauseDialogVisible"
+      v-model="pauseDialogConfig.visiable"
       icon="kubernetes-pause"
+      :loading="pauseDialogConfig.loading"
       title="暂停无状态应用更新"
       type="primary"
       @confirm="handleConfirmPause"
@@ -170,8 +176,9 @@
 
     <!-- 单个删除 Dialog -->
     <BeeDialog
-      v-model="deleteDialogVisible"
+      v-model="deleteDialogConfig.visiable"
       icon="basic-delete"
+      :loading="deleteDialogConfig.loading"
       title="删除无状态应用"
       type="danger"
       @confirm="handleConfirmDelete"
@@ -183,8 +190,9 @@
 
     <!-- 批量删除 Dialog -->
     <BeeDialog
-      v-model="batchDeleteDialogVisible"
+      v-model="batchDeleteDialogConfig.visiable"
       icon="basic-delete"
+      :loading="batchDeleteDialogConfig.loading"
       title="批量删除无状态应用"
       type="danger"
       @confirm="handleConfirmBatchDelete"
@@ -195,35 +203,19 @@
 </template>
 
 <script setup lang="ts">
-import { computed, onMounted, reactive, ref } from 'vue'
+import { computed, onMounted } from 'vue'
 
-import { useRoute, useRouter } from 'vue-router'
-
-import type { DeploymentListVo, DeploymentQueryForm } from '@/types/kubernetes/workload/deployment'
-
-import { getNamespaceList } from '@/api/kubernetes/namespace/namespace'
-import {
-  getDeploymentList,
-  deleteDeployment,
-  deleteDeployments,
-  restartDeployment,
-  scaleDeployment,
-  resumeDeployment,
-  pauseDeployment,
-} from '@/api/kubernetes/workload/deployment'
-
-import { KubernetesRouteNames } from '@/router/names'
+import { useRoute } from 'vue-router'
 
 import BeeButton from '@/components/base/BeeButton/index.vue'
 import BeeDialog from '@/components/base/BeeDialog/index.vue'
 import BeeInputSearch from '@/components/base/BeeInputSearch/index.vue'
-import { BeeMessage } from '@/components/base/BeeMessage'
 import BeeSelect from '@/components/base/BeeSelect/index.vue'
 import BeePagination from '@/components/BeePagination/index.vue'
 import BeeTableColumn from '@/components/BeeTable/BeeTableColumn.vue'
 import BeeTableCommonCell from '@/components/BeeTable/BeeTableCommonCell.vue'
 import BeeTable from '@/components/BeeTable/index.vue'
-import BeeActionCell, { type ActionItem } from '@/components/business/BeeActionCell/index.vue'
+import BeeActionCell from '@/components/business/BeeActionCell/index.vue'
 import BeeAuditCell from '@/components/business/BeeAuditCell/index.vue'
 import BeeBatchDeleteDialogContent from '@/components/business/BeeDialogContent/BeeBatchDeleteDialogContent.vue'
 import BeePageHeader from '@/components/business/BeePageHeader/index.vue'
@@ -233,7 +225,6 @@ import BeePage from '@/components/layout/BeePage/index.vue'
 
 import WorkloadInfoCell from '@/views/kubernetes/workload/components/WorkloadInfoCell/index.vue'
 
-import { usePermission } from '@/composables/usePermission'
 import {
   DEPLOYMENT_PAGE_META,
   DEPLOYMENT_STATUS_OPTIONS,
@@ -241,452 +232,66 @@ import {
 } from '@/config/kubernetes/workload/deployment.ts'
 import { useKubernetesStore } from '@/stores'
 
+import { useNamespaceFetch } from '../../namespace/composables/useFetch'
+
+import { useDeploymentAction } from './composables/useAction'
+import { useDeploymentFetch } from './composables/useFetch'
+import { useDeploymentPermission } from './composables/usePermission'
+import { useDeploymentTable } from './composables/useTable'
+
 defineOptions({ name: 'DeploymentPage' })
-
-// ==================== Composables & Route ====================
-const { hasPermission } = usePermission()
-const route = useRoute()
-const router = useRouter()
-
-// ==================== Reactive State ====================
-// ---------- 查询条件 ----------
-/** 搜索关键词 */
-const searchKey = ref('')
-/** 查询条件 */
-const queryForm = reactive<Partial<DeploymentQueryForm>>({})
-/** 分页条件请求 / 响应 */
-const pagination = reactive({ page: 1, pageSize: 10, total: 0 })
-// ---------- 表格数据 ----------
-/** BeeTable 实例引用 */
-const tableRef = ref<InstanceType<typeof BeeTable>>()
-/** 列表加载态 */
-const loading = ref(false)
-/** 列表数据 */
-const tableData = ref<DeploymentListVo[]>([])
-// ---------- 选中逻辑 ----------
-/** 当前行数据 */
-const selectedRow = ref<DeploymentListVo>()
-/** 多选选中数据 */
-const selectedRows = ref<DeploymentListVo[]>([])
-// ---------- 对话框 ----------
-/** 扩缩容弹框显隐 */
-const scaleDialogVisible = ref(false)
-/** 重启确认弹框显隐 */
-const restartDialogVisible = ref(false)
-/** 恢复更新确认弹框显隐 */
-const resumeDialogVisible = ref(false)
-/** 暂停更新确认弹框显隐 */
-const pauseDialogVisible = ref(false)
-/** 单个删除弹框显隐 */
-const deleteDialogVisible = ref(false)
-/** 批量删除弹框显隐 */
-const batchDeleteDialogVisible = ref(false)
-
-// --- 选项数据
-/** 命名空间选项 */
-const namespaceOptions = ref<{ label: string; value: string | undefined }[]>([
-  { label: '全部命名空间', value: undefined },
-])
 
 // ==================== Computed ====================
 /** 当前集群 UID */
-const clusterUid = computed(() => (route.params.clusterUid as string) || useKubernetesStore().activeClusterUid || '')
-/** 多选选中数据中可删除列表 */
-const deletableRows = computed(() => selectedRows.value.filter(row => row.deletable))
+const clusterUid = computed(
+  () => (useRoute().params.clusterUid as string) || useKubernetesStore().activeClusterUid || '',
+)
 
-// ==================== Permission ====================
-/** 页面级权限缓存，避免模板/循环中重复调用 hasPermission */
-const perm: Record<string, boolean> = {
-  create: hasPermission('kubernetes:workload:deployment:create'),
-  edit: hasPermission('kubernetes:workload:deployment:edit'),
-  view: hasPermission('kubernetes:workload:deployment:view'),
-  delete: hasPermission('kubernetes:workload:deployment:delete'),
-}
+// ==================== Namespace Composables ====================
+const { namespaceOptions, fetchNamespaceOptions } = useNamespaceFetch(clusterUid)
 
-// ==================== Row Actions Generate ====================
-/**
- * 构建行操作数组
- * @param row - 当前行数据
- * @returns 操作项数组
- */
-function getActions(row: DeploymentListVo): ActionItem[] {
-  const actions: ActionItem[] = []
-  if (perm.view) {
-    actions.push({ value: 'view', label: '详情', icon: 'basic-view', handler: () => handleViewDetail(row) })
-  }
-  if (perm.edit) {
-    actions.push(
-      { value: 'edit', label: '编辑', icon: 'basic-edit', handler: () => handleEdit(row) },
-      { value: 'labels', label: '配置标签', icon: 'kubernetes-label', handler: () => handleLabels(row) },
-      { value: 'annotations', label: '配置注解', icon: 'kubernetes-annotation', handler: () => handleAnnotations(row) },
-      { value: 'scale', label: '扩缩容', icon: 'kubernetes-scale', handler: () => handleScale(row) },
-      { value: 'restart', label: '重启', icon: 'basic-refresh', handler: () => handleRestart(row) },
-      { value: 'rollback', label: '回滚', icon: 'kubernetes-rollback', handler: () => handleRollback(row) },
-    )
-    if (row.paused) {
-      actions.push({
-        value: 'resume',
-        label: '恢复更新',
-        icon: 'kubernetes-resume',
-        handler: () => handleResume(row),
-      })
-    } else {
-      actions.push({
-        value: 'pause',
-        label: '暂停更新',
-        icon: 'kubernetes-pause',
-        handler: () => handlePause(row),
-      })
-    }
-  }
-  if (perm.delete && row.deletable) {
-    actions.push({ value: 'delete', label: '删除', icon: 'basic-delete', handler: () => handleDelete(row) })
-  }
-  return actions
-}
-
-// ==================== Data Loading ====================
-/**
- * 请求命名空间选项列表数据
- */
-async function loadNamespaceOptions() {
-  if (!clusterUid.value) return
-  try {
-    const { list } = await getNamespaceList(clusterUid.value, { mode: 'Simple' })
-    namespaceOptions.value = [
-      { label: '全部命名空间', value: undefined },
-      ...list.map(ns => ({ label: ns.name, value: ns.name })),
-    ]
-  } catch (err) {
-    console.error('[loadNamespaceOptions]', err)
-    BeeMessage.error('加载命名空间选项失败，请稍后再试')
-  }
-}
-
-/**
- * 请求无状态应用列表数据
- */
-async function loadData() {
-  if (!clusterUid.value) {
-    tableData.value = []
-    return
-  }
-  loading.value = true
-  try {
-    const { list, total } = await getDeploymentList(clusterUid.value, {
-      ...queryForm,
-      page: pagination.page,
-      pageSize: pagination.pageSize,
-    })
-    tableData.value = list
-    pagination.total = total
-  } catch (err) {
-    console.error('[loadData]', err)
-    BeeMessage.error('加载无状态应用列表失败')
-  } finally {
-    loading.value = false
-  }
-}
-
-// ==================== BeeTable Handler ====================
-/**
- * 表格选中行变化
- * @param rows
- */
-function handleSelectionChange(rows: Record<string, unknown>[]) {
-  selectedRows.value = rows as unknown as DeploymentListVo[]
-}
-
-// ==================== Handler ====================
-/**
- * 搜索
- */
-function handleSearch() {
-  queryForm.uid = searchKey.value
-  queryForm.name = searchKey.value
-  pagination.page = 1
-  void loadData()
-}
-
-/**
- * 重置搜索条件
- */
-function handleReset() {
-  queryForm.uid = undefined
-  queryForm.name = undefined
-  queryForm.namespace = undefined
-  queryForm.status = undefined
-  pagination.page = 1
-  pagination.pageSize = 10
-  searchKey.value = ''
-  void loadData()
-}
-
-/**
- * 创建无状态应用
- */
-function handleCreate() {
-  router
-    .push({ name: KubernetesRouteNames.Deployment.Create, params: { clusterUid: clusterUid.value } })
-    .catch(() => {})
-}
-
-/**
- * 创建无状态应用（YAML）
- */
-function handleCreateYaml() {
-  router
-    .push({ name: KubernetesRouteNames.Deployment.CreateYaml, params: { clusterUid: clusterUid.value } })
-    .catch(() => {})
-}
-
-/**
- * 查看无状态应用详情
- * @param row - 当前行数据
- */
-function handleViewDetail(row: DeploymentListVo) {
-  router
-    .push({
-      name: KubernetesRouteNames.Deployment.Detail,
-      params: { clusterId: clusterUid.value, namespace: row.namespace, name: row.name },
-    })
-    .catch(() => {})
-}
-
-/**
- * 编辑无状态应用
- * @param row
- */
-function handleEdit(row: DeploymentListVo) {
-  router
-    .push({
-      name: KubernetesRouteNames.Deployment.Edit,
-      params: { clusterId: clusterUid.value, namespace: row.namespace, name: row.name },
-    })
-    .catch(() => {})
-}
-
-/**
- * 配置无状态应用标签
- * @param row - 当前行数据
- */
-function handleLabels(row: DeploymentListVo) {
-  router
-    .push({
-      name: KubernetesRouteNames.Deployment.ManageLabels,
-      params: { clusterUid: clusterUid.value, namespace: row.namespace, name: row.name },
-    })
-    .catch(() => {})
-}
-
-/**
- * 配置无状态应用注解
- * @param row - 当前行数据
- */
-function handleAnnotations(row: DeploymentListVo) {
-  router
-    .push({
-      name: KubernetesRouteNames.Deployment.ManageAnnotations,
-      params: { clusterUid: clusterUid.value, namespace: row.namespace, name: row.name },
-    })
-    .catch(() => {})
-}
-
-/**
- * 扩缩容无状态应用
- * @param row - 当前行数据
- */
-function handleScale(row: DeploymentListVo) {
-  selectedRow.value = row
-  scaleDialogVisible.value = true
-}
-
-/**
- * 重启无状态应用
- * @param row - 当前行数据
- */
-function handleRestart(row: DeploymentListVo) {
-  selectedRow.value = row
-  restartDialogVisible.value = true
-}
-
-/**
- * 回滚无状态应用
- * @param row - 当前行数据
- */
-function handleRollback(row: DeploymentListVo) {
-  BeeMessage.info(`回滚: ${row.name}`)
-}
-
-/**
- * 恢复无状态应用更新
- * @param row - 当前行数据
- */
-function handleResume(row: DeploymentListVo) {
-  selectedRow.value = row
-  resumeDialogVisible.value = true
-}
-
-/**
- * 暂停无状态应用更新
- * @param row - 当前行数据
- */
-function handlePause(row: DeploymentListVo) {
-  selectedRow.value = row
-  pauseDialogVisible.value = true
-}
-
-/**
- * 删除无状态应用
- * @param row
- */
-function handleDelete(row: DeploymentListVo) {
-  selectedRow.value = row
-  deleteDialogVisible.value = true
-}
-/**
- * 打开批量删除确认弹窗
- */
-function handleBatchDelete() {
-  if (deletableRows.value.length === 0) {
-    BeeMessage.warning('选中的无状态应用均不可删除')
-    return
-  }
-  batchDeleteDialogVisible.value = true
-}
-
-/**
- * 导出 Deployment
- * @remarks 功能开发中
- */
-function handleExport() {
-  BeeMessage.info('功能开发中')
-}
-
-/**
- * 导入 Deployment
- * @remarks 功能开发中
- */
-function handleImport() {
-  BeeMessage.info('功能开发中')
-}
-
-/**
- * 清空选中数据
- */
-function handleClearSelection() {
-  tableRef.value?.clearSelection()
-}
-
-// ==================== Dialog Confirm ====================
-/**
- * 二次确认扩缩容无状态应用
- * @param newReplicas
- */
-async function handleConfirmScale(newReplicas: number) {
-  if (!selectedRow.value) return
-  const { namespace, name, replicas } = selectedRow.value
-  try {
-    await scaleDeployment(clusterUid.value, namespace, name, { replicas: newReplicas })
-    if (replicas > newReplicas) BeeMessage.success(`成功缩容无状态应用【${name}】`)
-    else BeeMessage.success(`成功扩容无状态应用【${name}】`)
-    selectedRow.value = undefined
-    void loadData()
-  } catch (err) {
-    console.error('[handleRestart]', err)
-    BeeMessage.error(`扩缩容无状态应用【${name}】失败`)
-  }
-}
-
-/**
- * 二次确认重启无状态应用
- */
-async function handleConfirmRestart() {
-  if (!selectedRow.value) return
-  const { namespace, name } = selectedRow.value
-  try {
-    await restartDeployment(clusterUid.value, namespace, name)
-    BeeMessage.success(`成功重启无状态应用【${name}】`)
-    selectedRow.value = undefined
-    void loadData()
-  } catch (err) {
-    console.error('[handleRestart]', err)
-    BeeMessage.error(`重启无状态应用【${name}】失败`)
-  }
-}
-
-/**
- * 二次确认恢复无状态应用更新
- */
-async function handleConfirmResume() {
-  if (!selectedRow.value) return
-  const { namespace, name } = selectedRow.value
-  try {
-    await resumeDeployment(clusterUid.value, namespace, name)
-    BeeMessage.success(`成功恢复无状态应用【${name}】更新`)
-    selectedRow.value = undefined
-    void loadData()
-  } catch (err) {
-    console.error('[handleResume]', err)
-    BeeMessage.error(`恢复无状态应用【${name}】更新失败`)
-  }
-}
-
-/**
- * 二次确认暂停无状态应用更新
- */
-async function handleConfirmPause() {
-  if (!selectedRow.value) return
-  const { namespace, name } = selectedRow.value
-  try {
-    await pauseDeployment(clusterUid.value, namespace, name)
-    BeeMessage.success(`成功暂停无状态应用【${name}】更新`)
-    selectedRow.value = undefined
-    void loadData()
-  } catch (err) {
-    console.error('[handlePause]', err)
-    BeeMessage.error(`暂停无状态应用【${name}】更新失败`)
-  }
-}
-
-/**
- * 二次确认删除无状态应用
- */
-async function handleConfirmDelete() {
-  if (!selectedRow.value) return
-  const { namespace, name } = selectedRow.value
-  try {
-    await deleteDeployment(clusterUid.value, namespace, name)
-    BeeMessage.success(`成功删除无状态应用【${name}】`)
-    selectedRow.value = undefined
-    void loadData()
-  } catch (err) {
-    console.error('[handleConfirmDelete]', err)
-    BeeMessage.error(`删除无状态应用【${name}】失败`)
-  }
-}
-
-/**
- * 二次确认批量删除无状态应用
- */
-async function handleConfirmBatchDelete() {
-  if (deletableRows.value.length === 0) return
-  const uids = deletableRows.value.map(row => row.uid)
-  try {
-    await deleteDeployments(clusterUid.value, uids)
-    BeeMessage.success(`成功删除 ${uids.length} 个无状态应用`)
-    selectedRows.value = []
-    void loadData()
-  } catch (err) {
-    console.error('[handleConfirmBatchDelete]', err)
-    BeeMessage.error('批量删除无状态应用失败')
-  }
-}
+// ==================== Deployment Composables ====================
+const { permissionMap } = useDeploymentPermission()
+const { tableRef, loading, selectedRow, selectedRows, handleSelectionChange } = useDeploymentTable()
+const { queryForm, pageData, deployments, fetchDeployments } = useDeploymentFetch(clusterUid, loading)
+const {
+  searchKey,
+  scaleDialogConfig,
+  restartDialogConfig,
+  resumeDialogConfig,
+  pauseDialogConfig,
+  deleteDialogConfig,
+  batchDeleteDialogConfig,
+  getActions,
+  handleSearch,
+  handleReset,
+  handleCreate,
+  handleCreateYaml,
+  handleBatchDelete,
+  handleImport,
+  handleExport,
+  handleClearSelection,
+  handleConfirmScale,
+  handleConfirmRestart,
+  handleConfirmResume,
+  handleConfirmPause,
+  handleConfirmDelete,
+  handleConfirmBatchDelete,
+} = useDeploymentAction(
+  clusterUid,
+  permissionMap,
+  queryForm,
+  pageData,
+  fetchDeployments,
+  tableRef,
+  selectedRow,
+  selectedRows,
+)
 
 // ==================== Lifecycle ====================
 onMounted(() => {
-  void loadNamespaceOptions()
-  void loadData()
+  void fetchNamespaceOptions()
+  void fetchDeployments()
 })
 </script>
 

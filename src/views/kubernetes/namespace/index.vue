@@ -20,7 +20,7 @@
       <div class="page-body__table">
         <BeeTable
           ref="tableRef"
-          :data="tableData"
+          :data="namespaces"
           :loading="loading"
           row-key="uid"
           selectable
@@ -78,10 +78,10 @@
           <BeeButton v-if="perm.create" icon="basic-import" @click="handleImport"> 导入 </BeeButton>
         </div>
         <BeePagination
-          v-model:page="pagination.page"
-          v-model:page-size="pagination.pageSize"
-          :total="pagination.total"
-          @change="loadData"
+          v-model:page="pageData.page"
+          v-model:page-size="pageData.pageSize"
+          :total="pageData.total"
+          @change="handlePaginationChange"
         />
       </div>
     </BeeCard>
@@ -113,13 +113,13 @@
 </template>
 
 <script setup lang="ts">
-import { computed, onMounted, reactive, ref } from 'vue'
+import { computed, onMounted, ref } from 'vue'
 
 import { useRoute, useRouter } from 'vue-router'
 
-import type { NamespaceListVo, NamespaceQueryForm } from '@/types/kubernetes/namespace'
+import type { NamespaceListVo } from '@/types/kubernetes/namespace'
 
-import { getNamespaceList, deleteNamespace, deleteNamespaces } from '@/api/kubernetes/namespace/namespace'
+import { deleteNamespace, deleteNamespaces } from '@/api/kubernetes/namespace/namespace'
 
 import { KubernetesRouteNames } from '@/router/names.ts'
 
@@ -145,6 +145,7 @@ import { usePermission } from '@/composables/usePermission'
 import { NAMESPACE_PAGE_META, NAMESPACE_STATUS_OPTIONS } from '@/config/kubernetes/namespace'
 
 import NamespaceInfoCell from './components/NamespaceInfoCell/index.vue'
+import { useNamespaceFetch } from './composables/useFetch.ts'
 
 defineOptions({ name: 'NamespacePage' })
 
@@ -157,17 +158,11 @@ const router = useRouter()
 // ---------- 查询条件 ----------
 /** 搜索关键词 */
 const searchKey = ref('')
-/** 查询条件 */
-const queryForm = reactive<Partial<NamespaceQueryForm>>({})
-/** 分页条件请求 / 响应 */
-const pagination = reactive({ page: 1, pageSize: 10, total: 0 })
 // ---------- 表格数据 ----------
 /** BeeTable 实例引用 */
 const tableRef = ref<InstanceType<typeof BeeTable>>()
 /** 列表加载态 */
 const loading = ref(false)
-/** 列表数据 */
-const tableData = ref<NamespaceListVo[]>([])
 // ---------- 选中逻辑 ----------
 /** 当前行数据 */
 const selectedRow = ref<NamespaceListVo>()
@@ -184,6 +179,8 @@ const batchDeleteDialogVisible = ref(false)
 const clusterUid = computed(() => (route.params.clusterUid as string) || useKubernetesStore().activeClusterUid || '')
 /** 多选选中数据中可删除列表 */
 const deletableRows = computed(() => selectedRows.value.filter(row => row.deletable))
+
+const { queryForm, pageData, namespaces, fetchNamespaces } = useNamespaceFetch(clusterUid)
 
 // ==================== Permission ====================
 /** 页面级权限缓存，避免模板/循环中重复调用 hasPermission */
@@ -236,32 +233,6 @@ function getActions(row: NamespaceListVo): ActionItem[] {
   return actions
 }
 
-// ==================== Data Loading ====================
-/**
- * 请求命名空间列表数据
- */
-async function loadData() {
-  if (!clusterUid.value) {
-    tableData.value = []
-    return
-  }
-  loading.value = true
-  try {
-    const { list, total } = await getNamespaceList(clusterUid.value, {
-      ...queryForm,
-      page: pagination.page,
-      pageSize: pagination.pageSize,
-    })
-    tableData.value = list as NamespaceListVo[]
-    pagination.total = total
-  } catch (err) {
-    console.error('[loadData]', err)
-    BeeMessage.error('加载命名空间列表失败')
-  } finally {
-    loading.value = false
-  }
-}
-
 // ==================== BeeTable Handler ====================
 /**
  * 表格选中行变化
@@ -271,28 +242,34 @@ function handleSelectionChange(rows: Record<string, unknown>[]) {
   selectedRows.value = rows as unknown as NamespaceListVo[]
 }
 
+// ==================== BeePagination Handler ====================
+/** 分页数据改变触发列表数据刷新 */
+async function handlePaginationChange() {
+  await fetchNamespaces(loading)
+}
+
 // ==================== Handler ====================
 /**
  * 搜索
  */
-function handleSearch() {
+async function handleSearch() {
   queryForm.uid = searchKey.value || undefined
   queryForm.name = searchKey.value || undefined
-  pagination.page = 1
-  void loadData()
+  pageData.page = 1
+  await fetchNamespaces(loading)
 }
 
 /**
  * 重置搜索条件
  */
-function handleReset() {
+async function handleReset() {
   queryForm.uid = undefined
   queryForm.name = undefined
   queryForm.status = undefined
-  pagination.page = 1
-  pagination.pageSize = 10
+  pageData.page = 1
+  pageData.pageSize = 10
   searchKey.value = ''
-  void loadData()
+  await fetchNamespaces(loading)
 }
 
 /**
@@ -432,7 +409,7 @@ async function handleConfirmDelete() {
     await deleteNamespace(clusterUid.value, name)
     BeeMessage.success(`成功删除命名空间【${name}】`)
     selectedRow.value = undefined
-    void loadData()
+    void fetchNamespaces(loading)
   } catch (err) {
     console.error('[handleConfirmDelete]', err)
     BeeMessage.error(`删除命名空间【${name}】失败`)
@@ -449,7 +426,7 @@ async function handleConfirmBatchDelete() {
     await deleteNamespaces(clusterUid.value, uids)
     BeeMessage.success(`成功删除 ${uids.length} 个命名空间`)
     selectedRows.value = []
-    void loadData()
+    void void fetchNamespaces(loading)
   } catch (err) {
     console.error('[handleConfirmBatchDelete]', err)
     BeeMessage.error('批量删除命名空间失败')
@@ -458,7 +435,7 @@ async function handleConfirmBatchDelete() {
 
 // ==================== Lifecycle ====================
 onMounted(() => {
-  void loadData()
+  void fetchNamespaces(loading)
 })
 </script>
 

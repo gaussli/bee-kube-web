@@ -34,9 +34,15 @@ export interface PageForm {
  * 分页响应结构
  * @template T - 列表数据类型
  */
-export interface PageVo<T = any> {
+export interface PageVo<T = any> extends PageEntity {
   /** 数据列表 */
   list: T[]
+}
+
+/**
+ * 分页实体
+ */
+export interface PageEntity {
   /** 总条数 */
   total: number
   /** 当前页码 */

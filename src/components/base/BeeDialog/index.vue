@@ -14,7 +14,7 @@
           </div>
           <div class="bee-dialog__actions">
             <BeeButton @click="handleCancel">取 消</BeeButton>
-            <BeeButton :type="type" @click="handleConfirm">确 认</BeeButton>
+            <BeeButton :loading="props.loading" :type="type" @click="handleConfirm">确 认</BeeButton>
           </div>
         </div>
       </div>
@@ -37,12 +37,18 @@ const modelValue = defineModel<boolean>()
 
 const props = withDefaults(
   defineProps<{
+    /** Dialog 图标 */
     icon: string
+    /** Dialog 标题  */
     title: string
+    /** Dialog 类型 */
     type?: BeeType
+    /** 加载标记 */
+    loading?: boolean
   }>(),
   {
     type: 'default',
+    loading: false,
   },
 )
 
@@ -68,7 +74,6 @@ function handleCancel() {
  */
 function handleConfirm() {
   emit('confirm')
-  modelValue.value = false
 }
 </script>
 
