@@ -7,7 +7,7 @@ import type { Option, ResourcePageMeta } from '@/config/kubernetes'
 
 /** StorageClass 列表页面功能元数据 */
 export const STORAGECLASS_PAGE_META: ResourcePageMeta = {
-  icon: 'kubernetes-storageclass',
+  icon: 'kubernetes-storage-class',
   title: '存储类',
   description:
     '存储类（StorageClass）是 Kubernetes 中用于定义存储供给方式的资源对象，描述集群可用的存储类型及其供给策略。',

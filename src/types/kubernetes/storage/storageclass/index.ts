@@ -32,6 +32,8 @@ export interface StorageClassListVo extends UidEntity, Clustered, AuditEntity, D
   description?: string
   /** 存储提供者 */
   provisioner: string
+  /** 是否为默认存储类（集群默认存储供给方式） */
+  isDefault?: boolean
   /** 回收策略 */
   reclaimPolicy?: PersistentVolumeReclaimPolicy
   /** 允许的卷绑定模式 */
