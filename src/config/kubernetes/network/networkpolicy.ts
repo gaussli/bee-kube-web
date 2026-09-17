@@ -7,7 +7,7 @@ import type { Option, ResourcePageMeta } from '@/config/kubernetes'
 
 /** NetworkPolicy 列表页面功能元数据 */
 export const NETWORKPOLICY_PAGE_META: ResourcePageMeta = {
-  icon: 'kubernetes-networkpolicy',
+  icon: 'kubernetes-network-policy',
   title: '网络策略',
   description:
     '网络策略（NetworkPolicy）是 Kubernetes 中用于控制 Pod 之间网络通信的资源对象，通过定义入站和出站规则实现网络隔离。',

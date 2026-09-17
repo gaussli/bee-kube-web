@@ -10,7 +10,7 @@ export const INGRESS_PAGE_META: ResourcePageMeta = {
   icon: 'kubernetes-ingress',
   title: '入口',
   description:
-    '路由（Ingress）是 Kubernetes 中用于管理集群外部 HTTP/HTTPS 访问的资源对象，支持基于域名和路径的流量路由。',
+    '入口（Ingress）是 Kubernetes 中用于管理集群外部 HTTP/HTTPS 访问的资源对象，支持基于域名和路径的流量路由。',
 }
 
 /** Ingress 路径匹配类型原始数据（用于派生类型） */
