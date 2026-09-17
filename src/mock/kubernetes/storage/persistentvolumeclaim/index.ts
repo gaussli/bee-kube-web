@@ -167,7 +167,13 @@ function getPersistentVolumeClaimList(
   })
   const filteredUid = query.uid ? filtered.filter(d => d.uid === query.uid) : []
   const filteredName = query.name ? filtered.filter(d => d.name.includes(query.name as string)) : []
-  const matched = query.uid || query.name ? Array.from(new Set([...filteredUid, ...filteredName])) : filtered
+  const filteredStorageClassName = query.storageClassName
+    ? filtered.filter(d => d.storageClassName?.includes(query.storageClassName as string))
+    : []
+  const matched =
+    query.uid || query.name || query.storageClassName
+      ? Array.from(new Set([...filteredUid, ...filteredName, ...filteredStorageClassName]))
+      : filtered
   const page = query.page || 1
   const pageSize = query.pageSize || 10
   return {

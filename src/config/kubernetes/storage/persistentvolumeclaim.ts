@@ -7,24 +7,27 @@ import type { Option, ResourcePageMeta } from '@/config/kubernetes'
 
 /** PersistentVolumeClaim 列表页面功能元数据 */
 export const PERSISTENTVOLUMECLAIM_PAGE_META: ResourcePageMeta = {
-  icon: 'kubernetes-persistentvolumeclaim',
+  icon: 'kubernetes-persistent-volume-claim',
   title: '持久卷声明',
   description:
     '持久卷声明（PersistentVolumeClaim）是用户对持久卷的存储请求，支持指定容量、访问模式等存储需求，实现存储资源的动态申请与绑定。',
 }
 
 /** PersistentVolumeClaim 绑定状态类型原始数据（用于派生类型） */
-const _persistentVolumeClaimPhases = [
-  { value: 'Pending', label: '未绑定' },
-  { value: 'Bound', label: '已绑定' },
-  { value: 'Lost', label: '卷丢失' },
+const _persistentVolumeClaimPhases: Option[] = [
+  { value: 'Pending', label: '未绑定', type: 'warning' },
+  { value: 'Bound', label: '已绑定', type: 'success' },
+  { value: 'Lost', label: '卷丢失', type: 'danger' },
 ] as const
 
 /** PersistentVolumeClaim 绑定状态类型 */
 export type PersistentVolumeClaimPhase = (typeof _persistentVolumeClaimPhases)[number]['value']
 
-/** PersistentVolumeClaim 绑定状态类型配置选项 */
-export const PERSISTENTVOLUMECLAIM_PHASE_OPTIONS: Option[] = [..._persistentVolumeClaimPhases]
+/** PersistentVolumeClaim 绑定状态类型配置选项（含"所有状态"） */
+export const PERSISTENTVOLUMECLAIM_PHASE_OPTIONS: Option[] = [
+  { value: undefined, label: '所有状态' },
+  ..._persistentVolumeClaimPhases,
+]
 
 /** PersistentVolumeClaim 卷属性变更状态类型原始数据（用于派生类型） */
 const _persistentVolumeClaimModifyVolumeStatuses = [

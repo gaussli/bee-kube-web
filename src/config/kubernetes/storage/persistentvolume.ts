@@ -55,12 +55,12 @@ export type NodeSelectorOperator = (typeof _nodeSelectorOperators)[number]['valu
 export const NODE_SELECTOR_OPERATOR_OPTIONS: Option[] = [..._nodeSelectorOperators]
 
 /** PersistentVolume 存储状态类型原始数据（用于派生类型） */
-const _persistentVolumePhases = [
-  { value: 'Pending', label: '未就绪' },
-  { value: 'Available', label: '可用' },
-  { value: 'Bound', label: '已绑定' },
-  { value: 'Released', label: '已释放' },
-  { value: 'Failed', label: '失败' },
+const _persistentVolumePhases: Option[] = [
+  { value: 'Pending', label: '未就绪', type: 'warning' },
+  { value: 'Available', label: '可用', type: 'success' },
+  { value: 'Bound', label: '已绑定', type: 'primary' },
+  { value: 'Released', label: '已释放', type: 'warning' },
+  { value: 'Failed', label: '失败', type: 'danger' },
 ] as const
 
 /** PersistentVolume 存储状态类型 */

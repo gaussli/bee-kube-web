@@ -1,21 +1,21 @@
 <template>
-  <div class="access-mode-cell">
+  <div class="bee-access-mode-cell">
     <!-- 主内容（上方）：访问模式胶囊 -->
-    <div class="access-mode-cell__label">
+    <div class="bee-access-mode-cell__label">
       <template v-if="modeLabels.length">
         <BeeCapsule v-for="item in modeLabels" :key="item.value" :label="item.label" size="tiny" />
       </template>
       <span v-else>-</span>
     </div>
     <!-- 副文本（下方） -->
-    <BeeEllipsisTooltipLabel v-if="sublabel" class="access-mode-cell__sublabel" :label="sublabel" />
+    <BeeEllipsisTooltipLabel v-if="sublabel" class="bee-access-mode-cell__sublabel" :label="sublabel" />
   </div>
 </template>
 
 <script setup lang="ts">
 /**
- * AccessModeCell 访问模式单元格
- * @module views/kubernetes/storage/persistentvolume/components/AccessModeCell
+ * BeeAccessModeCell 访问模式单元格
+ * @module components/business/BeeAccessModeCell
  * @description 纯展示单元，结构与 BeeTableCommonCell 一致：上方为访问模式胶囊、下方为副文本，不发起任何请求
  */
 import { computed } from 'vue'
@@ -27,7 +27,7 @@ import BeeEllipsisTooltipLabel from '@/components/business/BeeEllipsisTooltipLab
 
 import { PERSISTENTVOLUME_ACCESS_MODE_OPTIONS } from '@/config/kubernetes/core'
 
-defineOptions({ name: 'AccessModeCell' })
+defineOptions({ name: 'BeeAccessModeCell' })
 
 // ==================== Prop ====================
 const props = withDefaults(
@@ -57,7 +57,7 @@ const modeLabels = computed(() =>
 /**
  * 结构与 BeeTableCommonCell 保持一致：`__label` 主内容行、`__sublabel` 副文本行
  */
-.access-mode-cell {
+.bee-access-mode-cell {
   display: flex;
   gap: 8px;
   flex-direction: column;

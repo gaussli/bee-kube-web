@@ -59,7 +59,7 @@
           <!-- 访问模式列 -->
           <BeeTableColumn :width="200">
             <template #default="{ row }">
-              <AccessModeCell :access-modes="row.accessModes" sublabel="访问模式" />
+              <BeeAccessModeCell :access-modes="row.accessModes" sublabel="访问模式" />
             </template>
           </BeeTableColumn>
           <!-- 回收策略列 -->
@@ -176,6 +176,7 @@ import BeePagination from '@/components/BeePagination/index.vue'
 import BeeTableColumn from '@/components/BeeTable/BeeTableColumn.vue'
 import BeeTableCommonCell from '@/components/BeeTable/BeeTableCommonCell.vue'
 import BeeTable from '@/components/BeeTable/index.vue'
+import BeeAccessModeCell from '@/components/business/BeeAccessModeCell/index.vue'
 import BeeActionCell from '@/components/business/BeeActionCell/index.vue'
 import BeeAuditCell from '@/components/business/BeeAuditCell/index.vue'
 import BeeBatchDeleteDialogContent from '@/components/business/BeeDialogContent/BeeBatchDeleteDialogContent.vue'
@@ -192,7 +193,6 @@ import {
 } from '@/config/kubernetes/storage/persistentvolume'
 import { useKubernetesStore } from '@/stores'
 
-import AccessModeCell from './components/AccessModeCell/index.vue'
 import PersistentVolumeInfoCell from './components/PersistentVolumeInfoCell/index.vue'
 import { usePersistentVolumeAction } from './composables/useAction'
 import { usePersistentVolumeFetch } from './composables/useFetch'

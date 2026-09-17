@@ -82,9 +82,9 @@ $types: primary, success, warning, danger;
   border: 1px solid;
   border-color: var(--bee-segment-capsule-color-border-default, map.get($colors-default, 'border', 'base'));
   border-radius: 9999px;
+  overflow: hidden;
   font-size: 13px;
   color: var(--bee-segment-capsule-color-text-default, map.get($colors-default, 'text', 'base'));
-  overflow: hidden;
 
   &__label,
   &__sublabel {
