@@ -141,14 +141,14 @@ const kubernetesMenus: CurrentMenu[] = [
     children: [
       {
         id: 'k8s8p9v0c1r2e3s4i5s6t7e8n9t0c1l2a3i4m5e6n7t',
-        code: 'kubernetes:storage:pvc',
+        code: 'kubernetes:storage:persistentvolumeclaim',
         name: '持久卷声明',
         icon: 'basic-id',
         type: 1,
       },
       {
         id: 'k8s9p0v1e2r3s4i5s6t7e8n9v0o1l2u3m4e5',
-        code: 'kubernetes:storage:pv',
+        code: 'kubernetes:storage:persistentvolume',
         name: '持久卷',
         icon: 'basic-id',
         type: 1,
@@ -164,7 +164,7 @@ const kubernetesMenus: CurrentMenu[] = [
   },
   {
     id: 'k8s1c2r3d4r5e6s7o8u9r0c1e2d3e4f5i6n7i8t9',
-    code: 'kubernetes:crd',
+    code: 'kubernetes:customresourcedefinition',
     name: '资源定义',
     icon: 'basic-id',
     type: 1,

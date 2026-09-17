@@ -3,6 +3,8 @@
  * @module config/kubernetes/core
  */
 
+import type { Option } from '@/config/kubernetes'
+
 /** 资源名称原始数据（用于派生类型） */
 const _resourceNames = [
   { value: 'cpu', label: 'CPU' },
@@ -76,7 +78,7 @@ export const QUANTITY_UNIT_VALUES: string[] = [
   ..._quantityUnitMilli,
   ..._quantityUnitsBinary,
   ..._quantityUnitsDecimal,
-].map((u) => u.value)
+].map(u => u.value)
 
 /** 二进制容量单位基数（1024 进制） */
 export const CAPACITY_BASE_BINARY = 1024
@@ -130,6 +132,9 @@ const _persistentVolumeAccessModes = [
 
 /** 持久卷访问模式 */
 export type PersistentVolumeAccessMode = (typeof _persistentVolumeAccessModes)[number]['value']
+
+/** 持久卷访问模式配置选项 */
+export const PERSISTENTVOLUME_ACCESS_MODE_OPTIONS: Option[] = [..._persistentVolumeAccessModes]
 
 /** 容器停止时发送的信号原始数据（用于派生类型） */
 const _signals = [

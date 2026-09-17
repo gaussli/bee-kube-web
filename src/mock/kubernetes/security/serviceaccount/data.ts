@@ -1,6 +1,6 @@
 /**
  * Kubernetes ServiceAccount 模拟数据
- * @module mock/kubernetes/security/serviceAccountData
+ * @module mock/kubernetes/security/serviceaccountData
  */
 import type { EventListVo } from '@/types/kubernetes/event'
 import type { ServiceAccountDetailVo, ServiceAccountListVo } from '@/types/kubernetes/security/serviceaccount'

@@ -1,6 +1,6 @@
 /**
  * ServiceAccount 管理 Mock
- * @module mock/kubernetes/security/serviceAccount
+ * @module mock/kubernetes/security/serviceaccount
  */
 import type { PageVo } from '@/types/index'
 import type { MetadataAnnotationForm, MetadataLabelForm } from '@/types/kubernetes'

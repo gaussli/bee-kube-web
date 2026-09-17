@@ -7,7 +7,7 @@ import type { Option, ResourcePageMeta } from '@/config/kubernetes'
 
 /** PersistentVolume 列表页面功能元数据 */
 export const PERSISTENTVOLUME_PAGE_META: ResourcePageMeta = {
-  icon: 'kubernetes-persistentvolume',
+  icon: 'kubernetes-persistent-volume',
   title: '持久卷',
   description:
     '持久卷（PersistentVolume）是 Kubernetes 集群中管理员预先配置的存储资源，独立于 Pod 生命周期，为应用提供持久化存储能力。',
@@ -67,4 +67,7 @@ const _persistentVolumePhases = [
 export type PersistentVolumePhase = (typeof _persistentVolumePhases)[number]['value']
 
 /** PersistentVolume 存储状态类型配置选项 */
-export const PERSISTENTVOLUME_PHASE_OPTIONS: Option[] = [..._persistentVolumePhases]
+export const PERSISTENTVOLUME_PHASE_OPTIONS: Option[] = [
+  { value: undefined, label: '所有状态' },
+  ..._persistentVolumePhases,
+]

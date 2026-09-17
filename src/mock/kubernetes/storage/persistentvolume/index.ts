@@ -1,6 +1,6 @@
 /**
  * PersistentVolume 管理 Mock
- * @module mock/kubernetes/storage/persistentVolume
+ * @module mock/kubernetes/storage/persistentvolume
  */
 import type { PageVo } from '@/types/index'
 import type { MetadataAnnotationForm, MetadataLabelForm } from '@/types/kubernetes'
