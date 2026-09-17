@@ -1,5 +1,5 @@
 /**
- * 服务帐号（ServiceAccount）资源页面 ViewObject 及请求对象聚合
+ * 服务账号（ServiceAccount）资源页面 ViewObject 及请求对象聚合
  * @module types/kubernetes/security/serviceaccount/index
  */
 
