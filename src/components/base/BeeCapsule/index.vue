@@ -1,5 +1,5 @@
 <template>
-  <div class="bee-capsule" :class="[typeClass, sizeClass, copiableClass]" @click="handleCopy(label)">
+  <div class="bee-capsule" :class="[typeClass, sizeClass, copyableClass]" @click="handleCopy(label)">
     <span>{{ label }}</span>
   </div>
 </template>
@@ -17,23 +17,23 @@ const props = withDefaults(
     label: string
     type?: BeeType
     size?: 'default' | 'tiny' | 'small' | 'large'
-    copiable?: boolean
+    copyable?: boolean
   }>(),
   {
     type: 'default',
     size: 'default',
-    copiable: true,
+    copyable: true,
   },
 )
 
 // ==================== Reactive State ====================
 const typeClass = computed(() => (props.type !== 'default' ? `bee-capsule--${props.type}` : ''))
 const sizeClass = computed(() => (props.size !== 'default' ? `bee-capsule--${props.size}` : ''))
-const copiableClass = computed(() => (props.copiable ? 'is-copiable' : ''))
+const copyableClass = computed(() => (props.copyable ? 'is-copyable' : ''))
 
 // ==================== Handler ====================
 async function handleCopy(s: string) {
-  if (props.copiable) {
+  if (props.copyable) {
     await useClipboard().copy(s)
   }
 }
@@ -63,7 +63,7 @@ $types: primary, success, warning, danger;
     white-space: nowrap;
   }
 
-  &:hover.is-copiable {
+  &:hover.is-copyable {
     cursor: pointer;
   }
 
