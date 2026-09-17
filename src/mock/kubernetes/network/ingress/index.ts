@@ -138,7 +138,13 @@ function getIngressList(clusterUid: string, query: Partial<IngressQueryForm>): P
   })
   const filteredUid = query.uid ? filtered.filter(d => d.uid === query.uid) : []
   const filteredName = query.name ? filtered.filter(d => d.name.includes(query.name as string)) : []
-  const matched = query.uid || query.name ? Array.from(new Set([...filteredUid, ...filteredName])) : filtered
+  const filteredIngressClassName = query.ingressClassName
+    ? filtered.filter(d => d.ingressClassName && d.ingressClassName.includes(query.ingressClassName as string))
+    : []
+  const matched =
+    query.uid || query.name || query.ingressClassName
+      ? Array.from(new Set([...filteredUid, ...filteredName, ...filteredIngressClassName]))
+      : filtered
   const page = query.page || 1
   const pageSize = query.pageSize || 10
   return {

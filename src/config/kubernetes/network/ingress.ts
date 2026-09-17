@@ -8,7 +8,7 @@ import type { Option, ResourcePageMeta } from '@/config/kubernetes'
 /** Ingress 列表页面功能元数据 */
 export const INGRESS_PAGE_META: ResourcePageMeta = {
   icon: 'kubernetes-ingress',
-  title: '路由',
+  title: '入口',
   description:
     '路由（Ingress）是 Kubernetes 中用于管理集群外部 HTTP/HTTPS 访问的资源对象，支持基于域名和路径的流量路由。',
 }
