@@ -95,19 +95,20 @@ $types: primary, success, warning, danger;
 
 // ==================== 对话框容器 ====================
 .bee-dialog {
+  /* stylelint-disable order/custom-properties-alphabetical-order */
   --bee-dialog-color-bg: #{$color-bg-third};
-  --bee-dialog-color-icon-bg: #{map.get($colors-default, 'bg', 'base')};
-  --bee-dialog-color-shadow: rgb(var(--bee-dialog-color-bg), 50%);
-  --bee-dialog-color-text: #{map.get($colors-default, 'text', 'base')};
+  --bee-dialog-color: #{map.get($color, 'default', 'text', 'base')};
+  --bee-dialog-icon-color-bg: #{map.get($color, 'default', 'bg', 'base')};
 
   @each $type in $types {
-    &--#{$type} {
-      --bee-dialog-color-icon-bg: #{map.get($color, $type, 'bg', 'base')};
-      --bee-dialog-color-text: #{map.get($color, $type, 'text', 'base')};
+    &.bee-dialog--#{$type} {
+      --bee-dialog-color: #{map.get($color, $type, 'text', 'base')};
+      --bee-dialog-icon-color-bg: #{map.get($color, $type, 'bg', 'base')};
     }
   }
 
-  filter: drop-shadow(0 0 4px var(--bee-dialog-color-shadow));
+  /* stylelint-enable order/custom-properties-alphabetical-order */
+  filter: drop-shadow(0 0 4px color-mix(in srgb, var(--bee-dialog-color-bg) 50%, transparent));
   display: flex;
   gap: 48px;
   flex-direction: column;
@@ -127,18 +128,17 @@ $types: primary, success, warning, danger;
     flex-direction: column;
     justify-content: flex-start;
     align-items: center;
+    color: var(--bee-dialog-color);
 
     &-icon {
       padding: 16px;
       border-radius: 9999px;
-      color: var(--bee-dialog-color-text);
-      background: var(--bee-dialog-color-icon-bg);
+      background: var(--bee-dialog-icon-color-bg);
     }
 
     &-title {
       font-size: 16px;
       font-weight: bold;
-      color: var(--bee-dialog-color-text);
       user-select: none;
     }
   }
@@ -156,7 +156,9 @@ $types: primary, success, warning, danger;
   }
 
   &__actions {
-    --bee-button-width: 100%;
+    .bee-button {
+      --bee-button-width: 100%;
+    }
 
     display: flex;
     gap: 16px;

@@ -7,7 +7,8 @@ $colors: () !default;
 
 @debug $colors;
 
-$color-primary: #ff814a;
+// $color-primary: #ff814a;
+$color-primary: rgb(200 100 0);
 
 // ---- 文字颜色 ----
 $color-text-regular: rgb(255 255 255);
@@ -18,12 +19,7 @@ $color-text-placeholder: $color-text-third;
 $color-text-disabled: rgb(80 80 80);
 
 // ---- 边框颜色 ----
-// $color-border-primary: map.get($colors, 'gray', 90);
-// $color-border-secondary: map.get($colors, 'gray', 70);
 $color-border-third: map.get($colors, 'gray', 50);
-
-// $color-border-placeholder: map.get($colors, 'gray', 40);
-// $color-border-disabled: map.get($colors, 'gray', 40);
 
 // ==================== 分隔线颜色 ====================
 $color-separator: rgb(80 80 80);
@@ -82,13 +78,13 @@ $colors-primary: (
     disabled: rgb(20 10 0),
   ),
   border: (
-    base: #ff814a,
+    base: rgb(200 100 0),
     hover: rgb(200 100 0),
     active: rgb(200 100 0),
     disabled: rgb(80 50 0),
   ),
   text: (
-    base: #ff814a,
+    base: rgb(200 100 0),
     hover: rgb(200 100 0),
     active: rgb(200 100 0),
     disabled: rgb(80 50 0),

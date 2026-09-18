@@ -199,6 +199,15 @@ function handleSelect(option: SelectOption) {
 
 // ==================== 触发器 ====================
 .bee-select__trigger {
+  /* stylelint-disable order/custom-properties-alphabetical-order */
+  --bee-select-color: #{$color-text-secondary};
+  --bee-select-color-bg: #{map.get($colors-default, 'bg', 'base')};
+  --bee-select-color-border: #{map.get($colors-default, 'border', 'base')};
+  --bee-select-color-active: #{$color-text-primary};
+  --bee-select-color-bg-active: var(--bee-select-color-bg);
+  --bee-select-color-border-active: #{$color-text-secondary};
+
+  /* stylelint-enable order/custom-properties-alphabetical-order */
   display: flex;
   gap: 8px;
   flex-flow: row nowrap;
@@ -207,19 +216,19 @@ function handleSelect(option: SelectOption) {
   height: 40px;
   padding: 0 20px;
   border: 1px solid;
-  border-color: var(--bee-select-color-border, map.get($colors-default, 'border', 'base'));
+  border-color: var(--bee-select-color-border);
   border-radius: 9999px;
   font-size: 14px;
   font-weight: normal;
-  color: var(--bee-select-color-text, $color-text-primary);
-  background: var(--bee-select-color-bg, map.get($colors-default, 'bg', 'base'));
+  color: var(--bee-select-color);
+  background: var(--bee-select-color-bg);
   cursor: pointer;
   transition: border-color 0.3s ease;
 
   &.is-opened {
-    border-color: var(--bee-select-color-border-active, map.get($colors-primary, 'border', 'base'));
-    color: var(--bee-select-color-text-active, map.get($colors-primary, 'text', 'base'));
-    background: var(--bee-select-color-bg-active, map.get($colors-primary, 'bg', 'base'));
+    border-color: var(--bee-select-color-border-active);
+    color: var(--bee-select-color-active);
+    background: var(--bee-select-color-bg-active);
   }
 
   &-value {
@@ -240,13 +249,19 @@ function handleSelect(option: SelectOption) {
 }
 
 // ==================== 下拉菜单 ====================
-$bee-select-menu-color-bg: rgb(40 40 40);
 
 .bee-select__menu {
-  --bee-select-menu-color-bg: #{$bee-select-menu-color-bg};
+  /* stylelint-disable order/custom-properties-alphabetical-order */
   --bee-select-menu-padding: 12px;
+  --bee-select-menu-color-bg: rgb(40 40 40);
+  --bee-select-menu-item-color: #{$color-text-secondary};
+  --bee-select-menu-item-color-hover: #{$color-text-regular};
+  --bee-select-menu-item-color-bg-hover: rgb(60 60 60);
+  --bee-select-menu-item-color-active: #{$color-text-regular};
+  --bee-select-menu-item-color-bg-active: #{$color-primary};
 
-  filter: drop-shadow(0 0 4px rgba($bee-select-menu-color-bg, 50%));
+  /* stylelint-enable order/custom-properties-alphabetical-order */
+  filter: drop-shadow(0 0 4px color-mix(in srgb, var(--bee-select-menu-color-bg) 50%, transparent));
   position: relative;
   z-index: 1000;
   padding: var(--bee-select-menu-padding);
@@ -284,12 +299,10 @@ $bee-select-menu-color-bg: rgb(40 40 40);
       align-items: center;
       width: 100%;
       padding: 8px 16px;
-      border: 1px solid;
-      border-color: transparent;
       border-radius: 9999px;
       font-size: 12px;
       font-weight: normal;
-      color: var(--bee-select-menu-item-color-text, map.get($colors-default, 'text', 'hover'));
+      color: var(--bee-select-menu-item-color);
       cursor: pointer;
       transition: background 0.2s;
 
@@ -298,15 +311,13 @@ $bee-select-menu-color-bg: rgb(40 40 40);
       }
 
       &.bee-select__menu-actived {
-        border-color: var(--bee-select-menu-item-color-border-active, map.get($colors-primary, 'border', 'base'));
-        color: var(--bee-select-menu-item-color-text-active, map.get($colors-primary, 'text', 'base'));
-        background: var(--bee-select-menu-item-color-bg-active, map.get($colors-primary, 'bg', 'base'));
+        color: var(--bee-select-menu-item-color-active);
+        background: var(--bee-select-menu-item-color-bg-active);
       }
 
       &:hover {
-        border-color: transparent;
-        color: var(--bee-select-menu-item-color-text-hover, $color-text-primary);
-        background: var(--bee-select-menu-item-color-bg-hover, $color-primary);
+        color: var(--bee-select-menu-item-color-hover);
+        background: var(--bee-select-menu-item-color-bg-hover);
       }
     }
   }

@@ -214,7 +214,7 @@ function handlePageInput() {
       height: 40px;
       padding: 0 20px;
       border: 1px solid;
-      border-color: map.get($colors-default, 'border', 'base');
+      border-color: map.get($color, 'default', 'border', 'base');
       border-radius: 9999px;
       text-align: center;
 

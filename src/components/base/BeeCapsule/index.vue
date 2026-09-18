@@ -44,32 +44,64 @@ const copyableClass = computed(() => (props.copyable ? 'is-copyable' : ''))
 // ==================== Handler ====================
 /**
  * 复制文本到剪贴板
+ * @param e
  * @description copyable 为 false 时直接返回；优先复制 copyLabel，缺省复制 label
  */
-async function handleCopy() {
-  if (props.copyable) {
-    await useClipboard().copy(props.copyLabel || props.label)
-  }
+async function handleCopy(e: MouseEvent) {
+  if (!props.copyable) return
+  e.stopPropagation()
+  await useClipboard().copy(props.copyLabel || props.label)
 }
 </script>
 
 <style lang="scss" scoped>
 @use 'sass:map';
 
-$types: primary, success, warning, danger;
-
 .bee-capsule {
+  /* stylelint-disable order/custom-properties-alphabetical-order */
+  --bee-capsule-height: 28px;
+  --bee-capsule-padding: 0 10px;
+  --bee-capsule-font-size: 13px;
+  --bee-capsule-color: #{map.get($color, 'default', 'text', base)};
+  --bee-capsule-color-border: #{map.get($color, 'default', 'border', 'base')};
+
+  @each $type in (primary, success, warning, danger) {
+    &.bee-capsule--#{$type} {
+      --bee-capsule-color: #{map.get($color, $type, 'text', 'base')};
+      --bee-capsule-color-border: #{map.get($color, $type, 'border', 'base')};
+    }
+  }
+
+  &.bee-capsule--tiny {
+    --bee-capsule-height: 18px;
+    --bee-capsule-padding: 0 6px;
+    --bee-capsule-font-size: 10px;
+  }
+
+  &.bee-capsule--small {
+    --bee-capsule-height: 24px;
+    --bee-capsule-padding: 0 8px;
+    --bee-capsule-font-size: 12px;
+  }
+
+  &.bee-capsule--large {
+    --bee-capsule-height: 32px;
+    --bee-capsule-padding: 0 12px;
+    --bee-capsule-font-size: 14px;
+  }
+
+  /* stylelint-enable order/custom-properties-alphabetical-order */
   display: flex;
   flex-direction: row;
   align-items: center;
-  height: 28px;
+  height: var(--bee-capsule-height);
   max-width: 100%;
-  padding: 0 10px;
+  padding: var(--bee-capsule-padding);
   border: 1px solid;
-  border-color: var(--bee-capsule-color-border-default, map.get($colors-default, 'border', 'base'));
+  border-color: var(--bee-capsule-color-border);
   border-radius: 9999px;
-  font-size: 13px;
-  color: var(--bee-capsule-color-text-default, map.get($colors-default, 'text', 'base'));
+  font-size: var(--bee-capsule-font-size);
+  color: var(--bee-capsule-color);
 
   span {
     overflow: hidden;
@@ -79,33 +111,6 @@ $types: primary, success, warning, danger;
 
   &:hover.is-copyable {
     cursor: pointer;
-  }
-
-  &--tiny {
-    height: 18px;
-    padding: 0 6px;
-    font-size: 10px;
-  }
-
-  &--small {
-    height: 24px;
-    padding: 0 8px;
-    font-size: 12px;
-  }
-
-  &--large {
-    height: 32px;
-    padding: 0 12px;
-    font-size: 14px;
-  }
-
-  @each $type in $types {
-    $colors-type: map.get($color, $type);
-
-    &.bee-capsule--#{$type} {
-      border-color: var(--bee-capsule-color-border-#{$type}, map.get($colors-type, 'border', 'base'));
-      color: var(--bee-capsule-color-text-#{$type}, map.get($colors-type, 'text', 'base'));
-    }
   }
 }
 </style>

@@ -6,11 +6,6 @@
 </template>
 
 <script setup lang="ts">
-/**
- * BeeButton 按钮组件
- * @module components/base/BeeButton
- * @description 基础按钮；加载态为组件内部行为，click 同步派发，不等待异步监听器完成
- */
 import { computed } from 'vue'
 
 import type { BeeType } from '@/config'
@@ -75,89 +70,91 @@ function handleClick(event: MouseEvent) {
 <style lang="scss" scoped>
 @use 'sass:map';
 
-$width: auto;
-$types: primary, success, warning, danger;
-
 .bee-button {
+  /* stylelint-disable order/custom-properties-alphabetical-order */
+  --bee-button-width: auto;
+  --bee-button-height: 40px;
+  --bee-button-padding: 0 20px;
+  --bee-button-font-size: 14px;
+  --bee-button-color: #{map.get($color, 'default', 'text', 'base')};
+  --bee-button-color-bg: #{map.get($color, 'default', 'bg', 'base')};
+  --bee-button-color-border: #{map.get($color, 'default', 'border', 'base')};
+  --bee-button-color-hover: #{map.get($color, 'default', 'text', 'hover')};
+  --bee-button-color-bg-hover: #{map.get($color, 'default', 'bg', 'hover')};
+  --bee-button-color-border-hover: #{map.get($color, 'default', 'border', 'hover')};
+  --bee-button-color-active: #{map.get($color, 'default', 'text', 'active')};
+  --bee-button-color-bg-active: #{map.get($color, 'default', 'bg', 'active')};
+  --bee-button-color-border-active: #{map.get($color, 'default', 'border', 'active')};
+  --bee-button-color-disabled: #{map.get($color, 'default', 'text', 'disabled')};
+  --bee-button-color-bg-disabled: #{map.get($color, 'default', 'bg', 'disabled')};
+  --bee-button-color-border-disabled: #{map.get($color, 'default', 'border', 'disabled')};
+
+  @each $type in (primary, success, warning, danger) {
+    &.bee-button--#{$type} {
+      --bee-button-color: #{map.get($color, $type, 'text', 'base')};
+      --bee-button-color-bg: #{map.get($color, $type, 'bg', 'base')};
+      --bee-button-color-border: #{map.get($color, $type, 'border', 'base')};
+      --bee-button-color-hover: #{map.get($color, $type, 'text', 'hover')};
+      --bee-button-color-bg-hover: #{map.get($color, $type, 'bg', 'hover')};
+      --bee-button-color-border-hover: #{map.get($color, $type, 'border', 'hover')};
+      --bee-button-color-active: #{map.get($color, $type, 'text', 'active')};
+      --bee-button-color-bg-active: #{map.get($color, $type, 'bg', 'active')};
+      --bee-button-color-border-active: #{map.get($color, $type, 'border', 'active')};
+      --bee-button-color-disabled: #{map.get($color, $type, 'text', 'disabled')};
+      --bee-button-color-bg-disabled: #{map.get($color, $type, 'bg', 'disabled')};
+      --bee-button-color-border-disabled: #{map.get($color, $type, 'border', 'disabled')};
+    }
+  }
+
+  &.bee-button--small {
+    --bee-button-height: 32px;
+    --bee-button-padding: 0 16px;
+    --bee-button-font-size: 12px;
+  }
+
+  &.bee-button--large {
+    --bee-button-height: 48px;
+    --bee-button-padding: 0 28px;
+    --bee-button-font-size: 16px;
+  }
+
+  /* stylelint-enable order/custom-properties-alphabetical-order */
   display: flex;
   gap: 4px;
   flex-direction: row;
   justify-content: center;
   align-items: center;
-  width: var(--bee-button-width, $width);
-  height: 40px;
-  padding: 0 20px;
+  width: var(--bee-button-width);
+  height: var(--bee-button-height);
+  padding: var(--bee-button-padding);
   border: 1px solid;
-  border-color: var(--bee-button-color-border-default, map.get($colors-default, 'border', 'base'));
+  border-color: var(--bee-button-color-border);
   border-radius: 9999px;
-  font-size: 14px;
+  font-size: var(--bee-button-font-size);
   font-weight: normal;
-  color: var(--bee-button-color-text-default, map.get($colors-default, 'text', 'base'));
+  color: var(--bee-button-color);
   white-space: nowrap;
-  background: var(--bee-button-color-bg-default, map.get($colors-default, 'bg', 'base'));
+  background: var(--bee-button-color-bg);
   cursor: pointer;
   user-select: none;
 
-  &--small {
-    height: 32px;
-    padding: 0 14px;
-    font-size: 12px;
-  }
-
-  &--large {
-    height: 48px;
-    padding: 0 28px;
-    font-size: 16px;
-  }
-
   &:hover:not(.is-disabled) {
-    border-color: var(--bee-button-color-border-default-hover, map.get($colors-default, 'border', 'hover'));
-    color: var(--bee-button-color-text-default-hover, map.get($colors-default, 'text', 'hover'));
-    background: var(--bee-button-color-bg-default-hover, map.get($colors-default, 'bg', 'hover'));
+    border-color: var(--bee-button-color-border-hover);
+    color: var(--bee-button-color-hover);
+    background: var(--bee-button-color-bg-hover);
   }
 
   &:active:not(.is-disabled) {
-    border-color: var(--bee-button-color-border-default-active, map.get($colors-default, 'border', 'active'));
-    color: var(--bee-button-color-text-default-active, map.get($colors-default, 'text', 'active'));
-    background: var(--bee-button-color-bg-default-active, map.get($colors-default, 'bg', 'active'));
-  }
-
-  @each $type in $types {
-    $colors-type: map.get($color, $type);
-
-    &.bee-button--#{$type} {
-      border-color: var(--bee-button-color-border-#{$type}, map.get($colors-type, 'border', 'base'));
-      color: var(--bee-button-color-text-#{$type}, map.get($colors-type, 'text', 'base'));
-      background: var(--bee-button-color-bg-#{$type}, map.get($colors-type, 'bg', 'base'));
-
-      &:hover {
-        border-color: var(--bee-button-color-border-#{$type}-hover, map.get($colors-type, 'border', 'hover'));
-        color: var(--bee-button-color-text-#{$type}-hover, map.get($colors-type, 'text', 'hover'));
-        background: var(--bee-button-color-bg-#{$type}-hover, map.get($colors-type, 'bg', 'hover'));
-      }
-
-      &:active {
-        border-color: var(--bee-button-color-border-#{$type}-active, map.get($colors-type, 'border', 'active'));
-        color: var(--bee-button-color-text-#{$type}-active, map.get($colors-type, 'text', 'active'));
-        background: var(--bee-button-color-bg-#{$type}-active, map.get($colors-type, 'bg', 'active'));
-      }
-    }
+    border-color: var(--bee-button-color-border-active);
+    color: var(--bee-button-color-active);
+    background: var(--bee-button-color-bg-active);
   }
 
   &.is-disabled {
-    border-color: var(--bee-button-color-border-default-disabled, map.get($colors-default, 'border', 'disabled'));
-    color: var(--bee-button-color-text-default-disabled, map.get($colors-default, 'text', 'disabled'));
-    background: var(--bee-button-color-bg-default-disabled, map.get($colors-default, 'bg', 'disabled'));
+    border-color: var(--bee-button-color-border-disabled);
+    color: var(--bee-button-color-disabled);
+    background: var(--bee-button-color-bg-disabled);
     cursor: not-allowed;
-
-    @each $type in $types {
-      $colors-type: map.get($color, $type);
-      &.bee-button--#{$type} {
-        border-color: var(--bee-button-color-border-#{$type}-disabled, map.get($colors-type, 'border', 'disabled'));
-        color: var(--bee-button-color-text-#{$type}-disabled, map.get($colors-type, 'text', 'disabled'));
-        background: var(--bee-button-color-bg-#{$type}-disabled, map.get($colors-type, 'bg', 'disabled'));
-      }
-    }
   }
 
   &.is-loading {

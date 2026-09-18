@@ -183,13 +183,16 @@ function handleSelect(option: DropdownOption) {
 }
 
 // ==================== 下拉菜单 ====================
-$bee-dropdown-menu-color-bg: rgb(40 40 40);
-
 .bee-dropdown__menu {
-  --bee-dropdown-menu-color-bg: #{$bee-dropdown-menu-color-bg};
-  --bee-dropdown-menu-padding: 12px;
+  /* stylelint-disable order/custom-properties-alphabetical-order */
+  --bee-dropdown-menu-padding: 12px 0;
+  --bee-dropdown-menu-color-bg: rgb(40 40 40);
+  --bee-dropdown-menu-item-color: #{$color-text-secondary};
+  --bee-dropdown-menu-item-color-hover: #{$color-text-regular};
+  --bee-dropdown-menu-item-color-bg-hover: #{$color-primary};
 
-  filter: drop-shadow(0 0 4px rgba($bee-dropdown-menu-color-bg, 50%));
+  /* stylelint-enable order/custom-properties-alphabetical-order */
+  filter: drop-shadow(0 0 4px color-mix(in srgb, var(--bee-dropdown-menu-color-bg) 50%, transparent));
   position: relative;
   z-index: 1000;
   padding: var(--bee-dropdown-menu-padding);
@@ -242,7 +245,7 @@ $bee-dropdown-menu-color-bg: rgb(40 40 40);
         border-radius: 9999px;
         font-size: 12px;
         font-weight: normal;
-        color: var(--bee-dropdown-menu-item-color-text, map.get($colors-default, 'text', 'hover'));
+        color: var(--bee-dropdown-menu-item-color);
         cursor: pointer;
         transition: background 0.2s;
 
@@ -252,8 +255,8 @@ $bee-dropdown-menu-color-bg: rgb(40 40 40);
 
         &:hover {
           border-color: transparent;
-          color: var(--bee-dropdown-menu-item-color-text-hover, $color-text-primary);
-          background: var(--bee-dropdown-menu-item-color-bg-hover, $color-primary);
+          color: var(--bee-dropdown-menu-item-color-hover);
+          background: var(--bee-dropdown-menu-item-color-bg-hover);
         }
       }
     }

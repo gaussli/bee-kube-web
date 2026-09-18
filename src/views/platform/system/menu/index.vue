@@ -4,7 +4,7 @@
     <div class="table-header">
       <div class="query-form">
         <div class="query-form-left">
-          <BeeInputSearch v-model="searchKey" placeholder="按 ID / 菜单名称 / 编码 搜索" />
+          <BeeSearchInput v-model="searchKey" placeholder="按 ID / 菜单名称 / 编码 搜索" />
           <BeeSegmentedControl v-model="queryForm.status" :options="statusOptions" @select="handleSelect" />
           <BeeSegmentedControl v-model="queryForm.type" :options="typeOptions" @select="handleTypeSelect" />
         </div>
@@ -248,8 +248,8 @@ import type { MenuQueryReq, MenuResp } from '@/types/platform/menu'
 import { changeMenuStatus, getMenuPage, removeMenu, batchRemoveMenus } from '@/api/platform/menu'
 
 import BeeButton from '@/components/base/BeeButton/index.vue'
-import BeeInputSearch from '@/components/base/BeeInputSearch/index.vue'
 import { BeeMessage } from '@/components/base/BeeMessage'
+import BeeSearchInput from '@/components/base/BeeSearchInput/index.vue'
 import BeeDialog from '@/components/BeeDialog/index.vue'
 import BeeLabelCopyable from '@/components/BeeLabelCopyable/index.vue'
 import BeeSegmentedControl from '@/components/BeeSegmentedControl/index.vue'

@@ -149,7 +149,7 @@ export default [
       // --- 元素属性排序（与 .vue 列表页规范一致）---
       // 顺序：指令(v-if/v-for/v-model) → id → ref/key → 其他指令 → 自定义属性(静态+动态绑定+简写布尔) → 事件
       // 注：class/style 不在 order 枚举内，由 Prettier 默认行为处理；同一类别内按字母升序(alphabetical)
-      // 例：<BeeInputSearch v-model="x" class="y" placeholder="z" />
+      // 例：<BeeSearchInput v-model="x" class="y" placeholder="z" />
       'vue/attributes-order': [
         'error',
         {

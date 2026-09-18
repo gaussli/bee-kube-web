@@ -1,7 +1,7 @@
 <template>
   <div class="bee-policy-cell">
     <!-- 主内容（上方）：策略类型分段胶囊（左段类型、右段规则数） -->
-    <div class="bee-policy-cell__label">
+    <div class="bee-policy-cell__top">
       <template v-if="capsules.length">
         <BeeSegmentCapsule
           v-for="item in capsules"
@@ -15,17 +15,11 @@
       <span v-else>-</span>
     </div>
     <!-- 副文本（下方） -->
-    <BeeEllipsisTooltipLabel v-if="sublabel" class="bee-policy-cell__sublabel" :label="sublabel" />
+    <BeeEllipsisTooltipLabel v-if="sublabel" class="bee-policy-cell__bottom" :label="sublabel" />
   </div>
 </template>
 
 <script setup lang="ts">
-/**
- * NetworkPolicyTypeCell 网络策略单元格
- * @module views/kubernetes/network/networkpolicy/components/NetworkPolicyTypeCell
- * @description 纯展示单元，结构与 BeeTableCommonCell 一致：上方为策略类型分段胶囊（左段类型、右段规则数）、
- *              下方为副文本，不发起任何请求
- */
 import { computed } from 'vue'
 
 import type { PolicyType } from '@/config/kubernetes/network/networkpolicy'
@@ -100,9 +94,6 @@ const capsules = computed(() => {
 </script>
 
 <style lang="scss" scoped>
-/**
- * 结构与 BeeTableCommonCell 保持一致：`__label` 主内容行、`__sublabel` 副文本行
- */
 .bee-policy-cell {
   display: flex;
   gap: 8px;
@@ -112,7 +103,7 @@ const capsules = computed(() => {
   width: 100%;
   height: auto;
 
-  &__label {
+  &__top {
     display: flex;
     gap: 8px;
     flex-flow: row wrap;
@@ -121,9 +112,14 @@ const capsules = computed(() => {
     font-size: 14px;
     font-weight: normal;
     color: $color-text-primary;
+
+    .bee-segment-capsule {
+      --bee-segment-capsule-color: #{$color-text-primary};
+      --bee-segment-capsule-color-border: #{$color-text-third};
+    }
   }
 
-  &__sublabel {
+  &__bottom {
     font-size: 12px;
     font-weight: normal;
     color: $color-text-third;

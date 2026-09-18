@@ -2,7 +2,7 @@
   <div class="deployment-pods">
     <!-- 查询表单 -->
     <div class="table-toolbar">
-      <BeeInputSearch v-model="searchKey" class="table-toolbar__search" placeholder="按 UID / 名称 / IP 搜索" />
+      <BeeSearchInput v-model="searchKey" class="table-toolbar__search" placeholder="按 UID / 名称 / IP 搜索" />
       <BeeSelect v-model="queryForm.status" :options="POD_STATUS_OPTIONS" placeholder="状态筛选" />
       <BeeButton icon="basic-search" @click="handleSearch"> 搜索 </BeeButton>
       <BeeButton icon="basic-refresh" @click="handleReset"> 重置 </BeeButton>
@@ -73,8 +73,8 @@ import { useRoute } from 'vue-router'
 import type { PodListVo, PodQueryForm } from '@/types/kubernetes/pod'
 
 import BeeButton from '@/components/base/BeeButton/index.vue'
-import BeeInputSearch from '@/components/base/BeeInputSearch/index.vue'
 import BeePagination from '@/components/base/BeePagination/index.vue'
+import BeeSearchInput from '@/components/base/BeeSearchInput/index.vue'
 import BeeSelect from '@/components/base/BeeSelect/index.vue'
 import BeePodInfoCell from '@/components/BeePodInfoCell/index.vue'
 import BeeTableColumn from '@/components/BeeTable/BeeTableColumn.vue'

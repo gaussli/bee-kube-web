@@ -7,7 +7,7 @@
     <BeeCard class="page-body">
       <!-- 工具栏 -->
       <div class="page-body__toolbar">
-        <BeeInputSearch
+        <BeeSearchInput
           v-model="searchKey"
           class="page-body__toolbar-search"
           placeholder="按 UID / 名称 / 存储类搜索"
@@ -175,8 +175,8 @@ import type { PersistentVolumeMode } from '@/config/kubernetes/storage/persisten
 
 import BeeButton from '@/components/base/BeeButton/index.vue'
 import BeeDialog from '@/components/base/BeeDialog/index.vue'
-import BeeInputSearch from '@/components/base/BeeInputSearch/index.vue'
 import BeePagination from '@/components/base/BeePagination/index.vue'
+import BeeSearchInput from '@/components/base/BeeSearchInput/index.vue'
 import BeeSelect from '@/components/base/BeeSelect/index.vue'
 import BeeTableColumn from '@/components/BeeTable/BeeTableColumn.vue'
 import BeeTableCommonCell from '@/components/BeeTable/BeeTableCommonCell.vue'

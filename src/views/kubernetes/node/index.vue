@@ -7,7 +7,7 @@
     <BeeCard class="page-body">
       <!-- 工具栏 -->
       <div class="page-body__toolbar">
-        <BeeInputSearch v-model="searchKey" class="page-body__toolbar-search" placeholder="按 UID / 名称 / IP 搜索" />
+        <BeeSearchInput v-model="searchKey" class="page-body__toolbar-search" placeholder="按 UID / 名称 / IP 搜索" />
         <BeeSelect v-model="queryForm.status" :options="NODE_STATUS_OPTIONS" placeholder="节点状态" />
         <BeeButton icon="basic-search" @click="handleSearch"> 搜索 </BeeButton>
         <BeeButton icon="basic-refresh" @click="handleReset"> 重置 </BeeButton>
@@ -154,8 +154,8 @@ import { useRoute } from 'vue-router'
 
 import BeeButton from '@/components/base/BeeButton/index.vue'
 import BeeDialog from '@/components/base/BeeDialog/index.vue'
-import BeeInputSearch from '@/components/base/BeeInputSearch/index.vue'
 import BeePagination from '@/components/base/BeePagination/index.vue'
+import BeeSearchInput from '@/components/base/BeeSearchInput/index.vue'
 import BeeSelect from '@/components/base/BeeSelect/index.vue'
 import BeeResourceUsageCell from '@/components/BeeResourceUsageCell/index.vue'
 import BeeTableColumn from '@/components/BeeTable/BeeTableColumn.vue'

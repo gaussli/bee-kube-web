@@ -8,26 +8,16 @@
       <div class="edit-basic">
         <BeeFieldInput id="uid" v-model="detailData.uid" disabled icon="basic-id" label="UID" />
         <BeeFieldInput id="name" v-model="detailData.name" disabled icon="basic-field-name" label="名称 / Name" />
-        <BeeFieldInput
+        <BeeFieldTextarea
           id="desc"
-          v-model="detailData.name"
-          icon="basic-field-name"
-          label="名称 / Name"
-          :max-length="63"
-          :required="true"
-          tip="名称只能包含小写字母、数字和 -，且必须以字母或数字开头和结尾，长度不能超过 63 个字符"
-          :validator="validateName"
+          v-model="detailData.description"
+          class="grid-line"
+          icon="basic-description"
+          label="描述"
+          :max-length="255"
+          :rows="5"
+          tip="描述长度不能超过 255 个字符"
         />
-
-        <div class="edit-basic__field grid-line">
-          <div class="edit-basic__field-name">
-            <BeeIcon class="edit-basic__field-name-icon" name="basic-description" />
-            <span>描述</span>
-          </div>
-          <div class="edit-basic__field-value edit-basic__field-value-textarea">
-            <textarea id="desc" v-model="detailData.description" placeholder="集群描述" :rows="5"></textarea>
-          </div>
-        </div>
       </div>
     </BeeCard>
   </BeePage>
@@ -41,12 +31,10 @@ import { useRouter } from 'vue-router'
 import type { ClusterDetailVo } from '@/types/kubernetes/cluster'
 
 import BeeFieldInput from '@/components/base/BeeFieldInput/index.vue'
-import BeeIcon from '@/components/base/BeeIcon/index.vue'
+import BeeFieldTextarea from '@/components/base/BeeFieldTextarea/index.vue'
 import BeeBackHeader, { type ActionItem } from '@/components/business/BeeBackHeader/index.vue'
 import BeeCard from '@/components/layout/BeeCard/index.vue'
 import BeePage from '@/components/layout/BeePage/index.vue'
-
-import { useValidator } from '../composables/useValidator'
 
 defineOptions({ name: 'ClusterEdit' })
 
@@ -65,8 +53,6 @@ const detailData = reactive<ClusterDetailVo>({
   resource: { capacity: {}, allocation: {}, usage: {} },
   deletable: false,
 })
-
-const { validateName } = useValidator()
 
 const actionItems = ref<ActionItem[]>([
   {
@@ -118,8 +104,6 @@ async function handleSubmit() {}
 </script>
 
 <style lang="scss" scoped>
-@use 'sass:map';
-
 .edit-body {
   display: flex;
   gap: 16px;
@@ -130,59 +114,11 @@ async function handleSubmit() {}
 
   .edit-basic {
     display: grid;
-    gap: 16px;
+    gap: 24px;
     grid-template-columns: 1fr 1fr;
 
-    &__field {
-      display: flex;
-      gap: 8px;
-      flex-direction: column;
-      width: 100%;
-
-      &-name {
-        display: flex;
-        gap: 8px;
-        flex-direction: row;
-        justify-content: flex-start;
-        align-items: center;
-        font-size: 12px;
-        font-weight: normal;
-        color: $color-text-third;
-      }
-
-      &-value {
-        display: flex;
-        gap: 8px;
-        flex-direction: row;
-        justify-content: flex-start;
-        align-items: center;
-        min-height: 32px;
-        padding: 0 14px;
-        border: 1px solid;
-        border-color: map.get($colors-default, 'border', 'base');
-        border-radius: 9999px;
-        font-size: 14px;
-        font-weight: normal;
-        color: $color-text-primary;
-
-        input,
-        textarea {
-          flex: 1;
-        }
-
-        &-textarea {
-          padding: 14px;
-          border-radius: 8px;
-        }
-
-        &.is-disabled {
-          background: map.get($colors-default, 'bg', 'hover');
-        }
-      }
-
-      &.grid-line {
-        grid-column: 1 / 3;
-      }
+    > .grid-line {
+      grid-column: 1 / 3;
     }
   }
 }

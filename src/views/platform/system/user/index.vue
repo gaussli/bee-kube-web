@@ -4,7 +4,7 @@
     <div class="table-header">
       <div class="query-form">
         <div class="query-form-left">
-          <BeeInputSearch v-model="searchKey" placeholder="按 ID / 用户名 / 昵称 搜索" />
+          <BeeSearchInput v-model="searchKey" placeholder="按 ID / 用户名 / 昵称 搜索" />
           <BeeSegmentedControl v-model="queryForm.status" :options="statusOptions" @select="handleSelect" />
         </div>
         <div class="query-form-right">
@@ -221,8 +221,8 @@ import type { UserQueryReq, UserResp } from '@/types/platform/user'
 import { getUserPage } from '@/api/platform/user'
 
 import BeeButton from '@/components/base/BeeButton/index.vue'
-import BeeInputSearch from '@/components/base/BeeInputSearch/index.vue'
 import { BeeMessage } from '@/components/base/BeeMessage'
+import BeeSearchInput from '@/components/base/BeeSearchInput/index.vue'
 import BeeDialog from '@/components/BeeDialog/index.vue'
 import BeeLabelCopyable from '@/components/BeeLabelCopyable/index.vue'
 import BeeSegmentedControl from '@/components/BeeSegmentedControl/index.vue'
