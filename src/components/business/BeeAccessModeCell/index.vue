@@ -3,7 +3,7 @@
     <!-- 主内容（上方）：访问模式胶囊 -->
     <div class="bee-access-mode-cell__label">
       <template v-if="modeLabels.length">
-        <BeeCapsule v-for="item in modeLabels" :key="item.value" :label="item.label" size="tiny" />
+        <BeeCapsule v-for="item in modeLabels" :key="item.value" :copyable="false" :label="item.label" size="tiny" />
       </template>
       <span v-else>-</span>
     </div>

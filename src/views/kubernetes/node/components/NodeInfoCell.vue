@@ -9,10 +9,10 @@
       <!-- 基础信息行：UID 胶囊 + IP 胶囊 + 名称 + 复制图标（hover 本组件时显示） -->
       <div class="content-top">
         <BeeTooltip :tooltip="uid">
-          <BeeCapsule label="UID" size="tiny" />
+          <BeeCapsule :copy-label="uid" label="UID" size="tiny" />
         </BeeTooltip>
         <BeeTooltip :tooltip="ip">
-          <BeeCapsule label="IP" size="tiny" />
+          <BeeCapsule :copy-label="ip" label="IP" size="tiny" />
         </BeeTooltip>
         <BeeEllipsisTooltipLabel :label="name" />
         <BeeIcon class="content-top__icon-copy" name="basic-copy" @click.stop="handleCopy" />

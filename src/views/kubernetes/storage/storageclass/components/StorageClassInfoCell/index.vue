@@ -8,10 +8,10 @@
     <div class="storage-class-info-cell__content">
       <div class="content-top">
         <BeeTooltip :tooltip="uid">
-          <BeeCapsule label="UID" size="tiny" />
+          <BeeCapsule :copy-label="uid" label="UID" size="tiny" />
         </BeeTooltip>
         <BeeEllipsisTooltipLabel :label="name" />
-        <BeeCapsule v-if="isDefault" label="默认" size="tiny" type="primary" />
+        <BeeCapsule v-if="isDefault" :copyable="false" label="默认" size="tiny" type="primary" />
         <BeeIcon class="content-top__icon-copy" name="basic-copy" @click.stop="handleCopy" />
       </div>
       <div class="content-bottom">

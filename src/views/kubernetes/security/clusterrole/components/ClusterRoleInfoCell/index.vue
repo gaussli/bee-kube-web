@@ -8,7 +8,7 @@
     <div class="cluster-role-info-cell__content">
       <div class="content-top">
         <BeeTooltip :tooltip="uid">
-          <BeeCapsule label="UID" size="tiny" />
+          <BeeCapsule :copy-label="uid" label="UID" size="tiny" />
         </BeeTooltip>
         <BeeEllipsisTooltipLabel :label="name" />
         <BeeIcon class="content-top__icon-copy" name="basic-copy" @click.stop="handleCopy" />

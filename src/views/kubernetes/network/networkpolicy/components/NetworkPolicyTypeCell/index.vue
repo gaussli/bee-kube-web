@@ -6,6 +6,7 @@
         <BeeSegmentCapsule
           v-for="item in capsules"
           :key="item.value"
+          :copyable="false"
           :label="item.label"
           size="tiny"
           :sublabel="String(item.count)"
@@ -20,8 +21,8 @@
 
 <script setup lang="ts">
 /**
- * BeePolicyCell 网络策略单元格
- * @module views/kubernetes/network/networkpolicy/components/BeePolicyCell
+ * NetworkPolicyTypeCell 网络策略单元格
+ * @module views/kubernetes/network/networkpolicy/components/NetworkPolicyTypeCell
  * @description 纯展示单元，结构与 BeeTableCommonCell 一致：上方为策略类型分段胶囊（左段类型、右段规则数）、
  *              下方为副文本，不发起任何请求
  */
@@ -34,7 +35,7 @@ import BeeEllipsisTooltipLabel from '@/components/business/BeeEllipsisTooltipLab
 
 import { NETWORKPOLICY_TYPE_OPTIONS } from '@/config/kubernetes/network/networkpolicy'
 
-defineOptions({ name: 'BeePolicyCell' })
+defineOptions({ name: 'NetworkPolicyTypeCell' })
 
 // ==================== 常量 ====================
 /** 已知策略类型的展示顺序 */

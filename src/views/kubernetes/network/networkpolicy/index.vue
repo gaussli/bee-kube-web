@@ -45,7 +45,7 @@
           <!-- 策略类型列 -->
           <BeeTableColumn :width="200">
             <template #default="{ row }">
-              <BeePolicyCell
+              <NetworkPolicyTypeCell
                 :egress-count="row.egressCount"
                 :ingress-count="row.ingressCount"
                 sublabel="策略类型"
@@ -160,8 +160,8 @@ import { useKubernetesStore } from '@/stores'
 
 import { useNamespaceFetch } from '../../namespace/composables/useFetch'
 
-import BeePolicyCell from './components/BeePolicyCell/index.vue'
 import NetworkPolicyInfoCell from './components/NetworkPolicyInfoCell/index.vue'
+import NetworkPolicyTypeCell from './components/NetworkPolicyTypeCell/index.vue'
 import { useNetworkPolicyAction } from './composables/useAction'
 import { useNetworkPolicyFetch } from './composables/useFetch'
 import { useNetworkPolicyPermission } from './composables/usePermission'
