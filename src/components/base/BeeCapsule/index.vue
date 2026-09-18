@@ -1,5 +1,5 @@
 <template>
-  <div class="bee-capsule" :class="[typeClass, sizeClass, copyableClass]" @click="handleCopy(label)">
+  <div class="bee-capsule" :class="[typeClass, sizeClass, copyableClass]" @click="handleCopy">
     <span>{{ label }}</span>
   </div>
 </template>
@@ -14,27 +14,41 @@ import { useClipboard } from '@/composables/useClipboard'
 // ==================== Prop ====================
 const props = withDefaults(
   defineProps<{
+    /** 胶囊展示文本 */
     label: string
+    /** 胶囊配色，default 为灰白描边，其余按主题色渲染 */
     type?: BeeType
+    /** 胶囊尺寸 */
     size?: 'default' | 'tiny' | 'small' | 'large'
+    /** 复制标记，false 时不复制且不显示鼠标手型 */
     copyable?: boolean
+    /** 点击复制的文本，缺省复制 label（用于展示值与复制值不一致的场景） */
+    copyLabel?: string
   }>(),
   {
     type: 'default',
     size: 'default',
     copyable: true,
+    copyLabel: undefined,
   },
 )
 
 // ==================== Reactive State ====================
+/** 配色 class 名称 */
 const typeClass = computed(() => (props.type !== 'default' ? `bee-capsule--${props.type}` : ''))
+/** 尺寸 class 名称 */
 const sizeClass = computed(() => (props.size !== 'default' ? `bee-capsule--${props.size}` : ''))
+/** 可复制 class 名称，非可复制时 hover 不显示手型 */
 const copyableClass = computed(() => (props.copyable ? 'is-copyable' : ''))
 
 // ==================== Handler ====================
-async function handleCopy(s: string) {
+/**
+ * 复制文本到剪贴板
+ * @description copyable 为 false 时直接返回；优先复制 copyLabel，缺省复制 label
+ */
+async function handleCopy() {
   if (props.copyable) {
-    await useClipboard().copy(s)
+    await useClipboard().copy(props.copyLabel || props.label)
   }
 }
 </script>
