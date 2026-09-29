@@ -241,7 +241,7 @@ function handleMoveToLeft() {
   border: 1px solid rgba($color-text-secondary, 0.1);
   border-radius: 8px;
   overflow: hidden;
-  background-color: $bg-overlay;
+  background-color: $color-bg-third;
 }
 
 .panel-header {

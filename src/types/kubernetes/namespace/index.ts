@@ -4,7 +4,7 @@
  */
 
 import type { AuditEntity, DeletableEntity, ExportQueryForm, PageForm, UidEntity } from '@/types/index'
-import type { ObjectMetaCreatableForm, ObjectMetaEditableForm } from '@/types/kubernetes/index'
+import type { NonNamespaceObjectMetaCreatableForm, NonNamespaceObjectMetaEditableForm } from '@/types/kubernetes/index'
 import type { Clustered, NonNamespaceObjectMeta } from '@/types/kubernetes/types'
 
 import type { NamespaceStatus } from '@/config/kubernetes/namespace'
@@ -86,7 +86,7 @@ export interface NamespaceMonitorVo {}
 /**
  * 创建请求对象
  */
-export interface NamespaceCreateForm extends ObjectMetaCreatableForm {
+export interface NamespaceCreateForm extends NonNamespaceObjectMetaCreatableForm {
   /** 描述 */
   description?: string
 }
@@ -94,7 +94,7 @@ export interface NamespaceCreateForm extends ObjectMetaCreatableForm {
 /**
  * 更新请求对象
  */
-export interface NamespaceUpdateForm extends ObjectMetaEditableForm {
+export interface NamespaceUpdateForm extends NonNamespaceObjectMetaEditableForm {
   /** 描述 */
   description?: string
 }

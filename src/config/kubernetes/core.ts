@@ -5,6 +5,16 @@
 
 import type { Option } from '@/config/kubernetes'
 
+/** 元数据（标签 / 注解）操作类型 */
+export const METADATA_OPERATION = {
+  /** 新增 */
+  Add: 1,
+  /** 移除 */
+  Remove: 2,
+  /** 全量替换：传入的键值对将完全覆盖现有数据 */
+  Replace: 3,
+} as const
+
 /** 资源名称原始数据（用于派生类型） */
 const _resourceNames = [
   { value: 'cpu', label: 'CPU' },

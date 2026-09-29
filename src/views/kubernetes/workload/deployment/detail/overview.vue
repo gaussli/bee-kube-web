@@ -218,6 +218,8 @@ const strategyLabel = computed(() => {
 </script>
 
 <style lang="scss" scoped>
+@use 'sass:map';
+
 .deployment-overview {
   display: flex;
   gap: $spacing-16;
@@ -249,7 +251,7 @@ const strategyLabel = computed(() => {
     width: 120px;
     height: 120px;
     border-radius: 50%;
-    background: conic-gradient($color-success 0% 100%, $color-bg-third 100% 100%);
+    background: conic-gradient(map.get($colors-success, 'text', 'base') 0% 100%, $color-bg-third 100% 100%);
 
     &-inner {
       display: flex;
@@ -264,7 +266,7 @@ const strategyLabel = computed(() => {
     &-value {
       font-size: $font-size-18;
       font-weight: bold;
-      color: $color-success;
+      color: map.get($colors-success, 'text', 'base');
     }
   }
 
@@ -394,11 +396,11 @@ const strategyLabel = computed(() => {
     font-weight: 500;
 
     &--true {
-      color: $color-success;
+      color: map.get($colors-success, 'text', 'base');
     }
 
     &--false {
-      color: $color-danger;
+      color: map.get($colors-danger, 'text', 'base');
     }
 
     &-dot {

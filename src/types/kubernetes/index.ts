@@ -28,16 +28,29 @@ export interface MetadataAnnotationForm {
 }
 
 /**
- * 可创建的元数据对象
+ * 可创建的非命名空间级元数据对象
+ * @remarks 用于集群级资源（Namespace、PersistentVolume、StorageClass 等），创建时无需指定所属命名空间
  */
-export interface ObjectMetaCreatableForm extends Partial<Metadata> {
+export interface NonNamespaceObjectMetaCreatableForm extends Partial<Metadata> {
   /** 资源名称 */
   name: string
+}
+
+/**
+ * 可创建的元数据对象（命名空间级资源）
+ */
+export interface ObjectMetaCreatableForm extends NonNamespaceObjectMetaCreatableForm {
   /** 命名空间，默认：default */
   namespace: string
 }
 
 /**
- * 可编辑的元数据对象
+ * 可编辑的非命名空间级元数据对象
+ * @remarks 用于集群级资源
  */
-export interface ObjectMetaEditableForm extends Partial<Metadata> {}
+export interface NonNamespaceObjectMetaEditableForm extends Partial<Metadata> {}
+
+/**
+ * 可编辑的元数据对象（命名空间级资源）
+ */
+export interface ObjectMetaEditableForm extends NonNamespaceObjectMetaEditableForm {}

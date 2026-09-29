@@ -120,6 +120,8 @@ defineExpose({ validate, resetFields, getFormData })
 </script>
 
 <style lang="scss" scoped>
+@use 'sass:map';
+
 .role-form {
   display: flex;
   flex-direction: column;
@@ -239,11 +241,11 @@ defineExpose({ validate, resetFields, getFormData })
   }
 
   &.active .status-dot {
-    background: $color-success;
+    background: map.get($colors-success, 'text', 'base');
   }
 
   &.disabled .status-dot {
-    background: $color-danger;
+    background: map.get($colors-danger, 'text', 'base');
   }
 }
 

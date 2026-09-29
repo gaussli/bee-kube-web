@@ -341,7 +341,7 @@ onMounted(() => {
     }
 
     .label-en {
-      color: $text-quaternary;
+      color: $color-text-third;
     }
   }
 

@@ -1,216 +1,186 @@
 <template>
-  <div class="namespace-create">
-    <!-- 页面标题 -->
-    <div class="page-header">
-      <BeePageHeader description="创建一个新的 Kubernetes 命名空间。" :icon="FolderOpened" title="创建命名空间" />
-    </div>
+  <BeePage>
+    <!-- 页面 Header -->
+    <BeeBackHeader :actions="actionItems" title="创建命名空间" @action="handleHeaderActions" @back="handleBack" />
 
-    <!-- 表单内容 -->
-    <div class="page-body">
-      <el-form ref="formRef" class="create-form" label-width="120px" :model="formData" :rules="formRules">
-        <el-form-item label="所属集群" prop="clusterUid">
-          <el-select v-model="formData.clusterUid" placeholder="选择集群" style="width: 300px">
-            <el-option label="默认集群" value="default" />
-          </el-select>
-        </el-form-item>
-
-        <el-form-item label="命名空间名称" prop="name">
-          <el-input v-model="formData.name" placeholder="请输入命名空间名称" style="width: 300px" />
-        </el-form-item>
-
-        <el-form-item label="标签">
-          <div class="key-value-list">
-            <div v-for="(item, index) in labelList" :key="index" class="key-value-item">
-              <el-input v-model="item.key" placeholder="键" />
-              <span class="separator">:</span>
-              <el-input v-model="item.value" placeholder="值" />
-              <el-button circle :icon="Delete" size="small" @click="removeLabel(index)" />
-            </div>
-            <BeeButton type="primary" @click="addLabel">
-              <template #icon><Plus /></template>
-              添加标签
-            </BeeButton>
-          </div>
-        </el-form-item>
-
-        <el-form-item label="注解">
-          <div class="key-value-list">
-            <div v-for="(item, index) in annotationList" :key="index" class="key-value-item">
-              <el-input v-model="item.key" placeholder="键" />
-              <span class="separator">:</span>
-              <el-input v-model="item.value" placeholder="值" />
-              <el-button circle :icon="Delete" size="small" @click="removeAnnotation(index)" />
-            </div>
-            <BeeButton type="primary" @click="addAnnotation">
-              <template #icon><Plus /></template>
-              添加注解
-            </BeeButton>
-          </div>
-        </el-form-item>
-      </el-form>
-    </div>
-
-    <!-- 底部操作 -->
-    <div class="page-footer">
-      <BeeButton @click="handleCancel">
-        <template #icon><Close /></template>
-        取消
-      </BeeButton>
-      <BeeButton :loading="submitting" type="primary" @click="handleSubmit">
-        <template #icon><Check /></template>
-        创建
-      </BeeButton>
-    </div>
-  </div>
+    <!-- 表单 Body -->
+    <BeeCard class="page-body">
+      <BeeForm ref="formRef" class="page-form">
+        <BeeFieldInput id="clusterUid" v-model="clusterUidText" disabled icon="kubernetes-cluster" label="所属集群" />
+        <BeeFieldInput
+          id="name"
+          v-model="formData.name"
+          icon="kubernetes-namespace"
+          label="名称 / Name"
+          required
+          tip="名称只能包含小写字母、数字和 -，且必须以字母或数字开头和结尾，最长 63 个字符。"
+          :validator="validateName"
+        />
+        <BeeFieldTextarea
+          id="desc"
+          v-model="formData.description"
+          class="grid-line"
+          icon="basic-description"
+          label="描述"
+          :max-length="255"
+          :rows="5"
+          tip="描述长度不能超过 255 个字符"
+          :validator="validateDescription"
+        />
+        <BeeKeyValueEditor
+          v-model="labelItems"
+          class="grid-line"
+          icon="kubernetes-label"
+          :key-validator="validateMetadataKey"
+          label="标签"
+          :value-max-length="63"
+          :value-validator="validateLabelValue"
+        />
+        <BeeKeyValueEditor
+          v-model="annotationItems"
+          class="grid-line"
+          icon="kubernetes-annotation"
+          :key-validator="validateMetadataKey"
+          label="注解"
+        />
+      </BeeForm>
+    </BeeCard>
+  </BeePage>
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue'
+import { computed, reactive, ref } from 'vue'
 
-import { useRouter } from 'vue-router'
+import { useRoute, useRouter } from 'vue-router'
 
-import { FolderOpened, Plus, Delete, Close, Check } from '@element-plus/icons-vue'
-
-import type { FormInstance } from 'element-plus'
-
-import type { NamespaceReq } from '@/types/index'
+import type { NamespaceCreateForm } from '@/types/kubernetes/namespace'
 
 import { createNamespace } from '@/api/kubernetes/namespace/namespace'
 
-import BeeButton from '@/components/base/BeeButton/index.vue'
+import { KubernetesRouteNames } from '@/router/names.ts'
+
+import BeeFieldInput from '@/components/base/BeeFieldInput/index.vue'
+import BeeFieldTextarea from '@/components/base/BeeFieldTextarea/index.vue'
+import BeeForm from '@/components/base/BeeForm/index.vue'
 import { BeeMessage } from '@/components/base/BeeMessage'
-import BeePageHeader from '@/components/business/BeePageHeader/index.vue'
+import BeeBackHeader, { type ActionItem } from '@/components/business/BeeBackHeader/index.vue'
+import BeeKeyValueEditor from '@/components/business/BeeKeyValueEditor/index.vue'
+import { keyValueItemsToRecord, type KeyValueItem } from '@/components/business/BeeKeyValueEditor/types'
+import BeeCard from '@/components/layout/BeeCard/index.vue'
+import BeePage from '@/components/layout/BeePage/index.vue'
+
+import { useValidator } from '../composables/useValidator'
 
 defineOptions({ name: 'NamespaceCreate' })
 
+const route = useRoute()
 const router = useRouter()
-const formRef = ref<FormInstance>()
-const submitting = ref(false)
+const { validateName, validateDescription, validateMetadataKey, validateLabelValue } = useValidator()
 
-const formData = ref<NamespaceReq>({
-  name: '',
-  clusterUid: 'default',
-  labels: {},
-  annotations: {},
-})
+// ==================== Reactive State ====================
+/** 表单实例，提交按钮在本组件之外，通过 ref 调用校验 */
+const formRef = ref<InstanceType<typeof BeeForm>>()
+/** 表单数据 */
+const formData = reactive<{ name: string; description: string }>({ name: '', description: '' })
+/** 标签条目 */
+const labelItems = ref<KeyValueItem[]>([])
+/** 注解条目 */
+const annotationItems = ref<KeyValueItem[]>([])
+/** 是否正在提交 */
+const isSubmitting = ref<boolean>(false)
 
-const formRules = {
-  clusterUid: [{ required: true, message: '请选择集群', trigger: 'change' }],
-  name: [
-    { required: true, message: '请输入命名空间名称', trigger: 'blur' },
-    { pattern: /^[a-z0-9]([-a-z0-9]*[a-z0-9])?$/, message: '名称只能包含小写字母、数字和连字符', trigger: 'blur' },
-  ],
+// ==================== Computed ====================
+/** 所属集群 UID（路由参数） */
+const clusterUid = computed(() => route.params.clusterUid as string)
+/** 所属集群只读展示值 */
+const clusterUidText = ref(clusterUid.value)
+/** 头部操作按钮组：提交期间展示加载态 */
+const actionItems = computed<ActionItem[]>(() => [
+  {
+    value: 'submit',
+    label: '创建',
+    icon: 'basic-right',
+    type: 'success',
+    loading: isSubmitting.value,
+  },
+])
+
+// ==================== Method ====================
+/**
+ * 构建创建请求数据
+ * @returns 创建请求对象
+ */
+function buildFormData(): Partial<NamespaceCreateForm> {
+  return {
+    name: formData.name,
+    description: formData.description || undefined,
+    labels: keyValueItemsToRecord(labelItems.value),
+    annotations: keyValueItemsToRecord(annotationItems.value),
+  }
 }
 
-const labelList = ref<Array<{ key: string; value: string }>>([])
-const annotationList = ref<Array<{ key: string; value: string }>>([])
-
-function addLabel() {
-  labelList.value.push({ key: '', value: '' })
+/**
+ * 提交创建
+ * @description 先聚合校验表单，失败时提示并聚焦首个错误字段；成功后返回命名空间列表
+ */
+async function handleSubmit() {
+  const result = formRef.value?.validate()
+  if (result && !result.valid) {
+    BeeMessage.error(result.firstError ?? '请检查表单填写')
+    return
+  }
+  isSubmitting.value = true
+  try {
+    await createNamespace(clusterUid.value, buildFormData())
+  } catch {
+    BeeMessage.error('创建命名空间失败')
+    return
+  } finally {
+    isSubmitting.value = false
+  }
+  BeeMessage.success('创建成功')
+  await router.push({ name: KubernetesRouteNames.Namespace.List, params: { clusterUid: clusterUid.value } })
 }
 
-function removeLabel(index: number) {
-  labelList.value.splice(index, 1)
-}
-
-function addAnnotation() {
-  annotationList.value.push({ key: '', value: '' })
-}
-
-function removeAnnotation(index: number) {
-  annotationList.value.splice(index, 1)
-}
-
-function handleCancel() {
+// ==================== Handler ====================
+/**
+ * 处理页面返回
+ */
+function handleBack() {
   router.back()
 }
 
-async function handleSubmit() {
-  const valid = await formRef.value?.validate().catch(() => false)
-  if (!valid) return
-
-  // 转换标签和注解
-  const labels: Record<string, string> = {}
-  labelList.value.forEach(item => {
-    if (item.key) labels[item.key] = item.value
-  })
-
-  const annotations: Record<string, string> = {}
-  annotationList.value.forEach(item => {
-    if (item.key) annotations[item.key] = item.value
-  })
-
-  const data: NamespaceReq = {
-    ...formData.value,
-    labels,
-    annotations,
-  }
-
-  submitting.value = true
-  try {
-    await createNamespace(data)
-    BeeMessage.success('创建成功')
-    router.back()
-  } catch {
-    // 失败处理
-  } finally {
-    submitting.value = false
+/**
+ * 处理操作按钮组逻辑
+ * @param value - 操作标识
+ */
+async function handleHeaderActions(value: string) {
+  switch (value) {
+    case 'submit': {
+      await handleSubmit()
+      break
+    }
   }
 }
 </script>
 
 <style lang="scss" scoped>
-.namespace-create {
-  display: flex;
-  flex-direction: column;
-  height: 100%;
-}
-
-.page-header {
-  flex-shrink: 0;
-  padding: 16px 20px 0;
-  margin-bottom: 16px;
-  background-color: $color-bg-secondary;
-}
-
 .page-body {
-  flex: 1;
-  min-height: 0;
-  padding: 0 20px;
-  overflow-y: auto;
-  background-color: $color-bg-secondary;
-}
-
-.page-footer {
   display: flex;
-  justify-content: space-between;
-  flex-shrink: 0;
-  padding: 16px 20px;
-  background-color: $color-bg-secondary;
-}
-
-.create-form {
-  max-width: 800px;
-  padding: 20px 0;
-}
-
-.key-value-list {
-  display: flex;
-  gap: 12px;
+  gap: 16px;
   flex-direction: column;
-}
+  flex: 1;
+  padding: 16px;
+  overflow: hidden auto;
 
-.key-value-item {
-  display: flex;
-  gap: 8px;
-  align-items: center;
+  .page-form {
+    display: grid;
+    gap: 24px;
+    grid-template-columns: 1fr 1fr;
 
-  .el-input {
-    flex: 1;
-  }
-
-  .separator {
-    color: $color-text-secondary;
+    > .grid-line {
+      grid-column: 1 / 3;
+    }
   }
 }
 </style>

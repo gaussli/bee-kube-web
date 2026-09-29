@@ -260,6 +260,8 @@ onMounted(() => {
 </script>
 
 <style lang="scss" scoped>
+@use 'sass:map';
+
 .menu-detail {
   display: flex;
   flex-direction: column;
@@ -355,7 +357,7 @@ onMounted(() => {
       align-items: center;
       padding-bottom: 12px;
       margin-bottom: 16px;
-      border-bottom: 1px solid $bg-selected;
+      border-bottom: 1px solid $color-separator;
       font-size: 14px;
       font-weight: 600;
       color: $color-text-primary;
@@ -395,7 +397,7 @@ onMounted(() => {
 
         .path-value {
           font-family: Monaco, Menlo, monospace;
-          color: $color-success;
+          color: map.get($colors-success, 'text', 'base');
         }
 
         .component-value {
@@ -406,7 +408,7 @@ onMounted(() => {
 
         .permission-value {
           font-family: Monaco, Menlo, monospace;
-          color: $color-warning;
+          color: map.get($colors-warning, 'text', 'base');
         }
       }
 

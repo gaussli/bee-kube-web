@@ -125,6 +125,8 @@ onMounted(() => {
 </script>
 
 <style lang="scss" scoped>
+@use 'sass:map';
+
 .statefulset-detail {
   display: flex;
   flex-direction: column;
@@ -198,10 +200,10 @@ onMounted(() => {
 }
 
 .replicas-ready {
-  color: $color-success;
+  color: map.get($colors-success, 'text', 'base');
 }
 
 .replicas-pending {
-  color: $color-warning;
+  color: map.get($colors-warning, 'text', 'base');
 }
 </style>

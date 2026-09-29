@@ -189,6 +189,7 @@
   <!-- 状态确认 Dialog -->
   <BeeDialog
     v-model="statusDialogVisible"
+    icon="basic-warning"
     :title="currentTargetRow?.status === 1 ? '确认禁用' : '确认启用'"
     @confirm="handleConfirmStatus"
   >
@@ -203,7 +204,12 @@
   </BeeDialog>
 
   <!-- 批量删除 Dialog -->
-  <BeeDialog v-model="batchDeleteDialogVisible" title="确认删除" @confirm="handleConfirmBatchDelete">
+  <BeeDialog
+    v-model="batchDeleteDialogVisible"
+    icon="basic-delete"
+    title="确认删除"
+    @confirm="handleConfirmBatchDelete"
+  >
     <div class="dialog-content">
       <p>
         确定要删除选中的 <strong>{{ selectedRows.length }}</strong> 个菜单吗？
@@ -217,7 +223,7 @@
   </BeeDialog>
 
   <!-- 单个删除 Dialog -->
-  <BeeDialog v-model="deleteDialogVisible" title="确认删除" @confirm="handleConfirmDelete">
+  <BeeDialog v-model="deleteDialogVisible" icon="basic-delete" title="确认删除" @confirm="handleConfirmDelete">
     <div class="dialog-content">
       <p>
         确定要删除菜单 <strong>{{ currentTargetRow?.name }}</strong> 吗？
@@ -248,9 +254,9 @@ import type { MenuQueryReq, MenuResp } from '@/types/platform/menu'
 import { changeMenuStatus, getMenuPage, removeMenu, batchRemoveMenus } from '@/api/platform/menu'
 
 import BeeButton from '@/components/base/BeeButton/index.vue'
+import BeeDialog from '@/components/base/BeeDialog/index.vue'
 import { BeeMessage } from '@/components/base/BeeMessage'
 import BeeSearchInput from '@/components/base/BeeSearchInput/index.vue'
-import BeeDialog from '@/components/BeeDialog/index.vue'
 import BeeLabelCopyable from '@/components/BeeLabelCopyable/index.vue'
 import BeeSegmentedControl from '@/components/BeeSegmentedControl/index.vue'
 import BeeTag from '@/components/BeeTag/index.vue'
@@ -427,6 +433,8 @@ onMounted(() => {
 </script>
 
 <style lang="scss" scoped>
+@use 'sass:map';
+
 .menu-table {
   display: flex;
   flex-direction: column;
@@ -501,13 +509,13 @@ onMounted(() => {
 .path {
   font-family: Monaco, Menlo, monospace;
   font-size: 12px;
-  color: $color-success;
+  color: map.get($colors-success, 'text', 'base');
 }
 
 .permission {
   font-family: Monaco, Menlo, monospace;
   font-size: 12px;
-  color: $color-warning;
+  color: map.get($colors-warning, 'text', 'base');
 }
 
 .parent-menu {

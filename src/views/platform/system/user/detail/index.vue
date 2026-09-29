@@ -308,7 +308,7 @@ onMounted(() => {
       align-items: center;
       padding-bottom: 12px;
       margin-bottom: 16px;
-      border-bottom: 1px solid $bg-selected;
+      border-bottom: 1px solid $color-separator;
       font-size: 14px;
       font-weight: 600;
       color: $color-text-primary;

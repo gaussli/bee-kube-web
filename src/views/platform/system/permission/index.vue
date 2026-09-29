@@ -132,6 +132,7 @@
     <!-- 状态确认 Dialog -->
     <BeeDialog
       v-model="statusDialogVisible"
+      icon="basic-warning"
       :title="currentTargetRow?.status === 1 ? '确认禁用' : '确认启用'"
       @confirm="handleConfirmStatus"
     >
@@ -146,7 +147,12 @@
     </BeeDialog>
 
     <!-- 批量删除 Dialog -->
-    <BeeDialog v-model="batchDeleteDialogVisible" title="确认删除" @confirm="handleConfirmBatchDelete">
+    <BeeDialog
+      v-model="batchDeleteDialogVisible"
+      icon="basic-delete"
+      title="确认删除"
+      @confirm="handleConfirmBatchDelete"
+    >
       <div class="dialog-content">
         <p>
           确定要删除选中的 <strong>{{ selectedRows.length }}</strong> 个权限吗？
@@ -160,7 +166,7 @@
     </BeeDialog>
 
     <!-- 单个删除 Dialog -->
-    <BeeDialog v-model="deleteDialogVisible" title="确认删除" @confirm="handleConfirmDelete">
+    <BeeDialog v-model="deleteDialogVisible" icon="basic-delete" title="确认删除" @confirm="handleConfirmDelete">
       <div class="dialog-content">
         <p>
           确定要删除权限 <strong>{{ currentTargetRow?.name }}</strong> 吗？
@@ -187,9 +193,9 @@ import {
 } from '@/api/platform/permission'
 
 import BeeButton from '@/components/base/BeeButton/index.vue'
+import BeeDialog from '@/components/base/BeeDialog/index.vue'
 import { BeeMessage } from '@/components/base/BeeMessage'
 import BeeSearchInput from '@/components/base/BeeSearchInput/index.vue'
-import BeeDialog from '@/components/BeeDialog/index.vue'
 import BeeLabelCopyable from '@/components/BeeLabelCopyable/index.vue'
 import BeeSegmentedControl from '@/components/BeeSegmentedControl/index.vue'
 import BeeTag from '@/components/BeeTag/index.vue'

@@ -186,6 +186,6 @@ onMounted(() => {
   border-radius: 4px;
   font-family: monospace;
   font-size: 13px;
-  background-color: $bg-card;
+  background-color: $color-bg-third;
 }
 </style>
