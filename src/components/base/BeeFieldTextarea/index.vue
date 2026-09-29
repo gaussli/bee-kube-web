@@ -51,12 +51,13 @@
 </template>
 
 <script setup lang="ts">
-import { computed, ref } from 'vue'
+import { computed, inject, onBeforeUnmount, onMounted, ref } from 'vue'
 
 import { useDebounceFn } from '@vueuse/core'
 
 import type { RuleResult } from '@/validators/types'
 
+import { BEE_FORM_KEY, type BeeFormField } from '@/components/base/BeeForm/context'
 import BeeIcon from '@/components/base/BeeIcon/index.vue'
 
 import { useClipboard } from '@/composables/useClipboard'
@@ -98,6 +99,10 @@ const props = withDefaults(
   },
 )
 
+// ==================== Inject ====================
+/** 最近的 BeeForm 上下文，未包裹在 BeeForm 中时为 undefined */
+const beeForm = inject(BEE_FORM_KEY, undefined)
+
 // ==================== Reactive State ====================
 const textareaRef = ref<HTMLTextAreaElement>()
 const isComposing = ref<boolean>(false)
@@ -118,7 +123,13 @@ const debouncedValidate = useDebounceFn((value: string) => {
 }, 300)
 
 // ==================== Method ====================
-function validate(value: string) {
+/**
+ * 触发字段校验
+ * @description 未传 validator 时直接通过；校验结果写入提示行，同时作为返回值供 BeeForm 聚合
+ * @param value - 字段当前值
+ * @returns 校验错误文案，通过时为 undefined
+ */
+function validate(value: string): RuleResult {
   if (!props.validator) return
   const result: RuleResult = props.validator(value)
   if (result == null) {
@@ -130,6 +141,17 @@ function validate(value: string) {
     tipIconName.value = 'basic-danger'
     tipStatusClass.value = 'bee-field-textarea__tip--danger'
   }
+  return result
+}
+
+/**
+ * 清空校验态
+ * @description 提示行恢复为初始 tip（初始值为空时整个提示行隐藏）
+ */
+function clearValidate() {
+  tipRef.value = props.tip
+  tipIconName.value = 'basic-info'
+  tipStatusClass.value = ''
 }
 
 // ==================== Handler ====================
@@ -162,6 +184,19 @@ function handleClear() {
   validate('')
   textareaRef.value?.focus()
 }
+
+// ==================== Lifecycle ====================
+/** 注册到最近 BeeForm 的字段实例 */
+const field: BeeFormField = {
+  id: props.id,
+  validate: () => validate(modelValue.value ?? ''),
+  focus: () => textareaRef.value?.focus(),
+  clearValidate,
+}
+
+onMounted(() => beeForm?.addField(field))
+
+onBeforeUnmount(() => beeForm?.removeField(field))
 </script>
 
 <style lang="scss" scoped>

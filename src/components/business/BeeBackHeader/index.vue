@@ -10,7 +10,9 @@
       <BeeButton
         v-for="action in actions"
         :key="action.value"
+        :disabled="action.disabled"
         :icon="action.icon"
+        :loading="action.loading"
         :type="action.type"
         @click="handleAction(action.value)"
       >
@@ -39,6 +41,10 @@ export interface ActionItem {
   type?: BeeType
   /** 分隔线标记 */
   divided?: boolean
+  /** 是否禁用 */
+  disabled?: boolean
+  /** 是否加载中：为 true 时按钮显示旋转载入图标且不派发点击事件 */
+  loading?: boolean
 }
 
 defineOptions({ name: 'BeeBackHeader' })
