@@ -3,18 +3,18 @@
 </template>
 
 <script setup lang="ts">
-import { onBeforeUnmount, onMounted, computed, ref, watch } from 'vue'
+import { onBeforeUnmount, onMounted, ref, watch } from 'vue'
 
 import * as monaco from 'monaco-editor'
 
-import { useAppStore } from '@/stores'
-
+import { EDITOR_THEME, registerEditorTheme } from './theme'
 import './worker'
 
 /**
  * 代码编辑器
  * @description 基于 Monaco Editor 的代码编辑器，默认识别 YAML，支持语法高亮、行号、括号匹配、折叠与查找。
- * 主题跟随应用全局主题；`v-model` 绑定纯文本内容，不参与任何解析与校验（内容合法性由提交后的接口返回）
+ * 背景透明（编辑区与行号槽都不铺底色），编辑器会完全融入父级容器背景；
+ * `v-model` 绑定纯文本内容，不参与任何解析与校验（内容合法性由提交后的接口返回）
  * @remarks 容器需要有确定高度：默认 `height="100%"`，依赖父级提供高度；也可显式传入如 `height="480px"`
  * @example
  * ```vue
@@ -42,14 +42,9 @@ const props = withDefaults(
 )
 
 // ==================== Reactive State ====================
-const appStore = useAppStore()
 const containerRef = ref<HTMLDivElement>()
 /** 编辑器实例 */
 let editorInstance: monaco.editor.IStandaloneCodeEditor | undefined
-
-// ==================== Computed ====================
-/** Monaco 主题，跟随应用全局主题 */
-const editorTheme = computed(() => (appStore.theme === 'dark' ? 'vs-dark' : 'vs'))
 
 // ==================== Method ====================
 /**
@@ -57,10 +52,11 @@ const editorTheme = computed(() => (appStore.theme === 'dark' ? 'vs-dark' : 'vs'
  */
 function createEditor() {
   if (!containerRef.value) return
+  registerEditorTheme()
   editorInstance = monaco.editor.create(containerRef.value, {
     value: modelValue.value,
     language: props.language,
-    theme: editorTheme.value,
+    theme: EDITOR_THEME,
     automaticLayout: true,
     readOnly: props.readonly,
     minimap: { enabled: false },
@@ -109,10 +105,6 @@ watch(
   },
 )
 
-watch(editorTheme, value => {
-  monaco.editor.setTheme(value)
-})
-
 // ==================== Lifecycle ====================
 onMounted(() => {
   createEditor()
@@ -131,7 +123,6 @@ onBeforeUnmount(() => {
 .bee-code-editor {
   width: 100%;
   min-height: 240px;
-  border: 1px solid map.get($colors-default, 'border', 'base');
   border-radius: 12px;
   overflow: hidden;
 }
