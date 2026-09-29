@@ -56,11 +56,6 @@ const detailData = reactive<ClusterDetailVo>({
 
 const actionItems = ref<ActionItem[]>([
   {
-    value: 'save',
-    label: '暂存',
-    icon: 'basic-save',
-  },
-  {
     value: 'submit',
     label: '提交',
     icon: 'basic-right',
@@ -81,21 +76,12 @@ function handleBack() {
  */
 async function handleHeaderActions(value: string) {
   switch (value) {
-    case 'save': {
-      await handleSave()
-      break
-    }
     case 'submit': {
       await handleSubmit()
       break
     }
   }
 }
-
-/**
- * 暂存集群数据
- */
-async function handleSave() {}
 
 /**
  * 提交集群数据
