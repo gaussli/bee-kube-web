@@ -14,7 +14,9 @@
           </div>
           <div class="bee-dialog__actions">
             <BeeButton @click="handleCancel">取 消</BeeButton>
-            <BeeButton :loading="props.loading" :type="type" @click="handleConfirm">确 认</BeeButton>
+            <BeeButton :disabled="confirmDisabled" :loading="props.loading" :type="type" @click="handleConfirm">
+              确 认
+            </BeeButton>
           </div>
         </div>
       </div>
@@ -45,10 +47,13 @@ const props = withDefaults(
     type?: BeeType
     /** 加载标记 */
     loading?: boolean
+    /** 确认按钮禁用标记：用于表单未通过校验时阻止提交 */
+    confirmDisabled?: boolean
   }>(),
   {
     type: 'default',
     loading: false,
+    confirmDisabled: false,
   },
 )
 

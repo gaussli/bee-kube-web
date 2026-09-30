@@ -62,6 +62,9 @@ export function useDeploymentAction<T extends dialogData>(
   /** 搜索关键词 */
   const searchKey = ref('')
 
+  /** 扩缩容表单：`valid` 由 BeeScaleDialogContent 校验后回传 */
+  const scaleForm = reactive<{ replicas: number | undefined; valid: boolean }>({ replicas: undefined, valid: true })
+
   const scaleDialogConfig = reactive<DialogConfig>({
     visible: false,
     loading: false,
@@ -246,11 +249,11 @@ export function useDeploymentAction<T extends dialogData>(
   /**
    * 扩缩容无状态应用
    * @param row - 当前行数据
-   * @param row.namespace
-   * @param row.name
    */
   function handleScale(row: T) {
     dialogData.value = row
+    scaleForm.replicas = row.replicas
+    scaleForm.valid = true
     scaleDialogConfig.visible = true
   }
 
@@ -326,15 +329,24 @@ export function useDeploymentAction<T extends dialogData>(
 
   /**
    * 二次确认扩缩容无状态应用
-   * @param newReplicas
+   * @description 副本数取自扩缩容表单，校验失败或与当前副本数相同时不发起请求
    */
-  async function handleConfirmScale(newReplicas: number) {
+  async function handleConfirmScale() {
     if (!dialogData.value) {
       scaleDialogConfig.loading = false
       scaleDialogConfig.visible = false
       return
     }
+    const newReplicas = scaleForm.replicas
+    if (!scaleForm.valid || newReplicas == null) {
+      BeeMessage.error('请输入合法的副本数')
+      return
+    }
     const { namespace, name, replicas } = dialogData.value
+    if (newReplicas === replicas) {
+      BeeMessage.warning('副本数未发生变化')
+      return
+    }
     try {
       scaleDialogConfig.loading = true
       await scaleDeployment(clusterUid.value, namespace, name, { replicas: newReplicas })
@@ -479,6 +491,7 @@ export function useDeploymentAction<T extends dialogData>(
   return {
     // ==================== Reactive State ====================
     searchKey,
+    scaleForm,
     scaleDialogConfig,
     restartDialogConfig,
     resumeDialogConfig,

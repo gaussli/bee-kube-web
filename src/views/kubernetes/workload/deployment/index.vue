@@ -123,13 +123,20 @@
     <!-- 扩缩容 Dialog -->
     <BeeDialog
       v-model="scaleDialogConfig.visible"
+      :confirm-disabled="!scaleForm.valid"
       icon="kubernetes-scale"
       :loading="scaleDialogConfig.loading"
       title="扩缩容无状态应用"
       type="primary"
-      @confirm="handleConfirmScale(5)"
+      @confirm="handleConfirmScale"
     >
-      <span> Scale Form </span>
+      <BeeScaleDialogContent
+        v-model="scaleForm.replicas"
+        v-model:valid="scaleForm.valid"
+        :current-replicas="selectedRow?.replicas ?? 0"
+        :name="selectedRow?.name || ''"
+        resource-type="无状态应用"
+      />
     </BeeDialog>
 
     <!-- 重启确认 Dialog -->
@@ -218,6 +225,7 @@ import BeeTable from '@/components/BeeTable/index.vue'
 import BeeActionCell from '@/components/business/BeeActionCell/index.vue'
 import BeeAuditCell from '@/components/business/BeeAuditCell/index.vue'
 import BeeBatchDeleteDialogContent from '@/components/business/BeeDialogContent/BeeBatchDeleteDialogContent.vue'
+import BeeScaleDialogContent from '@/components/business/BeeDialogContent/BeeScaleDialogContent.vue'
 import BeePageHeader from '@/components/business/BeePageHeader/index.vue'
 import BeeStatusCell from '@/components/business/BeeStatusCell/index.vue'
 import BeeCard from '@/components/layout/BeeCard/index.vue'
@@ -256,6 +264,7 @@ const { tableRef, loading, selectedRow, selectedRows, handleSelectionChange } = 
 const { queryForm, pageData, deployments, fetchDeployments } = useDeploymentFetch(clusterUid, loading)
 const {
   searchKey,
+  scaleForm,
   scaleDialogConfig,
   restartDialogConfig,
   resumeDialogConfig,
