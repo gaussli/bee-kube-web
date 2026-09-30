@@ -30,3 +30,6 @@ export type SecretType = (typeof _secretTypes)[number]['value']
 
 /** Secret 类型配置选项 */
 export const SECRET_TYPE_OPTIONS: Option[] = [{ value: undefined, label: '所有类型' }, ..._secretTypes]
+
+/** Secret 类型表单项选项（不含「所有类型」筛选项） */
+export const SECRET_TYPE_FORM_OPTIONS: Option[] = [..._secretTypes]

@@ -3,17 +3,17 @@
     <BeeTreeNode
       v-for="node in data"
       :key="node[nodeKey]"
-      :node="node"
-      :node-key="nodeKey"
       :checked-keys="checkedKeys"
-      :half-checked-keys="halfCheckedKeys"
       :disabled="disabled"
-      :selected-key="selectedKey"
       :expand-all="defaultExpandAll"
       :expanded-keys="expandedKeys"
-      @toggle="handleToggle"
+      :half-checked-keys="halfCheckedKeys"
+      :node="node"
+      :node-key="nodeKey"
+      :selected-key="selectedKey"
       @check="handleCheck"
       @select="handleSelect"
+      @toggle="handleToggle"
     >
       <template v-for="(_, name) in $slots" #[name]="slotData">
         <slot :name="name" v-bind="slotData || {}" />

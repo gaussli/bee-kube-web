@@ -1,6 +1,6 @@
 <template>
   <div class="user-avatar" :style="{ width: `${size}px`, height: `${size}px` }">
-    <img v-if="src" :src="src" :alt="text" @error="handleError" />
+    <img v-if="src" :alt="text" :src="src" @error="handleError" />
     <span v-else :style="{ backgroundColor: bgColor, fontSize: `${size * 0.4}px` }">{{ initials }}</span>
   </div>
 </template>

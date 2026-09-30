@@ -1,6 +1,15 @@
 <template>
   <!-- 触发器：click 时显示下拉菜单选项 -->
-  <div ref="triggerRef" class="bee-select__trigger" :class="[openedClass]" :style="[widthStyle]" @click="handleToggle">
+  <div
+    ref="triggerRef"
+    class="bee-select__trigger"
+    :class="[openedClass, disabledClass]"
+    :style="[widthStyle]"
+    :tabindex="disabled ? -1 : 0"
+    @click="handleToggle"
+    @keydown.enter.prevent="handleToggle"
+    @keydown.space.prevent="handleToggle"
+  >
     <span class="bee-select__trigger-value" :class="[placeholderClass]">{{ selectedLabel || placeholder }}</span>
     <BeeIcon class="bee-select__trigger-icon-arrow" :class="[openedClass]" name="basic-arrow-down" />
   </div>
@@ -56,11 +65,14 @@ const props = withDefaults(
     placeholder?: string
     /** 组件宽度（px） */
     width?: number | string
+    /** 禁用标记：禁用时不可展开菜单 */
+    disabled?: boolean
   }>(),
   {
     options: () => [],
     placeholder: '请选择',
     width: 120,
+    disabled: false,
   },
 )
 
@@ -86,6 +98,8 @@ const isOpen = ref(false)
 // ==================== Computed ====================
 /** 下拉菜单展开标记 class 名称 */
 const openedClass = computed(() => (isOpen.value ? 'is-opened' : ''))
+/** 禁用标记 class 名称 */
+const disabledClass = computed(() => (props.disabled ? 'is-disabled' : ''))
 /** 占位标记 class 名称 */
 const placeholderClass = computed(() => (!selectedLabel.value ? 'is-placeholder' : ''))
 /** 组件宽度样式对象 */
@@ -179,9 +193,20 @@ function closeMenu() {
  * 切换展开/收起
  */
 function handleToggle() {
+  if (props.disabled) return
   isOpen.value = !isOpen.value
   emit('visible-change', isOpen.value)
 }
+
+/**
+ * 聚焦触发器
+ * @description 供表单在聚合校验失败时定位到本字段
+ */
+function focus() {
+  triggerRef.value?.focus()
+}
+
+defineExpose({ focus })
 
 /**
  * 处理选项选中
@@ -206,6 +231,8 @@ function handleSelect(option: SelectOption) {
   --bee-select-color-active: #{$color-text-primary};
   --bee-select-color-bg-active: var(--bee-select-color-bg);
   --bee-select-color-border-active: #{$color-text-secondary};
+  --bee-select-color-bg-disabled: #{map.get($colors-default, 'bg', 'hover')};
+  --bee-select-color-disabled: #{$color-text-disabled};
 
   /* stylelint-enable order/custom-properties-alphabetical-order */
   display: flex;
@@ -229,6 +256,12 @@ function handleSelect(option: SelectOption) {
     border-color: var(--bee-select-color-border-active);
     color: var(--bee-select-color-active);
     background: var(--bee-select-color-bg-active);
+  }
+
+  &.is-disabled {
+    color: var(--bee-select-color-disabled);
+    background: var(--bee-select-color-bg-disabled);
+    cursor: not-allowed;
   }
 
   &-value {

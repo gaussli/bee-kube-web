@@ -5,9 +5,9 @@
       <circle :cx="center" :cy="center" fill="none" :r="radius" :stroke="bgColor" :stroke-width="strokeWidth" />
       <!-- 数据圆环 -->
       <circle
+        class="ring-progress"
         :cx="center"
         :cy="center"
-        class="ring-progress"
         fill="none"
         :r="radius"
         :stroke="color"

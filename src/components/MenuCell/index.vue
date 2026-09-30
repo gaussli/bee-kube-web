@@ -1,7 +1,7 @@
 <template>
   <div class="menu-info">
     <div class="menu-left">
-      <el-icon :size="24" class="menu-icon">
+      <el-icon class="menu-icon" :size="24">
         <component :is="iconComponent" />
       </el-icon>
     </div>

@@ -1,6 +1,6 @@
 <template>
   <div class="user-profile">
-    <UserAvatar :src="avatar" :name="username" :size="36" />
+    <UserAvatar :name="username" :size="36" :src="avatar" />
     <div class="user-info">
       <div class="username">
         {{ username }}

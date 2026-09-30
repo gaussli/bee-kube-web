@@ -96,7 +96,11 @@ const props = withDefaults(
     disabled?: boolean
     /** 初始提示文案 */
     tip?: string
-    /** 键校验函数：在「键必填」「键重复」校验之后执行 */
+    /** 外部已占用的键：本编辑器内出现相同键时报错（例如 ConfigMap 的 data 与 binaryData 键不允许重叠） */
+    occupiedKeys?: string[]
+    /** 键被外部占用时的错误文案 */
+    occupiedKeyMessage?: string
+    /** 键校验函数：在「键必填」「键重复」「键被占用」校验之后执行 */
     keyValidator?: (key: string, item: KeyValueItem, items: KeyValueItem[]) => RuleResult
     /** 值校验函数：在键校验通过后执行 */
     valueValidator?: (value: string, item: KeyValueItem, items: KeyValueItem[]) => RuleResult
@@ -111,6 +115,8 @@ const props = withDefaults(
     valueMaxLength: undefined,
     disabled: false,
     tip: '',
+    occupiedKeys: () => [],
+    occupiedKeyMessage: '键已被其他字段占用',
     keyValidator: undefined,
     valueValidator: undefined,
   },
@@ -171,6 +177,7 @@ function validateRow(row: KeyValueItem, index: number): RuleResult {
     (item, itemIndex) => itemIndex !== index && !isBlankKeyValueItem(item) && item.key === row.key,
   )
   if (isDuplicated) return `键【${row.key}】重复`
+  if (props.occupiedKeys.includes(row.key)) return props.occupiedKeyMessage
   const keyError = props.keyValidator?.(row.key, row, rows.value)
   if (keyError != null) return keyError
   return props.valueValidator?.(row.value, row, rows.value)
@@ -341,8 +348,8 @@ onBeforeUnmount(() => beeForm?.removeField(field))
 
   &__input {
     flex: 1;
-    min-width: 0;
     height: var(--bee-key-value-editor-height);
+    min-width: 0;
     padding: var(--bee-key-value-editor-padding);
     border: 1px solid;
     border-color: var(--bee-key-value-editor-color-border);
@@ -350,7 +357,7 @@ onBeforeUnmount(() => beeForm?.removeField(field))
     font-size: var(--bee-key-value-editor-font-size);
     font-weight: normal;
     color: var(--bee-key-value-editor-color);
-    background: var(--bee-key-value-editor-color-bg-transparent);
+    background: transparent;
 
     &:focus {
       border-color: var(--bee-key-value-editor-color-border-active);
