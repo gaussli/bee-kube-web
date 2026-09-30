@@ -41,6 +41,9 @@ const _nodeExpressionOperators = [
 /** 节点标签匹配运算符 */
 export type NodeExpressionOperator = (typeof _nodeExpressionOperators)[number]['value']
 
+/** 节点标签匹配运算符配置选项 */
+export const NODE_EXPRESSION_OPERATOR_OPTIONS: Option[] = [..._nodeExpressionOperators]
+
 /** 污点容忍运算符映射 */
 const _tolerationOperators = [
   { value: 'Exists', label: '存在' },
@@ -51,6 +54,9 @@ const _tolerationOperators = [
 
 /** 污点容忍运算符 */
 export type TolerationOperator = (typeof _tolerationOperators)[number]['value']
+
+/** 污点容忍运算符配置选项 */
+export const TOLERATION_OPERATOR_OPTIONS: Option[] = [..._tolerationOperators]
 
 /** EmptyDir 存储介质类型映射 */
 const _emptyDirStorageMediums = [

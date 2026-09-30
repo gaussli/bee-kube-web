@@ -861,9 +861,21 @@ export const mockDeploymentPodList: PodListVo[] = [0, 1, 10, 11, 20]
     namespace: mockDeploymentDetail.namespace,
   }))
 
-const mockDeploymentServiceList: DeploymentServiceListVo[] = mockServiceList
+/**
+ * 关联服务（mock）
+ * @remarks 按固定详情的命名空间过滤，保证与本无状态应用自洽
+ */
+const mockDeploymentServiceList: DeploymentServiceListVo[] = mockServiceList.filter(
+  item => item.namespace === mockDeploymentDetail.namespace,
+)
 
-const mockDeploymentIngressList: DeploymentIngressListVo[] = mockIngressList
+/**
+ * 关联入口（mock）
+ * @remarks 同上，按固定详情的命名空间过滤
+ */
+const mockDeploymentIngressList: DeploymentIngressListVo[] = mockIngressList.filter(
+  item => item.namespace === mockDeploymentDetail.namespace,
+)
 
 export const mockDeploymentNetwork: DeploymentNetworkVo = {
   services: mockDeploymentServiceList,

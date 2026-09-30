@@ -117,6 +117,9 @@ const _taintEffects = [
 /** 污点效果 */
 export type TaintEffect = (typeof _taintEffects)[number]['value']
 
+/** 污点效果配置选项 */
+export const TAINT_EFFECT_OPTIONS: Option[] = [..._taintEffects]
+
 /** HostPath 卷类型原始数据（用于派生类型） */
 const _hostPathTypes = [
   { value: '', label: '未指定' },

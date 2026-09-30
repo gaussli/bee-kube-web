@@ -311,7 +311,9 @@ function getDeploymentHistoryRevisionList(
     if (query.revision && d.revision !== query.revision) return false
     return true
   })
-  const filteredChangeCause = query.changeCause ? filtered.filter(d => d.changeCause === query.changeCause) : []
+  const filteredChangeCause = query.changeCause
+    ? filtered.filter(d => d.changeCause.includes(query.changeCause as string))
+    : []
   const matched = query.changeCause ? Array.from(new Set([...filteredChangeCause])) : filtered
   const page = query.page || 1
   const pageSize = query.pageSize || 10

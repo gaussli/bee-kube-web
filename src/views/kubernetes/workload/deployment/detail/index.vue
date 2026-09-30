@@ -8,7 +8,7 @@
     <BeeCard class="deployment-detail__content">
       <DeploymentOverview v-if="activeTab === 'overview' && detailData" :data="detailData" />
       <DeploymentPods v-else-if="activeTab === 'pods'" />
-      <DeploymentScheduling v-else-if="activeTab === 'scheduling'" />
+      <DeploymentScheduling v-else-if="activeTab === 'scheduling' && detailData" :data="detailData" />
       <DeploymentHistory v-else-if="activeTab === 'history'" />
       <DeploymentNetwork v-else-if="activeTab === 'network'" />
       <DeploymentStorage v-else-if="activeTab === 'storage'" />
