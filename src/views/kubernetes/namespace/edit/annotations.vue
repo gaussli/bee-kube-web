@@ -41,15 +41,14 @@ import {
 import BeeCard from '@/components/layout/BeeCard/index.vue'
 import BeePage from '@/components/layout/BeePage/index.vue'
 
+import { useMetadataValidator } from '@/composables/useMetadataValidator'
 import { METADATA_OPERATION } from '@/config/kubernetes/core'
-
-import { useValidator } from '../composables/useValidator'
 
 defineOptions({ name: 'NamespaceManageAnnotations' })
 
 const route = useRoute()
 const router = useRouter()
-const { validateMetadataKey } = useValidator()
+const { validateMetadataKey } = useMetadataValidator()
 
 // ==================== Reactive State ====================
 /** 表单实例，提交按钮在本组件之外，通过 ref 调用校验 */
