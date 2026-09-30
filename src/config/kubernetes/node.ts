@@ -49,3 +49,32 @@ const _nodeConditionTypes = [
 
 /** 节点条件类型 */
 export type NodeConditionType = (typeof _nodeConditionTypes)[number]['value']
+
+/**
+ * 节点拓扑键配置
+ */
+export interface NodeTopologyKeyOption {
+  /** 拓扑标签键 */
+  key: string
+  /** 展示名称 */
+  label: string
+  /** 输入提示文案 */
+  tip: string
+}
+
+/** 已知节点拓扑键（K8s 稳定版拓扑标签，配置页始终展示，便于新增与修改） */
+export const NODE_TOPOLOGY_KEYS: NodeTopologyKeyOption[] = [
+  {
+    key: 'topology.kubernetes.io/region',
+    label: '区域（Region）',
+    tip: '键为 topology.kubernetes.io/region，例如 cn-north-1；留空表示本次不提交该拓扑标签。',
+  },
+  {
+    key: 'topology.kubernetes.io/zone',
+    label: '可用区（Zone）',
+    tip: '键为 topology.kubernetes.io/zone，例如 cn-north-1a；留空表示本次不提交该拓扑标签。',
+  },
+]
+
+/** 拓扑标签键前缀：用于识别节点上已存在的其它拓扑标签（包含已废弃的 failure-domain 前缀） */
+export const TOPOLOGY_KEY_PREFIXES: string[] = ['topology.kubernetes.io/', 'failure-domain.beta.kubernetes.io/']
