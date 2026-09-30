@@ -1,61 +1,90 @@
 <template>
   <div class="deployment-pods">
-    <!-- 查询表单 -->
-    <div class="table-toolbar">
-      <BeeSearchInput v-model="searchKey" class="table-toolbar__search" placeholder="按 UID / 名称 / IP 搜索" />
+    <!-- 工具栏 -->
+    <div class="deployment-pods__toolbar">
+      <BeeSearchInput
+        v-model="searchKey"
+        class="deployment-pods__toolbar-search"
+        placeholder="按 UID / 名称 / IP 搜索"
+      />
       <BeeSelect v-model="queryForm.status" :options="POD_STATUS_OPTIONS" placeholder="状态筛选" />
       <BeeButton icon="basic-search" @click="handleSearch"> 搜索 </BeeButton>
       <BeeButton icon="basic-refresh" @click="handleReset"> 重置 </BeeButton>
     </div>
 
-    <!-- 表格主体 -->
-    <div class="table-body">
-      <BeeTable :data="tableData" :loading="loading">
+    <!-- 表格 -->
+    <div class="deployment-pods__table">
+      <BeeTable :data="pods" :loading="loading" row-key="uid">
+        <!-- 容器组信息 -->
         <BeeTableColumn :width="500">
           <template #default="{ row }">
             <BeePodInfoCell :icon-size="32" :ip="row.ip" :name="row.name" :uid="row.uid" />
           </template>
         </BeeTableColumn>
-        <BeeTableColumn :width="120">
+        <!-- 状态 -->
+        <BeeTableColumn :width="160">
           <template #default="{ row }">
             <BeeStatusCell :options="POD_STATUS_OPTIONS" :status="row.status" :status-msg="row.statusMsg" />
           </template>
         </BeeTableColumn>
-        <BeeTableColumn :width="100">
+        <!-- 重启次数 -->
+        <BeeTableColumn :width="120">
           <template #default="{ row }">
-            <BeeTableCommonCell subtext="重启次数" :text="String(row.restarts)" />
+            <BeeTableCommonCell :label="String(row.restarts)" sublabel="重启次数" />
           </template>
         </BeeTableColumn>
+        <!-- 所属节点 -->
         <BeeTableColumn :width="200">
           <template #default="{ row }">
-            <BeeTableCommonCell :subtext="row.nodeIp" :text="row.nodeName" />
+            <BeeTableCommonCell :label="row.nodeName" :sublabel="row.nodeIp" />
           </template>
         </BeeTableColumn>
+        <!-- 就绪容器 -->
         <BeeTableColumn :width="140">
           <template #default="{ row }">
-            <BeeTableCommonCell subtext="就绪容器" :text="`${row.readyContainerCount} / ${row.containerCount}`" />
+            <BeeTableCommonCell :label="`${row.readyContainerCount} / ${row.containerCount}`" sublabel="就绪容器" />
           </template>
         </BeeTableColumn>
-        <BeeTableColumn :width="120">
+        <!-- CPU 使用量 -->
+        <BeeTableColumn :width="200">
           <template #default="{ row }">
-            <BeeTableCommonCell subtext="CPU 使用率" :text="row.cpuUsage" />
+            <BeeTableCommonCell
+              :label="formatCpu(row.resource.usage.cpu)"
+              :sublabel="`CPU 使用率 ${cpuUsagePercent(row)}%`"
+            />
           </template>
         </BeeTableColumn>
-        <BeeTableColumn :width="120">
+        <!-- 内存使用量 -->
+        <BeeTableColumn :width="200">
           <template #default="{ row }">
-            <BeeTableCommonCell subtext="内存使用率" :text="row.memoryUsage" />
+            <BeeTableCommonCell
+              :label="formatMemory(row.resource.usage.memory)"
+              :sublabel="`内存使用率 ${memoryUsagePercent(row)}%`"
+            />
+          </template>
+        </BeeTableColumn>
+        <!-- 创建信息 -->
+        <BeeTableColumn :width="200">
+          <template #default="{ row }">
+            <BeeAuditCell :datetime="row.createAt" field-name="创建人 / 时间" :username="row.createBy" />
+          </template>
+        </BeeTableColumn>
+        <!-- 更新信息 -->
+        <BeeTableColumn :width="200">
+          <template #default="{ row }">
+            <BeeAuditCell :datetime="row.updateAt" field-name="更新人 / 时间" :username="row.updateBy" />
           </template>
         </BeeTableColumn>
       </BeeTable>
     </div>
 
-    <!-- 表格底部 -->
-    <div class="table-footer">
+    <!-- 底栏 -->
+    <div class="deployment-pods__footer">
       <BeePagination
-        v-model="pagination.page"
-        v-model:page-size="pagination.pageSize"
-        :total="pagination.total"
-        @change="loadData"
+        v-model:page="pageData.page"
+        v-model:page-size="pageData.pageSize"
+        :total="pageData.total"
+        @change="fetchPods"
       />
     </div>
   </div>
@@ -63,16 +92,21 @@
 
 <script setup lang="ts">
 /**
- * Deployment 容器组列表
+ * Deployment 详情 - 容器组列表
  * @module views/kubernetes/workload/deployment/detail/pods
  */
-import { onMounted, reactive, ref } from 'vue'
+import { computed, onMounted, reactive, ref } from 'vue'
 
 import { useRoute } from 'vue-router'
 
 import type { PodListVo, PodQueryForm } from '@/types/kubernetes/pod'
 
+import { calcPercentage, formatCpu, formatMemory, toBytesOfQuantity, toMillicoresOfQuantity } from '@/utils/kubernetes'
+
+import { getDeploymentPodList } from '@/api/kubernetes/workload/deployment'
+
 import BeeButton from '@/components/base/BeeButton/index.vue'
+import { BeeMessage } from '@/components/base/BeeMessage'
 import BeePagination from '@/components/base/BeePagination/index.vue'
 import BeeSearchInput from '@/components/base/BeeSearchInput/index.vue'
 import BeeSelect from '@/components/base/BeeSelect/index.vue'
@@ -80,107 +114,153 @@ import BeePodInfoCell from '@/components/BeePodInfoCell/index.vue'
 import BeeTableColumn from '@/components/BeeTable/BeeTableColumn.vue'
 import BeeTableCommonCell from '@/components/BeeTable/BeeTableCommonCell.vue'
 import BeeTable from '@/components/BeeTable/index.vue'
+import BeeAuditCell from '@/components/business/BeeAuditCell/index.vue'
 import BeeStatusCell from '@/components/business/BeeStatusCell/index.vue'
 
 import { POD_STATUS_OPTIONS } from '@/config/kubernetes/pod'
 
 defineOptions({ name: 'DeploymentPods' })
 
-// ==================== Constants ====================
-
 const route = useRoute()
 
+// ==================== Computed ====================
+/** 所属集群 UID（路由参数） */
+const clusterUid = computed(() => route.params.clusterUid as string)
+/** 所属命名空间名称（路由参数） */
+const namespace = computed(() => route.params.namespace as string)
+/** 被查看无状态应用名称（路由参数） */
+const deploymentName = computed(() => route.params.name as string)
+
 // ==================== Reactive State ====================
-
-const clusterUid = ref(route.params.clusterUid as string)
-const namespaceUid = ref(route.params.namespaceUid as string)
-const deploymentUid = ref(route.params.uid as string)
-
+/** 列表加载态 */
 const loading = ref(false)
-const tableData = ref<PodListVo[]>([])
+/** 容器组列表 */
+const pods = ref<PodListVo[]>([])
+/** 搜索关键词，同时匹配 UID / 名称 / IP */
 const searchKey = ref('')
-
 /** 查询条件 */
-const queryForm = reactive<Partial<Omit<PodQueryForm, 'name'>>>({
-  status: undefined,
-})
+const queryForm = reactive<Partial<PodQueryForm>>({ status: undefined })
+/** 分页数据 */
+const pageData = reactive({ page: 1, pageSize: 10, total: 0 })
 
-/** 分页 */
-const pagination = reactive({ page: 1, pageSize: 10, total: 0 })
-
-// ==================== Data Loading ====================
+// ==================== Method ====================
+/**
+ * 计算 CPU 使用率（使用量 / 请求量）
+ * @param row - 容器组行数据
+ * @returns 使用率百分比
+ */
+function cpuUsagePercent(row: PodListVo): number {
+  return calcPercentage(
+    toMillicoresOfQuantity(row.resource.usage.cpu),
+    toMillicoresOfQuantity(row.resource.request.cpu),
+  )
+}
 
 /**
- * 加载 Pod 分页列表（暂未对齐文档接口，占位展示）
+ * 计算内存使用率（使用量 / 请求量）
+ * @param row - 容器组行数据
+ * @returns 使用率百分比
  */
-async function loadData() {
-  if (!clusterUid.value || !namespaceUid.value || !deploymentUid.value) {
-    tableData.value = []
-    pagination.total = 0
+function memoryUsagePercent(row: PodListVo): number {
+  return calcPercentage(toBytesOfQuantity(row.resource.usage.memory), toBytesOfQuantity(row.resource.request.memory))
+}
+
+/**
+ * 加载关联容器组列表
+ */
+async function fetchPods() {
+  if (!clusterUid.value || !namespace.value || !deploymentName.value) {
+    pods.value = []
+    pageData.total = 0
     return
   }
   loading.value = true
   try {
-    tableData.value = []
-    pagination.total = 0
+    const { list, total, page, pageSize } = await getDeploymentPodList(
+      clusterUid.value,
+      namespace.value,
+      deploymentName.value,
+      {
+        ...queryForm,
+        namespace: namespace.value,
+        uid: searchKey.value || undefined,
+        name: searchKey.value || undefined,
+        ip: searchKey.value || undefined,
+        page: pageData.page,
+        pageSize: pageData.pageSize,
+      },
+    )
+    pods.value = list
+    pageData.total = total
+    pageData.page = page
+    pageData.pageSize = pageSize
+  } catch {
+    BeeMessage.error('加载容器组列表失败')
   } finally {
     loading.value = false
   }
 }
 
-// ==================== Search & Reset ====================
-
-/** 搜索 */
+// ==================== Handler ====================
+/**
+ * 搜索
+ */
 function handleSearch() {
-  pagination.page = 1
-  void loadData()
+  pageData.page = 1
+  void fetchPods()
 }
 
-/** 重置搜索条件 */
+/**
+ * 重置搜索条件
+ */
 function handleReset() {
   searchKey.value = ''
   queryForm.status = undefined
-  pagination.page = 1
-  pagination.pageSize = 10
-  void loadData()
+  pageData.page = 1
+  pageData.pageSize = 10
+  void fetchPods()
 }
 
 // ==================== Lifecycle ====================
-
 onMounted(() => {
-  void loadData()
+  void fetchPods()
 })
 </script>
 
 <style lang="scss" scoped>
 .deployment-pods {
   display: flex;
-  flex-direction: column;
+  gap: 16px;
+  flex-flow: column;
+  justify-content: flex-start;
+  align-items: stretch;
   flex: 1;
+  width: 100%;
   min-height: 0;
   overflow: hidden;
 
-  .table-toolbar {
+  &__toolbar {
     display: flex;
-    gap: $spacing-8;
+    gap: 8px;
+    flex-flow: row wrap;
     align-items: center;
 
-    &__search {
+    &-search {
       flex: 1;
-      min-width: 0;
+      min-width: 100px;
     }
   }
 
-  .table-body {
+  &__table {
     flex: 1;
     min-height: 0;
-    margin-top: $spacing-16;
   }
 
-  .table-footer {
+  &__footer {
     display: flex;
+    flex-flow: row wrap;
     justify-content: flex-end;
-    padding-top: $spacing-16;
+    align-items: center;
   }
 }
 </style>

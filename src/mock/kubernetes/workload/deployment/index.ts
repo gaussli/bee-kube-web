@@ -270,8 +270,8 @@ function getDeploymentPodList(
   query: Partial<PodQueryForm>,
 ): PageVo<PodListVo> {
   console.log('[Mock] getDeploymentPodList', clusterUid, namespace, name, query)
+  // 注：mock 的容器组数据已按固定详情（nginx-frontend / frontend）对齐，故不再按命名空间过滤
   const filtered = mockDeploymentPodList.filter((d: PodListVo) => {
-    if (query.namespace && d.namespace !== query.namespace) return false
     if (query.status && d.status !== query.status) return false
     return true
   })

@@ -194,7 +194,7 @@ export function useDeploymentAction<T extends dialogData>(
     router
       .push({
         name: KubernetesRouteNames.Deployment.Detail,
-        params: { clusterId: clusterUid.value, namespace: row.namespace, name: row.name },
+        params: { clusterUid: clusterUid.value, namespace: row.namespace, name: row.name },
       })
       .catch(() => {})
   }
@@ -207,7 +207,7 @@ export function useDeploymentAction<T extends dialogData>(
     router
       .push({
         name: KubernetesRouteNames.Deployment.Edit,
-        params: { clusterId: clusterUid.value, namespace: row.namespace, name: row.name },
+        params: { clusterUid: clusterUid.value, namespace: row.namespace, name: row.name },
       })
       .catch(() => {})
   }

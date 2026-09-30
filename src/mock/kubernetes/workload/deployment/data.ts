@@ -846,7 +846,20 @@ status:
   collisionCount: 0
 `
 
-export const mockDeploymentPodList: PodListVo[] = mockPodList
+/**
+ * 无状态应用关联的容器组（mock）
+ * @remarks mock 的详情固定为 nginx-frontend（命名空间 frontend），容器组数据据此派生：
+ * 从共享的容器组数据中取样，并把命名空间与名称前缀对齐到本无状态应用，保证「详情 / 容器组」两侧自洽。
+ * 取样下标覆盖 Running / Pending / Failed 三种状态，便于演示状态筛选
+ */
+export const mockDeploymentPodList: PodListVo[] = [0, 1, 10, 11, 20]
+  .map(index => mockPodList[index])
+  .filter(pod => pod != null)
+  .map(pod => ({
+    ...pod,
+    name: pod.name.replace(/^[^-]+-/, `${mockDeploymentDetail.name}-`),
+    namespace: mockDeploymentDetail.namespace,
+  }))
 
 const mockDeploymentServiceList: DeploymentServiceListVo[] = mockServiceList
 

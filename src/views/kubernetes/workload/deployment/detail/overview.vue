@@ -48,10 +48,10 @@
       <div class="deployment-overview__section-title">基本信息</div>
       <div class="basic-info">
         <div class="basic-info__col">
-          <BeeFieldItem field-name="名称" :field-value="data.metadata.name" />
+          <BeeFieldItem field-name="名称" :field-value="data.name" />
           <BeeFieldItem field-name="UID" :field-value="data.uid" />
           <BeeFieldItem field-name="标签选择器" :field-value="selectorText" />
-          <BeeFieldItem field-name="版本" :field-value="`v${data.metadata.generation}`" />
+          <BeeFieldItem field-name="版本" :field-value="`v${data.generation}`" />
           <BeeFieldItem field-name="创建者" :field-value="data.createBy" />
           <BeeFieldItem field-name="Namespace" :field-value="data.namespace" />
         </div>
@@ -126,7 +126,7 @@
           </div>
           <div class="condition-item__reason">{{ cond.reason }}</div>
           <div class="condition-item__message">{{ cond.message }}</div>
-          <div class="condition-item__time">{{ cond.lastUpdateTime }}</div>
+          <div class="condition-item__time">{{ cond.lastTransitionTime }}</div>
         </div>
       </div>
     </BeeCard>
@@ -156,7 +156,7 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 
-import type { DeploymentDetailVo } from '@/types/kubernetes/workload/types'
+import type { DeploymentDetailVo } from '@/types/kubernetes/workload/deployment'
 
 import { calcPercentage } from '@/utils/kubernetes'
 
@@ -172,9 +172,9 @@ const props = defineProps<{
 
 /** 副本就绪百分比 */
 const replicaPercentage = computed(() => {
-  const { readyReplicas } = props.data.status
-  const desired = props.data.spec.replicas
-  return calcPercentage(readyReplicas, desired)
+  const { readyReplicas } = props.data.statusObj
+  const { replicas } = props.data.spec
+  return calcPercentage(readyReplicas, replicas)
 })
 
 /** 副本就绪环形颜色 */
@@ -187,21 +187,21 @@ const replicaRingColor = computed(() => {
 
 /** 标签选择器展示文本 */
 const selectorText = computed(() => {
-  const sel = props.data.spec.selector.matchLabels
-  return Object.entries(sel)
+  const matchLabels = props.data.spec.selector.matchLabels ?? {}
+  return Object.entries(matchLabels)
     .map(([k, v]) => `${k}: ${v}`)
     .join(', ')
 })
 
 /** 标签列表 */
-const labels = computed(() => Object.entries(props.data.metadata.labels))
+const labels = computed(() => Object.entries(props.data.labels ?? {}))
 
 /** 注解列表 */
-const annotations = computed(() => Object.entries(props.data.metadata.annotations))
+const annotations = computed(() => Object.entries(props.data.annotations ?? {}))
 
 /** 主容器计算资源配置（取模板中第一个主容器） */
 const resources = computed(() => {
-  const containers = props.data.spec.template.spec.containers
+  const containers = props.data.spec.template.spec.containers ?? []
   return containers.length > 0 ? containers[0].resources : undefined
 })
 
