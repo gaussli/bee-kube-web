@@ -6,7 +6,7 @@
     <div class="bee-pod-info-cell__content">
       <div class="bee-pod-info-cell__top">
         <BeeTooltip :tooltip="uid">
-          <BeeTag size="tiny" type="primary">UID</BeeTag>
+          <BeeCapsule :copyable="false" label="UID" size="tiny" />
         </BeeTooltip>
         <span class="bee-pod-info-cell__name">{{ name }}</span>
         <BeeIcon
@@ -29,9 +29,9 @@
  * 上下结构展示 Pod 名称（支持复制）和 IP 信息
  * @module components/BeePodInfoCell
  */
+import BeeCapsule from '@/components/base/BeeCapsule/index.vue'
 import BeeIcon from '@/components/base/BeeIcon/index.vue'
 import BeeTooltip from '@/components/base/BeeTooltip/index.vue'
-import BeeTag from '@/components/BeeTag/index.vue'
 
 import { useClipboard } from '@/composables/useClipboard'
 
