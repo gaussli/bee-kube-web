@@ -1,23 +1,21 @@
 <template>
   <div class="bee-pod-info-cell">
+    <!-- 左部分：容器组图标 -->
     <div class="bee-pod-info-cell__icon">
-      <BeeIcon :name="icon" :size="iconSize" />
+      <BeeIcon :name="icon" />
     </div>
+    <!-- 右部分：容器组基础信息（UID、名称、IP） -->
     <div class="bee-pod-info-cell__content">
-      <div class="bee-pod-info-cell__top">
+      <div class="content-top">
         <BeeTooltip :tooltip="uid">
-          <BeeCapsule :copyable="false" label="UID" size="tiny" />
+          <BeeCapsule :copy-label="uid" label="UID" size="tiny" />
         </BeeTooltip>
-        <span class="bee-pod-info-cell__name">{{ name }}</span>
-        <BeeIcon
-          class="bee-pod-info-cell__copy-icon"
-          name="basic-copy"
-          :size="14"
-          @click.stop="useClipboard().copy(props.name)"
-        />
+        <BeeEllipsisTooltipLabel :label="name" />
+        <BeeIcon class="content-top__icon-copy" name="basic-copy" @click.stop="handleCopy" />
       </div>
-      <div class="bee-pod-info-cell__bottom">
-        <span class="bee-pod-info-cell__ip">{{ ip || '-' }}</span>
+      <div class="content-bottom">
+        <BeeIcon name="basic-url" />
+        <BeeEllipsisTooltipLabel :label="ip || '-'" />
       </div>
     </div>
   </div>
@@ -25,79 +23,95 @@
 
 <script setup lang="ts">
 /**
- * Pod 信息单元格组件
- * 上下结构展示 Pod 名称（支持复制）和 IP 信息
+ * 容器组信息单元格组件
+ * @description 左侧容器组图标；右侧上下两行 —— 上行 UID 胶囊（hover 展示完整 UID、点击复制）+ 名称 + 名称复制按钮，
+ * 下行 IP 地址。与 `NamespaceInfoCell` / `WorkloadInfoCell` 结构保持一致
  * @module components/BeePodInfoCell
  */
 import BeeCapsule from '@/components/base/BeeCapsule/index.vue'
 import BeeIcon from '@/components/base/BeeIcon/index.vue'
 import BeeTooltip from '@/components/base/BeeTooltip/index.vue'
+import BeeEllipsisTooltipLabel from '@/components/business/BeeEllipsisTooltipLabel/index.vue'
 
 import { useClipboard } from '@/composables/useClipboard'
 
 defineOptions({ name: 'BeePodInfoCell' })
 
+// ==================== Prop ====================
 const props = withDefaults(
   defineProps<{
-    /** 左侧图标名称 */
+    /** 容器组图标 */
     icon?: string
-    /** 左侧图标大小 */
-    iconSize?: number
-    /** Kubernetes 资源 UID，hover UID 标签时显示完整 UID */
+    /** 容器组 UID，hover UID 胶囊时以 tooltip 展示完整值 */
     uid: string
-    /** Pod 名称 */
+    /** 容器组名称 */
     name: string
-    /** Pod IP */
+    /** 容器组 IP */
     ip?: string
   }>(),
   {
     icon: 'kubernetes-pod',
-    iconSize: 32,
-    ip: '',
+    ip: '-',
   },
 )
+
+// ==================== Handler ====================
+/**
+ * 复制容器组名称到剪贴板
+ */
+async function handleCopy() {
+  await useClipboard().copy(props.name)
+}
 </script>
 
 <style lang="scss" scoped>
 .bee-pod-info-cell {
   display: flex;
-  gap: $spacing-8;
+  gap: 8px;
   flex-direction: row;
+  justify-content: flex-start;
   align-items: center;
   width: 100%;
   height: auto;
 
   &__icon {
-    display: inline-flex;
-    justify-content: center;
-    align-items: center;
-    flex-shrink: 0;
-    color: var(--bee-row-selected-icon-color, $color-text-secondary);
+    font-size: 48px;
+    color: var(--bee-row-selected-icon-color, $color-text-third);
   }
 
   &__content {
     display: flex;
-    gap: $spacing-8;
+    gap: 8px;
     flex-direction: column;
+    justify-content: center;
+    align-items: flex-start;
     flex: 1;
     min-width: 0;
   }
 
-  &__top {
+  .content-top {
     display: flex;
-    gap: $spacing-8;
+    gap: 8px;
+    flex-direction: row;
+    justify-content: flex-start;
     align-items: center;
-  }
-
-  &__name {
-    font-size: $font-size-14;
+    width: 100%;
+    font-size: 14px;
     color: $color-text-primary;
-    white-space: nowrap;
   }
 
-  &__copy-icon {
-    flex-shrink: 0;
+  .content-bottom {
+    display: flex;
+    gap: 4px;
+    flex-direction: row;
+    justify-content: flex-start;
+    align-items: center;
+    width: 100%;
+    font-size: 12px;
     color: $color-text-third;
+  }
+
+  .content-top__icon-copy {
     opacity: 0;
     cursor: pointer;
     transition: opacity 0.15s;
@@ -107,21 +121,8 @@ const props = withDefaults(
     }
   }
 
-  &:hover &__copy-icon {
+  &:hover .content-top__icon-copy {
     opacity: 1;
-  }
-
-  &__bottom {
-    min-width: 0;
-  }
-
-  &__ip {
-    display: block;
-    overflow: hidden;
-    font-size: $font-size-12;
-    color: $color-text-third;
-    text-overflow: ellipsis;
-    white-space: nowrap;
   }
 }
 </style>

@@ -18,7 +18,7 @@
         <!-- 容器组信息 -->
         <BeeTableColumn :width="500">
           <template #default="{ row }">
-            <BeePodInfoCell :icon-size="32" :ip="row.ip" :name="row.name" :uid="row.uid" />
+            <BeePodInfoCell :ip="row.ip" :name="row.name" :uid="row.uid" />
           </template>
         </BeeTableColumn>
         <!-- 状态 -->
