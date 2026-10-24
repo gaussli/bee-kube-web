@@ -120,10 +120,12 @@ function handleClick(index: number, value?: string | number) {
   // ---- 通用 ----
   --bee-segmented-bg: transparent;
   --bee-segmented-color: #{$color-text-primary};
-  --bee-segmented-hover-bg: map.get($colors-primary, 'bg', 'hover');
+  // hover 用轻量中性提示，避免与选中态的深色填充混淆
+  --bee-segmented-hover-bg: rgb(255 255 255 / 8%);
 
   // ---- 选中 ----
-  --bee-segmented-slider-bg: map.get($colors-primary, 'bg', 'active');
+  // 选中滑块用半透明主色底，与未选/hover 明确区分
+  --bee-segmented-slider-bg: rgb(200 100 0 / 18%);
   --bee-segmented-slider-border-color: map.get($colors-primary, 'border', 'active');
   --bee-segmented-active-color: map.get($colors-primary, 'text', 'active');
   /* stylelint-enable order/custom-properties-alphabetical-order */
@@ -164,11 +166,13 @@ function handleClick(index: number, value?: string | number) {
     white-space: nowrap;
     cursor: pointer;
     user-select: none;
-    transition: color 0.25s ease;
+    transition: color 0.25s ease, background-color 0.25s ease;
 
-    &:hover {
+    // 仅未选项 hover，避免覆盖选中态的圆环；hover 给主色文字反馈
+    &:not(.active):hover {
       border-radius: 9999px;
       background-color: var(--bee-segmented-hover-bg);
+      color: var(--bee-segmented-active-color);
     }
 
     &.active {
