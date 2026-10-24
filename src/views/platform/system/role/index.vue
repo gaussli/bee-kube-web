@@ -5,7 +5,7 @@
       <div class="query-form">
         <div class="query-form-left">
           <BeeSearchInput v-model="searchKey" placeholder="按 ID / 角色名称 / 编码 搜索" />
-          <BeeSegmentedControl v-model="queryForm.status" :options="statusOptions" @select="handleSelect" />
+          <BeeSegmented v-model="queryForm.status" :options="statusOptions" @select="handleSelect" />
         </div>
         <div class="query-form-right">
           <BeeButton @click="handleReset">
@@ -235,7 +235,7 @@ import BeeDialog from '@/components/base/BeeDialog/index.vue'
 import { BeeMessage } from '@/components/base/BeeMessage'
 import BeeSearchInput from '@/components/base/BeeSearchInput/index.vue'
 import BeeLabelCopyable from '@/components/BeeLabelCopyable/index.vue'
-import BeeSegmentedControl from '@/components/BeeSegmentedControl/index.vue'
+import BeeSegmented from '@/components/BeeSegmented/index.vue'
 import BeeTag from '@/components/BeeTag/index.vue'
 import BeeAuditCell from '@/components/business/BeeAuditCell/index.vue'
 import BeeIconLabel from '@/components/business/BeeIconLabel/index.vue'

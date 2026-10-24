@@ -3,7 +3,7 @@
     <BeeBackHeader title="无状态应用详情" @action="handleAction" @back="handleBack" />
     <BeeResourceOverviewInfo :data="resourceData" />
     <BeeCard class="deployment-detail__tabs">
-      <BeeSegmentedControl v-model="activeTab" :options="tabOptions" />
+      <BeeSegmented v-model="activeTab" :options="tabOptions" />
     </BeeCard>
     <BeeCard class="deployment-detail__content">
       <DeploymentOverview v-if="activeTab === 'overview' && detailData" :data="detailData" />
@@ -29,7 +29,7 @@ import type { DeploymentDetailVo } from '@/types/kubernetes/workload/deployment/
 
 import { getDeploymentDetail } from '@/api/kubernetes/workload/deployment'
 
-import BeeSegmentedControl from '@/components/BeeSegmentedControl/index.vue'
+import BeeSegmented from '@/components/BeeSegmented/index.vue'
 import BeeBackHeader from '@/components/business/BeeBackHeader/index.vue'
 import BeeCard from '@/components/layout/BeeCard/index.vue'
 import BeePage from '@/components/layout/BeePage/index.vue'

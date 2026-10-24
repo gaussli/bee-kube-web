@@ -1,14 +1,14 @@
 <template>
-  <div ref="containerRef" class="bee-segmented-control">
-    <div class="bee-segmented-control__slider" :style="sliderStyle" />
+  <div ref="containerRef" class="bee-segmented">
+    <div class="bee-segmented__slider" :style="sliderStyle" />
     <div
       v-for="(option, index) in options"
       :key="option.value"
-      class="bee-segmented-control__item"
+      class="bee-segmented__item"
       :class="{ active: activeIndex === index }"
       @click="handleClick(index, option.value)"
     >
-      <BeeIcon v-if="option.icon" class="bee-segmented-control__icon" :name="option.icon" :size="14" />
+      <BeeIcon v-if="option.icon" class="bee-segmented__icon" :name="option.icon" :size="14" />
       {{ option.label }}
     </div>
   </div>
@@ -17,13 +17,13 @@
 <script setup lang="ts">
 /**
  * 分段控制器组件
- * @module components/BeeSegmentedControl
+ * @module components/BeeSegmented
  */
 import { computed, ref, watch, nextTick, onMounted } from 'vue'
 
 import BeeIcon from '@/components/base/BeeIcon/index.vue'
 
-defineOptions({ name: 'BeeSegmentedControl' })
+defineOptions({ name: 'BeeSegmented' })
 
 /** 分段控制器选项 */
 interface Option {
@@ -57,7 +57,7 @@ const activeIndex = ref<number>(0)
  */
 const sliderStyle = computed(() => {
   if (!containerRef.value) return {}
-  const items = containerRef.value.querySelectorAll('.bee-segmented-control__item')
+  const items = containerRef.value.querySelectorAll('.bee-segmented__item')
   const activeItem = items[activeIndex.value] as HTMLElement
   if (!activeItem) return {}
   return {
@@ -115,7 +115,7 @@ function handleClick(index: number, value?: string | number) {
 <style lang="scss" scoped>
 @use 'sass:map';
 
-.bee-segmented-control {
+.bee-segmented {
   /* stylelint-disable order/custom-properties-alphabetical-order */
   // ---- 通用 ----
   --bee-segmented-bg: transparent;

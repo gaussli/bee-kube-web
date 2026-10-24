@@ -1,7 +1,7 @@
 <template>
   <header class="bee-header">
     <div class="header-left">
-      <BeeSegmentedControl v-model="currentTab" :options="tabOptions" @select="handleTabChange" />
+      <BeeSegmented v-model="currentTab" :options="tabOptions" @select="handleTabChange" />
     </div>
 
     <div class="header-title">
@@ -44,7 +44,7 @@ import BeeDropdown from '@/components/base/BeeDropdown/index.vue'
 import BeeIconButton from '@/components/base/BeeIconButton/index.vue'
 import { BeeMessage } from '@/components/base/BeeMessage'
 import BeeTooltip from '@/components/base/BeeTooltip/index.vue'
-import BeeSegmentedControl from '@/components/BeeSegmentedControl/index.vue'
+import BeeSegmented from '@/components/BeeSegmented/index.vue'
 import BeeHeaderUserInfo from '@/components/business/BeeHeaderUserInfo/index.vue'
 
 import { useAppStore, useUserStore } from '@/stores'
